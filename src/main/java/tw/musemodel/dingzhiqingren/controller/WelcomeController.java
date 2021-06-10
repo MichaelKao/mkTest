@@ -340,7 +340,6 @@ public class WelcomeController {
 		try {
 			jsonObject = loverService.reactivate(username, request, locale);
 		} catch (NoSuchElementException ignore) {
-			LOGGER.debug("第三百四十三行");
 			jsonObject = new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
 					"reactivate.notFound",
@@ -368,7 +367,9 @@ public class WelcomeController {
 			return new ModelAndView("redirect:/");
 		}
 
-		Document document = servant.parseDocument();
+		Document document = servant.parseDocument(
+			"classpath:/skeleton/signIn.xml"
+		);
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.signIn",
@@ -376,7 +377,18 @@ public class WelcomeController {
 			locale
 		));
 
-		Element countriesElement = document.createElement("countries");
+		Element formElement = document.createElement("form");
+		formElement.setAttribute(
+			"i18n-submit",
+			messageSource.getMessage(
+				"signIn.form.submit",
+				null,
+				locale
+			)
+		);
+		documentElement.appendChild(formElement);
+
+		Element countryElement = document.createElement("country");
 		servant.getCountries().stream().map(country -> {
 			String callingCode = country.getCallingCode();
 			Element optionElement = document.createElement("option");
@@ -385,14 +397,21 @@ public class WelcomeController {
 				String.format(
 					"+%s (%s)",
 					callingCode,
-					country.getName()
+					messageSource.getMessage(
+						String.format(
+							"country.%s",
+							country.getName()
+						),
+						null,
+						locale
+					)
 				)
 			);
 			return optionElement;
-		}).forEachOrdered(countryElement -> {
-			countriesElement.appendChild(countryElement);
+		}).forEachOrdered(optionElement -> {
+			countryElement.appendChild(optionElement);
 		});
-		documentElement.appendChild(countriesElement);
+		formElement.appendChild(countryElement);
 
 		ModelAndView modelAndView = new ModelAndView("signIn");
 		modelAndView.getModelMap().addAttribute(document);

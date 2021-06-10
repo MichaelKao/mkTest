@@ -49,7 +49,7 @@
 				</DIV>
 			</DIV>
 			<DIV class="form-group mb-3">
-				<BUTTON class="btn btn-primary" id="signInButton" type="submit">
+				<BUTTON class="btn btn-primary" type="submit">
 					<xsl:value-of select="@i18n-submit"/>
 				</BUTTON>
 			</DIV>
