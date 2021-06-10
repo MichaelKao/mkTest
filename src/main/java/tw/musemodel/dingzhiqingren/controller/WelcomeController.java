@@ -213,7 +213,7 @@ public class WelcomeController {
 		formElement.setAttribute(
 			"i18n-submit",
 			messageSource.getMessage(
-				"signIn.form.submit",
+				"activated.form.submit",
 				null,
 				locale
 			)
@@ -228,7 +228,7 @@ public class WelcomeController {
 
 		Element shadowElement = document.createElement("shadow");
 		shadowElement.setAttribute("i18n", messageSource.getMessage(
-			"activated.form.submit",
+			"activated.form.shadow",
 			null,
 			locale
 		));
