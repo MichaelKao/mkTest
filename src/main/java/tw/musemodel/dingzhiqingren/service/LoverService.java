@@ -126,12 +126,16 @@ public class LoverService {
 	}
 
 	@Transactional
-	public JSONObject activated(Activated activated, HttpServletRequest request) {
+	public JSONObject activated(Activated activated, HttpServletRequest request, Locale locale) {
 		Lover lover = loadByIdentifier(activated.getIdentifier());
 		if (Objects.isNull(lover)) {
 			LOGGER.debug("初始化密码时找不到情人");
 			return new JavaScriptObjectNotation().
-				withReason("activated.cannotBeAuthenticated").
+				withReason(messageSource.getMessage(
+					"activated.mustntBeAuthenticated",
+					null,
+					locale
+				)).
 				withResponse(false).
 				toJSONObject();
 		}
@@ -165,7 +169,11 @@ public class LoverService {
 		);
 
 		return new JavaScriptObjectNotation().
-			withReason("activated.done").
+			withReason(messageSource.getMessage(
+				"activated.done",
+				null,
+				locale
+			)).
 			withRedirect("/me.asp").
 			withResponse(true).
 			toJSONObject();

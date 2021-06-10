@@ -209,11 +209,30 @@ public class WelcomeController {
 			locale
 		));
 
+		Element formElement = document.createElement("form");
+		formElement.setAttribute(
+			"i18n-submit",
+			messageSource.getMessage(
+				"signIn.form.submit",
+				null,
+				locale
+			)
+		);
+		documentElement.appendChild(formElement);
+
 		Element identifierElement = document.createElement("identifier");
 		identifierElement.setTextContent(
 			lover.getIdentifier().toString()
 		);
-		documentElement.appendChild(identifierElement);
+		formElement.appendChild(identifierElement);
+
+		Element shadowElement = document.createElement("shadow");
+		shadowElement.setAttribute("i18n", messageSource.getMessage(
+			"activated.form.submit",
+			null,
+			locale
+		));
+		formElement.appendChild(shadowElement);
 
 		ModelAndView modelAndView = new ModelAndView("activated");
 		modelAndView.getModelMap().addAttribute(document);
@@ -235,14 +254,14 @@ public class WelcomeController {
 			LOGGER.debug("登入状态下禁止初始化密码");
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
-					"activated.cannotBeAuthenticated",
+					"activated.mustntBeAuthenticated",
 					null,
 					locale
 				)).
 				withResponse(false).
 				toString();
 		}
-		return loverService.activated(activated, request).toString();
+		return loverService.activated(activated, request, locale).toString();
 	}
 
 	/**
