@@ -38,7 +38,7 @@
 				</DIV>
 			</DIV>
 			<DIV class="container">
-				<FORM action="{@path}" method="post">
+				<FORM action="/activated.asp" method="post">
 					<INPUT class="d-none" name="identifier" type="hidden" value="{identifier}"/>
 					<DIV class="form-group mb-3">
 						<DIV class="input-group">

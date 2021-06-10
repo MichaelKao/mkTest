@@ -61,9 +61,9 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 				authorizeRequests -> authorizeRequests.
 					antMatchers(
 						"/",
+						"/activate.asp",
+						"/activate.json",
 						"/activated.asp",
-						"/activation.asp",
-						"/activation.json",
 						"/authentication.json",
 						"/reactivate.asp",
 						"/reactivate.json",
@@ -124,9 +124,9 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 		webSecurity.
 			ignoring().
 			antMatchers(
-				"/SCRIPT/*",
-				"/STYLE/*",
-				"/webhook/*"
+				"/SCRIPT/**",
+				"/STYLE/**",
+				"/webhook/**"
 			);
 		LOGGER.debug(
 			String.format(
