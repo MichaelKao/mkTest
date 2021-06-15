@@ -126,6 +126,7 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 			antMatchers(
 				"/SCRIPT/**",
 				"/STYLE/**",
+				"/poc/**",
 				"/webhook/**"
 			);
 		LOGGER.debug(
