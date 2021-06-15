@@ -27,28 +27,34 @@
 		</HEAD>
 		<BODY class="mt-3 mb-3">
 			<DIV class="container">
-				<FORM action="/signIn.asp" method="post">
-					<INPUT class="d-none" id="username" name="username" type="hidden"/>
-					<DIV class="form-group mb-3">
-						<DIV class="input-group">
-							<SELECT class="custom-select" id="country" required="">
-								<xsl:apply-templates select="countries/*"/>
-							</SELECT>
-							<DIV class="input-group-append">
-								<INPUT class="form-control" id="cellularPhoneNumber" required="" type="text"/>
-							</DIV>
-						</DIV>
-						<DIV class="input-group mb-3">
-							<INPUT class="form-control" name="password" required="" type="password"/>
-						</DIV>
-					</DIV>
-					<DIV class="form-group mb-3">
-						<BUTTON class="btn btn-primary" id="signInButton" type="submit">登入</BUTTON>
-					</DIV>
-				</FORM>
+				<xsl:apply-templates select="form"/>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/signIn.js"/>
 		</BODY>
+	</xsl:template>
+
+	<xsl:template match="form">
+		<FORM action="/signIn.asp" method="post">
+			<INPUT class="d-none" id="username" name="username" type="hidden"/>
+			<DIV class="form-group mb-3">
+				<DIV class="input-group">
+					<SELECT class="custom-select" id="country" required="">
+						<xsl:apply-templates select="country/*"/>
+					</SELECT>
+					<DIV class="input-group-append">
+						<INPUT class="form-control" id="cellularPhoneNumber" required="" type="text"/>
+					</DIV>
+				</DIV>
+				<DIV class="input-group mb-3">
+					<INPUT class="form-control" name="password" required="" type="password"/>
+				</DIV>
+			</DIV>
+			<DIV class="form-group mb-3">
+				<BUTTON class="btn btn-primary" type="submit">
+					<xsl:value-of select="@i18n-submit"/>
+				</BUTTON>
+			</DIV>
+		</FORM>
 	</xsl:template>
 </xsl:stylesheet>

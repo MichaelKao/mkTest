@@ -38,7 +38,7 @@
 				</DIV>
 			</DIV>
 			<DIV class="container">
-				<FORM action="{@path}" method="post">
+				<FORM action="/activate.json" method="post">
 					<DIV class="form-group mb-3">
 						<DIV class="input-group">
 							<DIV class="input-group-prepend">

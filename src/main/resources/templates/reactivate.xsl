@@ -26,37 +26,33 @@
 			<xsl:call-template name="headLinkTags"/>
 		</HEAD>
 		<BODY class="mt-3 mb-3">
-			<DIV class="p-3 position-absolute" style="top:0;right:0">
-				<DIV class="toast hide" data-delay="3000" role="alert">
-					<DIV class="toast-header">
-						<STRONG class="mr-auto"/>
-						<BUTTON type="button" class="ml-2 mb-1 close" data-dismiss="toast">
-							<SPAN>&#215;</SPAN>
-						</BUTTON>
-					</DIV>
-					<DIV class="toast-body"/>
-				</DIV>
-			</DIV>
+			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container">
-				<FORM action="/reactivate.json" method="post">
-					<INPUT class="d-none" id="username" name="username" type="hidden"/>
-					<DIV class="form-group mb-3">
-						<DIV class="input-group">
-							<SELECT class="custom-select" id="country" required="">
-								<xsl:apply-templates select="countries/*"/>
-							</SELECT>
-							<DIV class="input-group-append">
-								<INPUT class="form-control" id="cellularPhoneNumber" required="" type="text"/>
-							</DIV>
-						</DIV>
-					</DIV>
-					<DIV class="form-group mb-3">
-						<BUTTON class="btn btn-primary" id="signInButton" type="submit">重新激活</BUTTON>
-					</DIV>
-				</FORM>
+				<xsl:apply-templates select="form"/>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/reactivate.js"/>
 		</BODY>
+	</xsl:template>
+
+	<xsl:template match="form">
+		<FORM action="/reactivate.json" method="post">
+			<INPUT class="d-none" id="username" name="username" type="hidden"/>
+			<DIV class="form-group mb-3">
+				<DIV class="input-group">
+					<SELECT class="custom-select" id="country" required="">
+						<xsl:apply-templates select="country/*"/>
+					</SELECT>
+					<DIV class="input-group-append">
+						<INPUT class="form-control" id="cellularPhoneNumber" required="" type="text"/>
+					</DIV>
+				</DIV>
+			</DIV>
+			<DIV class="form-group mb-3">
+				<BUTTON class="btn btn-primary" type="submit">
+					<xsl:value-of select="@i18n-submit"/>
+				</BUTTON>
+			</DIV>
+		</FORM>
 	</xsl:template>
 </xsl:stylesheet>

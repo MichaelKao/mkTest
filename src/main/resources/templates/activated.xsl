@@ -26,35 +26,33 @@
 			<xsl:call-template name="headLinkTags"/>
 		</HEAD>
 		<BODY class="mt-3 mb-3">
-			<DIV class="p-3 position-absolute" style="top:0;right:0">
-				<DIV class="toast hide" data-delay="3000" role="alert">
-					<DIV class="toast-header">
-						<STRONG class="mr-auto"/>
-						<BUTTON type="button" class="ml-2 mb-1 close" data-dismiss="toast">
-							<SPAN>&#215;</SPAN>
-						</BUTTON>
-					</DIV>
-					<DIV class="toast-body"/>
-				</DIV>
-			</DIV>
+			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container">
-				<FORM action="{@path}" method="post">
-					<INPUT class="d-none" name="identifier" type="hidden" value="{identifier}"/>
-					<DIV class="form-group mb-3">
-						<DIV class="input-group">
-							<DIV class="input-group-prepend">
-								<LABEL class="input-group-text" for="shadow">密碼</LABEL>
-							</DIV>
-							<INPUT class="form-control" id="shadow" name="shadow" required="" type="password"/>
-							<DIV class="input-group-append">
-								<BUTTON class="btn btn-primary" type="submit">開始</BUTTON>
-							</DIV>
-						</DIV>
-					</DIV>
-				</FORM>
+				<xsl:apply-templates select="form"/>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
-			<SCRIPT src="/SCRIPT/activation.js"/>
+			<SCRIPT src="/SCRIPT/activate.js"/>
 		</BODY>
+	</xsl:template>
+
+	<xsl:template match="form">
+		<FORM action="/activated.asp" method="post">
+			<INPUT class="d-none" name="identifier" type="hidden" value="{identifier}"/>
+			<DIV class="form-group mb-3">
+				<DIV class="input-group">
+					<DIV class="input-group-prepend">
+						<LABEL class="input-group-text" for="shadow">
+							<xsl:value-of select="shadow/@i18n"/>
+						</LABEL>
+					</DIV>
+					<INPUT class="form-control" id="shadow" name="shadow" required="" type="password"/>
+					<DIV class="input-group-append">
+						<BUTTON class="btn btn-primary" type="submit">
+							<xsl:value-of select="@i18n-submit"/>
+						</BUTTON>
+					</DIV>
+				</DIV>
+			</DIV>
+		</FORM>
 	</xsl:template>
 </xsl:stylesheet>

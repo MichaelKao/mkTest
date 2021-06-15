@@ -39,7 +39,7 @@ public class SignedUpListener implements ApplicationListener<SignedUpEvent> {
 		PublishResult publishResult = AMAZON_SNS.publish(
 			new PublishRequest().
 				withMessage(String.format(
-					"請造訪 https://%s/activation.asp 並輸入激活碼：%s。",
+					"請造訪 https://%s/activate.asp 並輸入激活碼：%s。",
 					event.getDomainName(),
 					activation.getString()
 				)).

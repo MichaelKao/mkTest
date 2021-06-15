@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE document [
+<!ELEMENT document (form)>
+<!ATTLIST document
+	title CDATA #IMPLIED
+>
+<!ELEMENT form (country)>
+<!ATTLIST form
+	i18n-submit CDATA #IMPLIED
+>
+<!ELEMENT country (option+)>
+<!ATTLIST country
+	i18n CDATA #IMPLIED
+>
+<!ELEMENT option (#PCDATA)>
+<!ATTLIST option
+	selected CDATA	#IMPLIED
+	value CDATA	#IMPLIED
+>
+]><document/>
