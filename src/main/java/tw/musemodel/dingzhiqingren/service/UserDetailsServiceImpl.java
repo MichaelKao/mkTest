@@ -47,13 +47,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	private static Collection<GrantedAuthority> authorities(Collection<Role> roles) {
 		Collection<GrantedAuthority> authorities = new ArrayList<>();
-		for (Role role : roles) {
+		roles.forEach(role -> {
 			authorities.add(
 				new SimpleGrantedAuthority(
 					role.getTextualRepresentation()
 				)
 			);
-		}
+		});
 		return authorities;
 	}
 }

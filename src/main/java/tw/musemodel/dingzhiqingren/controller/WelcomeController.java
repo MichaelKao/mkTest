@@ -3,6 +3,7 @@ package tw.musemodel.dingzhiqingren.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -49,6 +51,9 @@ public class WelcomeController {
 	private final static Logger LOGGER = LoggerFactory.getLogger(WelcomeController.class);
 
 	@Autowired
+	private MessageSource messageSource;
+
+	@Autowired
 	private LoverService loverService;
 
 	@Autowired
@@ -68,10 +73,14 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/")
 	@ResponseBody
-	ModelAndView index(Authentication authentication) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView index(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", "首頁");
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.home",
+			null,
+			locale
+		));
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"me",
@@ -80,7 +89,11 @@ public class WelcomeController {
 		}
 
 		ModelAndView modelAndView = new ModelAndView("index");
-		modelAndView.getModelMap().addAttribute(document);
+		modelAndView.
+			getModelMap().
+			addAttribute(document).
+			addAttribute(messageSource);
+		LOGGER.debug("首頁\n\n{}", modelAndView);
 		return modelAndView;
 	}
 
@@ -95,27 +108,22 @@ public class WelcomeController {
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
-	@GetMapping(path = "/activation.asp")
-	ModelAndView activate(Authentication authentication, HttpServletRequest request) throws SAXException, IOException, ParserConfigurationException {
+	@GetMapping(path = "/activate.asp")
+	ModelAndView activate(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
-			LOGGER.debug(
-				"authentication 不是空值"
-			);
+			LOGGER.debug("已登入故激活页面重导至首页");
 			return new ModelAndView("redirect:/");
 		}
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute(
-			"path",
-			request.getRequestURL().toString().replaceAll(
-				"\\.asp$",
-				".json"
-			)
-		);
-		documentElement.setAttribute("title", "激活帳戶");
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.activate",
+			null,
+			locale
+		));
 
-		ModelAndView modelAndView = new ModelAndView("activation");
+		ModelAndView modelAndView = new ModelAndView("activate");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}
@@ -131,27 +139,39 @@ public class WelcomeController {
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
-	@PostMapping(path = "/activation.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/activate.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String activate(@RequestParam String string, Authentication authentication) throws SAXException, IOException, ParserConfigurationException {
+	String activate(@RequestParam String string, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			return new JavaScriptObjectNotation().
-				withReason("activation.cannotBeAuthenticated").
+				withReason(messageSource.getMessage(
+					"activate.mustntBeAuthenticated",
+					null,
+					locale
+				)).
 				withResponse(false).
 				toString();
 		}
 
 		JSONObject jsonObject;
 		try {
-			jsonObject = loverService.activate(string);
+			jsonObject = loverService.activate(string, locale);
 		} catch (NoSuchElementException ignore) {
 			jsonObject = new JavaScriptObjectNotation().
-				withReason("activation.notFound").
+				withReason(messageSource.getMessage(
+					"activate.notFound",
+					null,
+					locale
+				)).
 				withResponse(false).
 				toJSONObject();
 		} catch (RuntimeException runtimeException) {
 			jsonObject = new JavaScriptObjectNotation().
-				withReason(runtimeException.getMessage()).
+				withReason(messageSource.getMessage(
+					runtimeException.getMessage(),
+					null,
+					locale
+				)).
 				withResponse(false).
 				toJSONObject();
 		}
@@ -169,47 +189,50 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/activated.asp")
-	ModelAndView activated(@RequestParam UUID id, Authentication authentication, HttpServletRequest request) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView activated(@RequestParam UUID id, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
-			LOGGER.debug(
-				String.format(
-					"%s.activated(\n\tUUID = {},\n\tAuthentication = {}\n\tHttpServletRequest = {}\n);//登入状态下禁止初始化密码",
-					getClass().getName()
-				),
-				id,
-				authentication,
-				request
-			);
+			LOGGER.debug("登入状态下无法初始化密码");
 			return new ModelAndView("redirect:/");
 		}
 
 		Lover lover = loverService.loadByIdentifier(id);
 		if (Objects.isNull(lover)) {
-			LOGGER.debug(
-				String.format(
-					"%s.activated(\n\tUUID = {},\n\tAuthentication = {}\n\tHttpServletRequest = {}\n);//初始化密码时找不到情人",
-					getClass().getName()
-				),
-				id,
-				authentication,
-				request
-			);
+			LOGGER.debug("初始化密码时找不到情人");
 			return new ModelAndView("redirect:/");
 		}
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute(
-			"path",
-			request.getRequestURL().toString()
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.activated",
+			null,
+			locale
+		));
+
+		Element formElement = document.createElement("form");
+		formElement.setAttribute(
+			"i18n-submit",
+			messageSource.getMessage(
+				"activated.form.submit",
+				null,
+				locale
+			)
 		);
-		documentElement.setAttribute("title", "初始化密碼");
+		documentElement.appendChild(formElement);
 
 		Element identifierElement = document.createElement("identifier");
 		identifierElement.setTextContent(
 			lover.getIdentifier().toString()
 		);
-		documentElement.appendChild(identifierElement);
+		formElement.appendChild(identifierElement);
+
+		Element shadowElement = document.createElement("shadow");
+		shadowElement.setAttribute("i18n", messageSource.getMessage(
+			"activated.form.shadow",
+			null,
+			locale
+		));
+		formElement.appendChild(shadowElement);
 
 		ModelAndView modelAndView = new ModelAndView("activated");
 		modelAndView.getModelMap().addAttribute(document);
@@ -226,23 +249,19 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/activated.asp", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String activated(Activated activated, Authentication authentication, HttpServletRequest request) {
+	String activated(Activated activated, Authentication authentication, HttpServletRequest request, Locale locale) {
 		if (!servant.isNull(authentication)) {
-			LOGGER.debug(
-				String.format(
-					"%s.activated(\n\tActivated = {},\n\tAuthentication = {}\n\tHttpServletRequest = {}\n);//登入状态下禁止初始化密码",
-					getClass().getName()
-				),
-				activated,
-				authentication,
-				request
-			);
+			LOGGER.debug("登入状态下禁止初始化密码");
 			return new JavaScriptObjectNotation().
-				withReason("activated.cannotBeAuthenticated").
+				withReason(messageSource.getMessage(
+					"activated.mustntBeAuthenticated",
+					null,
+					locale
+				)).
 				withResponse(false).
 				toString();
 		}
-		return loverService.activated(activated, request).toString();
+		return loverService.activated(activated, request, locale).toString();
 	}
 
 	/**
@@ -266,16 +285,33 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/reactivate.asp")
-	ModelAndView reactivate(Authentication authentication) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView reactivate(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
 
-		Document document = servant.parseDocument();
+		Document document = servant.parseDocument(
+			"classpath:/skeleton/reactivate.xml"
+		);
 		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", "重新激活");
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.reactivate",
+			null,
+			locale
+		));
 
-		Element countriesElement = document.createElement("countries");
+		Element formElement = document.createElement("form");
+		formElement.setAttribute(
+			"i18n-submit",
+			messageSource.getMessage(
+				"reactivate.form.submit",
+				null,
+				locale
+			)
+		);
+		documentElement.appendChild(formElement);
+
+		Element countryElement = document.createElement("country");
 		servant.getCountries().stream().map(country -> {
 			String callingCode = country.getCallingCode();
 			Element optionElement = document.createElement("option");
@@ -284,14 +320,21 @@ public class WelcomeController {
 				String.format(
 					"+%s (%s)",
 					callingCode,
-					country.getName()
+					messageSource.getMessage(
+						String.format(
+							"country.%s",
+							country.getName()
+						),
+						null,
+						locale
+					)
 				)
 			);
 			return optionElement;
-		}).forEachOrdered(countryElement -> {
-			countriesElement.appendChild(countryElement);
+		}).forEachOrdered(optionElement -> {
+			countryElement.appendChild(optionElement);
 		});
-		documentElement.appendChild(countriesElement);
+		formElement.appendChild(countryElement);
 
 		ModelAndView modelAndView = new ModelAndView("reactivate");
 		modelAndView.getModelMap().addAttribute(document);
@@ -300,20 +343,28 @@ public class WelcomeController {
 
 	@PostMapping(path = "/reactivate.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String reactivate(@RequestParam String username, Authentication authentication, HttpServletRequest request) {
+	String reactivate(@RequestParam String username, Authentication authentication, HttpServletRequest request, Locale locale) {
 		if (!servant.isNull(authentication)) {
 			return new JavaScriptObjectNotation().
-				withReason("reactivate.cannotBeAuthenticated").
+				withReason(messageSource.getMessage(
+					"reactivate.mustntBeAuthenticated",
+					null,
+					locale
+				)).
 				withResponse(false).
 				toString();
 		}
 
 		JSONObject jsonObject;
 		try {
-			jsonObject = loverService.reactivate(username, request);
+			jsonObject = loverService.reactivate(username, request, locale);
 		} catch (NoSuchElementException ignore) {
 			jsonObject = new JavaScriptObjectNotation().
-				withReason("reactivate.notFound").
+				withReason(messageSource.getMessage(
+					"reactivate.notFound",
+					null,
+					locale
+				)).
 				withResponse(false).
 				toJSONObject();
 		}
@@ -330,16 +381,33 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/signIn.asp")
-	ModelAndView signIn(Authentication authentication) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView signIn(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
 
-		Document document = servant.parseDocument();
+		Document document = servant.parseDocument(
+			"classpath:/skeleton/signIn.xml"
+		);
 		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", "登入");
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.signIn",
+			null,
+			locale
+		));
 
-		Element countriesElement = document.createElement("countries");
+		Element formElement = document.createElement("form");
+		formElement.setAttribute(
+			"i18n-submit",
+			messageSource.getMessage(
+				"signIn.form.submit",
+				null,
+				locale
+			)
+		);
+		documentElement.appendChild(formElement);
+
+		Element countryElement = document.createElement("country");
 		servant.getCountries().stream().map(country -> {
 			String callingCode = country.getCallingCode();
 			Element optionElement = document.createElement("option");
@@ -348,14 +416,21 @@ public class WelcomeController {
 				String.format(
 					"+%s (%s)",
 					callingCode,
-					country.getName()
+					messageSource.getMessage(
+						String.format(
+							"country.%s",
+							country.getName()
+						),
+						null,
+						locale
+					)
 				)
 			);
 			return optionElement;
-		}).forEachOrdered(countryElement -> {
-			countriesElement.appendChild(countryElement);
+		}).forEachOrdered(optionElement -> {
+			countryElement.appendChild(optionElement);
 		});
-		documentElement.appendChild(countriesElement);
+		formElement.appendChild(countryElement);
 
 		ModelAndView modelAndView = new ModelAndView("signIn");
 		modelAndView.getModelMap().addAttribute(document);
@@ -384,14 +459,18 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/signUp.asp")
-	ModelAndView signUp(Authentication authentication) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView signUp(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", "新建帳戶");
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.signUp",
+			null,
+			locale
+		));
 
 		Element countriesElement = document.createElement("countries");
 		servant.getCountries().stream().map(country -> {
@@ -428,7 +507,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/signUp.asp")
 	@ResponseBody
-	ModelAndView signUp(SignUp signUp, Authentication authentication, HttpServletRequest request) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView signUp(SignUp signUp, Authentication authentication, HttpServletRequest request, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -438,7 +517,11 @@ public class WelcomeController {
 		} catch (RuntimeException runtimeException) {
 			Document document = servant.parseDocument();
 			Element documentElement = document.getDocumentElement();
-			documentElement.setAttribute("title", "新建帳戶");
+			documentElement.setAttribute("title", messageSource.getMessage(
+				"title.signUp",
+				null,
+				locale
+			));
 
 			Element countriesElement = document.createElement("countries");
 			servant.getCountries().stream().map(country -> {

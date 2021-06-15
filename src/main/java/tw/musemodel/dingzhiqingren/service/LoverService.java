@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -63,6 +65,9 @@ public class LoverService {
 	private AuthenticationManager authenticationManager;
 
 	@Autowired
+	private MessageSource messageSource;
+
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
@@ -87,20 +92,31 @@ public class LoverService {
 		return loverRepository.findAll();
 	}
 
+	/**
+	 * 激活
+	 *
+	 * @param inputString 激活码
+	 * @param locale 语言环境
+	 * @return 杰森对象
+	 */
 	@Transactional
-	public JSONObject activate(String inputString) {
+	public JSONObject activate(String inputString, Locale locale) {
 		Activation activation = activationRepository.
 			findOneByString(inputString).
 			orElseThrow();
 		if (Objects.isNull(activation.getString()) || Objects.nonNull(activation.getOccurred())) {
-			throw new RuntimeException("activation.activated");
+			throw new RuntimeException("activate.activated");
 		}
 
 		activation.setString(null);
 		activation.setOccurred(new Date(System.currentTimeMillis()));
 		activation = activationRepository.saveAndFlush(activation);
 		return new JavaScriptObjectNotation().
-			withReason("activation.done").
+			withReason(messageSource.getMessage(
+				"activate.done",
+				null,
+				locale
+			)).
 			withRedirect(String.format(
 				"/activated.asp?id=%s",
 				activation.getLover().getIdentifier().toString()
@@ -110,19 +126,16 @@ public class LoverService {
 	}
 
 	@Transactional
-	public JSONObject activated(Activated activated, HttpServletRequest request) {
+	public JSONObject activated(Activated activated, HttpServletRequest request, Locale locale) {
 		Lover lover = loadByIdentifier(activated.getIdentifier());
 		if (Objects.isNull(lover)) {
-			LOGGER.debug(
-				String.format(
-					"%s.activated(\n\tActivated = {},\n\tHttpServletRequest = {}\n);//初始化密码时找不到情人",
-					getClass().getName()
-				),
-				activated,
-				request
-			);
+			LOGGER.debug("初始化密码时找不到情人");
 			return new JavaScriptObjectNotation().
-				withReason("activated.cannotBeAuthenticated").
+				withReason(messageSource.getMessage(
+					"activated.mustntBeAuthenticated",
+					null,
+					locale
+				)).
 				withResponse(false).
 				toJSONObject();
 		}
@@ -156,7 +169,11 @@ public class LoverService {
 		);
 
 		return new JavaScriptObjectNotation().
-			withReason("activated.done").
+			withReason(messageSource.getMessage(
+				"activated.done",
+				null,
+				locale
+			)).
 			withRedirect("/me.asp").
 			withResponse(true).
 			toJSONObject();
@@ -177,18 +194,16 @@ public class LoverService {
 	}
 
 	@Transactional
-	public JSONObject reactivate(String username, HttpServletRequest request) {
+	public JSONObject reactivate(String username, HttpServletRequest request, Locale locale) {
 		Lover lover = loadByUsername(username);
 		if (Objects.isNull(lover)) {
-			LOGGER.debug(
-				String.format(
-					"%s.reactivate(\n\tString = {}\n);//重新激活时找不到用户",
-					getClass().getName()
-				),
-				username
-			);
+			LOGGER.debug("重新激活时找不到情人");
 			return new JavaScriptObjectNotation().
-				withReason("reactivate.cannotBeAuthenticated").
+				withReason(messageSource.getMessage(
+					"reactivate.notFound",
+					null,
+					locale
+				)).
 				withResponse(false).
 				toJSONObject();
 		}
@@ -198,7 +213,11 @@ public class LoverService {
 		).orElseThrow();
 		if (Objects.isNull(activation.getString()) || Objects.nonNull(activation.getOccurred())) {
 			return new JavaScriptObjectNotation().
-				withReason("reactivate.bringOwlsToAthens").
+				withReason(messageSource.getMessage(
+					"reactivate.bringOwlsToAthens",
+					null,
+					locale
+				)).
 				withResponse(false).
 				toJSONObject();
 		}
@@ -218,10 +237,16 @@ public class LoverService {
 		activation = activationRepository.saveAndFlush(activation);
 		PublishResult publishResult = AMAZON_SNS.publish(
 			new PublishRequest().
-				withMessage(String.format(
-					"請造訪 https://%s/activation.asp 並輸入激活碼：%s。",
-					request.getServerName(),
-					activation.getString()
+				withMessage(messageSource.getMessage(
+					"reactivate.bringOwlsToAthens",
+					new String[]{
+						activation.getString(),
+						String.format(
+							"https://%s/activate.asp",
+							request.getServerName()
+						)
+					},
+					locale
 				)).
 				withPhoneNumber(String.format(
 					"+%s%s",
@@ -231,8 +256,18 @@ public class LoverService {
 		);
 
 		return new JavaScriptObjectNotation().
-			withReason("reactivate.done").
-			withRedirect("/activation.asp").
+			withReason(messageSource.getMessage(
+				"reactivate.done",
+				new String[]{
+					activation.getString(),
+					String.format(
+						"https://%s/activate.asp",
+						request.getServerName()
+					)
+				},
+				locale
+			)).
+			withRedirect("/activate.asp").
 			withResponse(true).
 			withResult(publishResult).
 			toJSONObject();

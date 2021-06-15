@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 	<xsl:output
 		encoding="UTF-8"
 		media-type="text/html"
@@ -42,7 +42,7 @@
 								<A href="/signUp.asp">註冊</A>
 							</LI>
 							<LI class="list-group-item">
-								<A href="/activation.asp">激活</A>
+								<A href="/activate.asp">激活</A>
 							</LI>
 							<LI class="list-group-item">
 								<A href="/reactivate.asp">重新激活</A>

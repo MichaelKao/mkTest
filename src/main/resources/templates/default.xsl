@@ -44,4 +44,18 @@
 		<META content="IE=edge" http-equiv="X-UA-Compatible"/>
 		<META content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport"/>
 	</xsl:template>
+
+	<xsl:template name="bootstrapToast">
+		<DIV class="p-3 position-absolute" style="top:0;right:0">
+			<DIV class="toast hide" data-delay="3000" role="alert">
+				<DIV class="toast-header">
+					<STRONG class="mr-auto"/>
+					<BUTTON type="button" class="ml-2 mb-1 close" data-dismiss="toast">
+						<SPAN>&#215;</SPAN>
+					</BUTTON>
+				</DIV>
+				<DIV class="toast-body"/>
+			</DIV>
+		</DIV>
+	</xsl:template>
 </xsl:stylesheet>
