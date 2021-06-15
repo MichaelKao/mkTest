@@ -1,6 +1,8 @@
 package tw.musemodel.dingzhiqingren.service;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -36,6 +38,8 @@ public class Servant {
 
 	@Autowired
 	private RoleRepository roleRepository;
+
+	public final static Charset UTF_8 = StandardCharsets.UTF_8;
 
 	public final static String ROLE_ADMINISTRATOR = "ROLE_ALMIGHTY";
 

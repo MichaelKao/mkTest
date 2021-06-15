@@ -124,6 +124,7 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 		webSecurity.
 			ignoring().
 			antMatchers(
+				"/*.html",
 				"/SCRIPT/**",
 				"/STYLE/**",
 				"/poc/**",
