@@ -2,6 +2,9 @@ package tw.com.ecpay.ecpg;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * 向绿界取得厂商验证码
@@ -12,12 +15,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ApplyToken {
 
 	@JsonProperty("MerchantID")
+	@NotBlank(message = "token.merchantId.NotBlank")
+	@Size(max = 10)
 	private String merchantId;
 
 	@JsonProperty("RqHeader")
+	@NotNull(message = "token.rqHeader.NotNull")
 	private RqHeader rqHeader;
 
 	@JsonProperty("Data")
+	@NotBlank(message = "token.data.NotBlank")
 	private String data;
 
 	/**
@@ -34,7 +41,9 @@ public class ApplyToken {
 	}
 
 	/**
-	 * @param merchantId 若为平台商时，参数请带平台商所绑的特店编号。
+	 * 若为平台商时，参数请带平台商所绑的特店编号。
+	 *
+	 * @param merchantId 特店编号
 	 */
 	public void setMerchantId(String merchantId) {
 		this.merchantId = merchantId;
@@ -62,7 +71,9 @@ public class ApplyToken {
 	}
 
 	/**
-	 * @param data 加密过 JSON 格式的数据。
+	 * 加密过 JSON 格式的数据。
+	 *
+	 * @param data 加密数据
 	 */
 	public void setData(String data) {
 		this.data = data;
@@ -77,9 +88,12 @@ public class ApplyToken {
 	public class RqHeader {
 
 		@JsonProperty("Timestamp")
+		@NotNull(message = "token.rqHeader.timestamp.notNull")
 		private Long timestamp;
 
 		@JsonProperty("Revision")
+		@NotBlank(message = "token.rqHeader.revision.notBlank")
+		@Size(max = 10)
 		private String revision;
 
 		/**
@@ -96,8 +110,9 @@ public class ApplyToken {
 		}
 
 		/**
-		 * @param timestamp 时间戳 Unix timestamp；注意事项：若时间戳跟绿界服务器接收到时间超过 10
-		 * 分钟时，交易会失败无法进行。
+		 * 时间戳 Unix timestamp；注意事项：若时间戳跟绿界服务器接收到时间超过 10 分钟时，交易会失败无法进行。
+		 *
+		 * @param timestamp 传输时间
 		 */
 		public void setTimestamp(Long timestamp) {
 			this.timestamp = timestamp;
@@ -111,7 +126,9 @@ public class ApplyToken {
 		}
 
 		/**
-		 * @param revision 请参考文件封面的文件版号，例：1.0.0。
+		 * 请参考文件封面的文件版号，例：1.0.0。
+		 *
+		 * @param revision 串接文件版号
 		 */
 		public void setRevision(String revision) {
 			this.revision = revision;
@@ -120,19 +137,16 @@ public class ApplyToken {
 
 	/**
 	 * 取得厂商验证码(服务器)
-	 *
 	 * <h3>应用场景</h3>
 	 * <p>
 	 * 在使用绿界站内付 2.0
 	 * 金流服务之前，厂商服务器必须先向绿界服务器取得一组厂商验证码(token)。厂商服务器得到验证码后，必须将验证码传给厂商网站网页做产生站内付
 	 * 2.0 金流画面功能之用。 </p>
-	 *
 	 * <h3>介接路径</h3>
 	 * <ul>
 	 * <li>正式环境：https://ecpg.ecpay.com.tw/Merchant/GetTokenbyTrade</li>
 	 * <li>测试环境：https://ecpg-stage.ecpay.com.tw/Merchant/GetTokenbyTrade</li>
 	 * </ul>
-	 *
 	 * <h3>厂商传入参数(JSON 格式)</h3>
 	 * <ul>
 	 * <li>Content Type：application/json</li>
@@ -145,25 +159,48 @@ public class ApplyToken {
 	public static class Data {
 
 		@JsonProperty("PlatformID")
+		@Size(max = 10)
 		private String platformID;
 
 		@JsonProperty("MerchantID")
+		@NotBlank(message = "token.data.merchantId.NotBlank")
+		@Size(max = 10)
 		private String merchantId;
 
 		@JsonProperty("RememberCard")
+		@NotNull(message = "token.data.rememberCard.NotNull")
 		private Short rememberCard;
 
 		@JsonProperty("PaymentUIType")
+		@NotNull(message = "token.data.paymentUIType.NotNull")
 		private Short paymentUIType;
 
 		@JsonProperty("ChoosePaymentList")
+		@Size(max = 30)
 		private String choosePaymentList;
 
 		@JsonProperty("OrderInfo")
+		@NotNull(message = "token.data.orderInfo.NotNull")
 		private OrderInfo orderInfo;
 
 		@JsonProperty("CardInfo")
 		private CardInfo cardInfo;
+
+		@JsonProperty("ATMInfo")
+		private ATMInfo atmInfo;
+
+		@JsonProperty("CVSInfo")
+		private CVSInfo cvsInfo;
+
+		@JsonProperty("BarcodeInfo")
+		private BarcodeInfo barcodeInfo;
+
+		@JsonProperty("ConsumerInfo")
+		private ConsumerInfo consumerInfo;
+
+		@JsonProperty("CustomField")
+		@Size(max = 200)
+		private String customField;
 
 		/**
 		 * 默认构造器
@@ -179,9 +216,10 @@ public class ApplyToken {
 		}
 
 		/**
-		 * @param platformID
 		 * 为专案合作的平台商使用。一般特店或平台商本身介接，则参数请带空值。若为专案合作平台商的特店使用时，则参数请带平台商所绑的特店编号
 		 * MerchantID。
+		 *
+		 * @param platformID 特约合作平台商代号
 		 */
 		public void setPlatformID(String platformID) {
 			this.platformID = platformID;
@@ -209,7 +247,12 @@ public class ApplyToken {
 		}
 
 		/**
-		 * @param rememberCard <ul><li>0：否</li><li>1：是</li></ul>
+		 * <ul>
+		 * <li>0：否</li>
+		 * <li>1：是</li>
+		 * </ul>
+		 *
+		 * @param rememberCard 是否使用记忆卡号功能
 		 */
 		public void setRememberCard(Short rememberCard) {
 			this.rememberCard = rememberCard;
@@ -223,8 +266,12 @@ public class ApplyToken {
 		}
 
 		/**
-		 * @param paymentUIType
-		 * <ul><li>0：信用卡定期定额</li><li>2：付款选择清单页</li></ul>
+		 * <ul>
+		 * <li>0：信用卡定期定额</li>
+		 * <li>2：付款选择清单页</li>
+		 * </ul>
+		 *
+		 * @param paymentUIType 画面的呈现方式
 		 */
 		public void setPaymentUIType(Short paymentUIType) {
 			this.paymentUIType = paymentUIType;
@@ -238,10 +285,20 @@ public class ApplyToken {
 		}
 
 		/**
-		 * @param choosePaymentList paymentUIType 如选择 2，则必填。
-		 * <ul><li>0：全部付款方式</li><li>1：信用卡一次付清</li><li>2：信用卡分期付款</li><li>3：ATM</li><li>4：超商代码</li><li>5：超商条码</li></ul>
+		 * paymentUIType 如选择 2，则必填。
+		 * <ul>
+		 * <li>0：全部付款方式</li>
+		 * <li>1：信用卡一次付清</li>
+		 * <li>2：信用卡分期付款</li>
+		 * <li>3：ATM</li>
+		 * <li>4：超商代码</li>
+		 * <li>5：超商条码</li>
+		 * </ul>
+		 *
 		 * <p>
 		 * 可多选，例：1,2,3。 </p>
+		 *
+		 * @param choosePaymentList 欲使用的付款方式
 		 */
 		public void setChoosePaymentList(String choosePaymentList) {
 			this.choosePaymentList = choosePaymentList;
@@ -269,12 +326,94 @@ public class ApplyToken {
 		}
 
 		/**
-		 * @param cardInfo 以下情况为必填：<ol><li>paymentUIType 选择 0 或 1
-		 * </li><li>paymentUIType 选择 2，且 choosePaymentList 选择 0，1 或
-		 * 2</li></ol>
+		 * 以下情况为必填：
+		 * <ol>
+		 * <li>paymentUIType 选择 0 或 1</li>
+		 * <li>paymentUIType 选择 2，且 choosePaymentList 选择 0，1 或 2</li>
+		 * </ol>
+		 *
+		 * @param cardInfo 信用卡资讯
 		 */
 		public void setCardInfo(CardInfo cardInfo) {
 			this.cardInfo = cardInfo;
+		}
+
+		/**
+		 * @return ATM 资讯
+		 */
+		public ATMInfo getAtmInfo() {
+			return atmInfo;
+		}
+
+		/**
+		 * choosePaymentList 如选择 0 或 3 则必填。
+		 *
+		 * @param atmInfo ATM 资讯
+		 */
+		public void setAtmInfo(ATMInfo atmInfo) {
+			this.atmInfo = atmInfo;
+		}
+
+		/**
+		 * @return 超商代码资讯
+		 */
+		public CVSInfo getCvsInfo() {
+			return cvsInfo;
+		}
+
+		/**
+		 * choosePaymentList 如选择 0 或 4 则必填。
+		 *
+		 * @param cvsInfo 超商代码资讯
+		 */
+		public void setCvsInfo(CVSInfo cvsInfo) {
+			this.cvsInfo = cvsInfo;
+		}
+
+		/**
+		 * @return 超商条码资讯
+		 */
+		public BarcodeInfo getBarcodeInfo() {
+			return barcodeInfo;
+		}
+
+		/**
+		 * choosePaymentList 如选择 0 或 5 则必填。
+		 *
+		 * @param barcodeInfo 超商条码资讯
+		 */
+		public void setBarcodeInfo(BarcodeInfo barcodeInfo) {
+			this.barcodeInfo = barcodeInfo;
+		}
+
+		/**
+		 * @return 消费者资讯
+		 */
+		public ConsumerInfo getConsumerInfo() {
+			return consumerInfo;
+		}
+
+		/**
+		 * @param consumerInfo 消费者资讯
+		 */
+		public void setConsumerInfo(ConsumerInfo consumerInfo) {
+			this.consumerInfo = consumerInfo;
+		}
+
+		/**
+		 * @return 厂商自订栏位
+		 */
+		public String getCustomField() {
+			return customField;
+		}
+
+		/**
+		 * 提供厂商使用客制化栏位。
+		 *
+		 * @param customField 厂商自订栏位
+		 */
+		public void setCustomField(String customField) {
+			this.customField = customField;
 		}
 
 		/**
@@ -286,27 +425,57 @@ public class ApplyToken {
 		public class OrderInfo {
 
 			@JsonProperty("MerchantTradeDate")
+			@NotBlank(message = "token.data.orderInfo.merchantTradeDate.NotBlank")
+			@Size(max = 20)
 			private String merchantTradeDate;
 
 			@JsonProperty("MerchantTradeNo")
+			@NotBlank(message = "token.data.orderInfo.merchantTradeNo.NotBlank")
+			@Size(max = 20)
 			private String merchantTradeNo;
 
 			@JsonProperty("TotalAmount")
+			@NotNull(message = "token.data.orderInfo.totalAmount.NotNull")
 			private Integer totalAmount;
 
 			@JsonProperty("ReturnURL")
+			@NotBlank(message = "token.data.orderInfo.returnURL.NotBlank")
+			@Size(max = 200)
 			private String returnURL;
 
 			@JsonProperty("TradeDesc")
+			@NotBlank(message = "token.data.orderInfo.tradeDesc.NotBlank")
+			@Size(max = 200)
 			private String tradeDesc;
 
 			@JsonProperty("ItemName")
+			@NotBlank(message = "token.data.orderInfo.itemName.NotBlank")
+			@Size(max = 400)
 			private String itemName;
 
 			/**
 			 * 默认构造器
 			 */
 			public OrderInfo() {
+			}
+
+			/**
+			 * 构造器。
+			 *
+			 * @param merchantTradeDate 厂商交易时间
+			 * @param merchantTradeNo 特店交易编号
+			 * @param totalAmount 交易金额
+			 * @param returnURL 付款回传结果网址
+			 * @param tradeDesc 交易描述
+			 * @param itemName 商品名称
+			 */
+			public OrderInfo(String merchantTradeDate, String merchantTradeNo, Integer totalAmount, String returnURL, String tradeDesc, String itemName) {
+				this.merchantTradeDate = merchantTradeDate;
+				this.merchantTradeNo = merchantTradeNo;
+				this.totalAmount = totalAmount;
+				this.returnURL = returnURL;
+				this.tradeDesc = tradeDesc;
+				this.itemName = itemName;
 			}
 
 			/**
@@ -317,7 +486,9 @@ public class ApplyToken {
 			}
 
 			/**
-			 * @param merchantTradeDate yyyy/MM/dd HH:mm:ss
+			 * yyyy/MM/dd HH:mm:ss
+			 *
+			 * @param merchantTradeDate 厂商交易时间
 			 */
 			public void setMerchantTradeDate(String merchantTradeDate) {
 				this.merchantTradeDate = merchantTradeDate;
@@ -331,7 +502,9 @@ public class ApplyToken {
 			}
 
 			/**
-			 * @param merchantTradeNo 均为唯一值，不可重复使用；英数字大小写混合。
+			 * 均为唯一值，不可重复使用；英数字大小写混合。
+			 *
+			 * @param merchantTradeNo 特店交易编号
 			 */
 			public void setMerchantTradeNo(String merchantTradeNo) {
 				this.merchantTradeNo = merchantTradeNo;
@@ -345,27 +518,34 @@ public class ApplyToken {
 			}
 
 			/**
-			 * @param totalAmount
 			 * 请带整数，不可有小数点。仅限新台币。各付款金额的限制，请参考：https://www.ecpay.com.tw/CascadeFAQ/CascadeFAQ_Qa?nID=3605。
+			 *
+			 * @param totalAmount 交易金额
 			 */
 			public void setTotalAmount(Integer totalAmount) {
 				this.totalAmount = totalAmount;
 			}
 
 			/**
-			 * @return 付款回传结果
+			 * @return 付款回传结果网址
 			 */
 			public String getReturnURL() {
 				return returnURL;
 			}
 
 			/**
-			 * @param returnURL 当消费者付款完成后，绿界会将付款结果参数以幕后(server
-			 * POST)回传到该网址；详细说明请参考付款结果通知。
-			 * <h3>注意事项</h3><ol><li>请勿设定与 client 端接收付款结果网址
-			 * orderResultURL 相同位置，避免程式判断错误。 </li><li>请在收到 server
-			 * 端付款结果通知后，请正确回应 1|OK 给绿界。
-			 * </li></ol>
+			 * <p>
+			 * 当消费者付款完成后，绿界会将付款结果参数以幕后(server
+			 * POST)回传到该网址；详细说明请参考付款结果通知。</p>
+			 *
+			 * <h3>注意事项</h3>
+			 * <ol>
+			 * <li>请勿设定与 client 端接收付款结果网址 orderResultURL
+			 * 相同位置，避免程式判断错误。 </li>
+			 * <li>请在收到 server 端付款结果通知后，请正确回应 1|OK 给绿界。</li>
+			 * </ol>
+			 *
+			 * @param returnURL 付款回传结果网址
 			 */
 			public void setReturnURL(String returnURL) {
 				this.returnURL = returnURL;
@@ -393,7 +573,9 @@ public class ApplyToken {
 			}
 
 			/**
-			 * @param itemName 商品名称以 # 分开。
+			 * 商品名称以 # 分开。
+			 *
+			 * @param itemName 商品名称
 			 */
 			public void setItemName(String itemName) {
 				this.itemName = itemName;
@@ -401,7 +583,15 @@ public class ApplyToken {
 		}
 
 		/**
-		 * 信用卡资讯
+		 * <h1>信用卡资讯</h1>
+		 *
+		 * <p>
+		 * 以下情况为必填：
+		 * <ol>
+		 * <li>paymentUIType 选择 0 或 1</li>
+		 * <li>paymentUIType 选择 2，且 choosePaymentList 选择 0，1 或 2</li>
+		 * </ol>
+		 * </p>
 		 *
 		 * @author p@musemodel.tw
 		 */
@@ -424,9 +614,12 @@ public class ApplyToken {
 			private Short execTimes;
 
 			@JsonProperty("OrderResultURL")
+			@NotBlank(message = "token.data.cardInfo.orderResultURL.NotBlank")
+			@Size(max = 200)
 			private String orderResultURL;
 
 			@JsonProperty("PeriodReturnURL")
+			@Size(max = 200)
 			private String periodReturnURL;
 
 			@JsonProperty("CreditInstallment")
@@ -440,6 +633,15 @@ public class ApplyToken {
 			}
 
 			/**
+			 * 构造器。
+			 *
+			 * @param orderResultURL 3D 验证回传付款结果网址
+			 */
+			public CardInfo(String orderResultURL) {
+				this.orderResultURL = orderResultURL;
+			}
+
+			/**
 			 * @return 使用信用卡红利
 			 */
 			public String getRedeem() {
@@ -447,7 +649,9 @@ public class ApplyToken {
 			}
 
 			/**
-			 * @param redeem 默认为不使用；0：不使用，1：使用。
+			 * 默认为不使用；0：不使用，1：使用。
+			 *
+			 * @param redeem 使用信用卡红利
 			 */
 			public void setRedeem(String redeem) {
 				this.redeem = redeem;
@@ -461,8 +665,9 @@ public class ApplyToken {
 			}
 
 			/**
-			 * @param periodAmount 当 TokenData#paymentUIType 为 0
-			 * 时，此栏位必填。
+			 * 当 TokenData#paymentUIType 为 0 时，此栏位必填。
+			 *
+			 * @param periodAmount 定期定额每次授权金额
 			 */
 			public void setPeriodAmount(Short periodAmount) {
 				this.periodAmount = periodAmount;
@@ -476,8 +681,10 @@ public class ApplyToken {
 			}
 
 			/**
-			 * @param periodType 当 TokenData#paymentUIType 为 0
+			 * 当 TokenData#paymentUIType 为 0
 			 * 时，此栏位必填；D：以天为周期，M：以月为周期，Y：以年为周期。
+			 *
+			 * @param periodType 定期定额周期种类
 			 */
 			public void setPeriodType(String periodType) {
 				this.periodType = periodType;
@@ -491,10 +698,11 @@ public class ApplyToken {
 			}
 
 			/**
-			 * @param frequency 当 TokenData#paymentUIType 为 0
-			 * 时，此栏位必填；注意事项：至少要大于等于 1 次以上。当 periodType 设为 D 时，最多可设
-			 * 365 次。当 periodType 设为 M 时，最多可设 12 次。当 periodType 设为 Y
-			 * 时，最多可设 1 次。
+			 * 当 TokenData#paymentUIType 为 0 时，此栏位必填；注意事项：至少要大于等于 1
+			 * 次以上。当 periodType 设为 D 时，最多可设 365 次。当 periodType 设为 M
+			 * 时，最多可设 12 次。当 periodType 设为 Y 时，最多可设 1 次。
+			 *
+			 * @param frequency 定期定额执行频率
 			 */
 			public void setFrequency(Short frequency) {
 				this.frequency = frequency;
@@ -508,10 +716,11 @@ public class ApplyToken {
 			}
 
 			/**
-			 * @param execTimes 当 TokenData#paymentUIType 为 0
-			 * 时，此栏位必填。注意事项：至少要大于 1 次以上。当 PeriodType 设为 D 时，最多可设 999
-			 * 次。当 PeriodType 设为 M 时，最多可设 99 次。当 PeriodType 设为 Y
-			 * 时，最多可设 9 次。
+			 * 当 TokenData#paymentUIType 为 0 时，此栏位必填。注意事项：至少要大于 1
+			 * 次以上。当 PeriodType 设为 D 时，最多可设 999 次。当 PeriodType 设为 M
+			 * 时，最多可设 99 次。当 PeriodType 设为 Y 时，最多可设 9 次。
+			 *
+			 * @param execTimes 定期定额执行次数
 			 */
 			public void setExecTimes(Short execTimes) {
 				this.execTimes = execTimes;
@@ -525,8 +734,9 @@ public class ApplyToken {
 			}
 
 			/**
-			 * @param orderResultURL 使用 3D
-			 * 验证时，当消费者付款完成后，绿界会将付款结果参数以幕前(Client POST)回传到该网址。
+			 * 使用 3D 验证时，当消费者付款完成后，绿界会将付款结果参数以幕前(Client POST)回传到该网址。
+			 *
+			 * @param orderResultURL 3D 验证回传付款结果网址
 			 */
 			public void setOrderResultURL(String orderResultURL) {
 				this.orderResultURL = orderResultURL;
@@ -540,8 +750,10 @@ public class ApplyToken {
 			}
 
 			/**
-			 * @param periodReturnURL 当 TokenData#paymentUIType 为 0
+			 * 当 TokenData#paymentUIType 为 0
 			 * 时，此栏位必填；若交易是信用卡定期定额的方式，则每次执行授权完，会将授权结果回传到这个设定的网址。
+			 *
+			 * @param periodReturnURL 定期定额执行结果回应网址
 			 */
 			public void setPeriodReturnURL(String periodReturnURL) {
 				this.periodReturnURL = periodReturnURL;
@@ -555,12 +767,419 @@ public class ApplyToken {
 			}
 
 			/**
-			 * @param creditInstallment 当 Token#choosePaymentList 为
-			 * 0 或 Token#choosePaymentList 有选择 2
+			 * 当 Token#choosePaymentList 为 0 或
+			 * Token#choosePaymentList 有选择 2
 			 * 时，此栏位必填；支援多期数请以逗号分隔，例：3,6,12,18,24。
+			 *
+			 * @param creditInstallment 刷卡分期期数
 			 */
 			public void setCreditInstallment(String creditInstallment) {
 				this.creditInstallment = creditInstallment;
+			}
+		}
+
+		/**
+		 * <h1>ATM 资讯</h1>
+		 *
+		 * <p>
+		 * choosePaymentList 如选择 0 或 3 则必填。</p>
+		 *
+		 * @author p@musemodel.tw
+		 */
+		@JsonIgnoreProperties(ignoreUnknown = true)
+		public class ATMInfo {
+
+			@JsonProperty("ExpireDate")
+			@NotNull(message = "token.data.atmInfo.expireDate.NotNull")
+			private Short expireDate;
+
+			@JsonProperty("ATMBankCode")
+			@Size(max = 10)
+			private String atmBankCode;
+
+			/**
+			 * 默认构造器
+			 */
+			public ATMInfo() {
+			}
+
+			/**
+			 * 构造器。
+			 *
+			 * @param expireDate 允许缴费有效天数
+			 */
+			public ATMInfo(Short expireDate) {
+				this.expireDate = expireDate;
+			}
+
+			/**
+			 * @return 允许缴费有效天数
+			 */
+			public Short getExpireDate() {
+				return expireDate;
+			}
+
+			/**
+			 * 以天为单位；最长 60 天，最短 1 天，默认为 3 天。
+			 *
+			 * @param expireDate 允许缴费有效天数
+			 */
+			public void setExpireDate(Short expireDate) {
+				this.expireDate = expireDate;
+			}
+
+			/**
+			 * @return ATM 银行代码
+			 */
+			public String getAtmBankCode() {
+				return atmBankCode;
+			}
+
+			/**
+			 * 缴费银行代码；若未传入，依系统默认银行为主。
+			 *
+			 * @param atmBankCode ATM 银行代码
+			 */
+			public void setAtmBankCode(String atmBankCode) {
+				this.atmBankCode = atmBankCode;
+			}
+		}
+
+		/**
+		 * <h1>超商代码资讯</h1>
+		 * <p>
+		 * choosePaymentList 如选择 0 或 4 则必填。</p>
+		 *
+		 * @author p@musemodel.tw
+		 */
+		@JsonIgnoreProperties(ignoreUnknown = true)
+		public class CVSInfo {
+
+			@JsonProperty("StoreExpireDate")
+			@NotNull(message = "token.data.cvsInfo.storeExpireDate.NotNull")
+			private Integer storeExpireDate;
+
+			@JsonProperty("CVSCode")
+			@Size(max = 10)
+			private String cvsCode;
+
+			@JsonProperty("Desc_1")
+			@Size(max = 20)
+			private String desc1;
+
+			@JsonProperty("Desc_2")
+			@Size(max = 20)
+			private String desc2;
+
+			@JsonProperty("Desc_3")
+			@Size(max = 20)
+			private String desc3;
+
+			@JsonProperty("Desc_4")
+			@Size(max = 20)
+			private String desc4;
+
+			/**
+			 * 默认构造器
+			 */
+			public CVSInfo() {
+			}
+
+			/**
+			 * 构造器。
+			 *
+			 * @param storeExpireDate 超商缴费截止时间
+			 */
+			public CVSInfo(Integer storeExpireDate) {
+				this.storeExpireDate = storeExpireDate;
+			}
+
+			/**
+			 * @return 超商缴费截止时间
+			 */
+			public Integer getStoreExpireDate() {
+				return storeExpireDate;
+			}
+
+			/**
+			 * <p>
+			 * 以分钟为单位，若未设定此参数，默认为 10080 分钟(7 天)。</p>
+			 *
+			 * <p>
+			 * 若需设定此参数，请于建立订单时将此参数送给绿界。提醒您，CVS 带入数值不可超过 86400
+			 * 分钟，超过时一律以 86400 分钟计(60 天)，例：08/01 的 20:15 购买商品，缴费期限为
+			 * 7 天，表示 08/08 的 20:15 前必须前往超商缴费。</p>
+			 *
+			 * @param storeExpireDate 超商缴费截止时间
+			 */
+			public void setStoreExpireDate(Integer storeExpireDate) {
+				this.storeExpireDate = storeExpireDate;
+			}
+
+			/**
+			 * @return 超商代码
+			 */
+			public String getCvsCode() {
+				return cvsCode;
+			}
+
+			/**
+			 * <ul>
+			 * <li>CVS：超商代码缴款(不指定超商)</li>
+			 * <li>OK：OK超商代码缴款</li>
+			 * <li>FAMILY：全家超商代码缴款</li>
+			 * <li>HILIFE：莱尔富超商代码缴款</li>
+			 * <li>IBON：7-11 ibon 代码缴款</li>
+			 * </ul>
+			 *
+			 * <p>
+			 * 若未传入，默认为 CVS。</p>
+			 *
+			 * @param cvsCode 超商代码
+			 */
+			public void setCvsCode(String cvsCode) {
+				this.cvsCode = cvsCode;
+			}
+
+			/**
+			 * @return 交易描述 1
+			 */
+			public String getDesc1() {
+				return desc1;
+			}
+
+			/**
+			 * 若缴费超商为 family (全家)或 ibon (7-11)时，会显示在超商缴费平台萤幕上。
+			 *
+			 * @param desc1 交易描述 1
+			 */
+			public void setDesc1(String desc1) {
+				this.desc1 = desc1;
+			}
+
+			/**
+			 * @return 交易描述 2
+			 */
+			public String getDesc2() {
+				return desc2;
+			}
+
+			/**
+			 * 若缴费超商为 family (全家)或 ibon (7-11)时，会显示在超商缴费平台萤幕上。
+			 *
+			 * @param desc2 交易描述 2
+			 */
+			public void setDesc2(String desc2) {
+				this.desc2 = desc2;
+			}
+
+			/**
+			 * @return 交易描述 3
+			 */
+			public String getDesc3() {
+				return desc3;
+			}
+
+			/**
+			 * 若缴费超商为 family (全家)或 ibon (7-11)时，会显示在超商缴费平台萤幕上。
+			 *
+			 * @param desc3 交易描述 3
+			 */
+			public void setDesc3(String desc3) {
+				this.desc3
+					= desc3;
+			}
+
+			/**
+			 * @return 交易描述 4
+			 */
+			public String getDesc4() {
+				return desc4;
+			}
+
+			/**
+			 * 若缴费超商为 family (全家)或 ibon (7-11)时，会显示在超商缴费平台萤幕上。
+			 *
+			 * @param desc4 交易描述 4
+			 */
+			public void setDesc4(String desc4) {
+				this.desc4 = desc4;
+			}
+		}
+
+		/**
+		 * <h1>超商条码资讯</h1>
+		 *
+		 * <p>
+		 * choosePaymentList 如选择 0 或 5 则必填。</p>
+		 *
+		 * @author p@musemodel.tw
+		 */
+		@JsonIgnoreProperties(ignoreUnknown = true)
+		public class BarcodeInfo {
+
+			@JsonProperty("StoreExpireDate")
+			@NotNull(message = "token.data.barcodeInfo.storeExpireDate.NotNull")
+			private Short storeExpireDate;
+
+			/**
+			 * 默认构造器
+			 */
+			public BarcodeInfo() {
+			}
+
+			/**
+			 * 构造器。
+			 *
+			 * @param storeExpireDate 超商缴费截止时间
+			 */
+			public BarcodeInfo(Short storeExpireDate) {
+				this.storeExpireDate = storeExpireDate;
+			}
+
+			/**
+			 * @return 超商缴费截止时间
+			 */
+			public Short getStoreExpireDate() {
+				return storeExpireDate;
+			}
+
+			/**
+			 * 以天为单位，默认为 7 天。
+			 *
+			 * @param storeExpireDate 超商缴费截止时间
+			 */
+			public void setStoreExpireDate(Short storeExpireDate) {
+				this.storeExpireDate = storeExpireDate;
+			}
+		}
+
+		/**
+		 * 消费者资讯
+		 *
+		 * @author p@musemodel.tw
+		 */
+		@JsonIgnoreProperties(ignoreUnknown = true)
+		public class ConsumerInfo {
+
+			@JsonProperty("MerchantMemberID")
+			@Size(max = 60)
+			private String merchantMemberId;
+
+			@JsonProperty("Email")
+			@Size(max = 30)
+			private String email;
+
+			@JsonProperty("Phone")
+			@Size(max = 60)
+			private String phone;
+
+			@JsonProperty("Name")
+			@Size(max = 50)
+			private String name;
+
+			@JsonProperty("CountryCode")
+			@Size(max = 3)
+			private String countryCode;
+
+			@JsonProperty("Address")
+			@Size(max = 50)
+			private String address;
+
+			/**
+			 * 默认构造器
+			 */
+			public ConsumerInfo() {
+			}
+
+			/**
+			 * @return 消费者会员编号
+			 */
+			public String getMerchantMemberId() {
+				return merchantMemberId;
+			}
+
+			/**
+			 * 当 rememberCard = 1，此栏位必填。
+			 *
+			 * @param merchantMemberId 消费者会员编号
+			 */
+			public void setMerchantMemberId(String merchantMemberId) {
+				this.merchantMemberId = merchantMemberId;
+			}
+
+			/**
+			 * @return 信用卡持卡人电子信箱
+			 */
+			public String getEmail() {
+				return email;
+			}
+
+			/**
+			 * @param email 信用卡持卡人电子信箱
+			 */
+			public void setEmail(String email) {
+				this.email = email;
+			}
+
+			/**
+			 * @return 信用卡持卡人电话
+			 */
+			public String getPhone() {
+				return phone;
+			}
+
+			/**
+			 * @param phone 信用卡持卡人电话
+			 */
+			public void setPhone(String phone) {
+				this.phone = phone;
+			}
+
+			/**
+			 * @return 信用卡持卡人姓名
+			 */
+			public String getName() {
+				return name;
+			}
+
+			/**
+			 * @param name 信用卡持卡人姓名
+			 */
+			public void setName(String name) {
+				this.name = name;
+			}
+
+			/**
+			 * @return 国别码
+			 */
+			public String getCountryCode() {
+				return countryCode;
+			}
+
+			/**
+			 * 持卡人帐单地址国别码，请参考 ISO-3166；台湾请填写 158。
+			 *
+			 * @param countryCode 国别码
+			 */
+			public void setCountryCode(String countryCode) {
+				this.countryCode = countryCode;
+			}
+
+			/**
+			 * @return 地址
+			 */
+			public String getAddress() {
+				return address;
+			}
+
+			/**
+			 * 持卡人帐单地址。
+			 *
+			 * @param address 地址
+			 */
+			public void setAddress(String address) {
+				this.address = address;
 			}
 		}
 	}
