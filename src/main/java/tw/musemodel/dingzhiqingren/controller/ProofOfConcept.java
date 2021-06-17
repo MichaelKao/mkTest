@@ -33,4 +33,16 @@ public class ProofOfConcept {
 	String encrypt() throws Exception {
 		return inpay2Service.encrypt("{\"Name\":\"Test\",\"ID\":\"A123456789\"}");
 	}
+
+	@GetMapping(path = "/applyToken", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String applyToken() throws Exception {
+		return inpay2Service.applyToken();
+	}
+
+	@GetMapping(path = "/replyToken", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String replyToken() throws Exception {
+		return inpay2Service.replyToken();
+	}
 }
