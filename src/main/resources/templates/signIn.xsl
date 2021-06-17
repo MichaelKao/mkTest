@@ -25,9 +25,13 @@
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
 		</HEAD>
-		<BODY class="mt-3 mb-3">
-			<DIV class="container">
-				<xsl:apply-templates select="form"/>
+		<BODY>
+			<xsl:call-template name="navbar"/>
+			<xsl:call-template name="bootstrapToast"/>
+			<DIV class="page-header section-height-100">
+				<DIV class="container">
+					<xsl:apply-templates select="form"/>
+				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/signIn.js"/>
@@ -35,26 +39,54 @@
 	</xsl:template>
 
 	<xsl:template match="form">
-		<FORM action="/signIn.asp" method="post">
-			<INPUT class="d-none" id="username" name="username" type="hidden"/>
-			<DIV class="form-group mb-3">
-				<DIV class="input-group">
-					<SELECT class="custom-select" id="country" required="">
-						<xsl:apply-templates select="country/*"/>
-					</SELECT>
-					<DIV class="input-group-append">
-						<INPUT class="form-control" id="cellularPhoneNumber" required="" type="text"/>
+		<DIV class="row">
+			<DIV class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-auto">
+				<DIV class="card card-plain">
+					<DIV class="card-header pb-0 text-left">
+						<H4 class="font-weight-bolder">
+							<xsl:value-of select="/document/@title"/>
+						</H4>
+						<P class="mb-0">輸入手機號碼及密碼登入</P>
+					</DIV>
+					<DIV class="card-body">
+						<FORM action="/signIn.asp" method="post">
+							<INPUT class="d-none" id="username" name="username" type="hidden"/>
+							<DIV class="form-group">
+								<SELECT class="form-control" id="country" required="">
+									<xsl:apply-templates select="country/*"/>
+								</SELECT>
+							</DIV>
+							<DIV class="row align-items-center mb-3">
+								<DIV class="col-1">
+									<I class="fas fa-mobile-alt text-lg"></I>
+								</DIV>
+								<DIV class="col-11">
+									<INPUT class="form-control" id="cellularPhoneNumber" placeholder="手機號碼" required="" type="text"/>
+								</DIV>
+							</DIV>
+							<DIV class="row align-items-center mb-3">
+								<DIV class="col-1">
+									<I class="fas fa-lock-alt text-lg"></I>
+								</DIV>
+								<DIV class="col-11">
+									<INPUT class="form-control" name="password" placeholder="密碼" required="" type="password"/>
+								</DIV>
+							</DIV>
+							<DIV class="text-center">
+								<BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0" type="submit">
+									<xsl:value-of select="@i18n-submit"/>
+								</BUTTON>
+							</DIV>
+						</FORM>
+					</DIV>
+					<DIV class="card-footer text-center pt-0 px-lg-2 px-1">
+						<P class="text-sm mx-auto">
+							<SPAN class="me-1">還沒有帳號嗎?</SPAN>
+							<A href="/signUp.asp" class="text-primary text-gradient font-weight-bold">馬上註冊</A>
+						</P>
 					</DIV>
 				</DIV>
-				<DIV class="input-group mb-3">
-					<INPUT class="form-control" name="password" required="" type="password"/>
-				</DIV>
 			</DIV>
-			<DIV class="form-group mb-3">
-				<BUTTON class="btn btn-primary" type="submit">
-					<xsl:value-of select="@i18n-submit"/>
-				</BUTTON>
-			</DIV>
-		</FORM>
+		</DIV>
 	</xsl:template>
 </xsl:stylesheet>

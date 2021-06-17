@@ -28,16 +28,65 @@
 		</OPTION>
 	</xsl:template>
 
+	<xsl:template name="navbar">
+		<DIV class="container position-sticky z-index-sticky top-0">
+			<NAV class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
+				<DIV class="container-fluid">
+					<A class="navbar-brand font-weight-bolder ms-sm-3" href="/">訂製情人</A>
+					<BUTTON class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation">
+						<SPAN class="navbar-toggler-icon mt-2">
+							<SPAN class="navbar-toggler-bar bar1"></SPAN>
+							<SPAN class="navbar-toggler-bar bar2"></SPAN>
+							<SPAN class="navbar-toggler-bar bar3"></SPAN>
+						</SPAN>
+					</BUTTON>
+					<DIV class="collapse navbar-collapse pt-3 pb-2 py-lg-0 w-100" id="navigation">
+						<UL class="navbar-nav navbar-nav-hover ms-lg-12 ps-lg-5 w-100 justify-content-end">
+							<LI class="nav-item dropdown dropdown-hover mx-2">
+								<A class="nav-link cursor-pointer" id="dropdownMenuPages" data-bs-toggle="dropdown">
+									<SPAN class="mx-1">Pages</SPAN>
+									<i class="fas fa-chevron-down"></i>
+								</A>
+								<DIV class="dropdown-menu dropdown-menu-animation p-3 border-radius-lg mt-0 mt-lg-3">
+									<DIV class="d-none d-lg-block">
+										<H6 class="dropdown-header text-dark font-weight-bolder d-flex justify-content-cente align-items-center px-0">
+											<I class="fas fa-home"></I>
+											<SPAN>Member</SPAN>
+										</H6>
+										<A class="dropdown-item border-radius-md" href="/">
+											<span class="ps-3">About Us</span>
+										</A>
+									</DIV>
+									<DIV class="d-lg-none">
+										<H6 class="dropdown-header text-dark font-weight-bolder d-flex justify-content-cente align-items-center px-0">
+											<I class="fas fa-home"></I>
+											<SPAN>Member</SPAN>
+										</H6>
+										<A class="dropdown-item border-radius-md" href="/">
+											<SPAN class="ps-3">About Us</SPAN>
+										</A>
+									</DIV>
+								</DIV>
+							</LI>
+						</UL>
+					</DIV>
+				</DIV>
+			</NAV>
+		</DIV>
+	</xsl:template>
+
 	<xsl:template name="bodyScriptTags">
 		<SCRIPT src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"/>
-		<SCRIPT crossorigin="anonymous" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"/>
+		<SCRIPT crossorigin="anonymous" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"/>
+		<SCRIPT crossorigin="anonymous" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"/>
 		<SCRIPT crossorigin="anonymous" integrity="sha512-yUNtg0k40IvRQNR20bJ4oH6QeQ/mgs9Lsa6V+3qxTj58u2r+JiAYOhOW0o+ijuMmqCtCEg7LZRA+T4t84/ayVA==" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.0/perfect-scrollbar.min.js"/>
 		<SCRIPT src="https://kit.fontawesome.com/5ed1767edc.js"/>
+		<SCRIPT src="/SCRIPT/soft-design-system.min.js"/>
 	</xsl:template>
 
 	<xsl:template name="headLinkTags">
-		<LINK href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&#38;family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&#38;display=swap" rel="stylesheet"/>
-		<LINK crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" rel="stylesheet"/>
+		<LINK href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet"/>
+		<LINK href="/STYLE/soft-design-system.css" rel="stylesheet"/>
 	</xsl:template>
 
 	<xsl:template name="headMetaTags">
@@ -46,14 +95,11 @@
 	</xsl:template>
 
 	<xsl:template name="bootstrapToast">
-		<DIV class="p-3 position-absolute" style="top:0;right:0">
-			<DIV class="toast hide" data-delay="3000" role="alert">
-				<DIV class="toast-header">
-					<STRONG class="mr-auto"/>
-					<BUTTON type="button" class="ml-2 mb-1 close" data-dismiss="toast">
-						<SPAN>&#215;</SPAN>
-					</BUTTON>
-				</DIV>
+		<DIV class="p-3 position-fixed" style="top:50px;right:0;z-index:10000;">
+			<DIV class="toast hide" data-delay="2500" role="alert">
+				<BUTTON type="button" class="mr-2 close" data-dismiss="toast">
+					<SPAN>&#215;</SPAN>
+				</BUTTON>
 				<DIV class="toast-body"/>
 			</DIV>
 		</DIV>

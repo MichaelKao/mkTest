@@ -1,0 +1,15 @@
+.toast {
+	border-radius: 10px;
+	width: 200px;
+	background-color: #9C27B011;
+}
+
+.toast BUTTON {
+	color: white;
+}
+
+.toast-body {
+	background-color: #9C27B0AA;
+	border-radius: 10px;
+	color: white;
+}

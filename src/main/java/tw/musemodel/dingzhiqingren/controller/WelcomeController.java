@@ -123,6 +123,17 @@ public class WelcomeController {
 			locale
 		));
 
+		Element formElement = document.createElement("form");
+		formElement.setAttribute(
+			"i18n-submit",
+			messageSource.getMessage(
+				"activate.form.submit",
+				null,
+				locale
+			)
+		);
+		documentElement.appendChild(formElement);
+
 		ModelAndView modelAndView = new ModelAndView("activate");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
@@ -472,6 +483,17 @@ public class WelcomeController {
 			locale
 		));
 
+		Element formElement = document.createElement("form");
+		formElement.setAttribute(
+			"i18n-submit",
+			messageSource.getMessage(
+				"signUp.form.submit",
+				null,
+				locale
+			)
+		);
+		documentElement.appendChild(formElement);
+
 		Element countriesElement = document.createElement("countries");
 		servant.getCountries().stream().map(country -> {
 			Element optionElement = document.createElement("option");
@@ -483,14 +505,21 @@ public class WelcomeController {
 				String.format(
 					"+%s (%s)",
 					country.getCallingCode(),
-					country.getName()
+					messageSource.getMessage(
+						String.format(
+							"country.%s",
+							country.getName()
+						),
+						null,
+						locale
+					)
 				)
 			);
 			return optionElement;
 		}).forEachOrdered(countryElement -> {
 			countriesElement.appendChild(countryElement);
 		});
-		documentElement.appendChild(countriesElement);
+		formElement.appendChild(countriesElement);
 
 		ModelAndView modelAndView = new ModelAndView("signUp");
 		modelAndView.getModelMap().addAttribute(document);
@@ -507,62 +536,32 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/signUp.asp")
 	@ResponseBody
-	ModelAndView signUp(SignUp signUp, Authentication authentication, HttpServletRequest request, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	String signUp(SignUp signUp, Authentication authentication, HttpServletRequest request, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
-			return new ModelAndView("redirect:/");
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"signUp.mustntBeAuthenticated",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toString();
 		}
 
+		JSONObject jsonObject;
 		try {
-			loverService.signUp(signUp, request);
+			jsonObject = loverService.signUp(signUp, request, locale);
 		} catch (RuntimeException runtimeException) {
-			Document document = servant.parseDocument();
-			Element documentElement = document.getDocumentElement();
-			documentElement.setAttribute("title", messageSource.getMessage(
-				"title.signUp",
-				null,
-				locale
-			));
-
-			Element countriesElement = document.createElement("countries");
-			servant.getCountries().stream().map(country -> {
-				Short id = country.getId();
-				Element optionElement = document.createElement("option");
-				if (Objects.equals(id, signUp.getCountry())) {
-					optionElement.setAttribute(
-						"selected",
-						null
-					);
-				}
-				optionElement.setAttribute(
-					"value",
-					country.getId().toString()
-				);
-				optionElement.setTextContent(
-					String.format(
-						"+%s (%s)",
-						country.getCallingCode(),
-						country.getName()
-					)
-				);
-				return optionElement;
-			}).forEachOrdered(countryElement -> {
-				countriesElement.appendChild(countryElement);
-			});
-			documentElement.appendChild(countriesElement);
-
-			Element loginElement = document.createElement("login");
-			loginElement.setAttribute(
-				"reason",
-				runtimeException.getMessage()
-			);
-			loginElement.setTextContent(signUp.getLogin());
-			documentElement.appendChild(loginElement);
-
-			ModelAndView modelAndView = new ModelAndView("signUp");
-			modelAndView.getModelMap().addAttribute(document);
-			return modelAndView;
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					runtimeException.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
 		}
-		return new ModelAndView("redirect:/activation.asp");
+		return jsonObject.toString();
 	}
 
 	@GetMapping(path = "/{lover:\\d+}/cellular.json", produces = MediaType.TEXT_PLAIN_VALUE)

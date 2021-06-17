@@ -15,6 +15,7 @@
 		<HTML dir="ltr" lang="zh-Hant">
 			<xsl:apply-templates select="document"/>
 		</HTML>
+		<LINK href="/STYLE/index.css" rel="stylesheet"/>
 	</xsl:template>
 
 	<xsl:template match="document">
@@ -25,7 +26,8 @@
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
 		</HEAD>
-		<BODY class="mt-3 mb-3">
+		<BODY>
+			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container">
 				<UL class="list-group">
 					<xsl:choose>

@@ -25,35 +25,54 @@
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
 		</HEAD>
-		<BODY class="mt-3 mb-3">
-			<DIV class="p-3 position-absolute" style="top:0;right:0">
-				<DIV class="toast hide" data-delay="3000" role="alert">
-					<DIV class="toast-header">
-						<STRONG class="mr-auto"/>
-						<BUTTON type="button" class="ml-2 mb-1 close" data-dismiss="toast">
-							<SPAN>&#215;</SPAN>
-						</BUTTON>
-					</DIV>
-					<DIV class="toast-body"/>
+		<BODY>
+			<xsl:call-template name="navbar"/>
+			<xsl:call-template name="bootstrapToast"/>
+			<DIV class="page-header section-height-100">
+				<DIV class="container">
+					<xsl:apply-templates select="form"/>
 				</DIV>
 			</DIV>
-			<DIV class="container">
-				<FORM action="/activate.json" method="post">
-					<DIV class="form-group mb-3">
-						<DIV class="input-group">
-							<DIV class="input-group-prepend">
-								<LABEL class="input-group-text" for="string">激活碼</LABEL>
-							</DIV>
-							<INPUT class="form-control" id="string" name="string" required="" type="text"/>
-							<DIV class="input-group-append">
-								<BUTTON class="btn btn-primary" type="submit">激活</BUTTON>
-							</DIV>
-						</DIV>
-					</DIV>
-				</FORM>
-			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
-			<SCRIPT src="/SCRIPT/activation.js"/>
+			<SCRIPT src="/SCRIPT/activate.js"/>
 		</BODY>
+	</xsl:template>
+
+	<xsl:template match="form">
+		<DIV class="row">
+			<DIV class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-auto">
+				<DIV class="card card-plain">
+					<DIV class="card-header pb-0 text-left">
+						<H4 class="font-weight-bolder">
+							<xsl:value-of select="/document/@title"/>
+						</H4>
+						<P class="mb-0">輸入手機號碼註冊</P>
+					</DIV>
+					<DIV class="card-body">
+						<FORM action="/activate.json" method="post">
+							<DIV class="row align-items-center mb-3">
+								<DIV class="col-1">
+									<I class="fas fa-shield-check text-lg"></I>
+								</DIV>
+								<DIV class="col-11">
+									<INPUT class="form-control" id="string" name="string" placeholder="輸入激活碼" required="" type="text"/>
+								</DIV>
+							</DIV>
+							<DIV class="text-center">
+								<BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0" type="submit">
+									<xsl:value-of select="@i18n-submit"/>
+								</BUTTON>
+							</DIV>
+						</FORM>
+					</DIV>
+					<DIV class="card-footer text-center pt-0 px-lg-2 px-1">
+						<P class="text-sm mx-auto">
+							<SPAN class="me-1">無激活碼?</SPAN>
+							<A href="/reactivate.asp" class="text-primary text-gradient font-weight-bold">重寄激活碼</A>
+						</P>
+					</DIV>
+				</DIV>
+			</DIV>
+		</DIV>
 	</xsl:template>
 </xsl:stylesheet>

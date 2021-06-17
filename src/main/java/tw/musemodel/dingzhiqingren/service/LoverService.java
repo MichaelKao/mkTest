@@ -295,7 +295,7 @@ public class LoverService {
 	}
 
 	@Transactional
-	public Lover signUp(SignUp signUp, HttpServletRequest request) {
+	public JSONObject signUp(SignUp signUp, HttpServletRequest request, Locale locale) {
 		Country country = countryRepository.
 			findById(signUp.getCountry()).
 			orElseThrow();
@@ -316,7 +316,15 @@ public class LoverService {
 			request.getServerName(),
 			request.getLocale()
 		));
-		return lover;
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"signUp.done",
+				null,
+				locale
+			)).
+			withRedirect("/activate.asp").
+			withResponse(true).
+			toJSONObject();
 	}
 
 	@Transactional

@@ -25,10 +25,13 @@
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
 		</HEAD>
-		<BODY class="mt-3 mb-3">
+		<BODY>
+			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container">
-				<xsl:apply-templates select="form"/>
+			<DIV class="page-header section-height-100">
+				<DIV class="container">
+					<xsl:apply-templates select="form"/>
+				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/activate.js"/>
@@ -36,23 +39,35 @@
 	</xsl:template>
 
 	<xsl:template match="form">
-		<FORM action="/activated.asp" method="post">
-			<INPUT class="d-none" name="identifier" type="hidden" value="{identifier}"/>
-			<DIV class="form-group mb-3">
-				<DIV class="input-group">
-					<DIV class="input-group-prepend">
-						<LABEL class="input-group-text" for="shadow">
-							<xsl:value-of select="shadow/@i18n"/>
-						</LABEL>
+		<DIV class="row">
+			<DIV class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-auto">
+				<DIV class="card card-plain">
+					<DIV class="card-header pb-0 text-left">
+						<H4 class="font-weight-bolder">
+							<xsl:value-of select="/document/@title"/>
+						</H4>
+						<P class="mb-0">設定您的密碼</P>
 					</DIV>
-					<INPUT class="form-control" id="shadow" name="shadow" required="" type="password"/>
-					<DIV class="input-group-append">
-						<BUTTON class="btn btn-primary" type="submit">
-							<xsl:value-of select="@i18n-submit"/>
-						</BUTTON>
+					<DIV class="card-body">
+						<FORM action="/activated.asp" method="post">
+							<INPUT class="d-none" name="identifier" type="hidden" value="{identifier}"/>
+							<DIV class="row align-items-center mb-3">
+								<DIV class="col-1">
+									<I class="fas fa-lock-alt text-lg"></I>
+								</DIV>
+								<DIV class="col-11">
+									<INPUT class="form-control" id="shadow" name="shadow" placeholder="{shadow/@i18n}" required="" type="password"/>
+								</DIV>
+							</DIV>
+							<DIV class="text-center">
+								<BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0" type="submit">
+									<xsl:value-of select="@i18n-submit"/>
+								</BUTTON>
+							</DIV>
+						</FORM>
 					</DIV>
 				</DIV>
 			</DIV>
-		</FORM>
+		</DIV>
 	</xsl:template>
 </xsl:stylesheet>
