@@ -45,4 +45,10 @@ public class ProofOfConcept {
 	String replyToken() throws Exception {
 		return inpay2Service.replyToken();
 	}
+
+	@GetMapping(path = "/token.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String token() throws Exception {
+		return inpay2Service.token();
+	}
 }

@@ -141,5 +141,74 @@ public class ReplyToken {
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Data {
+
+		@JsonProperty("RtnCode")
+		private Integer rtnCode;
+
+		@JsonProperty("RtnMsg")
+		private String rtnMsg;
+
+		@JsonProperty("PlatformID")
+		private String platformID;
+
+		@JsonProperty("MerchantID")
+		private String merchantId;
+
+		@JsonProperty("Token")
+		private String token;
+
+		@JsonProperty("TokenExpireDate")
+		private String tokenExpireDate;
+
+		public Data() {
+		}
+
+		public Integer getRtnCode() {
+			return rtnCode;
+		}
+
+		public void setRtnCode(Integer rtnCode) {
+			this.rtnCode = rtnCode;
+		}
+
+		public String getRtnMsg() {
+			return rtnMsg;
+		}
+
+		public void setRtnMsg(String rtnMsg) {
+			this.rtnMsg = rtnMsg;
+		}
+
+		public String getPlatformID() {
+			return platformID;
+		}
+
+		public void setPlatformID(String platformID) {
+			this.platformID = platformID;
+		}
+
+		public String getMerchantId() {
+			return merchantId;
+		}
+
+		public void setMerchantId(String merchantId) {
+			this.merchantId = merchantId;
+		}
+
+		public String getToken() {
+			return token;
+		}
+
+		public void setToken(String token) {
+			this.token = token;
+		}
+
+		public String getTokenExpireDate() {
+			return tokenExpireDate;
+		}
+
+		public void setTokenExpireDate(String tokenExpireDate) {
+			this.tokenExpireDate = tokenExpireDate;
+		}
 	}
 }

@@ -40,7 +40,30 @@
 					ECPay.ServerType.Stage,
 					1,
 					function (errMsg) {
-						
+						console.log(errMsg);
+						$.get(
+							'/poc/token.json',
+							function(data) {
+								if (data.RtnCode === 1) {									
+									try {
+										ECPay.createPayment(
+											data.Token,
+											ECPay.Language.zhTW,
+											function (errMsg) {
+												if (errMsg !== null) {
+													alert(errMsg);
+												}
+											}
+										);
+									} catch (err) {
+										ErrHandle(err);
+									}
+								} else {
+									alert(data.RtnMsg);
+								}
+							},
+							'json'
+						);
 					}
 				);
 			});

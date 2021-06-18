@@ -1,6 +1,8 @@
 package tw.com.ecpay.ecpg;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -137,6 +139,7 @@ public class ApplyToken {
 
 	/**
 	 * 取得厂商验证码(服务器)
+	 *
 	 * <h3>应用场景</h3>
 	 * <p>
 	 * 在使用绿界站内付 2.0
@@ -158,6 +161,7 @@ public class ApplyToken {
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Data {
 
+		@JsonInclude(Include.NON_NULL)
 		@JsonProperty("PlatformID")
 		@Size(max = 10)
 		private String platformID;
@@ -175,6 +179,7 @@ public class ApplyToken {
 		@NotNull(message = "token.data.paymentUIType.NotNull")
 		private Short paymentUIType;
 
+		@JsonInclude(Include.NON_NULL)
 		@JsonProperty("ChoosePaymentList")
 		@Size(max = 30)
 		private String choosePaymentList;
@@ -183,21 +188,27 @@ public class ApplyToken {
 		@NotNull(message = "token.data.orderInfo.NotNull")
 		private OrderInfo orderInfo;
 
+		@JsonInclude(Include.NON_NULL)
 		@JsonProperty("CardInfo")
 		private CardInfo cardInfo;
 
+		@JsonInclude(Include.NON_NULL)
 		@JsonProperty("ATMInfo")
 		private ATMInfo atmInfo;
 
+		@JsonInclude(Include.NON_NULL)
 		@JsonProperty("CVSInfo")
 		private CVSInfo cvsInfo;
 
+		@JsonInclude(Include.NON_NULL)
 		@JsonProperty("BarcodeInfo")
 		private BarcodeInfo barcodeInfo;
 
+		@JsonInclude(Include.NON_NULL)
 		@JsonProperty("ConsumerInfo")
 		private ConsumerInfo consumerInfo;
 
+		@JsonInclude(Include.NON_NULL)
 		@JsonProperty("CustomField")
 		@Size(max = 200)
 		private String customField;
@@ -206,6 +217,19 @@ public class ApplyToken {
 		 * 默认构造器
 		 */
 		public Data() {
+		}
+
+		/**
+		 * 构造器。
+		 *
+		 * @param merchantId 特店编号
+		 * @param rememberCard 是否使用记忆卡号功能
+		 * @param paymentUIType 画面的呈现方式
+		 */
+		public Data(String merchantId, Short rememberCard, Short paymentUIType) {
+			this.merchantId = merchantId;
+			this.rememberCard = rememberCard;
+			this.paymentUIType = paymentUIType;
 		}
 
 		/**
@@ -540,7 +564,7 @@ public class ApplyToken {
 			 *
 			 * <h3>注意事项</h3>
 			 * <ol>
-			 * <li>请勿设定与 client 端接收付款结果网址 orderResultURL
+			 * <li>请勿设定与 client 端接收付款结果网址 orderResultUrl
 			 * 相同位置，避免程式判断错误。 </li>
 			 * <li>请在收到 server 端付款结果通知后，请正确回应 1|OK 给绿界。</li>
 			 * </ol>
@@ -598,30 +622,37 @@ public class ApplyToken {
 		@JsonIgnoreProperties(ignoreUnknown = true)
 		public class CardInfo {
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("Redeem")
 			private String redeem;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("PeriodAmount")
 			private Short periodAmount;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("PeriodType")
 			private String periodType;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("Frequency")
 			private Short frequency;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("ExecTimes")
 			private Short execTimes;
 
 			@JsonProperty("OrderResultURL")
 			@NotBlank(message = "token.data.cardInfo.orderResultURL.NotBlank")
 			@Size(max = 200)
-			private String orderResultURL;
+			private String orderResultUrl;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("PeriodReturnURL")
 			@Size(max = 200)
-			private String periodReturnURL;
+			private String periodReturnUrl;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("CreditInstallment")
 			private String creditInstallment;
 
@@ -635,10 +666,10 @@ public class ApplyToken {
 			/**
 			 * 构造器。
 			 *
-			 * @param orderResultURL 3D 验证回传付款结果网址
+			 * @param orderResultUrl 3D 验证回传付款结果网址
 			 */
-			public CardInfo(String orderResultURL) {
-				this.orderResultURL = orderResultURL;
+			public CardInfo(String orderResultUrl) {
+				this.orderResultUrl = orderResultUrl;
 			}
 
 			/**
@@ -729,34 +760,34 @@ public class ApplyToken {
 			/**
 			 * @return 3D 验证回传付款结果网址
 			 */
-			public String getOrderResultURL() {
-				return orderResultURL;
+			public String getOrderResultUrl() {
+				return orderResultUrl;
 			}
 
 			/**
 			 * 使用 3D 验证时，当消费者付款完成后，绿界会将付款结果参数以幕前(Client POST)回传到该网址。
 			 *
-			 * @param orderResultURL 3D 验证回传付款结果网址
+			 * @param orderResultUrl 3D 验证回传付款结果网址
 			 */
-			public void setOrderResultURL(String orderResultURL) {
-				this.orderResultURL = orderResultURL;
+			public void setOrderResultUrl(String orderResultUrl) {
+				this.orderResultUrl = orderResultUrl;
 			}
 
 			/**
 			 * @return 定期定额执行结果回应网址
 			 */
-			public String getPeriodReturnURL() {
-				return periodReturnURL;
+			public String getPeriodReturnUrl() {
+				return periodReturnUrl;
 			}
 
 			/**
 			 * 当 TokenData#paymentUIType 为 0
 			 * 时，此栏位必填；若交易是信用卡定期定额的方式，则每次执行授权完，会将授权结果回传到这个设定的网址。
 			 *
-			 * @param periodReturnURL 定期定额执行结果回应网址
+			 * @param periodReturnUrl 定期定额执行结果回应网址
 			 */
-			public void setPeriodReturnURL(String periodReturnURL) {
-				this.periodReturnURL = periodReturnURL;
+			public void setPeriodReturnUrl(String periodReturnUrl) {
+				this.periodReturnUrl = periodReturnUrl;
 			}
 
 			/**
@@ -793,6 +824,7 @@ public class ApplyToken {
 			@NotNull(message = "token.data.atmInfo.expireDate.NotNull")
 			private Short expireDate;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("ATMBankCode")
 			@Size(max = 10)
 			private String atmBankCode;
@@ -859,22 +891,27 @@ public class ApplyToken {
 			@NotNull(message = "token.data.cvsInfo.storeExpireDate.NotNull")
 			private Integer storeExpireDate;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("CVSCode")
 			@Size(max = 10)
 			private String cvsCode;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("Desc_1")
 			@Size(max = 20)
 			private String desc1;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("Desc_2")
 			@Size(max = 20)
 			private String desc2;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("Desc_3")
 			@Size(max = 20)
 			private String desc3;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("Desc_4")
 			@Size(max = 20)
 			private String desc4;
@@ -1062,26 +1099,32 @@ public class ApplyToken {
 		@JsonIgnoreProperties(ignoreUnknown = true)
 		public class ConsumerInfo {
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("MerchantMemberID")
 			@Size(max = 60)
 			private String merchantMemberId;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("Email")
 			@Size(max = 30)
 			private String email;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("Phone")
 			@Size(max = 60)
 			private String phone;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("Name")
 			@Size(max = 50)
 			private String name;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("CountryCode")
 			@Size(max = 3)
 			private String countryCode;
 
+			@JsonInclude(Include.NON_NULL)
 			@JsonProperty("Address")
 			@Size(max = 50)
 			private String address;
