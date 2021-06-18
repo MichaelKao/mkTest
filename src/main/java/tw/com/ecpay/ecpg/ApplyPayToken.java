@@ -10,23 +10,23 @@ import javax.validation.constraints.Size;
 
 /**
  * 建立交易 (Server)
- * 
+ *
  * @author m@musemodel.tw
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApplyPayToken {
-	
+
 	@JsonProperty("MerchantID")
-	@NotBlank(message = "inpay2.payToken.merchantId.NotBlank")
+	@NotBlank(message = "inpay2.PayToken.MerchantID.NotBlank")
 	@Size(max = 10)
 	private String merchantId;
 
 	@JsonProperty("RqHeader")
-	@NotNull(message = "inpay2.payToken.rqHeader.NotNull")
+	@NotNull(message = "inpay2.PayToken.RqHeader.NotNull")
 	private RqHeader rqHeader;
 
 	@JsonProperty("Data")
-	@NotBlank(message = "inpay2.payToken.data.NotBlank")
+	@NotBlank(message = "inpay2.PayToken.Data.NotBlank")
 	private String data;
 
 	/**
@@ -34,7 +34,7 @@ public class ApplyPayToken {
 	 */
 	public ApplyPayToken() {
 	}
-	
+
 	/**
 	 * @return 特店編號
 	 */
@@ -44,7 +44,7 @@ public class ApplyPayToken {
 
 	/**
 	 * 若為平台商時，參數請帶平台商所綁的特店編號
-	 * 
+	 *
 	 * @param merchantId 特店編號
 	 */
 	public void setMerchantId(String merchantId) {
@@ -74,26 +74,27 @@ public class ApplyPayToken {
 
 	/**
 	 * 加密過 JSON 格式的資料。
-	 * 
+	 *
 	 * @param data 加密資料
 	 */
 	public void setData(String data) {
 		this.data = data;
 	}
-	
+
 	/**
 	 * 傳輸資料
-	 * 
+	 *
+	 * @author m@musemodel.tw
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public class RqHeader {
-	
+
 		@JsonProperty("Timestamp")
-		@NotNull(message = "inpay2.payToken.rqHeader.timestamp.notNull")
+		@NotNull(message = "inpay2.PayToken.RqHeader.Timestamp.NotNull")
 		private Long timestamp;
 
 		@JsonProperty("Revision")
-		@NotBlank(message = "inpay2.payToken.rqHeader.revision.notBlank")
+		@NotBlank(message = "inpay2.PayToken.RqHeader.Revision.NotBlank")
 		@Size(max = 10)
 		private String revision;
 
@@ -101,6 +102,17 @@ public class ApplyPayToken {
 		 * 默認構造器
 		 */
 		public RqHeader() {
+		}
+
+		/**
+		 * 构造器。
+		 *
+		 * @param timestamp 传输时间
+		 * @param revision 串接文件版号
+		 */
+		public RqHeader(Long timestamp, String revision) {
+			this.timestamp = timestamp;
+			this.revision = revision;
 		}
 
 		/**
@@ -112,7 +124,7 @@ public class ApplyPayToken {
 
 		/**
 		 * 時間戳 Unix timestamp；若時間戳跟綠界伺服器接收到時間超過 10 分鐘時，交易會失敗無法進行
-		 * 
+		 *
 		 * @param timestamp 傳輸時間
 		 */
 		public void setTimestamp(Long timestamp) {
@@ -128,51 +140,39 @@ public class ApplyPayToken {
 
 		/**
 		 * 請參考文件封面的文件版號。Ex: 1.0.0
-		 * 
+		 *
 		 * @param revision 串接文件版號
 		 */
 		public void setRevision(String revision) {
 			this.revision = revision;
 		}
 	}
-	
+
 	/**
-	 * 建立交易(Server)
+	 * 加密过 JSON 格式的数据
 	 *
-	 * <h3>应用场景</h3>
-	 * <p>廠商 Server 需將從廠商 Web 取得到的 PayToken，送至綠界 Server 建立交易。</p>
-	 * <h3>介接路径</h3>
-	 * <ul>
-	 * <li>正式环境：https://ecpg.ecpay.com.tw/Merchant/CreatePayment</li>
-	 * <li>测试环境：https://ecpg-stage.ecpay.com.tw/Merchant/CreatePayment</li>
-	 * </ul>
-	 * <h3>厂商传入参数(JSON 格式)</h3>
-	 * <ul>
-	 * <li>Content Type：application/json</li>
-	 * <li>HTTP Method：POST</li>
-	 * </ul>
-	 *
+	 * @author m@musemodel.tw
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Data {
-		
+
 		@JsonInclude(Include.NON_NULL)
 		@JsonProperty("PlatformID")
 		@Size(max = 10)
 		private String platformId;
 
 		@JsonProperty("MerchantID")
-		@NotBlank(message = "inpay.payToken.data.merchantId.NotBlank")
+		@NotBlank(message = "inpay.payToken.Data.MerchantID.NotBlank")
 		@Size(max = 10)
 		private String merchantId;
 
 		@JsonProperty("PayToken")
-		@NotBlank(message = "inpay.payToken.data.payToken.NotBlank")
+		@NotBlank(message = "inpay.payToken.Data.PayToken.NotBlank")
 		@Size(max = 64)
 		private String payToken;
-		
+
 		@JsonProperty("MerchantTradeNo")
-		@NotBlank(message = "inpay.payToken.data.merchantTradeNo.NotBlank")
+		@NotBlank(message = "inpay.payToken.Data.MerchantTradeNo.NotBlank")
 		@Size(max = 20)
 		private String merchantTradeNo;
 
@@ -181,7 +181,7 @@ public class ApplyPayToken {
 		 */
 		public Data() {
 		}
-		
+
 		/**
 		 * @param merchantId 廠商編號
 		 * @param payToken 付款代碼

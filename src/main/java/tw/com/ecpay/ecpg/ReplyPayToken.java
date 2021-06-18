@@ -131,13 +131,15 @@ public class ReplyPayToken {
 			this.timestamp = timestamp;
 		}
 	}
-	
+
 	/**
-	 * 
+	 * 加密过 JSON 格式的数据
+	 *
+	 * @author m@musemodel.tw
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Data {
-		
+
 		@JsonProperty("RtnCode")
 		private Integer rtnCode;
 
@@ -149,27 +151,27 @@ public class ReplyPayToken {
 
 		@JsonProperty("MerchantID")
 		private String merchantId;
-		
+
 		@JsonProperty("OrderInfo")
 		private OrderInfo orderInfo;
-		
+
 		@JsonProperty("ThreeDInfo")
 		private ThreeDInfo threeDInfo;
-		
+
 		@JsonProperty("CardInfo")
 		private CardInfo cardInfo;
-		
+
 		@JsonProperty("ATMInfo")
 		private ATMInfo atmInfo;
-		
+
 		@JsonProperty("CVSInfo")
 		private CVSInfo cvsInfo;
-		
+
 		@JsonProperty("BarcodeInfo")
 		private BarcodeInfo barcodeInfo;
-		
+
 		@JsonProperty("CustomField")
-		private String CustomField;
+		private String customField;
 
 		/**
 		 * 默認構造器
@@ -186,6 +188,7 @@ public class ReplyPayToken {
 
 		/**
 		 * 1 代表 API 執行成功，其餘代碼均為失敗。
+		 *
 		 * @param rtnCode 交易狀態
 		 */
 		public void setRtnCode(Integer rtnCode) {
@@ -215,6 +218,7 @@ public class ReplyPayToken {
 
 		/**
 		 * 特約合作平台商特店編號。
+		 *
 		 * @param platformId 平台商編號
 		 */
 		public void setPlatformId(String platformId) {
@@ -292,6 +296,20 @@ public class ReplyPayToken {
 		}
 
 		/**
+		 * @return 超商代码资讯
+		 */
+		public CVSInfo getCvsInfo() {
+			return cvsInfo;
+		}
+
+		/**
+		 * @param cvsInfo 超商代码资讯
+		 */
+		public void setCvsInfo(CVSInfo cvsInfo) {
+			this.cvsInfo = cvsInfo;
+		}
+
+		/**
 		 * @return 超商條碼資訊
 		 */
 		public BarcodeInfo getBarcodeInfo() {
@@ -309,40 +327,45 @@ public class ReplyPayToken {
 		 * @return 廠商自訂欄位
 		 */
 		public String getCustomField() {
-			return CustomField;
+			return customField;
 		}
 
 		/**
-		 * @param CustomField 廠商自訂欄位
+		 * @param customField 廠商自訂欄位
 		 */
-		public void setCustomField(String CustomField) {
-			this.CustomField = CustomField;
+		public void setCustomField(String customField) {
+			this.customField = customField;
 		}
-		
+
+		/**
+		 * 订单资讯
+		 *
+		 * @author m@musemodel.tw
+		 */
 		@JsonIgnoreProperties(ignoreUnknown = true)
 		public class OrderInfo {
-			
+
 			@JsonProperty("MerchantTradeNo")
 			private String merchantTradeNo;
-			
+
 			@JsonProperty("TradeNo")
 			private String tradeNo;
-			
+
 			@JsonProperty("TradeAmt")
 			private Integer tradeAmt;
-			
+
 			@JsonProperty("TradeDate")
 			private String tradeDate;
-			
+
 			@JsonProperty("PaymentType")
 			private String paymentType;
-			
+
 			@JsonProperty("PaymentDate")
 			private String paymentDate;
-			
+
 			@JsonProperty("ChargeFee")
 			private Integer chargeFee;
-			
+
 			@JsonProperty("TradeStatus")
 			private String tradeStatus;
 
@@ -403,6 +426,7 @@ public class ReplyPayToken {
 
 			/**
 			 * yyyy/MM/dd HH:mm:ss
+			 *
 			 * @param tradeDate 訂單成立時間
 			 */
 			public void setTradeDate(String tradeDate) {
@@ -432,6 +456,7 @@ public class ReplyPayToken {
 
 			/**
 			 * yyyy/MM/dd HH:mm:ss
+			 *
 			 * @param paymentDate 付款時間
 			 */
 			public void setPaymentDate(String paymentDate) {
@@ -466,12 +491,17 @@ public class ReplyPayToken {
 				this.tradeStatus = tradeStatus;
 			}
 		}
-		
+
+		/**
+		 * 3D 验证资讯
+		 *
+		 * @author m@musemodel.tw
+		 */
 		@JsonIgnoreProperties(ignoreUnknown = true)
 		public class ThreeDInfo {
-			
+
 			@JsonProperty("ThreeDURL")
-			private String threeDURL;
+			private String threeDUrl;
 
 			/**
 			 * 默認構造器
@@ -482,79 +512,85 @@ public class ReplyPayToken {
 			/**
 			 * @return 3D 驗證 URL
 			 */
-			public String getThreeDURL() {
-				return threeDURL;
+			public String getThreeDUrl() {
+				return threeDUrl;
 			}
 
 			/**
 			 * 3D 驗證連結，請勿使用 iframe 方式開啟。
-			 * @param threeDURL 3D 驗證 URL
+			 *
+			 * @param threeDUrl 3D 驗證 URL
 			 */
-			public void setThreeDURL(String threeDURL) {
-				this.threeDURL = threeDURL;
+			public void setThreeDUrl(String threeDUrl) {
+				this.threeDUrl = threeDUrl;
 			}
 		}
-		
+
+		/**
+		 * 信用卡授权资讯
+		 *
+		 * @author m@musemodel.tw
+		 */
 		@JsonIgnoreProperties(ignoreUnknown = true)
 		public class CardInfo {
-			
+
 			@JsonProperty("AuthCode")
 			private String authCode;
-			
+
 			@JsonProperty("Gwsr")
 			private Integer gwsr;
-			
+
 			@JsonProperty("ProcessDate")
 			private String processDate;
-			
+
 			@JsonProperty("Amount")
 			private Integer amount;
-			
+
 			@JsonProperty("Stage")
 			private Short stage;
-			
+
 			@JsonProperty("Stast")
 			private Integer stast;
-			
+
 			@JsonProperty("Staed")
 			private Integer staed;
-			
+
 			@JsonProperty("Eci")
 			private Short eci;
-			
+
 			@JsonProperty("Card6No")
 			private String card6No;
-			
+
 			@JsonProperty("Card4No")
 			private String card4No;
-			
+
 			@JsonProperty("RedDan")
 			private Integer redDan;
-			
+
 			@JsonProperty("RedDeAmt")
 			private Integer redDeAmt;
-			
+
 			@JsonProperty("RedOkAmt")
 			private Integer redOkAmt;
-			
+
 			@JsonProperty("RedYet")
 			private Integer redYet;
-			
+
 			@JsonProperty("PeriodType")
 			private String periodType;
-			
+
 			@JsonProperty("Frequency")
 			private Short frequency;
-			
+
 			@JsonProperty("ExecTimes")
 			private Short execTimes;
-			
+
 			@JsonProperty("PeriodAmount")
 			private Integer periodAmount;
-			
+
 			@JsonProperty("TotalSuccessTimes")
 			private Integer totalSuccessTimes;
-			
+
 			@JsonProperty("TotalSuccessAmount")
 			private Long totalSuccessAmount;
 
@@ -601,6 +637,7 @@ public class ReplyPayToken {
 
 			/**
 			 * yyyy/MM/dd HH:mm:ss
+			 *
 			 * @param processDate 交易時間
 			 */
 			public void setProcessDate(String processDate) {
@@ -845,16 +882,21 @@ public class ReplyPayToken {
 				this.totalSuccessAmount = totalSuccessAmount;
 			}
 		}
-		
+
+		/**
+		 * ATM 资讯
+		 *
+		 * @author m@musemodel.tw
+		 */
 		@JsonIgnoreProperties(ignoreUnknown = true)
 		public class ATMInfo {
-			
+
 			@JsonProperty("BankCode")
 			private String bankCode;
-			
+
 			@JsonProperty("vAccount")
 			private String vAccount;
-			
+
 			@JsonProperty("ExpireDate")
 			private String expireDate;
 
@@ -901,22 +943,28 @@ public class ReplyPayToken {
 
 			/**
 			 * 格式為 yyyy/MM/dd
+			 *
 			 * @param expireDate 繳費期限
 			 */
 			public void setExpireDate(String expireDate) {
 				this.expireDate = expireDate;
 			}
 		}
-		
+
+		/**
+		 * 超商代码资讯
+		 *
+		 * @author m@musemodel.tw
+		 */
 		@JsonIgnoreProperties(ignoreUnknown = true)
 		public class CVSInfo {
-			
+
 			@JsonProperty("PaymentNo")
 			private String paymentNo;
-			
+
 			@JsonProperty("ExpireDate")
 			private String expireDate;
-			
+
 			@JsonProperty("PaymentURL")
 			private String paymentURL;
 
@@ -949,6 +997,7 @@ public class ReplyPayToken {
 
 			/**
 			 * 格式為 yyyy/MM/dd HH:mm:ss
+			 *
 			 * @param expireDate 繳費期限
 			 */
 			public void setExpireDate(String expireDate) {
@@ -964,25 +1013,31 @@ public class ReplyPayToken {
 
 			/**
 			 * 由綠界科技提供手機上顯示的三段式繳費條碼網頁
+			 *
 			 * @param paymentURL 繳費連結
 			 */
 			public void setPaymentURL(String paymentURL) {
 				this.paymentURL = paymentURL;
-			}			
+			}
 		}
-		
+
+		/**
+		 * 超商条码资讯
+		 *
+		 * @author m@musemodel.tw
+		 */
 		@JsonIgnoreProperties(ignoreUnknown = true)
 		public class BarcodeInfo {
-			
+
 			@JsonProperty("ExpireDate")
 			private String expireDate;
-			
+
 			@JsonProperty("Barcode1")
 			private String barcode1;
-			
+
 			@JsonProperty("Barcode2")
 			private String barcode2;
-			
+
 			@JsonProperty("Barcode3")
 			private String barcode3;
 
@@ -1001,7 +1056,8 @@ public class ReplyPayToken {
 
 			/**
 			 * 格式為 yyyy/MM/dd HH:mm:ss
-			 * @param expireDate 繳費期限	
+			 *
+			 * @param expireDate 繳費期限
 			 */
 			public void setExpireDate(String expireDate) {
 				this.expireDate = expireDate;
@@ -1016,6 +1072,7 @@ public class ReplyPayToken {
 
 			/**
 			 * 格式為 9 碼數字
+			 *
 			 * @param barcode1 條碼第一段號碼
 			 */
 			public void setBarcode1(String barcode1) {
@@ -1031,6 +1088,7 @@ public class ReplyPayToken {
 
 			/**
 			 * 格式為 16 碼數字
+			 *
 			 * @param barcode2 條碼第二段號碼
 			 */
 			public void setBarcode2(String barcode2) {
@@ -1046,6 +1104,7 @@ public class ReplyPayToken {
 
 			/**
 			 * 格式為 15 碼數字
+			 *
 			 * @param barcode3 條碼第三段號碼
 			 */
 			public void setBarcode3(String barcode3) {

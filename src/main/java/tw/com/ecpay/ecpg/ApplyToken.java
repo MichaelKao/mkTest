@@ -17,16 +17,16 @@ import javax.validation.constraints.Size;
 public class ApplyToken {
 
 	@JsonProperty("MerchantID")
-	@NotBlank(message = "token.merchantId.NotBlank")
+	@NotBlank(message = "inpay2.token.MerchantID.NotBlank")
 	@Size(max = 10)
 	private String merchantId;
 
 	@JsonProperty("RqHeader")
-	@NotNull(message = "token.rqHeader.NotNull")
+	@NotNull(message = "inpay2.token.RqHeader.NotNull")
 	private RqHeader rqHeader;
 
 	@JsonProperty("Data")
-	@NotBlank(message = "token.data.NotBlank")
+	@NotBlank(message = "inpay2.token.Data.NotBlank")
 	private String data;
 
 	/**
@@ -90,11 +90,11 @@ public class ApplyToken {
 	public class RqHeader {
 
 		@JsonProperty("Timestamp")
-		@NotNull(message = "token.rqHeader.timestamp.notNull")
+		@NotNull(message = "inpay2.token.RqHeader.Timestamp.NotNull")
 		private Long timestamp;
 
 		@JsonProperty("Revision")
-		@NotBlank(message = "token.rqHeader.revision.notBlank")
+		@NotBlank(message = "inpay2.token.RqHeader.Revision.NotBlank")
 		@Size(max = 10)
 		private String revision;
 
@@ -167,16 +167,16 @@ public class ApplyToken {
 		private String platformID;
 
 		@JsonProperty("MerchantID")
-		@NotBlank(message = "token.data.merchantId.NotBlank")
+		@NotBlank(message = "inpay2.token.Data.MerchantID.NotBlank")
 		@Size(max = 10)
 		private String merchantId;
 
 		@JsonProperty("RememberCard")
-		@NotNull(message = "token.data.rememberCard.NotNull")
+		@NotNull(message = "inpay2.token.Data.RememberCard.NotNull")
 		private Short rememberCard;
 
 		@JsonProperty("PaymentUIType")
-		@NotNull(message = "token.data.paymentUIType.NotNull")
+		@NotNull(message = "inpay2.token.Data.PaymentUIType.NotNull")
 		private Short paymentUIType;
 
 		@JsonInclude(Include.NON_NULL)
@@ -185,7 +185,7 @@ public class ApplyToken {
 		private String choosePaymentList;
 
 		@JsonProperty("OrderInfo")
-		@NotNull(message = "token.data.orderInfo.NotNull")
+		@NotNull(message = "inpay2.token.Data.OrderInfo.NotNull")
 		private OrderInfo orderInfo;
 
 		@JsonInclude(Include.NON_NULL)
@@ -449,31 +449,31 @@ public class ApplyToken {
 		public class OrderInfo {
 
 			@JsonProperty("MerchantTradeDate")
-			@NotBlank(message = "token.data.orderInfo.merchantTradeDate.NotBlank")
+			@NotBlank(message = "inpay2.token.Data.OrderInfo.MerchantTradeDate.NotBlank")
 			@Size(max = 20)
 			private String merchantTradeDate;
 
 			@JsonProperty("MerchantTradeNo")
-			@NotBlank(message = "token.data.orderInfo.merchantTradeNo.NotBlank")
+			@NotBlank(message = "inpay2.token.Data.OrderInfo.MerchantTradeNo.NotBlank")
 			@Size(max = 20)
 			private String merchantTradeNo;
 
 			@JsonProperty("TotalAmount")
-			@NotNull(message = "token.data.orderInfo.totalAmount.NotNull")
+			@NotNull(message = "inpay2.token.Data.OrderInfo.TotalAmount.NotNull")
 			private Integer totalAmount;
 
 			@JsonProperty("ReturnURL")
-			@NotBlank(message = "token.data.orderInfo.returnURL.NotBlank")
+			@NotBlank(message = "inpay2.token.Data.OrderInfo.ReturnURL.NotBlank")
 			@Size(max = 200)
 			private String returnURL;
 
 			@JsonProperty("TradeDesc")
-			@NotBlank(message = "token.data.orderInfo.tradeDesc.NotBlank")
+			@NotBlank(message = "inpay2.token.Data.OrderInfo.TradeDesc.NotBlank")
 			@Size(max = 200)
 			private String tradeDesc;
 
 			@JsonProperty("ItemName")
-			@NotBlank(message = "token.data.orderInfo.itemName.NotBlank")
+			@NotBlank(message = "inpay2.token.Data.OrderInfo.ItemName.NotBlank")
 			@Size(max = 400)
 			private String itemName;
 
@@ -643,7 +643,7 @@ public class ApplyToken {
 			private Short execTimes;
 
 			@JsonProperty("OrderResultURL")
-			@NotBlank(message = "token.data.cardInfo.orderResultURL.NotBlank")
+			@NotBlank(message = "inpay2.token.Data.CardInfo.OrderResultURL.NotBlank")
 			@Size(max = 200)
 			private String orderResultUrl;
 
@@ -821,7 +821,7 @@ public class ApplyToken {
 		public class ATMInfo {
 
 			@JsonProperty("ExpireDate")
-			@NotNull(message = "token.data.atmInfo.expireDate.NotNull")
+			@NotNull(message = "inpay2.token.Data.ATMInfo.ExpireDate.NotNull")
 			private Short expireDate;
 
 			@JsonInclude(Include.NON_NULL)
@@ -888,7 +888,7 @@ public class ApplyToken {
 		public class CVSInfo {
 
 			@JsonProperty("StoreExpireDate")
-			@NotNull(message = "token.data.cvsInfo.storeExpireDate.NotNull")
+			@NotNull(message = "inpay2.token.Data.CVSInfo.StoreExpireDate.NotNull")
 			private Integer storeExpireDate;
 
 			@JsonInclude(Include.NON_NULL)
@@ -1056,7 +1056,7 @@ public class ApplyToken {
 		public class BarcodeInfo {
 
 			@JsonProperty("StoreExpireDate")
-			@NotNull(message = "token.data.barcodeInfo.storeExpireDate.NotNull")
+			@NotNull(message = "inpay2.token.Data.BarcodeInfo.StoreExpireDate.NotNull")
 			private Short storeExpireDate;
 
 			/**
