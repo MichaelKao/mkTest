@@ -44,27 +44,52 @@
 						<UL class="navbar-nav navbar-nav-hover ms-lg-12 ps-lg-5 w-100 justify-content-end">
 							<LI class="nav-item dropdown dropdown-hover mx-2">
 								<A class="nav-link cursor-pointer" id="dropdownMenuPages" data-bs-toggle="dropdown">
-									<SPAN class="mx-1">Pages</SPAN>
+									<SPAN class="mx-1">會員</SPAN>
 									<i class="fas fa-chevron-down"></i>
 								</A>
 								<DIV class="dropdown-menu dropdown-menu-animation p-3 border-radius-lg mt-0 mt-lg-3">
 									<DIV class="d-none d-lg-block">
 										<H6 class="dropdown-header text-dark font-weight-bolder d-flex justify-content-cente align-items-center px-0">
 											<I class="fas fa-home"></I>
-											<SPAN>Member</SPAN>
+											<SPAN class="ms-1">會員專區</SPAN>
 										</H6>
-										<A class="dropdown-item border-radius-md" href="/">
-											<span class="ps-3">About Us</span>
-										</A>
+										<xsl:choose>
+											<xsl:when test="@me">
+												<A class="dropdown-item border-radius-md" href="/signOut.asp">
+													<span class="ps-3">登出</span>
+												</A>
+											</xsl:when>
+											<xsl:otherwise>
+												<A class="dropdown-item border-radius-md" href="/signIn.asp">
+													<span class="ps-3">登入</span>
+												</A>
+												<A class="dropdown-item border-radius-md" href="/signUp.asp">
+													<span class="ps-3">註冊</span>
+												</A>
+											</xsl:otherwise>
+										</xsl:choose>
+
 									</DIV>
 									<DIV class="d-lg-none">
 										<H6 class="dropdown-header text-dark font-weight-bolder d-flex justify-content-cente align-items-center px-0">
 											<I class="fas fa-home"></I>
-											<SPAN>Member</SPAN>
+											<SPAN>會員專區</SPAN>
 										</H6>
-										<A class="dropdown-item border-radius-md" href="/">
-											<SPAN class="ps-3">About Us</SPAN>
-										</A>
+										<xsl:choose>
+											<xsl:when test="@me">
+												<A class="dropdown-item border-radius-md" href="/signOut.asp">
+													<span class="ps-3">登出</span>
+												</A>
+											</xsl:when>
+											<xsl:otherwise>
+												<A class="dropdown-item border-radius-md" href="/signIn.asp">
+													<span class="ps-3">登入</span>
+												</A>
+												<A class="dropdown-item border-radius-md" href="/signUp.asp">
+													<span class="ps-3">註冊</span>
+												</A>
+											</xsl:otherwise>
+										</xsl:choose>
 									</DIV>
 								</DIV>
 							</LI>
@@ -95,10 +120,10 @@
 	</xsl:template>
 
 	<xsl:template name="bootstrapToast">
-		<DIV class="p-3 position-fixed" style="top:50px;right:0;z-index:10000;">
-			<DIV class="toast hide" data-delay="2500" role="alert">
-				<BUTTON type="button" class="mr-2 close" data-dismiss="toast">
-					<SPAN>&#215;</SPAN>
+		<DIV class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
+			<DIV class="toast hide" data-bs-delay="2500" >
+				<BUTTON type="button" class="btn-close" data-bs-dismiss="toast">
+					<I class="far fa-times ms-2 text-dark text-lg"></I>
 				</BUTTON>
 				<DIV class="toast-body"/>
 			</DIV>
