@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author p@musemodel.tw
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ReplyToken {
+public class TokenResponse {
 
 	@JsonProperty("MerchantID")
 	private String merchantId;
@@ -29,7 +29,7 @@ public class ReplyToken {
 	/**
 	 * 默认构造器
 	 */
-	public ReplyToken() {
+	public TokenResponse() {
 	}
 
 	/**
@@ -127,7 +127,9 @@ public class ReplyToken {
 		}
 
 		/**
-		 * @param timestamp 时间戳 Unix timestamp。
+		 * 时间戳 Unix timestamp。
+		 *
+		 * @param timestamp 回传时间
 		 */
 		public void setTimestamp(Long timestamp) {
 			this.timestamp = timestamp;

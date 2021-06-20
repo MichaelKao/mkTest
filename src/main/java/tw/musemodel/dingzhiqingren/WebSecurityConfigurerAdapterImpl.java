@@ -127,6 +127,7 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 				"/*.html",
 				"/SCRIPT/**",
 				"/STYLE/**",
+				"/inpay2/**",
 				"/poc/**",
 				"/webhook/**"
 			);

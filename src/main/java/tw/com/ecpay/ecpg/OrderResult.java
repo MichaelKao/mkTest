@@ -68,7 +68,7 @@ public class OrderResult {
 	}
 
 	/**
-	 * 1 代表傳輸資料(MerchantID， RqHeader， Data)接收成功，其餘均為失敗
+	 * 1 代表傳輸資料(MerchantID、RqHeader、Data)接收成功，其餘均為失敗
 	 *
 	 * @param transCode 回傳代碼
 	 */
@@ -108,6 +108,8 @@ public class OrderResult {
 
 	/**
 	 * 回传数据
+	 *
+	 * @author m@musemodel.tw
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public class RpHeader {
@@ -129,7 +131,9 @@ public class OrderResult {
 		}
 
 		/**
-		 * @param timestamp 时间戳 Unix timestamp。
+		 * 时间戳 Unix timestamp。
+		 *
+		 * @param timestamp 回传时间
 		 */
 		public void setTimestamp(Long timestamp) {
 			this.timestamp = timestamp;
@@ -137,14 +141,23 @@ public class OrderResult {
 	}
 
 	/**
-	 * 應用場景Ⅰ： Server 端方式(Server POST)(ReturnURL)
-	 * 當消費者付款完成後，廠商接受綠界的付款結果訊息，並回應接收訊息 Step1.綠界：以 ServerPost 方式傳送付款結果訊息至廠商的
-	 * Server 網址(ReturnURL) Step2.廠商：收到綠界的付款結果訊息，回應 1|OK
+	 * 應用場景 I：Server 端方式(Server
+	 * POST)(ReturnURL)當消費者付款完成後，廠商接受綠界的付款結果訊息，並回應接收訊息。
+	 *
+	 * <ul>
+	 * <li>Step1. 綠界：以 Server POST 方式傳送付款結果訊息至廠商的 Server 網址(ReturnURL)</li>
+	 * <li>Step2. 廠商：收到綠界的付款結果訊息，回應 1|OK</li>
+	 * </ul>
 	 *
 	 *
-	 * 應用場景Ⅱ： 當訂單是使用信用卡定期定額的交易時，在每次授權成功後，綠界會傳送付款通知結果 Step 1.
-	 * 綠界：第二次授權是由綠界的排程進行授權，交易授權成功後以 Server POST 方式傳送付款通知至廠商傳送
-	 * 的付款完成通知回傳網址[PeriodReturnURL]。 Step 2. 廠商：收到綠界的付款通知訊息後，需比對檢查碼是否相符。
+	 * 應用場景 II：當訂單是使用信用卡定期定額的交易時，在每次授權成功後，綠界會傳送付款通知結果。
+	 * <ul>
+	 * <li>Step 1. 綠界：第二次授權是由綠界的排程進行授權，交易授權成功後以 Server POST
+	 * 方式傳送付款通知至廠商傳送的付款完成通知回傳網址[PeriodReturnURL]。</li>
+	 * <li>Step 2. 廠商：收到綠界的付款通知訊息後，需比對檢查碼是否相符。</li>
+	 * </ul>
+	 *
+	 * @author m@musemodel.tw
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Data {
@@ -178,7 +191,7 @@ public class OrderResult {
 
 		@JsonProperty("CustomField")
 		private String customField;
-		
+
 		/**
 		 * 默認構造器
 		 */
@@ -324,13 +337,18 @@ public class OrderResult {
 
 		/**
 		 * 提供特店使用客制化欄位
-		 * 
+		 *
 		 * @param customField 廠商自訂欄位
 		 */
 		public void setCustomField(String customField) {
 			this.customField = customField;
 		}
 
+		/**
+		 * 订单资讯
+		 *
+		 * @author m@musemodel.tw
+		 */
 		@JsonIgnoreProperties(ignoreUnknown = true)
 		public class OrderInfo {
 
@@ -476,7 +494,7 @@ public class OrderResult {
 			}
 
 			/**
-			 * 回傳值： 若為 0 時，代表交易訂單成立未付款 若為 1 時，代表交易訂單成立已付款
+			 * 回傳值：若為 0 時，代表交易訂單成立未付款 若為 1 時，代表交易訂單成立已付款。
 			 *
 			 * @param tradeStatus 交易狀態
 			 */
@@ -485,6 +503,11 @@ public class OrderResult {
 			}
 		}
 
+		/**
+		 * CVS 资讯
+		 *
+		 * @author m@musemodel.tw
+		 */
 		@JsonIgnoreProperties(ignoreUnknown = true)
 		public class CVSInfo {
 
@@ -495,7 +518,7 @@ public class OrderResult {
 			private String paymentNo;
 
 			@JsonProperty("PaymentURL")
-			private String paymentURL;
+			private String paymentUrl;
 
 			/**
 			 * 默認構造器
@@ -511,7 +534,12 @@ public class OrderResult {
 			}
 
 			/**
-			 * family：全家 hilife：萊爾富 okmart：OK 超商 ibon：7-11
+			 * <ul>
+			 * <li>family：全家</li>
+			 * <li>hilife：萊爾富</li>
+			 * <li>okmart：OK 超商</li>
+			 * <li>ibon：7-11</li>
+			 * </ul>
 			 *
 			 * @param payFrom 繳費超商
 			 */
@@ -536,18 +564,23 @@ public class OrderResult {
 			/**
 			 * @return 繳費連結
 			 */
-			public String getPaymentURL() {
-				return paymentURL;
+			public String getPaymentUrl() {
+				return paymentUrl;
 			}
 
 			/**
-			 * @param paymentURL 繳費連結
+			 * @param paymentUrl 繳費連結
 			 */
-			public void setPaymentURL(String paymentURL) {
-				this.paymentURL = paymentURL;
+			public void setPaymentUrl(String paymentUrl) {
+				this.paymentUrl = paymentUrl;
 			}
 		}
 
+		/**
+		 * Barcode 资讯
+		 *
+		 * @author m@musemodel.tw
+		 */
 		@JsonIgnoreProperties(ignoreUnknown = true)
 		public class BarcodeInfo {
 
@@ -577,6 +610,11 @@ public class OrderResult {
 			}
 		}
 
+		/**
+		 * ATM 资讯
+		 *
+		 * @author m@musemodel.tw
+		 */
 		@JsonIgnoreProperties(ignoreUnknown = true)
 		public class ATMInfo {
 
@@ -621,66 +659,71 @@ public class OrderResult {
 			}
 		}
 
+		/**
+		 * 授权资讯
+		 *
+		 * @author m@musemodel.tw
+		 */
 		@JsonIgnoreProperties(ignoreUnknown = true)
 		public class CardInfo {
 
 			@JsonProperty("AuthCode")
 			private String authCode;
-			
+
 			@JsonProperty("Gwsr")
 			private Integer gwsr;
-			
+
 			@JsonProperty("ProcessDate")
 			private String processDate;
-			
+
 			@JsonProperty("Amount")
 			private Integer amount;
-			
+
 			@JsonProperty("Eci")
 			private Short eci;
-			
+
 			@JsonProperty("Card6No")
 			private String card6No;
-			
+
 			@JsonProperty("Card4No")
 			private String card4No;
-			
+
 			@JsonProperty("Stage")
 			private Short stage;
-			
+
 			@JsonProperty("Stast")
 			private Integer stast;
-			
+
 			@JsonProperty("Staed")
 			private Integer staed;
-			
+
 			@JsonProperty("RedDan")
 			private Integer redDan;
-			
+
 			@JsonProperty("RedDeAmt")
 			private Integer redDeAmt;
-			
+
 			@JsonProperty("RedOkAmt")
 			private Integer redOkAmt;
-			
+
 			@JsonProperty("RedYet")
 			private Integer redYet;
-			
+
 			@JsonProperty("PeriodType")
 			private String periodType;
-			
+
 			@JsonProperty("Frequency")
 			private Short frequency;
-			
+
 			@JsonProperty("ExecTimes")
 			private Short execTimes;
-			
+
 			@JsonProperty("PeriodAmount")
 			private Integer periodAmount;
-			
+
 			@JsonProperty("TotalSuccessTimes")
 			private Integer totalSuccessTimes;
-			
+
 			@JsonProperty("TotalSuccessAmount")
 			private Long totalSuccessAmount;
 
@@ -689,7 +732,7 @@ public class OrderResult {
 			 */
 			public CardInfo() {
 			}
-			
+
 			/**
 			 * @return 銀行授權碼
 			 */
@@ -727,6 +770,7 @@ public class OrderResult {
 
 			/**
 			 * yyyy/MM/dd HH:mm:ss
+			 *
 			 * @param processDate 交易時間
 			 */
 			public void setProcessDate(String processDate) {
@@ -756,7 +800,7 @@ public class OrderResult {
 
 			/**
 			 * Eci=5,6,2,1 代表該筆交易為 3D 交易
-			 * 
+			 *
 			 * @param eci 3D(VBV) 回傳值
 			 */
 			public void setEci(Short eci) {
@@ -800,7 +844,7 @@ public class OrderResult {
 
 			/**
 			 * 分期付款時回傳
-			 * 
+			 *
 			 * @param stage 分期期數
 			 */
 			public void setStage(Short stage) {
@@ -816,7 +860,7 @@ public class OrderResult {
 
 			/**
 			 * 分期付款時回傳
-			 * 
+			 *
 			 * @param stast 首期金額
 			 */
 			public void setStast(Integer stast) {
@@ -832,7 +876,7 @@ public class OrderResult {
 
 			/**
 			 * 分期付款時回傳
-			 * 
+			 *
 			 * @param staed 各期金額
 			 */
 			public void setStaed(Integer staed) {
@@ -848,7 +892,7 @@ public class OrderResult {
 
 			/**
 			 * 紅利折扺時回傳
-			 * 
+			 *
 			 * @param redDan 紅利扣點
 			 */
 			public void setRedDan(Integer redDan) {
@@ -864,7 +908,7 @@ public class OrderResult {
 
 			/**
 			 * 紅利折扺時回傳
-			 * 
+			 *
 			 * @param redDeAmt 紅利折抵金額
 			 */
 			public void setRedDeAmt(Integer redDeAmt) {
@@ -880,7 +924,7 @@ public class OrderResult {
 
 			/**
 			 * 紅利折扺時回傳
-			 * 
+			 *
 			 * @param redOkAmt 實際扣款金額
 			 */
 			public void setRedOkAmt(Integer redOkAmt) {
@@ -896,7 +940,7 @@ public class OrderResult {
 
 			/**
 			 * 紅利折扺時回傳
-			 * 
+			 *
 			 * @param redYet 紅利剩餘點數
 			 */
 			public void setRedYet(Integer redYet) {
@@ -912,7 +956,7 @@ public class OrderResult {
 
 			/**
 			 * 定期定額時才會回傳
-			 * 
+			 *
 			 * @param periodType 週期種類
 			 */
 			public void setPeriodType(String periodType) {
@@ -928,7 +972,7 @@ public class OrderResult {
 
 			/**
 			 * 定期定額時才會回傳
-			 * 
+			 *
 			 * @param frequency 執行頻率
 			 */
 			public void setFrequency(Short frequency) {
@@ -944,7 +988,7 @@ public class OrderResult {
 
 			/**
 			 * 定期定額時才會回傳
-			 * 
+			 *
 			 * @param execTimes 執行次數
 			 */
 			public void setExecTimes(Short execTimes) {
@@ -960,7 +1004,7 @@ public class OrderResult {
 
 			/**
 			 * 定期定額時才會回傳
-			 * 
+			 *
 			 * @param periodAmount 訂單建立時的每次要授權金額
 			 */
 			public void setPeriodAmount(Integer periodAmount) {
@@ -976,7 +1020,7 @@ public class OrderResult {
 
 			/**
 			 * 定期定額時才會回傳
-			 * 
+			 *
 			 * @param totalSuccessTimes 目前已成功授權的次數
 			 */
 			public void setTotalSuccessTimes(Integer totalSuccessTimes) {
@@ -992,7 +1036,7 @@ public class OrderResult {
 
 			/**
 			 * 定期定額時才會回傳
-			 * 
+			 *
 			 * @param totalSuccessAmount 目前已成功授權的金額合計
 			 */
 			public void setTotalSuccessAmount(Long totalSuccessAmount) {

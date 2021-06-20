@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
  * @author p@musemodel.tw
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ApplyToken {
+public class TokenRequest {
 
 	@JsonProperty("MerchantID")
 	@NotBlank(message = "inpay2.token.MerchantID.NotBlank")
@@ -32,7 +32,7 @@ public class ApplyToken {
 	/**
 	 * 默认构造器
 	 */
-	public ApplyToken() {
+	public TokenRequest() {
 	}
 
 	/**

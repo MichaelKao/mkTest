@@ -2,7 +2,9 @@ package tw.musemodel.dingzhiqingren.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.InvalidAlgorithmParameterException;
@@ -27,23 +29,13 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.MessageSource;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import tw.com.ecpay.ecpg.ApplyToken;
-import tw.com.ecpay.ecpg.ApplyToken.Data.CardInfo;
-import tw.com.ecpay.ecpg.ApplyToken.Data.ConsumerInfo;
-import tw.com.ecpay.ecpg.ApplyToken.Data.OrderInfo;
-import tw.com.ecpay.ecpg.ApplyToken.RqHeader;
-import tw.com.ecpay.ecpg.ReplyToken;
-import tw.musemodel.dingzhiqingren.repository.ActivationRepository;
-import tw.musemodel.dingzhiqingren.repository.CountryRepository;
-import tw.musemodel.dingzhiqingren.repository.LineUserProfileRepository;
-import tw.musemodel.dingzhiqingren.repository.LoverRepository;
-import tw.musemodel.dingzhiqingren.repository.UserRepository;
+import tw.com.ecpay.ecpg.TokenRequest;
+import tw.com.ecpay.ecpg.TokenRequest.Data.CardInfo;
+import tw.com.ecpay.ecpg.TokenRequest.Data.ConsumerInfo;
+import tw.com.ecpay.ecpg.TokenRequest.Data.OrderInfo;
+import tw.com.ecpay.ecpg.TokenRequest.RqHeader;
+import tw.com.ecpay.ecpg.TokenResponse;
 
 /**
  * 服务层：情人
@@ -70,36 +62,6 @@ public class Inpay2Service {
 	private final static String INPAY2_MERCHANT_ID = System.getenv("INPAY2_MERCHANT_ID");
 
 	private final static String INPAY2_TRANSFORMATION = "AES/CBC/PKCS5Padding";
-
-	@Autowired
-	private ApplicationEventPublisher applicationEventPublisher;
-
-	@Autowired
-	private AuthenticationManager authenticationManager;
-
-	@Autowired
-	private MessageSource messageSource;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
-	@Autowired
-	private Servant servant;
-
-	@Autowired
-	private ActivationRepository activationRepository;
-
-	@Autowired
-	private CountryRepository countryRepository;
-
-	@Autowired
-	private LineUserProfileRepository lineUserProfileRepository;
-
-	@Autowired
-	private LoverRepository loverRepository;
-
-	@Autowired
-	private UserRepository userRepository;
 
 	private IvParameterSpec getIvParameterSpec() throws UnsupportedEncodingException {
 		StringBuilder stringBuilder = new StringBuilder(16);
@@ -168,15 +130,24 @@ public class Inpay2Service {
 		));
 	}
 
-	public String token() throws Exception {
+	public String createPayment() {
+		return null;
+	}
+
+	/**
+	 * 取得厂商验证码
+	 *
+	 * @return 绿界回传厂商验证码对象
+	 */
+	public String getTokenByTrade() {
 		final Long currentTimeMillis = System.currentTimeMillis();
-		ApplyToken.Data applyTokenData = new ApplyToken.Data(
+		TokenRequest.Data tokenRequestData = new TokenRequest.Data(
 			INPAY2_MERCHANT_ID,
 			(short) 0,
 			(short) 0
 		);
 
-		applyTokenData.setOrderInfo(applyTokenData.new OrderInfo(
+		tokenRequestData.setOrderInfo(tokenRequestData.new OrderInfo(
 			"2021/06/18 02:46:00",
 			String.format("%s", currentTimeMillis.toString()),
 			300,
@@ -185,93 +156,140 @@ public class Inpay2Service {
 			"商品名称"
 		));
 
-		CardInfo cardInfo = applyTokenData.new CardInfo(
-			"https://musemodel.ngrok.io/poc/orderResultUrl.asp"
+		CardInfo cardInfo = tokenRequestData.new CardInfo(
+			"https://musemodel.ngrok.io/poc/orderResultUrl.asp"//TODO
 		);
 		cardInfo.setPeriodAmount((short) 300);
 		cardInfo.setPeriodType("M");
 		cardInfo.setFrequency((short) 1);
 		cardInfo.setExecTimes((short) 99);
 		cardInfo.setPeriodReturnUrl(
-			"https://musemodel.ngrok.io/poc/periodReturnUrl.asp"
+			"https://musemodel.ngrok.io/poc/periodReturnUrl.asp"//TODO
 		);
-		applyTokenData.setCardInfo(cardInfo);
+		tokenRequestData.setCardInfo(cardInfo);
 
-		ConsumerInfo consumerInfo = applyTokenData.new ConsumerInfo();
-		consumerInfo.setMerchantMemberId("test123456");
-		applyTokenData.setConsumerInfo(consumerInfo);
+		ConsumerInfo consumerInfo = tokenRequestData.new ConsumerInfo();
+		consumerInfo.setMerchantMemberId("test123456");//TODO
+		tokenRequestData.setConsumerInfo(consumerInfo);
 
-		String applyTokenDataString = JSON_MAPPER.writeValueAsString(
-			applyTokenData
-		);
-		LOGGER.debug(
-			"取得厂商验证码(服务器)\n{}",
-			applyTokenDataString
-		);
+		String tokenRequestDataString;
+		try {
+			tokenRequestDataString = JSON_MAPPER.writeValueAsString(
+				tokenRequestData
+			);
+		} catch (JsonProcessingException jsonProcessingException) {
+			LOGGER.info(
+				String.format(
+					"生成厂商验证码请求对象时发生序列化异常！\n%s.getTokenByTrade();",
+					getClass().getName()
+				),
+				jsonProcessingException
+			);
+			return null;
+		}
 
-		ApplyToken applyToken = new ApplyToken();
+		TokenRequest tokenRequest = new TokenRequest();
 
-		RqHeader rqHeader = applyToken.new RqHeader();
+		RqHeader rqHeader = tokenRequest.new RqHeader();
 		rqHeader.setTimestamp(currentTimeMillis / 1000);
 		rqHeader.setRevision(INPAY2_API_VERSION);
 
-		applyToken.setMerchantId(INPAY2_MERCHANT_ID);
-		applyToken.setRqHeader(rqHeader);
-		applyToken.setData(encrypt(applyTokenDataString));
-
-		LOGGER.debug(
-			"向绿界取得厂商验证码\n{}",
-			JSON_MAPPER.writeValueAsString(applyToken)
-		);
-
-		CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
-		HttpPost httpPost = new HttpPost(new URIBuilder(
-			INPAY2_GET_TOKEN_BY_TRADE
-		).build());
-		httpPost.setHeader(new BasicHeader(
-			"Content-Type",
-			"application/json"
-		));
-		httpPost.setEntity(new StringEntity(
-			JSON_MAPPER.writeValueAsString(applyToken)
-		));
-
-		CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
-		HttpEntity httpEntity = closeableHttpResponse.getEntity();
-		if (Objects.isNull(httpEntity)) {
+		tokenRequest.setMerchantId(INPAY2_MERCHANT_ID);
+		tokenRequest.setRqHeader(rqHeader);
+		try {
+			tokenRequest.setData(encrypt(tokenRequestDataString));
+		} catch (UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException exception) {
+			LOGGER.info(
+				String.format(
+					"生成厂商验证码请求对象时发生加密异常！\n%s.getTokenByTrade();",
+					getClass().getName()
+				),
+				exception
+			);
 			return null;
 		}
-		String responseBody = IOUtils.toString(
-			httpEntity.getContent(),
-			Servant.UTF_8
-		);
-		closeableHttpResponse.close();
-		closeableHttpClient.close();
 
-		return decrypt(JSON_MAPPER.readValue(
-			responseBody,
-			ReplyToken.class
-		).getData());
-	}
+		String responseBody;
+		try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
+			HttpPost httpPost = new HttpPost(new URIBuilder(
+				INPAY2_GET_TOKEN_BY_TRADE
+			).build());
+			httpPost.setHeader(new BasicHeader(
+				"Content-Type",
+				"application/json"
+			));
+			httpPost.setEntity(new StringEntity(
+				JSON_MAPPER.writeValueAsString(tokenRequest)
+			));
 
-	public String applyToken() throws JsonProcessingException {
-		ApplyToken applyToken = new ApplyToken();
-		RqHeader rqHeader = applyToken.new RqHeader();
-		rqHeader.setTimestamp(System.currentTimeMillis() / 1000);
-		rqHeader.setRevision(INPAY2_API_VERSION);
+			CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
+			HttpEntity httpEntity = closeableHttpResponse.getEntity();
+			if (Objects.isNull(httpEntity)) {
+				LOGGER.info(
+					String.format(
+						"请求厂商验证码时发生不明的异常！\n%s.getTokenByTrade();",
+						getClass().getName()
+					)
+				);
+				return null;
+			}
+			responseBody = IOUtils.toString(
+				httpEntity.getContent(),
+				Servant.UTF_8
+			);
 
-		applyToken.setMerchantId(INPAY2_MERCHANT_ID);
-		applyToken.setRqHeader(rqHeader);
-		applyToken.setData("{\"MerchantID\":\"3002607\",\"RqHeader\":{\"Timestamp\":1525168923,\"Revision\":\"1.0.0\"},\"Data\":\"7woM9RorZKAtXJRVccAb0qhHYm+5lnlhBzyfh5EZdNck7PacNsRHgv/Jvp//ajJidqcQcs0UmAgPQVjXQHeziw==\"}");
+			closeableHttpResponse.close();
+			closeableHttpClient.close();
+		} catch (URISyntaxException | IllegalArgumentException | UnsupportedEncodingException exception) {
+			LOGGER.info(
+				String.format(
+					"建立厂商验证码请求时发生异常！\n%s.getTokenByTrade();",
+					getClass().getName()
+				),
+				exception
+			);
+			return null;
+		} catch (JsonProcessingException jsonProcessingException) {
+			LOGGER.info(
+				String.format(
+					"建立厂商验证码请求时发生序列化异常！\n%s.getTokenByTrade();",
+					getClass().getName()
+				),
+				jsonProcessingException
+			);
+			return null;
+		} catch (IOException ioException) {
+			LOGGER.info(
+				String.format(
+					"请求厂商验证码时发生输入输出异常！\n%s.getTokenByTrade();",
+					getClass().getName()
+				),
+				ioException
+			);
+			return null;
+		}
 
-		return JSON_MAPPER.writeValueAsString(applyToken);
-	}
-
-	public String replyToken() throws JsonProcessingException {
-		ReplyToken replyToken = JSON_MAPPER.readValue(
-			"{\"MerchantID\":\"3002607\",\"RpHeader\":{\"Timestamp\":1525169058},\"TransCode\":1,\"TransMsg\":\"Success\",\"Data\":\"7woM9RorZKAtXJRVccAb0qhHYm+5lnlhBzyfh5EZdNck7PacNsRHgv/Jvp//ajJidqcQcs0UmAgPQVjXQHeziw==\"}",
-			ReplyToken.class
-		);
-		return JSON_MAPPER.writeValueAsString(replyToken);
+		try {
+			return decrypt(JSON_MAPPER.readValue(responseBody,
+				TokenResponse.class
+			).getData());
+		} catch (JsonProcessingException jsonProcessingException) {
+			LOGGER.info(
+				String.format(
+					"生成厂商验证码响应对象时发生反序列化异常！\n%s.getTokenByTrade();",
+					getClass().getName()
+				),
+				jsonProcessingException
+			);
+		} catch (UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException exception) {
+			LOGGER.info(
+				String.format(
+					"生成厂商验证码响应对象时发生解密异常！\n%s.getTokenByTrade();",
+					getClass().getName()
+				),
+				exception
+			);
+		}
+		return null;
 	}
 }
