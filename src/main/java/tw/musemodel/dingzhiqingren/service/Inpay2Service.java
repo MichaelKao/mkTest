@@ -30,6 +30,8 @@ import org.apache.http.message.BasicHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import tw.com.ecpay.ecpg.PaymentRequest;
+import tw.com.ecpay.ecpg.PaymentResponse;
 import tw.com.ecpay.ecpg.TokenRequest;
 import tw.com.ecpay.ecpg.TokenRequest.Data.CardInfo;
 import tw.com.ecpay.ecpg.TokenRequest.Data.ConsumerInfo;
@@ -94,6 +96,12 @@ public class Inpay2Service {
 		);
 	}
 
+	/**
+	 * 发出 http post 请求并取得响应。
+	 *
+	 * @param requestBody 请求内容
+	 * @return 响应内容
+	 */
 	@SuppressWarnings("ConvertToTryWithResources")
 	private String httpPost(final String requestBody) {
 		String responseBody;
@@ -114,9 +122,10 @@ public class Inpay2Service {
 			if (Objects.isNull(httpEntity)) {
 				LOGGER.info(
 					String.format(
-						"请求厂商验证码时发生不明的异常！\n%s.getTokenByTrade();",
+						"请求厂商验证码时发生不明的异常！\n%s.httpPost(\n\tString requestBody = {}\n);",
 						getClass().getName()
-					)
+					),
+					requestBody
 				);
 				return null;
 			}
@@ -130,18 +139,20 @@ public class Inpay2Service {
 		} catch (URISyntaxException | IllegalArgumentException | UnsupportedEncodingException exception) {
 			LOGGER.info(
 				String.format(
-					"建立 http post 请求时发生异常！\n%s.getTokenByTrade();",
+					"建立 http post 请求时发生异常！\n%s.httpPost(\n\tString requestBody = {}\n);",
 					getClass().getName()
 				),
+				requestBody,
 				exception
 			);
 			return null;
 		} catch (IOException ioException) {
 			LOGGER.info(
 				String.format(
-					"输入输出异常！\n%s.getTokenByTrade();",
+					"输入输出异常！\n%s.httpPost(\n\tString requestBody = {}\n);",
 					getClass().getName()
 				),
+				requestBody,
 				ioException
 			);
 			return null;
@@ -185,7 +196,96 @@ public class Inpay2Service {
 		));
 	}
 
-	public String createPayment() {
+	/**
+	 * 建立交易
+	 *
+	 * @return
+	 */
+	public String createPayment(final String payToken) {
+		final Long currentTimeMillis = System.currentTimeMillis();
+		String merchantTradeNo = "";//TODO
+		PaymentRequest.Data paymentRequestData = new PaymentRequest.Data(
+			INPAY2_MERCHANT_ID,
+			payToken,
+			merchantTradeNo
+		);
+
+		String paymentRequestDataString;
+		try {
+			paymentRequestDataString = JSON_MAPPER.writeValueAsString(
+				paymentRequestData
+			);
+		} catch (JsonProcessingException jsonProcessingException) {
+			LOGGER.info(
+				String.format(
+					"生成建立交易请求对象时发生序列化异常！\n%s.createPayment(\n\tString payToken = {}\n);",
+					getClass().getName()
+				),
+				payToken,
+				jsonProcessingException
+			);
+			return null;
+		}
+
+		PaymentRequest paymentRequest = new PaymentRequest();
+		paymentRequest.setMerchantId(INPAY2_MERCHANT_ID);
+		paymentRequest.setRqHeader(paymentRequest.new RqHeader(
+			currentTimeMillis / 1000,
+			INPAY2_API_VERSION
+		));
+		try {
+			paymentRequest.setData(encrypt(paymentRequestDataString));
+		} catch (UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException exception) {
+			LOGGER.info(
+				String.format(
+					"生成建立交易请求对象时发生加密异常！\n%s.createPayment(\n\tString payToken = {}\n);",
+					getClass().getName()
+				),
+				payToken,
+				exception
+			);
+			return null;
+		}
+
+		String responseBody;
+		try {
+			responseBody = httpPost(
+				JSON_MAPPER.writeValueAsString(paymentRequest)
+			);
+		} catch (JsonProcessingException jsonProcessingException) {
+			LOGGER.info(
+				String.format(
+					"建立建立交易请求时发生序列化异常！\n%s.getTokenByTrade();",
+					getClass().getName()
+				),
+				jsonProcessingException
+			);
+			return null;
+		}
+
+		try {
+			return decrypt(JSON_MAPPER.readValue(
+				responseBody,
+				PaymentResponse.class
+			).getData());
+		} catch (JsonProcessingException jsonProcessingException) {
+			LOGGER.info(
+				String.format(
+					"生成建立交易响应对象时发生反序列化异常！\n%s.getTokenByTrade();",
+					getClass().getName()
+				),
+				jsonProcessingException
+			);
+		} catch (UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException exception) {
+			LOGGER.info(
+				String.format(
+					"生成建立交易响应对象时发生解密异常！\n%s.getTokenByTrade();",
+					getClass().getName()
+				),
+				exception
+			);
+		}
+
 		return null;
 	}
 
@@ -245,7 +345,7 @@ public class Inpay2Service {
 
 		TokenRequest tokenRequest = new TokenRequest();
 
-		RqHeader rqHeader = tokenRequest.new RqHeader();
+		tw.com.ecpay.ecpg.TokenRequest.RqHeader rqHeader = tokenRequest.new RqHeader();
 		rqHeader.setTimestamp(currentTimeMillis / 1000);
 		rqHeader.setRevision(INPAY2_API_VERSION);
 
