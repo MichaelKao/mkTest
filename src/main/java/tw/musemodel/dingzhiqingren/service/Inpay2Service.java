@@ -94,6 +94,61 @@ public class Inpay2Service {
 		);
 	}
 
+	@SuppressWarnings("ConvertToTryWithResources")
+	private String httpPost(final String requestBody) {
+		String responseBody;
+		try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
+			HttpPost httpPost = new HttpPost(new URIBuilder(
+				INPAY2_GET_TOKEN_BY_TRADE
+			).build());
+			httpPost.setHeader(new BasicHeader(
+				"Content-Type",
+				"application/json"
+			));
+			httpPost.setEntity(new StringEntity(
+				JSON_MAPPER.writeValueAsString(requestBody)
+			));
+
+			CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
+			HttpEntity httpEntity = closeableHttpResponse.getEntity();
+			if (Objects.isNull(httpEntity)) {
+				LOGGER.info(
+					String.format(
+						"请求厂商验证码时发生不明的异常！\n%s.getTokenByTrade();",
+						getClass().getName()
+					)
+				);
+				return null;
+			}
+			responseBody = IOUtils.toString(
+				httpEntity.getContent(),
+				Servant.UTF_8
+			);
+
+			closeableHttpResponse.close();
+			closeableHttpClient.close();
+		} catch (URISyntaxException | IllegalArgumentException | UnsupportedEncodingException exception) {
+			LOGGER.info(
+				String.format(
+					"建立 http post 请求时发生异常！\n%s.getTokenByTrade();",
+					getClass().getName()
+				),
+				exception
+			);
+			return null;
+		} catch (IOException ioException) {
+			LOGGER.info(
+				String.format(
+					"输入输出异常！\n%s.getTokenByTrade();",
+					getClass().getName()
+				),
+				ioException
+			);
+			return null;
+		}
+		return responseBody;
+	}
+
 	public String decrypt(final String data) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
 		Cipher cipher = Cipher.getInstance(INPAY2_TRANSFORMATION);
 		cipher.init(
@@ -210,45 +265,10 @@ public class Inpay2Service {
 		}
 
 		String responseBody;
-		try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
-			HttpPost httpPost = new HttpPost(new URIBuilder(
-				INPAY2_GET_TOKEN_BY_TRADE
-			).build());
-			httpPost.setHeader(new BasicHeader(
-				"Content-Type",
-				"application/json"
-			));
-			httpPost.setEntity(new StringEntity(
+		try {
+			responseBody = httpPost(
 				JSON_MAPPER.writeValueAsString(tokenRequest)
-			));
-
-			CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
-			HttpEntity httpEntity = closeableHttpResponse.getEntity();
-			if (Objects.isNull(httpEntity)) {
-				LOGGER.info(
-					String.format(
-						"请求厂商验证码时发生不明的异常！\n%s.getTokenByTrade();",
-						getClass().getName()
-					)
-				);
-				return null;
-			}
-			responseBody = IOUtils.toString(
-				httpEntity.getContent(),
-				Servant.UTF_8
 			);
-
-			closeableHttpResponse.close();
-			closeableHttpClient.close();
-		} catch (URISyntaxException | IllegalArgumentException | UnsupportedEncodingException exception) {
-			LOGGER.info(
-				String.format(
-					"建立厂商验证码请求时发生异常！\n%s.getTokenByTrade();",
-					getClass().getName()
-				),
-				exception
-			);
-			return null;
 		} catch (JsonProcessingException jsonProcessingException) {
 			LOGGER.info(
 				String.format(
@@ -258,19 +278,11 @@ public class Inpay2Service {
 				jsonProcessingException
 			);
 			return null;
-		} catch (IOException ioException) {
-			LOGGER.info(
-				String.format(
-					"请求厂商验证码时发生输入输出异常！\n%s.getTokenByTrade();",
-					getClass().getName()
-				),
-				ioException
-			);
-			return null;
 		}
 
 		try {
-			return decrypt(JSON_MAPPER.readValue(responseBody,
+			return decrypt(JSON_MAPPER.readValue(
+				responseBody,
 				TokenResponse.class
 			).getData());
 		} catch (JsonProcessingException jsonProcessingException) {
