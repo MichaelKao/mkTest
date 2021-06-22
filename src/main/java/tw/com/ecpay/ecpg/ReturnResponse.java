@@ -2,6 +2,7 @@ package tw.com.ecpay.ecpg;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Objects;
 
 /**
  * 付款結果通知
@@ -9,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author m@musemodel.tw
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OrderResult {
+public class ReturnResponse {
 
 	@JsonProperty("MerchantID")
 	private String merchantId;
@@ -29,7 +30,7 @@ public class OrderResult {
 	/**
 	 * 默認構造器
 	 */
-	public OrderResult() {
+	public ReturnResponse() {
 	}
 
 	/**
@@ -196,6 +197,22 @@ public class OrderResult {
 		 * 默認構造器
 		 */
 		public Data() {
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder stringBuilder = new StringBuilder("{");
+			stringBuilder.append("\"rtnCode\":").append(Objects.isNull(rtnCode) ? "null" : rtnCode).append(",");
+			stringBuilder.append("\"rtnMsg\":").append(Objects.isNull(rtnMsg) ? "null" : "\"" + rtnMsg + "\"").append(",");
+			stringBuilder.append("\"platformId\":").append(Objects.isNull(platformId) ? "null" : "\"" + platformId + "\"").append(",");
+			stringBuilder.append("\"merchantId\":").append(Objects.isNull(merchantId) ? "null" : "\"" + merchantId + "\"").append(",");
+			stringBuilder.append("\"orderInfo\":").append(Objects.isNull(orderInfo) ? "null" : orderInfo).append(",");
+			stringBuilder.append("\"cvsInfo\":").append(Objects.isNull(cvsInfo) ? "null" : cvsInfo).append(",");
+			stringBuilder.append("\"barcodeInfo\":").append(Objects.isNull(barcodeInfo) ? "null" : barcodeInfo).append(",");
+			stringBuilder.append("\"atmInfo\":").append(Objects.isNull(atmInfo) ? "null" : atmInfo).append(",");
+			stringBuilder.append("\"cardInfo\":").append(Objects.isNull(cardInfo) ? "null" : cardInfo).append(",");
+			stringBuilder.append("\"customField\":").append(Objects.isNull(customField) ? "null" : "\"" + customField + "\"").append("}");
+			return stringBuilder.toString();
 		}
 
 		/**

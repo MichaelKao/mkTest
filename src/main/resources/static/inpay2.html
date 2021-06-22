@@ -31,6 +31,8 @@
 		<SCRIPT src="https://ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116"></SCRIPT>
 		<SCRIPT>
 			$(document).ready(function () {
+				$('FORM').get(0).reset();
+
 				ECPay.initialize(
 					ECPay.ServerType.Stage,
 					1,
@@ -45,7 +47,7 @@
 									try {
 										ECPay.createPayment(
 											data.Token,
-											ECPay.Language.zhTW,
+											null === navigator.language.match(/^zh/gi) ? ECPay.Language.enUS : ECPay.Language.zhTW,
 											function (errMsg) {
 												if (errMsg !== null) {
 													alert(errMsg);
@@ -73,32 +75,39 @@
 								alert(errMsg);
 								return false;
 							}
+							let payToken = paymentInfo.PayToken;
 							$(form.payToken).val(
-								paymentInfo.PayToken
+								payToken
 							);
 							$(form.paymentType).val(
 								paymentInfo.PaymentType
 							);
 							$.post(
-								'/inpay2/createPayment.json',
+								`/inpay2/createPayment/${payToken}.json`,
 								function(data) {
-									if (data.RtnCode === 1) {									
-										try {
-											ECPay.createPayment(
-												data.Token,
-												ECPay.Language.zhTW,
-												function (errMsg) {
-													if (errMsg !== null) {
-														alert(errMsg);
-													}
-												}
-											);
-										} catch (err) {
-											alert(err);
-										}
+									console.log(data);
+									if (data.ThreeDInfo.ThreeDURL) {
+										location.replace(data.ThreeDInfo.ThreeDURL);
 									} else {
-										alert(data.RtnMsg);
+										alert('呃!?');
 									}
+//									if (data.RtnCode === 1) {									
+//										try {
+//											ECPay.createPayment(
+//												data.Token,
+//												ECPay.Language.zhTW,
+//												function (errMsg) {
+//													if (errMsg !== null) {
+//														alert(errMsg);
+//													}
+//												}
+//											);
+//										} catch (err) {
+//											alert(err);
+//										}
+//									} else {
+//										alert(data.RtnMsg);
+//									}
 								},
 								'json'
 							);

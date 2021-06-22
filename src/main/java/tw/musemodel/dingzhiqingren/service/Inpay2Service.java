@@ -10,7 +10,9 @@ import java.net.URLEncoder;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 import java.util.Objects;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -18,6 +20,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpSession;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -29,6 +32,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tw.com.ecpay.ecpg.PaymentRequest;
 import tw.com.ecpay.ecpg.PaymentResponse;
@@ -38,6 +42,8 @@ import tw.com.ecpay.ecpg.TokenRequest.Data.ConsumerInfo;
 import tw.com.ecpay.ecpg.TokenRequest.Data.OrderInfo;
 import tw.com.ecpay.ecpg.TokenRequest.RqHeader;
 import tw.com.ecpay.ecpg.TokenResponse;
+import tw.musemodel.dingzhiqingren.entity.Temporary;
+import tw.musemodel.dingzhiqingren.repository.TemporaryRepository;
 
 /**
  * 服务层：情人
@@ -51,11 +57,13 @@ public class Inpay2Service {
 
 	private final static JsonMapper JSON_MAPPER = new JsonMapper();
 
+	private final static String INPAY2ENDPOINT_CREATE_PAYMENT = System.getenv("INPAY2ENDPOINT_CREATE_PAYMENT");
+
+	private final static String INPAY2ENDPOINT_GET_TOKEN_BY_TRADE = System.getenv("INPAY2ENDPOINT_GET_TOKEN_BY_TRADE");
+
 	private final static String INPAY2_ALGORITHM = "AES";
 
 	private final static String INPAY2_API_VERSION = System.getenv("INPAY2_API_VERSION");
-
-	private final static String INPAY2_GET_TOKEN_BY_TRADE = System.getenv("INPAY2_GET_TOKEN_BY_TRADE");
 
 	private final static String INPAY2_HASH_IV = System.getenv("INPAY2_HASH_IV");
 
@@ -96,6 +104,9 @@ public class Inpay2Service {
 		);
 	}
 
+	@Autowired
+	private TemporaryRepository temporaryRepository;
+
 	/**
 	 * 发出 http post 请求并取得响应。
 	 *
@@ -103,19 +114,17 @@ public class Inpay2Service {
 	 * @return 响应内容
 	 */
 	@SuppressWarnings("ConvertToTryWithResources")
-	private String httpPost(final String requestBody) {
+	private String httpPost(final String uri, final String requestBody) {
 		String responseBody;
 		try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
-			HttpPost httpPost = new HttpPost(new URIBuilder(
-				INPAY2_GET_TOKEN_BY_TRADE
-			).build());
+			HttpPost httpPost = new HttpPost(
+				new URIBuilder(uri).build()
+			);
 			httpPost.setHeader(new BasicHeader(
 				"Content-Type",
 				"application/json"
 			));
-			httpPost.setEntity(new StringEntity(
-				JSON_MAPPER.writeValueAsString(requestBody)
-			));
+			httpPost.setEntity(new StringEntity(requestBody));
 
 			CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
 			HttpEntity httpEntity = closeableHttpResponse.getEntity();
@@ -199,11 +208,23 @@ public class Inpay2Service {
 	/**
 	 * 建立交易
 	 *
-	 * @return
+	 * @param payToken 支付令牌
+	 * @return 绿界回传支付令牌对象字符串
 	 */
-	public String createPayment(final String payToken) {
+	public String createPayment(final String payToken, final HttpSession session) {
 		final Long currentTimeMillis = System.currentTimeMillis();
-		String merchantTradeNo = "";//TODO
+		String merchantTradeNo = temporaryRepository.findTop1BySessionIdOrderByIdDesc(
+			session.getId()
+		).getMerchantTradeNo();
+		LOGGER.debug(
+			String.format(
+				"建立交易 輸入參數\n%s.createPayment(\n\tString payToken = {}\n\tHttpSession session = {}\n);\n交易編號：{}",
+				getClass().getName()
+			),
+			payToken,
+			session,
+			merchantTradeNo
+		);
 		PaymentRequest.Data paymentRequestData = new PaymentRequest.Data(
 			INPAY2_MERCHANT_ID,
 			payToken,
@@ -218,10 +239,11 @@ public class Inpay2Service {
 		} catch (JsonProcessingException jsonProcessingException) {
 			LOGGER.info(
 				String.format(
-					"生成建立交易请求对象时发生序列化异常！\n%s.createPayment(\n\tString payToken = {}\n);",
+					"生成建立交易请求对象时发生序列化异常！\n%s.createPayment(\n\tString payToken = {}\n\tHttpSession session = {}\n);",
 					getClass().getName()
 				),
 				payToken,
+				session,
 				jsonProcessingException
 			);
 			return null;
@@ -238,10 +260,11 @@ public class Inpay2Service {
 		} catch (UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException exception) {
 			LOGGER.info(
 				String.format(
-					"生成建立交易请求对象时发生加密异常！\n%s.createPayment(\n\tString payToken = {}\n);",
+					"生成建立交易请求对象时发生加密异常！\n%s.createPayment(\n\tString payToken = {}\n\tHttpSession session = {}\n);",
 					getClass().getName()
 				),
 				payToken,
+				session,
 				exception
 			);
 			return null;
@@ -250,20 +273,35 @@ public class Inpay2Service {
 		String responseBody;
 		try {
 			responseBody = httpPost(
+				INPAY2ENDPOINT_CREATE_PAYMENT,
 				JSON_MAPPER.writeValueAsString(paymentRequest)
 			);
 		} catch (JsonProcessingException jsonProcessingException) {
 			LOGGER.info(
 				String.format(
-					"建立建立交易请求时发生序列化异常！\n%s.getTokenByTrade();",
+					"建立交易请求时发生序列化异常！\n%s.createPayment(\n\tString payToken = {}\n\tHttpSession session = {}\n);",
 					getClass().getName()
 				),
+				payToken,
+				session,
 				jsonProcessingException
 			);
 			return null;
 		}
 
 		try {
+			LOGGER.info(
+				String.format(
+					"建立交易！\n%s.createPayment(\n\tString payToken = {}\n\tHttpSession session = {}\n);",
+					getClass().getName()
+				),
+				payToken,
+				session,
+				decrypt(JSON_MAPPER.readValue(
+					responseBody,
+					PaymentResponse.class
+				).getData())
+			);
 			return decrypt(JSON_MAPPER.readValue(
 				responseBody,
 				PaymentResponse.class
@@ -271,17 +309,21 @@ public class Inpay2Service {
 		} catch (JsonProcessingException jsonProcessingException) {
 			LOGGER.info(
 				String.format(
-					"生成建立交易响应对象时发生反序列化异常！\n%s.getTokenByTrade();",
+					"生成建立交易响应对象时发生反序列化异常！\n%s.createPayment(\n\tString payToken = {}\n\tHttpSession session = {}\n);",
 					getClass().getName()
 				),
+				payToken,
+				session,
 				jsonProcessingException
 			);
 		} catch (UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException exception) {
 			LOGGER.info(
 				String.format(
-					"生成建立交易响应对象时发生解密异常！\n%s.getTokenByTrade();",
+					"生成建立交易响应对象时发生解密异常！\n%s.createPayment(\n\tString payToken = {}\n\tHttpSession session = {}\n);",
 					getClass().getName()
 				),
+				payToken,
+				session,
 				exception
 			);
 		}
@@ -289,13 +331,33 @@ public class Inpay2Service {
 		return null;
 	}
 
+	private String generateMerchantTradeDate(Long currentTimeMillis) {
+		Date date = new Date(currentTimeMillis);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+		return new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(date);
+	}
+
+	private String generateMerchantTradeNo(Long currentTimeMillis) {
+		Date date = new Date(currentTimeMillis);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+		//return new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(date);
+		return String.format("%s", currentTimeMillis.toString());
+	}
+
 	/**
 	 * 取得厂商验证码
 	 *
-	 * @return 绿界回传厂商验证码对象
+	 * @return 绿界回传厂商验证码对象字符串
+	 * @throws com.fasterxml.jackson.core.JsonProcessingException
 	 */
-	public String getTokenByTrade() {
+	public String getTokenByTrade(final HttpSession session) throws JsonProcessingException {
 		final Long currentTimeMillis = System.currentTimeMillis();
+		final String merchantTradeNo = generateMerchantTradeNo(currentTimeMillis);
+		Temporary temporary = new Temporary();
+		temporary.setSessionId(session.getId());
+		temporary.setMerchantTradeNo(merchantTradeNo);
+		temporary = temporaryRepository.saveAndFlush(temporary);
+
 		TokenRequest.Data tokenRequestData = new TokenRequest.Data(
 			INPAY2_MERCHANT_ID,
 			(short) 0,
@@ -303,29 +365,49 @@ public class Inpay2Service {
 		);
 
 		tokenRequestData.setOrderInfo(tokenRequestData.new OrderInfo(
-			"2021/06/18 02:46:00",
-			String.format("%s", currentTimeMillis.toString()),
-			300,
-			"https://musemodel.ngrok.io/poc/returnUrl.asp",
-			"交易描述",
-			"商品名称"
+			generateMerchantTradeDate(currentTimeMillis),
+			temporary.getMerchantTradeNo(),//TODO：SimpleDateFormat
+			300,//TODO：JPA
+			String.format(
+				"https://%s/inpay2/return.asp",
+				Servant.LOCALHOST
+			),
+			"交易描述",//TODO：JPA
+			"商品名称"//TODO：JPA
 		));
 
 		CardInfo cardInfo = tokenRequestData.new CardInfo(
-			"https://musemodel.ngrok.io/poc/orderResultUrl.asp"//TODO
+			String.format(
+				"https://%s/inpay2/orderResult.asp",
+				Servant.LOCALHOST
+			)
 		);
 		cardInfo.setPeriodAmount((short) 300);
 		cardInfo.setPeriodType("M");
 		cardInfo.setFrequency((short) 1);
 		cardInfo.setExecTimes((short) 99);
 		cardInfo.setPeriodReturnUrl(
-			"https://musemodel.ngrok.io/poc/periodReturnUrl.asp"//TODO
+			String.format(
+				"https://%s/inpay2/periodReturn.asp",
+				Servant.LOCALHOST
+			)
 		);
 		tokenRequestData.setCardInfo(cardInfo);
 
 		ConsumerInfo consumerInfo = tokenRequestData.new ConsumerInfo();
-		consumerInfo.setMerchantMemberId("test123456");//TODO
+		consumerInfo.setMerchantMemberId("test123456");//TODO：JPA
+		consumerInfo.setPhone("0930940238");
 		tokenRequestData.setConsumerInfo(consumerInfo);
+		LOGGER.debug(
+			String.format(
+				"生成厂商验证码请求对象！\n%s.getTokenByTrade();\n{}\n交易編號：{}",
+				getClass().getName()
+			),
+			JSON_MAPPER.writeValueAsString(
+				tokenRequestData
+			),
+			merchantTradeNo
+		);
 
 		String tokenRequestDataString;
 		try {
@@ -367,6 +449,7 @@ public class Inpay2Service {
 		String responseBody;
 		try {
 			responseBody = httpPost(
+				INPAY2ENDPOINT_GET_TOKEN_BY_TRADE,
 				JSON_MAPPER.writeValueAsString(tokenRequest)
 			);
 		} catch (JsonProcessingException jsonProcessingException) {
@@ -381,6 +464,16 @@ public class Inpay2Service {
 		}
 
 		try {
+			LOGGER.debug(
+				String.format(
+					"生成厂商验证码请求！\n%s.getTokenByTrade();\n{}",
+					getClass().getName()
+				),
+				decrypt(JSON_MAPPER.readValue(
+					responseBody,
+					TokenResponse.class
+				).getData())
+			);
 			return decrypt(JSON_MAPPER.readValue(
 				responseBody,
 				TokenResponse.class

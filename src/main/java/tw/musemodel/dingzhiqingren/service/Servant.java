@@ -39,13 +39,15 @@ public class Servant {
 	@Autowired
 	private RoleRepository roleRepository;
 
-	public final static Charset UTF_8 = StandardCharsets.UTF_8;
+	public final static String LOCALHOST = System.getenv("LOCALHOST");
 
 	public final static String ROLE_ADMINISTRATOR = "ROLE_ALMIGHTY";
 
 	public final static String ROLE_ACCOUNTANT = "ROLE_FINANCE";
 
 	public final static String ROLE_ADVENTURER = "ROLE_YONGHU";
+
+	public final static Charset UTF_8 = StandardCharsets.UTF_8;
 
 	public boolean isNull(Authentication authentication) {
 		return Objects.isNull(authentication);

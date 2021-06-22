@@ -1,6 +1,7 @@
 package tw.musemodel.dingzhiqingren.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.json.JSONObject;
 
 /**
@@ -11,12 +12,15 @@ import org.json.JSONObject;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JavaScriptObjectNotation {
 
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String reason;
 
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String redirect;
 
 	private boolean response;
 
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Object result;
 
 	public JavaScriptObjectNotation() {
