@@ -31,13 +31,19 @@
 			<xsl:call-template name="bootstrapToast"/>
 			<HEADER class="header-2">
 				<DIV class="page-header section-height-85 relative" style="background-image: url('https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/COUPLE/COUPLE+(1).jpg')">
-					<DIV class="container">
+					<DIV class="container text-center">
 						<DIV class="row">
 							<DIV class="col-lg-7 text-center mx-auto">
 								<H1 class="text-white pt-3 mt-n5">訂製你的專屬情人</H1>
-								<P class="lead text-white mt-3">平台真人管理，會員有驗證，收入有證明。我們嚴選有經濟能力的成功男士，讓女孩們能夠在這裡找到自己的夢想與幸福。young me提供最高度的個人隱私，讓您不必拐彎抹角，安心地找尋一段最理想的幸福關係。</P>
+								<P class="lead text-white mt-3">平台真人管理，會員有驗證，收入有證明。我們嚴選有經濟能力的成功男士，讓女孩們能夠在這裡找到自己的夢想與幸福。提供最高度的個人隱私，讓您不必拐彎抹角，安心地找尋一段最理想的幸福關係。</P>
 							</DIV>
 						</DIV>
+						<xsl:if test="not(@me)">
+							<DIV>
+								<A class="btn btn-dark mx-2" href="/signIn.asp">登入</A>
+								<A class="btn btn-dark mx-2" href="/signUp.asp">註冊</A>
+							</DIV>
+						</xsl:if>
 					</DIV>
 					<DIV class="position-absolute w-100 z-index-1 bottom-0">
 						<SVG class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">

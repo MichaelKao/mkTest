@@ -1,0 +1,34 @@
+LABEL {
+	cursor: pointer;
+}
+
+.progress-bar {
+	width: 0%;
+}
+
+.imgContainer IMG {
+	max-width: 100%;
+}
+
+.avatarWrap {
+	position: relative;
+}
+
+.avatarWrap .btnDel {
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: 28px;
+	border: none;
+	background-color: white;
+	cursor: pointer;
+	margin: 0;
+	padding: 0;
+	border-radius: 50%;
+}
+
+@media screen and (min-width: 768px) {
+	.container.content {
+		width: 50%;
+	}
+}

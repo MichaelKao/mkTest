@@ -1,7 +1,15 @@
 package tw.musemodel.dingzhiqingren.controller;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -27,6 +35,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -593,5 +602,212 @@ public class WelcomeController {
 	@Secured({"ROLE_YONGHU"})
 	String webhook(@PathVariable String webhook) {
 		return webhook.replaceAll("^@", "");
+	}
+
+	/**
+	 * 看自己的個人檔案
+	 * 
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException 
+	 */
+	@GetMapping(path = "/profile/")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView self(Authentication authentication, Locale locale) 
+		throws SAXException, IOException, ParserConfigurationException {
+		
+		if (servant.isNull(authentication)) {
+			return new ModelAndView("redirect:/");
+		}
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.signUp",
+			null,
+			locale
+		));
+
+		ModelAndView modelAndView = new ModelAndView("profile");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+	
+	/**
+	 * 看某人(也可能是自己)的個人檔案
+	 * 
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException 
+	 */
+	@GetMapping(path = "/profile/{identifier}/")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView profile(Authentication authentication, Locale locale) 
+		throws SAXException, IOException, ParserConfigurationException {
+		
+		if (servant.isNull(authentication)) {
+			return new ModelAndView("redirect:/");
+		}
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.signUp",
+			null,
+			locale
+		));
+
+		ModelAndView modelAndView = new ModelAndView("profile");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
+	 * 顯示自己的編輯頁面
+	 * 
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException 
+	 */
+	@GetMapping(path = "/me.asp")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView editPage(Authentication authentication, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
+		
+		if (servant.isNull(authentication)) {
+			return new ModelAndView("redirect:/");
+		}
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.signUp",
+			null,
+			locale
+		));
+
+		ModelAndView modelAndView = new ModelAndView("editProfile");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+	
+	/**
+	 * 修改自己的個人檔案
+	 * 
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException 
+	 */
+	@PostMapping(path = "/me.asp")
+	@Secured({"ROLE_YONGHU"})
+	String editProfile(Authentication authentication, Locale locale) {
+
+		return null;
+	}
+
+	/**
+	 * 相片管理頁面
+	 * 
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException 
+	 */
+	@GetMapping(path = "/album.asp")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView album(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		if (servant.isNull(authentication)) {
+			return new ModelAndView("redirect:/");
+		}
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.signUp",
+			null,
+			locale
+		));
+
+		ModelAndView modelAndView = new ModelAndView("album");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+	
+	/**
+	 * 我的收藏
+	 * 
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException 
+	 */
+	@GetMapping(path = "/favorite.asp")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView favorite(Authentication authentication, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
+		
+		if (servant.isNull(authentication)) {
+			return new ModelAndView("redirect:/");
+		}
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.signUp",
+			null,
+			locale
+		));
+
+		ModelAndView modelAndView = new ModelAndView("favorite");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+	
+	/**
+	 * 誰看過我
+	 * 
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException 
+	 */
+	@GetMapping(path = "/looksMe.asp")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView whoLooksMe(Authentication authentication, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
+		
+		if (servant.isNull(authentication)) {
+			return new ModelAndView("redirect:/");
+		}
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.signUp",
+			null,
+			locale
+		));
+
+		ModelAndView modelAndView = new ModelAndView("looksMe");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
 	}
 }

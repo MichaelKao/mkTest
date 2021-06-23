@@ -1,0 +1,49 @@
+@media screen and (max-width: 767px) {
+	#footer {
+		position: fixed;
+		right: 20px;
+		bottom: 20px;
+		z-index: 1000;
+	}
+}
+
+.btn {
+	font-size: 40px !important;
+}
+
+button.fav {
+	border-radius: 50%;
+	color: #6c757d;
+}
+
+button.fav.liked i {
+	animation: heart-grow .7s;
+	color: #CB0C9F;
+}
+
+@keyframes heart-grow {
+	0% {
+		transform: scale(3);
+		opacity: 0;
+	}
+	50% {
+		opacity: 1;
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+.carousel {
+	position: relative;
+}
+.carousel A {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	font-size: 40px;
+	color: #cb0c9fcc;
+	z-index: 10;
+}
+.carousel A:hover {
+	color: #cb0c9f;
+}

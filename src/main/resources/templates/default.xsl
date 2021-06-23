@@ -40,58 +40,53 @@
 							<SPAN class="navbar-toggler-bar bar3"></SPAN>
 						</SPAN>
 					</BUTTON>
-					<DIV class="collapse navbar-collapse pt-3 pb-2 py-lg-0 w-100" id="navigation">
-						<UL class="navbar-nav navbar-nav-hover ms-lg-12 ps-lg-5 w-100 justify-content-end">
-							<LI class="nav-item dropdown dropdown-hover mx-2">
-								<A class="nav-link cursor-pointer" id="dropdownMenuPages" data-bs-toggle="dropdown">
-									<SPAN class="mx-1">會員</SPAN>
-									<i class="fas fa-chevron-down"></i>
-								</A>
-								<DIV class="dropdown-menu dropdown-menu-animation p-3 border-radius-lg mt-0 mt-lg-3">
-									<DIV class="d-none d-lg-block">
-										<H6 class="dropdown-header text-dark font-weight-bolder d-flex justify-content-cente align-items-center px-0">
-											<I class="fas fa-home"></I>
-											<SPAN class="ms-1">會員專區</SPAN>
-										</H6>
-										<xsl:choose>
-											<xsl:when test="@me">
-												<A class="dropdown-item border-radius-md" href="/signOut.asp">
-													<span class="ps-3">登出</span>
-												</A>
-											</xsl:when>
-											<xsl:otherwise>
-												<A class="dropdown-item border-radius-md" href="/signIn.asp">
-													<span class="ps-3">登入</span>
-												</A>
-												<A class="dropdown-item border-radius-md" href="/signUp.asp">
-													<span class="ps-3">註冊</span>
-												</A>
-											</xsl:otherwise>
-										</xsl:choose>
-
+					<DIV class="collapse navbar-collapse" id="navigation">
+						<UL class="navbar-nav navbar-nav-hover w-100 justify-content-end">
+							<xsl:if test="@me">
+								<LI class="nav-item dropdown dropdown-hover">
+									<A class="nav-link cursor-pointer text-primary" id="dropdownMenuPages" data-bs-toggle="dropdown">
+										<SPAN class="me-1">會員</SPAN>
+										<I class="fas fa-chevron-down"></I>
+									</A>
+									<DIV class="dropdown-menu dropdown-menu-animation p-3 border-radius-lg mt-0 mt-lg-3">
+										<DIV class="d-none d-lg-block">
+											<A class="dropdown-item border-radius-md" href="/profile.asp">
+												<SPAN>個人檔案</SPAN>
+											</A>
+											<A class="dropdown-item border-radius-md" href="/favorite.asp">
+												<SPAN>我的收藏</SPAN>
+											</A>
+											<A class="dropdown-item border-radius-md" href="/looksMe.asp">
+												<SPAN>誰看過我</SPAN>
+											</A>
+										</DIV>
+										<DIV class="d-lg-none">
+											<A class="dropdown-item border-radius-md" href="/profile.asp">
+												<SPAN>個人檔案</SPAN>
+											</A>
+											<A class="dropdown-item border-radius-md" href="/favorite.asp">
+												<SPAN>我的收藏</SPAN>
+											</A>
+											<A class="dropdown-item border-radius-md" href="/looksMe.asp">
+												<SPAN>誰看過我</SPAN>
+											</A>
+										</DIV>
 									</DIV>
-									<DIV class="d-lg-none">
-										<H6 class="dropdown-header text-dark font-weight-bolder d-flex justify-content-cente align-items-center px-0">
-											<I class="fas fa-home"></I>
-											<SPAN>會員專區</SPAN>
-										</H6>
-										<xsl:choose>
-											<xsl:when test="@me">
-												<A class="dropdown-item border-radius-md" href="/signOut.asp">
-													<span class="ps-3">登出</span>
-												</A>
-											</xsl:when>
-											<xsl:otherwise>
-												<A class="dropdown-item border-radius-md" href="/signIn.asp">
-													<span class="ps-3">登入</span>
-												</A>
-												<A class="dropdown-item border-radius-md" href="/signUp.asp">
-													<span class="ps-3">註冊</span>
-												</A>
-											</xsl:otherwise>
-										</xsl:choose>
-									</DIV>
-								</DIV>
+								</LI>
+							</xsl:if>
+							<LI class="nav-item">
+								<xsl:choose>
+									<xsl:when test="@me">
+										<A class="nav-link nav-link-icon" href="/signOut.asp">
+											<SPAN>登出</SPAN>
+										</A>
+									</xsl:when>
+									<xsl:otherwise>
+										<A class="nav-link nav-link-icon" href="/signIn.asp">
+											<SPAN>登入</SPAN>
+										</A>
+									</xsl:otherwise>
+								</xsl:choose>
 							</LI>
 						</UL>
 					</DIV>
