@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.Basic;
@@ -35,7 +34,7 @@ import javax.persistence.UniqueConstraint;
 	property = "id"
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Location implements Serializable {
+public class Location implements java.io.Serializable {
 
 	private static final long serialVersionUID = -8980376544581458604L;
 
