@@ -64,7 +64,7 @@ public class Country implements java.io.Serializable {
 	}
 
 	/**
-	 * \	* @param id 主键
+	 * @param id 主键
 	 */
 	protected Country(Short id) {
 		this.id = id;
