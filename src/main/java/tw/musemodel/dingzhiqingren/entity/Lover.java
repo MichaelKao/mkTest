@@ -1,12 +1,16 @@
 package tw.musemodel.dingzhiqingren.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -62,7 +66,7 @@ public class Lover implements Serializable {
 
 	@JoinColumn(name = "guo_jia", nullable = false, referencedColumnName = "id")
 	@ManyToOne(optional = false)
-	@JsonBackReference
+	@JsonManagedReference
 	private Country country;
 
 	@Basic(optional = false)
@@ -70,35 +74,50 @@ public class Lover implements Serializable {
 	private String login;
 
 	@Column(name = "mi_ma")
+	@JsonIgnore
 	private String shadow;
+
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "lover")
+	private Activation activation;
+
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "lover")
+	private LineUserProfile lineUserProfile;
+
+	@Column(name = "huo_yue")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date active;
+
+	@Column(name = "dao_qi")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date vip;
 
 	@JoinColumn(name = "di_qu", referencedColumnName = "id")
 	@ManyToOne
-	@JsonBackReference
+	@JsonManagedReference
 	private Location location;
 
 	@Column(name = "ni_cheng")
 	private String nickname;
 
 	@Column(name = "sheng_ri")
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	private Date birthday;
 
 	@Column(name = "xing_bie")
 	private Boolean gender;
 
 	@Column(name = "da_tou")
-	private String photo;
+	private String profileImage;
 
 	@Column(name = "zi_jie")
-	private String introduction;
+	private String aboutMe;
 
 	@Column(name = "ha_luo")
-	private String hello;
+	private String greeting;
 
+	@Column(name = "ti_xing")
 	@Enumerated(EnumType.STRING)
 	@Type(type = "pgsql_enum")
-	@Column(name = "ti_xing")
 	private BodyType bodyType;
 
 	@Column(name = "shen_gao")
@@ -107,46 +126,34 @@ public class Lover implements Serializable {
 	@Column(name = "ti_zhong")
 	private Short weight;
 
+	@Column(name = "xue_li")
 	@Enumerated(EnumType.STRING)
 	@Type(type = "pgsql_enum")
-	@Column(name = "xue_li")
 	private Education education;
 
+	@Column(name = "hun_yin")
 	@Enumerated(EnumType.STRING)
 	@Type(type = "pgsql_enum")
-	@Column(name = "hun_yin")
 	private Marriage marriage;
 
 	@Column(name = "zhi_ye")
 	private String occupation;
 
+	@Column(name = "chou_yan")
 	@Enumerated(EnumType.STRING)
 	@Type(type = "pgsql_enum")
-	@Column(name = "chou_yan")
 	private Smoking smoking;
 
+	@Column(name = "yin_jiu")
 	@Enumerated(EnumType.STRING)
 	@Type(type = "pgsql_enum")
-	@Column(name = "yin_jiu")
 	private Drinking drinking;
 
 	@Column(name = "tian_jia_hao_you")
-	private String lineID;
+	private String inviteMeAsLineFriend;
 
 	@Column(name = "li_xiang_dui_xiang")
-	private String idealType;
-
-	@Column(name = "huo_yue")
-	private Date active;
-
-	@Column(name = "dao_qi")
-	private Date vip;
-
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "lover")
-	private LineUserProfile lineUserProfile;
-
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "lover")
-	private Activation activation;
+	private String idealConditions;
 
 	@JoinTable(
 		name = "shou_quan",
@@ -158,6 +165,7 @@ public class Lover implements Serializable {
 		}
 	)
 	@ManyToMany(fetch = FetchType.EAGER)
+	@JsonManagedReference
 	private Collection<Role> roles;
 
 	/**
@@ -188,91 +196,81 @@ public class Lover implements Serializable {
 
 	@Override
 	public String toString() {
-		return "tw.musemodel.dingzhiqingren.Lover[ id=" + id + " ]";
+		try {
+			return new JsonMapper().writeValueAsString(this);
+		} catch (JsonProcessingException ignore) {
+			return Objects.isNull(id) ? "null" : id.toString();
+		}
 	}
 
 	/**
-	 * @return 主鍵
+	 * @return 主键
 	 */
 	public Integer getId() {
 		return id;
 	}
 
 	/**
-	 * @param id 主鍵
+	 * @param id 主键
 	 */
 	public void setId(Integer id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return 識別碼
+	 * @return 识别码
 	 */
 	public UUID getIdentifier() {
 		return identifier;
 	}
 
 	/**
-	 * @param identifier 識別碼
+	 * @param identifier 识别码
 	 */
 	public void setIdentifier(UUID identifier) {
 		this.identifier = identifier;
 	}
 
 	/**
-	 * @return 國碼
+	 * @return 国码
 	 */
 	public Country getCountry() {
 		return country;
 	}
 
 	/**
-	 * @param country 國碼
+	 * @param country 国码
 	 */
 	public void setCountry(Country country) {
 		this.country = country;
 	}
 
 	/**
-	 * @return 帳號
+	 * @return 帐号(手机号)
 	 */
 	public String getLogin() {
 		return login;
 	}
 
 	/**
-	 * @param login 帳號
+	 * @param login 帐号(手机号)
 	 */
 	public void setLogin(String login) {
 		this.login = login;
 	}
 
 	/**
-	 * @return 密碼
+	 * @return 密码
 	 */
 	public String getShadow() {
 		return shadow;
 	}
 
 	/**
-	 * @param shadow 密碼
+	 * @param shadow 密码
 	 */
 	public void setShadow(String shadow) {
 		this.shadow = shadow;
-	}
-
-	/**
-	 * @return LINE User Profile
-	 */
-	public LineUserProfile getLineUserProfile() {
-		return lineUserProfile;
-	}
-
-	/**
-	 * @param lineUserProfile LINE User Profile
-	 */
-	public void setLineUserProfile(LineUserProfile lineUserProfile) {
-		this.lineUserProfile = lineUserProfile;
 	}
 
 	/**
@@ -290,42 +288,70 @@ public class Lover implements Serializable {
 	}
 
 	/**
-	 * @return 身分
+	 * @return LINE User Profile
 	 */
-	public Collection<Role> getRoles() {
-		return roles;
+	public LineUserProfile getLineUserProfile() {
+		return lineUserProfile;
 	}
 
 	/**
-	 * @param roles 身分
+	 * @param lineUserProfile LINE User Profile
 	 */
-	public void setRoles(Collection<Role> roles) {
-		this.roles = roles;
+	public void setLineUserProfile(LineUserProfile lineUserProfile) {
+		this.lineUserProfile = lineUserProfile;
 	}
 
 	/**
-	 * @return 地區
+	 * @return 活跃
+	 */
+	public Date getActive() {
+		return active;
+	}
+
+	/**
+	 * @param active 活跃
+	 */
+	public void setActive(Date active) {
+		this.active = active;
+	}
+
+	/**
+	 * @return VIP
+	 */
+	public Date getVip() {
+		return vip;
+	}
+
+	/**
+	 * @param vip VIP
+	 */
+	public void setVip(Date vip) {
+		this.vip = vip;
+	}
+
+	/**
+	 * @return 地区
 	 */
 	public Location getLocation() {
 		return location;
 	}
 
 	/**
-	 * @param location 地區
+	 * @param location 地区
 	 */
 	public void setLocation(Location location) {
 		this.location = location;
 	}
 
 	/**
-	 * @return 暱稱
+	 * @return 昵称
 	 */
 	public String getNickname() {
 		return nickname;
 	}
 
 	/**
-	 * @param nickname 暱稱
+	 * @param nickname 昵称
 	 */
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
@@ -346,70 +372,70 @@ public class Lover implements Serializable {
 	}
 
 	/**
-	 * @return 性別
+	 * @return 性别
 	 */
 	public Boolean getGender() {
 		return gender;
 	}
 
 	/**
-	 * @param gender 性別
+	 * @param gender 性别
 	 */
 	public void setGender(Boolean gender) {
 		this.gender = gender;
 	}
 
 	/**
-	 * @return 大頭照
+	 * @return 大头
 	 */
-	public String getPhoto() {
-		return photo;
+	public String getProfileImage() {
+		return profileImage;
 	}
 
 	/**
-	 * @param photo 大頭照
+	 * @param profileImage 大头
 	 */
-	public void setPhoto(String photo) {
-		this.photo = photo;
+	public void setProfileImage(String profileImage) {
+		this.profileImage = profileImage;
 	}
 
 	/**
-	 * @return 自我介紹
+	 * @return 自介
 	 */
-	public String getIntroduction() {
-		return introduction;
+	public String getAboutMe() {
+		return aboutMe;
 	}
 
 	/**
-	 * @param introduction 自我介紹
+	 * @param aboutMe 自介
 	 */
-	public void setIntroduction(String introduction) {
-		this.introduction = introduction;
+	public void setAboutMe(String aboutMe) {
+		this.aboutMe = aboutMe;
 	}
 
 	/**
-	 * @return 打招呼
+	 * @return 哈啰
 	 */
-	public String getHello() {
-		return hello;
+	public String getGreeting() {
+		return greeting;
 	}
 
 	/**
-	 * @param hello 打招呼
+	 * @param greeting 哈啰
 	 */
-	public void setHello(String hello) {
-		this.hello = hello;
+	public void setGreeting(String greeting) {
+		this.greeting = greeting;
 	}
 
 	/**
-	 * @return 體型
+	 * @return 体型
 	 */
 	public BodyType getBodyType() {
 		return bodyType;
 	}
 
 	/**
-	 * @param bodyType 體型
+	 * @param bodyType 体型
 	 */
 	public void setBodyType(BodyType bodyType) {
 		this.bodyType = bodyType;
@@ -430,145 +456,136 @@ public class Lover implements Serializable {
 	}
 
 	/**
-	 * @return 體重
+	 * @return 体重
 	 */
 	public Short getWeight() {
 		return weight;
 	}
 
 	/**
-	 * @param weight 體重
+	 * @param weight 体重
 	 */
 	public void setWeight(Short weight) {
 		this.weight = weight;
 	}
 
 	/**
-	 * @return 學歷
+	 * @return 学历
 	 */
 	public Education getEducation() {
 		return education;
 	}
 
 	/**
-	 * @param education 學歷
+	 * @param education 学历
 	 */
 	public void setEducation(Education education) {
 		this.education = education;
 	}
 
 	/**
-	 * @return 婚姻狀態
+	 * @return 婚姻
 	 */
 	public Marriage getMarriage() {
 		return marriage;
 	}
 
 	/**
-	 * @param marriage 婚姻狀態
+	 * @param marriage 婚姻
 	 */
 	public void setMarriage(Marriage marriage) {
 		this.marriage = marriage;
 	}
 
 	/**
-	 * @return 職業
+	 * @return 职业
 	 */
 	public String getOccupation() {
 		return occupation;
 	}
 
 	/**
-	 * @param occupation 職業
+	 * @param occupation 职业
 	 */
 	public void setOccupation(String occupation) {
 		this.occupation = occupation;
 	}
 
 	/**
-	 * @return 抽菸習慣
+	 * @return 抽烟
 	 */
 	public Smoking getSmoking() {
 		return smoking;
 	}
 
 	/**
-	 * @param smoking 抽菸習慣
+	 * @param smoking 抽烟
 	 */
 	public void setSmoking(Smoking smoking) {
 		this.smoking = smoking;
 	}
 
 	/**
-	 * @return 飲酒習慣
+	 * @return 饮酒
 	 */
 	public Drinking getDrinking() {
 		return drinking;
 	}
 
 	/**
-	 * @param drinking 飲酒習慣
+	 * @param drinking 饮酒
 	 */
 	public void setDrinking(Drinking drinking) {
 		this.drinking = drinking;
 	}
 
 	/**
-	 * @return 添加 Line 好友
+	 * @return 添加 LINE 好友
 	 */
-	public String getLineID() {
-		return lineID;
+	public String getInviteMeAsLineFriend() {
+		return inviteMeAsLineFriend;
 	}
 
 	/**
-	 * @param lineID 添加 Line 好友
+	 * @param inviteMeAsLineFriend 添加 LINE 好友
 	 */
-	public void setLineID(String lineID) {
-		this.lineID = lineID;
+	public void setInviteMeAsLineFriend(String inviteMeAsLineFriend) {
+		this.inviteMeAsLineFriend = inviteMeAsLineFriend;
 	}
 
 	/**
-	 * @return 理想型
+	 * @return 理想对象
 	 */
-	public String getIdealType() {
-		return idealType;
+	public String getIdealConditions() {
+		return idealConditions;
 	}
 
 	/**
-	 * @param idealType 理想型
+	 * @param idealConditions 理想对象
 	 */
-	public void setIdealType(String idealType) {
-		this.idealType = idealType;
+	public void setIdealConditions(String idealConditions) {
+		this.idealConditions = idealConditions;
 	}
 
 	/**
-	 * @return 活躍
+	 * @return 身份
 	 */
-	public Date getActive() {
-		return active;
+	public Collection<Role> getRoles() {
+		return roles;
 	}
 
 	/**
-	 * @param active 活躍
+	 * @param roles 身份
 	 */
-	public void setActive(Date active) {
-		this.active = active;
+	public void setRoles(Collection<Role> roles) {
+		this.roles = roles;
 	}
 
 	/**
-	 * @return VIP
+	 * 体型
+	 *
+	 * @author m@musemodel.tw
 	 */
-	public Date getVip() {
-		return vip;
-	}
-
-	/**
-	 * @param vip VIP
-	 */
-	public void setVip(Date vip) {
-		this.vip = vip;
-	}
-
 	public enum BodyType {
 
 		PING_JUN("fit", 1),
@@ -588,22 +605,11 @@ public class Lover implements Serializable {
 		}
 	}
 
-	public enum Drinking {
-
-		BU_HE_JIU("不喝酒", 1),
-		OU_ER_HE("偶爾喝", 2),
-		JING_CHANG_HE("經爾喝", 3);
-
-		private String label;
-
-		private int index;
-
-		private Drinking(String label, int index) {
-			this.label = label;
-			this.index = index;
-		}
-	}
-
+	/**
+	 * 学历
+	 *
+	 * @author m@musemodel.tw
+	 */
 	public enum Education {
 
 		GUO_XIAO("國小", 1),
@@ -624,6 +630,11 @@ public class Lover implements Serializable {
 		}
 	}
 
+	/**
+	 * 婚姻
+	 *
+	 * @author m@musemodel.tw
+	 */
 	public enum Marriage {
 
 		DAN_SHEN("單身", 1),
@@ -640,6 +651,11 @@ public class Lover implements Serializable {
 		}
 	}
 
+	/**
+	 * 抽烟
+	 *
+	 * @author m@musemodel.tw
+	 */
 	public enum Smoking {
 
 		BU_CHOU_YAN("不抽菸", 1),
@@ -651,6 +667,27 @@ public class Lover implements Serializable {
 		private int index;
 
 		private Smoking(String label, int index) {
+			this.label = label;
+			this.index = index;
+		}
+	}
+
+	/**
+	 * 饮酒
+	 *
+	 * @author m@musemodel.tw
+	 */
+	public enum Drinking {
+
+		BU_HE_JIU("不喝酒", 1),
+		OU_ER_HE("偶爾喝", 2),
+		JING_CHANG_HE("經爾喝", 3);
+
+		private String label;
+
+		private int index;
+
+		private Drinking(String label, int index) {
 			this.label = label;
 			this.index = index;
 		}
