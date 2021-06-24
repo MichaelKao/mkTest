@@ -9,7 +9,6 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -44,7 +43,6 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.SignUp;
-import tw.musemodel.dingzhiqingren.repository.LocationRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
@@ -61,14 +59,18 @@ public class WelcomeController {
 	private final static Logger LOGGER = LoggerFactory.getLogger(WelcomeController.class);
 
 	private static final String BUCKET_NAME = System.getenv("S3_BUCKET");
+
 	private static final String ACCESS_KEY = System.getenv("AWS_ACCESS_KEY_ID");
+
 	private static final String SECRET_KEY = System.getenv("AWS_SECRET_ACCESS_KEY");
+
 	private static final String REGION = System.getenv("S3_REGION");
-	private static final AmazonS3 s3client = AmazonS3ClientBuilder
-		.standard()
-		.withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY)))
-		.withRegion(REGION)
-		.build();
+
+	private static final AmazonS3 AMAZON_S3 = AmazonS3ClientBuilder.
+		standard().
+		withCredentials(new AWSStaticCredentialsProvider(
+			new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY)
+		)).withRegion(REGION).build();
 
 	private static final String TEMP_DIRECTORY = System.getProperty("java.io.tmpdir");
 
@@ -728,10 +730,10 @@ public class WelcomeController {
 		Element loverElement = document.createElement("lover");
 		documentElement.appendChild(loverElement);
 
-		if (!Objects.isNull(lover.getLocation().getCity())) {
+		if (!Objects.isNull(lover.getLocation().getName())) {
 			loverElement.setAttribute(
 				"location",
-				lover.getLocation().getCity()
+				lover.getLocation().getName()
 			);
 		}
 
@@ -763,53 +765,53 @@ public class WelcomeController {
 				locale
 			));
 		}
-		
-		if (!Objects.isNull(lover.getPhoto())) {
+
+		if (!Objects.isNull(lover.getProfileImage())) {
 			loverElement.setAttribute(
 				"photo",
-				lover.getPhoto()
+				lover.getProfileImage()
 			);
 		}
-		
-		if (!Objects.isNull(lover.getIntroduction())) {
+
+		if (!Objects.isNull(lover.getAboutMe())) {
 			loverElement.setAttribute(
 				"intro",
-				lover.getIntroduction()
+				lover.getAboutMe()
 			);
 		}
-		
+
 		if (!Objects.isNull(lover.getBodyType())) {
 			loverElement.setAttribute(
 				"bodyType",
 				messageSource.getMessage(
-				lover.getBodyType().toString(),
-				null,
-				locale
-			));
+					lover.getBodyType().toString(),
+					null,
+					locale
+				));
 		}
-		
+
 		if (!Objects.isNull(lover.getHeight())) {
 			loverElement.setAttribute(
 				"height",
 				lover.getHeight().toString()
 			);
 		}
-		
+
 		if (!Objects.isNull(lover.getWeight())) {
 			loverElement.setAttribute(
 				"weight",
 				lover.getWeight().toString()
 			);
 		}
-		
+
 		if (!Objects.isNull(lover.getEducation())) {
 			loverElement.setAttribute(
 				"education",
 				messageSource.getMessage(
-				lover.getBodyType().toString(),
-				null,
-				locale
-			));
+					lover.getBodyType().toString(),
+					null,
+					locale
+				));
 		}
 
 		ModelAndView modelAndView = new ModelAndView("profile");
@@ -908,8 +910,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/favorite.asp")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView favorite(Authentication authentication, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView favorite(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
@@ -940,8 +941,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/looksMe.asp")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView whoLooksMe(Authentication authentication, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView whoLooksMe(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
@@ -974,9 +974,7 @@ public class WelcomeController {
 	@PostMapping(path = "/uploadfile")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
-	String upload(Authentication authentication, Locale locale,
-		@RequestParam("file") MultipartFile file)
-		throws SAXException, IOException, ParserConfigurationException {
+	String upload(Authentication authentication, Locale locale, @RequestParam("file") MultipartFile file) throws SAXException, IOException, ParserConfigurationException {
 
 		String fileUrl = null;
 		try {
@@ -985,7 +983,7 @@ public class WelcomeController {
 			));
 			fileUrl = "https://www.youngme.vip/yuepao/" + file.getOriginalFilename();
 			file.transferTo(f);
-			s3client.putObject(
+			AMAZON_S3.putObject(
 				new PutObjectRequest(
 					BUCKET_NAME + "/yuepao",
 					file.getOriginalFilename(),
@@ -1010,11 +1008,10 @@ public class WelcomeController {
 	@PostMapping(value = "/deletefile")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
-	String deleteFile(Authentication authentication, Locale locale,
-		@RequestParam String index) {
+	String deleteFile(Authentication authentication, Locale locale, @RequestParam String index) {
 		DeleteObjectRequest deleteObjectRequest
 			= new DeleteObjectRequest(BUCKET_NAME + "/yuepao", index + ".jpg");
-		s3client.deleteObject(deleteObjectRequest);
+		AMAZON_S3.deleteObject(deleteObjectRequest);
 
 		return new JavaScriptObjectNotation().
 			withReason("Delete successfully").
