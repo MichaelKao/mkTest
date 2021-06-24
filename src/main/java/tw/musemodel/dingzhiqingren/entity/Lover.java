@@ -43,12 +43,12 @@ import org.hibernate.annotations.TypeDef;
 @Table(schema = "yuepao", name = "qing_ren", uniqueConstraints = {
 	@UniqueConstraint(columnNames = {"shi_bie_ma"})
 })
+@TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
 @JsonIdentityInfo(
 	generator = ObjectIdGenerators.PropertyGenerator.class,
 	property = "id"
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
-@TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
 public class Lover implements java.io.Serializable {
 
 	private static final long serialVersionUID = 5470899666401402787L;
