@@ -42,10 +42,6 @@ public class Lover implements Serializable {
 
 	private static final long serialVersionUID = 5470899666401402787L;
 
-	public enum Carrer {
-	XXX,
-	YYY
-}
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
