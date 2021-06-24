@@ -64,6 +64,25 @@
 									<INPUT class="form-control form-control-lg" name="login" placeholder="手機號碼" required="" type="text" value=""/>
 								</DIV>
 							</DIV>
+							<DIV class="row align-items-center mb-3">
+								<DIV class="col-1">
+									<i class="fas fa-venus-mars"></i>
+								</DIV>
+								<DIV class="col-10 d-flex justify-content-around align-items-center">
+									<DIV class="form-check">
+										<INPUT class="form-check-input" id="female" name="gender" required="" type="radio" value="false"/>
+										<LABEL class="custom-control-label" for="female">
+											<xsl:value-of select="gender/@female"/>
+										</LABEL>
+									</DIV>
+									<DIV class="form-check">
+										<INPUT class="form-check-input" id="male" name="gender" required="" type="radio" value="true"/>
+										<LABEL class="custom-control-label" for="male">
+											<xsl:value-of select="gender/@male"/>
+										</LABEL>
+									</DIV>
+								</DIV>
+							</DIV>
 							<DIV class="text-center">
 								<BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0" type="submit">
 									<xsl:value-of select="@i18n-submit"/>

@@ -16,6 +16,10 @@ public class SignUp {
 	@NotEmpty
 	@NotNull
 	private String login;
+	
+	@NotEmpty
+	@NotNull
+	private Boolean gender;
 
 	public SignUp() {
 	}
@@ -42,5 +46,13 @@ public class SignUp {
 
 	public void setLogin(String login) {
 		this.login = login;
+	}
+
+	public Boolean getGender() {
+		return gender;
+	}
+
+	public void setGender(Boolean gender) {
+		this.gender = gender;
 	}
 }

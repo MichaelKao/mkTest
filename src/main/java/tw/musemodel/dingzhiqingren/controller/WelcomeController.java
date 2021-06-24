@@ -44,6 +44,7 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.SignUp;
+import tw.musemodel.dingzhiqingren.repository.LocationRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
@@ -58,6 +59,18 @@ import tw.musemodel.dingzhiqingren.service.Servant;
 public class WelcomeController {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(WelcomeController.class);
+
+	private static final String BUCKET_NAME = System.getenv("S3_BUCKET");
+	private static final String ACCESS_KEY = System.getenv("AWS_ACCESS_KEY_ID");
+	private static final String SECRET_KEY = System.getenv("AWS_SECRET_ACCESS_KEY");
+	private static final String REGION = System.getenv("S3_REGION");
+	private static final AmazonS3 s3client = AmazonS3ClientBuilder
+		.standard()
+		.withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY)))
+		.withRegion(REGION)
+		.build();
+
+	private static final String TEMP_DIRECTORY = System.getProperty("java.io.tmpdir");
 
 	@Autowired
 	private MessageSource messageSource;
@@ -530,6 +543,25 @@ public class WelcomeController {
 		});
 		formElement.appendChild(countriesElement);
 
+		Element genderElement = document.createElement("gender");
+		genderElement.setAttribute(
+			"female",
+			messageSource.getMessage(
+				"gender.female",
+				null,
+				locale
+			)
+		);
+		genderElement.setAttribute(
+			"male",
+			messageSource.getMessage(
+				"gender.male",
+				null,
+				locale
+			)
+		);
+		formElement.appendChild(genderElement);
+
 		ModelAndView modelAndView = new ModelAndView("signUp");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
@@ -550,6 +582,17 @@ public class WelcomeController {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
 					"signUp.mustntBeAuthenticated",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toString();
+		}
+
+		if (Objects.isNull(signUp.getGender())) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"signUp.mustSetGender",
 					null,
 					locale
 				)).
@@ -606,19 +649,19 @@ public class WelcomeController {
 
 	/**
 	 * 看自己的個人檔案
-	 * 
+	 *
 	 * @param authentication
 	 * @param locale
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
-	 * @throws ParserConfigurationException 
+	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/profile/")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView self(Authentication authentication, Locale locale) 
+	ModelAndView self(Authentication authentication, Locale locale)
 		throws SAXException, IOException, ParserConfigurationException {
-		
+
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -626,31 +669,42 @@ public class WelcomeController {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.signUp",
+			"title.profile",
 			null,
 			locale
 		));
+
+		Lover lover = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"me",
+				authentication.getName()
+			);
+		}
 
 		ModelAndView modelAndView = new ModelAndView("profile");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}
-	
+
 	/**
 	 * 看某人(也可能是自己)的個人檔案
-	 * 
+	 *
 	 * @param authentication
 	 * @param locale
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
-	 * @throws ParserConfigurationException 
+	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/profile/{identifier}/")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView profile(Authentication authentication, Locale locale) 
+	ModelAndView profile(@PathVariable UUID identifier, Authentication authentication, Locale locale)
 		throws SAXException, IOException, ParserConfigurationException {
-		
+
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -658,10 +712,105 @@ public class WelcomeController {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.signUp",
+			"title.profile",
 			null,
 			locale
 		));
+
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"me",
+				authentication.getName()
+			);
+		}
+
+		Lover lover = loverService.loadByIdentifier(identifier);
+		Element loverElement = document.createElement("lover");
+		documentElement.appendChild(loverElement);
+
+		if (!Objects.isNull(lover.getLocation().getCity())) {
+			loverElement.setAttribute(
+				"location",
+				lover.getLocation().getCity()
+			);
+		}
+
+		if (!Objects.isNull(lover.getNickname())) {
+			loverElement.setAttribute(
+				"nickName",
+				lover.getNickname()
+			);
+		}
+
+		if (!Objects.isNull(lover.getBirthday())) {
+			loverElement.setAttribute(
+				"birthday",
+				servant.getAgeByBirth(
+					lover.getBirthday()).toString()
+			);
+		}
+
+		if (!Objects.isNull(lover.getGender())) {
+			loverElement.setAttribute(
+				"gender",
+				lover.getGender() ? messageSource.getMessage(
+				"gender.male",
+				null,
+				locale
+			) : messageSource.getMessage(
+				"gender.female",
+				null,
+				locale
+			));
+		}
+		
+		if (!Objects.isNull(lover.getPhoto())) {
+			loverElement.setAttribute(
+				"photo",
+				lover.getPhoto()
+			);
+		}
+		
+		if (!Objects.isNull(lover.getIntroduction())) {
+			loverElement.setAttribute(
+				"intro",
+				lover.getIntroduction()
+			);
+		}
+		
+		if (!Objects.isNull(lover.getBodyType())) {
+			loverElement.setAttribute(
+				"bodyType",
+				messageSource.getMessage(
+				lover.getBodyType().toString(),
+				null,
+				locale
+			));
+		}
+		
+		if (!Objects.isNull(lover.getHeight())) {
+			loverElement.setAttribute(
+				"height",
+				lover.getHeight().toString()
+			);
+		}
+		
+		if (!Objects.isNull(lover.getWeight())) {
+			loverElement.setAttribute(
+				"weight",
+				lover.getWeight().toString()
+			);
+		}
+		
+		if (!Objects.isNull(lover.getEducation())) {
+			loverElement.setAttribute(
+				"education",
+				messageSource.getMessage(
+				lover.getBodyType().toString(),
+				null,
+				locale
+			));
+		}
 
 		ModelAndView modelAndView = new ModelAndView("profile");
 		modelAndView.getModelMap().addAttribute(document);
@@ -670,19 +819,19 @@ public class WelcomeController {
 
 	/**
 	 * 顯示自己的編輯頁面
-	 * 
+	 *
 	 * @param authentication
 	 * @param locale
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
-	 * @throws ParserConfigurationException 
+	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/me.asp")
 	@Secured({"ROLE_YONGHU"})
 	ModelAndView editPage(Authentication authentication, Locale locale)
 		throws SAXException, IOException, ParserConfigurationException {
-		
+
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -699,16 +848,16 @@ public class WelcomeController {
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}
-	
+
 	/**
 	 * 修改自己的個人檔案
-	 * 
+	 *
 	 * @param authentication
 	 * @param locale
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
-	 * @throws ParserConfigurationException 
+	 * @throws ParserConfigurationException
 	 */
 	@PostMapping(path = "/me.asp")
 	@Secured({"ROLE_YONGHU"})
@@ -719,13 +868,13 @@ public class WelcomeController {
 
 	/**
 	 * 相片管理頁面
-	 * 
+	 *
 	 * @param authentication
 	 * @param locale
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
-	 * @throws ParserConfigurationException 
+	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/album.asp")
 	@Secured({"ROLE_YONGHU"})
@@ -746,22 +895,22 @@ public class WelcomeController {
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}
-	
+
 	/**
 	 * 我的收藏
-	 * 
+	 *
 	 * @param authentication
 	 * @param locale
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
-	 * @throws ParserConfigurationException 
+	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/favorite.asp")
 	@Secured({"ROLE_YONGHU"})
 	ModelAndView favorite(Authentication authentication, Locale locale)
 		throws SAXException, IOException, ParserConfigurationException {
-		
+
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -778,22 +927,22 @@ public class WelcomeController {
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}
-	
+
 	/**
 	 * 誰看過我
-	 * 
+	 *
 	 * @param authentication
 	 * @param locale
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
-	 * @throws ParserConfigurationException 
+	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/looksMe.asp")
 	@Secured({"ROLE_YONGHU"})
 	ModelAndView whoLooksMe(Authentication authentication, Locale locale)
 		throws SAXException, IOException, ParserConfigurationException {
-		
+
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -809,5 +958,67 @@ public class WelcomeController {
 		ModelAndView modelAndView = new ModelAndView("looksMe");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
+	}
+
+	/**
+	 * 上傳照片
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @param file
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@PostMapping(path = "/uploadfile")
+	@Secured({"ROLE_YONGHU"})
+	@ResponseBody
+	String upload(Authentication authentication, Locale locale,
+		@RequestParam("file") MultipartFile file)
+		throws SAXException, IOException, ParserConfigurationException {
+
+		String fileUrl = null;
+		try {
+			File f = new File(TEMP_DIRECTORY, Long.toString(
+				System.currentTimeMillis()
+			));
+			fileUrl = "https://www.youngme.vip/yuepao/" + file.getOriginalFilename();
+			file.transferTo(f);
+			s3client.putObject(
+				new PutObjectRequest(
+					BUCKET_NAME + "/yuepao",
+					file.getOriginalFilename(),
+					f
+				)
+			);
+			f.delete();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return fileUrl;
+	}
+
+	/**
+	 * 刪除照片
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @param index
+	 * @return
+	 */
+	@PostMapping(value = "/deletefile")
+	@Secured({"ROLE_YONGHU"})
+	@ResponseBody
+	String deleteFile(Authentication authentication, Locale locale,
+		@RequestParam String index) {
+		DeleteObjectRequest deleteObjectRequest
+			= new DeleteObjectRequest(BUCKET_NAME + "/yuepao", index + ".jpg");
+		s3client.deleteObject(deleteObjectRequest);
+
+		return new JavaScriptObjectNotation().
+			withReason("Delete successfully").
+			withResponse(true).
+			toJSONObject().toString();
 	}
 }
