@@ -295,6 +295,11 @@ public class LoverService {
 	}
 
 	@Transactional
+	public Lover saveLover(Lover lover) {
+		return loverRepository.saveAndFlush(lover);
+	}
+
+	@Transactional
 	public JSONObject signUp(SignUp signUp, HttpServletRequest request, Locale locale) {
 		Country country = countryRepository.
 			findById(signUp.getCountry()).
