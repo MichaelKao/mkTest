@@ -1,11 +1,13 @@
 package tw.musemodel.dingzhiqingren.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import java.io.Serializable;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.util.Collection;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -33,7 +35,7 @@ import javax.persistence.UniqueConstraint;
 	property = "id"
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Country implements Serializable {
+public class Country implements java.io.Serializable {
 
 	private static final long serialVersionUID = 3590335394075995522L;
 
@@ -52,12 +54,18 @@ public class Country implements Serializable {
 	private String name;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "country")
-	@JsonManagedReference
+	@JsonBackReference
 	private Collection<Lover> lovers;
 
+	/**
+	 * 默认构造器
+	 */
 	public Country() {
 	}
 
+	/**
+	 * \	* @param id 主键
+	 */
 	protected Country(Short id) {
 		this.id = id;
 	}
@@ -80,37 +88,65 @@ public class Country implements Serializable {
 
 	@Override
 	public String toString() {
-		return "tw.musemodel.dingzhiqingren.Country[ id=" + id + " ]";
+		try {
+			return new JsonMapper().writeValueAsString(this);
+		} catch (JsonProcessingException ignore) {
+			return Objects.isNull(id) ? "null" : id.toString();
+		}
 	}
 
+	/**
+	 * @return 主键
+	 */
 	public Short getId() {
 		return id;
 	}
 
+	/**
+	 * @param id 主键
+	 */
 	public void setId(Short id) {
 		this.id = id;
 	}
 
+	/**
+	 * @return 国码
+	 */
 	public String getCallingCode() {
 		return callingCode;
 	}
 
+	/**
+	 * @param callingCode 国码
+	 */
 	public void setCallingCode(String callingCode) {
 		this.callingCode = callingCode;
 	}
 
+	/**
+	 * @return 国名(i18n 键)
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @param name 国名(i18n 键)
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * @return 情人们
+	 */
 	public Collection<Lover> getLovers() {
 		return lovers;
 	}
 
+	/**
+	 * @param lovers 情人们
+	 */
 	public void setLovers(Collection<Lover> lovers) {
 		this.lovers = lovers;
 	}

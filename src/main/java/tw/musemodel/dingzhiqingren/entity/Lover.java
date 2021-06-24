@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
@@ -50,7 +49,7 @@ import org.hibernate.annotations.TypeDef;
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
-public class Lover implements Serializable {
+public class Lover implements java.io.Serializable {
 
 	private static final long serialVersionUID = 5470899666401402787L;
 
@@ -169,11 +168,14 @@ public class Lover implements Serializable {
 	private Collection<Role> roles;
 
 	/**
-	 * 建構子
+	 * 默认构造器
 	 */
 	public Lover() {
 	}
 
+	/**
+	 * @param id 主键
+	 */
 	protected Lover(Integer id) {
 		this.id = id;
 	}
