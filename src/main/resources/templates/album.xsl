@@ -31,7 +31,7 @@
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container content py-7">
-				<A class="text-primary text-lg" href="/profile.asp">
+				<A class="text-primary text-lg" href="/profile/">
 					<I class="fad fa-chevron-double-left"></I>
 				</A>
 				<HR class="horizontal dark"/>

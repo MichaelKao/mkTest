@@ -263,3 +263,7 @@ COMMENT ON COLUMN"yuepao"."qing_ren"."chou_yan"IS'抽烟';
 COMMENT ON COLUMN"yuepao"."qing_ren"."yin_jiu"IS'饮酒';
 COMMENT ON COLUMN"yuepao"."qing_ren"."tian_jia_hao_you"IS'添加好友';
 COMMENT ON COLUMN"yuepao"."qing_ren"."li_xiang_dui_xiang"IS'理想对象';
+
+ALTER TABLE"yuepao"."qing_ren"
+ADD COLUMN"huo_yue"timestamptz;
+COMMENT ON COLUMN"yuepao"."qing_ren"."huo_yue"IS'活跃';

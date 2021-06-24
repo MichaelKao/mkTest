@@ -32,7 +32,7 @@
 				<DIV class="card mx-md-7">
 					<FORM class="p-3" id="contact-form" method="post">
 						<DIV class="card-body pt-1">
-							<A class="text-primary text-lg" href="/profile.asp">
+							<A class="text-primary text-lg" href="/profile/">
 								<I class="fad fa-chevron-double-left"></I>
 							</A>
 							<DIV class="row mt-3">

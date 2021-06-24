@@ -50,7 +50,7 @@
 									</A>
 									<DIV class="dropdown-menu dropdown-menu-animation p-3 border-radius-lg mt-0 mt-lg-3">
 										<DIV class="d-none d-lg-block">
-											<A class="dropdown-item border-radius-md" href="/profile.asp">
+											<A class="dropdown-item border-radius-md" href="/profile/">
 												<SPAN>個人檔案</SPAN>
 											</A>
 											<A class="dropdown-item border-radius-md" href="/favorite.asp">
@@ -61,7 +61,7 @@
 											</A>
 										</DIV>
 										<DIV class="d-lg-none">
-											<A class="dropdown-item border-radius-md" href="/profile.asp">
+											<A class="dropdown-item border-radius-md" href="/profile/">
 												<SPAN>個人檔案</SPAN>
 											</A>
 											<A class="dropdown-item border-radius-md" href="/favorite.asp">
@@ -115,8 +115,8 @@
 	</xsl:template>
 
 	<xsl:template name="bootstrapToast">
-		<DIV class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
-			<DIV class="toast hide" data-bs-delay="2500" >
+		<DIV class="position-fixed top-50 end-0 p-3" style="z-index: 5">
+			<DIV class="toast hide" data-bs-delay="2000" >
 				<BUTTON type="button" class="btn-close" data-bs-dismiss="toast">
 					<I class="far fa-times ms-2 text-dark text-lg"></I>
 				</BUTTON>

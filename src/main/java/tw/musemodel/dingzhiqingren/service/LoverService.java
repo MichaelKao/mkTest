@@ -309,6 +309,7 @@ public class LoverService {
 		lover.setIdentifier(UUID.randomUUID());
 		lover.setCountry(country);
 		lover.setLogin(login);
+		lover.setGender(signUp.getGender());
 		lover = loverRepository.saveAndFlush(lover);
 
 		applicationEventPublisher.publishEvent(new SignedUpEvent(
