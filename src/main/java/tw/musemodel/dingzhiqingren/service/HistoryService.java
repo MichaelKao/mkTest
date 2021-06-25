@@ -37,14 +37,19 @@ public class HistoryService {
 	public static final Behavior BEHAVIOR_FARE = Behavior.CHE_MA_FEI;
 
 	/**
+	 * 历程：给我赖(男对女)行为
+	 */
+	public static final Behavior BEHAVIOR_GIMME_YOUR_LINE_INVITATION = Behavior.JI_WO_LAI;
+
+	/**
 	 * 历程：打招呼(女对男)行为
 	 */
 	public static final Behavior BEHAVIOR_GREETING = Behavior.DA_ZHAO_HU;
 
 	/**
-	 * 历程：给我赖(男对女)行为
+	 * 历程：给你赖(女对男)行为
 	 */
-	public static final Behavior BEHAVIOR_INVITE_ME_AS_LINE_FRIEND = Behavior.JI_WO_LAI;
+	public static final Behavior BEHAVIOR_INVITE_ME_AS_LINE_FRIEND = Behavior.JI_NI_LAI;
 
 	/**
 	 * 历程：月费行为
@@ -55,6 +60,46 @@ public class HistoryService {
 	 * 历程：看过我行为
 	 */
 	public static final Behavior BEHAVIOR_PEEK = Behavior.KAN_GUO_WO;
+
+	/**
+	 * 给我赖(男对女)
+	 *
+	 * @param initiative 男生
+	 * @param passive 女生
+	 * @param greetingMessage 招呼语
+	 * @return 杰森对象
+	 */
+	@Transactional
+	public JSONObject gimmeYourLineInvitation(Lover initiative, Lover passive, String greetingMessage) {
+		if (Objects.isNull(initiative)) {
+			throw new IllegalArgumentException("gimmeYourLineInvitation.initiativeMustntBeNull");
+		}
+		if (Objects.isNull(passive)) {
+			throw new IllegalArgumentException("gimmeYourLineInvitation.passiveMustntBeNull");
+		}
+		if (Objects.equals(initiative.getGender(), true)) {
+			throw new RuntimeException("gimmeYourLineInvitation.initiativeMustBeMale");
+		}
+		if (Objects.equals(passive.getGender(), false)) {
+			throw new RuntimeException("gimmeYourLineInvitation.passiveMustBeFemale");
+		}
+
+		History history = new History(
+			initiative,
+			passive,
+			BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
+			(short) 0
+		);
+		greetingMessage = Objects.isNull(greetingMessage) || greetingMessage.isBlank() ? initiative.getGreeting() : greetingMessage;
+		history.setGreeting(
+			Objects.isNull(greetingMessage) || greetingMessage.isBlank() ? null : greetingMessage.trim()
+		);
+		history = historyRepository.saveAndFlush(history);
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			withResult(history).
+			toJSONObject();
+	}
 
 	/**
 	 * 打招呼(女对男)

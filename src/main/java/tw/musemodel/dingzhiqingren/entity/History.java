@@ -97,6 +97,22 @@ public class History implements java.io.Serializable {
 		this.behavior = behavior;
 	}
 
+	/**
+	 * 构造器：适用于「给我赖」。
+	 *
+	 * @param initiative 主动方
+	 * @param passive 被动方
+	 * @param behavior 行为
+	 * @param points 点数
+	 */
+	public History(Lover initiative, Lover passive, Behavior behavior, short points) {
+		this();
+		this.initiative = initiative;
+		this.passive = passive;
+		this.behavior = behavior;
+		this.points = points;
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 0;
