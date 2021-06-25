@@ -40,7 +40,7 @@
 					<DIV class="d-flex justify-content-center align-items-center">
 						<DIV>
 							<DIV id="fileDiv1">
-								<xsl:if test="not(photo)">
+								<xsl:if test="not(profileImage)">
 									<xsl:attribute name="class" value="d-none">d-none</xsl:attribute>
 								</xsl:if>
 								<DIV class="avatarWrap">
@@ -49,9 +49,9 @@
 									</BUTTON>
 									<IMG alt="profile_picture" class="border-radius-md" id="avatar1" src="https://via.placeholder.com/200" width="100">
 										<xsl:choose>
-											<xsl:when test="photo">
+											<xsl:when test="profileImage">
 												<xsl:attribute name="src">
-													<xsl:value-of select="photo"/>
+													<xsl:value-of select="profileImage"/>
 												</xsl:attribute>
 											</xsl:when>
 											<xsl:otherwise>
@@ -62,7 +62,7 @@
 								</DIV>
 							</DIV>
 							<DIV id="fileDiv1WithoutPic">
-								<xsl:if test="photo">
+								<xsl:if test="profileImage">
 									<xsl:attribute name="class" value="d-none">d-none</xsl:attribute>
 								</xsl:if>
 								<DIV class="avatarWrap">

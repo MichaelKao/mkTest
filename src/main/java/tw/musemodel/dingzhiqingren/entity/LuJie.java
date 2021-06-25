@@ -17,57 +17,38 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 /**
- * 国家
+ * 绿界
  *
  * @author p@musemodel.tw
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(schema = "yuepao", name = "guo_jia", uniqueConstraints = {
-	@UniqueConstraint(columnNames = {"guo_ma"}),
-	@UniqueConstraint(columnNames = {"guo_ming"})
-})
+@Table(schema = "yuepao", name = "lu_jie")
 @JsonIdentityInfo(
 	generator = ObjectIdGenerators.PropertyGenerator.class,
 	property = "id"
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Country implements java.io.Serializable {
+public class LuJie implements java.io.Serializable {
 
-	private static final long serialVersionUID = 3590335394075995522L;
+	private static final long serialVersionUID = -4281476222101128901L;
 
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
-	private Short id;
+	private Long id;
 
-	@Basic(optional = false)
-	@Column(name = "guo_ma", nullable = false)
-	private String callingCode;
-
-	@Basic(optional = false)
-	@Column(name = "guo_ming", nullable = false)
-	private String name;
-
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "country")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "luJie")
 	@JsonBackReference
-	private Collection<Lover> lovers;
+	private Collection<History> histories;
 
 	/**
 	 * 默认构造器
 	 */
-	public Country() {
-	}
-
-	/**
-	 * @param id 主键
-	 */
-	protected Country(Short id) {
-		this.id = id;
+	public LuJie() {
 	}
 
 	@Override
@@ -79,10 +60,10 @@ public class Country implements java.io.Serializable {
 
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof Country)) {
+		if (!(object instanceof LuJie)) {
 			return false;
 		}
-		Country other = (Country) object;
+		LuJie other = (LuJie) object;
 		return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
 	}
 
@@ -98,56 +79,28 @@ public class Country implements java.io.Serializable {
 	/**
 	 * @return 主键
 	 */
-	public Short getId() {
+	public Long getId() {
 		return id;
 	}
 
 	/**
 	 * @param id 主键
 	 */
-	public void setId(Short id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return 国码
+	 * @return 歷程
 	 */
-	public String getCallingCode() {
-		return callingCode;
+	public Collection<History> getHistories() {
+		return histories;
 	}
 
 	/**
-	 * @param callingCode 国码
+	 * @param histories 歷程
 	 */
-	public void setCallingCode(String callingCode) {
-		this.callingCode = callingCode;
-	}
-
-	/**
-	 * @return 国名(i18n 键)
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name 国名(i18n 键)
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return 情人们
-	 */
-	public Collection<Lover> getLovers() {
-		return lovers;
-	}
-
-	/**
-	 * @param lovers 情人们
-	 */
-	public void setLovers(Collection<Lover> lovers) {
-		this.lovers = lovers;
+	public void setHistories(Collection<History> histories) {
+		this.histories = histories;
 	}
 }

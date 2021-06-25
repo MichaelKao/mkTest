@@ -52,7 +52,6 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.SignUp;
-import tw.musemodel.dingzhiqingren.repository.LocationRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
@@ -69,14 +68,18 @@ public class WelcomeController {
 	private final static Logger LOGGER = LoggerFactory.getLogger(WelcomeController.class);
 
 	private static final String BUCKET_NAME = System.getenv("S3_BUCKET");
+
 	private static final String ACCESS_KEY = System.getenv("AWS_ACCESS_KEY_ID");
+
 	private static final String SECRET_KEY = System.getenv("AWS_SECRET_ACCESS_KEY");
+
 	private static final String REGION = System.getenv("S3_REGION");
-	private static final AmazonS3 s3client = AmazonS3ClientBuilder
-		.standard()
-		.withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY)))
-		.withRegion(REGION)
-		.build();
+
+	private static final AmazonS3 AMAZON_S3 = AmazonS3ClientBuilder.
+		standard().
+		withCredentials(new AWSStaticCredentialsProvider(
+			new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY)
+		)).withRegion(REGION).build();
 
 	private static final String TEMP_DIRECTORY = System.getProperty("java.io.tmpdir");
 
@@ -754,6 +757,7 @@ public class WelcomeController {
 
 		Element loverElement = document.createElement("lover");
 
+		// 此頁是否為本人
 		if (Objects.equals(me, lover)) {
 			loverElement.setAttribute(
 				"me",
@@ -974,8 +978,8 @@ public class WelcomeController {
 			me.setOccupation(model.getOccupation());
 		}
 
-		if (!Objects.isNull(model.getLineID())) {
-			me.setLineID(model.getLineID());
+		if (!Objects.isNull(model.getInviteMeAsLineFriend())) {
+			me.setInviteMeAsLineFriend(model.getInviteMeAsLineFriend());
 		}
 
 		if (!Objects.isNull(model.getBodyType())) {
@@ -998,18 +1002,18 @@ public class WelcomeController {
 			me.setDrinking(model.getDrinking());
 		}
 
-		if (!Objects.isNull(model.getIntroduction())) {
-			String introduction = model.getIntroduction().replaceAll("(\r\n|\n)", "<br>");
-			me.setIntroduction(introduction);
+		if (!Objects.isNull(model.getAboutMe())) {
+			String aboutMe = model.getAboutMe().replaceAll("(\r\n|\n)", "<br>");
+			me.setAboutMe(aboutMe);
 		}
 
-		if (!Objects.isNull(model.getIdealType())) {
-			String idealType = model.getIdealType().replaceAll("(\r\n|\n)", "<br>");
-			me.setIdealType(idealType);
+		if (!Objects.isNull(model.getIdealConditions())) {
+			String idealConditions = model.getIdealConditions().replaceAll("(\r\n|\n)", "<br>");
+			me.setIdealConditions(idealConditions);
 		}
 
-		if (!Objects.isNull(model.getHello())) {
-			me.setHello(model.getHello());
+		if (!Objects.isNull(model.getGreeting())) {
+			me.setGreeting(model.getGreeting());
 		}
 
 		loverRepository.saveAndFlush(me);
@@ -1111,6 +1115,7 @@ public class WelcomeController {
 	@GetMapping(path = "/album.asp")
 	@Secured({"ROLE_YONGHU"})
 	ModelAndView album(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -1134,10 +1139,10 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		if (!Objects.isNull(me.getPhoto())) {
-			Element photoElement = document.createElement("photo");
-			photoElement.setTextContent(me.getPhoto());
-			documentElement.appendChild(photoElement);
+		if (!Objects.isNull(me.getProfileImage())) {
+			Element profileImageElement = document.createElement("profileImage");
+			profileImageElement.setTextContent(me.getProfileImage());
+			documentElement.appendChild(profileImageElement);
 		}
 
 		ModelAndView modelAndView = new ModelAndView("album");
@@ -1169,13 +1174,12 @@ public class WelcomeController {
 
 		String fileUrl = null;
 		try {
-
 			File file = new File(TEMP_DIRECTORY, Long.toString(
 				System.currentTimeMillis()
 			));
 			fileUrl = "https://www.youngme.vip/profilePhoto/" + me.getIdentifier().toString();
 			multipartFile.transferTo(file);
-			s3client.putObject(
+			AMAZON_S3.putObject(
 				new PutObjectRequest(
 					BUCKET_NAME + "/profilePhoto",
 					me.getIdentifier().toString(),
@@ -1183,7 +1187,7 @@ public class WelcomeController {
 				)
 			);
 			file.delete();
-			me.setPhoto(fileUrl);
+			me.setProfileImage(fileUrl);
 			loverRepository.saveAndFlush(me);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1209,12 +1213,12 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		DeleteObjectRequest deleteObjectRequest
-			= new DeleteObjectRequest(
-				BUCKET_NAME + "/profilePhoto",
-				me.getIdentifier().toString()
-			);
-		s3client.deleteObject(deleteObjectRequest);
+		DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(
+			BUCKET_NAME + "/profilePhoto",
+			me.getIdentifier().toString()
+		);
+
+		AMAZON_S3.deleteObject(deleteObjectRequest);
 
 		return new JavaScriptObjectNotation().
 			withReason("Delete successfully").

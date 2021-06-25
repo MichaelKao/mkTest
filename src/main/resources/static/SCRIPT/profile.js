@@ -1,10 +1,10 @@
 $(document).ready(function () {
 	
-	var content = $("DIV.introduction").text();
-	$('DIV.introduction').html(content);
+	var content = $("DIV.aboutMe").text();
+	$('DIV.aboutMe').html(content);
 	
-	var content = $("DIV.idealType").text();
-	$('DIV.idealType').html(content);
+	var content = $("DIV.idealConditions").text();
+	$('DIV.idealConditions').html(content);
 	
 	$('BUTTON.fav').click(function () {
 		$(this).toggleClass('liked')

@@ -4,6 +4,8 @@ import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Collection;
@@ -298,6 +300,11 @@ public class LoverService {
 	}
 
 	@Transactional
+	public Lover saveLover(Lover lover) {
+		return loverRepository.saveAndFlush(lover);
+	}
+
+	@Transactional
 	public JSONObject signUp(SignUp signUp, HttpServletRequest request, Locale locale) {
 		Country country = countryRepository.
 			findById(signUp.getCountry()).
@@ -357,7 +364,7 @@ public class LoverService {
 			loverElement.setAttribute(
 				"location",
 				messageSource.getMessage(
-					lover.getLocation().getCity(),
+					lover.getLocation().getName(),
 					null,
 					locale
 				));
@@ -370,18 +377,19 @@ public class LoverService {
 			);
 		}
 
-		if (!Objects.isNull(lover.getBirthday())) {
+		Date birth = lover.getBirthday();
+		LOGGER.debug("生日{}", birth);
+		if (!Objects.isNull(birth)) {
 			loverElement.setAttribute(
 				"age",
 				servant.getAgeByBirth(
-					lover.getBirthday()).toString()
+					birth).toString()
 			);
+			
 			loverElement.setAttribute(
 				"birthday",
-				DateTimeFormatter.ofPattern("yyyy-MM-dd").format(
-					servant.toTaipeiZonedDateTime(
-						lover.getBirthday()
-					).withZoneSameInstant(Servant.ZONE_ID_TAIPEI)
+				new SimpleDateFormat("yyyy-MM-dd").format(
+					birth
 				)
 			);
 		}
@@ -400,18 +408,18 @@ public class LoverService {
 			));
 		}
 
-		if (!Objects.isNull(lover.getPhoto())) {
+		if (!Objects.isNull(lover.getProfileImage())) {
 			loverElement.setAttribute(
-				"photo",
-				lover.getPhoto()
+				"profileImage",
+				lover.getProfileImage()
 			);
 		}
 
-		if (!Objects.isNull(lover.getIntroduction())) {
-			String introduction = lover.getIntroduction();
+		if (!Objects.isNull(lover.getAboutMe())) {
+			String aboutMe = lover.getAboutMe();
 			loverElement.setAttribute(
-				"intro",
-				introduction
+				"aboutMe",
+				aboutMe
 			);
 		}
 
@@ -486,24 +494,24 @@ public class LoverService {
 				));
 		}
 
-		if (!Objects.isNull(lover.getIdealType())) {
+		if (!Objects.isNull(lover.getIdealConditions())) {
 			loverElement.setAttribute(
-				"idealType",
-				lover.getIdealType()
+				"idealConditions",
+				lover.getIdealConditions()
 			);
 		}
 
-		if (!Objects.isNull(lover.getLineID())) {
+		if (!Objects.isNull(lover.getInviteMeAsLineFriend())) {
 			loverElement.setAttribute(
-				"lineLink",
-				lover.getLineID()
+				"inviteMeAsLineFriend",
+				lover.getInviteMeAsLineFriend()
 			);
 		}
 
-		if (!Objects.isNull(lover.getHello())) {
+		if (!Objects.isNull(lover.getGreeting())) {
 			loverElement.setAttribute(
-				"hello",
-				lover.getHello()
+				"greeting",
+				lover.getGreeting()
 			);
 		}
 

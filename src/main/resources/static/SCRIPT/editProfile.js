@@ -1,12 +1,12 @@
 $(document).ready(function () {
 
-	var content = $("TEXTAREA#introduction").val();
+	var content = $("TEXTAREA#aboutMe").val();
 	content = content.replace(/<br>/g, "\n");
-	$('TEXTAREA#introduction').val(content);
+	$('TEXTAREA#aboutMe').val(content);
 	
-	var content = $("TEXTAREA#idealType").val();
+	var content = $("TEXTAREA#idealConditions").val();
 	content = content.replace(/<br>/g, "\n");
-	$('TEXTAREA#idealType').val(content);
+	$('TEXTAREA#idealConditions').val(content);
 
 	$('#birth').datetimepicker({
 		format: "YYYY-MM-DD",

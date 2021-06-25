@@ -69,8 +69,8 @@
 						<INPUT class="form-control" id="occupation" name="occupation" type="text" value="{@occupation}"/>
 					</DIV>
 					<DIV class="col-md-12 mb-3">
-						<LABEL for="lineLink">Line 好友連結</LABEL>
-						<INPUT class="form-control" id="lineLink" name="lineID" type="text" value="{@lineLink}"/>
+						<LABEL for="inviteMeAsLineFriend">Line 好友連結</LABEL>
+						<INPUT class="form-control" id="inviteMeAsLineFriend" name="inviteMeAsLineFriend" type="text" value="{@inviteMeAsLineFriend}"/>
 					</DIV>
 					<DIV class="form-group">
 						<LABEL for="bodyType">體型</LABEL>
@@ -139,25 +139,25 @@
 					</DIV>
 					<DIV class="col-md-12 pe-2 mb-3">
 						<DIV class="form-group mb-0">
-							<LABEL for="introduction">關於我</LABEL>
-							<TEXTAREA class="form-control" id="introduction" name="introduction" rows="6">
-								<xsl:value-of select="@intro"/>
+							<LABEL for="aboutMe">關於我</LABEL>
+							<TEXTAREA class="form-control" id="aboutMe" name="aboutMe" rows="6">
+								<xsl:value-of select="@aboutMe"/>
 							</TEXTAREA>
 						</DIV>
 					</DIV>
 					<DIV class="col-md-12 pe-2 mb-3">
 						<DIV class="form-group mb-0">
-							<LABEL for="idealType">理想對象</LABEL>
-							<TEXTAREA class="form-control" id="idealType" name="idealType" rows="6">
-								<xsl:value-of select="@idealType"/>
+							<LABEL for="idealConditions">理想對象</LABEL>
+							<TEXTAREA class="form-control" id="idealConditions" name="idealConditions" rows="6">
+								<xsl:value-of select="@idealConditions"/>
 							</TEXTAREA>
 						</DIV>
 					</DIV>
 					<DIV class="col-md-12 pe-2 mb-3">
 						<DIV class="form-group mb-0">
-							<LABEL for="hello">打招呼</LABEL>
-							<TEXTAREA class="form-control" id="hello" name="hello" rows="4">
-								<xsl:value-of select="@hello"/>
+							<LABEL for="greeting">打招呼</LABEL>
+							<TEXTAREA class="form-control" id="greeting" name="greeting" rows="4">
+								<xsl:value-of select="@greeting"/>
 							</TEXTAREA>
 						</DIV>
 					</DIV>

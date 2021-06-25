@@ -48,7 +48,7 @@
 				</DIV>
 				<DIV class="carousel-inner">
 					<DIV class="carousel-item active">
-						<IMG class="d-block w-100" src="{@photo}" alt="大頭照"/>
+						<IMG class="d-block w-100" src="{@profileImage}" alt="大頭照"/>
 					</DIV>
 					<DIV class="carousel-item">
 						<IMG class="d-block w-100" src="https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(2).jpg" alt="照片2"/>
@@ -173,14 +173,14 @@
 			<HR class="horizontal dark my-4"/>
 			<DIV class="mb-2">
 				<DIV class="font-weight-bold text-lg">關於我：</DIV>
-				<DIV class="introduction">
-					<xsl:value-of select="@intro"/>
+				<DIV class="aboutMe">
+					<xsl:value-of select="@aboutMe"/>
 				</DIV>
 			</DIV>
 			<DIV class="mb-2">
 				<DIV class="font-weight-bold text-lg">理想中的約會對象：</DIV>
-				<DIV class="idealType">
-					<xsl:value-of select="@idealType"/>
+				<DIV class="idealConditions">
+					<xsl:value-of select="@idealConditions"/>
 				</DIV>
 			</DIV>
 		</DIV>
