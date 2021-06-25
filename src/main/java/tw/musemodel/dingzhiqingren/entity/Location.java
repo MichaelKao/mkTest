@@ -1,8 +1,11 @@
 package tw.musemodel.dingzhiqingren.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.Basic;
@@ -17,7 +20,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
- * 地區
+ * 地区
  *
  * @author m@musemodel.tw
  */
@@ -26,11 +29,15 @@ import javax.persistence.UniqueConstraint;
 @Table(schema = "yuepao", name = "di_qu", uniqueConstraints = {
 	@UniqueConstraint(columnNames = {"xian_shi_ming"})
 })
+@JsonIdentityInfo(
+	generator = ObjectIdGenerators.PropertyGenerator.class,
+	property = "id"
+)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Location implements Serializable {	
+public class Location implements java.io.Serializable {
 
 	private static final long serialVersionUID = -8980376544581458604L;
-	
+
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,20 +46,23 @@ public class Location implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "xian_shi_ming", nullable = false)
-	private String city;
-	
+	private String name;
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "location")
-	@JsonManagedReference
+	@JsonBackReference
 	private Collection<Lover> lovers;
 
 	/**
-	 * 建構子
+	 * 默认构造器
 	 */
 	public Location() {
 	}
 
-	public Location(String city) {
-		this.city = city;
+	/**
+	 * @param name 县市名(i18n 键)
+	 */
+	public Location(String name) {
+		this.name = name;
 	}
 
 	@Override
@@ -61,7 +71,7 @@ public class Location implements Serializable {
 		hash = 53 * hash + Objects.hashCode(this.id);
 		return hash;
 	}
-	
+
 	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof Location)) {
@@ -70,37 +80,55 @@ public class Location implements Serializable {
 		Location other = (Location) object;
 		return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
 	}
-	
+
 	@Override
 	public String toString() {
-		return "tw.musemodel.dingzhiqingren.Location[ id=" + id + " ]";
+		try {
+			return new JsonMapper().writeValueAsString(this);
+		} catch (JsonProcessingException ignore) {
+			return Objects.isNull(id) ? "null" : id.toString();
+		}
 	}
 
 	/**
-	 * @return 主鍵
+	 * @return 主键
 	 */
 	public Short getId() {
 		return id;
 	}
 
 	/**
-	 * @param id 主鍵
+	 * @param id 主键
 	 */
 	public void setId(Short id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return 縣市名
+	 * @return 县市名(i18n 键)
 	 */
-	public String getCity() {
-		return city;
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * @param city 縣市名
+	 * @param name 县市名(i18n 键)
 	 */
-	public void setCity(String city) {
-		this.city = city;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return 情人们
+	 */
+	public Collection<Lover> getLovers() {
+		return lovers;
+	}
+
+	/**
+	 * @param lovers 情人们
+	 */
+	public void setLovers(Collection<Lover> lovers) {
+		this.lovers = lovers;
 	}
 }

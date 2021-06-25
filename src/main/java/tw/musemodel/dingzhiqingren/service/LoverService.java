@@ -4,6 +4,9 @@ import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -30,6 +33,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import tw.musemodel.dingzhiqingren.entity.Activation;
 import tw.musemodel.dingzhiqingren.entity.Country;
 import tw.musemodel.dingzhiqingren.entity.LineUserProfile;
@@ -295,6 +300,11 @@ public class LoverService {
 	}
 
 	@Transactional
+	public Lover saveLover(Lover lover) {
+		return loverRepository.saveAndFlush(lover);
+	}
+
+	@Transactional
 	public JSONObject signUp(SignUp signUp, HttpServletRequest request, Locale locale) {
 		Country country = countryRepository.
 			findById(signUp.getCountry()).
@@ -346,5 +356,176 @@ public class LoverService {
 			string,
 			expiry
 		));
+	}
+
+	public Element loverElement(Element loverElement, Lover lover, Locale locale) {
+
+		if (!Objects.isNull(lover.getLocation())) {
+			loverElement.setAttribute(
+				"location",
+				messageSource.getMessage(
+					lover.getLocation().getName(),
+					null,
+					locale
+				));
+		}
+
+		if (!Objects.isNull(lover.getNickname())) {
+			loverElement.setAttribute(
+				"nickname",
+				lover.getNickname()
+			);
+		}
+
+		Date birth = lover.getBirthday();
+		LOGGER.debug("生日{}", birth);
+		if (!Objects.isNull(birth)) {
+			loverElement.setAttribute(
+				"age",
+				servant.getAgeByBirth(
+					birth).toString()
+			);
+			
+			loverElement.setAttribute(
+				"birthday",
+				new SimpleDateFormat("yyyy-MM-dd").format(
+					birth
+				)
+			);
+		}
+
+		if (!Objects.isNull(lover.getGender())) {
+			loverElement.setAttribute(
+				"gender",
+				lover.getGender() ? messageSource.getMessage(
+				"gender.male",
+				null,
+				locale
+			) : messageSource.getMessage(
+				"gender.female",
+				null,
+				locale
+			));
+		}
+
+		if (!Objects.isNull(lover.getProfileImage())) {
+			loverElement.setAttribute(
+				"profileImage",
+				lover.getProfileImage()
+			);
+		}
+
+		if (!Objects.isNull(lover.getAboutMe())) {
+			String aboutMe = lover.getAboutMe();
+			loverElement.setAttribute(
+				"aboutMe",
+				aboutMe
+			);
+		}
+
+		if (!Objects.isNull(lover.getBodyType())) {
+			loverElement.setAttribute(
+				"bodyType",
+				messageSource.getMessage(
+					lover.getBodyType().toString(),
+					null,
+					locale
+				));
+		}
+
+		if (!Objects.isNull(lover.getHeight())) {
+			loverElement.setAttribute(
+				"height",
+				lover.getHeight().toString()
+			);
+		}
+
+		if (!Objects.isNull(lover.getWeight())) {
+			loverElement.setAttribute(
+				"weight",
+				lover.getWeight().toString()
+			);
+		}
+
+		if (!Objects.isNull(lover.getEducation())) {
+			loverElement.setAttribute(
+				"education",
+				messageSource.getMessage(
+					lover.getEducation().toString(),
+					null,
+					locale
+				));
+		}
+
+		if (!Objects.isNull(lover.getMarriage())) {
+			loverElement.setAttribute(
+				"marriage",
+				messageSource.getMessage(
+					lover.getMarriage().toString(),
+					null,
+					locale
+				));
+		}
+
+		if (!Objects.isNull(lover.getOccupation())) {
+			loverElement.setAttribute(
+				"occupation",
+				lover.getOccupation()
+			);
+		}
+
+		if (!Objects.isNull(lover.getSmoking())) {
+			loverElement.setAttribute(
+				"smoking",
+				messageSource.getMessage(
+					lover.getSmoking().toString(),
+					null,
+					locale
+				));
+		}
+
+		if (!Objects.isNull(lover.getDrinking())) {
+			loverElement.setAttribute(
+				"drinking",
+				messageSource.getMessage(
+					lover.getDrinking().toString(),
+					null,
+					locale
+				));
+		}
+
+		if (!Objects.isNull(lover.getIdealConditions())) {
+			loverElement.setAttribute(
+				"idealConditions",
+				lover.getIdealConditions()
+			);
+		}
+
+		if (!Objects.isNull(lover.getInviteMeAsLineFriend())) {
+			loverElement.setAttribute(
+				"inviteMeAsLineFriend",
+				lover.getInviteMeAsLineFriend()
+			);
+		}
+
+		if (!Objects.isNull(lover.getGreeting())) {
+			loverElement.setAttribute(
+				"greeting",
+				lover.getGreeting()
+			);
+		}
+
+		if (!Objects.isNull(lover.getActive())) {
+			loverElement.setAttribute(
+				"active",
+				Servant.ZHONG_HUA_MIN_ZU.format(
+					servant.toTaipeiZonedDateTime(
+						lover.getActive()
+					).withZoneSameInstant(Servant.ZONE_ID_TAIPEI)
+				).replaceAll("\\+\\d{2}$", "")
+			);
+		}
+
+		return loverElement;
 	}
 }
