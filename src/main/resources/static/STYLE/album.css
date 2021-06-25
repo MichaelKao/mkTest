@@ -10,11 +10,11 @@ LABEL {
 	max-width: 100%;
 }
 
-.avatarWrap {
+.pictureWrap {
 	position: relative;
 }
 
-.avatarWrap .btnDel {
+.pictureWrap .btnDel {
 	position: absolute;
 	top: 2px;
 	left: 2px;

@@ -277,3 +277,51 @@ CREATE TABLE"lu_jie"(
 COMMENT ON TABLE"lu_jie"IS'绿界';
 COMMENT ON COLUMN"lu_jie"."id"IS'主键';
 
+/**
+ * 生活照
+ */
+CREATE TABLE"yuepao"."sheng_huo_zhao"(
+	"id"serial2 PRIMARY KEY,
+        "qing_ren"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"shi_bie_ma"uuid NOT NULL UNIQUE,
+	"shi_chuo"timestamptz NOT NULL DEFAULT"now"()
+);
+COMMENT ON TABLE"yuepao"."sheng_huo_zhao"IS'生活照';
+COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."id"IS'主鍵';
+COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."qing_ren"IS'情人';
+COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."shi_bie_ma"IS'識別碼';
+COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."shi_chuo"IS'時戳';
+
+CREATE TYPE"xing_wei"AS ENUM(
+	'YUE_FEI',--月费
+	'CHU_ZHI',--储值
+	'JI_WO_LAI',--给我赖
+	'JI_NI_LAI',--给你赖
+	'DA_ZHAO_HU',--打招呼
+	'KAN_GUO_WO',--看过我
+	'CHE_MA_FEI'--车马费
+);
+COMMENT ON TYPE"xing_wei"IS'行为';
+
+/**
+ * 历程
+ */
+CREATE TABLE"yuepao"."li_cheng"(
+	"id"serial8 PRIMARY KEY,
+	"zhu_dong_de"int NOT NULL REFERENCES"yuepao"."qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,--主动的
+	"bei_dong_de"int REFERENCES"yuepao"."qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,--被动的
+	"xing_wei" "yuepao"."xing_wei",--行为
+	"shi_chuo"timestamptz,--时戳
+	"dian_shu"int2,--点数
+	"lu_jie"int8 REFERENCES"yuepao"."lu_jie"("id")ON DELETE RESTRICT ON UPDATE CASCADE,--绿界
+	"zhao_hu_yu"text--招呼语
+);
+COMMENT ON TABLE"yuepao"."li_cheng"IS'历程';
+COMMENT ON COLUMN"yuepao"."li_cheng"."id"IS'主键';
+COMMENT ON COLUMN"yuepao"."li_cheng"."zhu_dong_de"IS'主动的';
+COMMENT ON COLUMN"yuepao"."li_cheng"."bei_dong_de"IS'被动的';
+COMMENT ON COLUMN"yuepao"."li_cheng"."xing_wei"IS'行为';
+COMMENT ON COLUMN"yuepao"."li_cheng"."shi_chuo"IS'时戳';
+COMMENT ON COLUMN"yuepao"."li_cheng"."dian_shu"IS'点数';
+COMMENT ON COLUMN"yuepao"."li_cheng"."lu_jie"IS'绿界';
+COMMENT ON COLUMN"yuepao"."li_cheng"."zhao_hu_yu"IS'招呼语';

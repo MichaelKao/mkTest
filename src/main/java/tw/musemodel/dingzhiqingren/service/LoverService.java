@@ -4,9 +4,8 @@ import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -18,6 +17,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -35,10 +35,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.entity.Activation;
 import tw.musemodel.dingzhiqingren.entity.Country;
 import tw.musemodel.dingzhiqingren.entity.LineUserProfile;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.Role;
 import tw.musemodel.dingzhiqingren.entity.User;
 import tw.musemodel.dingzhiqingren.event.SignedUpEvent;
@@ -49,6 +51,7 @@ import tw.musemodel.dingzhiqingren.repository.ActivationRepository;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineUserProfileRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
+import tw.musemodel.dingzhiqingren.repository.PictureRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
 
 /**
@@ -92,6 +95,12 @@ public class LoverService {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private AmazonWebServices amazonWebServices;
+
+	@Autowired
+	private PictureRepository pictureRepository;
 
 	public List<Lover> loadLovers() {
 		return loverRepository.findAll();
@@ -182,6 +191,24 @@ public class LoverService {
 			withRedirect("/me.asp").
 			withResponse(true).
 			toJSONObject();
+	}
+
+	@Transactional(readOnly = true)
+	public Integer calculateAge(Lover lover) {
+		if (Objects.isNull(lover)) {
+			throw new RuntimeException("calculateAge.loverMustntBeNull");
+		}
+
+		Date birthday = lover.getBirthday();
+		if (Objects.isNull(birthday)) {
+			throw new RuntimeException("calculateAge.birthdayMustntBeNull");
+		}
+
+		Calendar birth = new GregorianCalendar(), today;
+		today = new GregorianCalendar();
+		birth.setTime(birthday);
+
+		return today.get(Calendar.YEAR) - birth.get(Calendar.YEAR);
 	}
 
 	@Transactional(readOnly = true)
@@ -322,6 +349,11 @@ public class LoverService {
 		lover.setGender(signUp.getGender());
 		lover = loverRepository.saveAndFlush(lover);
 
+		// 上傳預設大頭照
+		amazonWebServices.copyDefaultImageToLover(
+			lover.getIdentifier().toString()
+		);
+
 		applicationEventPublisher.publishEvent(new SignedUpEvent(
 			lover,
 			request.getServerName(),
@@ -358,45 +390,55 @@ public class LoverService {
 		));
 	}
 
-	public Element loverElement(Element loverElement, Lover lover, Locale locale) {
+	public Document readDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 
-		if (!Objects.isNull(lover.getLocation())) {
-			loverElement.setAttribute(
-				"location",
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		Element loverElement = document.createElement("lover");
+		documentElement.appendChild(loverElement);
+
+		Element profileImageElement = document.createElement("profileImage");
+		profileImageElement.setTextContent(
+			"http://www.youngme.vip/profileImage/" + lover.getIdentifier().toString()
+		);
+		loverElement.appendChild(profileImageElement);
+
+		List<Picture> pictures = pictureRepository.findByLover(lover);
+		for (Picture picture : pictures) {
+			Element pictureElement = document.createElement("picture");
+			pictureElement.setTextContent(
+				"http://www.youngme.vip/pictures/" + picture.getIdentifier().toString()
+			);
+			loverElement.appendChild(pictureElement);
+		}
+
+		if (Objects.nonNull(lover.getLocation())) {
+			Element locationElement = document.createElement("location");
+			locationElement.setTextContent(
 				messageSource.getMessage(
 					lover.getLocation().getName(),
 					null,
 					locale
 				));
+			loverElement.appendChild(locationElement);
 		}
 
-		if (!Objects.isNull(lover.getNickname())) {
-			loverElement.setAttribute(
-				"nickname",
-				lover.getNickname()
-			);
+		if (Objects.nonNull(lover.getNickname())) {
+			Element nicknameElement = document.createElement("nickname");
+			nicknameElement.setTextContent(lover.getNickname());
+			loverElement.appendChild(nicknameElement);
 		}
 
 		Date birth = lover.getBirthday();
-		LOGGER.debug("生日{}", birth);
-		if (!Objects.isNull(birth)) {
-			loverElement.setAttribute(
-				"age",
-				servant.getAgeByBirth(
-					birth).toString()
-			);
-			
-			loverElement.setAttribute(
-				"birthday",
-				new SimpleDateFormat("yyyy-MM-dd").format(
-					birth
-				)
-			);
+		if (Objects.nonNull(birth)) {
+			Element ageElement = document.createElement("age");
+			ageElement.setTextContent(calculateAge(lover).toString());
+			loverElement.appendChild(ageElement);
 		}
 
-		if (!Objects.isNull(lover.getGender())) {
-			loverElement.setAttribute(
-				"gender",
+		if (Objects.nonNull(lover.getGender())) {
+			Element genderElement = document.createElement("gender");
+			genderElement.setTextContent(
 				lover.getGender() ? messageSource.getMessage(
 				"gender.male",
 				null,
@@ -406,126 +448,288 @@ public class LoverService {
 				null,
 				locale
 			));
+			loverElement.appendChild(genderElement);
 		}
 
-		if (!Objects.isNull(lover.getProfileImage())) {
-			loverElement.setAttribute(
-				"profileImage",
-				lover.getProfileImage()
-			);
+		if (Objects.nonNull(lover.getAboutMe())) {
+			Element aboutMeElement = document.createElement("aboutMe");
+			aboutMeElement.setTextContent(lover.getAboutMe());
+			loverElement.appendChild(aboutMeElement);
 		}
 
-		if (!Objects.isNull(lover.getAboutMe())) {
-			String aboutMe = lover.getAboutMe();
-			loverElement.setAttribute(
-				"aboutMe",
-				aboutMe
-			);
-		}
-
-		if (!Objects.isNull(lover.getBodyType())) {
-			loverElement.setAttribute(
-				"bodyType",
+		if (Objects.nonNull(lover.getBodyType())) {
+			Element bodyTypeElement = document.createElement("bodyType");
+			bodyTypeElement.setTextContent(
 				messageSource.getMessage(
 					lover.getBodyType().toString(),
 					null,
 					locale
-				));
-		}
-
-		if (!Objects.isNull(lover.getHeight())) {
-			loverElement.setAttribute(
-				"height",
-				lover.getHeight().toString()
+				)
 			);
+			loverElement.appendChild(bodyTypeElement);
 		}
 
-		if (!Objects.isNull(lover.getWeight())) {
-			loverElement.setAttribute(
-				"weight",
-				lover.getWeight().toString()
-			);
+		if (Objects.nonNull(lover.getHeight())) {
+			Element heightElement = document.createElement("height");
+			heightElement.setTextContent(lover.getHeight().toString());
+			loverElement.appendChild(heightElement);
 		}
 
-		if (!Objects.isNull(lover.getEducation())) {
-			loverElement.setAttribute(
-				"education",
+		if (Objects.nonNull(lover.getWeight())) {
+			Element weightElement = document.createElement("weight");
+			weightElement.setTextContent(lover.getWeight().toString());
+			loverElement.appendChild(weightElement);
+		}
+
+		if (Objects.nonNull(lover.getEducation())) {
+			Element educationElement = document.createElement("education");
+			educationElement.setTextContent(
 				messageSource.getMessage(
 					lover.getEducation().toString(),
 					null,
 					locale
 				));
+			loverElement.appendChild(educationElement);
 		}
 
-		if (!Objects.isNull(lover.getMarriage())) {
-			loverElement.setAttribute(
-				"marriage",
+		if (Objects.nonNull(lover.getMarriage())) {
+			Element marriageElement = document.createElement("marriage");
+			marriageElement.setTextContent(
 				messageSource.getMessage(
 					lover.getMarriage().toString(),
 					null,
 					locale
 				));
+			loverElement.appendChild(marriageElement);
 		}
 
-		if (!Objects.isNull(lover.getOccupation())) {
-			loverElement.setAttribute(
-				"occupation",
-				lover.getOccupation()
-			);
+		if (Objects.nonNull(lover.getOccupation())) {
+			Element occupationElement = document.createElement("occupation");
+			occupationElement.setTextContent(lover.getOccupation());
+			loverElement.appendChild(occupationElement);
 		}
 
-		if (!Objects.isNull(lover.getSmoking())) {
-			loverElement.setAttribute(
-				"smoking",
+		if (Objects.nonNull(lover.getSmoking())) {
+			Element smokingElement = document.createElement("smoking");
+			smokingElement.setTextContent(
 				messageSource.getMessage(
 					lover.getSmoking().toString(),
 					null,
 					locale
 				));
+			loverElement.appendChild(smokingElement);
 		}
 
-		if (!Objects.isNull(lover.getDrinking())) {
-			loverElement.setAttribute(
-				"drinking",
+		if (Objects.nonNull(lover.getDrinking())) {
+			Element drinkingElement = document.createElement("drinking");
+			drinkingElement.setTextContent(
 				messageSource.getMessage(
 					lover.getDrinking().toString(),
 					null,
 					locale
 				));
+			loverElement.appendChild(drinkingElement);
 		}
 
-		if (!Objects.isNull(lover.getIdealConditions())) {
-			loverElement.setAttribute(
-				"idealConditions",
-				lover.getIdealConditions()
-			);
+		if (Objects.nonNull(lover.getIdealConditions())) {
+			Element idealConditionsElement = document.createElement("idealConditions");
+			idealConditionsElement.setTextContent(lover.getIdealConditions());
+			loverElement.appendChild(idealConditionsElement);
 		}
 
-		if (!Objects.isNull(lover.getInviteMeAsLineFriend())) {
-			loverElement.setAttribute(
-				"inviteMeAsLineFriend",
-				lover.getInviteMeAsLineFriend()
-			);
+		if (Objects.nonNull(lover.getInviteMeAsLineFriend())) {
+			Element inviteMeAsLineFriendElement = document.createElement("inviteMeAsLineFriend");
+			inviteMeAsLineFriendElement.setTextContent(lover.getInviteMeAsLineFriend());
+			loverElement.appendChild(inviteMeAsLineFriendElement);
 		}
 
-		if (!Objects.isNull(lover.getGreeting())) {
-			loverElement.setAttribute(
-				"greeting",
-				lover.getGreeting()
-			);
+		if (Objects.nonNull(lover.getGreeting())) {
+			Element greetingElement = document.createElement("greeting");
+			greetingElement.setTextContent(lover.getGreeting());
+			loverElement.appendChild(greetingElement);
 		}
 
-		if (!Objects.isNull(lover.getActive())) {
-			loverElement.setAttribute(
-				"active",
+		if (Objects.nonNull(lover.getActive())) {
+			Element activeElement = document.createElement("active");
+			activeElement.setTextContent(
 				Servant.ZHONG_HUA_MIN_ZU.format(
 					servant.toTaipeiZonedDateTime(
 						lover.getActive()
 					).withZoneSameInstant(Servant.ZONE_ID_TAIPEI)
-				).replaceAll("\\+\\d{2}$", "")
-			);
+				).replaceAll("\\+\\d{2}$", ""));
+			loverElement.appendChild(activeElement);
 		}
 
-		return loverElement;
+		return document;
+	}
+
+	public Document writeDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		Element loverElement = document.createElement("lover");
+		loverElement.setAttribute(
+			"i18n-submit",
+			messageSource.getMessage(
+				"editProfile.form.submit",
+				null,
+				locale
+			)
+		);
+		documentElement.appendChild(loverElement);
+
+		for (Lover.BodyType bodyType : Lover.BodyType.values()) {
+			Element bodyTypeElement = document.createElement("bodyType");
+			bodyTypeElement.setTextContent(
+				messageSource.getMessage(
+					bodyType.toString(),
+					null,
+					locale
+				));
+			bodyTypeElement.setAttribute(
+				"bodyTypeEnum", bodyType.toString()
+			);
+			if (Objects.equals(lover.getBodyType(), bodyType)) {
+				bodyTypeElement.setAttribute(
+					"bodyTypeSelected", ""
+				);
+			}
+			loverElement.appendChild(bodyTypeElement);
+		}
+
+		for (Lover.Education education : Lover.Education.values()) {
+			Element educationElement = document.createElement("education");
+			educationElement.setTextContent(
+				messageSource.getMessage(
+					education.toString(),
+					null,
+					locale
+				));
+			educationElement.setAttribute(
+				"educationEnum", education.toString()
+			);
+			if (Objects.equals(lover.getEducation(), education)) {
+				educationElement.setAttribute(
+					"educationSelected", ""
+				);
+			}
+			loverElement.appendChild(educationElement);
+		}
+
+		for (Lover.Marriage marriage : Lover.Marriage.values()) {
+			Element marriageElement = document.createElement("marriage");
+			marriageElement.setTextContent(
+				messageSource.getMessage(
+					marriage.toString(),
+					null,
+					locale
+				));
+			marriageElement.setAttribute(
+				"marriageEnum", marriage.toString()
+			);
+			if (Objects.equals(lover.getMarriage(), marriage)) {
+				marriageElement.setAttribute(
+					"marriageSelected", ""
+				);
+			}
+			loverElement.appendChild(marriageElement);
+		}
+
+		for (Lover.Smoking smoking : Lover.Smoking.values()) {
+			Element smokingElement = document.createElement("smoking");
+			smokingElement.setTextContent(
+				messageSource.getMessage(
+					smoking.toString(),
+					null,
+					locale
+				));
+			smokingElement.setAttribute(
+				"smokingEnum", smoking.toString()
+			);
+			if (Objects.equals(lover.getSmoking(), smoking)) {
+				smokingElement.setAttribute(
+					"smokingSelected", ""
+				);
+			}
+			loverElement.appendChild(smokingElement);
+		}
+
+		for (Lover.Drinking drinking : Lover.Drinking.values()) {
+			Element drinkingElement = document.createElement("drinking");
+			drinkingElement.setTextContent(
+				messageSource.getMessage(
+					drinking.toString(),
+					null,
+					locale
+				));
+			drinkingElement.setAttribute(
+				"drinkingEnum", drinking.toString()
+			);
+			if (Objects.equals(lover.getDrinking(), drinking)) {
+				drinkingElement.setAttribute(
+					"drinkingSelected", ""
+				);
+			}
+			loverElement.appendChild(drinkingElement);
+		}
+
+		if (Objects.nonNull(lover.getNickname())) {
+			Element nicknameElement = document.createElement("nickname");
+			nicknameElement.setTextContent(lover.getNickname());
+			loverElement.appendChild(nicknameElement);
+		}
+
+		Date birth = lover.getBirthday();
+		if (Objects.nonNull(birth)) {
+			Element birthdayElement = document.createElement("birthday");
+			birthdayElement.setTextContent(
+				new SimpleDateFormat("yyyy-MM-dd").format(birth
+				));
+			loverElement.appendChild(birthdayElement);
+		}
+
+		if (Objects.nonNull(lover.getAboutMe())) {
+			Element aboutMeElement = document.createElement("aboutMe");
+			aboutMeElement.setTextContent(lover.getAboutMe());
+			loverElement.appendChild(aboutMeElement);
+		}
+
+		if (Objects.nonNull(lover.getHeight())) {
+			Element heightElement = document.createElement("height");
+			heightElement.setTextContent(lover.getHeight().toString());
+			loverElement.appendChild(heightElement);
+		}
+
+		if (Objects.nonNull(lover.getWeight())) {
+			Element weightElement = document.createElement("weight");
+			weightElement.setTextContent(lover.getWeight().toString());
+			loverElement.appendChild(weightElement);
+		}
+
+		if (Objects.nonNull(lover.getOccupation())) {
+			Element occupationElement = document.createElement("occupation");
+			occupationElement.setTextContent(lover.getOccupation());
+			loverElement.appendChild(occupationElement);
+		}
+
+		if (Objects.nonNull(lover.getIdealConditions())) {
+			Element idealConditionsElement = document.createElement("idealConditions");
+			idealConditionsElement.setTextContent(lover.getIdealConditions());
+			loverElement.appendChild(idealConditionsElement);
+		}
+
+		if (Objects.nonNull(lover.getInviteMeAsLineFriend())) {
+			Element inviteMeAsLineFriendElement = document.createElement("inviteMeAsLineFriend");
+			inviteMeAsLineFriendElement.setTextContent(lover.getInviteMeAsLineFriend());
+			loverElement.appendChild(inviteMeAsLineFriendElement);
+		}
+
+		if (Objects.nonNull(lover.getGreeting())) {
+			Element greetingElement = document.createElement("greeting");
+			greetingElement.setTextContent(lover.getGreeting());
+			loverElement.appendChild(greetingElement);
+		}
+
+		return document;
 	}
 }

@@ -1,9 +1,12 @@
 @media screen and (max-width: 767px) {
-	#footer {
+	#icon {
 		position: fixed;
 		right: 20px;
 		bottom: 20px;
 		z-index: 1000;
+	}
+	.carousel A {
+		left: 10px;
 	}
 }
 

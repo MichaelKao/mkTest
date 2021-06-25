@@ -35,159 +35,35 @@
 					<I class="fad fa-chevron-double-left"></I>
 				</A>
 				<HR class="horizontal dark"/>
-				<ARTICLE class="py-4 text-center">
-					<H2 class="h4 text-primary mb-4">大頭貼</H2>
-					<DIV class="d-flex justify-content-center align-items-center">
-						<DIV>
-							<DIV id="fileDiv1">
-								<xsl:if test="not(profileImage)">
-									<xsl:attribute name="class" value="d-none">d-none</xsl:attribute>
-								</xsl:if>
-								<DIV class="avatarWrap">
-									<BUTTON class="btnDel" id="delete1" type="button">
-										<I class="fas fa-trash-alt text-primary"></I>
-									</BUTTON>
-									<IMG alt="profile_picture" class="border-radius-md" id="avatar1" src="https://via.placeholder.com/200" width="100">
-										<xsl:choose>
-											<xsl:when test="profileImage">
-												<xsl:attribute name="src">
-													<xsl:value-of select="profileImage"/>
-												</xsl:attribute>
-											</xsl:when>
-											<xsl:otherwise>
-												<xsl:attribute name="src">https://via.placeholder.com/200</xsl:attribute>
-											</xsl:otherwise>
-										</xsl:choose>
-									</IMG>
-								</DIV>
-							</DIV>
-							<DIV id="fileDiv1WithoutPic">
-								<xsl:if test="profileImage">
-									<xsl:attribute name="class" value="d-none">d-none</xsl:attribute>
-								</xsl:if>
-								<DIV class="avatarWrap">
-									<LABEL>
-										<INPUT accept="image/*" class="sr-only" id="input1" name="image" type="file"/>
-										<IMG alt="upload_icon" src="/upload_icon.svg" width="100"/>
-									</LABEL>
-								</DIV>
-							</DIV>
-						</DIV>
+				<ARTICLE class="py-4">
+					<DIV class="h4 text-primary mb-3 d-flex align-items-baseline">
+						<SPAN>大頭貼</SPAN>
+						<LABEL>
+							<INPUT accept="image/*" class="sr-only" data-type="profileImage"  name="image" type="file"/>
+							<I class="far fa-pen text-lg"></I>
+						</LABEL>
+					</DIV>
+					<DIV>
+						<IMG alt="profile_image" class="border-radius-md" src="{profileImage}" id="profileImageImg" width="100"/>
 					</DIV>
 				</ARTICLE>
-				<ARTICLE class="py-4 text-center">
-					<H2 class="h4 text-primary mb-4">其他照片</H2>
-					<DIV class="d-flex justify-content-center my-5">
-						<DIV class="me-4">
-							<DIV class="d-none" id="fileDiv2">
-								<DIV class="avatarWrap">
-									<BUTTON class="btnDel" id="delete2" type="button">
-										<I class="fas fa-trash-alt text-primary"></I>
-									</BUTTON>
-									<IMG alt="profile_picture" class="border-radius-md" src="https://via.placeholder.com/200" id="avatar2" width="90"/>
-								</DIV>
-							</DIV>
-							<DIV id="fileDiv2WithoutPic">
-								<DIV class="avatarWrap">
-									<LABEL>
-										<INPUT accept="image/*" class="sr-only" id="input2" name="image" type="file"/>
-										<IMG alt="upload_icon" src="/upload_icon.svg" width="90"/>
-									</LABEL>
-								</DIV>
-							</DIV>
-						</DIV>
-						<DIV class="me-4">
-							<DIV class="d-none" id="fileDiv3">
-								<DIV class="avatarWrap">
-									<BUTTON class="btnDel" type="button" id="delete3">
-										<I class="fas fa-trash-alt text-primary"></I>
-									</BUTTON>
-									<IMG alt="profile_picture" class="border-radius-md" src="https://via.placeholder.com/200" id="avatar3" width="90"/>
-								</DIV>
-							</DIV>
-							<DIV id="fileDiv3WithoutPic">
-								<DIV class="avatarWrap">
-									<LABEL>
-										<INPUT accept="image/*" class="sr-only" id="input3" name="image" type="file"/>
-										<IMG alt="upload_icon" src="/upload_icon.svg" width="90"/>
-									</LABEL>
-								</DIV>
-							</DIV>
-						</DIV>
-						<DIV>
-							<DIV class="d-none" id="fileDiv4">
-								<DIV class="avatarWrap">
-									<BUTTON class="btnDel" type="button" id="delete4">
-										<I class="fas fa-trash-alt text-primary"></I>
-									</BUTTON>
-									<IMG alt="profile_picture" class="border-radius-md" src="https://via.placeholder.com/200" id="avatar4" width="90"/>
-								</DIV>
-							</DIV>
-							<DIV id="fileDiv4WithoutPic">
-								<DIV class="avatarWrap">
-									<LABEL>
-										<INPUT accept="image/*" class="sr-only" id="input4" name="image" type="file"/>
-										<IMG alt="upload_icon" src="/upload_icon.svg" width="90"/>
-									</LABEL>
-								</DIV>
-							</DIV>
-						</DIV>
+				<ARTICLE class="py-4">
+					<DIV class="h4 text-primary mb-3 d-flex align-items-baseline">
+						<SPAN>其他照片</SPAN>
+						<LABEL>
+							<INPUT accept="image/*" class="sr-only" data-type="picture" name="image" type="file"/>
+							<I class="far fa-plus-circle text-lg"></I>
+						</LABEL>
 					</DIV>
-					<DIV class="d-flex justify-content-center">
-						<DIV class="me-4">
-							<DIV class="d-none" id="fileDiv5">
-								<DIV class="avatarWrap">
-									<BUTTON class="btnDel" type="button" id="delete5">
-										<I class="fas fa-trash-alt text-primary"></I>
-									</BUTTON>
-									<IMG alt="profile_picture" class="border-radius-md" src="https://via.placeholder.com/200" id="avatar5" width="90"/>
-								</DIV>
+					<DIV class="d-flex flex-wrap pictures">
+						<xsl:for-each select="picture">
+							<DIV class="m-1 pictureWrap">
+								<BUTTON class="btnDel" data-id="{@picIdentifier}" id="delete{position()}" type="button">
+									<I class="fas fa-trash-alt text-primary"></I>
+								</BUTTON>
+								<IMG alt="照片{position()}" class="border-radius-md" src="{.}" width="100"/>
 							</DIV>
-							<DIV id="fileDiv5WithoutPic">
-								<DIV class="avatarWrap">
-									<LABEL>
-										<INPUT accept="image/*" class="sr-only" id="input5" name="image" type="file"/>
-										<IMG alt="upload_icon" src="/upload_icon.svg" width="90"/>
-									</LABEL>
-								</DIV>
-							</DIV>
-						</DIV>
-						<DIV class="me-4">
-							<DIV class="d-none" id="fileDiv6">
-								<DIV class="avatarWrap">
-									<BUTTON class="btnDel" id="delete6" type="button">
-										<I class="fas fa-trash-alt text-primary"></I>
-									</BUTTON>
-									<IMG alt="profile_picture" class="border-radius-md" src="https://via.placeholder.com/200" id="avatar6" width="90"/>
-								</DIV>
-							</DIV>
-							<DIV id="fileDiv6WithoutPic">
-								<DIV class="avatarWrap">
-									<LABEL>
-										<INPUT accept="image/*" class="sr-only" id="input6" name="image" type="file"/>
-										<IMG alt="upload_icon" src="/upload_icon.svg" width="90"/>
-									</LABEL>
-								</DIV>
-							</DIV>
-						</DIV>
-						<DIV>
-							<DIV class="d-none" id="fileDiv7">
-								<DIV class="avatarWrap">
-									<BUTTON class="btnDel" type="button" id="delete7">
-										<I class="fas fa-trash-alt text-primary"></I>
-									</BUTTON>
-									<IMG alt="profile_picture" class="border-radius-md" src="https://via.placeholder.com/200" id="avatar7" width="90"/>
-								</DIV>
-							</DIV>
-							<DIV id="fileDiv7WithoutPic">
-								<DIV class="avatarWrap">
-									<LABEL>
-										<INPUT accept="image/*" class="sr-only" id="input7" name="image" type="file"/>
-										<IMG alt="upload_icon" src="/upload_icon.svg" width="90"/>
-									</LABEL>
-								</DIV>
-							</DIV>
-						</DIV>
+						</xsl:for-each>
 					</DIV>
 				</ARTICLE>
 				<DIV class="modal" id="confirmModal" role="dialog" tabindex="-1">
@@ -201,7 +77,6 @@
 								<P>是否確認刪除照片?</P>
 							</DIV>
 							<DIV class="modal-footer">
-								<INPUT name="delete" type="hidden" value=""/>
 								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消</BUTTON>
 								<BUTTON class="btn btn-primary btnDelConfirm" type="button">確定</BUTTON>
 							</DIV>
@@ -239,7 +114,6 @@
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
-			<SCRIPT src="https://sdk.amazonaws.com/js/aws-sdk-2.207.0.min.js"/>
 			<SCRIPT crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.js" integrity="sha512-E4KfIuQAc9ZX6zW1IUJROqxrBqJXPuEcDKP6XesMdu2OV4LW7pj8+gkkyx2y646xEV7yxocPbaTtk2LQIJewXw==" referrerpolicy="no-referrer"/>
 			<SCRIPT src="/SCRIPT/album.js"/>
 		</BODY>

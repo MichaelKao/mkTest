@@ -1,14 +1,17 @@
 $(document).ready(function () {
 
 	$('.imgContainer').css({'max-height': $(window).height() - 250 + "px"});
-	var avatar = document.getElementById('avatar1');
+
 	var image = document.getElementById('image');
 	var input;
 	var $modal = $('#modal');
 	var cropper;
+	var photoType;
+
 	$('INPUT[name="image"]').on("change", function (e) {
 		var files = e.target.files;
 		input = this;
+		photoType = $(input).data('type');
 
 		var done = function (url) {
 			this.value = '';
@@ -30,7 +33,6 @@ $(document).ready(function () {
 				reader.readAsDataURL(file);
 			}
 		}
-		avatar = document.getElementById('avatar' + this.id.replace("input", ""));
 	});
 
 	$modal.on('shown.bs.modal', function () {
@@ -58,7 +60,7 @@ $(document).ready(function () {
 	});
 
 	$('#crop').click(function () {
-		var initialAvatarURL;
+
 		var canvas;
 		let CutWidth;
 		let CutHeight;
@@ -83,10 +85,17 @@ $(document).ready(function () {
 				width: CutWidth,
 				height: CutHeight,
 			});
-			initialAvatarURL = avatar.src;
-			avatar.src = canvas.toDataURL();
+
+			if (photoType === 'profileImage') {
+				$('#profileImageImg').attr('src', canvas.toDataURL());
+			}
+
+//			if (photoType === 'picture') {
+//				$('#profileImageImg').attr('src', canvas.toDataURL());
+//			}
+
 			canvas.toBlob(function (blob) {
-				var OK = uploadpic(avatar.id.replace("avatar", ""), blob);
+				var OK = uploadpic(blob);
 				if (!OK && typeof (OK) != "undefined") {
 					alert('上傳失敗');
 					$modal.modal('hide');
@@ -97,27 +106,30 @@ $(document).ready(function () {
 		}
 	});
 
-	function uploadpic(num, blob) {
+	function uploadpic(blob) {
 
 		var file = new FormData();
-		var filename = num + '.jpg';
-		file.append('file', blob, filename);
+		file.append('file', blob);
+
+
+		var postUrl;
+		if (photoType === 'picture') {
+			postUrl = '/uploadPicture';
+		}
+		if (photoType === 'profileImage') {
+			postUrl = '/uploadProfileImage';
+		}
 
 		$.ajax({
-			url: '/uploadfile',
+			url: postUrl,
 			cache: false,
 			contentType: false,
 			processData: false,
 			data: file,
 			type: 'post',
 			success: function (data) {
-				if (data == 0) {
-					alert('上傳失敗');
+				if (photoType === 'picture') {
 					window.location.reload();
-				} else {
-					$('#fileDiv' + num).removeClass();
-					$('#fileDiv' + num + 'WithoutPic').addClass('d-none');
-					console.log('#fileDiv' + num + '上傳成功');
 				}
 				$modal.modal('hide');
 			},
@@ -142,22 +154,22 @@ $(document).ready(function () {
 		});
 	}
 
+	var identifier;
+
 	$('.btnDel').click(function () {
-		var index = $(this).attr('id').replace("delete", "");
+		identifier = $(this).data('id');
 		$('#confirmModal').modal('show');
-		$('#confirmModal').find('INPUT[type="hidden"]').val(index);
 	});
 
 	$('.btnDelConfirm').click(function () {
-		var index = $('INPUT[name="delete"]').val();
-		deleteFile(index);
+		deleteFile(identifier);
 	});
 
-	function deleteFile(index) {
+	function deleteFile(identifier) {
 		$.post(
-			'/deletefile',
+			'/deletePicture',
 			{
-				index: index
+				identifier: identifier
 			},
 			(data) => {
 			try {

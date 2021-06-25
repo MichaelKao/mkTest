@@ -42,20 +42,20 @@
 		<DIV class="col-md-5 mb-4">
 			<DIV class="carousel slide" data-bs-ride="carousel" id="carousel">
 				<DIV class="carousel-indicators">
-					<BUTTON aria-current="true" aria-label="Slide 1" type="button" data-bs-target="#carousel" data-bs-slide-to="0" class="active"></BUTTON>
-					<BUTTON aria-label="Slide 2" data-bs-slide-to="1" data-bs-target="#carousel" type="button"></BUTTON>
-					<BUTTON aria-label="Slide 3" data-bs-slide-to="2" data-bs-target="#carousel" type="button"></BUTTON>
+					<BUTTON aria-current="true" type="button" data-bs-target="#carousel" data-bs-slide-to="0" class="active"></BUTTON>
+					<xsl:for-each select="picture">
+						<BUTTON data-bs-slide-to="{position()}" data-bs-target="#carousel" type="button"></BUTTON>
+					</xsl:for-each>
 				</DIV>
 				<DIV class="carousel-inner">
 					<DIV class="carousel-item active">
-						<IMG class="d-block w-100" src="{@profileImage}" alt="大頭照"/>
+						<IMG class="d-block w-100" src="{profileImage}" alt="大頭照"/>
 					</DIV>
-					<DIV class="carousel-item">
-						<IMG class="d-block w-100" src="https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(2).jpg" alt="照片2"/>
-					</DIV>
-					<DIV class="carousel-item">
-						<IMG class="d-block w-100" src="https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(3).jpg" alt="照片3"/>
-					</DIV>
+					<xsl:for-each select="picture">
+						<DIV class="carousel-item">
+							<IMG class="d-block w-100" src="{.}" alt="照片{position()}"/>
+						</DIV>
+					</xsl:for-each>
 				</DIV>
 				<BUTTON class="carousel-control-prev" data-bs-slide="prev" data-bs-target="#carousel" type="button">
 					<SPAN aria-hidden="true" class="carousel-control-prev-icon"></SPAN>
@@ -65,7 +65,7 @@
 					<SPAN aria-hidden="true" class="carousel-control-next-icon"></SPAN>
 					<SPAN class="visually-hidden">Next</SPAN>
 				</BUTTON>
-				<xsl:if test="@me">
+				<xsl:if test="/document/@me">
 					<A href="/album.asp">
 						<I class="fad fa-camera"></I>
 					</A>
@@ -73,8 +73,8 @@
 			</DIV>
 			<DIV class="d-flex">
 				<xsl:choose>
-					<xsl:when test="not(@me)">
-						<DIV class="d-flex justify-content-center justify-content-md-start" id="footer">
+					<xsl:when test="not(/document/@me)">
+						<DIV class="d-flex justify-content-center justify-content-md-start" id="icon">
 							<DIV>
 								<BUTTON class="btn btn-icon-only btn-link fav" href="https://lin.ee/LJprCs3">
 									<I class="fad fa-heart"></I>
@@ -100,87 +100,87 @@
 		<DIV class="col-md-4 ms-4">
 			<DIV class="d-flex align-items-center">
 				<H3 class="text-primary me-2">
-					<xsl:value-of select="@nickname"/>
+					<xsl:value-of select="nickname"/>
 				</H3>
 				<DIV class="text-dark text-bold mx-1">
-					<xsl:value-of select="@location"/>
+					<xsl:value-of select="location"/>
 				</DIV>
 				<DIV class="text-dark text-bold mx-1">
-					<xsl:value-of select="@age"/>
+					<xsl:value-of select="age"/>
 				</DIV>
 				<DIV class="text-dark text-bold mx-1">
-					<xsl:value-of select="@gender"/>
+					<xsl:value-of select="gender"/>
 				</DIV>
 			</DIV>
 			<DIV class="d-flex align-items-center">
-				<DIV class="text-dark text-bold mx-1">上一次上線</DIV>
+				<DIV class="text-dark text-bold me-1">上一次上線</DIV>
 				<DIV class="text-primary text-bold mx-1">
-					<xsl:value-of select="@active"/>
+					<xsl:value-of select="active"/>
 				</DIV>
-				
+
 			</DIV>
 			<HR class="horizontal dark my-4"/>
 			<DIV class="mb-2">
 				<SPAN class="font-weight-bold text-lg">身高：</SPAN>
 				<SPAN>
-					<xsl:value-of select="@height"/>
+					<xsl:value-of select="height"/>
 				</SPAN>
 				<SPAN>公分</SPAN>
 			</DIV>
 			<DIV class="mb-2">
 				<SPAN class="font-weight-bold text-lg">體重：</SPAN>
 				<SPAN>
-					<xsl:value-of select="@weight"/>
+					<xsl:value-of select="weight"/>
 				</SPAN>
 				<SPAN>公斤</SPAN>
 			</DIV>
 			<DIV class="mb-2">
 				<SPAN class="font-weight-bold text-lg">體型：</SPAN>
 				<SPAN>
-					<xsl:value-of select="@bodyType"/>
+					<xsl:value-of select="bodyType"/>
 				</SPAN>
 			</DIV>
 			<DIV class="mb-2">
 				<SPAN class="font-weight-bold text-lg">學歷：</SPAN>
 				<SPAN>
-					<xsl:value-of select="@education"/>
+					<xsl:value-of select="education"/>
 				</SPAN>
 			</DIV>
 			<DIV class="mb-2">
 				<SPAN class="font-weight-bold text-lg">婚姻狀態：</SPAN>
 				<SPAN>
-					<xsl:value-of select="@marriage"/>
+					<xsl:value-of select="marriage"/>
 				</SPAN>
 			</DIV>
 			<DIV class="mb-2">
 				<SPAN class="font-weight-bold text-lg">職業：</SPAN>
 				<SPAN>
-					<xsl:value-of select="@occupation"/>
+					<xsl:value-of select="occupation"/>
 				</SPAN>
 			</DIV>
 			<DIV class="mb-2">
 				<SPAN class="font-weight-bold text-lg">抽菸習慣：</SPAN>
 				<SPAN>
-					<xsl:value-of select="@smoking"/>
+					<xsl:value-of select="smoking"/>
 				</SPAN>
 			</DIV>
 			<DIV class="mb-2">
 				<SPAN class="font-weight-bold text-lg">飲酒習慣：</SPAN>
 				<SPAN>
-					<xsl:value-of select="@drinking"/>
+					<xsl:value-of select="drinking"/>
 				</SPAN>
 			</DIV>
 			<HR class="horizontal dark my-4"/>
 			<DIV class="mb-2">
 				<DIV class="font-weight-bold text-lg">關於我：</DIV>
 				<DIV class="aboutMe">
-					<xsl:value-of select="@aboutMe"/>
+					<xsl:value-of select="aboutMe"/>
 				</DIV>
 			</DIV>
 			<DIV class="mb-2">
 				<DIV class="font-weight-bold text-lg">理想中的約會對象：</DIV>
 				<DIV class="idealConditions">
-					<xsl:value-of select="@idealConditions"/>
+					<xsl:value-of select="idealConditions"/>
 				</DIV>
 			</DIV>
 		</DIV>
