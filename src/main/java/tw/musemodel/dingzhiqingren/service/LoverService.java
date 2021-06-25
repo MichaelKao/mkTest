@@ -5,8 +5,6 @@ import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -33,7 +31,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import tw.musemodel.dingzhiqingren.entity.Activation;
 import tw.musemodel.dingzhiqingren.entity.Country;
@@ -182,6 +179,24 @@ public class LoverService {
 			withRedirect("/me.asp").
 			withResponse(true).
 			toJSONObject();
+	}
+
+	@Transactional(readOnly = true)
+	public Integer calculateAge(Lover lover) {
+		if (Objects.isNull(lover)) {
+			throw new RuntimeException("calculateAge.loverMustntBeNull");
+		}
+
+		Date birthday = lover.getBirthday();
+		if (Objects.isNull(birthday)) {
+			throw new RuntimeException("calculateAge.birthdayMustntBeNull");
+		}
+
+		Calendar birth = new GregorianCalendar(), today;
+		today = new GregorianCalendar();
+		birth.setTime(birthday);
+
+		return today.get(Calendar.YEAR) - birth.get(Calendar.YEAR);
 	}
 
 	@Transactional(readOnly = true)
@@ -385,7 +400,7 @@ public class LoverService {
 				servant.getAgeByBirth(
 					birth).toString()
 			);
-			
+
 			loverElement.setAttribute(
 				"birthday",
 				new SimpleDateFormat("yyyy-MM-dd").format(
