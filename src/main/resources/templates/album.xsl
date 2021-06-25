@@ -39,15 +39,32 @@
 					<H2 class="h4 text-primary mb-4">大頭貼</H2>
 					<DIV class="d-flex justify-content-center align-items-center">
 						<DIV>
-							<DIV class="d-none" id="fileDiv1">
+							<DIV id="fileDiv1">
+								<xsl:if test="not(photo)">
+									<xsl:attribute name="class" value="d-none">d-none</xsl:attribute>
+								</xsl:if>
 								<DIV class="avatarWrap">
 									<BUTTON class="btnDel" id="delete1" type="button">
 										<I class="fas fa-trash-alt text-primary"></I>
 									</BUTTON>
-									<IMG alt="profile_picture" class="border-radius-md" id="avatar1" src="https://via.placeholder.com/200" width="100"/>
+									<IMG alt="profile_picture" class="border-radius-md" id="avatar1" src="https://via.placeholder.com/200" width="100">
+										<xsl:choose>
+											<xsl:when test="photo">
+												<xsl:attribute name="src">
+													<xsl:value-of select="photo"/>
+												</xsl:attribute>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:attribute name="src">https://via.placeholder.com/200</xsl:attribute>
+											</xsl:otherwise>
+										</xsl:choose>
+									</IMG>
 								</DIV>
 							</DIV>
 							<DIV id="fileDiv1WithoutPic">
+								<xsl:if test="photo">
+									<xsl:attribute name="class" value="d-none">d-none</xsl:attribute>
+								</xsl:if>
 								<DIV class="avatarWrap">
 									<LABEL>
 										<INPUT accept="image/*" class="sr-only" id="input1" name="image" type="file"/>

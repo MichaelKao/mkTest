@@ -9,7 +9,12 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -23,15 +28,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -105,7 +113,7 @@ public class WelcomeController {
 		));
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
-				"me",
+				"signIn",
 				authentication.getName()
 			);
 		}
@@ -674,16 +682,28 @@ public class WelcomeController {
 			locale
 		));
 
-		Lover lover = loverService.loadByUsername(
-			authentication.getName()
-		);
-
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
-				"me",
+				"signIn",
 				authentication.getName()
 			);
 		}
+
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Element loverElement = document.createElement("lover");
+		loverElement.setAttribute(
+			"me",
+			null
+		);
+
+		documentElement.appendChild(
+			loverService.loverElement(
+				loverElement, me, locale
+			));
 
 		ModelAndView modelAndView = new ModelAndView("profile");
 		modelAndView.getModelMap().addAttribute(document);
@@ -719,98 +739,32 @@ public class WelcomeController {
 
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
-				"me",
+				"signIn",
 				authentication.getName()
 			);
 		}
 
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		// 識別碼的帳號
 		Lover lover = loverService.loadByIdentifier(identifier);
+
 		Element loverElement = document.createElement("lover");
-		documentElement.appendChild(loverElement);
 
-		if (!Objects.isNull(lover.getLocation().getCity())) {
+		if (Objects.equals(me, lover)) {
 			loverElement.setAttribute(
-				"location",
-				lover.getLocation().getCity()
+				"me",
+				null
 			);
 		}
 
-		if (!Objects.isNull(lover.getNickname())) {
-			loverElement.setAttribute(
-				"nickName",
-				lover.getNickname()
-			);
-		}
-
-		if (!Objects.isNull(lover.getBirthday())) {
-			loverElement.setAttribute(
-				"birthday",
-				servant.getAgeByBirth(
-					lover.getBirthday()).toString()
-			);
-		}
-
-		if (!Objects.isNull(lover.getGender())) {
-			loverElement.setAttribute(
-				"gender",
-				lover.getGender() ? messageSource.getMessage(
-				"gender.male",
-				null,
-				locale
-			) : messageSource.getMessage(
-				"gender.female",
-				null,
-				locale
+		documentElement.appendChild(
+			loverService.loverElement(
+				loverElement, lover, locale
 			));
-		}
-		
-		if (!Objects.isNull(lover.getPhoto())) {
-			loverElement.setAttribute(
-				"photo",
-				lover.getPhoto()
-			);
-		}
-		
-		if (!Objects.isNull(lover.getIntroduction())) {
-			loverElement.setAttribute(
-				"intro",
-				lover.getIntroduction()
-			);
-		}
-		
-		if (!Objects.isNull(lover.getBodyType())) {
-			loverElement.setAttribute(
-				"bodyType",
-				messageSource.getMessage(
-				lover.getBodyType().toString(),
-				null,
-				locale
-			));
-		}
-		
-		if (!Objects.isNull(lover.getHeight())) {
-			loverElement.setAttribute(
-				"height",
-				lover.getHeight().toString()
-			);
-		}
-		
-		if (!Objects.isNull(lover.getWeight())) {
-			loverElement.setAttribute(
-				"weight",
-				lover.getWeight().toString()
-			);
-		}
-		
-		if (!Objects.isNull(lover.getEducation())) {
-			loverElement.setAttribute(
-				"education",
-				messageSource.getMessage(
-				lover.getBodyType().toString(),
-				null,
-				locale
-			));
-		}
 
 		ModelAndView modelAndView = new ModelAndView("profile");
 		modelAndView.getModelMap().addAttribute(document);
@@ -839,10 +793,131 @@ public class WelcomeController {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.signUp",
+			"title.editProfile",
 			null,
 			locale
 		));
+
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"signIn",
+				authentication.getName()
+			);
+		}
+
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Element loverElement = document.createElement("lover");
+		loverElement.setAttribute(
+			"i18n-submit",
+			messageSource.getMessage(
+				"editProfile.form.submit",
+				null,
+				locale
+			)
+		);
+		documentElement.appendChild(
+			loverService.loverElement(
+				loverElement, me, locale
+			));
+
+		for (Lover.BodyType bodyType : Lover.BodyType.values()) {
+			Element bodyTypeElement = document.createElement("bodyType");
+			bodyTypeElement.setTextContent(
+				messageSource.getMessage(
+					bodyType.toString(),
+					null,
+					locale
+				));
+			bodyTypeElement.setAttribute(
+				"bodyTypeEnum", bodyType.toString()
+			);
+			if (Objects.equals(me.getBodyType(), bodyType)) {
+				bodyTypeElement.setAttribute(
+					"bodyTypeSelected", ""
+				);
+			}
+			loverElement.appendChild(bodyTypeElement);
+		}
+
+		for (Lover.Education education : Lover.Education.values()) {
+			Element educationElement = document.createElement("education");
+			educationElement.setTextContent(
+				messageSource.getMessage(
+					education.toString(),
+					null,
+					locale
+				));
+			educationElement.setAttribute(
+				"educationEnum", education.toString()
+			);
+			if (Objects.equals(me.getEducation(), education)) {
+				educationElement.setAttribute(
+					"educationSelected", ""
+				);
+			}
+			loverElement.appendChild(educationElement);
+		}
+
+		for (Lover.Marriage marriage : Lover.Marriage.values()) {
+			Element marriageElement = document.createElement("marriage");
+			marriageElement.setTextContent(
+				messageSource.getMessage(
+					marriage.toString(),
+					null,
+					locale
+				));
+			marriageElement.setAttribute(
+				"marriageEnum", marriage.toString()
+			);
+			if (Objects.equals(me.getMarriage(), marriage)) {
+				marriageElement.setAttribute(
+					"marriageSelected", ""
+				);
+			}
+			loverElement.appendChild(marriageElement);
+		}
+
+		for (Lover.Smoking smoking : Lover.Smoking.values()) {
+			Element smokingElement = document.createElement("smoking");
+			smokingElement.setTextContent(
+				messageSource.getMessage(
+					smoking.toString(),
+					null,
+					locale
+				));
+			smokingElement.setAttribute(
+				"smokingEnum", smoking.toString()
+			);
+			if (Objects.equals(me.getSmoking(), smoking)) {
+				smokingElement.setAttribute(
+					"smokingSelected", ""
+				);
+			}
+			loverElement.appendChild(smokingElement);
+		}
+
+		for (Lover.Drinking drinking : Lover.Drinking.values()) {
+			Element drinkingElement = document.createElement("drinking");
+			drinkingElement.setTextContent(
+				messageSource.getMessage(
+					drinking.toString(),
+					null,
+					locale
+				));
+			drinkingElement.setAttribute(
+				"drinkingEnum", drinking.toString()
+			);
+			if (Objects.equals(me.getDrinking(), drinking)) {
+				drinkingElement.setAttribute(
+					"drinkingSelected", ""
+				);
+			}
+			loverElement.appendChild(drinkingElement);
+		}
 
 		ModelAndView modelAndView = new ModelAndView("editProfile");
 		modelAndView.getModelMap().addAttribute(document);
@@ -861,39 +936,88 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/me.asp")
 	@Secured({"ROLE_YONGHU"})
-	String editProfile(Authentication authentication, Locale locale) {
+	@ResponseBody
+	String editProfile(Lover model, Authentication authentication, Locale locale,
+		@RequestParam(name = "birth", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date birthday) {
 
-		return null;
-	}
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
 
-	/**
-	 * 相片管理頁面
-	 *
-	 * @param authentication
-	 * @param locale
-	 * @return
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 */
-	@GetMapping(path = "/album.asp")
-	@Secured({"ROLE_YONGHU"})
-	ModelAndView album(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return new ModelAndView("redirect:/");
+		if (!Objects.isNull(model.getNickname())) {
+			me.setNickname(model.getNickname());
 		}
 
-		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.signUp",
-			null,
-			locale
-		));
+		if (!Objects.isNull(birthday)) {
+			ZonedDateTime birth = ZonedDateTime.of(
+				LocalDate.ofInstant(
+					birthday.toInstant(),
+					Servant.ZONE_ID_TAIPEI
+				),
+				LocalTime.MIN,
+				Servant.ZONE_ID_TAIPEI
+			);
+			birthday.setTime(birth.toEpochSecond() * 1000);
+			me.setBirthday(birthday);
+		}
 
-		ModelAndView modelAndView = new ModelAndView("album");
-		modelAndView.getModelMap().addAttribute(document);
-		return modelAndView;
+		if (!Objects.isNull(model.getHeight())) {
+			me.setHeight(model.getHeight());
+		}
+
+		if (!Objects.isNull(model.getWeight())) {
+			me.setWeight(model.getWeight());
+		}
+
+		if (!Objects.isNull(model.getOccupation())) {
+			me.setOccupation(model.getOccupation());
+		}
+
+		if (!Objects.isNull(model.getLineID())) {
+			me.setLineID(model.getLineID());
+		}
+
+		if (!Objects.isNull(model.getBodyType())) {
+			me.setBodyType(model.getBodyType());
+		}
+
+		if (!Objects.isNull(model.getEducation())) {
+			me.setEducation(model.getEducation());
+		}
+
+		if (!Objects.isNull(model.getMarriage())) {
+			me.setMarriage(model.getMarriage());
+		}
+
+		if (!Objects.isNull(model.getSmoking())) {
+			me.setSmoking(model.getSmoking());
+		}
+
+		if (!Objects.isNull(model.getDrinking())) {
+			me.setDrinking(model.getDrinking());
+		}
+
+		if (!Objects.isNull(model.getIntroduction())) {
+			String introduction = model.getIntroduction().replaceAll("(\r\n|\n)", "<br>");
+			me.setIntroduction(introduction);
+		}
+
+		if (!Objects.isNull(model.getIdealType())) {
+			String idealType = model.getIdealType().replaceAll("(\r\n|\n)", "<br>");
+			me.setIdealType(idealType);
+		}
+
+		if (!Objects.isNull(model.getHello())) {
+			me.setHello(model.getHello());
+		}
+
+		loverRepository.saveAndFlush(me);
+
+		return new JavaScriptObjectNotation().
+			withReason("Update successfully").
+			withResponse(true).
+			toJSONObject().toString();
 	}
 
 	/**
@@ -918,10 +1042,17 @@ public class WelcomeController {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.signUp",
+			"title.favorite",
 			null,
 			locale
 		));
+
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"signIn",
+				authentication.getName()
+			);
+		}
 
 		ModelAndView modelAndView = new ModelAndView("favorite");
 		modelAndView.getModelMap().addAttribute(document);
@@ -950,12 +1081,66 @@ public class WelcomeController {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.signUp",
+			"title.looksMe",
 			null,
 			locale
 		));
 
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"signIn",
+				authentication.getName()
+			);
+		}
+
 		ModelAndView modelAndView = new ModelAndView("looksMe");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
+	 * 相片管理頁面
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/album.asp")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView album(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		if (servant.isNull(authentication)) {
+			return new ModelAndView("redirect:/");
+		}
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.album",
+			null,
+			locale
+		));
+
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"signIn",
+				authentication.getName()
+			);
+		}
+
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		if (!Objects.isNull(me.getPhoto())) {
+			Element photoElement = document.createElement("photo");
+			photoElement.setTextContent(me.getPhoto());
+			documentElement.appendChild(photoElement);
+		}
+
+		ModelAndView modelAndView = new ModelAndView("album");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}
@@ -975,24 +1160,31 @@ public class WelcomeController {
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
 	String upload(Authentication authentication, Locale locale,
-		@RequestParam("file") MultipartFile file)
+		@RequestParam("file") MultipartFile multipartFile)
 		throws SAXException, IOException, ParserConfigurationException {
+
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
 
 		String fileUrl = null;
 		try {
-			File f = new File(TEMP_DIRECTORY, Long.toString(
+
+			File file = new File(TEMP_DIRECTORY, Long.toString(
 				System.currentTimeMillis()
 			));
-			fileUrl = "https://www.youngme.vip/yuepao/" + file.getOriginalFilename();
-			file.transferTo(f);
+			fileUrl = "https://www.youngme.vip/profilePhoto/" + me.getIdentifier().toString();
+			multipartFile.transferTo(file);
 			s3client.putObject(
 				new PutObjectRequest(
-					BUCKET_NAME + "/yuepao",
-					file.getOriginalFilename(),
-					f
+					BUCKET_NAME + "/profilePhoto",
+					me.getIdentifier().toString(),
+					file
 				)
 			);
-			f.delete();
+			file.delete();
+			me.setPhoto(fileUrl);
+			loverRepository.saveAndFlush(me);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1012,8 +1204,16 @@ public class WelcomeController {
 	@ResponseBody
 	String deleteFile(Authentication authentication, Locale locale,
 		@RequestParam String index) {
+
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
 		DeleteObjectRequest deleteObjectRequest
-			= new DeleteObjectRequest(BUCKET_NAME + "/yuepao", index + ".jpg");
+			= new DeleteObjectRequest(
+				BUCKET_NAME + "/profilePhoto",
+				me.getIdentifier().toString()
+			);
 		s3client.deleteObject(deleteObjectRequest);
 
 		return new JavaScriptObjectNotation().

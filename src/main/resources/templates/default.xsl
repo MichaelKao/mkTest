@@ -42,7 +42,7 @@
 					</BUTTON>
 					<DIV class="collapse navbar-collapse" id="navigation">
 						<UL class="navbar-nav navbar-nav-hover w-100 justify-content-end">
-							<xsl:if test="@me">
+							<xsl:if test="@signIn">
 								<LI class="nav-item dropdown dropdown-hover">
 									<A class="nav-link cursor-pointer text-primary" id="dropdownMenuPages" data-bs-toggle="dropdown">
 										<SPAN class="me-1">會員</SPAN>
@@ -76,7 +76,7 @@
 							</xsl:if>
 							<LI class="nav-item">
 								<xsl:choose>
-									<xsl:when test="@me">
+									<xsl:when test="@signIn">
 										<A class="nav-link nav-link-icon" href="/signOut.asp">
 											<SPAN>登出</SPAN>
 										</A>

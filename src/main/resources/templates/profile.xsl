@@ -65,43 +65,60 @@
 					<SPAN aria-hidden="true" class="carousel-control-next-icon"></SPAN>
 					<SPAN class="visually-hidden">Next</SPAN>
 				</BUTTON>
-				<A href="/album.asp">
-					<I class="fad fa-camera"></I>
-				</A>
+				<xsl:if test="@me">
+					<A href="/album.asp">
+						<I class="fad fa-camera"></I>
+					</A>
+				</xsl:if>
 			</DIV>
 			<DIV class="d-flex">
-				<DIV class="d-flex justify-content-center justify-content-md-start" id="footer">
-					<DIV>
-						<BUTTON class="btn btn-icon-only btn-link fav" href="https://lin.ee/LJprCs3">
-							<I class="fad fa-heart"></I>
-						</BUTTON>
-					</DIV>
-					<DIV class="mx-2">
-						<BUTTON class="btn btn-icon-only btn-link mx-4 ms-md-3" href="https://lin.ee/LJprCs3">
-							<I class="fad fa-comment-plus"></I>
-						</BUTTON>
-					</DIV>
-				</DIV>
-				<DIV class="ms-md-auto">
-					<A class="btn btn-icon-only btn-link mx-md-4" href="/me.asp">
-						<I class="fad fa-pen"></I>
-					</A>
-				</DIV>
+				<xsl:choose>
+					<xsl:when test="not(@me)">
+						<DIV class="d-flex justify-content-center justify-content-md-start" id="footer">
+							<DIV>
+								<BUTTON class="btn btn-icon-only btn-link fav" href="https://lin.ee/LJprCs3">
+									<I class="fad fa-heart"></I>
+								</BUTTON>
+							</DIV>
+							<DIV class="mx-2">
+								<BUTTON class="btn btn-icon-only btn-link mx-4 ms-md-3" href="https://lin.ee/LJprCs3">
+									<I class="fad fa-comment-plus"></I>
+								</BUTTON>
+							</DIV>
+						</DIV>
+					</xsl:when>
+					<xsl:otherwise>
+						<DIV class="ms-md-auto">
+							<A class="btn btn-icon-only btn-link mx-md-4" href="/me.asp">
+								<I class="fad fa-pen"></I>
+							</A>
+						</DIV>
+					</xsl:otherwise>
+				</xsl:choose>
 			</DIV>
 		</DIV>
 		<DIV class="col-md-4 ms-4">
-			<H3 class="text-primary">
-				<xsl:value-of select="@nickName"/>
-				<SPAN class="text-dark ms-3 text-lg">
+			<DIV class="d-flex align-items-center">
+				<H3 class="text-primary me-2">
+					<xsl:value-of select="@nickname"/>
+				</H3>
+				<DIV class="text-dark text-bold mx-1">
 					<xsl:value-of select="@location"/>
-				</SPAN>
-				<SPAN class="text-dark ms-3 text-lg">
+				</DIV>
+				<DIV class="text-dark text-bold mx-1">
 					<xsl:value-of select="@age"/>
-				</SPAN>
-				<SPAN class="text-dark ms-3 text-lg">
+				</DIV>
+				<DIV class="text-dark text-bold mx-1">
 					<xsl:value-of select="@gender"/>
-				</SPAN>
-			</H3>
+				</DIV>
+			</DIV>
+			<DIV class="d-flex align-items-center">
+				<DIV class="text-dark text-bold mx-1">上一次上線</DIV>
+				<DIV class="text-primary text-bold mx-1">
+					<xsl:value-of select="@active"/>
+				</DIV>
+				
+			</DIV>
 			<HR class="horizontal dark my-4"/>
 			<DIV class="mb-2">
 				<SPAN class="font-weight-bold text-lg">身高：</SPAN>
@@ -125,30 +142,46 @@
 			</DIV>
 			<DIV class="mb-2">
 				<SPAN class="font-weight-bold text-lg">學歷：</SPAN>
-				<SPAN>大專以上</SPAN>
+				<SPAN>
+					<xsl:value-of select="@education"/>
+				</SPAN>
 			</DIV>
 			<DIV class="mb-2">
 				<SPAN class="font-weight-bold text-lg">婚姻狀態：</SPAN>
-				<SPAN>單身</SPAN>
+				<SPAN>
+					<xsl:value-of select="@marriage"/>
+				</SPAN>
+			</DIV>
+			<DIV class="mb-2">
+				<SPAN class="font-weight-bold text-lg">職業：</SPAN>
+				<SPAN>
+					<xsl:value-of select="@occupation"/>
+				</SPAN>
 			</DIV>
 			<DIV class="mb-2">
 				<SPAN class="font-weight-bold text-lg">抽菸習慣：</SPAN>
-				<SPAN>偶爾</SPAN>
+				<SPAN>
+					<xsl:value-of select="@smoking"/>
+				</SPAN>
 			</DIV>
 			<DIV class="mb-2">
 				<SPAN class="font-weight-bold text-lg">飲酒習慣：</SPAN>
-				<SPAN>偶爾</SPAN>
+				<SPAN>
+					<xsl:value-of select="@drinking"/>
+				</SPAN>
 			</DIV>
 			<HR class="horizontal dark my-4"/>
 			<DIV class="mb-2">
 				<DIV class="font-weight-bold text-lg">關於我：</DIV>
-				<DIV>
+				<DIV class="introduction">
 					<xsl:value-of select="@intro"/>
 				</DIV>
 			</DIV>
 			<DIV class="mb-2">
 				<DIV class="font-weight-bold text-lg">理想中的約會對象：</DIV>
-				<DIV>好相處<br/>可依靠<br/>你情我願</DIV>
+				<DIV class="idealType">
+					<xsl:value-of select="@idealType"/>
+				</DIV>
 			</DIV>
 		</DIV>
 	</xsl:template>

@@ -6,7 +6,6 @@ $(document).ready(function () {
 			$(form).attr('action'),
 			$(form).serialize(),
 			function (data) {
-				console.log(data);
 				if (data.response) {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');
@@ -19,7 +18,7 @@ $(document).ready(function () {
 				}
 			},
 			'json'
-		);
+			);
 		return false;
 	});
 });

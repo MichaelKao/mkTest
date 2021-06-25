@@ -4,6 +4,7 @@ import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -30,6 +31,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import tw.musemodel.dingzhiqingren.entity.Activation;
 import tw.musemodel.dingzhiqingren.entity.Country;
 import tw.musemodel.dingzhiqingren.entity.LineUserProfile;
@@ -346,5 +349,175 @@ public class LoverService {
 			string,
 			expiry
 		));
+	}
+
+	public Element loverElement(Element loverElement, Lover lover, Locale locale) {
+
+		if (!Objects.isNull(lover.getLocation())) {
+			loverElement.setAttribute(
+				"location",
+				messageSource.getMessage(
+					lover.getLocation().getCity(),
+					null,
+					locale
+				));
+		}
+
+		if (!Objects.isNull(lover.getNickname())) {
+			loverElement.setAttribute(
+				"nickname",
+				lover.getNickname()
+			);
+		}
+
+		if (!Objects.isNull(lover.getBirthday())) {
+			loverElement.setAttribute(
+				"age",
+				servant.getAgeByBirth(
+					lover.getBirthday()).toString()
+			);
+			loverElement.setAttribute(
+				"birthday",
+				DateTimeFormatter.ofPattern("yyyy-MM-dd").format(
+					servant.toTaipeiZonedDateTime(
+						lover.getBirthday()
+					).withZoneSameInstant(Servant.ZONE_ID_TAIPEI)
+				)
+			);
+		}
+
+		if (!Objects.isNull(lover.getGender())) {
+			loverElement.setAttribute(
+				"gender",
+				lover.getGender() ? messageSource.getMessage(
+				"gender.male",
+				null,
+				locale
+			) : messageSource.getMessage(
+				"gender.female",
+				null,
+				locale
+			));
+		}
+
+		if (!Objects.isNull(lover.getPhoto())) {
+			loverElement.setAttribute(
+				"photo",
+				lover.getPhoto()
+			);
+		}
+
+		if (!Objects.isNull(lover.getIntroduction())) {
+			String introduction = lover.getIntroduction();
+			loverElement.setAttribute(
+				"intro",
+				introduction
+			);
+		}
+
+		if (!Objects.isNull(lover.getBodyType())) {
+			loverElement.setAttribute(
+				"bodyType",
+				messageSource.getMessage(
+					lover.getBodyType().toString(),
+					null,
+					locale
+				));
+		}
+
+		if (!Objects.isNull(lover.getHeight())) {
+			loverElement.setAttribute(
+				"height",
+				lover.getHeight().toString()
+			);
+		}
+
+		if (!Objects.isNull(lover.getWeight())) {
+			loverElement.setAttribute(
+				"weight",
+				lover.getWeight().toString()
+			);
+		}
+
+		if (!Objects.isNull(lover.getEducation())) {
+			loverElement.setAttribute(
+				"education",
+				messageSource.getMessage(
+					lover.getEducation().toString(),
+					null,
+					locale
+				));
+		}
+
+		if (!Objects.isNull(lover.getMarriage())) {
+			loverElement.setAttribute(
+				"marriage",
+				messageSource.getMessage(
+					lover.getMarriage().toString(),
+					null,
+					locale
+				));
+		}
+
+		if (!Objects.isNull(lover.getOccupation())) {
+			loverElement.setAttribute(
+				"occupation",
+				lover.getOccupation()
+			);
+		}
+
+		if (!Objects.isNull(lover.getSmoking())) {
+			loverElement.setAttribute(
+				"smoking",
+				messageSource.getMessage(
+					lover.getSmoking().toString(),
+					null,
+					locale
+				));
+		}
+
+		if (!Objects.isNull(lover.getDrinking())) {
+			loverElement.setAttribute(
+				"drinking",
+				messageSource.getMessage(
+					lover.getDrinking().toString(),
+					null,
+					locale
+				));
+		}
+
+		if (!Objects.isNull(lover.getIdealType())) {
+			loverElement.setAttribute(
+				"idealType",
+				lover.getIdealType()
+			);
+		}
+
+		if (!Objects.isNull(lover.getLineID())) {
+			loverElement.setAttribute(
+				"lineLink",
+				lover.getLineID()
+			);
+		}
+
+		if (!Objects.isNull(lover.getHello())) {
+			loverElement.setAttribute(
+				"hello",
+				lover.getHello()
+			);
+		}
+
+		if (!Objects.isNull(lover.getActive())) {
+			loverElement.setAttribute(
+				"active",
+				Servant.ZHONG_HUA_MIN_ZU.format(
+					servant.toTaipeiZonedDateTime(
+						lover.getActive()
+					).withZoneSameInstant(Servant.ZONE_ID_TAIPEI)
+				).replaceAll("\\+\\d{2}$", "")
+			);
+		}
+
+		return loverElement;
 	}
 }
