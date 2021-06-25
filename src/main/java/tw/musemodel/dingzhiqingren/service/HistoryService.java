@@ -1,12 +1,10 @@
 package tw.musemodel.dingzhiqingren.service;
 
-import java.util.Locale;
 import java.util.Objects;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tw.musemodel.dingzhiqingren.entity.History;
@@ -26,9 +24,6 @@ public class HistoryService {
 	private final static Logger LOGGER = LoggerFactory.getLogger(HistoryService.class);
 
 	@Autowired
-	private MessageSource messageSource;
-
-	@Autowired
 	private HistoryRepository historyRepository;
 
 	/**
@@ -37,17 +32,17 @@ public class HistoryService {
 	public static final Behavior BEHAVIOR_CHARGED = Behavior.CHU_ZHI;
 
 	/**
-	 * 历程：车马费行为
+	 * 历程：车马费(男对女)行为
 	 */
 	public static final Behavior BEHAVIOR_FARE = Behavior.CHE_MA_FEI;
 
 	/**
-	 * 历程：打招呼行为
+	 * 历程：打招呼(女对男)行为
 	 */
 	public static final Behavior BEHAVIOR_GREETING = Behavior.DA_ZHAO_HU;
 
 	/**
-	 * 历程：给我赖行为
+	 * 历程：给我赖(男对女)行为
 	 */
 	public static final Behavior BEHAVIOR_INVITE_ME_AS_LINE_FRIEND = Behavior.JI_WO_LAI;
 
@@ -62,26 +57,64 @@ public class HistoryService {
 	public static final Behavior BEHAVIOR_PEEK = Behavior.KAN_GUO_WO;
 
 	/**
+	 * 打招呼(女对男)
+	 *
+	 * @param initiative 女生
+	 * @param passive 男生
+	 * @param greetingMessage 招呼语
+	 * @return 杰森对象
+	 */
+	@Transactional
+	public JSONObject greet(Lover initiative, Lover passive, String greetingMessage) {
+		if (Objects.isNull(initiative)) {
+			throw new IllegalArgumentException("greet.initiativeMustntBeNull");
+		}
+		if (Objects.isNull(passive)) {
+			throw new IllegalArgumentException("greet.passiveMustntBeNull");
+		}
+		if (Objects.equals(initiative.getGender(), true)) {
+			throw new RuntimeException("greet.initiativeMustBeFemale");
+		}
+		if (Objects.equals(passive.getGender(), false)) {
+			throw new RuntimeException("greet.passiveMustBeMale");
+		}
+
+		History history = new History(
+			initiative,
+			passive,
+			BEHAVIOR_GREETING
+		);
+		greetingMessage = Objects.isNull(greetingMessage) || greetingMessage.isBlank() ? initiative.getGreeting() : greetingMessage;
+		history.setGreeting(
+			Objects.isNull(greetingMessage) || greetingMessage.isBlank() ? null : greetingMessage.trim()
+		);
+		history = historyRepository.saveAndFlush(history);
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			withResult(history).
+			toJSONObject();
+	}
+
+	/**
 	 * 看过我
 	 *
 	 * @param initiative 谁看了
 	 * @param passive 看了谁
-	 * @param locale 语言环境
 	 * @return 杰森对象
 	 */
 	@Transactional
-	public JSONObject peek(Lover initiative, Lover passive, Locale locale) {
+	public JSONObject peek(Lover initiative, Lover passive) {
 		if (Objects.isNull(initiative)) {
-			throw new IllegalArgumentException("peek.initiative.mustntBeNull");
+			throw new IllegalArgumentException("peek.initiativeMustntBeNull");
 		}
 		if (Objects.isNull(passive)) {
-			throw new IllegalArgumentException("peek.passive.mustntBeNull");
+			throw new IllegalArgumentException("peek.passiveMustntBeNull");
 		}
 		if (Objects.equals(initiative, passive)) {
-			throw new RuntimeException("peek.passive.mustBeDifferent");
+			throw new RuntimeException("peek.mustBeDifferent");
 		}
 		if (Objects.equals(initiative.getGender(), passive.getGender())) {
-			throw new RuntimeException("peek.passive.mustBeStraight");
+			throw new RuntimeException("peek.mustBeStraight");
 		}
 
 		History history = historyRepository.saveAndFlush(new History(

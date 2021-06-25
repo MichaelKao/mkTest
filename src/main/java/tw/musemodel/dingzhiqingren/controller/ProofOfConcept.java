@@ -1,9 +1,7 @@
 package tw.musemodel.dingzhiqingren.controller;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,34 +53,58 @@ public class ProofOfConcept {
 		return historyRepository.findAll();
 	}
 
+	/**
+	 * 打招呼(女对男)
+	 *
+	 * @param male 男生
+	 * @param greetingMessage 招呼语
+	 * @param authentication 用户凭证
+	 * @param locale 语言环境
+	 * @return 杰森对象字符串
+	 */
 	@GetMapping(path = "/greet.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	History greet(@RequestParam Lover from, @RequestParam Lover to, @RequestParam(required = false) String greeting) {
-		History history = new History();
-		history.setInitiative(from);
-		history.setPassive(to);
-		history.setBehavior(History.Behavior.DA_ZHAO_HU);
-		history.setOccurred(new Date(System.currentTimeMillis()));
-		if (Objects.nonNull(greeting)) {
-			history.setGreeting(greeting);
-		} else if (Objects.nonNull(from.getGreeting())) {
-			history.setGreeting(from.getGreeting());
-		}
-		return historyRepository.saveAndFlush(history);
-	}
-
-	@PostMapping(path = "/peek.json", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	String peek(@RequestParam Lover masochism, Authentication authentication, Locale locale) {
+	String greet(@RequestParam("whom") Lover male, @RequestParam(name = "what", required = false) String greetingMessage, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
-			return new JavaScriptObjectNotation().
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover female = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = historyService.greet(
+				female,
+				male,
+				greetingMessage
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
-					"mustBeAuthenticated",
+					exception.getMessage(),
 					null,
 					locale
 				)).
 				withResponse(false).
-				toString();
+				toJSONObject();
+		}
+		return jsonObject.toString();
+	}
+
+	/**
+	 * 看过我
+	 *
+	 * @param masochism 谁被看
+	 * @param authentication 用户凭证
+	 * @param locale 语言环境
+	 * @return 杰森对象字符串
+	 */
+	@PostMapping(path = "/peek.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String peek(@RequestParam Lover masochism, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
 		}
 		Lover sadism = loverService.loadByUsername(
 			authentication.getName()
@@ -92,8 +114,7 @@ public class ProofOfConcept {
 		try {
 			jsonObject = historyService.peek(
 				sadism,
-				masochism,
-				locale
+				masochism
 			);
 		} catch (Exception exception) {
 			jsonObject = new JavaScriptObjectNotation().

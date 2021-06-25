@@ -244,9 +244,10 @@ public class History implements java.io.Serializable {
 		YUE_FEI("YUE_FEI", 1),//月费
 		CHU_ZHI("CHU_ZHI", 2),//充值
 		JI_WO_LAI("JI_WO_LAI", 3),//给我赖
-		DA_ZHAO_HU("DA_ZHAO_HU", 4),//打招呼
-		KAN_GUO_WO("KAN_GUO_WO", 5),//看过我
-		CHE_MA_FEI("CHE_MA_FEI", 6);//车马费
+		JI_NI_LAI("JI_NI_LAI", 4),//给你赖
+		DA_ZHAO_HU("DA_ZHAO_HU", 5),//打招呼
+		KAN_GUO_WO("KAN_GUO_WO", 6),//看过我
+		CHE_MA_FEI("CHE_MA_FEI", 7);//车马费
 
 		private String label;
 
