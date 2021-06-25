@@ -158,6 +158,43 @@ public class ProofOfConcept {
 	}
 
 	/**
+	 * 给你赖(女对男)
+	 *
+	 * @param male 男生
+	 * @param authentication 用户凭证
+	 * @param locale 语言环境
+	 * @return 杰森对象字符串
+	 */
+	@PostMapping(path = "/stalked.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String inviteMeAsLineFriend(@RequestParam("whom") Lover male, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover female = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = historyService.inviteMeAsLineFriend(
+				female,
+				male
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
+	}
+
+	/**
 	 * 看过我
 	 *
 	 * @param masochism 谁被看
