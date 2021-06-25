@@ -62,6 +62,42 @@ public class HistoryService {
 	public static final Behavior BEHAVIOR_PEEK = Behavior.KAN_GUO_WO;
 
 	/**
+	 * 车马费(男对女)
+	 *
+	 * @param initiative 男生
+	 * @param passive 女生
+	 * @param points 点数
+	 * @return 杰森对象
+	 */
+	@Transactional
+	public JSONObject fare(Lover initiative, Lover passive, short points) {
+		if (Objects.isNull(initiative)) {
+			throw new IllegalArgumentException("gimmeYourLineInvitation.initiativeMustntBeNull");
+		}
+		if (Objects.isNull(passive)) {
+			throw new IllegalArgumentException("gimmeYourLineInvitation.passiveMustntBeNull");
+		}
+		if (Objects.equals(initiative.getGender(), false)) {
+			throw new RuntimeException("gimmeYourLineInvitation.initiativeMustBeMale");
+		}
+		if (Objects.equals(passive.getGender(), true)) {
+			throw new RuntimeException("gimmeYourLineInvitation.passiveMustBeFemale");
+		}
+		//TODO:	男生剩余点数够不够？扣除点数！
+		History history = new History(
+			initiative,
+			passive,
+			BEHAVIOR_FARE,
+			points
+		);
+		history = historyRepository.saveAndFlush(history);
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			withResult(history).
+			toJSONObject();
+	}
+
+	/**
 	 * 给我赖(男对女)
 	 *
 	 * @param initiative 男生

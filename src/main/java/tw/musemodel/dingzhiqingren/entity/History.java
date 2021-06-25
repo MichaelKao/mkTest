@@ -98,7 +98,7 @@ public class History implements java.io.Serializable {
 	}
 
 	/**
-	 * 构造器：适用于「给我赖」。
+	 * 构造器：适用于「车马费」、「给我赖」。
 	 *
 	 * @param initiative 主动方
 	 * @param passive 被动方
