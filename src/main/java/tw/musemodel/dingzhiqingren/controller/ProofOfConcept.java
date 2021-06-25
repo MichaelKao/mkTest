@@ -1,6 +1,5 @@
 package tw.musemodel.dingzhiqingren.controller;
 
-import java.util.List;
 import java.util.Locale;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -10,15 +9,12 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
-import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
@@ -44,13 +40,43 @@ public class ProofOfConcept {
 	@Autowired
 	private Servant servant;
 
-	@Autowired
-	HistoryRepository historyRepository;
-
-	@GetMapping(path = "/history.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	/**
+	 * 车马费(男对女)
+	 *
+	 * @param female 女生
+	 * @param points 点数
+	 * @param authentication 用户凭证
+	 * @param locale 语言环境
+	 * @return 杰森对象字符串
+	 */
+	@PostMapping(path = "/fare.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	List<History> history() {
-		return historyRepository.findAll();
+	String fare(@RequestParam("whom") Lover female, @RequestParam(name = "howMany", required = false) short points, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover male = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = historyService.fare(
+				male,
+				female,
+				points
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
 	}
 
 	/**
@@ -62,7 +88,7 @@ public class ProofOfConcept {
 	 * @param locale 语言环境
 	 * @return 杰森对象字符串
 	 */
-	@GetMapping(path = "/greet.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/greet.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	String greet(@RequestParam("whom") Lover male, @RequestParam(name = "what", required = false) String greetingMessage, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
