@@ -3,6 +3,10 @@ package tw.musemodel.dingzhiqingren.service;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -112,4 +116,22 @@ public class Servant {
 		}
 		return age;
 	}
+	
+	/**
+	 * 中华民族日期时间格式化器
+	 */
+	public static final DateTimeFormatter ZHONG_HUA_MIN_ZU = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX");
+	
+	public ZonedDateTime toTaipeiZonedDateTime(Instant instant) {
+		return ZonedDateTime.ofInstant(instant, ZONE_ID_TAIPEI);
+	}
+
+	public ZonedDateTime toTaipeiZonedDateTime(Date date) {
+		return Servant.this.toTaipeiZonedDateTime(date.toInstant());
+	}
+	
+	/**
+	 * 东八区
+	 */
+	public static final ZoneId ZONE_ID_TAIPEI = ZoneId.of("Asia/Taipei");
 }

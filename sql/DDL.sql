@@ -167,7 +167,7 @@ ORDER BY
 "ROLE"."id";
 
 /**
- * 国家
+ * 地区
  */
 CREATE TABLE"yuepao"."di_qu"(
 	"id"serial2 PRIMARY KEY,
@@ -175,7 +175,7 @@ CREATE TABLE"yuepao"."di_qu"(
 );
 COMMENT ON TABLE"yuepao"."di_qu"IS'地区';
 COMMENT ON COLUMN"yuepao"."di_qu"."id"IS'主键';
-COMMENT ON COLUMN"yuepao"."di_qu"."xian_shi_ming"IS'县市名';
+COMMENT ON COLUMN"yuepao"."di_qu"."xian_shi_ming"IS'县市名(i18n 键)';
 --
 INSERT INTO"yuepao"."di_qu"("xian_shi_ming")VALUES
 (E'TAI_BEI'),(E'JI_LONG'),--北基
@@ -229,8 +229,10 @@ CREATE TYPE"yuepao"."yin_jiu"AS ENUM(
 COMMENT ON TYPE"yuepao"."yin_jiu"IS'饮酒';
 
 ALTER TABLE"yuepao"."qing_ren"
+ADD COLUMN"huo_yue"timestamptz,--活跃
+ADD COLUMN"dao_qi"timestamptz,--到期
 ADD COLUMN"di_qu"int2 REFERENCES"yuepao"."di_qu"("id")ON DELETE RESTRICT ON UPDATE CASCADE,--地区
-ADD COLUMN"ni_cheng"varchar,--暱稱
+ADD COLUMN"ni_cheng"varchar,--昵称
 ADD COLUMN"sheng_ri"date,--生日
 ADD COLUMN"xing_bie"bool,--性别
 ADD COLUMN"da_tou"text,--大头
@@ -246,8 +248,10 @@ ADD COLUMN"chou_yan" "yuepao"."chou_yan",--抽烟
 ADD COLUMN"yin_jiu" "yuepao"."yin_jiu",--饮酒
 ADD COLUMN"tian_jia_hao_you"text,--添加好友
 ADD COLUMN"li_xiang_dui_xiang"text;--理想对象
+COMMENT ON COLUMN"yuepao"."qing_ren"."huo_yue"IS'活跃';
+COMMENT ON COLUMN"yuepao"."qing_ren"."dao_qi"IS'到期';
 COMMENT ON COLUMN"yuepao"."qing_ren"."di_qu"IS'地区';
-COMMENT ON COLUMN"yuepao"."qing_ren"."ni_cheng"IS'暱稱';
+COMMENT ON COLUMN"yuepao"."qing_ren"."ni_cheng"IS'昵称';
 COMMENT ON COLUMN"yuepao"."qing_ren"."sheng_ri"IS'生日';
 COMMENT ON COLUMN"yuepao"."qing_ren"."xing_bie"IS'性别';
 COMMENT ON COLUMN"yuepao"."qing_ren"."da_tou"IS'大头';
@@ -264,6 +268,12 @@ COMMENT ON COLUMN"yuepao"."qing_ren"."yin_jiu"IS'饮酒';
 COMMENT ON COLUMN"yuepao"."qing_ren"."tian_jia_hao_you"IS'添加好友';
 COMMENT ON COLUMN"yuepao"."qing_ren"."li_xiang_dui_xiang"IS'理想对象';
 
-ALTER TABLE"yuepao"."qing_ren"
-ADD COLUMN"huo_yue"timestamptz;
-COMMENT ON COLUMN"yuepao"."qing_ren"."huo_yue"IS'活跃';
+/**
+ * 绿界
+ */
+CREATE TABLE"lu_jie"(
+	"id"serial8 PRIMARY KEY
+);
+COMMENT ON TABLE"lu_jie"IS'绿界';
+COMMENT ON COLUMN"lu_jie"."id"IS'主键';
+

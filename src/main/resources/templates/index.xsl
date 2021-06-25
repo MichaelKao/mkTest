@@ -38,7 +38,7 @@
 								<P class="lead text-white mt-3">平台真人管理，會員有驗證，收入有證明。我們嚴選有經濟能力的成功男士，讓女孩們能夠在這裡找到自己的夢想與幸福。提供最高度的個人隱私，讓您不必拐彎抹角，安心地找尋一段最理想的幸福關係。</P>
 							</DIV>
 						</DIV>
-						<xsl:if test="not(@me)">
+						<xsl:if test="not(@signIn)">
 							<DIV>
 								<A class="btn btn-dark mx-2" href="/signIn.asp">登入</A>
 								<A class="btn btn-dark mx-2" href="/signUp.asp">註冊</A>
