@@ -77,10 +77,10 @@ public class HistoryService {
 		if (Objects.isNull(passive)) {
 			throw new IllegalArgumentException("gimmeYourLineInvitation.passiveMustntBeNull");
 		}
-		if (Objects.equals(initiative.getGender(), true)) {
+		if (Objects.equals(initiative.getGender(), false)) {
 			throw new RuntimeException("gimmeYourLineInvitation.initiativeMustBeMale");
 		}
-		if (Objects.equals(passive.getGender(), false)) {
+		if (Objects.equals(passive.getGender(), true)) {
 			throw new RuntimeException("gimmeYourLineInvitation.passiveMustBeFemale");
 		}
 
