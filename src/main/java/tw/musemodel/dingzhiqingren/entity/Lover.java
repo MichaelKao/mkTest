@@ -168,7 +168,7 @@ public class Lover implements java.io.Serializable {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JsonManagedReference
 	private Collection<Role> roles;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "lover")
 	@JsonBackReference
 	private Collection<Picture> pictures;
@@ -602,7 +602,7 @@ public class Lover implements java.io.Serializable {
 	public void setPictures(Collection<Picture> pictures) {
 		this.pictures = pictures;
 	}
-	
+
 	/**
 	 * 体型
 	 *

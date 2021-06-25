@@ -14,8 +14,8 @@ import tw.musemodel.dingzhiqingren.entity.Picture;
  */
 @Repository
 public interface PictureRepository extends JpaRepository<Picture, Integer> {
-	
+
 	public List<Picture> findByLover(Lover lover);
-	
-	public Picture findByIdentifier(UUID identifier);
+
+	public Picture findOneByIdentifier(UUID identifier);
 }

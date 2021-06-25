@@ -54,7 +54,7 @@ public class Picture implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "shi_chuo", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date time;
+	private Date occurred;
 
 	/**
 	 * 默认构造器
@@ -132,16 +132,14 @@ public class Picture implements Serializable {
 	/**
 	 * @return 時戳
 	 */
-	public Date getTime() {
-		return time;
+	public Date getOccurred() {
+		return occurred;
 	}
 
 	/**
-	 * @param time 時戳
+	 * @param occurred 時戳
 	 */
-	public void setTime(Date time) {
-		this.time = time;
+	public void setOccurred(Date occurred) {
+		this.occurred = occurred;
 	}
-
-	
 }
