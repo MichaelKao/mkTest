@@ -9,7 +9,7 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.EnumType;
 
 /**
- * @author p@musemodel.tw
+ * @author m@musemodel.tw
  */
 public class PostgreSQLEnumType extends EnumType {
 
@@ -20,7 +20,11 @@ public class PostgreSQLEnumType extends EnumType {
 		if (Objects.isNull(value)) {
 			preparedStatement.setNull(index, Types.OTHER);
 		} else {
-			preparedStatement.setObject(index, value.toString(), Types.OTHER);
+			preparedStatement.setObject(
+				index,
+				value.toString(),
+				Types.OTHER
+			);
 		}
 	}
 }
