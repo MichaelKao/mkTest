@@ -80,6 +80,21 @@ public class History implements java.io.Serializable {
 	 * 默认构造器
 	 */
 	public History() {
+		occurred = new Date(System.currentTimeMillis());
+	}
+
+	/**
+	 * 构造器：适用于「看过我」。
+	 *
+	 * @param initiative 主动方
+	 * @param passive 被动方
+	 * @param behavior 行为
+	 */
+	public History(Lover initiative, Lover passive, Behavior behavior) {
+		this();
+		this.initiative = initiative;
+		this.passive = passive;
+		this.behavior = behavior;
 	}
 
 	@Override
@@ -226,12 +241,12 @@ public class History implements java.io.Serializable {
 	 */
 	public enum Behavior {
 
-		YUE_FEI("YUE_FEI", 1),
-		CHU_ZHI("CHU_ZHI", 2),
-		JI_WO_LAI("JI_WO_LAI", 3),
-		DA_ZHAO_HU("DA_ZHAO_HU", 4),
-		KAN_GUO_WO("KAN_GUO_WO", 5),
-		CHE_MA_FEI("CHE_MA_FEI", 6);
+		YUE_FEI("YUE_FEI", 1),//月费
+		CHU_ZHI("CHU_ZHI", 2),//充值
+		JI_WO_LAI("JI_WO_LAI", 3),//给我赖
+		DA_ZHAO_HU("DA_ZHAO_HU", 4),//打招呼
+		KAN_GUO_WO("KAN_GUO_WO", 5),//看过我
+		CHE_MA_FEI("CHE_MA_FEI", 6);//车马费
 
 		private String label;
 
