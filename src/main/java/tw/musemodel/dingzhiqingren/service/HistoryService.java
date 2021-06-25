@@ -83,7 +83,7 @@ public class HistoryService {
 		if (Objects.equals(passive.getGender(), true)) {
 			throw new RuntimeException("gimmeYourLineInvitation.passiveMustBeFemale");
 		}
-
+		//TODO:	男生剩余点数够不够？扣除点数！
 		History history = new History(
 			initiative,
 			passive,
@@ -133,6 +133,46 @@ public class HistoryService {
 		history.setGreeting(
 			Objects.isNull(greetingMessage) || greetingMessage.isBlank() ? null : greetingMessage.trim()
 		);
+		history = historyRepository.saveAndFlush(history);
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			withResult(history).
+			toJSONObject();
+	}
+
+	/**
+	 * 给你赖(女对男)
+	 *
+	 * @param initiative 女生
+	 * @param passive 男生
+	 * @return 杰森对象
+	 */
+	@Transactional
+	public JSONObject inviteMeAsLineFriend(Lover initiative, Lover passive) {
+		if (Objects.isNull(initiative)) {
+			throw new IllegalArgumentException("inviteMeAsLineFriend.initiativeMustntBeNull");
+		}
+		if (Objects.isNull(passive)) {
+			throw new IllegalArgumentException("inviteMeAsLineFriend.passiveMustntBeNull");
+		}
+		if (Objects.equals(initiative.getGender(), true)) {
+			throw new RuntimeException("inviteMeAsLineFriend.initiativeMustBeFemale");
+		}
+		if (Objects.equals(passive.getGender(), false)) {
+			throw new RuntimeException("inviteMeAsLineFriend.passiveMustBeMale");
+		}
+		//TODO:	男生有要求过吗？女生已给过吗？
+		String inviteMeAsLineFriend = initiative.getInviteMeAsLineFriend();
+		if (Objects.isNull(inviteMeAsLineFriend) || inviteMeAsLineFriend.isBlank()) {
+			throw new RuntimeException("inviteMeAsLineFriend.mustntBeNull");
+		}
+
+		History history = new History(
+			initiative,
+			passive,
+			BEHAVIOR_INVITE_ME_AS_LINE_FRIEND
+		);
+		history.setGreeting(inviteMeAsLineFriend);
 		history = historyRepository.saveAndFlush(history);
 		return new JavaScriptObjectNotation().
 			withResponse(true).
