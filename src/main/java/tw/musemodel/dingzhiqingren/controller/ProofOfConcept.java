@@ -51,7 +51,7 @@ public class ProofOfConcept {
 	 */
 	@PostMapping(path = "/fare.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String fare(@RequestParam("whom") Lover female, @RequestParam(name = "howMany", required = false) short points, Authentication authentication, Locale locale) {
+	String fare(@RequestParam("whom") Lover female, @RequestParam(name = "howMany") short points, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -65,6 +65,45 @@ public class ProofOfConcept {
 				male,
 				female,
 				points
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
+	}
+
+	/**
+	 * 给我赖(男对女)
+	 *
+	 * @param female 女生
+	 * @param greetingMessage 招呼语
+	 * @param authentication 用户凭证
+	 * @param locale 语言环境
+	 * @return 杰森对象字符串
+	 */
+	@PostMapping(path = "/stalking.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String gimmeYourLineInvitation(@RequestParam("whom") Lover female, @RequestParam(name = "what", required = false) String greetingMessage, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover male = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = historyService.gimmeYourLineInvitation(
+				male,
+				female,
+				greetingMessage
 			);
 		} catch (Exception exception) {
 			jsonObject = new JavaScriptObjectNotation().
