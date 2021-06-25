@@ -277,7 +277,6 @@ CREATE TABLE"lu_jie"(
 COMMENT ON TABLE"lu_jie"IS'绿界';
 COMMENT ON COLUMN"lu_jie"."id"IS'主键';
 
-<<<<<<< HEAD
 /**
  * 生活照
  */
@@ -293,7 +292,6 @@ COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."qing_ren"IS'情人';
 COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."shi_bie_ma"IS'識別碼';
 COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."shi_chuo"IS'時戳';
 
-=======
 CREATE TYPE"xing_wei"AS ENUM(
 	'YUE_FEI',--月费
 	'CHU_ZHI',--储值
@@ -327,4 +325,3 @@ COMMENT ON COLUMN"yuepao"."li_cheng"."shi_chuo"IS'时戳';
 COMMENT ON COLUMN"yuepao"."li_cheng"."dian_shu"IS'点数';
 COMMENT ON COLUMN"yuepao"."li_cheng"."lu_jie"IS'绿界';
 COMMENT ON COLUMN"yuepao"."li_cheng"."zhao_hu_yu"IS'招呼语';
->>>>>>> feature-inpay2
