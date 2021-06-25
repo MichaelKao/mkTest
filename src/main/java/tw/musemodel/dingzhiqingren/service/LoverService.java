@@ -6,8 +6,6 @@ import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -193,6 +191,24 @@ public class LoverService {
 			withRedirect("/me.asp").
 			withResponse(true).
 			toJSONObject();
+	}
+
+	@Transactional(readOnly = true)
+	public Integer calculateAge(Lover lover) {
+		if (Objects.isNull(lover)) {
+			throw new RuntimeException("calculateAge.loverMustntBeNull");
+		}
+
+		Date birthday = lover.getBirthday();
+		if (Objects.isNull(birthday)) {
+			throw new RuntimeException("calculateAge.birthdayMustntBeNull");
+		}
+
+		Calendar birth = new GregorianCalendar(), today;
+		today = new GregorianCalendar();
+		birth.setTime(birthday);
+
+		return today.get(Calendar.YEAR) - birth.get(Calendar.YEAR);
 	}
 
 	@Transactional(readOnly = true)
@@ -416,7 +432,7 @@ public class LoverService {
 		Date birth = lover.getBirthday();
 		if (Objects.nonNull(birth)) {
 			Element ageElement = document.createElement("age");
-			ageElement.setTextContent(getAgeByBirth(birth).toString());
+			ageElement.setTextContent(calculateAge(lover).toString());
 			loverElement.appendChild(ageElement);
 		}
 
@@ -715,36 +731,5 @@ public class LoverService {
 		}
 
 		return document;
-	}
-
-	/**
-	 * 生日計算年齡
-	 *
-	 * @param birthday
-	 * @return
-	 */
-	public Integer getAgeByBirth(Date birthday) {
-
-		Calendar cal = Calendar.getInstance();
-		Calendar bir = Calendar.getInstance();
-		bir.setTime(birthday);
-		if (cal.before(birthday)) {
-			throw new IllegalArgumentException("日期大於今日");
-		}
-
-		int yearNow = cal.get(Calendar.YEAR);
-		int monthNow = cal.get(Calendar.MONTH);
-		int dayNow = cal.get(Calendar.DAY_OF_MONTH);
-
-		int yearBirth = bir.get(Calendar.YEAR);
-		int monthBirth = bir.get(Calendar.MONTH);
-		int dayBirth = bir.get(Calendar.DAY_OF_MONTH);
-
-		int age = yearNow - yearBirth;
-
-		if (monthNow < monthBirth || (monthNow == monthBirth && dayNow < dayBirth)) {
-			age--;
-		}
-		return age;
 	}
 }

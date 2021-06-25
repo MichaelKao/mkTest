@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import tw.musemodel.dingzhiqingren.entity.History;
 
 /**
- * 历程
+ * 数据访问对象：历程
  *
  * @author p@musemodel.tw
  */
