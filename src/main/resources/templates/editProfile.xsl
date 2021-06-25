@@ -48,29 +48,29 @@
 				<DIV class="row mt-3">
 					<DIV class="col-md-12 mb-3">
 						<LABEL for="nickname">暱稱</LABEL>
-						<INPUT class="form-control" id="nickname" name="nickname" type="text" value="{@nickname}"/>
+						<INPUT class="form-control" id="nickname" name="nickname" type="text" value="{nickname}"/>
 					</DIV>
 					<DIV class="form-group">
 						<LABEL for="birth">生日</LABEL>
-						<INPUT class="form-control datetimepicker" id="birth" name="birth" readonly="" required="" type="text" value="{@birthday}"/>
+						<INPUT class="form-control datetimepicker" id="birth" name="birth" readonly="" required="" type="text" value="{birthday}"/>
 					</DIV>
 					<DIV class="d-flex">
 						<DIV class="col-6 mb-3 pe-1">
 							<LABEL for="height">身高</LABEL>
-							<INPUT class="form-control" id="height" name="height" type="text" value="{@height}"/>
+							<INPUT class="form-control" id="height" name="height" type="text" value="{height}"/>
 						</DIV>
 						<DIV class="col-6 mb-3 ps-1">
 							<LABEL for="weight">體重</LABEL>
-							<INPUT class="form-control" id="weight" name="weight" type="text" value="{@weight}"/>
+							<INPUT class="form-control" id="weight" name="weight" type="text" value="{weight}"/>
 						</DIV>
 					</DIV>
 					<DIV class="col-md-12 mb-3">
 						<LABEL for="occupation">職業</LABEL>
-						<INPUT class="form-control" id="occupation" name="occupation" type="text" value="{@occupation}"/>
+						<INPUT class="form-control" id="occupation" name="occupation" type="text" value="{occupation}"/>
 					</DIV>
 					<DIV class="col-md-12 mb-3">
 						<LABEL for="inviteMeAsLineFriend">Line 好友連結</LABEL>
-						<INPUT class="form-control" id="inviteMeAsLineFriend" name="inviteMeAsLineFriend" type="text" value="{@inviteMeAsLineFriend}"/>
+						<INPUT class="form-control" id="inviteMeAsLineFriend" name="inviteMeAsLineFriend" type="text" value="{inviteMeAsLineFriend}"/>
 					</DIV>
 					<DIV class="form-group">
 						<LABEL for="bodyType">體型</LABEL>
@@ -141,7 +141,7 @@
 						<DIV class="form-group mb-0">
 							<LABEL for="aboutMe">關於我</LABEL>
 							<TEXTAREA class="form-control" id="aboutMe" name="aboutMe" rows="6">
-								<xsl:value-of select="@aboutMe"/>
+								<xsl:value-of select="aboutMe"/>
 							</TEXTAREA>
 						</DIV>
 					</DIV>
@@ -149,7 +149,7 @@
 						<DIV class="form-group mb-0">
 							<LABEL for="idealConditions">理想對象</LABEL>
 							<TEXTAREA class="form-control" id="idealConditions" name="idealConditions" rows="6">
-								<xsl:value-of select="@idealConditions"/>
+								<xsl:value-of select="idealConditions"/>
 							</TEXTAREA>
 						</DIV>
 					</DIV>
@@ -157,7 +157,7 @@
 						<DIV class="form-group mb-0">
 							<LABEL for="greeting">打招呼</LABEL>
 							<TEXTAREA class="form-control" id="greeting" name="greeting" rows="4">
-								<xsl:value-of select="@greeting"/>
+								<xsl:value-of select="greeting"/>
 							</TEXTAREA>
 						</DIV>
 					</DIV>

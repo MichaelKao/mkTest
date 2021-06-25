@@ -49,10 +49,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.SignUp;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
+import tw.musemodel.dingzhiqingren.repository.PictureRepository;
+import tw.musemodel.dingzhiqingren.service.AmazonWebServices;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 
@@ -67,22 +70,6 @@ public class WelcomeController {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(WelcomeController.class);
 
-	private static final String BUCKET_NAME = System.getenv("S3_BUCKET");
-
-	private static final String ACCESS_KEY = System.getenv("AWS_ACCESS_KEY_ID");
-
-	private static final String SECRET_KEY = System.getenv("AWS_SECRET_ACCESS_KEY");
-
-	private static final String REGION = System.getenv("S3_REGION");
-
-	private static final AmazonS3 AMAZON_S3 = AmazonS3ClientBuilder.
-		standard().
-		withCredentials(new AWSStaticCredentialsProvider(
-			new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY)
-		)).withRegion(REGION).build();
-
-	private static final String TEMP_DIRECTORY = System.getProperty("java.io.tmpdir");
-
 	@Autowired
 	private MessageSource messageSource;
 
@@ -94,6 +81,12 @@ public class WelcomeController {
 
 	@Autowired
 	private LoverRepository loverRepository;
+
+	@Autowired
+	private AmazonWebServices amazonWebServices;
+
+	@Autowired
+	private PictureRepository pictureRepository;
 
 	/**
 	 * 首页
@@ -677,7 +670,12 @@ public class WelcomeController {
 			return new ModelAndView("redirect:/");
 		}
 
-		Document document = servant.parseDocument();
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Document document = loverService.readDocument(me, locale);
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.profile",
@@ -685,6 +683,7 @@ public class WelcomeController {
 			locale
 		));
 
+		// 有登入狀態
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
@@ -692,21 +691,10 @@ public class WelcomeController {
 			);
 		}
 
-		// 本人
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
-		);
-
-		Element loverElement = document.createElement("lover");
-		loverElement.setAttribute(
+		documentElement.setAttribute(
 			"me",
 			null
 		);
-
-		documentElement.appendChild(
-			loverService.loverElement(
-				loverElement, me, locale
-			));
 
 		ModelAndView modelAndView = new ModelAndView("profile");
 		modelAndView.getModelMap().addAttribute(document);
@@ -732,21 +720,6 @@ public class WelcomeController {
 			return new ModelAndView("redirect:/");
 		}
 
-		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.profile",
-			null,
-			locale
-		));
-
-		if (!servant.isNull(authentication)) {
-			documentElement.setAttribute(
-				"signIn",
-				authentication.getName()
-			);
-		}
-
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -755,20 +728,29 @@ public class WelcomeController {
 		// 識別碼的帳號
 		Lover lover = loverService.loadByIdentifier(identifier);
 
-		Element loverElement = document.createElement("lover");
+		Document document = loverService.readDocument(lover, locale);
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.profile",
+			null,
+			locale
+		));
+
+		// 有登入狀態
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"signIn",
+				authentication.getName()
+			);
+		}
 
 		// 此頁是否為本人
 		if (Objects.equals(me, lover)) {
-			loverElement.setAttribute(
+			documentElement.setAttribute(
 				"me",
 				null
 			);
 		}
-
-		documentElement.appendChild(
-			loverService.loverElement(
-				loverElement, lover, locale
-			));
 
 		ModelAndView modelAndView = new ModelAndView("profile");
 		modelAndView.getModelMap().addAttribute(document);
@@ -794,7 +776,12 @@ public class WelcomeController {
 			return new ModelAndView("redirect:/");
 		}
 
-		Document document = servant.parseDocument();
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+		
+		Document document = loverService.writeDocument(me, locale);
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.editProfile",
@@ -808,121 +795,7 @@ public class WelcomeController {
 				authentication.getName()
 			);
 		}
-
-		// 本人
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
-		);
-
-		Element loverElement = document.createElement("lover");
-		loverElement.setAttribute(
-			"i18n-submit",
-			messageSource.getMessage(
-				"editProfile.form.submit",
-				null,
-				locale
-			)
-		);
-		documentElement.appendChild(
-			loverService.loverElement(
-				loverElement, me, locale
-			));
-
-		for (Lover.BodyType bodyType : Lover.BodyType.values()) {
-			Element bodyTypeElement = document.createElement("bodyType");
-			bodyTypeElement.setTextContent(
-				messageSource.getMessage(
-					bodyType.toString(),
-					null,
-					locale
-				));
-			bodyTypeElement.setAttribute(
-				"bodyTypeEnum", bodyType.toString()
-			);
-			if (Objects.equals(me.getBodyType(), bodyType)) {
-				bodyTypeElement.setAttribute(
-					"bodyTypeSelected", ""
-				);
-			}
-			loverElement.appendChild(bodyTypeElement);
-		}
-
-		for (Lover.Education education : Lover.Education.values()) {
-			Element educationElement = document.createElement("education");
-			educationElement.setTextContent(
-				messageSource.getMessage(
-					education.toString(),
-					null,
-					locale
-				));
-			educationElement.setAttribute(
-				"educationEnum", education.toString()
-			);
-			if (Objects.equals(me.getEducation(), education)) {
-				educationElement.setAttribute(
-					"educationSelected", ""
-				);
-			}
-			loverElement.appendChild(educationElement);
-		}
-
-		for (Lover.Marriage marriage : Lover.Marriage.values()) {
-			Element marriageElement = document.createElement("marriage");
-			marriageElement.setTextContent(
-				messageSource.getMessage(
-					marriage.toString(),
-					null,
-					locale
-				));
-			marriageElement.setAttribute(
-				"marriageEnum", marriage.toString()
-			);
-			if (Objects.equals(me.getMarriage(), marriage)) {
-				marriageElement.setAttribute(
-					"marriageSelected", ""
-				);
-			}
-			loverElement.appendChild(marriageElement);
-		}
-
-		for (Lover.Smoking smoking : Lover.Smoking.values()) {
-			Element smokingElement = document.createElement("smoking");
-			smokingElement.setTextContent(
-				messageSource.getMessage(
-					smoking.toString(),
-					null,
-					locale
-				));
-			smokingElement.setAttribute(
-				"smokingEnum", smoking.toString()
-			);
-			if (Objects.equals(me.getSmoking(), smoking)) {
-				smokingElement.setAttribute(
-					"smokingSelected", ""
-				);
-			}
-			loverElement.appendChild(smokingElement);
-		}
-
-		for (Lover.Drinking drinking : Lover.Drinking.values()) {
-			Element drinkingElement = document.createElement("drinking");
-			drinkingElement.setTextContent(
-				messageSource.getMessage(
-					drinking.toString(),
-					null,
-					locale
-				));
-			drinkingElement.setAttribute(
-				"drinkingEnum", drinking.toString()
-			);
-			if (Objects.equals(me.getDrinking(), drinking)) {
-				drinkingElement.setAttribute(
-					"drinkingSelected", ""
-				);
-			}
-			loverElement.appendChild(drinkingElement);
-		}
-
+		
 		ModelAndView modelAndView = new ModelAndView("editProfile");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
@@ -1139,10 +1012,21 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		if (!Objects.isNull(me.getProfileImage())) {
-			Element profileImageElement = document.createElement("profileImage");
-			profileImageElement.setTextContent(me.getProfileImage());
-			documentElement.appendChild(profileImageElement);
+		Element profileImageElement = document.createElement("profileImage");
+		profileImageElement.setTextContent(
+			"http://www.youngme.vip/profileImage/" + me.getIdentifier().toString()
+		);
+		documentElement.appendChild(profileImageElement);
+
+		List<Picture> pictures = pictureRepository.findByLover(me);
+		for (Picture picture : pictures) {
+			String identifier = picture.getIdentifier().toString();
+			Element pictureElement = document.createElement("picture");
+			pictureElement.setAttribute("picIdentifier", identifier);
+			pictureElement.setTextContent(
+				"http://www.youngme.vip/pictures/" + identifier
+			);
+			documentElement.appendChild(pictureElement);
 		}
 
 		ModelAndView modelAndView = new ModelAndView("album");
@@ -1151,7 +1035,7 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 上傳照片
+	 * 上傳大頭照
 	 *
 	 * @param authentication
 	 * @param locale
@@ -1161,10 +1045,10 @@ public class WelcomeController {
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
-	@PostMapping(path = "/uploadfile")
+	@PostMapping(path = "/uploadProfileImage")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
-	String upload(Authentication authentication, Locale locale,
+	String uploadProfileImage(Authentication authentication, Locale locale,
 		@RequestParam("file") MultipartFile multipartFile)
 		throws SAXException, IOException, ParserConfigurationException {
 
@@ -1172,27 +1056,54 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		String fileUrl = null;
-		try {
-			File file = new File(TEMP_DIRECTORY, Long.toString(
-				System.currentTimeMillis()
-			));
-			fileUrl = "https://www.youngme.vip/profilePhoto/" + me.getIdentifier().toString();
-			multipartFile.transferTo(file);
-			AMAZON_S3.putObject(
-				new PutObjectRequest(
-					BUCKET_NAME + "/profilePhoto",
-					me.getIdentifier().toString(),
-					file
-				)
-			);
-			file.delete();
-			me.setProfileImage(fileUrl);
-			loverRepository.saveAndFlush(me);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return fileUrl;
+		amazonWebServices.uploadPhotoToS3Bucket(
+			multipartFile, me.getIdentifier().toString(), "/profileImage"
+		);
+
+		return new JavaScriptObjectNotation().
+			withReason("Upload successfully.").
+			withResponse(true).
+			toJSONObject().toString();
+	}
+
+	/**
+	 * 上傳照片
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @param multipartFile
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@PostMapping(path = "/uploadPicture")
+	@Secured({"ROLE_YONGHU"})
+	@ResponseBody
+	String uploadPicture(Authentication authentication, Locale locale,
+		@RequestParam("file") MultipartFile multipartFile)
+		throws SAXException, IOException, ParserConfigurationException {
+
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		UUID fileName = UUID.randomUUID();
+
+		amazonWebServices.uploadPhotoToS3Bucket(
+			multipartFile, fileName.toString(), "/pictures"
+		);
+
+		Picture picture = new Picture();
+		picture.setLover(me);
+		picture.setIdentifier(fileName);
+		picture.setTime(new Date(System.currentTimeMillis()));
+		pictureRepository.saveAndFlush(picture);
+
+		return new JavaScriptObjectNotation().
+			withReason("Upload successfully.").
+			withResponse(true).
+			toJSONObject().toString();
 	}
 
 	/**
@@ -1203,22 +1114,18 @@ public class WelcomeController {
 	 * @param index
 	 * @return
 	 */
-	@PostMapping(value = "/deletefile")
+	@PostMapping(value = "/deletePicture")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
 	String deleteFile(Authentication authentication, Locale locale,
-		@RequestParam String index) {
+		@RequestParam UUID identifier) {
 
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
+		amazonWebServices.deletePhotoFromS3Bucket(identifier.toString());
+		
+		pictureRepository.deleteById(
+			pictureRepository.findByIdentifier(identifier).getId()
 		);
-
-		DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(
-			BUCKET_NAME + "/profilePhoto",
-			me.getIdentifier().toString()
-		);
-
-		AMAZON_S3.deleteObject(deleteObjectRequest);
+		pictureRepository.flush();
 
 		return new JavaScriptObjectNotation().
 			withReason("Delete successfully").

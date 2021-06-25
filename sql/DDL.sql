@@ -277,3 +277,18 @@ CREATE TABLE"lu_jie"(
 COMMENT ON TABLE"lu_jie"IS'绿界';
 COMMENT ON COLUMN"lu_jie"."id"IS'主键';
 
+/**
+ * 生活照
+ */
+CREATE TABLE"yuepao"."sheng_huo_zhao"(
+	"id"serial2 PRIMARY KEY,
+        "qing_ren"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"shi_bie_ma"uuid NOT NULL UNIQUE,
+	"shi_chuo"timestamptz NOT NULL DEFAULT"now"()
+);
+COMMENT ON TABLE"yuepao"."sheng_huo_zhao"IS'生活照';
+COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."id"IS'主鍵';
+COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."qing_ren"IS'情人';
+COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."shi_bie_ma"IS'識別碼';
+COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."shi_chuo"IS'時戳';
+

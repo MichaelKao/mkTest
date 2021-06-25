@@ -1,5 +1,6 @@
 package tw.musemodel.dingzhiqingren.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -25,6 +26,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -166,6 +168,10 @@ public class Lover implements java.io.Serializable {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JsonManagedReference
 	private Collection<Role> roles;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "lover")
+	@JsonBackReference
+	private Collection<Picture> pictures;
 
 	/**
 	 * 默认构造器
@@ -583,6 +589,20 @@ public class Lover implements java.io.Serializable {
 		this.roles = roles;
 	}
 
+	/**
+	 * @return 照片集
+	 */
+	public Collection<Picture> getPictures() {
+		return pictures;
+	}
+
+	/**
+	 * @param pictures 照片集
+	 */
+	public void setPictures(Collection<Picture> pictures) {
+		this.pictures = pictures;
+	}
+	
 	/**
 	 * 体型
 	 *
