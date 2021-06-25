@@ -12,5 +12,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/poc")
 public class ProofOfConcept {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(ProofOfConcept.class);	
+	private final static Logger LOGGER = LoggerFactory.getLogger(ProofOfConcept.class);
 }

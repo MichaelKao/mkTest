@@ -1,19 +1,10 @@
 package tw.musemodel.dingzhiqingren.controller;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -35,11 +26,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -75,6 +64,12 @@ public class WelcomeController {
 	private MessageSource messageSource;
 
 	@Autowired
+	private AmazonWebServices amazonWebServices;
+
+	@Autowired
+	private HistoryService historyService;
+
+	@Autowired
 	private LoverService loverService;
 
 	@Autowired
@@ -84,13 +79,7 @@ public class WelcomeController {
 	private LoverRepository loverRepository;
 
 	@Autowired
-	private AmazonWebServices amazonWebServices;
-
-	@Autowired
 	private PictureRepository pictureRepository;
-	
-	@Autowired
-	private HistoryService historyService;
 
 	/**
 	 * 首页
@@ -667,9 +656,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/profile/")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView self(Authentication authentication, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
-
+	ModelAndView self(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -717,9 +704,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/profile/{identifier}/")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView profile(@PathVariable UUID identifier, Authentication authentication, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
-
+	ModelAndView profile(@PathVariable UUID identifier, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -773,9 +758,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/me.asp")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView editPage(Authentication authentication, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
-
+	ModelAndView editPage(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -784,7 +767,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		
+
 		Document document = loverService.writeDocument(me, locale);
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -799,7 +782,7 @@ public class WelcomeController {
 				authentication.getName()
 			);
 		}
-		
+
 		ModelAndView modelAndView = new ModelAndView("editProfile");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
@@ -818,9 +801,7 @@ public class WelcomeController {
 	@PostMapping(path = "/me.asp")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
-	String editProfile(Lover model, Authentication authentication, Locale locale,
-		@RequestParam(name = "birth", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date birthday) {
-
+	String editProfile(Lover model, @RequestParam(name = "birth", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date birthday, Authentication authentication, Locale locale) {
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -913,9 +894,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/favorite.asp")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView favorite(Authentication authentication, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
-
+	ModelAndView favorite(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -952,9 +931,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/looksMe.asp")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView whoLooksMe(Authentication authentication, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
-
+	ModelAndView whoLooksMe(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -992,7 +969,6 @@ public class WelcomeController {
 	@GetMapping(path = "/album.asp")
 	@Secured({"ROLE_YONGHU"})
 	ModelAndView album(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -1052,10 +1028,7 @@ public class WelcomeController {
 	@PostMapping(path = "/uploadProfileImage")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
-	String uploadProfileImage(Authentication authentication, Locale locale,
-		@RequestParam("file") MultipartFile multipartFile)
-		throws SAXException, IOException, ParserConfigurationException {
-
+	String uploadProfileImage(@RequestParam("file") MultipartFile multipartFile, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -1084,10 +1057,7 @@ public class WelcomeController {
 	@PostMapping(path = "/uploadPicture")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
-	String uploadPicture(Authentication authentication, Locale locale,
-		@RequestParam("file") MultipartFile multipartFile)
-		throws SAXException, IOException, ParserConfigurationException {
-
+	String uploadPicture(@RequestParam("file") MultipartFile multipartFile, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -1095,18 +1065,21 @@ public class WelcomeController {
 		UUID fileName = UUID.randomUUID();
 
 		amazonWebServices.uploadPhotoToS3Bucket(
-			multipartFile, fileName.toString(), "/pictures"
+			multipartFile,
+			fileName.toString(),
+			"/pictures"
 		);
 
 		Picture picture = new Picture();
 		picture.setLover(me);
 		picture.setIdentifier(fileName);
-		picture.setTime(new Date(System.currentTimeMillis()));
-		pictureRepository.saveAndFlush(picture);
+		picture.setOccurred(new Date(System.currentTimeMillis()));
+		picture = pictureRepository.saveAndFlush(picture);
 
 		return new JavaScriptObjectNotation().
 			withReason("Upload successfully.").
 			withResponse(true).
+			withResult(picture).
 			toJSONObject().toString();
 	}
 
@@ -1119,24 +1092,24 @@ public class WelcomeController {
 	 * @return
 	 */
 	@PostMapping(value = "/deletePicture")
-	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
-	String deleteFile(Authentication authentication, Locale locale,
-		@RequestParam UUID identifier) {
-
-		amazonWebServices.deletePhotoFromS3Bucket(identifier.toString());
-		
+	@Secured({"ROLE_YONGHU"})
+	String deleteFile(@RequestParam UUID identifier, Authentication authentication, Locale locale) {
 		pictureRepository.deleteById(
-			pictureRepository.findByIdentifier(identifier).getId()
+			pictureRepository.findOneByIdentifier(identifier).getId()
 		);
 		pictureRepository.flush();
+
+		amazonWebServices.deletePhotoFromS3Bucket(
+			identifier.toString()
+		);
 
 		return new JavaScriptObjectNotation().
 			withReason("Delete successfully").
 			withResponse(true).
 			toJSONObject().toString();
 	}
-	
+
 	/**
 	 * 车马费(男对女)
 	 *
@@ -1148,6 +1121,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/fare.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
 	String fare(@RequestParam("whom") Lover female, @RequestParam(name = "howMany") short points, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -1187,6 +1161,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/stalking.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
 	String gimmeYourLineInvitation(@RequestParam("whom") Lover female, @RequestParam(name = "what", required = false) String greetingMessage, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -1226,6 +1201,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/greet.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
 	String greet(@RequestParam("whom") Lover male, @RequestParam(name = "what", required = false) String greetingMessage, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -1264,6 +1240,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/stalked.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
 	String inviteMeAsLineFriend(@RequestParam("whom") Lover male, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -1301,6 +1278,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/peek.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
 	String peek(@RequestParam Lover masochism, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
