@@ -30,38 +30,39 @@
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container py-8 text-center">
 				<DIV class="mx-sm-5 mx-lg-12 mb-5">
-					<h4 class="text-primary">誰看過我</h4>
+					<H4 class="text-primary">誰看過我</H4>
 					<HR class="horizontal dark"/>
 				</DIV>
-				<DIV class="row mx-sm-5 mx-lg-12 align-items-center justify-content-center">
-					<A class="col-4 col-sm-3" href="/profile.asp">
-						<IMG alt="profile_photo" class="border-radius-lg w-65" src="https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(8).jpg"/>
-					</A>
-					<DIV class="col-6 col-sm-7">
-						<A class="h4" href="/profile.asp">Michael Roven</A>
-						<DIV>28, 高雄</DIV>
-					</DIV>
-					<HR class="horizontal dark my-3"/>
-				</DIV>
-				<DIV class="row mx-sm-5 mx-lg-12 align-items-center justify-content-center">
-					<A class="col-4 col-sm-3" href="/profile.asp">
-						<IMG alt="profile_photo" class="border-radius-lg w-65" src="https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(5).jpg"/>
-					</A>
-					<DIV class="col-6 col-sm-7">
-						<A class="h4" href="/profile.asp">Michael Roven</A>
-						<DIV>28, 高雄</DIV>
-					</DIV>
-					<HR class="horizontal dark my-3"/>
-				</DIV>
-				<DIV class="row mx-sm-5 mx-lg-12 align-items-center justify-content-center">
-					<A class="col-4 col-sm-3" href="/profile.asp">
-						<IMG alt="profile_photo" class="border-radius-lg w-65" src="https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(6).jpg"/>
-					</A>
-					<DIV class="col-6 col-sm-7">
-						<A class="h4" href="/profile.asp">Michael Roven</A>
-						<DIV>28, 高雄</DIV>
-					</DIV>
-					<HR class="horizontal dark my-3"/>
+				<DIV class="d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center">
+					<xsl:for-each select="peeker">
+						<DIV class="col-10 col-sm-8 col-md-5 card card-frame mb-3 mx-2">
+							<DIV class="card-body d-flex align-items-center justify-content-around p-3 p-md-4">
+								<DIV>
+									<A href="/profile/{@identifier}/">
+										<IMG alt="profile_photo" class="border-radius-lg" src="http://www.youngme.vip/profileImage/{@identifier}" width="70"/>
+									</A>
+								</DIV>
+								<DIV class="memberInfo ms-3">
+									<A class="h6" href="/profile/{@identifier}/">
+										<SPAN>
+											<xsl:value-of select="@nickname"/>
+										</SPAN>
+										<SPAN class="me-1">,</SPAN>
+										<SPAN>
+											<xsl:value-of select="@age"/>
+										</SPAN>
+									</A>
+									<DIV>
+										<SPAN class="me-1">到訪了</SPAN>
+										<SPAN>
+											<xsl:value-of select="@times"/>
+										</SPAN>
+										<SPAN class="ms-1">次</SPAN>
+									</DIV>
+								</DIV>
+							</DIV>
+						</DIV>
+					</xsl:for-each>
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>

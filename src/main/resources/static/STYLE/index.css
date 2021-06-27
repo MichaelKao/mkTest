@@ -1,0 +1,10 @@
+.memberBlock{
+	position: relative;
+	cursor: pointer;
+}
+
+.memberInfo {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}

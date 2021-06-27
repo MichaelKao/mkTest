@@ -42,7 +42,7 @@
 	<xsl:template match="lover">
 		<FORM action="/me.asp" method="post">
 			<DIV class="card-body pt-1">
-				<A class="text-primary text-lg" href="/profile/">
+				<A class="text-primary h2" href="/profile/">
 					<I class="fad fa-chevron-double-left"></I>
 				</A>
 				<DIV class="row mt-3">
@@ -68,10 +68,12 @@
 						<LABEL for="occupation">職業</LABEL>
 						<INPUT class="form-control" id="occupation" name="occupation" type="text" value="{occupation}"/>
 					</DIV>
-					<DIV class="col-md-12 mb-3">
-						<LABEL for="inviteMeAsLineFriend">Line 好友連結</LABEL>
-						<INPUT class="form-control" id="inviteMeAsLineFriend" name="inviteMeAsLineFriend" type="text" value="{inviteMeAsLineFriend}"/>
-					</DIV>
+					<xsl:if test="/document/@female">
+						<DIV class="col-md-12 mb-3">
+							<LABEL for="inviteMeAsLineFriend">Line 好友連結</LABEL>
+							<INPUT class="form-control" id="inviteMeAsLineFriend" name="inviteMeAsLineFriend" type="text" value="{inviteMeAsLineFriend}"/>
+						</DIV>
+					</xsl:if>
 					<DIV class="form-group">
 						<LABEL for="bodyType">體型</LABEL>
 						<SELECT class="form-control" id="bodyType" name="bodyType">

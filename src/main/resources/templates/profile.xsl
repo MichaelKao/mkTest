@@ -29,9 +29,59 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container py-8">
+			<DIV class="container py-7 py-md-8">
 				<DIV class="row justify-content-center">
 					<xsl:apply-templates select="lover"/>
+				</DIV>
+				<DIV class="modal fade" id="giftModal" role="dialog" tabindex="-1">
+					<DIV class="modal-dialog" role="document">
+						<DIV class="modal-content">
+							<DIV class="modal-header">
+								<H5 class="modal-title">請輸入</H5>
+								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
+							</DIV>
+							<DIV class="modal-body">
+								<DIV class="form-group col-6">
+									<LABEL class="h6" for="gift">車馬費</LABEL>
+									<INPUT class="form-control" id="gift" name="howMany" required="" type="number"/>
+								</DIV>
+							</DIV>
+							<DIV class="modal-footer">
+								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+									<xsl:value-of select="@i18n-cancel"/>
+								</BUTTON>
+								<BUTTON class="btn btn-primary confirmBtn" type="submit">
+									<xsl:value-of select="@i18n-confirm"/>
+								</BUTTON>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
+				<DIV class="modal fade" id="modal" role="dialog" tabindex="-1">
+					<DIV class="modal-dialog" role="document">
+						<DIV class="modal-content">
+							<DIV class="modal-header">
+								<H5 class="modal-title">請輸入</H5>
+								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
+							</DIV>
+							<DIV class="modal-body">
+								<DIV class="form-group col-8">
+									<LABEL class="h6" for="hello">招呼語</LABEL>
+									<TEXTAREA class="form-control" id="hello" name="what" type="text">
+										<xsl:value-of select="lover/greeting"/>
+									</TEXTAREA>
+								</DIV>
+							</DIV>
+							<DIV class="modal-footer">
+								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+									<xsl:value-of select="@i18n-cancel"/>
+								</BUTTON>
+								<BUTTON class="btn btn-primary confirmBtn" type="submit">
+									<xsl:value-of select="@i18n-confirm"/>
+								</BUTTON>
+							</DIV>
+						</DIV>
+					</DIV>
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
@@ -39,6 +89,7 @@
 		</BODY>
 	</xsl:template>
 	<xsl:template match="lover">
+		<INPUT name="whom" type="hidden" value="{@id}"/>
 		<DIV class="col-md-5 mb-4">
 			<DIV class="carousel slide" data-bs-ride="carousel" id="carousel">
 				<DIV class="carousel-indicators">
@@ -67,7 +118,7 @@
 				</BUTTON>
 				<xsl:if test="/document/@me">
 					<A href="/album.asp">
-						<I class="fad fa-camera"></I>
+						<I class="fad fa-camera font40"></I>
 					</A>
 				</xsl:if>
 			</DIV>
@@ -76,21 +127,36 @@
 					<xsl:when test="not(/document/@me)">
 						<DIV class="d-flex justify-content-center justify-content-md-start" id="icon">
 							<DIV>
-								<BUTTON class="btn btn-icon-only btn-link fav" href="https://lin.ee/LJprCs3">
-									<I class="fad fa-heart"></I>
+								<BUTTON class="btn btn-icon-only btn-link fav" type="button">
+									<I class="fad fa-heart font40"></I>
 								</BUTTON>
 							</DIV>
-							<DIV class="mx-2">
-								<BUTTON class="btn btn-icon-only btn-link mx-4 ms-md-3" href="https://lin.ee/LJprCs3">
-									<I class="fad fa-comment-plus"></I>
+							<DIV>
+								<BUTTON class="btn btn-icon-only btn-link ms-4" type="button">
+									<xsl:choose>
+										<xsl:when test="/document/@male">
+											<xsl:attribute name="id">giveMeLine</xsl:attribute>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:attribute name="id">greeting</xsl:attribute>
+										</xsl:otherwise>
+									</xsl:choose>
+									<I class="fad fa-comment-plus font40"></I>
 								</BUTTON>
 							</DIV>
+							<xsl:if test="/document/@male">
+								<DIV>
+									<BUTTON class="btn btn-icon-only btn-link mx-4 gift" type="button">
+										<I class="fad fa-gift font40"></I>
+									</BUTTON>
+								</DIV>
+							</xsl:if>
 						</DIV>
 					</xsl:when>
 					<xsl:otherwise>
 						<DIV class="ms-md-auto">
 							<A class="btn btn-icon-only btn-link mx-md-4" href="/me.asp">
-								<I class="fad fa-pen"></I>
+								<I class="fad fa-pen font40"></I>
 							</A>
 						</DIV>
 					</xsl:otherwise>
@@ -113,7 +179,9 @@
 				</DIV>
 			</DIV>
 			<DIV class="d-flex align-items-center">
-				<DIV class="text-dark text-bold me-1">上一次上線</DIV>
+				<DIV class="text-dark text-bold me-1">
+					<xsl:value-of select="@i18n-lastLogin"/>
+				</DIV>
 				<DIV class="text-primary text-bold mx-1">
 					<xsl:value-of select="active"/>
 				</DIV>

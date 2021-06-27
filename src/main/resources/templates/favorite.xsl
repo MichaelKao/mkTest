@@ -28,40 +28,38 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container py-8 text-center">
-				<DIV class="mx-sm-5 mx-lg-12 mb-5">
-					<h4 class="text-primary">我的收藏</h4>
+			<DIV class="container py-8">
+				<DIV class="mb-4 text-center">
+					<H4 class="text-primary">我的收藏</H4>
 					<HR class="horizontal dark"/>
 				</DIV>
-				<DIV class="row mx-sm-5 mx-lg-12 align-items-center justify-content-center">
-					<A class="col-4 col-sm-3" href="/profile.asp">
-						<IMG alt="profile_photo" class="border-radius-lg w-65" src="https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(8).jpg"/>
-					</A>
-					<DIV class="col-6 col-sm-7">
-						<A class="h4" href="/profile.asp">Michael Roven</A>
-						<DIV>28, 高雄</DIV>
+				<DIV class="d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center">
+					<DIV class="col-10 col-sm-8 col-md-5 card card-frame mb-3 mx-2">
+						<DIV class="card-body d-flex align-items-center justify-content-around p-3 p-md-4">
+							<DIV>
+								<A href="/profile/">
+									<IMG alt="profile_photo" class="border-radius-lg" src="https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(8).jpg" width="70"/>
+								</A>
+							</DIV>
+							<DIV class="memberInfo ms-3">
+								<A class="h6" href="/profile/">Michael Roven</A>
+								<DIV>28, 高雄</DIV>
+							</DIV>
+						</DIV>
 					</DIV>
-					<HR class="horizontal dark my-3"/>
-				</DIV>
-				<DIV class="row mx-sm-5 mx-lg-12 align-items-center justify-content-center">
-					<A class="col-4 col-sm-3" href="/profile.asp">
-						<IMG alt="profile_photo" class="border-radius-lg w-65" src="https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(5).jpg"/>
-					</A>
-					<DIV class="col-6 col-sm-7">
-						<A class="h4" href="/profile.asp">Michael Roven</A>
-						<DIV>28, 高雄</DIV>
+					<DIV class="col-10 col-sm-8 col-md-5 card card-frame mb-3 mx-2">
+						<DIV class="card-body d-flex align-items-center justify-content-around">
+							<DIV>
+								<A href="/profile/">
+									<IMG alt="profile_photo" class="border-radius-lg" src="https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(5).jpg" width="70"/>
+								</A>
+							</DIV>
+							<DIV class="memberInfo ms-3">
+								<A class="h6" href="/profile/">Michael Roven</A>
+								<DIV>28, 高雄</DIV>
+							</DIV>
+						</DIV>
 					</DIV>
-					<HR class="horizontal dark my-3"/>
-				</DIV>
-				<DIV class="row mx-sm-5 mx-lg-12 align-items-center justify-content-center">
-					<A class="col-4 col-sm-3" href="/profile.asp">
-						<IMG alt="profile_photo" class="border-radius-lg w-65" src="https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(6).jpg"/>
-					</A>
-					<DIV class="col-6 col-sm-7">
-						<A class="h4" href="/profile.asp">Michael Roven</A>
-						<DIV>28, 高雄</DIV>
-					</DIV>
-					<HR class="horizontal dark my-3"/>
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>

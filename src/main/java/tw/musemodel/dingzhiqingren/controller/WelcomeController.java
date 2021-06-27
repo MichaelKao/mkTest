@@ -5,11 +5,14 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -37,11 +40,14 @@ import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import tw.musemodel.dingzhiqingren.entity.History;
+import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.SignUp;
+import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
 import tw.musemodel.dingzhiqingren.service.AmazonWebServices;
@@ -81,6 +87,9 @@ public class WelcomeController {
 	@Autowired
 	private PictureRepository pictureRepository;
 
+	@Autowired
+	private HistoryRepository historyRepository;
+
 	/**
 	 * 首页
 	 *
@@ -100,11 +109,42 @@ public class WelcomeController {
 			null,
 			locale
 		));
+		// 登入狀態
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
 				authentication.getName()
 			);
+			// 本人
+			Lover me = loverService.loadByUsername(
+				authentication.getName()
+			);
+			// 確認性別
+			Boolean isMale = loverService.isMale(me);
+			List<Lover> lovers = new ArrayList<Lover>();
+			if (isMale) {
+				lovers = loverRepository.findAllByGender(false);
+			}
+			if (!isMale) {
+				lovers = loverRepository.findAllByGender(true);
+			}
+
+			for (Lover lover : lovers) {
+				Element loverElement = document.createElement("lover");
+				documentElement.appendChild(loverElement);
+
+				Element nicknameElement = document.createElement("nickname");
+				nicknameElement.setTextContent(lover.getNickname());
+				loverElement.appendChild(nicknameElement);
+
+				Element ageElement = document.createElement("age");
+				ageElement.setTextContent(loverService.calculateAge(lover).toString());
+				loverElement.appendChild(ageElement);
+
+				Element identifierElement = document.createElement("identifier");
+				identifierElement.setTextContent(lover.getIdentifier().toString());
+				loverElement.appendChild(identifierElement);
+			}
 		}
 
 		ModelAndView modelAndView = new ModelAndView("index");
@@ -714,6 +754,9 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
+		// 確認性別
+		Boolean isMale = loverService.isMale(me);
+
 		// 識別碼的帳號
 		Lover lover = loverService.loadByIdentifier(identifier);
 
@@ -732,6 +775,11 @@ public class WelcomeController {
 				authentication.getName()
 			);
 		}
+
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
 
 		// 此頁是否為本人
 		if (Objects.equals(me, lover)) {
@@ -767,6 +815,9 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+		
+		// 確認性別
+		Boolean isMale = loverService.isMale(me);
 
 		Document document = loverService.writeDocument(me, locale);
 		Element documentElement = document.getDocumentElement();
@@ -782,6 +833,11 @@ public class WelcomeController {
 				authentication.getName()
 			);
 		}
+		
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
 
 		ModelAndView modelAndView = new ModelAndView("editProfile");
 		modelAndView.getModelMap().addAttribute(document);
@@ -879,6 +935,7 @@ public class WelcomeController {
 		return new JavaScriptObjectNotation().
 			withReason("Update successfully").
 			withResponse(true).
+			withRedirect("/profile/").
 			toJSONObject().toString();
 	}
 
@@ -936,6 +993,11 @@ public class WelcomeController {
 			return new ModelAndView("redirect:/");
 		}
 
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -949,6 +1011,45 @@ public class WelcomeController {
 				"signIn",
 				authentication.getName()
 			);
+		}
+
+		List<History> histories = historyRepository.findByPassiveAndBehavior(
+			me,
+			Behavior.KAN_GUO_WO
+		);
+
+		Set<Lover> peekers = new HashSet<Lover>();
+		for (History history : histories) {
+			if (!peekers.contains(history.getInitiative())) {
+				peekers.add(history.getInitiative());
+				Lover peeker = history.getInitiative();
+				// 到訪次數
+				Long times = historyRepository.countByInitiativeAndPassiveAndBehavior(
+					peeker, me, Behavior.KAN_GUO_WO
+				);
+				Element peekerElement = document.createElement("peeker");
+				documentElement.appendChild(peekerElement);
+				peekerElement.setAttribute(
+					"times",
+					times.toString()
+				);
+				peekerElement.setAttribute(
+					"identifier",
+					peeker.getIdentifier().toString()
+				);
+				if (Objects.nonNull(peeker.getNickname())) {
+					peekerElement.setAttribute(
+						"nickname",
+						peeker.getNickname()
+					);
+				}
+				if (Objects.nonNull(peeker.getBirthday())) {
+					peekerElement.setAttribute(
+						"age",
+						loverService.calculateAge(peeker).toString()
+					);
+				}
+			}
 		}
 
 		ModelAndView modelAndView = new ModelAndView("looksMe");
@@ -1079,7 +1180,7 @@ public class WelcomeController {
 		return new JavaScriptObjectNotation().
 			withReason("Upload successfully.").
 			withResponse(true).
-			withResult(picture).
+			withResult(picture.toString()).
 			toJSONObject().toString();
 	}
 
@@ -1108,6 +1209,80 @@ public class WelcomeController {
 			withReason("Delete successfully").
 			withResponse(true).
 			toJSONObject().toString();
+	}
+
+	/**
+	 * 儲值愛心
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/deposit.asp")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView deposit(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		if (servant.isNull(authentication)) {
+			return new ModelAndView("redirect:/");
+		}
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.deposit",
+			null,
+			locale
+		));
+
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"signIn",
+				authentication.getName()
+			);
+		}
+
+		ModelAndView modelAndView = new ModelAndView("deposit");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
+	 * 升級 VIP
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/upgrade.asp")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView upgrade(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		if (servant.isNull(authentication)) {
+			return new ModelAndView("redirect:/");
+		}
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.upgrade",
+			null,
+			locale
+		));
+
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"signIn",
+				authentication.getName()
+			);
+		}
+
+		ModelAndView modelAndView = new ModelAndView("upgrade");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
 	}
 
 	/**
@@ -1279,7 +1454,7 @@ public class WelcomeController {
 	@PostMapping(path = "/peek.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
-	String peek(@RequestParam Lover masochism, Authentication authentication, Locale locale) {
+	String peek(@RequestParam("whom") Lover masochism, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}

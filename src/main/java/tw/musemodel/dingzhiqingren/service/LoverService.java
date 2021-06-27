@@ -390,12 +390,51 @@ public class LoverService {
 		));
 	}
 
-	public Document readDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	/**
+	 * 確認性別
+	 * @param lover
+	 * @return 
+	 */
+	public Boolean isMale(Lover lover) {
+		Boolean isMale = lover.getGender();
+		return isMale;
+	}
+
+	public Document readDocument(Lover lover, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		Element loverElement = document.createElement("lover");
+		loverElement.setAttribute("id", lover.getId().toString());
 		documentElement.appendChild(loverElement);
+
+		// 確認按鈕
+		documentElement.setAttribute(
+			"i18n-confirm",
+			messageSource.getMessage(
+				"confirm.submit",
+				null,
+				locale
+			));
+
+		// 取消按鈕
+		documentElement.setAttribute(
+			"i18n-cancel",
+			messageSource.getMessage(
+				"cancel",
+				null,
+				locale
+			));
+
+		// 上一次登入
+		loverElement.setAttribute(
+			"i18n-lastLogin",
+			messageSource.getMessage(
+				"last.login",
+				null,
+				locale
+			));
 
 		Element profileImageElement = document.createElement("profileImage");
 		profileImageElement.setTextContent(
@@ -563,7 +602,8 @@ public class LoverService {
 		return document;
 	}
 
-	public Document writeDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	public Document writeDocument(Lover lover, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();

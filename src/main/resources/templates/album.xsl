@@ -31,7 +31,7 @@
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container content py-7">
-				<A class="text-primary text-lg" href="/profile/">
+				<A class="text-primary h2" href="/profile/">
 					<I class="fad fa-chevron-double-left"></I>
 				</A>
 				<HR class="horizontal dark"/>
@@ -40,7 +40,7 @@
 						<SPAN>大頭貼</SPAN>
 						<LABEL>
 							<INPUT accept="image/*" class="sr-only" data-type="profileImage"  name="image" type="file"/>
-							<I class="far fa-pen text-lg"></I>
+							<I class="far fa-pen h4"></I>
 						</LABEL>
 					</DIV>
 					<DIV>
@@ -52,7 +52,7 @@
 						<SPAN>其他照片</SPAN>
 						<LABEL>
 							<INPUT accept="image/*" class="sr-only" data-type="picture" name="image" type="file"/>
-							<I class="far fa-plus-circle text-lg"></I>
+							<I class="far fa-plus-circle h4"></I>
 						</LABEL>
 					</DIV>
 					<DIV class="d-flex flex-wrap pictures">

@@ -73,6 +73,16 @@
 										</DIV>
 									</DIV>
 								</LI>
+								<LI class="nav-item">
+									<A class="nav-link nav-link-icon" href="/deposit.asp">
+										<SPAN>儲值愛心</SPAN>
+									</A>
+								</LI>
+								<LI class="nav-item">
+									<A class="nav-link nav-link-icon" href="/upgrade.asp">
+										<SPAN>升級 VIP</SPAN>
+									</A>
+								</LI>
 							</xsl:if>
 							<LI class="nav-item">
 								<xsl:choose>
@@ -115,7 +125,7 @@
 	</xsl:template>
 
 	<xsl:template name="bootstrapToast">
-		<DIV class="position-fixed top-50 end-0 p-3" style="z-index: 5">
+		<DIV class="position-fixed top-5 end-0 p-3" style="z-index: 5">
 			<DIV class="toast hide" data-bs-delay="2000" >
 				<BUTTON type="button" class="btn-close" data-bs-dismiss="toast">
 					<I class="far fa-times ms-2 text-dark text-lg"></I>

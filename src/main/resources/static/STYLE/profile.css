@@ -10,16 +10,16 @@
 	}
 }
 
-.btn {
+I.font40 {
 	font-size: 40px !important;
 }
 
-button.fav {
+BUTTON.fav {
 	border-radius: 50%;
-	color: #6c757d;
+	color: #6C757D;
 }
 
-button.fav.liked i {
+BUTTON.fav.liked i {
 	animation: heart-grow .7s;
 	color: #CB0C9F;
 }
@@ -44,7 +44,7 @@ button.fav.liked i {
 	bottom: 10px;
 	right: 10px;
 	font-size: 40px;
-	color: #cb0c9fcc;
+	color: #CB0C9FCC;
 	z-index: 10;
 }
 .carousel A:hover {

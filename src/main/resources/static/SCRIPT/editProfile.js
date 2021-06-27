@@ -28,7 +28,7 @@ $(document).ready(function () {
 			$(form).serialize(),
 			function (data) {
 				if (data.response) {
-					window.location.reload();
+					location.href = data.redirect;
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');

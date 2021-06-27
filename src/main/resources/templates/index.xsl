@@ -33,13 +33,17 @@
 				<DIV class="page-header section-height-85 relative" style="background-image: url('https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/COUPLE/COUPLE+(1).jpg')">
 					<DIV class="container text-center">
 						<DIV class="row">
-							<DIV class="col-lg-7 text-center mx-auto">
-								<H1 class="text-white pt-3 mt-n5">訂製你的專屬情人</H1>
-								<P class="lead text-white mt-3">平台真人管理，會員有驗證，收入有證明。我們嚴選有經濟能力的成功男士，讓女孩們能夠在這裡找到自己的夢想與幸福。提供最高度的個人隱私，讓您不必拐彎抹角，安心地找尋一段最理想的幸福關係。</P>
+							<DIV class="col-10 col-md-6 text-center mx-auto">
+								<H2 class="text-white pt-3">訂製你的專屬情人</H2>
+								<DIV class="text-white mt-3">
+									<DIV>成熟穩重的男人</DIV>
+									<DIV>遇上充滿魅力的甜心寶貝</DIV>
+									<DIV>從此不再寂寞。</DIV>
+								</DIV>
 							</DIV>
 						</DIV>
 						<xsl:if test="not(@signIn)">
-							<DIV>
+							<DIV class="my-4">
 								<A class="btn btn-dark mx-2" href="/signIn.asp">登入</A>
 								<A class="btn btn-dark mx-2" href="/signUp.asp">註冊</A>
 							</DIV>
@@ -62,6 +66,22 @@
 					</DIV>
 				</DIV>
 			</HEADER>
+			<xsl:if test="@signIn">
+				<DIV class="d-flex flex-wrap justify-content-center my-5">
+					<xsl:for-each select="lover">
+						<A class="position-relative m-2" href="/profile/{identifier}/">
+							<IMG class="border-radius-md" src="http://www.youngme.vip/profileImage/{identifier}" width="120"/>
+							<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
+								<SPAN class="bg-dark opacity-6 border-radius-md px-1">
+									<xsl:value-of select="nickname"/>
+									<SPAN>,&#160;</SPAN>
+									<xsl:value-of select="age"/>
+								</SPAN>
+							</DIV>
+						</A>
+					</xsl:for-each>
+				</DIV>
+			</xsl:if>
 			<xsl:call-template name="bodyScriptTags"/>
 		</BODY>
 	</xsl:template>

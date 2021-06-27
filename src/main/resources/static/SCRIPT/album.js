@@ -90,10 +90,6 @@ $(document).ready(function () {
 				$('#profileImageImg').attr('src', canvas.toDataURL());
 			}
 
-//			if (photoType === 'picture') {
-//				$('#profileImageImg').attr('src', canvas.toDataURL());
-//			}
-
 			canvas.toBlob(function (blob) {
 				var OK = uploadpic(blob);
 				if (!OK && typeof (OK) != "undefined") {
