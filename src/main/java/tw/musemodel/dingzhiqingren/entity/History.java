@@ -65,6 +65,10 @@ public class History implements java.io.Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date occurred;
 
+	@Column(name = "yi_du")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date seen;
+
 	@Basic(optional = false)
 	@Column(name = "dian_shu", nullable = false)
 	private Short points;
@@ -208,6 +212,20 @@ public class History implements java.io.Serializable {
 	 */
 	public void setOccurred(Date occurred) {
 		this.occurred = occurred;
+	}
+
+	/**
+	 * @return 已读
+	 */
+	public Date getSeen() {
+		return seen;
+	}
+
+	/**
+	 * @param seen 已读
+	 */
+	public void setSeen(Date seen) {
+		this.seen = seen;
 	}
 
 	/**

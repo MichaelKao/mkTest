@@ -1,9 +1,12 @@
 package tw.musemodel.dingzhiqingren.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +17,6 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import org.slf4j.Logger;
@@ -53,15 +55,95 @@ public class Servant {
 	@Autowired
 	private RoleRepository roleRepository;
 
+	/**
+	 * 东八时区
+	 */
+	public static final ZoneId ASIA_TAIPEI = ZoneId.of("Asia/Taipei");
+
+	/**
+	 * 本地服务器域名
+	 */
 	public final static String LOCALHOST = System.getenv("LOCALHOST");
 
+	/**
+	 * 万能天神
+	 */
 	public final static String ROLE_ADMINISTRATOR = "ROLE_ALMIGHTY";
 
+	/**
+	 * 财务会计
+	 */
 	public final static String ROLE_ACCOUNTANT = "ROLE_FINANCE";
 
+	/**
+	 * 一般用户
+	 */
 	public final static String ROLE_ADVENTURER = "ROLE_YONGHU";
 
+	/**
+	 * 中华民族日期时间格式化器
+	 */
+	public static final DateTimeFormatter TAIWAN_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX");
+
+	/**
+	 * 系统暂存目录
+	 */
+	public static final File TEMPORARY_DIRECTORY = new File(System.getProperty("java.io.tmpdir"));
+
+	/**
+	 * 协调世界时
+	 */
+	public static final ZoneId UTC = ZoneId.of("UTC");
+
+	/**
+	 * 一种针对 Unicode 的可变长度字符编码
+	 */
 	public final static Charset UTF_8 = StandardCharsets.UTF_8;
+
+	/**
+	 * 服务器时区
+	 */
+	public static final ZoneId ZONE_ID = ZoneId.of(System.getenv("ZONE_ID"));
+
+	/**
+	 * 一天最晚的时戳
+	 *
+	 * @param timeMillis 自 1970 年 1 月 1 日格林威治标准时间 00:00:00 以来的毫秒数
+	 * @return java.util.Date
+	 */
+	public static Date maximumToday(long timeMillis) {
+		return new Date(ZonedDateTime.ofInstant(
+			ZonedDateTime.of(
+				LocalDate.ofInstant(
+					new Date(timeMillis).toInstant(),
+					ASIA_TAIPEI
+				),
+				LocalTime.MAX,
+				ASIA_TAIPEI
+			).toInstant(),
+			UTC
+		).toInstant().toEpochMilli());
+	}
+
+	/**
+	 * 一天最早的时戳
+	 *
+	 * @param timeMillis 自 1970 年 1 月 1 日格林威治标准时间 00:00:00 以来的毫秒数
+	 * @return java.util.Date
+	 */
+	public static Date minimumToday(long timeMillis) {
+		return new Date(ZonedDateTime.ofInstant(
+			ZonedDateTime.of(
+				LocalDate.ofInstant(
+					new Date(timeMillis).toInstant(),
+					ASIA_TAIPEI
+				),
+				LocalTime.MIN,
+				ASIA_TAIPEI
+			).toInstant(),
+			UTC
+		).toInstant().toEpochMilli());
+	}
 
 	public List<Country> getCountries() {
 		return countryRepository.findAll();
@@ -91,8 +173,27 @@ public class Servant {
 		return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(uri);
 	}
 
+	/**
+	 * 重定向到首页
+	 *
+	 * @return org.​springframework.​web.​servlet.ModelAndView
+	 */
 	public ModelAndView redirectToRoot() {
 		return new ModelAndView("redirect:/");
+	}
+
+	/**
+	 * 将 markdown 转为 HTML
+	 *
+	 * @param markdown markdown 语句
+	 * @return HTML 语句
+	 */
+	public String markdownToHtml(String markdown) {
+		return HtmlRenderer.builder().build().render(
+			Parser.builder().build().parse(
+				markdown
+			)
+		);
 	}
 
 	/**
@@ -112,31 +213,11 @@ public class Servant {
 			toString();
 	}
 
-	/**
-	 * 中华民族日期时间格式化器
-	 */
-	public static final DateTimeFormatter ZHONG_HUA_MIN_ZU = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX");
-
 	public ZonedDateTime toTaipeiZonedDateTime(Instant instant) {
-		return ZonedDateTime.ofInstant(instant, ZONE_ID_TAIPEI);
+		return ZonedDateTime.ofInstant(instant, ASIA_TAIPEI);
 	}
 
 	public ZonedDateTime toTaipeiZonedDateTime(Date date) {
 		return Servant.this.toTaipeiZonedDateTime(date.toInstant());
-	}
-
-	/**
-	 * 东八区
-	 */
-	public static final ZoneId ZONE_ID_TAIPEI = ZoneId.of("Asia/Taipei");
-
-	public String parseToHtml(String markdown) {
-		
-		Parser parser = Parser.builder().build();
-		Node node = parser.parse(markdown);
-		HtmlRenderer renderer = HtmlRenderer.builder().build();
-		String html = renderer.render(node);
-		
-		return html;
 	}
 }

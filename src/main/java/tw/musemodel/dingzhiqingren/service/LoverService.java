@@ -501,7 +501,7 @@ public class LoverService {
 		}
 
 		if (Objects.nonNull(lover.getAboutMe())) {
-			String html = servant.parseToHtml(lover.getAboutMe());
+			String html = servant.markdownToHtml(lover.getAboutMe());
 			Element aboutMeElement = document.createElement("aboutMe");
 			CDATASection cDATASection = document.createCDATASection(html);
 			aboutMeElement.appendChild(cDATASection);
@@ -583,7 +583,7 @@ public class LoverService {
 		}
 
 		if (Objects.nonNull(lover.getIdealConditions())) {
-			String html = servant.parseToHtml(lover.getIdealConditions());
+			String html = servant.markdownToHtml(lover.getIdealConditions());
 			Element idealConditionsElement = document.createElement("idealConditions");
 			CDATASection cDATASection = document.createCDATASection(html);
 			idealConditionsElement.appendChild(cDATASection);
@@ -605,10 +605,10 @@ public class LoverService {
 		if (Objects.nonNull(lover.getActive())) {
 			Element activeElement = document.createElement("active");
 			activeElement.setTextContent(
-				Servant.ZHONG_HUA_MIN_ZU.format(
+				Servant.TAIWAN_DATE_TIME_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						lover.getActive()
-					).withZoneSameInstant(Servant.ZONE_ID_TAIPEI)
+					).withZoneSameInstant(Servant.ASIA_TAIPEI)
 				).replaceAll("\\+\\d{2}$", ""));
 			loverElement.appendChild(activeElement);
 		}
