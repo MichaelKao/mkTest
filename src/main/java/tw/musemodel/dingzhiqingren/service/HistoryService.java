@@ -23,6 +23,8 @@ public class HistoryService {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(HistoryService.class);
 
+	private final static Short COST_GIMME_YOUR_LINE_INVITATION = Short.valueOf(System.getenv("COST_GIMME_YOUR_LINE_INVITATION"));
+
 	@Autowired
 	private HistoryRepository historyRepository;
 
@@ -72,18 +74,20 @@ public class HistoryService {
 	@Transactional
 	public JSONObject fare(Lover initiative, Lover passive, short points) {
 		if (Objects.isNull(initiative)) {
-			throw new IllegalArgumentException("gimmeYourLineInvitation.initiativeMustntBeNull");
+			throw new IllegalArgumentException("fare.initiativeMustntBeNull");
 		}
 		if (Objects.isNull(passive)) {
-			throw new IllegalArgumentException("gimmeYourLineInvitation.passiveMustntBeNull");
+			throw new IllegalArgumentException("fare.passiveMustntBeNull");
 		}
 		if (Objects.equals(initiative.getGender(), false)) {
-			throw new RuntimeException("gimmeYourLineInvitation.initiativeMustBeMale");
+			throw new RuntimeException("fare.initiativeMustBeMale");
 		}
 		if (Objects.equals(passive.getGender(), true)) {
-			throw new RuntimeException("gimmeYourLineInvitation.passiveMustBeFemale");
+			throw new RuntimeException("fare.passiveMustBeFemale");
 		}
-		//TODO:	男生剩余点数够不够？扣除点数！
+		if (points(initiative) < Math.abs(points)) {
+			throw new RuntimeException("fare.insufficientPoints");
+		}
 		History history = new History(
 			initiative,
 			passive,
@@ -119,12 +123,14 @@ public class HistoryService {
 		if (Objects.equals(passive.getGender(), true)) {
 			throw new RuntimeException("gimmeYourLineInvitation.passiveMustBeFemale");
 		}
-		//TODO:	男生剩余点数够不够？扣除点数！
+		if (points(initiative) < Math.abs(COST_GIMME_YOUR_LINE_INVITATION)) {
+			throw new RuntimeException("gimmeYourLineInvitation.insufficientPoints");
+		}
 		History history = new History(
 			initiative,
 			passive,
 			BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
-			(short) 0
+			COST_GIMME_YOUR_LINE_INVITATION
 		);
 		greetingMessage = Objects.isNull(greetingMessage) || greetingMessage.isBlank() ? initiative.getGreeting() : greetingMessage;
 		history.setGreeting(
