@@ -39,7 +39,7 @@
 							<DIV class="card-body d-flex align-items-center justify-content-around p-3 p-md-4">
 								<DIV>
 									<A href="/profile/{@identifier}/">
-										<IMG alt="profile_photo" class="border-radius-lg" src="http://www.youngme.vip/profileImage/{@identifier}" width="70"/>
+										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="70"/>
 									</A>
 								</DIV>
 								<DIV class="memberInfo ms-3">

@@ -133,17 +133,25 @@ public class WelcomeController {
 				Element loverElement = document.createElement("lover");
 				documentElement.appendChild(loverElement);
 
-				Element nicknameElement = document.createElement("nickname");
-				nicknameElement.setTextContent(lover.getNickname());
-				loverElement.appendChild(nicknameElement);
+				if (Objects.nonNull(lover.getNickname())) {
+					Element nicknameElement = document.createElement("nickname");
+					nicknameElement.setTextContent(lover.getNickname());
+					loverElement.appendChild(nicknameElement);
+				}
 
-				Element ageElement = document.createElement("age");
-				ageElement.setTextContent(loverService.calculateAge(lover).toString());
-				loverElement.appendChild(ageElement);
+				if (Objects.nonNull(lover.getBirthday())) {
+					Element ageElement = document.createElement("age");
+					ageElement.setTextContent(loverService.calculateAge(lover).toString());
+					loverElement.appendChild(ageElement);
+				}
 
 				Element identifierElement = document.createElement("identifier");
 				identifierElement.setTextContent(lover.getIdentifier().toString());
 				loverElement.appendChild(identifierElement);
+
+				Element profileImageElement = document.createElement("profileImage");
+				profileImageElement.setTextContent("https://www.youngme.vip/profileImage/" + lover.getProfileImage());
+				loverElement.appendChild(profileImageElement);
 			}
 		}
 
@@ -815,7 +823,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		
+
 		// 確認性別
 		Boolean isMale = loverService.isMale(me);
 
@@ -833,7 +841,7 @@ public class WelcomeController {
 				authentication.getName()
 			);
 		}
-		
+
 		documentElement.setAttribute(
 			isMale ? "male" : "female",
 			null
@@ -917,12 +925,12 @@ public class WelcomeController {
 		}
 
 		if (!Objects.isNull(model.getAboutMe())) {
-			String aboutMe = model.getAboutMe().replaceAll("(\r\n|\n)", "<br>");
+			String aboutMe = model.getAboutMe();
 			me.setAboutMe(aboutMe);
 		}
 
 		if (!Objects.isNull(model.getIdealConditions())) {
-			String idealConditions = model.getIdealConditions().replaceAll("(\r\n|\n)", "<br>");
+			String idealConditions = model.getIdealConditions();
 			me.setIdealConditions(idealConditions);
 		}
 
@@ -1037,6 +1045,10 @@ public class WelcomeController {
 					"identifier",
 					peeker.getIdentifier().toString()
 				);
+				peekerElement.setAttribute(
+					"profileImage",
+					"https://www.youngme.vip/profileImage/" + peeker.getProfileImage()
+				);
 				if (Objects.nonNull(peeker.getNickname())) {
 					peekerElement.setAttribute(
 						"nickname",
@@ -1094,9 +1106,11 @@ public class WelcomeController {
 		);
 
 		Element profileImageElement = document.createElement("profileImage");
-		profileImageElement.setTextContent(
-			"http://www.youngme.vip/profileImage/" + me.getIdentifier().toString()
-		);
+		if (Objects.nonNull(me.getProfileImage())) {
+			profileImageElement.setTextContent(
+				"http://www.youngme.vip/profileImage/" + me.getProfileImage()
+			);
+		}
 		documentElement.appendChild(profileImageElement);
 
 		List<Picture> pictures = pictureRepository.findByLover(me);
@@ -1134,9 +1148,16 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		amazonWebServices.uploadPhotoToS3Bucket(
-			multipartFile, me.getIdentifier().toString(), "/profileImage"
+		amazonWebServices.deletePhotoFromS3Bucket(
+			"/profileImage", me.getProfileImage()
 		);
+
+		String fileName = UUID.randomUUID().toString();
+		amazonWebServices.uploadPhotoToS3Bucket(
+			multipartFile, fileName, "/profileImage"
+		);
+		me.setProfileImage(fileName);
+		loverRepository.saveAndFlush(me);
 
 		return new JavaScriptObjectNotation().
 			withReason("Upload successfully.").
@@ -1195,14 +1216,14 @@ public class WelcomeController {
 	@PostMapping(value = "/deletePicture")
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
-	String deleteFile(@RequestParam UUID identifier, Authentication authentication, Locale locale) {
+	String deletePicture(@RequestParam UUID identifier, Authentication authentication, Locale locale) {
 		pictureRepository.deleteById(
 			pictureRepository.findOneByIdentifier(identifier).getId()
 		);
 		pictureRepository.flush();
 
 		amazonWebServices.deletePhotoFromS3Bucket(
-			identifier.toString()
+			"/pictures", identifier.toString()
 		);
 
 		return new JavaScriptObjectNotation().
@@ -1297,13 +1318,15 @@ public class WelcomeController {
 	@PostMapping(path = "/fare.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
-	String fare(@RequestParam("whom") Lover female, @RequestParam(name = "howMany") short points, Authentication authentication, Locale locale) {
+	String fare(@RequestParam("whom") UUID femaleUUID, @RequestParam(name = "howMany") short points, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
 		Lover male = loverService.loadByUsername(
 			authentication.getName()
 		);
+		
+		Lover female = loverService.loadByIdentifier(femaleUUID);
 
 		JSONObject jsonObject;
 		try {
@@ -1337,13 +1360,15 @@ public class WelcomeController {
 	@PostMapping(path = "/stalking.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
-	String gimmeYourLineInvitation(@RequestParam("whom") Lover female, @RequestParam(name = "what", required = false) String greetingMessage, Authentication authentication, Locale locale) {
+	String gimmeYourLineInvitation(@RequestParam("whom") UUID femaleUUID, @RequestParam(name = "what", required = false) String greetingMessage, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
 		Lover male = loverService.loadByUsername(
 			authentication.getName()
 		);
+		
+		Lover female = loverService.loadByIdentifier(femaleUUID);
 
 		JSONObject jsonObject;
 		try {
@@ -1377,14 +1402,16 @@ public class WelcomeController {
 	@PostMapping(path = "/greet.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
-	String greet(@RequestParam("whom") Lover male, @RequestParam(name = "what", required = false) String greetingMessage, Authentication authentication, Locale locale) {
+	String greet(@RequestParam("whom") UUID maleUUID, @RequestParam(name = "what", required = false) String greetingMessage, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
 		Lover female = loverService.loadByUsername(
 			authentication.getName()
 		);
-
+		
+		Lover male = loverService.loadByIdentifier(maleUUID);
+		
 		JSONObject jsonObject;
 		try {
 			jsonObject = historyService.greet(
@@ -1416,13 +1443,15 @@ public class WelcomeController {
 	@PostMapping(path = "/stalked.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
-	String inviteMeAsLineFriend(@RequestParam("whom") Lover male, Authentication authentication, Locale locale) {
+	String inviteMeAsLineFriend(@RequestParam("whom") UUID maleUUID, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
 		Lover female = loverService.loadByUsername(
 			authentication.getName()
 		);
+		
+		Lover male = loverService.loadByIdentifier(maleUUID);
 
 		JSONObject jsonObject;
 		try {
@@ -1454,13 +1483,15 @@ public class WelcomeController {
 	@PostMapping(path = "/peek.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
-	String peek(@RequestParam("whom") Lover masochism, Authentication authentication, Locale locale) {
+	String peek(@RequestParam("whom") UUID masochismUUID, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
 		Lover sadism = loverService.loadByUsername(
 			authentication.getName()
 		);
+		
+		Lover masochism = loverService.loadByIdentifier(masochismUUID);
 
 		JSONObject jsonObject;
 		try {

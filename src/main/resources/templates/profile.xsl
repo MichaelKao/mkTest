@@ -89,7 +89,7 @@
 		</BODY>
 	</xsl:template>
 	<xsl:template match="lover">
-		<INPUT name="whom" type="hidden" value="{@id}"/>
+		<INPUT name="whom" type="hidden" value="{@identifier}"/>
 		<DIV class="col-md-5 mb-4">
 			<DIV class="carousel slide" data-bs-ride="carousel" id="carousel">
 				<DIV class="carousel-indicators">
@@ -242,13 +242,13 @@
 			<DIV class="mb-2">
 				<DIV class="font-weight-bold text-lg">關於我：</DIV>
 				<DIV class="aboutMe">
-					<xsl:value-of select="aboutMe"/>
+					<xsl:value-of disable-output-escaping="yes" select="aboutMe"/>
 				</DIV>
 			</DIV>
 			<DIV class="mb-2">
 				<DIV class="font-weight-bold text-lg">理想中的約會對象：</DIV>
 				<DIV class="idealConditions">
-					<xsl:value-of select="idealConditions"/>
+					<xsl:value-of disable-output-escaping="yes" select="idealConditions"/>
 				</DIV>
 			</DIV>
 		</DIV>

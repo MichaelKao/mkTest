@@ -14,6 +14,9 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,4 +129,14 @@ public class Servant {
 	 * 东八区
 	 */
 	public static final ZoneId ZONE_ID_TAIPEI = ZoneId.of("Asia/Taipei");
+
+	public String parseToHtml(String markdown) {
+		
+		Parser parser = Parser.builder().build();
+		Node node = parser.parse(markdown);
+		HtmlRenderer renderer = HtmlRenderer.builder().build();
+		String html = renderer.render(node);
+		
+		return html;
+	}
 }

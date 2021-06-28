@@ -19,6 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -342,17 +346,20 @@ public class LoverService {
 			throw new RuntimeException("signUp.exists");
 		}
 
-		Lover lover = new Lover();
-		lover.setIdentifier(UUID.randomUUID());
-		lover.setCountry(country);
-		lover.setLogin(login);
-		lover.setGender(signUp.getGender());
-		lover = loverRepository.saveAndFlush(lover);
+		UUID identifier = UUID.randomUUID();
 
 		// 上傳預設大頭照
 		amazonWebServices.copyDefaultImageToLover(
-			lover.getIdentifier().toString()
+			identifier.toString()
 		);
+
+		Lover lover = new Lover();
+		lover.setIdentifier(identifier);
+		lover.setCountry(country);
+		lover.setLogin(login);
+		lover.setGender(signUp.getGender());
+		lover.setProfileImage(identifier.toString());
+		lover = loverRepository.saveAndFlush(lover);
 
 		applicationEventPublisher.publishEvent(new SignedUpEvent(
 			lover,
@@ -392,8 +399,9 @@ public class LoverService {
 
 	/**
 	 * 確認性別
+	 *
 	 * @param lover
-	 * @return 
+	 * @return
 	 */
 	public Boolean isMale(Lover lover) {
 		Boolean isMale = lover.getGender();
@@ -406,7 +414,7 @@ public class LoverService {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		Element loverElement = document.createElement("lover");
-		loverElement.setAttribute("id", lover.getId().toString());
+		loverElement.setAttribute("identifier", lover.getIdentifier().toString());
 		documentElement.appendChild(loverElement);
 
 		// 確認按鈕
@@ -437,9 +445,11 @@ public class LoverService {
 			));
 
 		Element profileImageElement = document.createElement("profileImage");
-		profileImageElement.setTextContent(
-			"http://www.youngme.vip/profileImage/" + lover.getIdentifier().toString()
-		);
+		if (Objects.nonNull(lover.getProfileImage())) {
+			profileImageElement.setTextContent(
+				"http://www.youngme.vip/profileImage/" + lover.getProfileImage()
+			);
+		}
 		loverElement.appendChild(profileImageElement);
 
 		List<Picture> pictures = pictureRepository.findByLover(lover);
@@ -491,8 +501,10 @@ public class LoverService {
 		}
 
 		if (Objects.nonNull(lover.getAboutMe())) {
+			String html = servant.parseToHtml(lover.getAboutMe());
 			Element aboutMeElement = document.createElement("aboutMe");
-			aboutMeElement.setTextContent(lover.getAboutMe());
+			CDATASection cDATASection = document.createCDATASection(html);
+			aboutMeElement.appendChild(cDATASection);
 			loverElement.appendChild(aboutMeElement);
 		}
 
@@ -571,8 +583,10 @@ public class LoverService {
 		}
 
 		if (Objects.nonNull(lover.getIdealConditions())) {
+			String html = servant.parseToHtml(lover.getIdealConditions());
 			Element idealConditionsElement = document.createElement("idealConditions");
-			idealConditionsElement.setTextContent(lover.getIdealConditions());
+			CDATASection cDATASection = document.createCDATASection(html);
+			idealConditionsElement.appendChild(cDATASection);
 			loverElement.appendChild(idealConditionsElement);
 		}
 

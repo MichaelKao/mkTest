@@ -93,7 +93,7 @@ public class HistoryService {
 		history = historyRepository.saveAndFlush(history);
 		return new JavaScriptObjectNotation().
 			withResponse(true).
-			withResult(history).
+			withResult(history.getOccurred()).
 			toJSONObject();
 	}
 
@@ -133,7 +133,7 @@ public class HistoryService {
 		history = historyRepository.saveAndFlush(history);
 		return new JavaScriptObjectNotation().
 			withResponse(true).
-			withResult(history).
+			withResult(history.getOccurred()).
 			toJSONObject();
 	}
 
@@ -172,7 +172,7 @@ public class HistoryService {
 		history = historyRepository.saveAndFlush(history);
 		return new JavaScriptObjectNotation().
 			withResponse(true).
-			withResult(history).
+			withResult(history.getOccurred()).
 			toJSONObject();
 	}
 
@@ -212,7 +212,7 @@ public class HistoryService {
 		history = historyRepository.saveAndFlush(history);
 		return new JavaScriptObjectNotation().
 			withResponse(true).
-			withResult(history).
+			withResult(history.getOccurred()).
 			toJSONObject();
 	}
 
@@ -245,7 +245,7 @@ public class HistoryService {
 		));
 		return new JavaScriptObjectNotation().
 			withResponse(true).
-			withResult(history).
+			withResult(history.getOccurred()).
 			toJSONObject();
 	}
 }

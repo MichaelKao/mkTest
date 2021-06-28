@@ -1,13 +1,5 @@
 $(document).ready(function () {
 
-	var content = $("TEXTAREA#aboutMe").val();
-	content = content.replace(/<br>/g, "\n");
-	$('TEXTAREA#aboutMe').val(content);
-	
-	var content = $("TEXTAREA#idealConditions").val();
-	content = content.replace(/<br>/g, "\n");
-	$('TEXTAREA#idealConditions').val(content);
-
 	$('#birth').datetimepicker({
 		format: "YYYY-MM-DD",
 		maxDate: new Date().setHours(0, 0, 0, 0),

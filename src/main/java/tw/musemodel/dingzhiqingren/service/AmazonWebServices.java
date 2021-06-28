@@ -84,13 +84,13 @@ public class AmazonWebServices {
 			toJSONObject();
 	}
 
-	public JSONObject deletePhotoFromS3Bucket(String name) {
+	public JSONObject deletePhotoFromS3Bucket(String folder, String fileName) {
 		AMAZON_S3.deleteObject(new DeleteObjectRequest(
 			String.format(
-				"%s/pictures",
+				"%s" + folder,
 				BUCKET_NAME
 			),
-			name
+			fileName
 		));
 
 		return new JavaScriptObjectNotation().

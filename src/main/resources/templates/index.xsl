@@ -66,11 +66,44 @@
 					</DIV>
 				</DIV>
 			</HEADER>
+			<SECTION class="pt-3 pb-4" id="count-stats">
+				<DIV class="container">
+					<DIV class="row">
+						<DIV class="col-lg-9 z-index-2 border-radius-xl mt-n10 mx-auto py-3 blur shadow-blur">
+							<DIV class="row">
+								<DIV class="col-md-4 position-relative">
+									<DIV class="p-3 text-center">
+										<H1 class="text-gradient text-primary">1</H1>
+										<H5 class="mt-3">手機號碼註冊</H5>	
+										<P class="text-sm">From buttons, to inputs, navbars, alerts or cards, you are covered</P>
+									</DIV>
+									<HR class="vertical dark"/>
+								</DIV>
+								<DIV class="col-md-4 position-relative">
+									<DIV class="p-3 text-center">
+										<H1 class="text-gradient text-primary">2</H1>
+										<H5 class="mt-3">編輯個人資料</H5>
+										<P class="text-sm">Mix the sections, change the colors and unleash your creativity</P>
+									</DIV>
+									<hr class="vertical dark"/>
+								</DIV>
+								<DIV class="col-md-4">
+									<DIV class="p-3 text-center">
+										<h1 class="text-gradient text-primary" id="state3" countto="4">3</h1>
+										<h5 class="mt-3">尋找心儀對象</h5>
+										<p class="text-sm">Save 3-4 weeks of work when you use our pre-made pages for your website</p>
+									</DIV>
+								</DIV>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
+			</SECTION>
 			<xsl:if test="@signIn">
 				<DIV class="d-flex flex-wrap justify-content-center my-5">
 					<xsl:for-each select="lover">
 						<A class="position-relative m-2" href="/profile/{identifier}/">
-							<IMG class="border-radius-md" src="http://www.youngme.vip/profileImage/{identifier}" width="120"/>
+							<IMG class="border-radius-md" src="{profileImage}" width="120"/>
 							<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
 								<SPAN class="bg-dark opacity-6 border-radius-md px-1">
 									<xsl:value-of select="nickname"/>
