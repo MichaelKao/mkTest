@@ -65,7 +65,8 @@ public class History implements java.io.Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date occurred;
 
-	@Column(name = "dian_shu")
+	@Basic(optional = false)
+	@Column(name = "dian_shu", nullable = false)
 	private Short points;
 
 	@JoinColumn(name = "lu_jie", nullable = false, referencedColumnName = "id")
@@ -81,6 +82,7 @@ public class History implements java.io.Serializable {
 	 */
 	public History() {
 		occurred = new Date(System.currentTimeMillis());
+		points = 0;
 	}
 
 	/**
