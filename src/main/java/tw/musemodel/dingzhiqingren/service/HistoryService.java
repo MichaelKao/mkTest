@@ -248,4 +248,12 @@ public class HistoryService {
 			withResult(history).
 			toJSONObject();
 	}
+
+	@Transactional(readOnly = true)
+	public Long points(Lover lover) {
+		if (Objects.isNull(lover)) {
+			throw new IllegalArgumentException("points.loverMustntBeNull");
+		}
+		return historyRepository.sumByInitiative(lover);
+	}
 }

@@ -277,21 +277,6 @@ CREATE TABLE"lu_jie"(
 COMMENT ON TABLE"lu_jie"IS'绿界';
 COMMENT ON COLUMN"lu_jie"."id"IS'主键';
 
-/**
- * 生活照
- */
-CREATE TABLE"yuepao"."sheng_huo_zhao"(
-	"id"serial2 PRIMARY KEY,
-        "qing_ren"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
-	"shi_bie_ma"uuid NOT NULL UNIQUE,
-	"shi_chuo"timestamptz NOT NULL DEFAULT"now"()
-);
-COMMENT ON TABLE"yuepao"."sheng_huo_zhao"IS'生活照';
-COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."id"IS'主鍵';
-COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."qing_ren"IS'情人';
-COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."shi_bie_ma"IS'識別碼';
-COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."shi_chuo"IS'時戳';
-
 CREATE TYPE"xing_wei"AS ENUM(
 	'YUE_FEI',--月费
 	'CHU_ZHI',--储值
@@ -311,8 +296,9 @@ CREATE TABLE"yuepao"."li_cheng"(
 	"zhu_dong_de"int NOT NULL REFERENCES"yuepao"."qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,--主动的
 	"bei_dong_de"int REFERENCES"yuepao"."qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,--被动的
 	"xing_wei" "yuepao"."xing_wei",--行为
-	"shi_chuo"timestamptz,--时戳
-	"dian_shu"int2,--点数
+	"shi_chuo"timestamptz DEFAULT"now"(),--时戳
+	"yi_du"timestamptz,--已读
+	"dian_shu"int2 NOT NULL DEFAULT'0',--点数
 	"lu_jie"int8 REFERENCES"yuepao"."lu_jie"("id")ON DELETE RESTRICT ON UPDATE CASCADE,--绿界
 	"zhao_hu_yu"text--招呼语
 );
@@ -322,6 +308,44 @@ COMMENT ON COLUMN"yuepao"."li_cheng"."zhu_dong_de"IS'主动的';
 COMMENT ON COLUMN"yuepao"."li_cheng"."bei_dong_de"IS'被动的';
 COMMENT ON COLUMN"yuepao"."li_cheng"."xing_wei"IS'行为';
 COMMENT ON COLUMN"yuepao"."li_cheng"."shi_chuo"IS'时戳';
+COMMENT ON COLUMN"yuepao"."li_cheng"."yi_du"IS'已读';
 COMMENT ON COLUMN"yuepao"."li_cheng"."dian_shu"IS'点数';
 COMMENT ON COLUMN"yuepao"."li_cheng"."lu_jie"IS'绿界';
 COMMENT ON COLUMN"yuepao"."li_cheng"."zhao_hu_yu"IS'招呼语';
+
+/**
+ * 生活照
+ */
+CREATE TABLE"sheng_huo_zhao"(
+	"id"serial2 PRIMARY KEY,
+        "qing_ren"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"shi_bie_ma"uuid NOT NULL UNIQUE,
+	"shi_chuo"timestamptz NOT NULL DEFAULT"now"()
+);
+COMMENT ON TABLE"yuepao"."sheng_huo_zhao"IS'生活照';
+COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."id"IS'主鍵';
+COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."qing_ren"IS'情人';
+COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."shi_bie_ma"IS'識別碼';
+COMMENT ON COLUMN"yuepao"."sheng_huo_zhao"."shi_chuo"IS'時戳';
+
+/**
+ * 储值方案
+ */
+CREATE TABLE"yuepao"."chu_zhi_fang_an"(
+	"id"serial2 PRIMARY KEY,
+	"ming_cheng"varchar NOT NULL UNIQUE,
+	"dian_shu"int2 NOT NULL,
+	"shou_xu_fei"int2 NOT NULL,
+	"jin_e"int NOT NULL
+);
+COMMENT ON TABLE"yuepao"."chu_zhi_fang_an"IS'储值方案';
+COMMENT ON COLUMN"yuepao"."chu_zhi_fang_an"."id"IS'主鍵';
+COMMENT ON COLUMN"yuepao"."chu_zhi_fang_an"."ming_cheng"IS'方案名称';
+COMMENT ON COLUMN"yuepao"."chu_zhi_fang_an"."dian_shu"IS'点数';
+COMMENT ON COLUMN"yuepao"."chu_zhi_fang_an"."shou_xu_fei"IS'手续费';
+COMMENT ON COLUMN"yuepao"."chu_zhi_fang_an"."jin_e"IS'金额';
+-- DML
+INSERT INTO"yuepao"."chu_zhi_fang_an"("ming_cheng","dian_shu","shou_xu_fei","jin_e")VALUES
+(E'plan.3000','3000','375','3375'),
+(E'plan.5000','5000','625','5625'),
+(E'plan.10000','10000','1250','11250');
