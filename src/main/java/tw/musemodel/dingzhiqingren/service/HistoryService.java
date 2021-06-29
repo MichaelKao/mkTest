@@ -1,15 +1,22 @@
 package tw.musemodel.dingzhiqingren.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.model.ActiveLogs;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 
@@ -22,6 +29,9 @@ import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 public class HistoryService {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(HistoryService.class);
+
+	@Autowired
+	private MessageSource messageSource;
 
 	@Autowired
 	private HistoryRepository historyRepository;
@@ -70,7 +80,7 @@ public class HistoryService {
 	 * @return 杰森对象
 	 */
 	@Transactional
-	public JSONObject fare(Lover initiative, Lover passive, short points) {
+	public JSONObject fare(Lover initiative, Lover passive, short points, Locale locale) {
 		if (Objects.isNull(initiative)) {
 			throw new IllegalArgumentException("gimmeYourLineInvitation.initiativeMustntBeNull");
 		}
@@ -92,6 +102,11 @@ public class HistoryService {
 		);
 		history = historyRepository.saveAndFlush(history);
 		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"giveHeartsToWoman.success",
+				null,
+				locale
+			)).
 			withResponse(true).
 			withResult(history.getOccurred()).
 			toJSONObject();
@@ -106,7 +121,7 @@ public class HistoryService {
 	 * @return 杰森对象
 	 */
 	@Transactional
-	public JSONObject gimmeYourLineInvitation(Lover initiative, Lover passive, String greetingMessage) {
+	public JSONObject gimmeYourLineInvitation(Lover initiative, Lover passive, String greetingMessage, Locale locale) {
 		if (Objects.isNull(initiative)) {
 			throw new IllegalArgumentException("gimmeYourLineInvitation.initiativeMustntBeNull");
 		}
@@ -132,6 +147,11 @@ public class HistoryService {
 		);
 		history = historyRepository.saveAndFlush(history);
 		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"gimmeYourLineInvitation.success",
+				null,
+				locale
+			)).
 			withResponse(true).
 			withResult(history.getOccurred()).
 			toJSONObject();
@@ -146,7 +166,7 @@ public class HistoryService {
 	 * @return 杰森对象
 	 */
 	@Transactional
-	public JSONObject greet(Lover initiative, Lover passive, String greetingMessage) {
+	public JSONObject greet(Lover initiative, Lover passive, String greetingMessage, Locale locale) {
 		if (Objects.isNull(initiative)) {
 			throw new IllegalArgumentException("greet.initiativeMustntBeNull");
 		}
@@ -171,6 +191,11 @@ public class HistoryService {
 		);
 		history = historyRepository.saveAndFlush(history);
 		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"greet.success",
+				null,
+				locale
+			)).
 			withResponse(true).
 			withResult(history.getOccurred()).
 			toJSONObject();
@@ -184,7 +209,7 @@ public class HistoryService {
 	 * @return 杰森对象
 	 */
 	@Transactional
-	public JSONObject inviteMeAsLineFriend(Lover initiative, Lover passive) {
+	public JSONObject inviteMeAsLineFriend(Lover initiative, Lover passive, Locale locale) {
 		if (Objects.isNull(initiative)) {
 			throw new IllegalArgumentException("inviteMeAsLineFriend.initiativeMustntBeNull");
 		}
@@ -211,6 +236,11 @@ public class HistoryService {
 		history.setGreeting(inviteMeAsLineFriend);
 		history = historyRepository.saveAndFlush(history);
 		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"inviteMeAsLineFriend.success",
+				null,
+				locale
+			)).
 			withResponse(true).
 			withResult(history.getOccurred()).
 			toJSONObject();
@@ -255,5 +285,36 @@ public class HistoryService {
 			throw new IllegalArgumentException("points.loverMustntBeNull");
 		}
 		return historyRepository.sumByInitiative(lover);
+	}
+
+	public List<ActiveLogs> findActiveLogsOrderByOccurredDesc(Lover lover) {
+		List<ActiveLogs> list = new ArrayList<ActiveLogs>();
+
+		for (History history : historyRepository.findByInitiativeAndBehaviorNot(lover, Behavior.KAN_GUO_WO)) {
+			ActiveLogs activeLogs = new ActiveLogs(
+				lover,
+				history.getPassive(),
+				history.getBehavior(),
+				history.getOccurred(),
+				history.getPoints(),
+				history.getGreeting(),
+				history.getRead()
+			);
+			list.add(activeLogs);
+		}
+		for (History history : historyRepository.findByPassiveAndBehaviorNot(lover, Behavior.KAN_GUO_WO)) {
+			ActiveLogs activeLogs = new ActiveLogs(
+				history.getInitiative(),
+				lover,
+				history.getBehavior(),
+				history.getOccurred(),
+				history.getPoints(),
+				history.getGreeting(),
+				history.getRead()
+			);
+			list.add(activeLogs);
+		}
+		Collections.sort(list, Comparator.reverseOrder());
+		return list;
 	}
 }

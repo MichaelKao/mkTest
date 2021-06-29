@@ -77,6 +77,10 @@ public class History implements java.io.Serializable {
 	@Column(name = "zhao_hu_yu")
 	private String greeting;
 
+	@Column(name = "yi_du")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date read;
+
 	/**
 	 * 默认构造器
 	 */
@@ -250,6 +254,20 @@ public class History implements java.io.Serializable {
 	 */
 	public void setGreeting(String greeting) {
 		this.greeting = greeting;
+	}
+
+	/**
+	 * @return 已讀
+	 */
+	public Date getRead() {
+		return read;
+	}
+
+	/**
+	 * @param read 已讀
+	 */
+	public void setRead(Date read) {
+		this.read = read;
 	}
 
 	/**

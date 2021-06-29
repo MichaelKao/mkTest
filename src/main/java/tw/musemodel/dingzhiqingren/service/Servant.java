@@ -131,12 +131,12 @@ public class Servant {
 	public static final ZoneId ZONE_ID_TAIPEI = ZoneId.of("Asia/Taipei");
 
 	public String parseToHtml(String markdown) {
-		
+
 		Parser parser = Parser.builder().build();
 		Node node = parser.parse(markdown);
 		HtmlRenderer renderer = HtmlRenderer.builder().build();
 		String html = renderer.render(node);
-		
+
 		return html;
 	}
 }

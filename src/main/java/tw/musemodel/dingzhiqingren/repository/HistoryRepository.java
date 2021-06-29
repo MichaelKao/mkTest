@@ -15,11 +15,15 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
  */
 @Repository
 public interface HistoryRepository extends JpaRepository<History, Long> {
-	
+
 	public List<History> findByPassiveAndBehavior(Lover passive, Behavior behavior);
-	
+
 	public Long countByInitiativeAndPassiveAndBehavior(Lover initiative, Lover passive, Behavior behavior);
 
 	@Query("SELECT SUM(h.points) FROM History h WHERE h.initiative = :initiative")
 	public Long sumByInitiative(Lover initiative);
+
+	public List<History> findByInitiativeAndBehaviorNot(Lover initiative, Behavior behavior);
+
+	public List<History> findByPassiveAndBehaviorNot(Lover passive, Behavior behavior);
 }

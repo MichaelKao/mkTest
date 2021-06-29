@@ -367,7 +367,7 @@ public class Inpay2Service {
 		tokenRequestData.setOrderInfo(tokenRequestData.new OrderInfo(
 			generateMerchantTradeDate(currentTimeMillis),
 			temporary.getMerchantTradeNo(),//TODO：SimpleDateFormat
-			300,//TODO：JPA
+			1688,
 			String.format(
 				"https://%s/inpay2/return.asp",
 				Servant.LOCALHOST
@@ -382,7 +382,7 @@ public class Inpay2Service {
 				Servant.LOCALHOST
 			)
 		);
-		cardInfo.setPeriodAmount((short) 300);
+		cardInfo.setPeriodAmount((short) 1688);
 		cardInfo.setPeriodType("M");
 		cardInfo.setFrequency((short) 1);
 		cardInfo.setExecTimes((short) 99);
