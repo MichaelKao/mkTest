@@ -884,8 +884,8 @@ public class WelcomeController {
 
 		if (!Objects.isNull(birthday)) {
 			ZonedDateTime birth = ZonedDateTime.of(LocalDate.ofInstant(birthday.toInstant(),
-					Servant.ASIA_TAIPEI
-				),
+				Servant.ASIA_TAIPEI
+			),
 				LocalTime.MIN,
 				Servant.ASIA_TAIPEI
 			);
