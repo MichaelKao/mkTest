@@ -107,6 +107,19 @@ public class Inpay2Service {
 	@Autowired
 	private LuJieRepository luJieRepository;
 
+	private String generateMerchantTradeDate(Long currentTimeMillis) {
+		Date date = new Date(currentTimeMillis);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+		return new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(date);
+	}
+
+	private String generateMerchantTradeNo(Long currentTimeMillis) {
+		Date date = new Date(currentTimeMillis);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+		//return new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(date);
+		return String.format("%s", currentTimeMillis.toString());
+	}
+
 	/**
 	 * 发出 http post 请求并取得响应。
 	 *
@@ -169,6 +182,19 @@ public class Inpay2Service {
 		return responseBody;
 	}
 
+	/**
+	 * 解密。
+	 *
+	 * @param data 解密前密文
+	 * @return 解密后数据
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchPaddingException
+	 * @throws InvalidKeyException
+	 * @throws InvalidAlgorithmParameterException
+	 * @throws UnsupportedEncodingException
+	 * @throws IllegalBlockSizeException
+	 * @throws BadPaddingException
+	 */
 	public String decrypt(final String data) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
 		Cipher cipher = Cipher.getInstance(INPAY2_TRANSFORMATION);
 		cipher.init(
@@ -185,6 +211,19 @@ public class Inpay2Service {
 		);
 	}
 
+	/**
+	 * 加密。
+	 *
+	 * @param data 加密前数据
+	 * @return 加密后密文
+	 * @throws UnsupportedEncodingException
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchPaddingException
+	 * @throws InvalidKeyException
+	 * @throws InvalidAlgorithmParameterException
+	 * @throws IllegalBlockSizeException
+	 * @throws BadPaddingException
+	 */
 	public String encrypt(final String data) throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 		String string = URLEncoder.encode(
 			data,
@@ -209,6 +248,7 @@ public class Inpay2Service {
 	 * 建立交易
 	 *
 	 * @param payToken 支付令牌
+	 * @param session 分配给会话的标识符
 	 * @return 绿界回传支付令牌对象字符串
 	 */
 	public String createPayment(final String payToken, final HttpSession session) {
@@ -331,23 +371,10 @@ public class Inpay2Service {
 		return null;
 	}
 
-	private String generateMerchantTradeDate(Long currentTimeMillis) {
-		Date date = new Date(currentTimeMillis);
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-		return new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(date);
-	}
-
-	private String generateMerchantTradeNo(Long currentTimeMillis) {
-		Date date = new Date(currentTimeMillis);
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-		//return new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(date);
-		return String.format("%s", currentTimeMillis.toString());
-	}
-
 	/**
 	 * 取得厂商验证码
 	 *
-	 * @param session javax.​servlet.​http.HttpSession
+	 * @param session 分配给会话的标识符
 	 * @return 绿界回传厂商验证码对象字符串
 	 * @throws com.fasterxml.jackson.core.JsonProcessingException
 	 */
@@ -368,7 +395,7 @@ public class Inpay2Service {
 		tokenRequestData.setOrderInfo(tokenRequestData.new OrderInfo(
 			generateMerchantTradeDate(currentTimeMillis),
 			luJie.getMerchantTradeNo(),//TODO：SimpleDateFormat
-			300,//TODO：JPA
+			1688,//TODO：JPA
 			String.format(
 				"https://%s/inpay2/return.asp",
 				Servant.LOCALHOST
@@ -383,7 +410,7 @@ public class Inpay2Service {
 				Servant.LOCALHOST
 			)
 		);
-		cardInfo.setPeriodAmount((short) 300);
+		cardInfo.setPeriodAmount((short) 1688);
 		cardInfo.setPeriodType("M");
 		cardInfo.setFrequency((short) 1);
 		cardInfo.setExecTimes((short) 99);

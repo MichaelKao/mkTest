@@ -44,8 +44,8 @@
 						</DIV>
 						<xsl:if test="not(@signIn)">
 							<DIV class="my-4">
-								<A class="btn btn-dark mx-2" href="/signIn.asp">登入</A>
-								<A class="btn btn-dark mx-2" href="/signUp.asp">註冊</A>
+								<A class="btn btn-primary btn-round btn-sm mx-2" href="/signIn.asp">登入</A>
+								<A class="btn btn-primary btn-round btn-sm mx-2" href="/signUp.asp">註冊</A>
 							</DIV>
 						</xsl:if>
 					</DIV>
@@ -69,31 +69,67 @@
 			<SECTION class="pt-3 pb-4" id="count-stats">
 				<DIV class="container">
 					<DIV class="row">
-						<DIV class="col-lg-9 z-index-2 border-radius-xl mt-n10 mx-auto py-3 blur shadow-blur">
+						<DIV class="col-lg-9 z-index-2 border-radius-xl mt-n8 mx-auto py-3 blur shadow-blur">
 							<DIV class="row">
-								<DIV class="col-md-4 position-relative">
-									<DIV class="p-3 text-center">
-										<H1 class="text-gradient text-primary">1</H1>
-										<H5 class="mt-3">手機號碼註冊</H5>	
-										<P class="text-sm">From buttons, to inputs, navbars, alerts or cards, you are covered</P>
+								<DIV class="col-4 position-relative">
+									<DIV class="p-1 text-center">
+										<H3 class="text-gradient text-primary text-">1</H3>
+										<H6 class="mt-3">手機註冊</H6>
+										<P class="text-sm">僅需使用手機號碼簡單註冊</P>
 									</DIV>
 									<HR class="vertical dark"/>
 								</DIV>
-								<DIV class="col-md-4 position-relative">
-									<DIV class="p-3 text-center">
-										<H1 class="text-gradient text-primary">2</H1>
-										<H5 class="mt-3">編輯個人資料</H5>
-										<P class="text-sm">Mix the sections, change the colors and unleash your creativity</P>
+								<DIV class="col-4 position-relative">
+									<DIV class="p-1 text-center">
+										<H3 class="text-gradient text-primary">2</H3>
+										<H6 class="mt-3">編輯資料</H6>
+										<P class="text-sm">編輯你/妳的個人資料</P>
 									</DIV>
-									<hr class="vertical dark"/>
+									<HR class="vertical dark"/>
 								</DIV>
-								<DIV class="col-md-4">
-									<DIV class="p-3 text-center">
-										<h1 class="text-gradient text-primary" id="state3" countto="4">3</h1>
-										<h5 class="mt-3">尋找心儀對象</h5>
-										<p class="text-sm">Save 3-4 weeks of work when you use our pre-made pages for your website</p>
+								<DIV class="col-4">
+									<DIV class="p-1 text-center">
+										<H3 class="text-gradient text-primary">3</H3>
+										<H6 class="mt-3">尋找對象</H6>
+										<P class="text-sm">馬上就能尋找心儀對象</P>
 									</DIV>
 								</DIV>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
+			</SECTION>
+			<SECTION class="py-4">
+				<DIV class="row my-4">
+					<DIV class="col-md-6 d-flex align-items-center justify-content-center">
+						<DIV class="position-relative">
+							<DIV class="manPic border-radius-2xl height-200 border-radius-bottom-start-0 border-radius-top-end-0">
+								<DIV class="manPicFrame position-absolute height-200 bg-gradient-primary border-radius-2xl border-radius-bottom-start-0 border-radius-top-end-0"></DIV>
+							</DIV>
+						</DIV>
+					</DIV>
+					<DIV class="col-md-6 text-center">
+						<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">MAN</SPAN>
+						<H4>馬上尋找你的理想男士</H4>
+						<DIV>這裡的對象不但事業有成，而且慷慨大方、寵愛女孩。</DIV>
+						<DIV>無論妳是網美、上班族或者是學生，</DIV>
+						<DIV>只要妳期待著被有經濟能力的人來照顧，</DIV>
+						<DIV>現在立即註冊，尋找你想要的理想關係。</DIV>
+					</DIV>
+				</DIV>
+				<DIV class="row">
+					<DIV class="col-md-6 mt-4 text-center order-2 order-md-1">
+						<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">WOMAN</SPAN>
+						<H4>馬上尋找你的心儀女孩</H4>
+						<DIV>這裡的女孩渴望找尋像您這樣的成功人士，</DIV>
+						<DIV>裡面有不少的網美、直播主或學生，</DIV>
+						<DIV>她們希望能夠用她們的美麗與溫柔，來換取您的寵愛。</DIV>
+						<DIV>現在立即註冊，尋找你心儀的幸福對象。</DIV>
+					</DIV>
+					<DIV class="col-md-6 d-flex align-items-center justify-content-center order-1 order-md-2">
+						<DIV class="position-relative">
+							<DIV class="womanPic border-radius-2xl height-200 border-radius-bottom-start-0 border-radius-top-end-0">
+								<DIV class="womanPicFrame position-absolute height-200 bg-gradient-primary border-radius-2xl border-radius-bottom-start-0 border-radius-top-end-0"></DIV>
 							</DIV>
 						</DIV>
 					</DIV>
@@ -106,9 +142,12 @@
 							<IMG class="border-radius-md" src="{profileImage}" width="120"/>
 							<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
 								<SPAN class="bg-dark opacity-6 border-radius-md px-1">
-									<xsl:value-of select="nickname"/>
-									<SPAN>,&#160;</SPAN>
-									<xsl:value-of select="age"/>
+									<SPAN>
+										<xsl:value-of select="nickname"/>
+									</SPAN>
+									<SPAN class="ms-2">
+										<xsl:value-of select="age"/>
+									</SPAN>
 								</SPAN>
 							</DIV>
 						</A>

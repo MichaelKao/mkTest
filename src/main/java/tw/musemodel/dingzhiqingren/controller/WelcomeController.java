@@ -2,6 +2,7 @@ package tw.musemodel.dingzhiqingren.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
@@ -44,12 +45,15 @@ import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
+import tw.musemodel.dingzhiqingren.entity.Plan;
 import tw.musemodel.dingzhiqingren.model.Activated;
+import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.SignUp;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
+import tw.musemodel.dingzhiqingren.repository.PlanRepository;
 import tw.musemodel.dingzhiqingren.service.AmazonWebServices;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
@@ -89,6 +93,9 @@ public class WelcomeController {
 
 	@Autowired
 	private HistoryRepository historyRepository;
+
+	@Autowired
+	private PlanRepository planRepository;
 
 	/**
 	 * 首页
@@ -877,8 +884,8 @@ public class WelcomeController {
 
 		if (!Objects.isNull(birthday)) {
 			ZonedDateTime birth = ZonedDateTime.of(LocalDate.ofInstant(birthday.toInstant(),
-					Servant.ASIA_TAIPEI
-				),
+				Servant.ASIA_TAIPEI
+			),
 				LocalTime.MIN,
 				Servant.ASIA_TAIPEI
 			);
@@ -1247,6 +1254,11 @@ public class WelcomeController {
 			return new ModelAndView("redirect:/");
 		}
 
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -1262,7 +1274,275 @@ public class WelcomeController {
 			);
 		}
 
+		for (Plan plan : planRepository.findAll()) {
+			Element planElement = document.createElement("plan");
+			planElement.setAttribute("points", Short.toString(plan.getPoints()));
+			planElement.setAttribute("amount", Integer.toString(plan.getAmount()));
+			planElement.setTextContent("方案" + plan.getId().toString());
+			documentElement.appendChild(planElement);
+		}
+
+		Element heartsElement = document.createElement("hearts");
+		heartsElement.setTextContent(historyRepository.sumByInitiative(me).toString());
+		documentElement.appendChild(heartsElement);
+
 		ModelAndView modelAndView = new ModelAndView("deposit");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
+	 * 動態紀錄
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/activeLogs.asp")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView transaction(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		if (servant.isNull(authentication)) {
+			return new ModelAndView("redirect:/");
+		}
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.activeLogs",
+			null,
+			locale
+		));
+
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"signIn",
+				authentication.getName()
+			);
+		}
+
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		// 確認性別
+		Boolean isMale = loverService.isMale(me);
+
+		List<Activity> activeLogsList = historyService.findActiveLogsOrderByOccurredDesc(me);
+
+		for (Activity activeLogs : activeLogsList) {
+			String initiativeIdentifier = activeLogs.getInitiative().getIdentifier().toString();
+			String initiativeProfileImage = activeLogs.getInitiative().getProfileImage();
+			String initiativeNickname = activeLogs.getInitiative().getNickname();
+			String passiveIdentifier = null;
+			String passiveProfileImage = null;
+			String passiveNickname = null;
+			if (Objects.nonNull(activeLogs.getPassive())) {
+				passiveIdentifier = activeLogs.getPassive().getIdentifier().toString();
+				passiveProfileImage = activeLogs.getPassive().getProfileImage();
+				passiveNickname = activeLogs.getPassive().getNickname();
+			}
+			String identifier = null;
+			String profileImage = null;
+			String message = null;
+
+			Element historyElement = document.createElement("history");
+			documentElement.appendChild(historyElement);
+			historyElement.setAttribute(
+				"time",
+				new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+					.format(activeLogs.getOccurred()
+					));
+			if (activeLogs.getBehavior() == Behavior.CHU_ZHI) {
+				if (isMale) {
+					profileImage = initiativeProfileImage;
+					message = String.format(
+						"%s%d%s",
+						"您儲值了",
+						Math.abs(activeLogs.getPoints()),
+						"愛心點數"
+					);
+					identifier = initiativeIdentifier;
+				}
+				historyElement.setAttribute(
+					"profileImage",
+					"https://www.youngme.vip/profileImage/" + profileImage
+				);
+				historyElement.setAttribute(
+					"message",
+					message
+				);
+				historyElement.setAttribute(
+					"identifier",
+					identifier
+				);
+			}
+			if (activeLogs.getBehavior() == Behavior.YUE_FEI) {
+				if (isMale) {
+					profileImage = initiativeProfileImage;
+					message = String.format(
+						"%s",
+						"升級 VIP 費用扣款 $1688"
+					);
+					identifier = initiativeIdentifier;
+				}
+				historyElement.setAttribute(
+					"profileImage",
+					"https://www.youngme.vip/profileImage/" + profileImage
+				);
+				historyElement.setAttribute(
+					"message",
+					message
+				);
+				historyElement.setAttribute(
+					"identifier",
+					identifier
+				);
+			}
+			if (activeLogs.getBehavior() == Behavior.JI_WO_LAI) {
+				if (isMale) {
+					profileImage = passiveProfileImage;
+					identifier = passiveIdentifier;
+					message = String.format(
+						"%s%s%s",
+						"您已向",
+						passiveNickname,
+						"要求 LINE"
+					);
+				}
+				if (!isMale) {
+					profileImage = initiativeProfileImage;
+					identifier = initiativeIdentifier;
+					message = String.format(
+						"%s%s%s",
+						initiativeNickname,
+						"向您要求 Line：",
+						activeLogs.getGreeting()
+					);
+				}
+				historyElement.setAttribute(
+					"profileImage",
+					"https://www.youngme.vip/profileImage/" + profileImage
+				);
+				historyElement.setAttribute(
+					"message",
+					message
+				);
+				historyElement.setAttribute(
+					"identifier",
+					identifier
+				);
+			}
+			if (activeLogs.getBehavior() == Behavior.JI_NI_LAI) {
+				if (isMale) {
+					profileImage = initiativeProfileImage;
+					identifier = initiativeIdentifier;
+					message = String.format(
+						"%s%s%s",
+						initiativeNickname,
+						"接受給您 Line：",
+						activeLogs.getInitiative().getInviteMeAsLineFriend()
+					);
+				}
+				if (!isMale) {
+					profileImage = passiveProfileImage;
+					identifier = passiveIdentifier;
+					message = String.format(
+						"%s%s%s",
+						"您已答應",
+						passiveNickname,
+						"給出 Line"
+					);
+				}
+				historyElement.setAttribute(
+					"profileImage",
+					"https://www.youngme.vip/profileImage/" + profileImage
+				);
+				historyElement.setAttribute(
+					"message",
+					message
+				);
+				historyElement.setAttribute(
+					"identifier",
+					identifier
+				);
+			}
+			if (activeLogs.getBehavior() == Behavior.DA_ZHAO_HU) {
+				if (isMale) {
+					profileImage = initiativeProfileImage;
+					identifier = initiativeIdentifier;
+					message = String.format(
+						"%s%s%s",
+						initiativeNickname,
+						"向您打招呼：",
+						activeLogs.getGreeting()
+					);
+				}
+				if (!isMale) {
+					profileImage = passiveProfileImage;
+					identifier = passiveIdentifier;
+					message = String.format(
+						"%s%s%s",
+						"您已向",
+						passiveNickname,
+						"打招呼"
+					);
+				}
+				historyElement.setAttribute(
+					"profileImage",
+					"https://www.youngme.vip/profileImage/" + profileImage
+				);
+				historyElement.setAttribute(
+					"message",
+					message
+				);
+				historyElement.setAttribute(
+					"identifier",
+					identifier
+				);
+			}
+			if (activeLogs.getBehavior() == Behavior.CHE_MA_FEI) {
+				if (isMale) {
+					profileImage = passiveProfileImage;
+					identifier = passiveIdentifier;
+					message = String.format(
+						"%s%s%d%s",
+						"您給了",
+						passiveNickname,
+						Math.abs(activeLogs.getPoints()),
+						"車馬費"
+					);
+				}
+				if (!isMale) {
+					profileImage = initiativeProfileImage;
+					identifier = initiativeIdentifier;
+					message = String.format(
+						"%s%s%d%s",
+						"您收到了來自",
+						initiativeNickname,
+						Math.abs(activeLogs.getPoints()),
+						"車馬費"
+					);
+				}
+				historyElement.setAttribute(
+					"profileImage",
+					"https://www.youngme.vip/profileImage/" + profileImage
+				);
+				historyElement.setAttribute(
+					"message",
+					message
+				);
+				historyElement.setAttribute(
+					"identifier",
+					identifier
+				);
+			}
+		}
+
+		ModelAndView modelAndView = new ModelAndView("activeLogs");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}
@@ -1323,7 +1603,7 @@ public class WelcomeController {
 		Lover male = loverService.loadByUsername(
 			authentication.getName()
 		);
-		
+
 		Lover female = loverService.loadByIdentifier(femaleUUID);
 
 		JSONObject jsonObject;
@@ -1331,7 +1611,8 @@ public class WelcomeController {
 			jsonObject = historyService.fare(
 				male,
 				female,
-				points
+				points,
+				locale
 			);
 		} catch (Exception exception) {
 			jsonObject = new JavaScriptObjectNotation().
@@ -1365,7 +1646,7 @@ public class WelcomeController {
 		Lover male = loverService.loadByUsername(
 			authentication.getName()
 		);
-		
+
 		Lover female = loverService.loadByIdentifier(femaleUUID);
 
 		JSONObject jsonObject;
@@ -1373,7 +1654,8 @@ public class WelcomeController {
 			jsonObject = historyService.gimme(
 				male,
 				female,
-				greetingMessage
+				greetingMessage,
+				locale
 			);
 		} catch (Exception exception) {
 			jsonObject = new JavaScriptObjectNotation().
@@ -1407,15 +1689,16 @@ public class WelcomeController {
 		Lover female = loverService.loadByUsername(
 			authentication.getName()
 		);
-		
+
 		Lover male = loverService.loadByIdentifier(maleUUID);
-		
+
 		JSONObject jsonObject;
 		try {
 			jsonObject = historyService.greet(
 				female,
 				male,
-				greetingMessage
+				greetingMessage,
+				locale
 			);
 		} catch (Exception exception) {
 			jsonObject = new JavaScriptObjectNotation().
@@ -1448,14 +1731,15 @@ public class WelcomeController {
 		Lover female = loverService.loadByUsername(
 			authentication.getName()
 		);
-		
+
 		Lover male = loverService.loadByIdentifier(maleUUID);
 
 		JSONObject jsonObject;
 		try {
 			jsonObject = historyService.inviteMeAsLineFriend(
 				female,
-				male
+				male,
+				locale
 			);
 		} catch (Exception exception) {
 			jsonObject = new JavaScriptObjectNotation().
@@ -1488,7 +1772,7 @@ public class WelcomeController {
 		Lover sadism = loverService.loadByUsername(
 			authentication.getName()
 		);
-		
+
 		Lover masochism = loverService.loadByIdentifier(masochismUUID);
 
 		JSONObject jsonObject;

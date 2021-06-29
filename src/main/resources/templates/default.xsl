@@ -59,6 +59,9 @@
 											<A class="dropdown-item border-radius-md" href="/looksMe.asp">
 												<SPAN>誰看過我</SPAN>
 											</A>
+											<A class="dropdown-item border-radius-md" href="/activeLogs.asp">
+												<SPAN>動態紀錄</SPAN>
+											</A>
 										</DIV>
 										<DIV class="d-lg-none">
 											<A class="dropdown-item border-radius-md" href="/profile/">
@@ -69,6 +72,9 @@
 											</A>
 											<A class="dropdown-item border-radius-md" href="/looksMe.asp">
 												<SPAN>誰看過我</SPAN>
+											</A>
+											<A class="dropdown-item border-radius-md" href="/activeLogs.asp">
+												<SPAN>動態紀錄</SPAN>
 											</A>
 										</DIV>
 									</DIV>

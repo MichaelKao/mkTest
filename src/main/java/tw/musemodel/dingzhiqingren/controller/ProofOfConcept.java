@@ -57,7 +57,8 @@ public class ProofOfConcept {
 			jsonObject = historyService.gimme(
 				male,
 				female,
-				"給我賴"
+				"給我賴",
+				locale
 			);
 		} catch (IllegalArgumentException illegalArgumentException) {
 			jsonObject = new JavaScriptObjectNotation().

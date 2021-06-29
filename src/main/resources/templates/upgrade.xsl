@@ -38,11 +38,22 @@
 							<DIV>2. 每日可跟女生要求 10 次加入 Line 好友</DIV>
 							<DIV>3. 可打賞車馬費給女生</DIV>
 						</P>
-						<BUTTON class="btn btn-sm btn-outline-info m-0" type="button">升級</BUTTON>
+					</DIV>
+				</DIV>
+				<DIV class="card col-11 col-md-8 col-lg-6 mx-auto mt-3">
+					<DIV class="card-body pt-2">
+						<DIV class="h3 d-block text-darker my-2">馬上升級!</DIV>
+						<DIV id="ECPayPayment"></DIV>
+						<FORM action="" method="post" name="payment">
+							<BUTTON class="btn btn-outline-info btn-sm h6 text-info px-3 m-0" type="submit">付款</BUTTON>
+						</FORM>
 					</DIV>
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
+			<SCRIPT src="https://cdn.jsdelivr.net/npm/node-forge@0.7.0/dist/forge.min.js"/>
+			<SCRIPT src="https://ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116"/>
+			<SCRIPT src="/SCRIPT/upgrade.js"/>
 		</BODY>
 	</xsl:template>
 </xsl:stylesheet>

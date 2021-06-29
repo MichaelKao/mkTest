@@ -28,43 +28,31 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container py-8 text-center">
-				<DIV class="mx-sm-5 mx-lg-12 mb-5">
-					<H4 class="text-primary">
-						<xsl:value-of select="@title"/>
-					</H4>
-					<HR class="horizontal dark"/>
-				</DIV>
+			<DIV class="container py-7">
+				<H4 class="text-primary text-center">
+					<xsl:value-of select="@title"/>
+				</H4>
 				<DIV class="d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center">
-					<xsl:for-each select="peeker">
-						<DIV class="col-10 col-sm-8 col-md-5 card card-frame mb-3 mx-2">
-							<DIV class="card-body d-flex align-items-center justify-content-around p-3 p-md-4">
+					<DIV class="col-11 col-md-8 card card-frame mb-3 mx-2">
+						<xsl:for-each select="history">
+							<DIV class="card-body d-flex align-items-center justify-content-start py-0">
 								<DIV>
 									<A href="/profile/{@identifier}/">
 										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="70"/>
 									</A>
 								</DIV>
-								<DIV class="memberInfo ms-3">
-									<A class="h6" href="/profile/{@identifier}/">
-										<SPAN>
-											<xsl:value-of select="@nickname"/>
-										</SPAN>
-										<SPAN class="me-1">,</SPAN>
-										<SPAN>
-											<xsl:value-of select="@age"/>
-										</SPAN>
-									</A>
-									<DIV>
-										<SPAN class="me-1">到訪了</SPAN>
-										<SPAN>
-											<xsl:value-of select="@times"/>
-										</SPAN>
-										<SPAN class="ms-1">次</SPAN>
+								<DIV class="memberInfo ms-4">
+									<SPAN class="text-xs font-weight-bold my-2">
+										<xsl:value-of select="@time"/>
+									</SPAN>
+									<DIV class="text-dark">
+										<xsl:value-of select="@message"/>
 									</DIV>
 								</DIV>
 							</DIV>
-						</DIV>
-					</xsl:for-each>
+							<HR class="horizontal dark"/>
+						</xsl:for-each>
+					</DIV>
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
