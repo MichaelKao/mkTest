@@ -883,13 +883,11 @@ public class WelcomeController {
 		}
 
 		if (!Objects.isNull(birthday)) {
-			ZonedDateTime birth = ZonedDateTime.of(
-				LocalDate.ofInstant(
-					birthday.toInstant(),
-					Servant.ZONE_ID_TAIPEI
+			ZonedDateTime birth = ZonedDateTime.of(LocalDate.ofInstant(birthday.toInstant(),
+					Servant.ASIA_TAIPEI
 				),
 				LocalTime.MIN,
-				Servant.ZONE_ID_TAIPEI
+				Servant.ASIA_TAIPEI
 			);
 			birthday.setTime(birth.toEpochSecond() * 1000);
 			me.setBirthday(birthday);
@@ -1654,7 +1652,7 @@ public class WelcomeController {
 
 		JSONObject jsonObject;
 		try {
-			jsonObject = historyService.gimmeYourLineInvitation(
+			jsonObject = historyService.gimme(
 				male,
 				female,
 				greetingMessage,

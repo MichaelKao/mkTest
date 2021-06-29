@@ -65,6 +65,10 @@ public class History implements java.io.Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date occurred;
 
+	@Column(name = "yi_du")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date seen;
+
 	@Basic(optional = false)
 	@Column(name = "dian_shu", nullable = false)
 	private Short points;
@@ -76,10 +80,6 @@ public class History implements java.io.Serializable {
 
 	@Column(name = "zhao_hu_yu")
 	private String greeting;
-
-	@Column(name = "yi_du")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date read;
 
 	/**
 	 * 默认构造器
@@ -215,6 +215,20 @@ public class History implements java.io.Serializable {
 	}
 
 	/**
+	 * @return 已读
+	 */
+	public Date getSeen() {
+		return seen;
+	}
+
+	/**
+	 * @param seen 已读
+	 */
+	public void setSeen(Date seen) {
+		this.seen = seen;
+	}
+
+	/**
 	 * @return 点数
 	 */
 	public Short getPoints() {
@@ -254,20 +268,6 @@ public class History implements java.io.Serializable {
 	 */
 	public void setGreeting(String greeting) {
 		this.greeting = greeting;
-	}
-
-	/**
-	 * @return 已讀
-	 */
-	public Date getRead() {
-		return read;
-	}
-
-	/**
-	 * @param read 已讀
-	 */
-	public void setRead(Date read) {
-		this.read = read;
 	}
 
 	/**

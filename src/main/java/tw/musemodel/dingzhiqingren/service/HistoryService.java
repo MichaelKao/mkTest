@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Date;
 import java.util.Objects;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -29,6 +30,13 @@ import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 public class HistoryService {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(HistoryService.class);
+
+	private final static Short COST_GIMME_YOUR_LINE_INVITATION = Short.valueOf(System.getenv("COST_GIMME_YOUR_LINE_INVITATION"));
+
+	private final static long VIP_DAILY_TOLERANCE = 10L;
+
+	@Autowired
+	private Servant servant;
 
 	@Autowired
 	private MessageSource messageSource;
@@ -82,18 +90,20 @@ public class HistoryService {
 	@Transactional
 	public JSONObject fare(Lover initiative, Lover passive, short points, Locale locale) {
 		if (Objects.isNull(initiative)) {
-			throw new IllegalArgumentException("gimmeYourLineInvitation.initiativeMustntBeNull");
+			throw new IllegalArgumentException("fare.initiativeMustntBeNull");//无主动方
 		}
 		if (Objects.isNull(passive)) {
-			throw new IllegalArgumentException("gimmeYourLineInvitation.passiveMustntBeNull");
+			throw new IllegalArgumentException("fare.passiveMustntBeNull");//无被动方
 		}
 		if (Objects.equals(initiative.getGender(), false)) {
-			throw new RuntimeException("gimmeYourLineInvitation.initiativeMustBeMale");
+			throw new RuntimeException("fare.initiativeMustBeMale");//主动方为女
 		}
 		if (Objects.equals(passive.getGender(), true)) {
-			throw new RuntimeException("gimmeYourLineInvitation.passiveMustBeFemale");
+			throw new RuntimeException("fare.passiveMustBeFemale");//被动方为男
 		}
-		//TODO:	男生剩余点数够不够？扣除点数！
+		if (points(initiative) < Math.abs(points)) {
+			throw new RuntimeException("fare.insufficientPoints");//点数不足
+		}
 		History history = new History(
 			initiative,
 			passive,
@@ -121,25 +131,42 @@ public class HistoryService {
 	 * @return 杰森对象
 	 */
 	@Transactional
-	public JSONObject gimmeYourLineInvitation(Lover initiative, Lover passive, String greetingMessage, Locale locale) {
+	public JSONObject gimme(Lover initiative, Lover passive, String greetingMessage, Locale locale) {
 		if (Objects.isNull(initiative)) {
-			throw new IllegalArgumentException("gimmeYourLineInvitation.initiativeMustntBeNull");
+			throw new IllegalArgumentException("gimmeYourLineInvitation.initiativeMustntBeNull");//无主动方
 		}
 		if (Objects.isNull(passive)) {
-			throw new IllegalArgumentException("gimmeYourLineInvitation.passiveMustntBeNull");
+			throw new IllegalArgumentException("gimmeYourLineInvitation.passiveMustntBeNull");//无被动方
 		}
 		if (Objects.equals(initiative.getGender(), false)) {
-			throw new RuntimeException("gimmeYourLineInvitation.initiativeMustBeMale");
+			throw new RuntimeException("gimmeYourLineInvitation.initiativeMustBeMale");//主动方为女
 		}
 		if (Objects.equals(passive.getGender(), true)) {
-			throw new RuntimeException("gimmeYourLineInvitation.passiveMustBeFemale");
+			throw new RuntimeException("gimmeYourLineInvitation.passiveMustBeFemale");//被动方为男
 		}
-		//TODO:	男生剩余点数够不够？扣除点数！
+		short cost = COST_GIMME_YOUR_LINE_INVITATION;
+		long currentTimeMillis = System.currentTimeMillis();
+		Date vip = initiative.getVip();
+		if (Objects.nonNull(vip) && vip.after(new Date(currentTimeMillis))) {
+			Long dailyCount = historyRepository.countByInitiativeAndBehaviorAndOccurredBetween(
+				initiative,
+				BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
+				Servant.minimumToday(currentTimeMillis),
+				Servant.maximumToday(currentTimeMillis)
+			);
+			if (Objects.isNull(dailyCount) || dailyCount <= VIP_DAILY_TOLERANCE) {
+				cost = 0;
+			}
+		} else {
+			if (points(initiative) < Math.abs(cost)) {
+				throw new RuntimeException("gimmeYourLineInvitation.insufficientPoints");//点数不足
+			}
+		}
 		History history = new History(
 			initiative,
 			passive,
 			BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
-			(short) 0
+			cost
 		);
 		greetingMessage = Objects.isNull(greetingMessage) || greetingMessage.isBlank() ? initiative.getGreeting() : greetingMessage;
 		history.setGreeting(
@@ -223,6 +250,11 @@ public class HistoryService {
 			throw new RuntimeException("inviteMeAsLineFriend.passiveMustBeMale");
 		}
 		//TODO:	男生有要求过吗？女生已给过吗？
+		//Long inviteMeAsLineFriendCount = historyRepository.countByInitiativeAndPassiveAndBehavior(
+		//	initiative,
+		//	passive,
+		//	BEHAVIOR_INVITE_ME_AS_LINE_FRIEND
+		//);
 		String inviteMeAsLineFriend = initiative.getInviteMeAsLineFriend();
 		if (Objects.isNull(inviteMeAsLineFriend) || inviteMeAsLineFriend.isBlank()) {
 			throw new RuntimeException("inviteMeAsLineFriend.mustntBeNull");
@@ -298,7 +330,7 @@ public class HistoryService {
 				history.getOccurred(),
 				history.getPoints(),
 				history.getGreeting(),
-				history.getRead()
+				history.getSeen()
 			);
 			list.add(activeLogs);
 		}
@@ -310,7 +342,7 @@ public class HistoryService {
 				history.getOccurred(),
 				history.getPoints(),
 				history.getGreeting(),
-				history.getRead()
+				history.getSeen()
 			);
 			list.add(activeLogs);
 		}
