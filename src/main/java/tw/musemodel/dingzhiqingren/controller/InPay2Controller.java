@@ -23,6 +23,8 @@ import tw.com.ecpay.ecpg.ReturnResponse;
 import tw.musemodel.dingzhiqingren.service.Inpay2Service;
 
 /**
+ * 控制器：站内付 2.0
+ *
  * @author p@musemodel.tw
  */
 @Controller

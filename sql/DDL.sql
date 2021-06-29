@@ -272,16 +272,100 @@ COMMENT ON COLUMN"yuepao"."qing_ren"."li_xiang_dui_xiang"IS'理想对象';
  * 绿界
  */
 CREATE TABLE"lu_jie"(
-	"id"serial8 PRIMARY KEY
+	"id"serial8 PRIMARY KEY,
+	"session_id"varchar,
+	--OrderInfo 订单资讯
+	"MerchantTradeDate"varchar(20),
+	"MerchantTradeNo"varchar(20),
+	"TotalAmount"int,
+	"ItemName"varchar(400),
+	"TradeNo"varchar(20),
+	"TradeAmt"int,
+	"TradeDate"varchar(20),
+	"PaymentType"varchar(20),
+	"PaymentDate"varchar(20),
+	"ChargeFee"int,
+	"TradeStatus"varchar(8),
+	--ATMInfo ATM 资讯
+	"BankCode"varchar(3),
+	"vAccount"varchar(16),
+	"ATMAccBank"varchar(3),
+	"ATMAccNo"varchar(5),
+	--BarcodeInfo 超商条码资讯
+	"Barcode1"varchar(20),
+	"Barcode2"varchar(20),
+	"Barcode3"varchar(20),
+	"BarcodeInfoPayFrom"varchar(10),
+	--CVSInfo 超商代码资讯
+	"PaymentNo"varchar(14),
+	"CVSInfoPayFrom"varchar(10),
+	--CardInfo 信用卡资讯
+	"AuthCode"varchar(6),
+	"Gwsr"int,
+	"Amount"int,
+	"Stage"int,
+	"Stast"int,
+	"Staed"int,
+	"Eci"int,
+	"Card6No"varchar(6),
+	"Card4No"varchar(4),
+	"PeriodType"varchar(1),
+	"Frequency"int2,
+	"ExecTimes"int2,
+	"PeriodAmount"int2,
+	"ProcessDate"varchar(20),
+	--ConsumerInfo 消费者资讯
+	"MerchantMemberID"varchar(60),
+	--特店自订栏位
+	"CustomField"varchar(200)
 );
-COMMENT ON TABLE"lu_jie"IS'绿界';
-COMMENT ON COLUMN"lu_jie"."id"IS'主键';
+COMMENT ON TABLE"yuepao"."lu_jie"IS'绿界';
+COMMENT ON COLUMN"yuepao"."lu_jie"."id"IS'主键';
+COMMENT ON COLUMN"yuepao"."lu_jie"."session_id"IS'分配给会话的标识符';
+COMMENT ON COLUMN"yuepao"."lu_jie"."MerchantTradeDate"IS'订单资讯：厂商交易时间';
+COMMENT ON COLUMN"yuepao"."lu_jie"."MerchantTradeNo"IS'订单资讯：特店交易编号';
+COMMENT ON COLUMN"yuepao"."lu_jie"."TotalAmount"IS'订单资讯：交易金额';
+COMMENT ON COLUMN"yuepao"."lu_jie"."ItemName"IS'订单资讯：商品名称';
+COMMENT ON COLUMN"yuepao"."lu_jie"."TradeNo"IS'订单资讯：绿界交易编号';
+COMMENT ON COLUMN"yuepao"."lu_jie"."TradeAmt"IS'订单资讯：交易金额';
+COMMENT ON COLUMN"yuepao"."lu_jie"."TradeDate"IS'订单资讯：订单成立时间';
+COMMENT ON COLUMN"yuepao"."lu_jie"."PaymentType"IS'订单资讯：付款方式';
+COMMENT ON COLUMN"yuepao"."lu_jie"."PaymentDate"IS'订单资讯：付款时间';
+COMMENT ON COLUMN"yuepao"."lu_jie"."ChargeFee"IS'订单资讯：手续费';
+COMMENT ON COLUMN"yuepao"."lu_jie"."TradeStatus"IS'订单资讯：交易状态';
+COMMENT ON COLUMN"yuepao"."lu_jie"."BankCode"IS'ATM 资讯：缴费银行代码';
+COMMENT ON COLUMN"yuepao"."lu_jie"."vAccount"IS'ATM 资讯：缴费虚拟帐号';
+COMMENT ON COLUMN"yuepao"."lu_jie"."ATMAccBank"IS'ATM 资讯：付款人银行代码';
+COMMENT ON COLUMN"yuepao"."lu_jie"."ATMAccNo"IS'ATM 资讯：付款人银行帐号后五码';
+COMMENT ON COLUMN"yuepao"."lu_jie"."Barcode1"IS'超商条码资讯：条码第一段号码';
+COMMENT ON COLUMN"yuepao"."lu_jie"."Barcode2"IS'超商条码资讯：条码第二段号码';
+COMMENT ON COLUMN"yuepao"."lu_jie"."Barcode3"IS'超商条码资讯：条码第三段号码';
+COMMENT ON COLUMN"yuepao"."lu_jie"."BarcodeInfoPayFrom"IS'超商条码资讯：缴费超商';
+COMMENT ON COLUMN"yuepao"."lu_jie"."PaymentNo"IS'超商代码资讯：缴费代码';
+COMMENT ON COLUMN"yuepao"."lu_jie"."CVSInfoPayFrom"IS'超商代码资讯：缴费超商';
+COMMENT ON COLUMN"yuepao"."lu_jie"."AuthCode"IS'信用卡资讯：银行授权码';
+COMMENT ON COLUMN"yuepao"."lu_jie"."Gwsr"IS'信用卡资讯：授权交易单号';
+COMMENT ON COLUMN"yuepao"."lu_jie"."Amount"IS'信用卡资讯：金额';
+COMMENT ON COLUMN"yuepao"."lu_jie"."Stage"IS'信用卡资讯：分期期数';
+COMMENT ON COLUMN"yuepao"."lu_jie"."Stast"IS'信用卡资讯：首期金额';
+COMMENT ON COLUMN"yuepao"."lu_jie"."Staed"IS'信用卡资讯：各期金额';
+COMMENT ON COLUMN"yuepao"."lu_jie"."Eci"IS'信用卡资讯：3D(VBV) 回传值';
+COMMENT ON COLUMN"yuepao"."lu_jie"."Card6No"IS'信用卡资讯：信用卡卡号前六码';
+COMMENT ON COLUMN"yuepao"."lu_jie"."Card4No"IS'信用卡资讯：信用卡卡号末四码';
+COMMENT ON COLUMN"yuepao"."lu_jie"."PeriodType"IS'信用卡资讯：定期定额周期种类';
+COMMENT ON COLUMN"yuepao"."lu_jie"."Frequency"IS'信用卡资讯：定期定额执行频率';
+COMMENT ON COLUMN"yuepao"."lu_jie"."ExecTimes"IS'信用卡资讯：定期定额执行次数';
+COMMENT ON COLUMN"yuepao"."lu_jie"."PeriodAmount"IS'信用卡资讯：定期定额每次授权金额';
+COMMENT ON COLUMN"yuepao"."lu_jie"."ProcessDate"IS'信用卡资讯：交易时间';
+COMMENT ON COLUMN"yuepao"."lu_jie"."MerchantMemberID"IS'消费者资讯：消费者会员编号';
+COMMENT ON COLUMN"yuepao"."lu_jie"."CustomField"IS'特店自订栏位：厂商自订栏位';
 
 CREATE TYPE"xing_wei"AS ENUM(
 	'YUE_FEI',--月费
 	'CHU_ZHI',--储值
 	'JI_WO_LAI',--给我赖
 	'JI_NI_LAI',--给你赖
+	'BU_JI_LAI',--不给赖
 	'DA_ZHAO_HU',--打招呼
 	'KAN_GUO_WO',--看过我
 	'CHE_MA_FEI'--车马费

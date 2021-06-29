@@ -42,11 +42,11 @@ import tw.com.ecpay.ecpg.TokenRequest.Data.ConsumerInfo;
 import tw.com.ecpay.ecpg.TokenRequest.Data.OrderInfo;
 import tw.com.ecpay.ecpg.TokenRequest.RqHeader;
 import tw.com.ecpay.ecpg.TokenResponse;
-import tw.musemodel.dingzhiqingren.entity.Temporary;
-import tw.musemodel.dingzhiqingren.repository.TemporaryRepository;
+import tw.musemodel.dingzhiqingren.entity.LuJie;
+import tw.musemodel.dingzhiqingren.repository.LuJieRepository;
 
 /**
- * 服务层：情人
+ * 服务层：站内付 2.0
  *
  * @author p@musemodel.tw
  */
@@ -105,7 +105,7 @@ public class Inpay2Service {
 	}
 
 	@Autowired
-	private TemporaryRepository temporaryRepository;
+	private LuJieRepository luJieRepository;
 
 	/**
 	 * 发出 http post 请求并取得响应。
@@ -213,7 +213,7 @@ public class Inpay2Service {
 	 */
 	public String createPayment(final String payToken, final HttpSession session) {
 		final Long currentTimeMillis = System.currentTimeMillis();
-		String merchantTradeNo = temporaryRepository.findTop1BySessionIdOrderByIdDesc(
+		String merchantTradeNo = luJieRepository.findTop1BySessionIdOrderByIdDesc(
 			session.getId()
 		).getMerchantTradeNo();
 		LOGGER.debug(
@@ -347,16 +347,17 @@ public class Inpay2Service {
 	/**
 	 * 取得厂商验证码
 	 *
+	 * @param session javax.​servlet.​http.HttpSession
 	 * @return 绿界回传厂商验证码对象字符串
 	 * @throws com.fasterxml.jackson.core.JsonProcessingException
 	 */
 	public String getTokenByTrade(final HttpSession session) throws JsonProcessingException {
 		final Long currentTimeMillis = System.currentTimeMillis();
 		final String merchantTradeNo = generateMerchantTradeNo(currentTimeMillis);
-		Temporary temporary = new Temporary();
-		temporary.setSessionId(session.getId());
-		temporary.setMerchantTradeNo(merchantTradeNo);
-		temporary = temporaryRepository.saveAndFlush(temporary);
+		LuJie luJie = new LuJie();
+		luJie.setSessionId(session.getId());
+		luJie.setMerchantTradeNo(merchantTradeNo);
+		luJie = luJieRepository.saveAndFlush(luJie);
 
 		TokenRequest.Data tokenRequestData = new TokenRequest.Data(
 			INPAY2_MERCHANT_ID,
@@ -366,7 +367,7 @@ public class Inpay2Service {
 
 		tokenRequestData.setOrderInfo(tokenRequestData.new OrderInfo(
 			generateMerchantTradeDate(currentTimeMillis),
-			temporary.getMerchantTradeNo(),//TODO：SimpleDateFormat
+			luJie.getMerchantTradeNo(),//TODO：SimpleDateFormat
 			300,//TODO：JPA
 			String.format(
 				"https://%s/inpay2/return.asp",
@@ -396,7 +397,7 @@ public class Inpay2Service {
 
 		ConsumerInfo consumerInfo = tokenRequestData.new ConsumerInfo();
 		consumerInfo.setMerchantMemberId("test123456");//TODO：JPA
-		consumerInfo.setPhone("0930940238");
+		//consumerInfo.setPhone("0930940238");
 		tokenRequestData.setConsumerInfo(consumerInfo);
 		LOGGER.debug(
 			String.format(

@@ -73,8 +73,8 @@ public class History implements java.io.Serializable {
 	@Column(name = "dian_shu", nullable = false)
 	private Short points;
 
-	@JoinColumn(name = "lu_jie", nullable = false, referencedColumnName = "id")
-	@ManyToOne(optional = false)
+	@JoinColumn(name = "lu_jie", referencedColumnName = "id")
+	@ManyToOne
 	@JsonManagedReference
 	private LuJie luJie;
 
