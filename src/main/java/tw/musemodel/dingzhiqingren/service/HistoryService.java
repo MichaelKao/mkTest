@@ -113,7 +113,7 @@ public class HistoryService {
 		history = historyRepository.saveAndFlush(history);
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
-				"giveHeartsToWoman.success",
+				"fare.success",
 				null,
 				locale
 			)).

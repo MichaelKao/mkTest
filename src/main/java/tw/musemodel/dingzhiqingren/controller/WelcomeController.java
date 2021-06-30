@@ -1283,8 +1283,11 @@ public class WelcomeController {
 		}
 
 		Element heartsElement = document.createElement("hearts");
-		heartsElement.setTextContent(historyRepository.sumByInitiative(me).toString());
 		documentElement.appendChild(heartsElement);
+		heartsElement.setTextContent(
+			historyRepository.countByInitiative(me) > 0
+			? historyRepository.sumByInitiative(me).toString() : "0"
+		);
 
 		ModelAndView modelAndView = new ModelAndView("deposit");
 		modelAndView.getModelMap().addAttribute(document);
@@ -1422,6 +1425,10 @@ public class WelcomeController {
 						initiativeNickname,
 						"向您要求 Line：",
 						activeLogs.getGreeting()
+					);
+					historyElement.setAttribute(
+						"button",
+						null
 					);
 				}
 				historyElement.setAttribute(
