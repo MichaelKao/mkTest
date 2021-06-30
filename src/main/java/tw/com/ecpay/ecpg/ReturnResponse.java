@@ -304,14 +304,14 @@ public class ReturnResponse {
 		/**
 		 * @return 超商代码资讯
 		 */
-		public CVSInfo getCvsInfo() {
+		public CVSInfo getCVSInfo() {
 			return cvsInfo;
 		}
 
 		/**
 		 * @param cvsInfo 超商代码资讯
 		 */
-		public void setCvsInfo(CVSInfo cvsInfo) {
+		public void setCVSInfo(CVSInfo cvsInfo) {
 			this.cvsInfo = cvsInfo;
 		}
 
@@ -332,14 +332,14 @@ public class ReturnResponse {
 		/**
 		 * @return ATM 資訊
 		 */
-		public ATMInfo getAtmInfo() {
+		public ATMInfo getATMInfo() {
 			return atmInfo;
 		}
 
 		/**
 		 * @param atmInfo ATM 資訊
 		 */
-		public void setAtmInfo(ATMInfo atmInfo) {
+		public void setATMInfo(ATMInfo atmInfo) {
 			this.atmInfo = atmInfo;
 		}
 
@@ -400,7 +400,7 @@ public class ReturnResponse {
 			private String tradeDate;
 
 			@JsonProperty("ChargeFee")
-			private Integer chargeFee;
+			private Float chargeFee;
 
 			@JsonProperty("TradeStatus")
 			private String tradeStatus;
@@ -513,14 +513,14 @@ public class ReturnResponse {
 			/**
 			 * @return 手續費
 			 */
-			public Integer getChargeFee() {
+			public Float getChargeFee() {
 				return chargeFee;
 			}
 
 			/**
 			 * @param chargeFee 手續費
 			 */
-			public void setChargeFee(Integer chargeFee) {
+			public void setChargeFee(Float chargeFee) {
 				this.chargeFee = chargeFee;
 			}
 
@@ -698,28 +698,28 @@ public class ReturnResponse {
 			/**
 			 * @return 付款人銀行代碼
 			 */
-			public String getAtmAccBank() {
+			public String getATMAccBank() {
 				return atmAccBank;
 			}
 
 			/**
 			 * @param atmAccBank 付款人銀行代碼
 			 */
-			public void setAtmAccBank(String atmAccBank) {
+			public void setATMAccBank(String atmAccBank) {
 				this.atmAccBank = atmAccBank;
 			}
 
 			/**
 			 * @return 付款人銀行帳號後五碼
 			 */
-			public String getAtmAccNo() {
+			public String getATMAccNo() {
 				return atmAccNo;
 			}
 
 			/**
 			 * @param atmAccNo 付款人銀行帳號後五碼
 			 */
-			public void setAtmAccNo(String atmAccNo) {
+			public void setATMAccNo(String atmAccNo) {
 				this.atmAccNo = atmAccNo;
 			}
 		}
@@ -745,7 +745,7 @@ public class ReturnResponse {
 			private Integer amount;
 
 			@JsonProperty("Eci")
-			private Short eci;
+			private Integer eci;
 
 			@JsonProperty("Card6No")
 			private String card6No;
@@ -754,7 +754,7 @@ public class ReturnResponse {
 			private String card4No;
 
 			@JsonProperty("Stage")
-			private Short stage;
+			private Integer stage;
 
 			@JsonProperty("Stast")
 			private Integer stast;
@@ -868,7 +868,7 @@ public class ReturnResponse {
 			/**
 			 * @return 3D(VBV) 回傳值
 			 */
-			public Short getEci() {
+			public Integer getEci() {
 				return eci;
 			}
 
@@ -877,7 +877,7 @@ public class ReturnResponse {
 			 *
 			 * @param eci 3D(VBV) 回傳值
 			 */
-			public void setEci(Short eci) {
+			public void setEci(Integer eci) {
 				this.eci = eci;
 			}
 
@@ -912,7 +912,7 @@ public class ReturnResponse {
 			/**
 			 * @return 分期期數
 			 */
-			public Short getStage() {
+			public Integer getStage() {
 				return stage;
 			}
 
@@ -921,7 +921,7 @@ public class ReturnResponse {
 			 *
 			 * @param stage 分期期數
 			 */
-			public void setStage(Short stage) {
+			public void setStage(Integer stage) {
 				this.stage = stage;
 			}
 
@@ -1086,7 +1086,7 @@ public class ReturnResponse {
 			}
 
 			/**
-			 * @return 目前已成功授權的次數
+			 * @return 目前已成功授权的次数
 			 */
 			public Integer getTotalSuccessTimes() {
 				return totalSuccessTimes;
@@ -1095,7 +1095,7 @@ public class ReturnResponse {
 			/**
 			 * 定期定額時才會回傳
 			 *
-			 * @param totalSuccessTimes 目前已成功授權的次數
+			 * @param totalSuccessTimes 目前已成功授权的次数
 			 */
 			public void setTotalSuccessTimes(Integer totalSuccessTimes) {
 				this.totalSuccessTimes = totalSuccessTimes;

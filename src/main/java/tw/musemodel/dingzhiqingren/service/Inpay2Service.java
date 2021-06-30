@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 import tw.com.ecpay.ecpg.OrderResultResponse;
 import tw.com.ecpay.ecpg.PaymentRequest;
 import tw.com.ecpay.ecpg.PaymentResponse;
+import tw.com.ecpay.ecpg.ReturnResponse;
 import tw.com.ecpay.ecpg.TokenRequest;
 import tw.com.ecpay.ecpg.TokenRequest.Data.CardInfo;
 import tw.com.ecpay.ecpg.TokenRequest.Data.ConsumerInfo;
@@ -439,9 +440,9 @@ public class Inpay2Service {
 			)
 		);
 		cardInfo.setPeriodAmount((short) 1688);
-		cardInfo.setPeriodType("M");
+		cardInfo.setPeriodType("D");//M
 		cardInfo.setFrequency((short) 1);
-		cardInfo.setExecTimes((short) 99);
+		cardInfo.setExecTimes((short) 3);//99
 		cardInfo.setPeriodReturnUrl(
 			String.format(
 				"https://%s/inpay2/periodReturn.asp",
@@ -452,7 +453,6 @@ public class Inpay2Service {
 
 		ConsumerInfo consumerInfo = tokenRequestData.new ConsumerInfo();
 		consumerInfo.setMerchantMemberId("test123456");//TODO：JPA
-		//consumerInfo.setPhone("0930940238");
 		tokenRequestData.setConsumerInfo(consumerInfo);
 		LOGGER.debug(
 			String.format(
@@ -605,6 +605,139 @@ public class Inpay2Service {
 			luJie.setPaymentNo(cvsInfo.getPaymentNo());
 		}
 		OrderResultResponse.Data.CardInfo cardInfo = data.getCardInfo();
+		if (Objects.nonNull(cardInfo)) {
+			luJie.setAuthCode(cardInfo.getAuthCode());
+			luJie.setGwsr(cardInfo.getGwsr());
+			luJie.setProcessDate(cardInfo.getProcessDate());
+			luJie.setAmount(cardInfo.getAmount());
+			luJie.setEci(cardInfo.getEci());
+			luJie.setCard6No(cardInfo.getCard6No());
+			luJie.setCard4No(cardInfo.getCard4No());
+			luJie.setStage(cardInfo.getStage());
+			luJie.setStast(cardInfo.getStast());
+			luJie.setStaed(cardInfo.getStaed());
+			luJie.setPeriodType(cardInfo.getPeriodType());
+			luJie.setFrequency(cardInfo.getFrequency());
+			luJie.setExecTimes(cardInfo.getExecTimes());
+			luJie.setPeriodAmount(cardInfo.getPeriodAmount());
+		}
+		luJie = luJieRepository.saveAndFlush(luJie);
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			withResult(luJie).
+			toJSONObject();
+	}
+
+	public JSONObject handlePeriodReturn(String requestBody) throws JsonProcessingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
+		ReturnResponse returnResponse = JSON_MAPPER.readValue(
+			requestBody,
+			ReturnResponse.class
+		);
+		if (returnResponse.getTransCode() != 1) {
+			return new JavaScriptObjectNotation().
+				withReason(returnResponse.getTransMsg()).
+				withResponse(false).
+				toJSONObject();
+		}
+		String decrypted = decrypt(returnResponse.getData());
+		ReturnResponse.Data data = JSON_MAPPER.readValue(
+			decrypted,
+			ReturnResponse.Data.class
+		);
+		LOGGER.info(
+			String.format(
+				"绿界以幕后方式传送第 n 次授權付款结果。\n%s#handlePeriodReturn(\n\tString requestBody = {}\n);\n{}",
+				getClass().getName()
+			),
+			requestBody,
+			decrypted
+		);
+		ReturnResponse.Data.OrderInfo orderInfo = data.getOrderInfo();
+		LuJie luJie = new LuJie();
+		luJie.setMerchantTradeNo(orderInfo.getMerchantTradeNo());
+		luJie.setTradeNo(orderInfo.getTradeNo());
+		luJie.setPaymentDate(orderInfo.getPaymentDate());
+		luJie.setTradeAmt(orderInfo.getTradeAmt());
+		luJie.setPaymentType(orderInfo.getPaymentType());
+		luJie.setTradeDate(orderInfo.getTradeDate());
+		luJie.setChargeFee(orderInfo.getChargeFee());
+		luJie.setTradeStatus(orderInfo.getTradeStatus());
+		ReturnResponse.Data.CardInfo cardInfo = data.getCardInfo();
+		if (Objects.nonNull(cardInfo)) {
+			luJie.setAuthCode(cardInfo.getAuthCode());
+			luJie.setGwsr(cardInfo.getGwsr());
+			luJie.setProcessDate(cardInfo.getProcessDate());
+			luJie.setAmount(cardInfo.getAmount());
+			luJie.setEci(cardInfo.getEci());
+			luJie.setCard6No(cardInfo.getCard6No());
+			luJie.setCard4No(cardInfo.getCard4No());
+			luJie.setStage(cardInfo.getStage());
+			luJie.setStast(cardInfo.getStast());
+			luJie.setStaed(cardInfo.getStaed());
+			luJie.setPeriodType(cardInfo.getPeriodType());
+			luJie.setFrequency(cardInfo.getFrequency());
+			luJie.setExecTimes(cardInfo.getExecTimes());
+			luJie.setPeriodAmount(cardInfo.getPeriodAmount());
+			luJie.setTotalSuccessTimes(cardInfo.getTotalSuccessTimes());
+		}
+		luJie = luJieRepository.saveAndFlush(luJie);
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			withResult(luJie).
+			toJSONObject();
+	}
+
+	public JSONObject handleReturn(String requestBody) throws JsonProcessingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
+		ReturnResponse returnResponse = JSON_MAPPER.readValue(
+			requestBody,
+			ReturnResponse.class
+		);
+		if (returnResponse.getTransCode() != 1) {
+			return new JavaScriptObjectNotation().
+				withReason(returnResponse.getTransMsg()).
+				withResponse(false).
+				toJSONObject();
+		}
+		String decrypted = decrypt(returnResponse.getData());
+		ReturnResponse.Data data = JSON_MAPPER.readValue(
+			decrypted,
+			ReturnResponse.Data.class
+		);
+		LOGGER.info(
+			String.format(
+				"绿界以幕后方式传送付款结果。\n%s#handleReturn(\n\tString requestBody = {}\n);\n{}",
+				getClass().getName()
+			),
+			requestBody,
+			decrypted
+		);
+		ReturnResponse.Data.OrderInfo orderInfo = data.getOrderInfo();
+		String merchantTradeNo = orderInfo.getMerchantTradeNo();
+		LuJie luJie = luJieRepository.findOneByMerchantTradeNo(
+			merchantTradeNo
+		).orElseThrow();
+		luJie.setTradeNo(orderInfo.getTradeNo());
+		luJie.setPaymentDate(orderInfo.getPaymentDate());
+		luJie.setTradeAmt(orderInfo.getTradeAmt());
+		luJie.setPaymentType(orderInfo.getPaymentType());
+		luJie.setTradeDate(orderInfo.getTradeDate());
+		luJie.setChargeFee(orderInfo.getChargeFee());
+		luJie.setTradeStatus(orderInfo.getTradeStatus());
+		ReturnResponse.Data.ATMInfo atmInfo = data.getATMInfo();
+		if (Objects.nonNull(atmInfo)) {
+			luJie.setATMAccBank(atmInfo.getATMAccBank());
+			luJie.setATMAccNo(atmInfo.getATMAccNo());
+		}
+		ReturnResponse.Data.BarcodeInfo barcodeInfo = data.getBarcodeInfo();
+		if (Objects.nonNull(barcodeInfo)) {
+			luJie.setBarcodeInfoPayFrom(barcodeInfo.getPayFrom());
+		}
+		ReturnResponse.Data.CVSInfo cvsInfo = data.getCVSInfo();
+		if (Objects.nonNull(cvsInfo)) {
+			luJie.setCVSInfoPayFrom(cvsInfo.getPayFrom());
+			luJie.setPaymentNo(cvsInfo.getPaymentNo());
+		}
+		ReturnResponse.Data.CardInfo cardInfo = data.getCardInfo();
 		if (Objects.nonNull(cardInfo)) {
 			luJie.setAuthCode(cardInfo.getAuthCode());
 			luJie.setGwsr(cardInfo.getGwsr());

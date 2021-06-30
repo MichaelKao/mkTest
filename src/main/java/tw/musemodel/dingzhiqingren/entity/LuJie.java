@@ -178,6 +178,9 @@ public class LuJie implements java.io.Serializable {
 	@Size(max = 20)
 	private String processDate;
 
+	@Column(name = "\"TotalSuccessTimes\"")
+	private Integer totalSuccessTimes;
+
 	@Column(length = 60, name = "\"MerchantMemberID\"")
 	@Size(max = 60)
 	private String merchantMemberId;
@@ -737,6 +740,20 @@ public class LuJie implements java.io.Serializable {
 	 */
 	public void setProcessDate(String processDate) {
 		this.processDate = processDate;
+	}
+
+	/**
+	 * @return 目前已成功授权的次数
+	 */
+	public Integer getTotalSuccessTimes() {
+		return totalSuccessTimes;
+	}
+
+	/**
+	 * @param totalSuccessTimes 目前已成功授权的次数
+	 */
+	public void setTotalSuccessTimes(Integer totalSuccessTimes) {
+		this.totalSuccessTimes = totalSuccessTimes;
 	}
 
 	/**

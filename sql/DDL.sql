@@ -314,6 +314,7 @@ CREATE TABLE"lu_jie"(
 	"ExecTimes"int2,
 	"PeriodAmount"int,
 	"ProcessDate"varchar(20),
+	"TotalSuccessTimes"int,
 	--ConsumerInfo 消费者资讯
 	"MerchantMemberID"varchar(60),
 	--特店自订栏位
@@ -357,6 +358,7 @@ COMMENT ON COLUMN"yuepao"."lu_jie"."Frequency"IS'信用卡资讯：定期定额�
 COMMENT ON COLUMN"yuepao"."lu_jie"."ExecTimes"IS'信用卡资讯：定期定额执行次数';
 COMMENT ON COLUMN"yuepao"."lu_jie"."PeriodAmount"IS'信用卡资讯：定期定额每次授权金额';
 COMMENT ON COLUMN"yuepao"."lu_jie"."ProcessDate"IS'信用卡资讯：交易时间';
+COMMENT ON COLUMN"yuepao"."lu_jie"."TotalSuccessTimes"IS'信用卡资讯：目前已成功授权的次数';
 COMMENT ON COLUMN"yuepao"."lu_jie"."MerchantMemberID"IS'消费者资讯：消费者会员编号';
 COMMENT ON COLUMN"yuepao"."lu_jie"."CustomField"IS'特店自订栏位：厂商自订栏位';
 
