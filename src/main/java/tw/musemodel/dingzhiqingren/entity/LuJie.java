@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
 /**
@@ -26,7 +27,11 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(schema = "yuepao", name = "lu_jie")
+@Table(schema = "yuepao", name = "lu_jie", uniqueConstraints = {
+	@UniqueConstraint(columnNames = {
+		"\"MerchantTradeDate\""
+	})
+})
 @JsonIdentityInfo(
 	generator = ObjectIdGenerators.PropertyGenerator.class,
 	property = "id"
@@ -80,7 +85,7 @@ public class LuJie implements java.io.Serializable {
 	private String paymentDate;
 
 	@Column(name = "\"ChargeFee\"")
-	private Integer chargeFee;
+	private Float chargeFee;
 
 	@Column(length = 8, name = "\"TradeStatus\"")
 	@Size(max = 8)
@@ -167,11 +172,14 @@ public class LuJie implements java.io.Serializable {
 	private Short execTimes;
 
 	@Column(name = "\"PeriodAmount\"")
-	private Short periodAmount;
+	private Integer periodAmount;
 
 	@Column(length = 20, name = "\"ProcessDate\"")
 	@Size(max = 20)
 	private String processDate;
+
+	@Column(name = "\"TotalSuccessTimes\"")
+	private Integer totalSuccessTimes;
 
 	@Column(length = 60, name = "\"MerchantMemberID\"")
 	@Size(max = 60)
@@ -373,14 +381,14 @@ public class LuJie implements java.io.Serializable {
 	/**
 	 * @return 订单资讯：手续费
 	 */
-	public Integer getChargeFee() {
+	public Float getChargeFee() {
 		return chargeFee;
 	}
 
 	/**
 	 * @param chargeFee 订单资讯：手续费
 	 */
-	public void setChargeFee(Integer chargeFee) {
+	public void setChargeFee(Float chargeFee) {
 		this.chargeFee = chargeFee;
 	}
 
@@ -709,14 +717,14 @@ public class LuJie implements java.io.Serializable {
 	/**
 	 * @return 信用卡资讯：定期定额每次授权金额
 	 */
-	public Short getPeriodAmount() {
+	public Integer getPeriodAmount() {
 		return periodAmount;
 	}
 
 	/**
 	 * @param periodAmount 信用卡资讯：定期定额每次授权金额
 	 */
-	public void setPeriodAmount(Short periodAmount) {
+	public void setPeriodAmount(Integer periodAmount) {
 		this.periodAmount = periodAmount;
 	}
 
@@ -732,6 +740,20 @@ public class LuJie implements java.io.Serializable {
 	 */
 	public void setProcessDate(String processDate) {
 		this.processDate = processDate;
+	}
+
+	/**
+	 * @return 目前已成功授权的次数
+	 */
+	public Integer getTotalSuccessTimes() {
+		return totalSuccessTimes;
+	}
+
+	/**
+	 * @param totalSuccessTimes 目前已成功授权的次数
+	 */
+	public void setTotalSuccessTimes(Integer totalSuccessTimes) {
+		this.totalSuccessTimes = totalSuccessTimes;
 	}
 
 	/**

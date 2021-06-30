@@ -20,6 +20,8 @@ import tw.musemodel.dingzhiqingren.service.HistoryService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 
 /**
+ * 控制器：概念验证
+ *
  * @author p@musemodel.tw
  */
 @Controller
@@ -40,7 +42,7 @@ public class ProofOfConcept {
 	@GetMapping(path = "/points/{identifier}")
 	@ResponseBody
 	@SuppressWarnings("null")
-	public long points(@PathVariable UUID identifier) {
+	long points(@PathVariable UUID identifier) {
 		Lover lover = loverService.loadByIdentifier(identifier);
 		if (Objects.isNull(lover)) {
 			return Long.MIN_VALUE;
@@ -51,7 +53,7 @@ public class ProofOfConcept {
 
 	@GetMapping(path = "/gimme")
 	@ResponseBody
-	public String date(@RequestParam Lover male, @RequestParam Lover female, Locale locale) {
+	String date(@RequestParam Lover male, @RequestParam Lover female, Locale locale) {
 		JSONObject jsonObject;
 		try {
 			jsonObject = historyService.gimme(

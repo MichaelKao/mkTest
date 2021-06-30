@@ -284,7 +284,7 @@ CREATE TABLE"lu_jie"(
 	"TradeDate"varchar(20),
 	"PaymentType"varchar(20),
 	"PaymentDate"varchar(20),
-	"ChargeFee"int,
+	"ChargeFee"float4,
 	"TradeStatus"varchar(8),
 	--ATMInfo ATM 资讯
 	"BankCode"varchar(3),
@@ -312,8 +312,9 @@ CREATE TABLE"lu_jie"(
 	"PeriodType"varchar(1),
 	"Frequency"int2,
 	"ExecTimes"int2,
-	"PeriodAmount"int2,
+	"PeriodAmount"int,
 	"ProcessDate"varchar(20),
+	"TotalSuccessTimes"int,
 	--ConsumerInfo 消费者资讯
 	"MerchantMemberID"varchar(60),
 	--特店自订栏位
@@ -357,6 +358,7 @@ COMMENT ON COLUMN"yuepao"."lu_jie"."Frequency"IS'信用卡资讯：定期定额�
 COMMENT ON COLUMN"yuepao"."lu_jie"."ExecTimes"IS'信用卡资讯：定期定额执行次数';
 COMMENT ON COLUMN"yuepao"."lu_jie"."PeriodAmount"IS'信用卡资讯：定期定额每次授权金额';
 COMMENT ON COLUMN"yuepao"."lu_jie"."ProcessDate"IS'信用卡资讯：交易时间';
+COMMENT ON COLUMN"yuepao"."lu_jie"."TotalSuccessTimes"IS'信用卡资讯：目前已成功授权的次数';
 COMMENT ON COLUMN"yuepao"."lu_jie"."MerchantMemberID"IS'消费者资讯：消费者会员编号';
 COMMENT ON COLUMN"yuepao"."lu_jie"."CustomField"IS'特店自订栏位：厂商自订栏位';
 

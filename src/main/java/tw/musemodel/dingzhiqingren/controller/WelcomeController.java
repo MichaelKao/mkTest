@@ -59,7 +59,7 @@ import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 
 /**
- * 根控制器
+ * 控制器：根
  *
  * @author p@musemodel.tw
  */
