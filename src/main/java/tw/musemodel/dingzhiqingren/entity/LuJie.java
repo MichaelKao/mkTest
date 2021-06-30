@@ -85,7 +85,7 @@ public class LuJie implements java.io.Serializable {
 	private String paymentDate;
 
 	@Column(name = "\"ChargeFee\"")
-	private Integer chargeFee;
+	private Float chargeFee;
 
 	@Column(length = 8, name = "\"TradeStatus\"")
 	@Size(max = 8)
@@ -172,7 +172,7 @@ public class LuJie implements java.io.Serializable {
 	private Short execTimes;
 
 	@Column(name = "\"PeriodAmount\"")
-	private Short periodAmount;
+	private Integer periodAmount;
 
 	@Column(length = 20, name = "\"ProcessDate\"")
 	@Size(max = 20)
@@ -378,14 +378,14 @@ public class LuJie implements java.io.Serializable {
 	/**
 	 * @return 订单资讯：手续费
 	 */
-	public Integer getChargeFee() {
+	public Float getChargeFee() {
 		return chargeFee;
 	}
 
 	/**
 	 * @param chargeFee 订单资讯：手续费
 	 */
-	public void setChargeFee(Integer chargeFee) {
+	public void setChargeFee(Float chargeFee) {
 		this.chargeFee = chargeFee;
 	}
 
@@ -714,14 +714,14 @@ public class LuJie implements java.io.Serializable {
 	/**
 	 * @return 信用卡资讯：定期定额每次授权金额
 	 */
-	public Short getPeriodAmount() {
+	public Integer getPeriodAmount() {
 		return periodAmount;
 	}
 
 	/**
 	 * @param periodAmount 信用卡资讯：定期定额每次授权金额
 	 */
-	public void setPeriodAmount(Short periodAmount) {
+	public void setPeriodAmount(Integer periodAmount) {
 		this.periodAmount = periodAmount;
 	}
 

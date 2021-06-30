@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import tw.com.ecpay.ecpg.OrderResultResponse;
 import tw.com.ecpay.ecpg.ReturnResponse;
 import tw.musemodel.dingzhiqingren.service.Inpay2Service;
 
@@ -79,23 +78,8 @@ public class InPay2Controller {
 	 */
 	@PostMapping(path = "/orderResult.asp", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	OrderResultResponse.Data handleOrderResult(@RequestParam("ResultData") String resultData) throws Exception {
-		LOGGER.info(
-			String.format(
-				"绿界以幕前方式传送付款结果。\n%s#handleOrderResult(\n\tString resultData = {}\n);",
-				getClass().getName()
-			),
-			resultData
-		);
-		OrderResultResponse orderResultResponse = JSON_MAPPER.readValue(
-			resultData,
-			OrderResultResponse.class
-		);
-		OrderResultResponse.Data data = JSON_MAPPER.readValue(
-			inpay2Service.decrypt(orderResultResponse.getData()),
-			OrderResultResponse.Data.class
-		);
-		return data;
+	String handleOrderResult(@RequestParam("ResultData") String resultData) throws Exception {
+		return inpay2Service.handleOrderResult(resultData).toString();
 	}
 
 	/**

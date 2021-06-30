@@ -30,10 +30,12 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tw.com.ecpay.ecpg.OrderResultResponse;
 import tw.com.ecpay.ecpg.PaymentRequest;
 import tw.com.ecpay.ecpg.PaymentResponse;
 import tw.com.ecpay.ecpg.TokenRequest;
@@ -43,6 +45,7 @@ import tw.com.ecpay.ecpg.TokenRequest.Data.OrderInfo;
 import tw.com.ecpay.ecpg.TokenRequest.RqHeader;
 import tw.com.ecpay.ecpg.TokenResponse;
 import tw.musemodel.dingzhiqingren.entity.LuJie;
+import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.LuJieRepository;
 
 /**
@@ -549,5 +552,79 @@ public class Inpay2Service {
 			);
 		}
 		return null;
+	}
+
+	public JSONObject handleOrderResult(String resultData) throws JsonProcessingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
+		OrderResultResponse orderResultResponse = JSON_MAPPER.readValue(
+			resultData,
+			OrderResultResponse.class
+		);
+		if (orderResultResponse.getTransCode() != 1) {
+			return new JavaScriptObjectNotation().
+				withReason(orderResultResponse.getTransMsg()).
+				withResponse(false).
+				toJSONObject();
+		}
+		String decrypted = decrypt(orderResultResponse.getData());
+		OrderResultResponse.Data data = JSON_MAPPER.readValue(
+			decrypted,
+			OrderResultResponse.Data.class
+		);
+		LOGGER.info(
+			String.format(
+				"绿界以幕前方式传送付款结果。\n%s#handleOrderResult(\n\tString resultData = {}\n);\n{}",
+				getClass().getName()
+			),
+			resultData,
+			decrypted
+		);
+		OrderResultResponse.Data.OrderInfo orderInfo = data.getOrderInfo();
+		String merchantTradeNo = orderInfo.getMerchantTradeNo();
+		LuJie luJie = luJieRepository.findOneByMerchantTradeNo(
+			merchantTradeNo
+		).orElseThrow();
+		luJie.setTradeNo(orderInfo.getTradeNo());
+		luJie.setPaymentDate(orderInfo.getPaymentDate());
+		luJie.setTradeAmt(orderInfo.getTradeAmt());
+		luJie.setPaymentType(orderInfo.getPaymentType());
+		luJie.setTradeDate(orderInfo.getTradeDate());
+		luJie.setChargeFee(orderInfo.getChargeFee());
+		luJie.setTradeStatus(orderInfo.getTradeStatus());
+		OrderResultResponse.Data.ATMInfo atmInfo = data.getATMInfo();
+		if (Objects.nonNull(atmInfo)) {
+			luJie.setATMAccBank(atmInfo.getATMAccBank());
+			luJie.setATMAccNo(atmInfo.getATMAccNo());
+		}
+		OrderResultResponse.Data.BarcodeInfo barcodeInfo = data.getBarcodeInfo();
+		if (Objects.nonNull(barcodeInfo)) {
+			luJie.setBarcodeInfoPayFrom(barcodeInfo.getPayFrom());
+		}
+		OrderResultResponse.Data.CVSInfo cvsInfo = data.getCVSInfo();
+		if (Objects.nonNull(cvsInfo)) {
+			luJie.setCVSInfoPayFrom(cvsInfo.getPayFrom());
+			luJie.setPaymentNo(cvsInfo.getPaymentNo());
+		}
+		OrderResultResponse.Data.CardInfo cardInfo = data.getCardInfo();
+		if (Objects.nonNull(cardInfo)) {
+			luJie.setAuthCode(cardInfo.getAuthCode());
+			luJie.setGwsr(cardInfo.getGwsr());
+			luJie.setProcessDate(cardInfo.getProcessDate());
+			luJie.setAmount(cardInfo.getAmount());
+			luJie.setEci(cardInfo.getEci());
+			luJie.setCard6No(cardInfo.getCard6No());
+			luJie.setCard4No(cardInfo.getCard4No());
+			luJie.setStage(cardInfo.getStage());
+			luJie.setStast(cardInfo.getStast());
+			luJie.setStaed(cardInfo.getStaed());
+			luJie.setPeriodType(cardInfo.getPeriodType());
+			luJie.setFrequency(cardInfo.getFrequency());
+			luJie.setExecTimes(cardInfo.getExecTimes());
+			luJie.setPeriodAmount(cardInfo.getPeriodAmount());
+		}
+		luJie = luJieRepository.saveAndFlush(luJie);
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			withResult(luJie).
+			toJSONObject();
 	}
 }

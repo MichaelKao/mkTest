@@ -284,7 +284,7 @@ CREATE TABLE"lu_jie"(
 	"TradeDate"varchar(20),
 	"PaymentType"varchar(20),
 	"PaymentDate"varchar(20),
-	"ChargeFee"int,
+	"ChargeFee"float4,
 	"TradeStatus"varchar(8),
 	--ATMInfo ATM 资讯
 	"BankCode"varchar(3),
@@ -312,7 +312,7 @@ CREATE TABLE"lu_jie"(
 	"PeriodType"varchar(1),
 	"Frequency"int2,
 	"ExecTimes"int2,
-	"PeriodAmount"int2,
+	"PeriodAmount"int,
 	"ProcessDate"varchar(20),
 	--ConsumerInfo 消费者资讯
 	"MerchantMemberID"varchar(60),
