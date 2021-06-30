@@ -86,6 +86,11 @@ public class Servant {
 	public static final DateTimeFormatter TAIWAN_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX");
 
 	/**
+	 * 语言环境：臺湾(繁体中文)
+	 */
+	public static final Locale TAIWAN = Locale.TAIWAN;
+
+	/**
 	 * 系统暂存目录
 	 */
 	public static final File TEMPORARY_DIRECTORY = new File(System.getProperty("java.io.tmpdir"));

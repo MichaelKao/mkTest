@@ -73,6 +73,13 @@ public class Inpay2Service {
 
 	private final static String INPAY2_TRANSFORMATION = "AES/CBC/PKCS5Padding";
 
+	private static final SimpleDateFormat SIMPLEDATEFORMAT_MERCHANTTRADEDATE = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+	private static final SimpleDateFormat SIMPLEDATEFORMAT_MERCHANTTRADENO = new SimpleDateFormat("yyww'YOUNG'");
+
+	@Autowired
+	private LuJieRepository luJieRepository;
+
 	private IvParameterSpec getIvParameterSpec() throws UnsupportedEncodingException {
 		StringBuilder stringBuilder = new StringBuilder(16);
 		stringBuilder.append(INPAY2_HASH_IV);
@@ -104,20 +111,38 @@ public class Inpay2Service {
 		);
 	}
 
-	@Autowired
-	private LuJieRepository luJieRepository;
-
-	private String generateMerchantTradeDate(Long currentTimeMillis) {
-		Date date = new Date(currentTimeMillis);
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-		return new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(date);
+	/**
+	 * 产生厂商交易时间。
+	 *
+	 * @param timeMillis 自 1970 年 1 月 1 日格林威治标准时间 00:00:00 以来的毫秒数
+	 * @return 字符串
+	 */
+	private String generateMerchantTradeDate(final long timeMillis) {
+		return SIMPLEDATEFORMAT_MERCHANTTRADEDATE.format(new Date(
+			timeMillis
+		));
 	}
 
-	private String generateMerchantTradeNo(Long currentTimeMillis) {
-		Date date = new Date(currentTimeMillis);
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-		//return new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(date);
-		return String.format("%s", currentTimeMillis.toString());
+	/**
+	 * 产生特店交易编号。
+	 *
+	 * @param timeMillis 自 1970 年 1 月 1 日格林威治标准时间 00:00:00 以来的毫秒数
+	 * @return 字符串
+	 */
+	private String generateMerchantTradeNo(final long timeMillis) {
+		String merchantTradeNo = null;
+		while (Objects.isNull(merchantTradeNo)) {
+			merchantTradeNo = SIMPLEDATEFORMAT_MERCHANTTRADENO.format(
+				new Date(timeMillis)
+			).concat(Long.
+				toHexString(timeMillis).
+				toUpperCase()
+			);
+			if (luJieRepository.countByMerchantTradeNo(merchantTradeNo) > 0) {
+				merchantTradeNo = null;
+			}
+		}
+		return merchantTradeNo;
 	}
 
 	/**

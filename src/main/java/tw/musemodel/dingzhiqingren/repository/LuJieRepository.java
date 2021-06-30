@@ -12,5 +12,7 @@ import tw.musemodel.dingzhiqingren.entity.LuJie;
 @Repository
 public interface LuJieRepository extends JpaRepository<LuJie, Long> {
 
+	public long countByMerchantTradeNo(String merchantTradeNo);
+
 	public LuJie findTop1BySessionIdOrderByIdDesc(String sessionId);
 }

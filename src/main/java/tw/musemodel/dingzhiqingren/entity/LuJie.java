@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
 /**
@@ -26,7 +27,11 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(schema = "yuepao", name = "lu_jie")
+@Table(schema = "yuepao", name = "lu_jie", uniqueConstraints = {
+	@UniqueConstraint(columnNames = {
+		"\"MerchantTradeDate\""
+	})
+})
 @JsonIdentityInfo(
 	generator = ObjectIdGenerators.PropertyGenerator.class,
 	property = "id"
