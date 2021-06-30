@@ -73,8 +73,8 @@ public class History implements java.io.Serializable {
 	@Column(name = "dian_shu", nullable = false)
 	private Short points;
 
-	@JoinColumn(name = "lu_jie", nullable = false, referencedColumnName = "id")
-	@ManyToOne(optional = false)
+	@JoinColumn(name = "lu_jie", referencedColumnName = "id")
+	@ManyToOne
 	@JsonManagedReference
 	private LuJie luJie;
 
@@ -281,9 +281,10 @@ public class History implements java.io.Serializable {
 		CHU_ZHI("CHU_ZHI", 2),//充值
 		JI_WO_LAI("JI_WO_LAI", 3),//给我赖
 		JI_NI_LAI("JI_NI_LAI", 4),//给你赖
-		DA_ZHAO_HU("DA_ZHAO_HU", 5),//打招呼
-		KAN_GUO_WO("KAN_GUO_WO", 6),//看过我
-		CHE_MA_FEI("CHE_MA_FEI", 7);//车马费
+		BU_JI_LAI("BU_JI_LAI", 5),//不给赖
+		DA_ZHAO_HU("DA_ZHAO_HU", 6),//打招呼
+		KAN_GUO_WO("KAN_GUO_WO", 7),//看过我
+		CHE_MA_FEI("CHE_MA_FEI", 8);//车马费
 
 		private String label;
 

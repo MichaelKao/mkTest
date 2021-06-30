@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.Lover;
-import tw.musemodel.dingzhiqingren.model.ActiveLogs;
+import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 
@@ -85,6 +85,7 @@ public class HistoryService {
 	 * @param initiative 男生
 	 * @param passive 女生
 	 * @param points 点数
+	 * @param locale
 	 * @return 杰森对象
 	 */
 	@Transactional
@@ -113,7 +114,7 @@ public class HistoryService {
 		history = historyRepository.saveAndFlush(history);
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
-				"fare.success",
+				"fare.done",
 				null,
 				locale
 			)).
@@ -128,6 +129,7 @@ public class HistoryService {
 	 * @param initiative 男生
 	 * @param passive 女生
 	 * @param greetingMessage 招呼语
+	 * @param locale
 	 * @return 杰森对象
 	 */
 	@Transactional
@@ -175,7 +177,7 @@ public class HistoryService {
 		history = historyRepository.saveAndFlush(history);
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
-				"gimmeYourLineInvitation.success",
+				"gimmeYourLineInvitation.done",
 				null,
 				locale
 			)).
@@ -190,6 +192,7 @@ public class HistoryService {
 	 * @param initiative 女生
 	 * @param passive 男生
 	 * @param greetingMessage 招呼语
+	 * @param locale
 	 * @return 杰森对象
 	 */
 	@Transactional
@@ -219,7 +222,7 @@ public class HistoryService {
 		history = historyRepository.saveAndFlush(history);
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
-				"greet.success",
+				"greet.done",
 				null,
 				locale
 			)).
@@ -233,6 +236,7 @@ public class HistoryService {
 	 *
 	 * @param initiative 女生
 	 * @param passive 男生
+	 * @param locale
 	 * @return 杰森对象
 	 */
 	@Transactional
@@ -269,7 +273,7 @@ public class HistoryService {
 		history = historyRepository.saveAndFlush(history);
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
-				"inviteMeAsLineFriend.success",
+				"inviteMeAsLineFriend.done",
 				null,
 				locale
 			)).
@@ -319,11 +323,11 @@ public class HistoryService {
 		return historyRepository.sumByInitiative(lover);
 	}
 
-	public List<ActiveLogs> findActiveLogsOrderByOccurredDesc(Lover lover) {
-		List<ActiveLogs> list = new ArrayList<ActiveLogs>();
+	public List<Activity> findActiveLogsOrderByOccurredDesc(Lover lover) {
+		List<Activity> list = new ArrayList<Activity>();
 
 		for (History history : historyRepository.findByInitiativeAndBehaviorNot(lover, Behavior.KAN_GUO_WO)) {
-			ActiveLogs activeLogs = new ActiveLogs(
+			Activity activeLogs = new Activity(
 				lover,
 				history.getPassive(),
 				history.getBehavior(),
@@ -335,7 +339,7 @@ public class HistoryService {
 			list.add(activeLogs);
 		}
 		for (History history : historyRepository.findByPassiveAndBehaviorNot(lover, Behavior.KAN_GUO_WO)) {
-			ActiveLogs activeLogs = new ActiveLogs(
+			Activity activeLogs = new Activity(
 				history.getInitiative(),
 				lover,
 				history.getBehavior(),

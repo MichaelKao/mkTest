@@ -1,15 +1,16 @@
 package tw.musemodel.dingzhiqingren.model;
 
 import java.util.Date;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 
 /**
+ * 动态记录
+ *
  * @author m@musemodel.tw
  */
-public class ActiveLogs implements Comparable<ActiveLogs> {
+public class Activity implements Comparable<Activity> {
 
 	private Lover initiative;
 
@@ -24,25 +25,24 @@ public class ActiveLogs implements Comparable<ActiveLogs> {
 	private String greeting;
 
 	@Override
-	public int compareTo(ActiveLogs other) {
+	public int compareTo(Activity other) {
 		return occurred.compareTo(other.occurred);
 	}
 
-	@NotEmpty
 	@NotNull
-	private Date read;
+	private Date seen;
 
-	public ActiveLogs() {
+	public Activity() {
 	}
 
-	public ActiveLogs(Lover initiative, Lover passive, Behavior behavior, Date occurred, Short points, String greeting, Date read) {
+	public Activity(Lover initiative, Lover passive, Behavior behavior, Date occurred, Short points, String greeting, Date seen) {
 		this.initiative = initiative;
 		this.passive = passive;
 		this.behavior = behavior;
 		this.occurred = occurred;
 		this.points = points;
 		this.greeting = greeting;
-		this.read = read;
+		this.seen = seen;
 	}
 
 	public Lover getInitiative() {
@@ -93,11 +93,11 @@ public class ActiveLogs implements Comparable<ActiveLogs> {
 		this.greeting = greeting;
 	}
 
-	public Date getRead() {
-		return read;
+	public Date getSeen() {
+		return seen;
 	}
 
-	public void setRead(Date read) {
-		this.read = read;
+	public void setSeen(Date seen) {
+		this.seen = seen;
 	}
 }

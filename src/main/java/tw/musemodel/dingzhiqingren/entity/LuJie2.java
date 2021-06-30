@@ -26,15 +26,15 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(schema = "yuepao", name = "lu_jie")
+@Table(catalog = "yuepao", schema = "yuepao", name = "lu_jie")
 @JsonIdentityInfo(
 	generator = ObjectIdGenerators.PropertyGenerator.class,
 	property = "id"
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LuJie implements java.io.Serializable {
+public class LuJie2 implements java.io.Serializable {
 
-	private static final long serialVersionUID = -4281476222101128901L;
+	private static final long serialVersionUID = 4819786542029887092L;
 
 	@Basic(optional = false)
 	@Column(nullable = false)
@@ -45,139 +45,139 @@ public class LuJie implements java.io.Serializable {
 	@Column(name = "session_id")
 	private String sessionId;
 
-	@Column(length = 20, name = "\"MerchantTradeDate\"")
+	@Column(length = 20, name = "MerchantTradeDate")
 	@Size(max = 20)
 	private String merchantTradeDate;
 
-	@Column(length = 20, name = "\"MerchantTradeNo\"")
+	@Column(length = 20, name = "MerchantTradeNo")
 	@Size(max = 20)
 	private String merchantTradeNo;
 
-	@Column(name = "\"TotalAmount\"")
+	@Column(name = "TotalAmount")
 	private Integer totalAmount;
 
-	@Column(length = 400, name = "\"ItemName\"")
+	@Column(length = 400, name = "ItemName")
 	@Size(max = 400)
 	private String itemName;
 
-	@Column(length = 20, name = "\"TradeNo\"")
+	@Column(length = 20, name = "TradeNo")
 	@Size(max = 20)
 	private String tradeNo;
 
-	@Column(name = "\"TradeAmt\"")
+	@Column(name = "TradeAmt")
 	private Integer tradeAmt;
 
-	@Column(length = 20, name = "\"TradeDate\"")
+	@Column(length = 20, name = "TradeDate")
 	@Size(max = 20)
 	private String tradeDate;
 
-	@Column(length = 20, name = "\"PaymentType\"")
+	@Column(length = 20, name = "PaymentType")
 	@Size(max = 20)
 	private String paymentType;
 
-	@Column(length = 20, name = "\"PaymentDate\"")
+	@Column(length = 20, name = "PaymentDate")
 	@Size(max = 20)
 	private String paymentDate;
 
-	@Column(name = "\"ChargeFee\"")
+	@Column(name = "ChargeFee")
 	private Integer chargeFee;
 
-	@Column(length = 8, name = "\"TradeStatus\"")
+	@Column(length = 8, name = "TradeStatus")
 	@Size(max = 8)
 	private String tradeStatus;
 
-	@Column(length = 3, name = "\"BankCode\"")
+	@Column(length = 3, name = "BankCode")
 	@Size(max = 3)
 	private String bankCode;
 
-	@Column(length = 16, name = "\"vAccount\"")
+	@Column(length = 16, name = "vAccount")
 	@Size(max = 16)
 	private String vAccount;
 
-	@Column(length = 3, name = "\"ATMAccBank\"")
+	@Column(length = 3, name = "ATMAccBank")
 	@Size(max = 3)
 	private String atmAccBank;
 
-	@Column(length = 5, name = "\"ATMAccNo\"")
+	@Column(length = 5, name = "ATMAccNo")
 	@Size(max = 5)
 	private String atmAccNo;
 
-	@Column(length = 20, name = "\"Barcode1\"")
+	@Column(length = 20, name = "Barcode1")
 	@Size(max = 20)
 	private String barcode1;
 
-	@Column(length = 20, name = "\"Barcode2\"")
+	@Column(length = 20, name = "Barcode2")
 	@Size(max = 20)
 	private String barcode2;
 
-	@Column(length = 20, name = "\"Barcode3\"")
+	@Column(length = 20, name = "Barcode3")
 	@Size(max = 20)
 	private String barcode3;
 
-	@Column(length = 10, name = "\"BarcodeInfoPayFrom\"")
+	@Column(length = 10, name = "BarcodeInfoPayFrom")
 	@Size(max = 10)
 	private String barcodeInfoPayFrom;
 
-	@Column(length = 14, name = "\"PaymentNo\"")
+	@Column(length = 14, name = "PaymentNo")
 	@Size(max = 14)
 	private String paymentNo;
 
-	@Column(length = 10, name = "\"CVSInfoPayFrom\"")
+	@Column(length = 10, name = "CVSInfoPayFrom")
 	@Size(max = 10)
 	private String cvsInfoPayFrom;
 
-	@Column(length = 6, name = "\"AuthCode\"")
+	@Column(length = 6, name = "AuthCode")
 	@Size(max = 6)
 	private String authCode;
 
-	@Column(name = "\"Gwsr\"")
+	@Column(name = "Gwsr")
 	private Integer gwsr;
 
-	@Column(name = "\"Amount\"")
+	@Column(name = "Amount")
 	private Integer amount;
 
-	@Column(name = "\"Stage\"")
+	@Column(name = "Stage")
 	private Integer stage;
 
-	@Column(name = "\"Stast\"")
+	@Column(name = "Stast")
 	private Integer stast;
 
-	@Column(name = "\"Staed\"")
+	@Column(name = "Staed")
 	private Integer staed;
 
-	@Column(name = "\"Eci\"")
+	@Column(name = "Eci")
 	private Integer eci;
 
-	@Column(length = 6, name = "\"Card6No\"")
+	@Column(length = 6, name = "Card6No")
 	@Size(max = 6)
 	private String card6No;
 
-	@Column(length = 4, name = "\"Card4No\"")
+	@Column(length = 4, name = "Card4No")
 	@Size(max = 4)
 	private String card4No;
 
-	@Column(length = 1, name = "\"PeriodType\"")
+	@Column(length = 1, name = "PeriodType")
 	@Size(max = 1)
 	private String periodType;
 
-	@Column(name = "\"Frequency\"")
+	@Column(name = "Frequency")
 	private Short frequency;
 
-	@Column(name = "\"ExecTimes\"")
+	@Column(name = "ExecTimes")
 	private Short execTimes;
 
-	@Column(name = "\"PeriodAmount\"")
+	@Column(name = "PeriodAmount")
 	private Short periodAmount;
 
-	@Column(length = 20, name = "\"ProcessDate\"")
+	@Column(length = 20, name = "ProcessDate")
 	@Size(max = 20)
 	private String processDate;
 
-	@Column(length = 60, name = "\"MerchantMemberID\"")
+	@Column(length = 60, name = "MerchantMemberID")
 	@Size(max = 60)
 	private String merchantMemberId;
 
-	@Column(length = 200, name = "\"CustomField\"")
+	@Column(length = 200, name = "CustomField")
 	@Size(max = 200)
 	private String customField;
 
@@ -188,7 +188,7 @@ public class LuJie implements java.io.Serializable {
 	/**
 	 * 默认构造器
 	 */
-	public LuJie() {
+	public LuJie2() {
 	}
 
 	@Override
@@ -200,10 +200,10 @@ public class LuJie implements java.io.Serializable {
 
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof LuJie)) {
+		if (!(object instanceof LuJie2)) {
 			return false;
 		}
-		LuJie other = (LuJie) object;
+		LuJie2 other = (LuJie2) object;
 		return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
 	}
 

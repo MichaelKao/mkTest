@@ -47,7 +47,7 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.Plan;
 import tw.musemodel.dingzhiqingren.model.Activated;
-import tw.musemodel.dingzhiqingren.model.ActiveLogs;
+import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.SignUp;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
@@ -1306,8 +1306,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/activeLogs.asp")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView transaction(Authentication authentication, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView transaction(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -1335,9 +1334,9 @@ public class WelcomeController {
 		// 確認性別
 		Boolean isMale = loverService.isMale(me);
 
-		List<ActiveLogs> activeLogsList = historyService.findActiveLogsOrderByOccurredDesc(me);
+		List<Activity> activeLogsList = historyService.findActiveLogsOrderByOccurredDesc(me);
 
-		for (ActiveLogs activeLogs : activeLogsList) {
+		for (Activity activeLogs : activeLogsList) {
 			String initiativeIdentifier = activeLogs.getInitiative().getIdentifier().toString();
 			String initiativeProfileImage = activeLogs.getInitiative().getProfileImage();
 			String initiativeNickname = activeLogs.getInitiative().getNickname();

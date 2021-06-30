@@ -23,6 +23,8 @@ import tw.com.ecpay.ecpg.ReturnResponse;
 import tw.musemodel.dingzhiqingren.service.Inpay2Service;
 
 /**
+ * 控制器：站内付 2.0
+ *
  * @author p@musemodel.tw
  */
 @Controller
@@ -41,7 +43,9 @@ public class InPay2Controller {
 	/**
 	 * 建立交易。
 	 *
-	 * @return @throws Exception
+	 * @param payToken 付款代码(有效期限为30分钟)
+	 * @param session 分配给会话的标识符
+	 * @return 绿界回传支付令牌对象字符串
 	 */
 	@PostMapping(path = "/createPayment/{payToken}.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -52,8 +56,10 @@ public class InPay2Controller {
 	/**
 	 * 取得厂商验证码。
 	 *
+	 * @param session 分配给会话的标识符
+	 * @param locale 语言环境
 	 * @return 厂商验证码 JSON 对象
-	 * @throws Exception
+	 * @throws com.​fasterxml.​jackson.​coreJsonProcessingException
 	 */
 	@PostMapping(path = "/getTokenByTrade.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
