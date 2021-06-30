@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -172,6 +173,14 @@ public class Lover implements java.io.Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "lover")
 	@JsonBackReference
 	private Collection<Picture> pictures;
+
+	@OneToMany(mappedBy = "female")
+	@JsonIgnore
+	private Set<LineGiven> femaleSet;
+
+	@OneToMany(mappedBy = "male")
+	@JsonIgnore
+	private Set<LineGiven> maleSet;
 
 	/**
 	 * 默认构造器

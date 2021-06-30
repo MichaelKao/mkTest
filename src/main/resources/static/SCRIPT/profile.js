@@ -8,6 +8,7 @@ $(document).ready(function () {
 
 	$('BUTTON.fav').click(function () {
 		$(this).toggleClass('liked')
+
 	});
 
 	var $giftModal = $('#giftModal');
@@ -23,7 +24,7 @@ $(document).ready(function () {
 		$modal.modal('show');
 		url = '/stalking.json';
 	});
-	
+
 	$('#greeting').click(function () {
 		$modal.modal('show');
 		url = '/greet.json';
@@ -40,6 +41,7 @@ $(document).ready(function () {
 				what: $('TEXTAREA[name="what"]').val()
 			},
 			function (data) {
+				console.log(data)
 				if (data.response) {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');

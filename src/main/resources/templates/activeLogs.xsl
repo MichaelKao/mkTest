@@ -33,7 +33,7 @@
 					<xsl:value-of select="@title"/>
 				</H4>
 				<DIV class="d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center">
-					<DIV class="col-11 col-md-8 card card-frame mb-3 mx-2">
+					<DIV class="col-12 col-md-8 card card-frame mb-3 mx-2">
 						<xsl:for-each select="history">
 							<DIV class="card-body d-flex align-items-center justify-content-start py-0">
 								<DIV>
@@ -41,13 +41,22 @@
 										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="70"/>
 									</A>
 								</DIV>
-								<DIV class="memberInfo ms-4">
-									<SPAN class="text-xs font-weight-bold my-2">
-										<xsl:value-of select="@time"/>
-									</SPAN>
-									<DIV class="text-dark">
-										<xsl:value-of select="@message"/>
+								<DIV class="ms-4 w-100 d-flex flex-column flex-md-row">
+									<DIV>
+										<SPAN class="text-xs font-weight-bold my-2">
+											<xsl:value-of select="@time"/>
+										</SPAN>
+										<DIV class="text-dark">
+											<xsl:value-of select="@message"/>
+										</DIV>
 									</DIV>
+									<xsl:if test="@button">
+										<DIV class="ms-0 ms-md-auto buttons">
+											<INPUT name="whom" type="hidden" value="{@identifier}"/>
+											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 accept" type="button">接受</BUTTON>
+											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 refuse" type="button">拒絕</BUTTON>
+										</DIV>
+									</xsl:if>
 								</DIV>
 							</DIV>
 							<HR class="horizontal dark"/>
@@ -56,6 +65,7 @@
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
+			<SCRIPT src="/SCRIPT/activeLogs.js"/>
 		</BODY>
 	</xsl:template>
 </xsl:stylesheet>

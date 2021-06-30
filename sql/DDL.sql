@@ -368,7 +368,9 @@ CREATE TYPE"xing_wei"AS ENUM(
 	'BU_JI_LAI',--不给赖
 	'DA_ZHAO_HU',--打招呼
 	'KAN_GUO_WO',--看过我
-	'CHE_MA_FEI'--车马费
+	'CHE_MA_FEI',--车马费
+	'SHOU_CANG',--收藏
+	'BU_SHOU_CANG'--收藏
 );
 COMMENT ON TYPE"xing_wei"IS'行为';
 
@@ -433,3 +435,18 @@ INSERT INTO"yuepao"."chu_zhi_fang_an"("ming_cheng","dian_shu","shou_xu_fei","jin
 (E'plan.3000','3000','375','3375'),
 (E'plan.5000','5000','625','5625'),
 (E'plan.10000','10000','1250','11250');
+
+
+/**
+ * 給不給賴
+ */
+CREATE TABLE"yuepao"."gei_bu_gei_lai"(
+	"nu_sheng"int8 NOT NULL REFERENCES"qing_ren"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
+	"nan_sheng"int8 NOT NULL REFERENCES"qing_ren"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
+	PRIMARY KEY("nu_sheng","nan_sheng"),
+	"jie_guo"bool
+);
+COMMENT ON TABLE"yuepao"."gei_bu_gei_lai"IS'女生給不給賴';
+COMMENT ON COLUMN"yuepao"."gei_bu_gei_lai"."nu_sheng"IS'女生';
+COMMENT ON COLUMN"yuepao"."gei_bu_gei_lai"."nan_sheng"IS'男生';
+COMMENT ON COLUMN"yuepao"."gei_bu_gei_lai"."jie_guo"IS'同意或拒絕';

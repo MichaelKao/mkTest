@@ -2,7 +2,6 @@ package tw.musemodel.dingzhiqingren.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
@@ -47,10 +46,10 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.Plan;
 import tw.musemodel.dingzhiqingren.model.Activated;
-import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.SignUp;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
+import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
 import tw.musemodel.dingzhiqingren.repository.PlanRepository;
@@ -96,6 +95,9 @@ public class WelcomeController {
 
 	@Autowired
 	private PlanRepository planRepository;
+
+	@Autowired
+	private LineGivenRepository lineGivenRepository;
 
 	/**
 	 * 首页
@@ -1311,8 +1313,14 @@ public class WelcomeController {
 			return new ModelAndView("redirect:/");
 		}
 
-		Document document = servant.parseDocument();
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Document document = historyService.historiesToDocument(me);
 		Element documentElement = document.getDocumentElement();
+
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.activeLogs",
 			null,
@@ -1324,229 +1332,6 @@ public class WelcomeController {
 				"signIn",
 				authentication.getName()
 			);
-		}
-
-		// 本人
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
-		);
-
-		// 確認性別
-		Boolean isMale = loverService.isMale(me);
-
-		List<Activity> activeLogsList = historyService.findActiveLogsOrderByOccurredDesc(me);
-
-		for (Activity activeLogs : activeLogsList) {
-			String initiativeIdentifier = activeLogs.getInitiative().getIdentifier().toString();
-			String initiativeProfileImage = activeLogs.getInitiative().getProfileImage();
-			String initiativeNickname = activeLogs.getInitiative().getNickname();
-			String passiveIdentifier = null;
-			String passiveProfileImage = null;
-			String passiveNickname = null;
-			if (Objects.nonNull(activeLogs.getPassive())) {
-				passiveIdentifier = activeLogs.getPassive().getIdentifier().toString();
-				passiveProfileImage = activeLogs.getPassive().getProfileImage();
-				passiveNickname = activeLogs.getPassive().getNickname();
-			}
-			String identifier = null;
-			String profileImage = null;
-			String message = null;
-
-			Element historyElement = document.createElement("history");
-			documentElement.appendChild(historyElement);
-			historyElement.setAttribute(
-				"time",
-				new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-					.format(activeLogs.getOccurred()
-					));
-			if (activeLogs.getBehavior() == Behavior.CHU_ZHI) {
-				if (isMale) {
-					profileImage = initiativeProfileImage;
-					message = String.format(
-						"%s%d%s",
-						"您儲值了",
-						Math.abs(activeLogs.getPoints()),
-						"愛心點數"
-					);
-					identifier = initiativeIdentifier;
-				}
-				historyElement.setAttribute(
-					"profileImage",
-					"https://www.youngme.vip/profileImage/" + profileImage
-				);
-				historyElement.setAttribute(
-					"message",
-					message
-				);
-				historyElement.setAttribute(
-					"identifier",
-					identifier
-				);
-			}
-			if (activeLogs.getBehavior() == Behavior.YUE_FEI) {
-				if (isMale) {
-					profileImage = initiativeProfileImage;
-					message = String.format(
-						"%s",
-						"升級 VIP 費用扣款 $1688"
-					);
-					identifier = initiativeIdentifier;
-				}
-				historyElement.setAttribute(
-					"profileImage",
-					"https://www.youngme.vip/profileImage/" + profileImage
-				);
-				historyElement.setAttribute(
-					"message",
-					message
-				);
-				historyElement.setAttribute(
-					"identifier",
-					identifier
-				);
-			}
-			if (activeLogs.getBehavior() == Behavior.JI_WO_LAI) {
-				if (isMale) {
-					profileImage = passiveProfileImage;
-					identifier = passiveIdentifier;
-					message = String.format(
-						"%s%s%s",
-						"您已向",
-						passiveNickname,
-						"要求 LINE"
-					);
-				}
-				if (!isMale) {
-					profileImage = initiativeProfileImage;
-					identifier = initiativeIdentifier;
-					message = String.format(
-						"%s%s%s",
-						initiativeNickname,
-						"向您要求 Line：",
-						activeLogs.getGreeting()
-					);
-					historyElement.setAttribute(
-						"button",
-						null
-					);
-				}
-				historyElement.setAttribute(
-					"profileImage",
-					"https://www.youngme.vip/profileImage/" + profileImage
-				);
-				historyElement.setAttribute(
-					"message",
-					message
-				);
-				historyElement.setAttribute(
-					"identifier",
-					identifier
-				);
-			}
-			if (activeLogs.getBehavior() == Behavior.JI_NI_LAI) {
-				if (isMale) {
-					profileImage = initiativeProfileImage;
-					identifier = initiativeIdentifier;
-					message = String.format(
-						"%s%s%s",
-						initiativeNickname,
-						"接受給您 Line：",
-						activeLogs.getInitiative().getInviteMeAsLineFriend()
-					);
-				}
-				if (!isMale) {
-					profileImage = passiveProfileImage;
-					identifier = passiveIdentifier;
-					message = String.format(
-						"%s%s%s",
-						"您已答應",
-						passiveNickname,
-						"給出 Line"
-					);
-				}
-				historyElement.setAttribute(
-					"profileImage",
-					"https://www.youngme.vip/profileImage/" + profileImage
-				);
-				historyElement.setAttribute(
-					"message",
-					message
-				);
-				historyElement.setAttribute(
-					"identifier",
-					identifier
-				);
-			}
-			if (activeLogs.getBehavior() == Behavior.DA_ZHAO_HU) {
-				if (isMale) {
-					profileImage = initiativeProfileImage;
-					identifier = initiativeIdentifier;
-					message = String.format(
-						"%s%s%s",
-						initiativeNickname,
-						"向您打招呼：",
-						activeLogs.getGreeting()
-					);
-				}
-				if (!isMale) {
-					profileImage = passiveProfileImage;
-					identifier = passiveIdentifier;
-					message = String.format(
-						"%s%s%s",
-						"您已向",
-						passiveNickname,
-						"打招呼"
-					);
-				}
-				historyElement.setAttribute(
-					"profileImage",
-					"https://www.youngme.vip/profileImage/" + profileImage
-				);
-				historyElement.setAttribute(
-					"message",
-					message
-				);
-				historyElement.setAttribute(
-					"identifier",
-					identifier
-				);
-			}
-			if (activeLogs.getBehavior() == Behavior.CHE_MA_FEI) {
-				if (isMale) {
-					profileImage = passiveProfileImage;
-					identifier = passiveIdentifier;
-					message = String.format(
-						"%s%s%d%s",
-						"您給了",
-						passiveNickname,
-						Math.abs(activeLogs.getPoints()),
-						"車馬費"
-					);
-				}
-				if (!isMale) {
-					profileImage = initiativeProfileImage;
-					identifier = initiativeIdentifier;
-					message = String.format(
-						"%s%s%d%s",
-						"您收到了來自",
-						initiativeNickname,
-						Math.abs(activeLogs.getPoints()),
-						"車馬費"
-					);
-				}
-				historyElement.setAttribute(
-					"profileImage",
-					"https://www.youngme.vip/profileImage/" + profileImage
-				);
-				historyElement.setAttribute(
-					"message",
-					message
-				);
-				historyElement.setAttribute(
-					"identifier",
-					identifier
-				);
-			}
 		}
 
 		ModelAndView modelAndView = new ModelAndView("activeLogs");
@@ -1744,6 +1529,50 @@ public class WelcomeController {
 		JSONObject jsonObject;
 		try {
 			jsonObject = historyService.inviteMeAsLineFriend(
+				female,
+				male,
+				locale
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+			if (Objects.equals(exception.getMessage(), "inviteMeAsLineFriend.mustntBeNull")) {
+				jsonObject.put("redirect", "/me.asp");
+			}
+		}
+		return jsonObject.toString();
+	}
+
+	/**
+	 * 不給你賴
+	 *
+	 * @param maleUUID
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/notStalked.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
+	String refuseToBeLineFriend(@RequestParam("whom") UUID maleUUID, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover female = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Lover male = loverService.loadByIdentifier(maleUUID);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = historyService.refuseToBeLineFriend(
 				female,
 				male,
 				locale

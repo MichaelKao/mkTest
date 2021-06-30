@@ -131,8 +131,8 @@
 	</xsl:template>
 
 	<xsl:template name="bootstrapToast">
-		<DIV class="position-fixed top-5 end-0 p-3" style="z-index: 5">
-			<DIV class="toast hide" data-bs-delay="2000" >
+		<DIV class="position-fixed top-5 end-0 p-3" style="z-index: 10000">
+			<DIV class="toast hide" data-bs-delay="1500" >
 				<BUTTON type="button" class="btn-close" data-bs-dismiss="toast">
 					<I class="far fa-times ms-2 text-dark text-lg"></I>
 				</BUTTON>
