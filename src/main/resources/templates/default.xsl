@@ -34,14 +34,16 @@
 				<DIV class="container-fluid">
 					<A class="navbar-brand font-weight-bolder ms-sm-3" href="/">訂製情人</A>
 					<DIV>
-						<A class="d-lg-none" href="/activeLogs.asp">
-							<I class="fal fa-bell"></I>
-							<xsl:if test="@announcement">
-								<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement">
-									<xsl:value-of select="@announcement"/>
-								</SPAN>
-							</xsl:if>
-						</A>
+						<xsl:if test="@signIn">
+							<A class="d-lg-none" href="/activeLogs.asp">
+								<I class="fal fa-bell"></I>
+								<xsl:if test="@announcement">
+									<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement">
+										<xsl:value-of select="@announcement"/>
+									</SPAN>
+								</xsl:if>
+							</A>
+						</xsl:if>
 						<BUTTON class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation">
 							<SPAN class="navbar-toggler-icon mt-2">
 								<SPAN class="navbar-toggler-bar bar1"></SPAN>
@@ -89,26 +91,30 @@
 										</DIV>
 									</DIV>
 								</LI>
-								<LI class="nav-item d-none d-lg-block">
-									<A class="nav-link nav-link-icon" href="/activeLogs.asp">
-										<I class="fal fa-bell"></I>
-										<xsl:if test="@announcement">
-											<SPAN class="text-xs text-light bg-warning border-radius-md ms-n1 announcement">
-												<xsl:value-of select="@announcement"/>
-											</SPAN>
-										</xsl:if>
-									</A>
-								</LI>
-								<LI class="nav-item">
-									<A class="nav-link nav-link-icon" href="/deposit.asp">
-										<SPAN>儲值愛心</SPAN>
-									</A>
-								</LI>
-								<LI class="nav-item">
-									<A class="nav-link nav-link-icon" href="/upgrade.asp">
-										<SPAN>升級 VIP</SPAN>
-									</A>
-								</LI>
+								<xsl:if test="@signIn">
+									<LI class="nav-item d-none d-lg-block">
+										<A class="nav-link nav-link-icon" href="/activeLogs.asp">
+											<I class="fal fa-bell"></I>
+											<xsl:if test="@announcement">
+												<SPAN class="text-xs text-light bg-warning border-radius-md ms-n1 announcement">
+													<xsl:value-of select="@announcement"/>
+												</SPAN>
+											</xsl:if>
+										</A>
+									</LI>
+								</xsl:if>
+								<xsl:if test="@male">
+									<LI class="nav-item">
+										<A class="nav-link nav-link-icon" href="/deposit.asp">
+											<SPAN>儲值愛心</SPAN>
+										</A>
+									</LI>
+									<LI class="nav-item">
+										<A class="nav-link nav-link-icon" href="/upgrade.asp">
+											<SPAN>升級 VIP</SPAN>
+										</A>
+									</LI>
+								</xsl:if>
 							</xsl:if>
 							<LI class="nav-item">
 								<xsl:choose>

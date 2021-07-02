@@ -417,8 +417,7 @@ public class HistoryService {
 	 * @return 杰森对象
 	 */
 	@Transactional
-	public JSONObject peek(Lover initiative, Lover passive
-	) {
+	public JSONObject peek(Lover initiative, Lover passive) {
 		if (Objects.isNull(initiative)) {
 			throw new IllegalArgumentException("peek.initiativeMustntBeNull");
 		}
@@ -444,8 +443,7 @@ public class HistoryService {
 	}
 
 	@Transactional(readOnly = true)
-	public Long points(Lover lover
-	) {
+	public Long points(Lover lover) {
 		if (Objects.isNull(lover)) {
 			throw new IllegalArgumentException("points.loverMustntBeNull");
 		}
