@@ -7,7 +7,20 @@ $(document).ready(function () {
 		});
 
 	$('BUTTON.fav').click(function () {
-		$(this).toggleClass('liked')
+		$(this).toggleClass('liked');
+		$.post(
+			'/favorite.json',
+			{
+				identifier: $('INPUT[name="whom"]').val()
+			},
+			(data) => {
+			if (data.response) {
+				$('.toast-body').html(data.reason);
+				$('.toast').toast('show');
+			}
+		},
+			'json'
+			);
 
 	});
 
@@ -20,12 +33,12 @@ $(document).ready(function () {
 		url = '/fare.json';
 	});
 
-	$('#giveMeLine').click(function () {
+	$('A#giveMeLine').on("click", function () {
 		$modal.modal('show');
 		url = '/stalking.json';
 	});
 
-	$('#greeting').click(function () {
+	$('A#greeting').on("click", function () {
 		$modal.modal('show');
 		url = '/greet.json';
 	});

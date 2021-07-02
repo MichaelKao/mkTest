@@ -25,8 +25,14 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 
 	public int countByInitiative(Lover initiative);
 
+	@Query("SELECT COUNT(h.id) FROM History h WHERE h.passive = :passive AND h.behavior != :behavior1 AND h.behavior != :behavior2 AND h.seen is null")
+	public int countByFemalePassive(Lover passive, Behavior behavior1, Behavior behavior2);
+
+	@Query("SELECT COUNT(h.id) FROM History h WHERE h.passive = :passive AND h.behavior != :behavior1 OR ( h.initiative = :passive AND h.behavior = :behavior2 ) AND h.seen is null")
+	public int countByPassive(Lover passive, Behavior behavior1, Behavior behavior2);
+
 	@Query("SELECT SUM(h.points) FROM History h WHERE h.initiative = :initiative")
-	public Long sumByInitiative(Lover initiative);
+	public Long sumByInitiativeHearts(Lover initiative);
 
 	public List<History> findByInitiativeAndBehaviorNot(Lover initiative, Behavior behavior);
 

@@ -44,12 +44,11 @@
 										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="70"/>
 									</A>
 								</DIV>
-								<DIV class="memberInfo ms-3">
+								<DIV class="ms-3">
 									<A class="h6" href="/profile/{@identifier}/">
-										<SPAN>
+										<SPAN class="me-2">
 											<xsl:value-of select="@nickname"/>
 										</SPAN>
-										<SPAN class="me-1">,</SPAN>
 										<SPAN>
 											<xsl:value-of select="@age"/>
 										</SPAN>

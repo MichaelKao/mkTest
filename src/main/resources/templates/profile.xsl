@@ -33,35 +33,44 @@
 				<DIV class="row justify-content-center">
 					<xsl:apply-templates select="lover"/>
 				</DIV>
-				<DIV class="modal fade" id="giftModal" role="dialog" tabindex="-1">
-					<DIV class="modal-dialog" role="document">
-						<DIV class="modal-content">
-							<DIV class="modal-header">
-								<H5 class="modal-title">請輸入</H5>
-								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
-							</DIV>
-							<DIV class="modal-body">
-								<DIV class="form-group col-6">
-									<LABEL class="h6" for="gift">車馬費</LABEL>
-									<INPUT class="form-control" id="gift" name="howMany" required="" type="number"/>
+				<xsl:if test="@male">
+					<DIV class="modal fade" id="giftModal" role="dialog" tabindex="-1">
+						<DIV class="modal-dialog" role="document">
+							<DIV class="modal-content">
+								<DIV class="modal-header">
+									<H5 class="modal-title">請輸入</H5>
+									<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
 								</DIV>
-							</DIV>
-							<DIV class="modal-footer">
-								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
-									<xsl:value-of select="@i18n-cancel"/>
-								</BUTTON>
-								<BUTTON class="btn btn-primary confirmBtn" type="submit">
-									<xsl:value-of select="@i18n-confirm"/>
-								</BUTTON>
+								<DIV class="modal-body">
+									<DIV class="form-group col-6">
+										<LABEL class="h6" for="gift">車馬費</LABEL>
+										<INPUT class="form-control" id="gift" name="howMany" required="" type="number"/>
+									</DIV>
+								</DIV>
+								<DIV class="modal-footer">
+									<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+										<xsl:value-of select="@i18n-cancel"/>
+									</BUTTON>
+									<BUTTON class="btn btn-primary confirmBtn" type="submit">
+										<xsl:value-of select="@i18n-confirm"/>
+									</BUTTON>
+								</DIV>
 							</DIV>
 						</DIV>
 					</DIV>
-				</DIV>
+				</xsl:if>
 				<DIV class="modal fade" id="modal" role="dialog" tabindex="-1">
 					<DIV class="modal-dialog" role="document">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
-								<H5 class="modal-title">請輸入</H5>
+								<xsl:choose>
+									<xsl:when test="@male">
+										<H5 class="modal-title">和女生要求Line</H5>
+									</xsl:when>
+									<xsl:otherwise>
+										<H5 class="modal-title">和男生打招呼</H5>
+									</xsl:otherwise>
+								</xsl:choose>
 								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">
@@ -127,22 +136,39 @@
 					<xsl:when test="not(/document/@me)">
 						<DIV class="d-flex justify-content-center justify-content-md-start" id="icon">
 							<DIV>
-								<BUTTON class="btn btn-icon-only btn-link fav" type="button">
+								<BUTTON type="button">
+									<xsl:choose>
+										<xsl:when test="/document/follow">
+											<xsl:attribute name="class">btn btn-icon-only btn-link fav liked</xsl:attribute>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:attribute name="class">btn btn-icon-only btn-link fav</xsl:attribute>
+										</xsl:otherwise>
+									</xsl:choose>
 									<I class="fad fa-heart font40"></I>
 								</BUTTON>
 							</DIV>
 							<DIV>
-								<BUTTON class="btn btn-icon-only btn-link ms-4" type="button">
+								<A class="btn btn-icon-only btn-link ms-4">
 									<xsl:choose>
 										<xsl:when test="/document/@male">
-											<xsl:attribute name="id">giveMeLine</xsl:attribute>
+											<xsl:choose>
+												<xsl:when test="/document/@match">
+													<xsl:attribute name="href">
+														<xsl:value-of select="/document/@match"/>
+													</xsl:attribute>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:attribute name="id">giveMeLine</xsl:attribute>
+												</xsl:otherwise>
+											</xsl:choose>
 										</xsl:when>
 										<xsl:otherwise>
 											<xsl:attribute name="id">greeting</xsl:attribute>
 										</xsl:otherwise>
 									</xsl:choose>
 									<I class="fad fa-comment-plus font40"></I>
-								</BUTTON>
+								</A>
 							</DIV>
 							<xsl:if test="/document/@male">
 								<DIV>

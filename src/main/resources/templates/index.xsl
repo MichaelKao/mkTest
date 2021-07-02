@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:output
 		encoding="UTF-8"
 		media-type="text/html"
@@ -16,6 +16,7 @@
 			<xsl:apply-templates select="document"/>
 		</HTML>
 		<LINK href="/STYLE/index.css" rel="stylesheet"/>
+		<LINK href="/manifest.json" rel="manifest"/>
 	</xsl:template>
 
 	<xsl:template match="document">
@@ -100,7 +101,7 @@
 				</DIV>
 			</SECTION>
 			<SECTION class="py-4">
-				<DIV class="row my-4">
+				<DIV class="row my-4 px-3 px-md-5 px-lg-11">
 					<DIV class="col-md-6 d-flex align-items-center justify-content-center">
 						<DIV class="position-relative">
 							<DIV class="manPic border-radius-2xl height-200 border-radius-bottom-start-0 border-radius-top-end-0">
@@ -108,7 +109,7 @@
 							</DIV>
 						</DIV>
 					</DIV>
-					<DIV class="col-md-6 text-center">
+					<DIV class="col-md-6 d-flex flex-column align-items-md-start align-items-center">
 						<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">MAN</SPAN>
 						<H4>馬上尋找你的理想男士</H4>
 						<DIV>這裡的對象不但事業有成，而且慷慨大方、寵愛女孩。</DIV>
@@ -117,8 +118,8 @@
 						<DIV>現在立即註冊，尋找你想要的理想關係。</DIV>
 					</DIV>
 				</DIV>
-				<DIV class="row">
-					<DIV class="col-md-6 mt-4 text-center order-2 order-md-1">
+				<DIV class="row px-3 px-md-5 px-xl-11">
+					<DIV class="col-md-6 mt-4 order-2 order-md-1 d-flex flex-column align-items-md-end align-items-center">
 						<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">WOMAN</SPAN>
 						<H4>馬上尋找你的心儀女孩</H4>
 						<DIV>這裡的女孩渴望找尋像您這樣的成功人士，</DIV>
@@ -136,23 +137,28 @@
 				</DIV>
 			</SECTION>
 			<xsl:if test="@signIn">
-				<DIV class="d-flex flex-wrap justify-content-center my-5">
-					<xsl:for-each select="lover">
-						<A class="position-relative m-2" href="/profile/{identifier}/">
-							<IMG class="border-radius-md" src="{profileImage}" width="120"/>
-							<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
-								<SPAN class="bg-dark opacity-6 border-radius-md px-1">
-									<SPAN>
-										<xsl:value-of select="nickname"/>
-									</SPAN>
-									<SPAN class="ms-2">
-										<xsl:value-of select="age"/>
-									</SPAN>
-								</SPAN>
-							</DIV>
-						</A>
-					</xsl:for-each>
-				</DIV>
+				<SECTION class="mt-4">
+					<H3 class="text-primary text-center">尋找你/妳的心儀對象</H3>
+					<DIV class="card">
+						<DIV class="d-flex flex-wrap justify-content-center my-5">
+							<xsl:for-each select="lover">
+								<A class="position-relative m-2" href="/profile/{identifier}/">
+									<IMG class="border-radius-md" src="{profileImage}" width="130"/>
+									<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
+										<SPAN class="bg-dark opacity-6 border-radius-md px-1">
+											<SPAN>
+												<xsl:value-of select="nickname"/>
+											</SPAN>
+											<SPAN class="ms-2">
+												<xsl:value-of select="age"/>
+											</SPAN>
+										</SPAN>
+									</DIV>
+								</A>
+							</xsl:for-each>
+						</DIV>
+					</DIV>
+				</SECTION>
 			</xsl:if>
 			<xsl:call-template name="bodyScriptTags"/>
 		</BODY>

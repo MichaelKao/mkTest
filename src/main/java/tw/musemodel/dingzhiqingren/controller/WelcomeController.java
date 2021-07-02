@@ -42,6 +42,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
+import tw.musemodel.dingzhiqingren.entity.LineGiven;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.Plan;
@@ -128,14 +129,26 @@ public class WelcomeController {
 			Lover me = loverService.loadByUsername(
 				authentication.getName()
 			);
+
 			// 確認性別
 			Boolean isMale = loverService.isMale(me);
+			// 通知數、顯示的 lovers 資料
+			int announcement = 0;
 			List<Lover> lovers = new ArrayList<Lover>();
 			if (isMale) {
 				lovers = loverRepository.findAllByGender(false);
+				historyRepository.countByPassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
 			}
 			if (!isMale) {
 				lovers = loverRepository.findAllByGender(true);
+				historyRepository.countByFemalePassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
+			}
+
+			if (announcement > 0) {
+				documentElement.setAttribute(
+					"announcement",
+					Integer.toString(announcement)
+				);
 			}
 
 			for (Lover lover : lovers) {
@@ -798,6 +811,29 @@ public class WelcomeController {
 			null
 		);
 
+		// 是否已交換過 LINE
+		LineGiven lineGiven = lineGivenRepository.findByFemaleAndMale(lover, me);
+		if (Objects.nonNull(lineGiven)) {
+			if (Objects.nonNull(lineGiven.getResponse())) {
+				documentElement.setAttribute(
+					lineGiven.getResponse() ? "match" : "noMatch",
+					lover.getInviteMeAsLineFriend()
+				);
+			}
+		}
+
+		// 是否收藏
+		Set<Lover> following = me.getFollowing();
+		if (Objects.nonNull(following)) {
+			Element followElement = document.createElement("follow");
+			for (Lover followed : following) {
+				if (Objects.equals(followed, lover)) {
+					documentElement.appendChild(followElement);
+					break;
+				}
+			}
+		}
+
 		// 此頁是否為本人
 		if (Objects.equals(me, lover)) {
 			documentElement.setAttribute(
@@ -966,10 +1002,16 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/favorite.asp")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView favorite(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView favorite(Authentication authentication, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
+
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -986,9 +1028,89 @@ public class WelcomeController {
 			);
 		}
 
+		Set<Lover> following = me.getFollowing();
+		for (Lover followed : following) {
+
+			Element followElement = document.createElement("follow");
+			documentElement.appendChild(followElement);
+			followElement.setAttribute(
+				"identifier",
+				followed.getIdentifier().toString()
+			);
+			followElement.setAttribute(
+				"profileImage",
+				"https://www.youngme.vip/profileImage/" + followed.getProfileImage()
+			);
+			if (Objects.nonNull(followed.getNickname())) {
+				followElement.setAttribute(
+					"nickname",
+					followed.getNickname()
+				);
+			}
+			if (Objects.nonNull(followed.getBirthday())) {
+				followElement.setAttribute(
+					"age",
+					loverService.calculateAge(followed).toString()
+				);
+			}
+		}
+
 		ModelAndView modelAndView = new ModelAndView("favorite");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
+	}
+
+	/**
+	 * 收藏
+	 *
+	 * @param identifier
+	 * @param authentication
+	 * @return
+	 */
+	@PostMapping(path = "/favorite.json")
+	@Secured({"ROLE_YONGHU"})
+	@ResponseBody
+	String favorite(@RequestParam UUID identifier, Authentication authentication) {
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		// 識別碼的帳號
+		Lover lover = loverService.loadByIdentifier(identifier);
+
+		Set<Lover> following = me.getFollowing();
+		for (Lover followed : following) {
+			if (Objects.equals(lover, followed)) {
+				following.remove(followed);
+				me.setFollowing(following);
+				loverRepository.saveAndFlush(me);
+				History history = new History(
+					me,
+					lover,
+					Behavior.BU_SHOU_CANG
+				);
+				historyRepository.saveAndFlush(history);
+				return new JavaScriptObjectNotation().
+					withReason("已取消收藏" + followed.getNickname()).
+					withResponse(true).
+					toJSONObject().toString();
+			}
+		}
+
+		following.add(lover);
+		me.setFollowing(following);
+		loverRepository.saveAndFlush(me);
+		History history = new History(
+			me,
+			lover,
+			Behavior.SHOU_CANG
+		);
+		historyRepository.saveAndFlush(history);
+		return new JavaScriptObjectNotation().
+			withReason("已收藏" + lover.getNickname()).
+			withResponse(true).
+			toJSONObject().toString();
 	}
 
 	/**
@@ -1003,7 +1125,8 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/looksMe.asp")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView whoLooksMe(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView
+		whoLooksMe(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -1288,7 +1411,7 @@ public class WelcomeController {
 		documentElement.appendChild(heartsElement);
 		heartsElement.setTextContent(
 			historyRepository.countByInitiative(me) > 0
-			? historyRepository.sumByInitiative(me).toString() : "0"
+			? historyRepository.sumByInitiativeHearts(me).toString() : "0"
 		);
 
 		ModelAndView modelAndView = new ModelAndView("deposit");

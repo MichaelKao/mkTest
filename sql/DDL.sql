@@ -453,3 +453,16 @@ COMMENT ON TABLE"yuepao"."gei_bu_gei_lai"IS'女生給不給賴';
 COMMENT ON COLUMN"yuepao"."gei_bu_gei_lai"."nu_sheng"IS'女生';
 COMMENT ON COLUMN"yuepao"."gei_bu_gei_lai"."nan_sheng"IS'男生';
 COMMENT ON COLUMN"yuepao"."gei_bu_gei_lai"."jie_guo"IS'同意或拒絕';
+
+
+/**
+ * 收藏
+ */
+CREATE TABLE"yuepao"."shou_cang"(
+	"shou_cang_de"int8 NOT NULL REFERENCES"yuepao"."qing_ren"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
+	"bei_shou_cang"int8 NOT NULL REFERENCES"yuepao"."qing_ren"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
+	PRIMARY KEY("shou_cang_de","bei_shou_cang")
+);
+COMMENT ON TABLE"yuepao"."shou_cang"IS'收藏';
+COMMENT ON COLUMN"yuepao"."shou_cang"."shou_cang_de"IS'收藏的';
+COMMENT ON COLUMN"yuepao"."shou_cang"."bei_shou_cang"IS'被收藏';

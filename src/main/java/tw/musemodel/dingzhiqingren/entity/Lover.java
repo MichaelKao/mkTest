@@ -182,6 +182,19 @@ public class Lover implements java.io.Serializable {
 	@JsonIgnore
 	private Set<LineGiven> maleSet;
 
+	@JoinTable(name = "shou_cang",
+		joinColumns = {
+			@JoinColumn(name = "shou_cang_de", referencedColumnName = "id", nullable = false)},
+		inverseJoinColumns = {
+			@JoinColumn(name = "bei_shou_cang", referencedColumnName = "id", nullable = false)})
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JsonIgnore
+	private Set<Lover> following;
+
+	@ManyToMany(mappedBy = "following", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private Set<Lover> followed;
+
 	/**
 	 * 默认构造器
 	 */
@@ -610,6 +623,50 @@ public class Lover implements java.io.Serializable {
 	 */
 	public void setPictures(Collection<Picture> pictures) {
 		this.pictures = pictures;
+	}
+
+	public Set<LineGiven> getFemaleSet() {
+		return femaleSet;
+	}
+
+	public void setFemaleSet(Set<LineGiven> femaleSet) {
+		this.femaleSet = femaleSet;
+	}
+
+	public Set<LineGiven> getMaleSet() {
+		return maleSet;
+	}
+
+	public void setMaleSet(Set<LineGiven> maleSet) {
+		this.maleSet = maleSet;
+	}
+
+	/**
+	 * @return 收藏
+	 */
+	public Set<Lover> getFollowing() {
+		return following;
+	}
+
+	/**
+	 * @param following 收藏
+	 */
+	public void setFollowing(Set<Lover> following) {
+		this.following = following;
+	}
+
+	/**
+	 * @return 被收藏
+	 */
+	public Set<Lover> getFollowed() {
+		return followed;
+	}
+
+	/**
+	 * @param followed 被收藏
+	 */
+	public void setFollowed(Set<Lover> followed) {
+		this.followed = followed;
 	}
 
 	/**

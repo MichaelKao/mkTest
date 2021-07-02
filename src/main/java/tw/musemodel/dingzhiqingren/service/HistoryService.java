@@ -90,6 +90,11 @@ public class HistoryService {
 	public static final Behavior BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND = Behavior.BU_JI_LAI;
 
 	/**
+	 * 历程：賴要求的退點(拒絕或過期)
+	 */
+	public static final Behavior BEHAVIOR_LAI_TUI_DIAN = Behavior.LAI_TUI_DIAN;
+
+	/**
 	 * 历程：月费行为
 	 */
 	public static final Behavior BEHAVIOR_MONTHLY_CHARGED = Behavior.YUE_FEI;
@@ -370,11 +375,22 @@ public class HistoryService {
 		);
 		history = historyRepository.saveAndFlush(history);
 
+		// 把男生的要求轉為已讀
 		History historySeen = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
 			passive, initiative, BEHAVIOR_GIMME_YOUR_LINE_INVITATION
 		);
 		historySeen.setSeen(new Date(System.currentTimeMillis()));
 		historyRepository.saveAndFlush(historySeen);
+
+		if (historySeen.getPoints() == -30) {
+			History historyTuiDian = new History(
+				passive,
+				initiative,
+				BEHAVIOR_LAI_TUI_DIAN
+			);
+			historyTuiDian.setPoints((short) 30);
+			historyRepository.saveAndFlush(historyTuiDian);
+		}
 
 		LineGiven lineGiven = new LineGiven(
 			new LineGivenPK(initiative.getId(), passive.getId()),
@@ -433,7 +449,7 @@ public class HistoryService {
 		if (Objects.isNull(lover)) {
 			throw new IllegalArgumentException("points.loverMustntBeNull");
 		}
-		return historyRepository.sumByInitiative(lover);
+		return historyRepository.sumByInitiativeHearts(lover);
 	}
 
 	public List<Activity> findActiveLogsOrderByOccurredDesc(Lover lover) {
@@ -477,6 +493,9 @@ public class HistoryService {
 		List<Activity> activeLogsList = findActiveLogsOrderByOccurredDesc(lover);
 
 		for (Activity activeLogs : activeLogsList) {
+			if (!isMale && activeLogs.getBehavior() == BEHAVIOR_LAI_TUI_DIAN) {
+				continue;
+			}
 			String initiativeIdentifier = activeLogs.getInitiative().getIdentifier().toString();
 			String initiativeProfileImage = activeLogs.getInitiative().getProfileImage();
 			String initiativeNickname = activeLogs.getInitiative().getNickname();
@@ -545,6 +564,31 @@ public class HistoryService {
 					identifier
 				);
 			}
+			if (activeLogs.getBehavior() == BEHAVIOR_LAI_TUI_DIAN) {
+				if (isMale) {
+					profileImage = initiativeProfileImage;
+					message = String.format(
+						"%s%s%s%d",
+						"您向",
+						passiveNickname,
+						"要 Line 不成功, 而退點",
+						activeLogs.getPoints()
+					);
+					identifier = initiativeIdentifier;
+				}
+				historyElement.setAttribute(
+					"profileImage",
+					"https://www.youngme.vip/profileImage/" + profileImage
+				);
+				historyElement.setAttribute(
+					"message",
+					message
+				);
+				historyElement.setAttribute(
+					"identifier",
+					identifier
+				);
+			}
 			if (activeLogs.getBehavior() == BEHAVIOR_GIMME_YOUR_LINE_INVITATION) {
 				if (isMale) {
 					profileImage = passiveProfileImage;
@@ -590,9 +634,12 @@ public class HistoryService {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
-						"%s%s%s",
+						"%s%s",
 						initiativeNickname,
-						"接受給您 Line：",
+						"接受給您 Line"
+					);
+					historyElement.setAttribute(
+						"lineButton",
 						activeLogs.getInitiative().getInviteMeAsLineFriend()
 					);
 				}

@@ -33,15 +33,25 @@
 			<NAV class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
 				<DIV class="container-fluid">
 					<A class="navbar-brand font-weight-bolder ms-sm-3" href="/">訂製情人</A>
-					<BUTTON class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation">
-						<SPAN class="navbar-toggler-icon mt-2">
-							<SPAN class="navbar-toggler-bar bar1"></SPAN>
-							<SPAN class="navbar-toggler-bar bar2"></SPAN>
-							<SPAN class="navbar-toggler-bar bar3"></SPAN>
-						</SPAN>
-					</BUTTON>
-					<DIV class="collapse navbar-collapse" id="navigation">
-						<UL class="navbar-nav navbar-nav-hover w-100 justify-content-end">
+					<DIV>
+						<A class="d-lg-none" href="/activeLogs.asp">
+							<I class="fal fa-bell"></I>
+							<xsl:if test="@announcement">
+								<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement">
+									<xsl:value-of select="@announcement"/>
+								</SPAN>
+							</xsl:if>
+						</A>
+						<BUTTON class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation">
+							<SPAN class="navbar-toggler-icon mt-2">
+								<SPAN class="navbar-toggler-bar bar1"></SPAN>
+								<SPAN class="navbar-toggler-bar bar2"></SPAN>
+								<SPAN class="navbar-toggler-bar bar3"></SPAN>
+							</SPAN>
+						</BUTTON>
+					</DIV>
+					<DIV class="collapse navbar-collapse justify-content-end" id="navigation">
+						<UL class="navbar-nav navbar-nav-hover">
 							<xsl:if test="@signIn">
 								<LI class="nav-item dropdown dropdown-hover">
 									<A class="nav-link cursor-pointer text-primary" id="dropdownMenuPages" data-bs-toggle="dropdown">
@@ -78,6 +88,16 @@
 											</A>
 										</DIV>
 									</DIV>
+								</LI>
+								<LI class="nav-item d-none d-lg-block">
+									<A class="nav-link nav-link-icon" href="/activeLogs.asp">
+										<I class="fal fa-bell"></I>
+										<xsl:if test="@announcement">
+											<SPAN class="text-xs text-light bg-warning border-radius-md ms-n1 announcement">
+												<xsl:value-of select="@announcement"/>
+											</SPAN>
+										</xsl:if>
+									</A>
 								</LI>
 								<LI class="nav-item">
 									<A class="nav-link nav-link-icon" href="/deposit.asp">
@@ -123,6 +143,7 @@
 	<xsl:template name="headLinkTags">
 		<LINK href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet"/>
 		<LINK href="/STYLE/soft-design-system.css" rel="stylesheet"/>
+		<LINK href="/STYLE/default.css" rel="stylesheet"/>
 	</xsl:template>
 
 	<xsl:template name="headMetaTags">

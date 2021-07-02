@@ -1,0 +1,22 @@
+{
+	"name": "訂製情人",
+	"short_name": "訂製情人",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"background_color": "#fff",
+	"theme_color": "#fff",
+	"orientation": "portrait-primary",
+	"icons": [
+		{
+			"src": "/",
+			"type": "image/png",
+			"sizes": "192x192"
+		},
+		{
+			"src": "/",
+			"type": "image/png",
+			"sizes": "512x512"
+		}
+	]
+}

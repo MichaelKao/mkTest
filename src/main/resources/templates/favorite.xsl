@@ -34,32 +34,27 @@
 					<HR class="horizontal dark"/>
 				</DIV>
 				<DIV class="d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center">
-					<DIV class="col-10 col-sm-8 col-md-5 card card-frame mb-3 mx-2">
-						<DIV class="card-body d-flex align-items-center justify-content-around p-3 p-md-4">
-							<DIV>
-								<A href="/profile/">
-									<IMG alt="profile_photo" class="border-radius-lg" src="https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(8).jpg" width="70"/>
-								</A>
-							</DIV>
-							<DIV class="memberInfo ms-3">
-								<A class="h6" href="/profile/">Michael Roven</A>
-								<DIV>28, 高雄</DIV>
-							</DIV>
-						</DIV>
-					</DIV>
-					<DIV class="col-10 col-sm-8 col-md-5 card card-frame mb-3 mx-2">
-						<DIV class="card-body d-flex align-items-center justify-content-around">
-							<DIV>
-								<A href="/profile/">
-									<IMG alt="profile_photo" class="border-radius-lg" src="https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(5).jpg" width="70"/>
-								</A>
-							</DIV>
-							<DIV class="memberInfo ms-3">
-								<A class="h6" href="/profile/">Michael Roven</A>
-								<DIV>28, 高雄</DIV>
+					<xsl:for-each select="follow">
+						<DIV class="col-10 col-sm-8 col-md-5 card card-frame mb-3 mx-2">
+							<DIV class="card-body d-flex align-items-center justify-content-around p-3 p-md-4">
+								<DIV>
+									<A href="/profile/{@identifier}/">
+										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="70"/>
+									</A>
+								</DIV>
+								<DIV class="ms-3">
+									<A class="h6" href="/profile/{@identifier}/">
+										<SPAN class="me-2">
+											<xsl:value-of select="@nickname"/>
+										</SPAN>
+										<SPAN>
+											<xsl:value-of select="@age"/>
+										</SPAN>
+									</A>
+								</DIV>
 							</DIV>
 						</DIV>
-					</DIV>
+					</xsl:for-each>
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
