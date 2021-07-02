@@ -271,7 +271,7 @@ COMMENT ON COLUMN"yuepao"."qing_ren"."li_xiang_dui_xiang"IS'理想对象';
 /**
  * 绿界
  */
-CREATE TABLE"lu_jie"(
+CREATE TABLE"yuepao"."lu_jie"(
 	"id"serial8 PRIMARY KEY,
 	"session_id"varchar,
 	--OrderInfo 订单资讯
@@ -362,7 +362,7 @@ COMMENT ON COLUMN"yuepao"."lu_jie"."TotalSuccessTimes"IS'信用卡资讯：目�
 COMMENT ON COLUMN"yuepao"."lu_jie"."MerchantMemberID"IS'消费者资讯：消费者会员编号';
 COMMENT ON COLUMN"yuepao"."lu_jie"."CustomField"IS'特店自订栏位：厂商自订栏位';
 
-CREATE TYPE"xing_wei"AS ENUM(
+CREATE TYPE"yuepao"."xing_wei"AS ENUM(
 	'YUE_FEI',--月费
 	'CHU_ZHI',--储值
 	'JI_WO_LAI',--给我赖
@@ -405,9 +405,9 @@ COMMENT ON COLUMN"yuepao"."li_cheng"."zhao_hu_yu"IS'招呼语';
 /**
  * 生活照
  */
-CREATE TABLE"sheng_huo_zhao"(
+CREATE TABLE"yuepao"."sheng_huo_zhao"(
 	"id"serial2 PRIMARY KEY,
-        "qing_ren"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+        "qing_ren"int NOT NULL REFERENCES"yuepao"."qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
 	"shi_bie_ma"uuid NOT NULL UNIQUE,
 	"shi_chuo"timestamptz NOT NULL DEFAULT"now"()
 );
@@ -444,8 +444,8 @@ INSERT INTO"yuepao"."chu_zhi_fang_an"("ming_cheng","dian_shu","shou_xu_fei","jin
  * 給不給賴
  */
 CREATE TABLE"yuepao"."gei_bu_gei_lai"(
-	"nu_sheng"int8 NOT NULL REFERENCES"qing_ren"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
-	"nan_sheng"int8 NOT NULL REFERENCES"qing_ren"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
+	"nu_sheng"int8 NOT NULL REFERENCES"yuepao"."qing_ren"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
+	"nan_sheng"int8 NOT NULL REFERENCES"yuepao"."qing_ren"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
 	PRIMARY KEY("nu_sheng","nan_sheng"),
 	"jie_guo"bool
 );
