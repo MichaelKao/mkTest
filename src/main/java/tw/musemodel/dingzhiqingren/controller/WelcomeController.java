@@ -1499,6 +1499,10 @@ public class WelcomeController {
 			null
 		);
 
+		if (!isMale) {
+			return new ModelAndView("redirect:/");
+		}
+
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
@@ -1548,6 +1552,10 @@ public class WelcomeController {
 			isMale ? "male" : "female",
 			null
 		);
+
+		if (!isMale) {
+			return new ModelAndView("redirect:/");
+		}
 
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
