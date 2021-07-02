@@ -22,7 +22,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(schema = "yuepao", name = "ji_huo", uniqueConstraints = {
+@Table(name = "ji_huo", uniqueConstraints = {
 	@UniqueConstraint(columnNames = {"zi_fu_chuan"})
 })
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -1,5 +1,8 @@
 package tw.musemodel.dingzhiqingren.service;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.PublishRequest;
@@ -65,7 +68,19 @@ public class LoverService {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(LoverService.class);
 
-	private static final AmazonSNS AMAZON_SNS = AmazonSNSClientBuilder.defaultClient();
+	private static final String AWS_ACCESS_KEY_ID = System.getenv("AWS_ACCESS_KEY_ID");
+
+	private static final String AWS_SECRET_ACCESS_KEY = System.getenv("AWS_SECRET_ACCESS_KEY");
+
+	private static final AmazonSNS AMAZON_SNS = AmazonSNSClientBuilder.
+		standard().
+		withCredentials(new AWSStaticCredentialsProvider(
+			new BasicAWSCredentials(
+				AWS_ACCESS_KEY_ID,
+				AWS_SECRET_ACCESS_KEY
+			)
+		)).
+		withRegion(Regions.AP_SOUTHEAST_1).build();
 
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
@@ -444,7 +459,7 @@ public class LoverService {
 		Element profileImageElement = document.createElement("profileImage");
 		if (Objects.nonNull(lover.getProfileImage())) {
 			profileImageElement.setTextContent(
-				"http://www.youngme.vip/profileImage/" + lover.getProfileImage()
+				servant.STATIC_HOST + "profileImage/" + lover.getProfileImage()
 			);
 		}
 		loverElement.appendChild(profileImageElement);
@@ -453,7 +468,7 @@ public class LoverService {
 		for (Picture picture : pictures) {
 			Element pictureElement = document.createElement("picture");
 			pictureElement.setTextContent(
-				"http://www.youngme.vip/pictures/" + picture.getIdentifier().toString()
+				servant.STATIC_HOST + "pictures/" + picture.getIdentifier().toString()
 			);
 			loverElement.appendChild(pictureElement);
 		}

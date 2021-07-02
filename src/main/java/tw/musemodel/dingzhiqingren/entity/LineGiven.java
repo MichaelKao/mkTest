@@ -18,7 +18,7 @@ import javax.persistence.Table;
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(schema = "yuepao", name = "gei_bu_gei_lai")
+@Table(name = "gei_bu_gei_lai")
 @JsonIdentityInfo(
 	generator = ObjectIdGenerators.PropertyGenerator.class,
 	property = "id"

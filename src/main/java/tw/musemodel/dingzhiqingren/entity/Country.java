@@ -26,7 +26,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(schema = "yuepao", name = "guo_jia", uniqueConstraints = {
+@Table(name = "guo_jia", uniqueConstraints = {
 	@UniqueConstraint(columnNames = {"guo_ma"}),
 	@UniqueConstraint(columnNames = {"guo_ming"})
 })

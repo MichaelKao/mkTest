@@ -531,7 +531,7 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					"https://www.youngme.vip/profileImage/" + profileImage
+					servant.STATIC_HOST + "profileImage/" + profileImage
 				);
 				historyElement.setAttribute(
 					"message",
@@ -553,7 +553,7 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					"https://www.youngme.vip/profileImage/" + profileImage
+					servant.STATIC_HOST + "profileImage/" + profileImage
 				);
 				historyElement.setAttribute(
 					"message",
@@ -578,7 +578,7 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					"https://www.youngme.vip/profileImage/" + profileImage
+					servant.STATIC_HOST + "profileImage/" + profileImage
 				);
 				historyElement.setAttribute(
 					"message",
@@ -618,7 +618,7 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					"https://www.youngme.vip/profileImage/" + profileImage
+					servant.STATIC_HOST + "profileImage/" + profileImage
 				);
 				historyElement.setAttribute(
 					"message",
@@ -655,7 +655,7 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					"https://www.youngme.vip/profileImage/" + profileImage
+					servant.STATIC_HOST + "profileImage/" + profileImage
 				);
 				historyElement.setAttribute(
 					"message",
@@ -688,7 +688,7 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					"https://www.youngme.vip/profileImage/" + profileImage
+					servant.STATIC_HOST + "profileImage/" + profileImage
 				);
 				historyElement.setAttribute(
 					"message",
@@ -722,7 +722,7 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					"https://www.youngme.vip/profileImage/" + profileImage
+					servant.STATIC_HOST + "profileImage/" + profileImage
 				);
 				historyElement.setAttribute(
 					"message",
@@ -758,7 +758,7 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					"https://www.youngme.vip/profileImage/" + profileImage
+					servant.STATIC_HOST + "profileImage/" + profileImage
 				);
 				historyElement.setAttribute(
 					"message",

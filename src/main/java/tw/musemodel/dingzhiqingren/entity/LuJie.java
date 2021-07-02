@@ -27,7 +27,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(schema = "yuepao", name = "lu_jie", uniqueConstraints = {
+@Table(name = "lu_jie", uniqueConstraints = {
 	@UniqueConstraint(columnNames = {
 		"\"MerchantTradeDate\""
 	})

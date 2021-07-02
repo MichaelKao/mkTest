@@ -172,7 +172,7 @@ public class WelcomeController {
 				loverElement.appendChild(identifierElement);
 
 				Element profileImageElement = document.createElement("profileImage");
-				profileImageElement.setTextContent("https://www.youngme.vip/profileImage/" + lover.getProfileImage());
+				profileImageElement.setTextContent(servant.STATIC_HOST + "profileImage/" + lover.getProfileImage());
 				loverElement.appendChild(profileImageElement);
 			}
 		}
@@ -1039,7 +1039,7 @@ public class WelcomeController {
 			);
 			followElement.setAttribute(
 				"profileImage",
-				"https://www.youngme.vip/profileImage/" + followed.getProfileImage()
+				servant.STATIC_HOST + "profileImage/" + followed.getProfileImage()
 			);
 			if (Objects.nonNull(followed.getNickname())) {
 				followElement.setAttribute(
@@ -1101,12 +1101,6 @@ public class WelcomeController {
 		following.add(lover);
 		me.setFollowing(following);
 		loverRepository.saveAndFlush(me);
-		History history = new History(
-			me,
-			lover,
-			Behavior.SHOU_CANG
-		);
-		historyRepository.saveAndFlush(history);
 		return new JavaScriptObjectNotation().
 			withReason("已收藏" + lover.getNickname()).
 			withResponse(true).
@@ -1177,7 +1171,7 @@ public class WelcomeController {
 				);
 				peekerElement.setAttribute(
 					"profileImage",
-					"https://www.youngme.vip/profileImage/" + peeker.getProfileImage()
+					servant.STATIC_HOST + "profileImage/" + peeker.getProfileImage()
 				);
 				if (Objects.nonNull(peeker.getNickname())) {
 					peekerElement.setAttribute(
@@ -1238,7 +1232,7 @@ public class WelcomeController {
 		Element profileImageElement = document.createElement("profileImage");
 		if (Objects.nonNull(me.getProfileImage())) {
 			profileImageElement.setTextContent(
-				"http://www.youngme.vip/profileImage/" + me.getProfileImage()
+				servant.STATIC_HOST + "profileImage/" + me.getProfileImage()
 			);
 		}
 		documentElement.appendChild(profileImageElement);
@@ -1249,7 +1243,7 @@ public class WelcomeController {
 			Element pictureElement = document.createElement("picture");
 			pictureElement.setAttribute("picIdentifier", identifier);
 			pictureElement.setTextContent(
-				"http://www.youngme.vip/pictures/" + identifier
+				servant.STATIC_HOST + "pictures/" + identifier
 			);
 			documentElement.appendChild(pictureElement);
 		}

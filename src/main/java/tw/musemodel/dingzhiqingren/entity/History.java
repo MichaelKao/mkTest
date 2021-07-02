@@ -31,7 +31,7 @@ import org.hibernate.annotations.TypeDef;
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(schema = "yuepao", name = "li_cheng")
+@Table(name = "li_cheng")
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
 @JsonIdentityInfo(
 	generator = ObjectIdGenerators.PropertyGenerator.class,
