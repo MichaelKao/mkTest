@@ -371,8 +371,9 @@ CREATE TYPE"xing_wei"AS ENUM(
 	'DA_ZHAO_HU',--打招呼
 	'KAN_GUO_WO',--看过我
 	'CHE_MA_FEI',--车马费
+	'LAI_TUI_DIAN',--要求賴的退點
 	'SHOU_CANG',--收藏
-	'BU_SHOU_CANG'--收藏
+	'BU_SHOU_CANG'--取消收藏
 );
 COMMENT ON TYPE"xing_wei"IS'行为';
 
