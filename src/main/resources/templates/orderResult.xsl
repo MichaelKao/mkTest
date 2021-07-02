@@ -24,55 +24,51 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
+			<STYLE>.successIcon{font-size: 60px;}</STYLE>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="page-header section-height-100">
-				<DIV class="container">
-					<xsl:apply-templates select="form"/>
+			<DIV class="container py-8">
+				<DIV class="card w-80 mx-auto">
+					<DIV class="row justify-content-center text-center">
+						<DIV class="col-lg-6">
+							<DIV class="text-gradient text-primary mb-0 h1 successIcon">
+								<xsl:choose>
+									<xsl:when test="@fail">
+										<I class="fal fa-exclamation-circle"></I>
+									</xsl:when>
+									<xsl:otherwise>
+										<I class="fal fa-check-circle"></I>
+									</xsl:otherwise>
+								</xsl:choose>
+							</DIV>
+							<H1 class="text-primary text-gradient">
+								<xsl:value-of select="@message"/>
+							</H1>
+							<P class="lead text-primary">
+								<xsl:value-of select="@reason"/>
+							</P>
+						</DIV>
+					</DIV>
+				</DIV>
+				<DIV class="row justify-content-center text-center">
+					<xsl:if test="not(@fail)">
+						<DIV class="h4 mt-5">
+							<DIV>您已成為 VIP</DIV>
+							<DIV>馬上搜尋心儀對象</DIV>
+						</DIV>
+					</xsl:if>
+					<A class="h1 text-info text-gradient" href="">
+						<xsl:attribute name="href">
+							<xsl:value-of select="@redirect"/>
+						</xsl:attribute>
+						<I class="fal fa-house-return"></I>
+					</A>
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/activate.js"/>
 		</BODY>
-	</xsl:template>
-
-	<xsl:template match="form">
-		<DIV class="row">
-			<DIV class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-auto">
-				<DIV class="card card-plain">
-					<DIV class="card-header pb-0 text-left">
-						<H4 class="font-weight-bolder">
-							<xsl:value-of select="/document/@title"/>
-						</H4>
-						<P class="mb-0">輸入手機號碼註冊</P>
-					</DIV>
-					<DIV class="card-body">
-						<FORM action="/activate.json" method="post">
-							<DIV class="row align-items-center mb-3">
-								<DIV class="col-1">
-									<I class="fas fa-shield-check text-lg"></I>
-								</DIV>
-								<DIV class="col-11">
-									<INPUT class="form-control" id="string" name="string" placeholder="輸入激活碼" required="" type="text"/>
-								</DIV>
-							</DIV>
-							<DIV class="text-center">
-								<BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0" type="submit">
-									<xsl:value-of select="@i18n-submit"/>
-								</BUTTON>
-							</DIV>
-						</FORM>
-					</DIV>
-					<DIV class="card-footer text-center pt-0 px-lg-2 px-1">
-						<P class="text-sm mx-auto">
-							<SPAN class="me-1">無激活碼?</SPAN>
-							<A href="/reactivate.asp" class="text-primary text-gradient font-weight-bold">重寄激活碼</A>
-						</P>
-					</DIV>
-				</DIV>
-			</DIV>
-		</DIV>
 	</xsl:template>
 </xsl:stylesheet>
