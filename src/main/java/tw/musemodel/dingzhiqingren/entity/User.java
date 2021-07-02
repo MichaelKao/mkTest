@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 @Entity
 @SuppressWarnings({"PersistenceUnitPresent", "ValidPrimaryTableName"})
-@Table(schema = "yuepao", name = "users")
+@Table(name = "users")
 public class User implements java.io.Serializable {
 
 	private static final long serialVersionUID = -6959800738346640019L;

@@ -43,7 +43,7 @@ import org.hibernate.annotations.TypeDef;
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(schema = "yuepao", name = "qing_ren", uniqueConstraints = {
+@Table(name = "qing_ren", uniqueConstraints = {
 	@UniqueConstraint(columnNames = {"shi_bie_ma"})
 })
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)

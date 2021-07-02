@@ -110,6 +110,8 @@ public class Servant {
 	 */
 	public static final ZoneId ZONE_ID = ZoneId.of(System.getenv("ZONE_ID"));
 
+	public static final String STATIC_HOST = System.getenv("STATIC_HOST");
+
 	/**
 	 * 一天最晚的时戳
 	 *

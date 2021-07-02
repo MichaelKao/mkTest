@@ -459,7 +459,7 @@ public class LoverService {
 		Element profileImageElement = document.createElement("profileImage");
 		if (Objects.nonNull(lover.getProfileImage())) {
 			profileImageElement.setTextContent(
-				"http://www.youngme.vip/profileImage/" + lover.getProfileImage()
+				servant.STATIC_HOST + "profileImage/" + lover.getProfileImage()
 			);
 		}
 		loverElement.appendChild(profileImageElement);
@@ -468,7 +468,7 @@ public class LoverService {
 		for (Picture picture : pictures) {
 			Element pictureElement = document.createElement("picture");
 			pictureElement.setTextContent(
-				"http://www.youngme.vip/pictures/" + picture.getIdentifier().toString()
+				servant.STATIC_HOST + "pictures/" + picture.getIdentifier().toString()
 			);
 			loverElement.appendChild(pictureElement);
 		}

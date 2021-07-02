@@ -26,7 +26,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(catalog = "yuepao", schema = "yuepao", name = "lu_jie")
+@Table(catalog = "yuepao", name = "lu_jie")
 @JsonIdentityInfo(
 	generator = ObjectIdGenerators.PropertyGenerator.class,
 	property = "id"

@@ -23,7 +23,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(name = "chu_zhi_fang_an", catalog = "yuepao", schema = "yuepao", uniqueConstraints = {
+@Table(name = "chu_zhi_fang_an", catalog = "yuepao", uniqueConstraints = {
 	@UniqueConstraint(columnNames = {"ming_cheng"})
 })
 @JsonIdentityInfo(
