@@ -118,6 +118,9 @@ public class LoverService {
 	@Autowired
 	private PictureRepository pictureRepository;
 
+	@Autowired
+	private LineMessagingService lineMessagingService;
+
 	public List<Lover> loadLovers() {
 		return loverRepository.findAll();
 	}
@@ -283,6 +286,17 @@ public class LoverService {
 		activation.setExpiry(expiry);
 
 		activation = activationRepository.saveAndFlush(activation);
+
+		// 暫時將激活碼送到 Line notify
+		lineMessagingService.notify(String.format(
+			"手機號碼 %s 的激活碼：%s️",
+			String.format(
+				"0%s",
+				lover.getLogin()
+			),
+			string
+		));
+
 		PublishResult publishResult = AMAZON_SNS.publish(
 			new PublishRequest().
 				withMessage(messageSource.getMessage(
@@ -378,6 +392,7 @@ public class LoverService {
 			request.getServerName(),
 			request.getLocale()
 		));
+
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
 				"signUp.done",
@@ -400,6 +415,16 @@ public class LoverService {
 		calendar.setTime(new Date(System.currentTimeMillis()));
 		calendar.add(Calendar.HOUR_OF_DAY, 1);
 		Date expiry = calendar.getTime();
+
+		// 暫時將激活碼送到 Line notify
+		lineMessagingService.notify(String.format(
+			"手機號碼 %s 的激活碼：%s️",
+			String.format(
+				"0%s",
+				lover.getLogin()
+			),
+			string
+		));
 
 		return activationRepository.saveAndFlush(new Activation(
 			lover.getId(),
