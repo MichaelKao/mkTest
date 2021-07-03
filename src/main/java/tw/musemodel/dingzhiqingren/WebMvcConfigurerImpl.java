@@ -53,26 +53,44 @@ public class WebMvcConfigurerImpl implements WebMvcConfigurer {
 		private String prefix;
 
 		public URIResolverImpl() {
+			prefix = "classpath:/templates/";
 			LOGGER.debug(
 				String.format(
-					"%s.URIResolverImpl(\n);//默认构造函数。",
-					getClass().getName()
-				)
+					new StringBuilder("默认构造器%n").
+						append("%s();%n").
+						append("%s = {}%n").
+						append("%s = {}").
+						toString(),
+					getClass(),
+					ServletContext.class,
+					String.class
+				),
+				servletContext,
+				prefix
 			);
-
-			this.prefix = "classpath:/templates/";
 		}
 
 		public URIResolverImpl(ServletContext servletContext) {
-			LOGGER.debug(
-				String.format(
-					"%s.URIResolverImpl(\n\tServletContext = {}\n);//默认构造函数。",
-					getClass().getName()
-				),
-				servletContext
-			);
 			this.servletContext = servletContext;
 			this.prefix = "classpath:/templates/";
+			LOGGER.debug(
+				String.format(
+					new StringBuilder("构造器%n").
+						append("%s.URIResolverImpl(%n").
+						append("\t%s = {}%n").
+						append(");%n").
+						append("%s = {}%n").
+						append("%s = {}").
+						toString(),
+					getClass(),
+					ServletContext.class,
+					ServletContext.class,
+					String.class
+				),
+				servletContext,
+				this.servletContext,
+				this.prefix
+			);
 		}
 
 		/**
@@ -83,15 +101,6 @@ public class WebMvcConfigurerImpl implements WebMvcConfigurer {
 		@Override
 		@SuppressWarnings({"BroadCatchBlock", "TooBroadCatch", "UnusedAssignment", "null"})
 		public Source resolve(String href, String base) {
-			LOGGER.debug(
-				String.format(
-					"%s.resolve(\n\tString = \"{}\",\n\tString = \"{}\"\n);",
-					getClass().getName()
-				),
-				href,
-				base
-			);
-
 			StreamSource source = null;
 			InputStream inputStream = null;
 			ServletContextResource servletContextResource = null;
@@ -108,17 +117,39 @@ public class WebMvcConfigurerImpl implements WebMvcConfigurer {
 				}
 			} catch (IOException ioException) {
 				LOGGER.debug(
-					getClass().getName() + ".resolve(\n\t\"{}\",\n\t\"{}\"\n);//IOException",
+					String.format(
+						new StringBuilder("处理器在遇到 xsl:include、xsl:import 或 document() 时调用%n").
+							append("%s.resolve(%n").
+							append("\t%s = {},%n").
+							append("\t%s = {}%n").
+							append(");%n").
+							append("%s = {}").
+							toString(),
+						getClass().getName(),
+						String.class,
+						String.class,
+						Source.class
+					),
 					href,
 					base,
+					source,
 					ioException
 				);
 			}
 
 			LOGGER.debug(
 				String.format(
-					"%s.resolve(\n\tString = \"{}\",\n\tString = \"{}\"\n);\nSource = {}",
-					getClass().getName()
+					new StringBuilder("处理器在遇到 xsl:include、xsl:import 或 document() 时调用%n").
+						append("%s.resolve(%n").
+						append("\t%s = {},%n").
+						append("\t%s = {}%n").
+						append(");%n").
+						append("%s = {}").
+						toString(),
+					getClass().getName(),
+					String.class,
+					String.class,
+					Source.class
 				),
 				href,
 				base,
@@ -133,9 +164,14 @@ public class WebMvcConfigurerImpl implements WebMvcConfigurer {
 		public String getPrefix() {
 			LOGGER.debug(
 				String.format(
-					"%s.getPrefix(\n);",
-					getClass().getName()
-				)
+					new StringBuilder("基底路径%n").
+						append("%s.getPrefix();%n").
+						append("%s = {}").
+						toString(),
+					getClass(),
+					String.class
+				),
+				prefix
 			);
 			return prefix;
 		}
@@ -144,111 +180,138 @@ public class WebMvcConfigurerImpl implements WebMvcConfigurer {
 		 * @param prefix 基底路径
 		 */
 		public void setPrefix(String prefix) {
+			this.prefix = prefix;
 			LOGGER.debug(
 				String.format(
-					"%s.setPrefix(\n\tString = \"{}\"\n);",
-					getClass().getName()
-				)
+					new StringBuilder("基底路径%n").
+						append("%s.setPrefix(%n").
+						append("\t%s = {}%n").
+						append(");%n").
+						append("%s = {}").
+						toString(),
+					getClass(),
+					String.class,
+					String.class
+				),
+				prefix,
+				this.prefix
 			);
-			this.prefix = prefix;
 		}
 	}
 
 	@Bean
 	public ViewResolver viewResolver() {
-		LOGGER.debug(
-			String.format(
-				"%s.viewResolver();//设置在转换中使用的 URIResolver，它可以处理对 XSLT document() 函数的调用。",
-				getClass().getName()
-			)
-		);
-
 		final String PREFIX = "classpath:/templates/";
 		XsltViewResolver xsltViewResolver = new XsltViewResolver();
 		xsltViewResolver.setIndent(false);
 		xsltViewResolver.setPrefix(PREFIX);
 		xsltViewResolver.setSuffix(".xsl");
 		xsltViewResolver.setUriResolver(new URIResolverImpl(servletContext));
+		LOGGER.debug(
+			String.format(
+				new StringBuilder("设置在转换中使用的 URIResolver，它可以处理对 XSLT document() 函数的调用%n").
+					append("%s.viewResolver();%n").
+					append("%s = {}").
+					toString(),
+				getClass(),
+				XsltViewResolver.class
+			),
+			xsltViewResolver
+		);
 		return xsltViewResolver;
 	}
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> handlerMethodArgumentResolvers) {
-		LOGGER.debug(
-			String.format(
-				"%s.addArgumentResolvers(\n\tList<HandlerMethodArgumentResolver> = {}\n);//添加解析器以支持自定义控制器方法参数类型。",
-				getClass().getName()
-			),
-			handlerMethodArgumentResolvers
-		);
 		handlerMethodArgumentResolvers.add(
 			deviceHandlerMethodArgumentResolver()
 		);
-		//handlerMethodArgumentResolvers.add(
-		//	new LuJieChanShengDingDanHandlerMethodArgumentResolver()
-		//);
-		//handlerMethodArgumentResolvers.add(
-		//	new LuJieFuKuanJieGuoHandlerMethodArgumentResolver()
-		//);
+		LOGGER.debug(
+			String.format(
+				new StringBuilder("添加解析器以支持自定义控制器方法参数类型%n").
+					append("%s.addArgumentResolvers(%n").
+					append("\t%s = {}%n").
+					append(");").
+					toString(),
+				getClass(),
+				List.class
+			),
+			handlerMethodArgumentResolvers
+		);
 	}
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry resourceHandlerRegistry) {
-		LOGGER.debug(
-			String.format(
-				"%s.addResourceHandlers(\n\tResourceHandlerRegistry = {}\n);//服务静态资源。",
-				getClass().getName()
-			),
-			resourceHandlerRegistry
-		);
 		resourceHandlerRegistry.
 			addResourceHandler("/**").
 			addResourceLocations("classpath:/static/");
+		LOGGER.debug(
+			String.format(
+				new StringBuilder("服务静态资源%n").
+					append("%s.addResourceHandlers(%n").
+					append("\t%s = {}%n").
+					append(");").
+					toString(),
+				getClass(),
+				ResourceHandlerRegistry.class
+			),
+			resourceHandlerRegistry
+		);
 	}
 
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer defaultServletHandlerConfigurer) {
+		defaultServletHandlerConfigurer.enable();
 		LOGGER.debug(
 			String.format(
-				"%s.configureDefaultServletHandling(\n\tDefaultServletHandlerConfigurer = {}\n);//启用转发到 \"default\" Servlet的功能。",
-				getClass().getName()
+				new StringBuilder("启用转发到 \"default\" Servlet 的功能%n").
+					append("%s.configureDefaultServletHandling(%n").
+					append("\t%s = {}%n").
+					append(");").
+					toString(),
+				getClass(),
+				DefaultServletHandlerConfigurer.class
 			),
 			defaultServletHandlerConfigurer
 		);
-		defaultServletHandlerConfigurer.enable();
 	}
 
 	@Bean
 	public DeviceResolverHandlerInterceptor deviceResolverHandlerInterceptor() {
-		LOGGER.debug(
-			String.format(
-				"%s.deviceResolverHandlerInterceptor(\n);//一个 Spring MVC 拦截器，它在调用任何请求处理程序之前解析发起 Web 请求的设备。",
-				getClass().getName()
-			)
-		);
+		LOGGER.debug(String.format(
+			new StringBuilder("一个 Spring MVC 拦截器，它在调用任何请求处理程序之前解析发起 Web 请求的设备%n").
+				append("%s.deviceResolverHandlerInterceptor();").
+				toString(),
+			getClass()
+		));
 		return new DeviceResolverHandlerInterceptor();
 	}
 
 	@Bean
 	public DeviceHandlerMethodArgumentResolver deviceHandlerMethodArgumentResolver() {
-		LOGGER.debug(
-			String.format(
-				"%s.deviceHandlerMethodArgumentResolver(\n);//Spring MVC HandlerMethodArgumentResolver 将类型为 Device 的 @Controller MethodParameters 解析为 Web 请求的当前设备属性的值。",
-				getClass().getName()
-			)
-		);
+		LOGGER.debug(String.format(
+			new StringBuilder("Spring MVC HandlerMethodArgumentResolver 将类型为 Device 的 @Controller MethodParameters 解析为 Web 请求的当前设备属性的值%n").
+				append("%s.deviceHandlerMethodArgumentResolver();").
+				toString(),
+			getClass()
+		));
 		return new DeviceHandlerMethodArgumentResolver();
 	}
 
 	@Override
 	public void addInterceptors(InterceptorRegistry interceptorRegistry) {
+		interceptorRegistry.addInterceptor(deviceResolverHandlerInterceptor());
 		LOGGER.debug(
 			String.format(
-				"%s.addInterceptors(\n\tInterceptorRegistry = {}\n);//添加 Spring MVC 生命周期拦截器，用于控制器方法调用和资源处理程序请求的预处理和后处理；拦截器可以注册以应用于所有请求或仅限于 URL 模式的子集。",
-				getClass().getName()
+				new StringBuilder("添加 Spring MVC 生命周期拦截器，用于控制器方法调用和资源处理程序请求的预处理和后处理；拦截器可以注册以应用于所有请求或仅限于 URL 模式的子集%n").
+					append("%s.addInterceptors(%n").
+					append("\t%s = {}%n").
+					append(");").
+					toString(),
+				getClass(),
+				InterceptorRegistry.class
 			),
 			interceptorRegistry
 		);
-		interceptorRegistry.addInterceptor(deviceResolverHandlerInterceptor());
 	}
 }
