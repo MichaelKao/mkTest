@@ -111,7 +111,8 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/")
 	@ResponseBody
-	ModelAndView index(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView index(Authentication authentication, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -138,16 +139,21 @@ public class WelcomeController {
 				null
 			);
 
+			documentElement.setAttribute(
+				"identifier",
+				me.getIdentifier().toString()
+			);
+
 			// 通知數、顯示的 lovers 資料
 			int announcement = 0;
 			List<Lover> lovers = new ArrayList<Lover>();
 			if (isMale) {
 				lovers = loverRepository.findAllByGender(false);
-				historyRepository.countByPassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
+				announcement = historyRepository.countByPassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
 			}
 			if (!isMale) {
 				lovers = loverRepository.findAllByGender(true);
-				historyRepository.countByFemalePassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
+				announcement = historyRepository.countByFemalePassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
 			}
 
 			if (announcement > 0) {
@@ -204,7 +210,8 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/activate.asp")
-	ModelAndView activate(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView activate(Authentication authentication, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			LOGGER.debug("已登入故激活页面重导至首页");
 			return new ModelAndView("redirect:/");
@@ -771,6 +778,11 @@ public class WelcomeController {
 			null
 		);
 
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
+
 		ModelAndView modelAndView = new ModelAndView("profile");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
@@ -816,6 +828,11 @@ public class WelcomeController {
 		documentElement.setAttribute(
 			isMale ? "male" : "female",
 			null
+		);
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
 		);
 
 		// 有登入狀態
@@ -911,6 +928,11 @@ public class WelcomeController {
 				authentication.getName()
 			);
 		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
 
 		ModelAndView modelAndView = new ModelAndView("editProfile");
 		modelAndView.getModelMap().addAttribute(document);
@@ -1056,6 +1078,11 @@ public class WelcomeController {
 			);
 		}
 
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
+
 		Set<Lover> following = me.getFollowing();
 		for (Lover followed : following) {
 
@@ -1175,6 +1202,11 @@ public class WelcomeController {
 			);
 		}
 
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
+
 		List<History> histories = historyRepository.findByPassiveAndBehavior(
 			me,
 			Behavior.KAN_GUO_WO
@@ -1267,6 +1299,11 @@ public class WelcomeController {
 				authentication.getName()
 			);
 		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
 
 		Element profileImageElement = document.createElement("profileImage");
 		if (Objects.nonNull(me.getProfileImage())) {
@@ -1440,6 +1477,15 @@ public class WelcomeController {
 			);
 		}
 
+		if (!isMale) {
+			return new ModelAndView("redirect:/");
+		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
+
 		for (Plan plan : planRepository.findAll()) {
 			Element planElement = document.createElement("plan");
 			planElement.setAttribute("points", Short.toString(plan.getPoints()));
@@ -1499,16 +1545,17 @@ public class WelcomeController {
 			null
 		);
 
-		if (!isMale) {
-			return new ModelAndView("redirect:/");
-		}
-
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
 				authentication.getName()
 			);
 		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
 
 		ModelAndView modelAndView = new ModelAndView("activeLogs");
 		modelAndView.getModelMap().addAttribute(document);
@@ -1563,6 +1610,11 @@ public class WelcomeController {
 				authentication.getName()
 			);
 		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
 
 		ModelAndView modelAndView = new ModelAndView("upgrade");
 		modelAndView.getModelMap().addAttribute(document);

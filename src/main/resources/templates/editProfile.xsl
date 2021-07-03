@@ -37,6 +37,9 @@
 			<SCRIPT crossorigin="anonymous" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"/>
 			<SCRIPT src="/SCRIPT/bootstrap-datetimepicker.js" type="text/javascript"></SCRIPT>
 			<SCRIPT src="/SCRIPT/editProfile.js"/>
+			<xsl:if test="@signIn">
+				<SCRIPT src="/SCRIPT/websocket.js"/>
+			</xsl:if>
 		</BODY>
 	</xsl:template>
 	<xsl:template match="lover">

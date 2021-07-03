@@ -15,8 +15,6 @@
 		<HTML dir="ltr" lang="zh-Hant">
 			<xsl:apply-templates select="document"/>
 		</HTML>
-		<LINK href="/STYLE/index.css" rel="stylesheet"/>
-		<LINK href="/manifest.json" rel="manifest"/>
 	</xsl:template>
 
 	<xsl:template match="document">
@@ -26,6 +24,8 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
+			<LINK href="/STYLE/index.css" rel="stylesheet"/>
+			<!--<LINK href="/manifest.json" rel="manifest"/>-->
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
@@ -161,6 +161,9 @@
 				</SECTION>
 			</xsl:if>
 			<xsl:call-template name="bodyScriptTags"/>
+			<xsl:if test="@signIn">
+				<SCRIPT src="/SCRIPT/websocket.js"/>
+			</xsl:if>
 		</BODY>
 	</xsl:template>
 </xsl:stylesheet>

@@ -54,7 +54,6 @@ $(document).ready(function () {
 				what: $('TEXTAREA[name="what"]').val()
 			},
 			function (data) {
-				console.log(data)
 				if (data.response) {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import tw.musemodel.dingzhiqingren.WebSocketServer;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.LineGiven;
@@ -58,6 +59,9 @@ public class HistoryService {
 
 	@Autowired
 	private LoverService loverService;
+
+	@Autowired
+	private WebSocketServer webSocketServer;
 
 	/**
 	 * 历程：充值行为
@@ -137,6 +141,16 @@ public class HistoryService {
 			points
 		);
 		history = historyRepository.saveAndFlush(history);
+
+		// 推送通知給女生
+		webSocketServer.sendNotification(
+			passive.getIdentifier().toString(),
+			String.format(
+				"%s打賞車馬費%d給妳!",
+				initiative.getNickname(),
+				points
+			));
+
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
 				"fare.done",
@@ -224,6 +238,15 @@ public class HistoryService {
 		);
 		history.setGreeting(greetingMessage);
 		history = historyRepository.saveAndFlush(history);
+
+		// 推送通知給女生
+		webSocketServer.sendNotification(
+			passive.getIdentifier().toString(),
+			String.format(
+				"%s和妳要求LINE：「%s」",
+				initiative.getNickname(),
+				greetingMessage
+			));
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
 				"gimmeYourLineInvitation.done",
@@ -270,6 +293,15 @@ public class HistoryService {
 		);
 		history.setGreeting(greetingMessage);
 		history = historyRepository.saveAndFlush(history);
+
+		// 推送通知給男生
+		webSocketServer.sendNotification(
+			passive.getIdentifier().toString(),
+			String.format(
+				"%s向你打招呼：「%s」",
+				initiative.getNickname(),
+				greetingMessage
+			));
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
 				"greet.done",
@@ -321,6 +353,14 @@ public class HistoryService {
 		);
 		history.setGreeting(inviteMeAsLineFriend);
 		history = historyRepository.saveAndFlush(history);
+
+		// 推送通知給男生
+		webSocketServer.sendNotification(
+			passive.getIdentifier().toString(),
+			String.format(
+				"%s已答應給你LINE!",
+				initiative.getNickname()
+			));
 
 		History historySeen = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
 			passive, initiative, BEHAVIOR_GIMME_YOUR_LINE_INVITATION

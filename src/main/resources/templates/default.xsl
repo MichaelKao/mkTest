@@ -30,6 +30,7 @@
 
 	<xsl:template name="navbar">
 		<DIV class="container position-sticky z-index-sticky top-0">
+			<INPUT name="identifier" type="hidden" value="{@identifier}"/>
 			<NAV class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
 				<DIV class="container-fluid">
 					<A class="navbar-brand font-weight-bolder ms-sm-3" href="/">訂製情人</A>
@@ -159,11 +160,9 @@
 
 	<xsl:template name="bootstrapToast">
 		<DIV class="position-fixed top-5 end-0 p-3" style="z-index: 10000">
-			<DIV class="toast hide" data-bs-delay="1500" >
-				<BUTTON type="button" class="btn-close" data-bs-dismiss="toast">
-					<I class="far fa-times ms-2 text-dark text-lg"></I>
-				</BUTTON>
-				<DIV class="toast-body"/>
+			<DIV class="toast fade hide bg-primary opacity-9" data-bs-delay="1800" >
+				<BUTTON type="button" class="btn-close ms-2 mt-1" data-bs-dismiss="toast"></BUTTON>
+				<DIV class="toast-body text-light"/>
 			</DIV>
 		</DIV>
 	</xsl:template>
