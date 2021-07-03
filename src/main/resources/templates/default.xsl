@@ -69,9 +69,11 @@
 											<A class="dropdown-item border-radius-md" href="/favorite.asp">
 												<SPAN>我的收藏</SPAN>
 											</A>
-											<A class="dropdown-item border-radius-md" href="/looksMe.asp">
-												<SPAN>誰看過我</SPAN>
-											</A>
+											<xsl:if test="(@vip)or(@female)">
+												<A class="dropdown-item border-radius-md" href="/looksMe.asp">
+													<SPAN>誰看過我</SPAN>
+												</A>
+											</xsl:if>
 											<A class="dropdown-item border-radius-md" href="/activeLogs.asp">
 												<SPAN>動態紀錄</SPAN>
 											</A>
@@ -83,9 +85,11 @@
 											<A class="dropdown-item border-radius-md" href="/favorite.asp">
 												<SPAN>我的收藏</SPAN>
 											</A>
-											<A class="dropdown-item border-radius-md" href="/looksMe.asp">
-												<SPAN>誰看過我</SPAN>
-											</A>
+											<xsl:if test="(@vip)or(@female)">
+												<A class="dropdown-item border-radius-md" href="/looksMe.asp">
+													<SPAN>誰看過我</SPAN>
+												</A>
+											</xsl:if>
 											<A class="dropdown-item border-radius-md" href="/activeLogs.asp">
 												<SPAN>動態紀錄</SPAN>
 											</A>

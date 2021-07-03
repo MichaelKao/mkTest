@@ -422,6 +422,14 @@ public class HistoryService {
 		historySeen.setSeen(new Date(System.currentTimeMillis()));
 		historyRepository.saveAndFlush(historySeen);
 
+		// 推送通知給男生
+		webSocketServer.sendNotification(
+			passive.getIdentifier().toString(),
+			String.format(
+				"%s已拒絕給你LINE!",
+				initiative.getNickname()
+			));
+
 		if (historySeen.getPoints() == -30) {
 			History historyTuiDian = new History(
 				passive,

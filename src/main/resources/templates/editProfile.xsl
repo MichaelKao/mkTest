@@ -51,7 +51,7 @@
 				<DIV class="row mt-3">
 					<DIV class="col-md-12 mb-3">
 						<LABEL for="nickname">暱稱</LABEL>
-						<INPUT class="form-control" id="nickname" name="nickname" type="text" value="{nickname}"/>
+						<INPUT class="form-control" id="nickname" name="nickname" required="" type="text" value="{nickname}"/>
 					</DIV>
 					<DIV class="form-group">
 						<LABEL for="birth">生日</LABEL>

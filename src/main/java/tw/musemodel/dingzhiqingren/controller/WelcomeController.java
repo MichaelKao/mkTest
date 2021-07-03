@@ -139,6 +139,14 @@ public class WelcomeController {
 				null
 			);
 
+			// 是否為 VIP
+			if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+				documentElement.setAttribute(
+					"vip",
+					null
+				);
+			}
+
 			documentElement.setAttribute(
 				"identifier",
 				me.getIdentifier().toString()
@@ -765,6 +773,14 @@ public class WelcomeController {
 			null
 		);
 
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
+
 		// 有登入狀態
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
@@ -829,6 +845,14 @@ public class WelcomeController {
 			isMale ? "male" : "female",
 			null
 		);
+
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
 
 		documentElement.setAttribute(
 			"identifier",
@@ -922,6 +946,14 @@ public class WelcomeController {
 			null
 		);
 
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
+
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
@@ -958,11 +990,16 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		if (!Objects.isNull(model.getNickname())) {
-			me.setNickname(model.getNickname());
+		if (model.getNickname().isBlank() || model.getNickname().isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason("請輸入暱稱").
+				withResponse(false).
+				toJSONObject().toString();
 		}
 
-		if (!Objects.isNull(birthday)) {
+		me.setNickname(model.getNickname());
+
+		if (Objects.nonNull(birthday)) {
 			ZonedDateTime birth = ZonedDateTime.of(LocalDate.ofInstant(birthday.toInstant(),
 				Servant.ASIA_TAIPEI
 			),
@@ -973,53 +1010,53 @@ public class WelcomeController {
 			me.setBirthday(birthday);
 		}
 
-		if (!Objects.isNull(model.getHeight())) {
+		if (Objects.nonNull(model.getHeight())) {
 			me.setHeight(model.getHeight());
 		}
 
-		if (!Objects.isNull(model.getWeight())) {
+		if (Objects.nonNull(model.getWeight())) {
 			me.setWeight(model.getWeight());
 		}
 
-		if (!Objects.isNull(model.getOccupation())) {
+		if (Objects.nonNull(model.getOccupation())) {
 			me.setOccupation(model.getOccupation());
 		}
 
-		if (!Objects.isNull(model.getInviteMeAsLineFriend())) {
+		if (Objects.nonNull(model.getInviteMeAsLineFriend())) {
 			me.setInviteMeAsLineFriend(model.getInviteMeAsLineFriend());
 		}
 
-		if (!Objects.isNull(model.getBodyType())) {
+		if (Objects.nonNull(model.getBodyType())) {
 			me.setBodyType(model.getBodyType());
 		}
 
-		if (!Objects.isNull(model.getEducation())) {
+		if (Objects.nonNull(model.getEducation())) {
 			me.setEducation(model.getEducation());
 		}
 
-		if (!Objects.isNull(model.getMarriage())) {
+		if (Objects.nonNull(model.getMarriage())) {
 			me.setMarriage(model.getMarriage());
 		}
 
-		if (!Objects.isNull(model.getSmoking())) {
+		if (Objects.nonNull(model.getSmoking())) {
 			me.setSmoking(model.getSmoking());
 		}
 
-		if (!Objects.isNull(model.getDrinking())) {
+		if (Objects.nonNull(model.getDrinking())) {
 			me.setDrinking(model.getDrinking());
 		}
 
-		if (!Objects.isNull(model.getAboutMe())) {
+		if (Objects.nonNull(model.getAboutMe())) {
 			String aboutMe = model.getAboutMe();
 			me.setAboutMe(aboutMe);
 		}
 
-		if (!Objects.isNull(model.getIdealConditions())) {
+		if (Objects.nonNull(model.getIdealConditions())) {
 			String idealConditions = model.getIdealConditions();
 			me.setIdealConditions(idealConditions);
 		}
 
-		if (!Objects.isNull(model.getGreeting())) {
+		if (Objects.nonNull(model.getGreeting())) {
 			me.setGreeting(model.getGreeting());
 		}
 
@@ -1070,6 +1107,14 @@ public class WelcomeController {
 			isMale ? "male" : "female",
 			null
 		);
+
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
 
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
@@ -1195,6 +1240,16 @@ public class WelcomeController {
 			null
 		);
 
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		} else {
+			return new ModelAndView("redirect:/");
+		}
+
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
@@ -1292,6 +1347,14 @@ public class WelcomeController {
 			isMale ? "male" : "female",
 			null
 		);
+
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
 
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
@@ -1470,6 +1533,14 @@ public class WelcomeController {
 			null
 		);
 
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
+
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
@@ -1545,6 +1616,14 @@ public class WelcomeController {
 			null
 		);
 
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
+
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
@@ -1599,6 +1678,14 @@ public class WelcomeController {
 			isMale ? "male" : "female",
 			null
 		);
+
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
 
 		if (!isMale) {
 			return new ModelAndView("redirect:/");
