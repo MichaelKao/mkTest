@@ -228,6 +228,30 @@ public class LoverService {
 	}
 
 	@Transactional(readOnly = true)
+	public Integer calculateAgeByBirthday(Date birthday) {
+
+		Calendar now = Calendar.getInstance();
+
+		Calendar birth = Calendar.getInstance();
+		birth.setTime(birthday);
+
+		int yearNow = now.get(Calendar.YEAR);
+		int monthNow = now.get(Calendar.MONTH);
+		int dayNow = now.get(Calendar.DAY_OF_MONTH);
+
+		int yearBirth = birth.get(Calendar.YEAR);
+		int monthBirth = birth.get(Calendar.MONTH);
+		int dayBirth = birth.get(Calendar.DAY_OF_MONTH);
+
+		int age = yearNow - yearBirth;
+
+		if (monthNow < monthBirth || (monthNow == monthBirth && dayNow < dayBirth)) {
+			age--;
+		}
+		return age;
+	}
+
+	@Transactional(readOnly = true)
 	public Lover loadByIdentifier(UUID identifier) {
 		return loverRepository.findOneByIdentifier(identifier);
 	}
@@ -358,6 +382,10 @@ public class LoverService {
 			throw new RuntimeException("signUp.exists");
 		}
 
+		if (calculateAgeByBirthday(signUp.getBirthday()) < 18) {
+			throw new RuntimeException("signUp.mustBeAtLeast18yrsOld");
+		}
+
 		UUID identifier = UUID.randomUUID();
 
 		// 上傳預設大頭照
@@ -370,6 +398,7 @@ public class LoverService {
 		lover.setCountry(country);
 		lover.setLogin(login);
 		lover.setGender(signUp.getGender());
+		lover.setBirthday(signUp.getBirthday());
 		lover.setProfileImage(identifier.toString());
 		lover = loverRepository.saveAndFlush(lover);
 

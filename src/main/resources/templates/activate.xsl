@@ -46,7 +46,7 @@
 						<H4 class="font-weight-bolder">
 							<xsl:value-of select="/document/@title"/>
 						</H4>
-						<P class="mb-0">輸入手機號碼註冊</P>
+						<P class="mb-0">輸入激活碼</P>
 					</DIV>
 					<DIV class="card-body">
 						<FORM action="/activate.json" method="post">

@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
 	var identifier = $('INPUT[name="identifier"]').val();
-	console.log(identifier)
+	var hostName = location.hostname;
 
 	var socket;
 	if (typeof (WebSocket) == "undefined") {
@@ -10,7 +10,7 @@ $(document).ready(function () {
 		console.log("Support WebSocket");
 	}
 
-	socket = new WebSocket("wss://jkfans.ngrok.io/webSocket/" + identifier);
+	socket = new WebSocket("wss://" + hostName + "/webSocket/" + identifier);
 
 	//開啟事件
 	socket.onopen = function () {

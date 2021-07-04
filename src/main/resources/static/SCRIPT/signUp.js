@@ -9,11 +9,11 @@ $(document).ready(function () {
 	$('FORM').submit(function (event) {
 		event.preventDefault();
 		let form = this;
+		$('INPUT[name="birthday"]').val($('#years').val() + '-' + $('#months').val() + '-' + $('#days').val());
 		$.post(
 			$(form).attr('action'),
 			$(form).serialize(),
 			function (data) {
-				console.log(data);
 				if (data.response) {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');

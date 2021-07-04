@@ -1,8 +1,11 @@
 package tw.musemodel.dingzhiqingren.model;
 
+import java.util.Date;
 import java.util.Objects;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 /**
  * @author p@musemodel.tw
@@ -16,10 +19,15 @@ public class SignUp {
 	@NotEmpty
 	@NotNull
 	private String login;
-	
+
 	@NotEmpty
 	@NotNull
 	private Boolean gender;
+
+	@NotEmpty
+	@NotNull
+	@DateTimeFormat(iso = ISO.DATE, fallbackPatterns = {"dd-MM-yyyy"})
+	private Date birthday;
 
 	public SignUp() {
 	}
@@ -54,5 +62,13 @@ public class SignUp {
 
 	public void setGender(Boolean gender) {
 		this.gender = gender;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
 	}
 }
