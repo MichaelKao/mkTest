@@ -57,6 +57,10 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.
+			requiresChannel().
+			requestMatchers(requestMatcher -> requestMatcher.getHeader("X-Forwarded-Proto") != null).
+			requiresSecure().
+			and().
 			authorizeRequests(
 				authorizeRequests -> authorizeRequests.
 					antMatchers(
