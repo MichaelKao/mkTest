@@ -400,6 +400,9 @@ public class LoverService {
 		lover.setGender(signUp.getGender());
 		lover.setBirthday(signUp.getBirthday());
 		lover.setProfileImage(identifier.toString());
+		lover.setAboutMe("嗨，我正在尋找對象。");
+		lover.setIdealConditions("對我好");
+		lover.setGreeting("嗨！我想認識你！");
 		lover = loverRepository.saveAndFlush(lover);
 
 		applicationEventPublisher.publishEvent(new SignedUpEvent(

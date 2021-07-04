@@ -2,9 +2,6 @@ package tw.musemodel.dingzhiqingren.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -22,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -665,7 +661,8 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/signUp.asp")
 	@ResponseBody
-	String signUp(SignUp signUp, Authentication authentication, HttpServletRequest request, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	String signUp(SignUp signUp, Authentication authentication, HttpServletRequest request, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
@@ -984,7 +981,7 @@ public class WelcomeController {
 	@PostMapping(path = "/me.asp")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
-	String editProfile(Lover model, @RequestParam(name = "birth", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date birthday, Authentication authentication, Locale locale) {
+	String editProfile(Lover model, Authentication authentication, Locale locale) {
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -997,18 +994,35 @@ public class WelcomeController {
 				toJSONObject().toString();
 		}
 
-		me.setNickname(model.getNickname());
-
-		if (Objects.nonNull(birthday)) {
-			ZonedDateTime birth = ZonedDateTime.of(LocalDate.ofInstant(birthday.toInstant(),
-				Servant.ASIA_TAIPEI
-			),
-				LocalTime.MIN,
-				Servant.ASIA_TAIPEI
-			);
-			birthday.setTime(birth.toEpochSecond() * 1000);
-			me.setBirthday(birthday);
+		if (model.getInviteMeAsLineFriend().isBlank() || model.getInviteMeAsLineFriend().isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason("請填入 LINE").
+				withResponse(false).
+				toJSONObject().toString();
 		}
+
+		if (model.getAboutMe().isBlank() || model.getAboutMe().isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason("請輸入關於我的內容").
+				withResponse(false).
+				toJSONObject().toString();
+		}
+
+		if (model.getIdealConditions().isBlank() || model.getIdealConditions().isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason("請輸入你的理想型").
+				withResponse(false).
+				toJSONObject().toString();
+		}
+
+		if (model.getGreeting().isBlank() || model.getGreeting().isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason("請輸入你的招呼語").
+				withResponse(false).
+				toJSONObject().toString();
+		}
+
+		me.setNickname(model.getNickname());
 
 		if (Objects.nonNull(model.getHeight())) {
 			me.setHeight(model.getHeight());
@@ -1022,9 +1036,7 @@ public class WelcomeController {
 			me.setOccupation(model.getOccupation());
 		}
 
-		if (Objects.nonNull(model.getInviteMeAsLineFriend())) {
-			me.setInviteMeAsLineFriend(model.getInviteMeAsLineFriend());
-		}
+		me.setInviteMeAsLineFriend(model.getInviteMeAsLineFriend());
 
 		if (Objects.nonNull(model.getBodyType())) {
 			me.setBodyType(model.getBodyType());
@@ -1046,19 +1058,13 @@ public class WelcomeController {
 			me.setDrinking(model.getDrinking());
 		}
 
-		if (Objects.nonNull(model.getAboutMe())) {
-			String aboutMe = model.getAboutMe();
-			me.setAboutMe(aboutMe);
-		}
+		String aboutMe = model.getAboutMe();
+		me.setAboutMe(aboutMe);
 
-		if (Objects.nonNull(model.getIdealConditions())) {
-			String idealConditions = model.getIdealConditions();
-			me.setIdealConditions(idealConditions);
-		}
+		String idealConditions = model.getIdealConditions();
+		me.setIdealConditions(idealConditions);
 
-		if (Objects.nonNull(model.getGreeting())) {
-			me.setGreeting(model.getGreeting());
-		}
+		me.setGreeting(model.getGreeting());
 
 		loverRepository.saveAndFlush(me);
 
