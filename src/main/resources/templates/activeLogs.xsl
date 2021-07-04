@@ -72,6 +72,9 @@
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/activeLogs.js"/>
+			<xsl:if test="@signIn">
+				<SCRIPT src="/SCRIPT/websocket.js"/>
+			</xsl:if>
 		</BODY>
 	</xsl:template>
 </xsl:stylesheet>

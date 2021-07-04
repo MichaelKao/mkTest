@@ -95,6 +95,9 @@
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/profile.js"/>
+			<xsl:if test="@signIn">
+				<SCRIPT src="/SCRIPT/websocket.js"/>
+			</xsl:if>
 		</BODY>
 	</xsl:template>
 	<xsl:template match="lover">

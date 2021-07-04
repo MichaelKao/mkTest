@@ -35,6 +35,7 @@
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
+			<SCRIPT src="/SCRIPT/birthday.js"/>
 			<SCRIPT src="/SCRIPT/signUp.js"/>
 		</BODY>
 	</xsl:template>
@@ -43,16 +44,15 @@
 		<DIV class="row">
 			<DIV class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-auto">
 				<DIV class="card card-plain">
-					<DIV class="card-header pb-0 text-left">
+					<DIV class="card-header p-1 p-sm-2 text-left">
 						<H4 class="font-weight-bolder">
 							<xsl:value-of select="/document/@title"/>
 						</H4>
-						<P class="mb-0">輸入手機號碼註冊</P>
 					</DIV>
-					<DIV class="card-body">
+					<DIV class="card-body p-1 p-sm-2">
 						<FORM action="/signUp.asp" method="post">
 							<DIV class="form-group">
-								<SELECT class="form-control" name="country" required="">
+								<SELECT class="form-control form-control-lg" name="country" required="">
 									<xsl:apply-templates select="countries/*"/>
 								</SELECT>
 							</DIV>
@@ -64,41 +64,66 @@
 									<INPUT class="form-control form-control-lg" name="login" placeholder="手機號碼" required="" type="text" value=""/>
 								</DIV>
 							</DIV>
+							<HR class="horizontal dark my-3"/>
+							<DIV class="row align-items-center mb-3">
+								<DIV class="col-1">
+									<i class="fas fa-birthday-cake"></i>
+								</DIV>
+								<DIV class="col-11 d-flex justify-content-around align-items-center">
+									<INPUT class="d-none" name="birthday" type="hidden" value=""/>
+									<DIV class="d-flex align-items-center">
+										<SELECT class="form-control" id="years" required=""></SELECT>
+										<SPAN class="ms-1">年</SPAN>
+									</DIV>
+									<DIV class="d-flex align-items-center">
+										<SELECT class="form-control" id="months" required=""></SELECT>
+										<SPAN class="ms-1">月</SPAN>
+									</DIV>
+									<DIV class="d-flex align-items-center">
+										<SELECT class="form-control" id="days" required=""></SELECT>
+										<SPAN class="ms-1">日</SPAN>
+									</DIV>
+								</DIV>
+							</DIV>
+							<HR class="horizontal dark my-3"/>
 							<DIV class="row align-items-center mb-3">
 								<DIV class="col-1">
 									<i class="fas fa-venus-mars"></i>
 								</DIV>
-								<DIV class="col-10 d-flex justify-content-around align-items-center">
+								<DIV class="col-11 d-flex justify-content-around align-items-center">
 									<DIV class="form-check">
 										<INPUT class="form-check-input" id="female" name="gender" required="" type="radio" value="false"/>
-										<LABEL class="custom-control-label" for="female">
+										<LABEL class="custom-control-label h6" for="female">
 											<xsl:value-of select="gender/@female"/>
 										</LABEL>
 									</DIV>
 									<DIV class="form-check">
 										<INPUT class="form-check-input" id="male" name="gender" required="" type="radio" value="true"/>
-										<LABEL class="custom-control-label" for="male">
+										<LABEL class="custom-control-label h6" for="male">
 											<xsl:value-of select="gender/@male"/>
 										</LABEL>
 									</DIV>
 								</DIV>
 							</DIV>
 							<DIV class="text-center">
-								<BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0" type="submit">
+								<BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mb-0" type="submit">
 									<xsl:value-of select="@i18n-submit"/>
 								</BUTTON>
 							</DIV>
 						</FORM>
 					</DIV>
 					<DIV class="card-footer text-center pt-0 px-lg-2 px-1">
-						<P class="text-sm mx-auto">
+						<DIV class="text-sm mx-auto">
+							<SPAN class="me-1">註冊即表示您保證年滿18歲</SPAN>
+						</DIV>
+						<DIV class="text-sm mx-auto">
 							<SPAN class="me-1">已是會員?</SPAN>
 							<A href="/signIn.asp" class="text-primary text-gradient font-weight-bold">按此登入</A>
-						</P>
-						<P class="text-sm mx-auto">
+						</DIV>
+						<DIV class="text-sm mx-auto">
 							<SPAN class="me-1">已有註冊手機?</SPAN>
 							<A href="/reactivate.asp" class="text-primary text-gradient font-weight-bold">按此重新激活</A>
-						</P>
+						</DIV>
 					</DIV>
 				</DIV>
 			</DIV>

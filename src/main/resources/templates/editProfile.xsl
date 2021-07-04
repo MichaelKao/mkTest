@@ -34,9 +34,10 @@
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
-			<SCRIPT crossorigin="anonymous" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"/>
-			<SCRIPT src="/SCRIPT/bootstrap-datetimepicker.js" type="text/javascript"></SCRIPT>
 			<SCRIPT src="/SCRIPT/editProfile.js"/>
+			<xsl:if test="@signIn">
+				<SCRIPT src="/SCRIPT/websocket.js"/>
+			</xsl:if>
 		</BODY>
 	</xsl:template>
 	<xsl:template match="lover">
@@ -48,11 +49,11 @@
 				<DIV class="row mt-3">
 					<DIV class="col-md-12 mb-3">
 						<LABEL for="nickname">暱稱</LABEL>
-						<INPUT class="form-control" id="nickname" name="nickname" type="text" value="{nickname}"/>
+						<INPUT class="form-control" id="nickname" name="nickname" required="" type="text" value="{nickname}"/>
 					</DIV>
 					<DIV class="form-group">
-						<LABEL for="birth">生日</LABEL>
-						<INPUT class="form-control datetimepicker" id="birth" name="birth" readonly="" required="" type="text" value="{birthday}"/>
+						<LABEL>生日</LABEL>
+						<INPUT class="form-control" readonly="" required="" type="text" value="{birthday}"/>
 					</DIV>
 					<DIV class="d-flex">
 						<DIV class="col-6 mb-3 pe-1">
@@ -71,7 +72,7 @@
 					<xsl:if test="/document/@female">
 						<DIV class="col-md-12 mb-3">
 							<LABEL for="inviteMeAsLineFriend">Line 好友連結</LABEL>
-							<INPUT class="form-control" id="inviteMeAsLineFriend" name="inviteMeAsLineFriend" type="text" value="{inviteMeAsLineFriend}"/>
+							<INPUT class="form-control" id="inviteMeAsLineFriend" name="inviteMeAsLineFriend" required="" type="text" value="{inviteMeAsLineFriend}"/>
 						</DIV>
 					</xsl:if>
 					<DIV class="form-group">
@@ -142,7 +143,7 @@
 					<DIV class="col-md-12 pe-2 mb-3">
 						<DIV class="form-group mb-0">
 							<LABEL for="aboutMe">關於我</LABEL>
-							<TEXTAREA class="form-control" id="aboutMe" name="aboutMe" rows="6">
+							<TEXTAREA class="form-control" id="aboutMe" name="aboutMe" required="" rows="6">
 								<xsl:value-of select="aboutMe"/>
 							</TEXTAREA>
 						</DIV>
@@ -150,7 +151,7 @@
 					<DIV class="col-md-12 pe-2 mb-3">
 						<DIV class="form-group mb-0">
 							<LABEL for="idealConditions">理想對象</LABEL>
-							<TEXTAREA class="form-control" id="idealConditions" name="idealConditions" rows="6">
+							<TEXTAREA class="form-control" id="idealConditions" name="idealConditions" required="" rows="6">
 								<xsl:value-of select="idealConditions"/>
 							</TEXTAREA>
 						</DIV>
@@ -158,7 +159,7 @@
 					<DIV class="col-md-12 pe-2 mb-3">
 						<DIV class="form-group mb-0">
 							<LABEL for="greeting">打招呼</LABEL>
-							<TEXTAREA class="form-control" id="greeting" name="greeting" rows="4">
+							<TEXTAREA class="form-control" id="greeting" name="greeting" required="" rows="4">
 								<xsl:value-of select="greeting"/>
 							</TEXTAREA>
 						</DIV>

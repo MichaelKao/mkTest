@@ -30,18 +30,21 @@
 
 	<xsl:template name="navbar">
 		<DIV class="container position-sticky z-index-sticky top-0">
+			<INPUT name="identifier" type="hidden" value="{@identifier}"/>
 			<NAV class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
 				<DIV class="container-fluid">
 					<A class="navbar-brand font-weight-bolder ms-sm-3" href="/">訂製情人</A>
 					<DIV>
-						<A class="d-lg-none" href="/activeLogs.asp">
-							<I class="fal fa-bell"></I>
-							<xsl:if test="@announcement">
-								<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement">
-									<xsl:value-of select="@announcement"/>
-								</SPAN>
-							</xsl:if>
-						</A>
+						<xsl:if test="@signIn">
+							<A class="d-lg-none" href="/activeLogs.asp">
+								<I class="fal fa-bell"></I>
+								<xsl:if test="@announcement">
+									<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement">
+										<xsl:value-of select="@announcement"/>
+									</SPAN>
+								</xsl:if>
+							</A>
+						</xsl:if>
 						<BUTTON class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation">
 							<SPAN class="navbar-toggler-icon mt-2">
 								<SPAN class="navbar-toggler-bar bar1"></SPAN>
@@ -66,9 +69,11 @@
 											<A class="dropdown-item border-radius-md" href="/favorite.asp">
 												<SPAN>我的收藏</SPAN>
 											</A>
-											<A class="dropdown-item border-radius-md" href="/looksMe.asp">
-												<SPAN>誰看過我</SPAN>
-											</A>
+											<xsl:if test="(@vip)or(@female)">
+												<A class="dropdown-item border-radius-md" href="/looksMe.asp">
+													<SPAN>誰看過我</SPAN>
+												</A>
+											</xsl:if>
 											<A class="dropdown-item border-radius-md" href="/activeLogs.asp">
 												<SPAN>動態紀錄</SPAN>
 											</A>
@@ -80,35 +85,41 @@
 											<A class="dropdown-item border-radius-md" href="/favorite.asp">
 												<SPAN>我的收藏</SPAN>
 											</A>
-											<A class="dropdown-item border-radius-md" href="/looksMe.asp">
-												<SPAN>誰看過我</SPAN>
-											</A>
+											<xsl:if test="(@vip)or(@female)">
+												<A class="dropdown-item border-radius-md" href="/looksMe.asp">
+													<SPAN>誰看過我</SPAN>
+												</A>
+											</xsl:if>
 											<A class="dropdown-item border-radius-md" href="/activeLogs.asp">
 												<SPAN>動態紀錄</SPAN>
 											</A>
 										</DIV>
 									</DIV>
 								</LI>
-								<LI class="nav-item d-none d-lg-block">
-									<A class="nav-link nav-link-icon" href="/activeLogs.asp">
-										<I class="fal fa-bell"></I>
-										<xsl:if test="@announcement">
-											<SPAN class="text-xs text-light bg-warning border-radius-md ms-n1 announcement">
-												<xsl:value-of select="@announcement"/>
-											</SPAN>
-										</xsl:if>
-									</A>
-								</LI>
-								<LI class="nav-item">
-									<A class="nav-link nav-link-icon" href="/deposit.asp">
-										<SPAN>儲值愛心</SPAN>
-									</A>
-								</LI>
-								<LI class="nav-item">
-									<A class="nav-link nav-link-icon" href="/upgrade.asp">
-										<SPAN>升級 VIP</SPAN>
-									</A>
-								</LI>
+								<xsl:if test="@signIn">
+									<LI class="nav-item d-none d-lg-block">
+										<A class="nav-link nav-link-icon" href="/activeLogs.asp">
+											<I class="fal fa-bell"></I>
+											<xsl:if test="@announcement">
+												<SPAN class="text-xs text-light bg-warning border-radius-md ms-n1 announcement">
+													<xsl:value-of select="@announcement"/>
+												</SPAN>
+											</xsl:if>
+										</A>
+									</LI>
+								</xsl:if>
+								<xsl:if test="@male">
+									<LI class="nav-item">
+										<A class="nav-link nav-link-icon" href="/deposit.asp">
+											<SPAN>儲值愛心</SPAN>
+										</A>
+									</LI>
+									<LI class="nav-item">
+										<A class="nav-link nav-link-icon" href="/upgrade.asp">
+											<SPAN>升級 VIP</SPAN>
+										</A>
+									</LI>
+								</xsl:if>
 							</xsl:if>
 							<LI class="nav-item">
 								<xsl:choose>
@@ -153,11 +164,9 @@
 
 	<xsl:template name="bootstrapToast">
 		<DIV class="position-fixed top-5 end-0 p-3" style="z-index: 10000">
-			<DIV class="toast hide" data-bs-delay="1500" >
-				<BUTTON type="button" class="btn-close" data-bs-dismiss="toast">
-					<I class="far fa-times ms-2 text-dark text-lg"></I>
-				</BUTTON>
-				<DIV class="toast-body"/>
+			<DIV class="toast fade hide bg-primary opacity-9" data-bs-delay="1800" >
+				<BUTTON type="button" class="btn-close ms-2 mt-1" data-bs-dismiss="toast"></BUTTON>
+				<DIV class="toast-body text-light"/>
 			</DIV>
 		</DIV>
 	</xsl:template>

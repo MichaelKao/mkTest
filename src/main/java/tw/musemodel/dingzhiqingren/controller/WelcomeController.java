@@ -2,9 +2,6 @@ package tw.musemodel.dingzhiqingren.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -22,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -111,7 +107,8 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/")
 	@ResponseBody
-	ModelAndView index(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView index(Authentication authentication, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -132,16 +129,35 @@ public class WelcomeController {
 
 			// 確認性別
 			Boolean isMale = loverService.isMale(me);
+
+			documentElement.setAttribute(
+				isMale ? "male" : "female",
+				null
+			);
+
+			// 是否為 VIP
+			if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+				documentElement.setAttribute(
+					"vip",
+					null
+				);
+			}
+
+			documentElement.setAttribute(
+				"identifier",
+				me.getIdentifier().toString()
+			);
+
 			// 通知數、顯示的 lovers 資料
 			int announcement = 0;
 			List<Lover> lovers = new ArrayList<Lover>();
 			if (isMale) {
 				lovers = loverRepository.findAllByGender(false);
-				historyRepository.countByPassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
+				announcement = historyRepository.countByPassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
 			}
 			if (!isMale) {
 				lovers = loverRepository.findAllByGender(true);
-				historyRepository.countByFemalePassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
+				announcement = historyRepository.countByFemalePassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
 			}
 
 			if (announcement > 0) {
@@ -198,7 +214,8 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/activate.asp")
-	ModelAndView activate(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView activate(Authentication authentication, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			LOGGER.debug("已登入故激活页面重导至首页");
 			return new ModelAndView("redirect:/");
@@ -644,7 +661,8 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/signUp.asp")
 	@ResponseBody
-	String signUp(SignUp signUp, Authentication authentication, HttpServletRequest request, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	String signUp(SignUp signUp, Authentication authentication, HttpServletRequest request, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
@@ -744,6 +762,22 @@ public class WelcomeController {
 			locale
 		));
 
+		// 確認性別
+		Boolean isMale = loverService.isMale(me);
+
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
+
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
+
 		// 有登入狀態
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
@@ -755,6 +789,11 @@ public class WelcomeController {
 		documentElement.setAttribute(
 			"me",
 			null
+		);
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
 		);
 
 		ModelAndView modelAndView = new ModelAndView("profile");
@@ -774,7 +813,8 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/profile/{identifier}/")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView profile(@PathVariable UUID identifier, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView profile(@PathVariable UUID identifier, Authentication authentication, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -783,9 +823,6 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-
-		// 確認性別
-		Boolean isMale = loverService.isMale(me);
 
 		// 識別碼的帳號
 		Lover lover = loverService.loadByIdentifier(identifier);
@@ -797,6 +834,27 @@ public class WelcomeController {
 			null,
 			locale
 		));
+
+		// 確認性別
+		Boolean isMale = loverService.isMale(me);
+
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
+
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
 
 		// 有登入狀態
 		if (!servant.isNull(authentication)) {
@@ -869,9 +927,6 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		// 確認性別
-		Boolean isMale = loverService.isMale(me);
-
 		Document document = loverService.writeDocument(me, locale);
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -879,6 +934,22 @@ public class WelcomeController {
 			null,
 			locale
 		));
+
+		// 確認性別
+		Boolean isMale = loverService.isMale(me);
+
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
+
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
 
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
@@ -888,8 +959,8 @@ public class WelcomeController {
 		}
 
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
-			null
+			"identifier",
+			me.getIdentifier().toString()
 		);
 
 		ModelAndView modelAndView = new ModelAndView("editProfile");
@@ -910,76 +981,90 @@ public class WelcomeController {
 	@PostMapping(path = "/me.asp")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
-	String editProfile(Lover model, @RequestParam(name = "birth", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date birthday, Authentication authentication, Locale locale) {
+	String editProfile(Lover model, Authentication authentication, Locale locale) {
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 
-		if (!Objects.isNull(model.getNickname())) {
-			me.setNickname(model.getNickname());
+		if (model.getNickname().isBlank() || model.getNickname().isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason("請輸入暱稱").
+				withResponse(false).
+				toJSONObject().toString();
 		}
 
-		if (!Objects.isNull(birthday)) {
-			ZonedDateTime birth = ZonedDateTime.of(LocalDate.ofInstant(birthday.toInstant(),
-				Servant.ASIA_TAIPEI
-			),
-				LocalTime.MIN,
-				Servant.ASIA_TAIPEI
-			);
-			birthday.setTime(birth.toEpochSecond() * 1000);
-			me.setBirthday(birthday);
+		if (model.getInviteMeAsLineFriend().isBlank() || model.getInviteMeAsLineFriend().isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason("請填入 LINE").
+				withResponse(false).
+				toJSONObject().toString();
 		}
 
-		if (!Objects.isNull(model.getHeight())) {
+		if (model.getAboutMe().isBlank() || model.getAboutMe().isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason("請輸入關於我的內容").
+				withResponse(false).
+				toJSONObject().toString();
+		}
+
+		if (model.getIdealConditions().isBlank() || model.getIdealConditions().isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason("請輸入你的理想型").
+				withResponse(false).
+				toJSONObject().toString();
+		}
+
+		if (model.getGreeting().isBlank() || model.getGreeting().isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason("請輸入你的招呼語").
+				withResponse(false).
+				toJSONObject().toString();
+		}
+
+		me.setNickname(model.getNickname());
+
+		if (Objects.nonNull(model.getHeight())) {
 			me.setHeight(model.getHeight());
 		}
 
-		if (!Objects.isNull(model.getWeight())) {
+		if (Objects.nonNull(model.getWeight())) {
 			me.setWeight(model.getWeight());
 		}
 
-		if (!Objects.isNull(model.getOccupation())) {
+		if (Objects.nonNull(model.getOccupation())) {
 			me.setOccupation(model.getOccupation());
 		}
 
-		if (!Objects.isNull(model.getInviteMeAsLineFriend())) {
-			me.setInviteMeAsLineFriend(model.getInviteMeAsLineFriend());
-		}
+		me.setInviteMeAsLineFriend(model.getInviteMeAsLineFriend());
 
-		if (!Objects.isNull(model.getBodyType())) {
+		if (Objects.nonNull(model.getBodyType())) {
 			me.setBodyType(model.getBodyType());
 		}
 
-		if (!Objects.isNull(model.getEducation())) {
+		if (Objects.nonNull(model.getEducation())) {
 			me.setEducation(model.getEducation());
 		}
 
-		if (!Objects.isNull(model.getMarriage())) {
+		if (Objects.nonNull(model.getMarriage())) {
 			me.setMarriage(model.getMarriage());
 		}
 
-		if (!Objects.isNull(model.getSmoking())) {
+		if (Objects.nonNull(model.getSmoking())) {
 			me.setSmoking(model.getSmoking());
 		}
 
-		if (!Objects.isNull(model.getDrinking())) {
+		if (Objects.nonNull(model.getDrinking())) {
 			me.setDrinking(model.getDrinking());
 		}
 
-		if (!Objects.isNull(model.getAboutMe())) {
-			String aboutMe = model.getAboutMe();
-			me.setAboutMe(aboutMe);
-		}
+		String aboutMe = model.getAboutMe();
+		me.setAboutMe(aboutMe);
 
-		if (!Objects.isNull(model.getIdealConditions())) {
-			String idealConditions = model.getIdealConditions();
-			me.setIdealConditions(idealConditions);
-		}
+		String idealConditions = model.getIdealConditions();
+		me.setIdealConditions(idealConditions);
 
-		if (!Objects.isNull(model.getGreeting())) {
-			me.setGreeting(model.getGreeting());
-		}
+		me.setGreeting(model.getGreeting());
 
 		loverRepository.saveAndFlush(me);
 
@@ -1021,12 +1106,33 @@ public class WelcomeController {
 			locale
 		));
 
+		// 確認性別
+		Boolean isMale = loverService.isMale(me);
+
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
+
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
+
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
 				authentication.getName()
 			);
 		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
 
 		Set<Lover> following = me.getFollowing();
 		for (Lover followed : following) {
@@ -1085,12 +1191,6 @@ public class WelcomeController {
 				following.remove(followed);
 				me.setFollowing(following);
 				loverRepository.saveAndFlush(me);
-				History history = new History(
-					me,
-					lover,
-					Behavior.BU_SHOU_CANG
-				);
-				historyRepository.saveAndFlush(history);
 				return new JavaScriptObjectNotation().
 					withReason("已取消收藏" + followed.getNickname()).
 					withResponse(true).
@@ -1138,12 +1238,35 @@ public class WelcomeController {
 			locale
 		));
 
+		// 確認性別
+		Boolean isMale = loverService.isMale(me);
+
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
+
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		} else {
+			return new ModelAndView("redirect:/");
+		}
+
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
 				authentication.getName()
 			);
 		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
 
 		List<History> histories = historyRepository.findByPassiveAndBehavior(
 			me,
@@ -1210,6 +1333,11 @@ public class WelcomeController {
 			return new ModelAndView("redirect:/");
 		}
 
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -1218,6 +1346,22 @@ public class WelcomeController {
 			locale
 		));
 
+		// 確認性別
+		Boolean isMale = loverService.isMale(me);
+
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
+
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
+
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
@@ -1225,8 +1369,9 @@ public class WelcomeController {
 			);
 		}
 
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
 		);
 
 		Element profileImageElement = document.createElement("profileImage");
@@ -1386,12 +1531,37 @@ public class WelcomeController {
 			locale
 		));
 
+		// 確認性別
+		Boolean isMale = loverService.isMale(me);
+
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
+
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
+
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
 				authentication.getName()
 			);
 		}
+
+		if (!isMale) {
+			return new ModelAndView("redirect:/");
+		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
 
 		for (Plan plan : planRepository.findAll()) {
 			Element planElement = document.createElement("plan");
@@ -1444,12 +1614,33 @@ public class WelcomeController {
 			locale
 		));
 
+		// 確認性別
+		Boolean isMale = loverService.isMale(me);
+
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
+
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
+
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
 				authentication.getName()
 			);
 		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
 
 		ModelAndView modelAndView = new ModelAndView("activeLogs");
 		modelAndView.getModelMap().addAttribute(document);
@@ -1473,6 +1664,11 @@ public class WelcomeController {
 			return new ModelAndView("redirect:/");
 		}
 
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -1481,12 +1677,37 @@ public class WelcomeController {
 			locale
 		));
 
+		// 確認性別
+		Boolean isMale = loverService.isMale(me);
+
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
+
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
+
+		if (!isMale) {
+			return new ModelAndView("redirect:/");
+		}
+
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
 				authentication.getName()
 			);
 		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
 
 		ModelAndView modelAndView = new ModelAndView("upgrade");
 		modelAndView.getModelMap().addAttribute(document);

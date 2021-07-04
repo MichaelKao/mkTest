@@ -58,6 +58,9 @@
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
+			<xsl:if test="@signIn">
+				<SCRIPT src="/SCRIPT/websocket.js"/>
+			</xsl:if>
 		</BODY>
 	</xsl:template>
 </xsl:stylesheet>

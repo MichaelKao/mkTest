@@ -42,13 +42,13 @@
 		<DIV class="row">
 			<DIV class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-auto">
 				<DIV class="card card-plain">
-					<DIV class="card-header pb-0 text-left">
+					<DIV class="card-header p-1 p-sm-2 text-left">
 						<H4 class="font-weight-bolder">
 							<xsl:value-of select="/document/@title"/>
 						</H4>
-						<P class="mb-0">輸入手機號碼註冊</P>
+						<P class="mb-0">輸入簡訊的激活碼</P>
 					</DIV>
-					<DIV class="card-body">
+					<DIV class="card-body p-1 p-sm-2">
 						<FORM action="/activate.json" method="post">
 							<DIV class="row align-items-center mb-3">
 								<DIV class="col-1">
