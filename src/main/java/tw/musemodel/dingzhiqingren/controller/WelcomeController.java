@@ -188,7 +188,13 @@ public class WelcomeController {
 				loverElement.appendChild(identifierElement);
 
 				Element profileImageElement = document.createElement("profileImage");
-				profileImageElement.setTextContent(servant.STATIC_HOST + "profileImage/" + lover.getProfileImage());
+				profileImageElement.setTextContent(
+					String.format(
+						"https://%s/profileImage/%s",
+						servant.STATIC_HOST,
+						lover.getProfileImage()
+					)
+				);
 				loverElement.appendChild(profileImageElement);
 			}
 		}
@@ -1145,7 +1151,11 @@ public class WelcomeController {
 			);
 			followElement.setAttribute(
 				"profileImage",
-				servant.STATIC_HOST + "profileImage/" + followed.getProfileImage()
+				String.format(
+					"https://%s/profileImage/%s",
+					servant.STATIC_HOST,
+					followed.getProfileImage()
+				)
 			);
 			if (Objects.nonNull(followed.getNickname())) {
 				followElement.setAttribute(
@@ -1247,7 +1257,7 @@ public class WelcomeController {
 		);
 
 		// 是否為 VIP
-		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date()) || !isMale) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -1294,7 +1304,11 @@ public class WelcomeController {
 				);
 				peekerElement.setAttribute(
 					"profileImage",
-					servant.STATIC_HOST + "profileImage/" + peeker.getProfileImage()
+					String.format(
+						"https://%s/profileImage/%s",
+						servant.STATIC_HOST,
+						peeker.getProfileImage()
+					)
 				);
 				if (Objects.nonNull(peeker.getNickname())) {
 					peekerElement.setAttribute(
@@ -1377,7 +1391,11 @@ public class WelcomeController {
 		Element profileImageElement = document.createElement("profileImage");
 		if (Objects.nonNull(me.getProfileImage())) {
 			profileImageElement.setTextContent(
-				servant.STATIC_HOST + "profileImage/" + me.getProfileImage()
+				String.format(
+					"https://%s/profileImage/%s",
+					servant.STATIC_HOST,
+					me.getProfileImage()
+				)
 			);
 		}
 		documentElement.appendChild(profileImageElement);
@@ -1388,7 +1406,11 @@ public class WelcomeController {
 			Element pictureElement = document.createElement("picture");
 			pictureElement.setAttribute("picIdentifier", identifier);
 			pictureElement.setTextContent(
-				servant.STATIC_HOST + "pictures/" + identifier
+				String.format(
+					"https://%s/pictures/%s",
+					servant.STATIC_HOST,
+					identifier
+				)
 			);
 			documentElement.appendChild(pictureElement);
 		}

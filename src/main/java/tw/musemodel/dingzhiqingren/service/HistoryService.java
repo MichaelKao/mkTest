@@ -577,7 +577,11 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					servant.STATIC_HOST + "profileImage/" + profileImage
+					String.format(
+						"https://%s/profileImage/%s",
+						servant.STATIC_HOST,
+						profileImage
+					)
 				);
 				historyElement.setAttribute(
 					"message",
@@ -599,7 +603,11 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					servant.STATIC_HOST + "profileImage/" + profileImage
+					String.format(
+						"https://%s/profileImage/%s",
+						servant.STATIC_HOST,
+						profileImage
+					)
 				);
 				historyElement.setAttribute(
 					"message",
@@ -624,7 +632,11 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					servant.STATIC_HOST + "profileImage/" + profileImage
+					String.format(
+						"https://%s/profileImage/%s",
+						servant.STATIC_HOST,
+						profileImage
+					)
 				);
 				historyElement.setAttribute(
 					"message",
@@ -664,7 +676,11 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					servant.STATIC_HOST + "profileImage/" + profileImage
+					String.format(
+						"https://%s/profileImage/%s",
+						servant.STATIC_HOST,
+						profileImage
+					)
 				);
 				historyElement.setAttribute(
 					"message",
@@ -701,7 +717,11 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					servant.STATIC_HOST + "profileImage/" + profileImage
+					String.format(
+						"https://%s/profileImage/%s",
+						servant.STATIC_HOST,
+						profileImage
+					)
 				);
 				historyElement.setAttribute(
 					"message",
@@ -734,7 +754,11 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					servant.STATIC_HOST + "profileImage/" + profileImage
+					String.format(
+						"https://%s/profileImage/%s",
+						servant.STATIC_HOST,
+						profileImage
+					)
 				);
 				historyElement.setAttribute(
 					"message",
@@ -768,7 +792,11 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					servant.STATIC_HOST + "profileImage/" + profileImage
+					String.format(
+						"https://%s/profileImage/%s",
+						servant.STATIC_HOST,
+						profileImage
+					)
 				);
 				historyElement.setAttribute(
 					"message",
@@ -804,7 +832,11 @@ public class HistoryService {
 				}
 				historyElement.setAttribute(
 					"profileImage",
-					servant.STATIC_HOST + "profileImage/" + profileImage
+					String.format(
+						"https://%s/profileImage/%s",
+						servant.STATIC_HOST,
+						profileImage
+					)
 				);
 				historyElement.setAttribute(
 					"message",

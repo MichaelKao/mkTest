@@ -509,7 +509,11 @@ public class LoverService {
 		Element profileImageElement = document.createElement("profileImage");
 		if (Objects.nonNull(lover.getProfileImage())) {
 			profileImageElement.setTextContent(
-				servant.STATIC_HOST + "profileImage/" + lover.getProfileImage()
+				String.format(
+					"https://%s/profileImage/%s",
+					servant.STATIC_HOST,
+					lover.getProfileImage()
+				)
 			);
 		}
 		loverElement.appendChild(profileImageElement);
