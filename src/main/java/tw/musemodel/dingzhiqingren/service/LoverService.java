@@ -223,11 +223,18 @@ public class LoverService {
 			throw new RuntimeException("calculateAge.birthdayMustntBeNull");
 		}
 
-		Calendar birth = new GregorianCalendar(), today;
-		today = new GregorianCalendar();
+		Calendar birth = new GregorianCalendar(),
+			current = new GregorianCalendar();
 		birth.setTime(birthday);
 
-		return today.get(Calendar.YEAR) - birth.get(Calendar.YEAR);
+		int years = current.get(Calendar.YEAR) - birth.get(Calendar.YEAR);
+		int birthDayOfYear = birth.get(Calendar.DAY_OF_YEAR),
+			currentDayOfYear = current.get(Calendar.DAY_OF_YEAR);
+		if (years == 17 && birthDayOfYear >= currentDayOfYear) {
+			years = 18;
+		}
+
+		return years;
 	}
 
 	@Transactional(readOnly = true)
