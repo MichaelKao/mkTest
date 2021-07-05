@@ -297,9 +297,9 @@ public class LoverService {
 				toJSONObject();
 		}
 
-		String string = RandomStringUtils.randomAlphanumeric(8);
+		String string = RandomStringUtils.randomNumeric(6);
 		while (activationRepository.countByString(string) > 0) {
-			string = RandomStringUtils.randomAlphanumeric(8);
+			string = RandomStringUtils.randomNumeric(6);
 		}
 		activation.setString(string);
 
@@ -324,13 +324,9 @@ public class LoverService {
 		PublishResult publishResult = AMAZON_SNS.publish(
 			new PublishRequest().
 				withMessage(messageSource.getMessage(
-					"reactivate.bringOwlsToAthens",
+					"reactivate.sms",
 					new String[]{
-						activation.getString(),
-						String.format(
-							"https://%s/activate.asp",
-							request.getServerName()
-						)
+						activation.getString()
 					},
 					locale
 				)).
@@ -438,9 +434,9 @@ public class LoverService {
 
 	@Transactional
 	public Activation signedUp(Lover lover) {
-		String string = RandomStringUtils.randomAlphanumeric(8);
+		String string = RandomStringUtils.randomNumeric(6);
 		while (activationRepository.countByString(string) > 0) {
-			string = RandomStringUtils.randomAlphanumeric(8);
+			string = RandomStringUtils.randomNumeric(6);
 		}
 
 		Calendar calendar = new GregorianCalendar();
