@@ -29,10 +29,8 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="page-header section-height-100">
-				<DIV class="container">
-					<xsl:apply-templates select="form"/>
-				</DIV>
+			<DIV class="container pt-8">
+				<xsl:apply-templates select="form"/>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/birthday.js"/>
@@ -69,20 +67,23 @@
 								<DIV class="col-1">
 									<i class="fas fa-birthday-cake"></i>
 								</DIV>
-								<DIV class="col-11 d-flex justify-content-around align-items-center">
-									<INPUT class="d-none" name="birthday" type="hidden" value=""/>
-									<DIV class="d-flex align-items-center">
-										<SELECT class="form-control" id="years" required=""></SELECT>
-										<SPAN class="ms-1">年</SPAN>
+								<DIV class="col-11">
+									<DIV class="d-flex justify-content-around align-items-center">
+										<INPUT class="d-none" name="birthday" type="hidden" value=""/>
+										<DIV class="d-flex align-items-center">
+											<SELECT class="form-control" id="years" required=""></SELECT>
+											<SPAN class="ms-1">年</SPAN>
+										</DIV>
+										<DIV class="d-flex align-items-center">
+											<SELECT class="form-control" id="months" required=""></SELECT>
+											<SPAN class="ms-1">月</SPAN>
+										</DIV>
+										<DIV class="d-flex align-items-center">
+											<SELECT class="form-control" id="days" required=""></SELECT>
+											<SPAN class="ms-1">日</SPAN>
+										</DIV>
 									</DIV>
-									<DIV class="d-flex align-items-center">
-										<SELECT class="form-control" id="months" required=""></SELECT>
-										<SPAN class="ms-1">月</SPAN>
-									</DIV>
-									<DIV class="d-flex align-items-center">
-										<SELECT class="form-control" id="days" required=""></SELECT>
-										<SPAN class="ms-1">日</SPAN>
-									</DIV>
+									<DIV class="text-center text-sm mt-1">生日註冊後不得更改</DIV>
 								</DIV>
 							</DIV>
 							<HR class="horizontal dark my-3"/>
@@ -90,19 +91,22 @@
 								<DIV class="col-1">
 									<i class="fas fa-venus-mars"></i>
 								</DIV>
-								<DIV class="col-11 d-flex justify-content-around align-items-center">
-									<DIV class="form-check">
-										<INPUT class="form-check-input" id="female" name="gender" required="" type="radio" value="false"/>
-										<LABEL class="custom-control-label h6" for="female">
-											<xsl:value-of select="gender/@female"/>
-										</LABEL>
+								<DIV class="col-11">
+									<DIV class="d-flex justify-content-around align-items-center">
+										<DIV class="form-check">
+											<INPUT class="form-check-input" id="female" name="gender" required="" type="radio" value="false"/>
+											<LABEL class="custom-control-label h6" for="female">
+												<xsl:value-of select="gender/@female"/>
+											</LABEL>
+										</DIV>
+										<DIV class="form-check">
+											<INPUT class="form-check-input" id="male" name="gender" required="" type="radio" value="true"/>
+											<LABEL class="custom-control-label h6" for="male">
+												<xsl:value-of select="gender/@male"/>
+											</LABEL>
+										</DIV>
 									</DIV>
-									<DIV class="form-check">
-										<INPUT class="form-check-input" id="male" name="gender" required="" type="radio" value="true"/>
-										<LABEL class="custom-control-label h6" for="male">
-											<xsl:value-of select="gender/@male"/>
-										</LABEL>
-									</DIV>
+									<DIV class="text-center text-sm mt-1">性別註冊後不得更改</DIV>
 								</DIV>
 							</DIV>
 							<DIV class="text-center">

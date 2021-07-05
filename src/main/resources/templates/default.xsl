@@ -69,11 +69,9 @@
 											<A class="dropdown-item border-radius-md" href="/favorite.asp">
 												<SPAN>我的收藏</SPAN>
 											</A>
-											<xsl:if test="(@vip)or(@female)">
-												<A class="dropdown-item border-radius-md" href="/looksMe.asp">
-													<SPAN>誰看過我</SPAN>
-												</A>
-											</xsl:if>
+											<A class="dropdown-item border-radius-md" href="/looksMe.asp">
+												<SPAN>誰看過我</SPAN>
+											</A>
 											<A class="dropdown-item border-radius-md" href="/activeLogs.asp">
 												<SPAN>動態紀錄</SPAN>
 											</A>
@@ -85,11 +83,9 @@
 											<A class="dropdown-item border-radius-md" href="/favorite.asp">
 												<SPAN>我的收藏</SPAN>
 											</A>
-											<xsl:if test="(@vip)or(@female)">
-												<A class="dropdown-item border-radius-md" href="/looksMe.asp">
-													<SPAN>誰看過我</SPAN>
-												</A>
-											</xsl:if>
+											<A class="dropdown-item border-radius-md" href="/looksMe.asp">
+												<SPAN>誰看過我</SPAN>
+											</A>
 											<A class="dropdown-item border-radius-md" href="/activeLogs.asp">
 												<SPAN>動態紀錄</SPAN>
 											</A>
@@ -108,6 +104,14 @@
 										</A>
 									</LI>
 								</xsl:if>
+								<LI class="nav-item">
+									<A class="nav-link nav-link-icon" href="/">
+										<SPAN>
+											<xsl:if test="@male">所有甜心</xsl:if>
+											<xsl:if test="@female">所有男仕</xsl:if>
+										</SPAN>
+									</A>
+								</LI>
 								<xsl:if test="@male">
 									<LI class="nav-item">
 										<A class="nav-link nav-link-icon" href="/deposit.asp">

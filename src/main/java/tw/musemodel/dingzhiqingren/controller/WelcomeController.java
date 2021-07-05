@@ -135,14 +135,6 @@ public class WelcomeController {
 				null
 			);
 
-			// 是否為 VIP
-			if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
-				documentElement.setAttribute(
-					"vip",
-					null
-				);
-			}
-
 			documentElement.setAttribute(
 				"identifier",
 				me.getIdentifier().toString()
@@ -776,14 +768,6 @@ public class WelcomeController {
 			null
 		);
 
-		// 是否為 VIP
-		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
-			documentElement.setAttribute(
-				"vip",
-				null
-			);
-		}
-
 		// 有登入狀態
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
@@ -1120,14 +1104,6 @@ public class WelcomeController {
 			null
 		);
 
-		// 是否為 VIP
-		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
-			documentElement.setAttribute(
-				"vip",
-				null
-			);
-		}
-
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
@@ -1256,16 +1232,6 @@ public class WelcomeController {
 			null
 		);
 
-		// 是否為 VIP
-		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date()) || !isMale) {
-			documentElement.setAttribute(
-				"vip",
-				null
-			);
-		} else {
-			return new ModelAndView("redirect:/");
-		}
-
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
@@ -1367,14 +1333,6 @@ public class WelcomeController {
 			isMale ? "male" : "female",
 			null
 		);
-
-		// 是否為 VIP
-		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
-			documentElement.setAttribute(
-				"vip",
-				null
-			);
-		}
 
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
@@ -1560,14 +1518,6 @@ public class WelcomeController {
 			isMale ? "male" : "female",
 			null
 		);
-
-		// 是否為 VIP
-		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
-			documentElement.setAttribute(
-				"vip",
-				null
-			);
-		}
 
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
