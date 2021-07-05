@@ -212,45 +212,44 @@ public class LoverService {
 			toJSONObject();
 	}
 
+	/**
+	 * 计算用户年龄。
+	 *
+	 * @param lover 情人
+	 * @return 足岁岁数
+	 */
 	@Transactional(readOnly = true)
 	public Integer calculateAge(Lover lover) {
 		if (Objects.isNull(lover)) {
 			throw new RuntimeException("calculateAge.loverMustntBeNull");
 		}
 
-		Date birthday = lover.getBirthday();
+		return calculateAge(lover.getBirthday());
+	}
+
+	/**
+	 * 以日期计算年龄。
+	 *
+	 * @param birthday 出生年月日
+	 * @return 足岁岁数
+	 */
+	@Transactional(readOnly = true)
+	public Integer calculateAge(Date birthday) {
 		if (Objects.isNull(birthday)) {
 			throw new RuntimeException("calculateAge.birthdayMustntBeNull");
 		}
 
-		Calendar birth = new GregorianCalendar(), today;
-		today = new GregorianCalendar();
+		Calendar birth = new GregorianCalendar(),
+			current = new GregorianCalendar();
 		birth.setTime(birthday);
 
-		return today.get(Calendar.YEAR) - birth.get(Calendar.YEAR);
-	}
-
-	@Transactional(readOnly = true)
-	public Integer calculateAgeByBirthday(Date birthday) {
-
-		Calendar now = Calendar.getInstance();
-
-		Calendar birth = Calendar.getInstance();
-		birth.setTime(birthday);
-
-		int yearNow = now.get(Calendar.YEAR);
-		int monthNow = now.get(Calendar.MONTH);
-		int dayNow = now.get(Calendar.DAY_OF_MONTH);
-
-		int yearBirth = birth.get(Calendar.YEAR);
-		int monthBirth = birth.get(Calendar.MONTH);
-		int dayBirth = birth.get(Calendar.DAY_OF_MONTH);
-
-		int age = yearNow - yearBirth;
-
-		if (monthNow < monthBirth || (monthNow == monthBirth && dayNow < dayBirth)) {
-			age--;
+		int age = current.get(Calendar.YEAR) - birth.get(Calendar.YEAR);
+		int birthDayOfYear = birth.get(Calendar.DAY_OF_YEAR),
+			currentDayOfYear = current.get(Calendar.DAY_OF_YEAR);
+		if (age == 17 && birthDayOfYear >= currentDayOfYear) {
+			age = 18;
 		}
+
 		return age;
 	}
 
@@ -392,7 +391,7 @@ public class LoverService {
 			throw new RuntimeException("signUp.exists");
 		}
 
-		if (calculateAgeByBirthday(signUp.getBirthday()) < 18) {
+		if (calculateAge(signUp.getBirthday()) < 18) {
 			throw new RuntimeException("signUp.mustBeAtLeast18yrsOld");
 		}
 
@@ -473,9 +472,7 @@ public class LoverService {
 		return isMale;
 	}
 
-	public Document readDocument(Lover lover, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
-
+	public Document readDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		Element loverElement = document.createElement("lover");
@@ -521,7 +518,11 @@ public class LoverService {
 		for (Picture picture : pictures) {
 			Element pictureElement = document.createElement("picture");
 			pictureElement.setTextContent(
-				servant.STATIC_HOST + "pictures/" + picture.getIdentifier().toString()
+				String.format(
+					"https://%s/pictures/%s",
+					servant.STATIC_HOST,
+					picture.getIdentifier().toString()
+				)
 			);
 			loverElement.appendChild(pictureElement);
 		}
@@ -546,7 +547,9 @@ public class LoverService {
 		Date birth = lover.getBirthday();
 		if (Objects.nonNull(birth)) {
 			Element ageElement = document.createElement("age");
-			ageElement.setTextContent(calculateAge(lover).toString());
+			ageElement.setTextContent(
+				calculateAge(lover).toString()
+			);
 			loverElement.appendChild(ageElement);
 		}
 
@@ -681,9 +684,7 @@ public class LoverService {
 		return document;
 	}
 
-	public Document writeDocument(Lover lover, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
-
+	public Document writeDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		Element loverElement = document.createElement("lover");
