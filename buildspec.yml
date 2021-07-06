@@ -6,14 +6,13 @@ phases:
       java: corretto11
   build:
     commands:
-      - echo Build started on `date`
+      - echo `date` 开始单元测试
       - mvn test
   post_build:
     commands:
-      - echo Build completed on `date`
+      - echo `date` 开始组建项目
       - mvn clean package
 artifacts:
   files:
     - target/executable.jar
-    - appspec.yml
   discard-paths: yes
