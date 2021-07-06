@@ -1939,4 +1939,102 @@ public class WelcomeController {
 		}
 		return jsonObject.toString();
 	}
+
+	/**
+	 * 服務條款
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/terms.asp")
+	ModelAndView terms(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.privacy",
+			null,
+			locale
+		));
+		// 登入狀態
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"signIn",
+				authentication.getName()
+			);
+			// 本人
+			Lover me = loverService.loadByUsername(
+				authentication.getName()
+			);
+
+			// 確認性別
+			Boolean isMale = loverService.isMale(me);
+
+			documentElement.setAttribute(
+				isMale ? "male" : "female",
+				null
+			);
+
+			documentElement.setAttribute(
+				"identifier",
+				me.getIdentifier().toString()
+			);
+		}
+
+		ModelAndView modelAndView = new ModelAndView("terms");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
+	 * 隱私權政策
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/privacy.asp")
+	ModelAndView privacy(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.privacy",
+			null,
+			locale
+		));
+		// 登入狀態
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"signIn",
+				authentication.getName()
+			);
+			// 本人
+			Lover me = loverService.loadByUsername(
+				authentication.getName()
+			);
+
+			// 確認性別
+			Boolean isMale = loverService.isMale(me);
+
+			documentElement.setAttribute(
+				isMale ? "male" : "female",
+				null
+			);
+
+			documentElement.setAttribute(
+				"identifier",
+				me.getIdentifier().toString()
+			);
+		}
+
+		ModelAndView modelAndView = new ModelAndView("privacy");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
 }

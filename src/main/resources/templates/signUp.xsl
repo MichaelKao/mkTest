@@ -118,7 +118,11 @@
 					</DIV>
 					<DIV class="card-footer text-center pt-0 px-lg-2 px-1">
 						<DIV class="text-sm mx-auto">
-							<SPAN class="me-1">註冊即表示您保證年滿18歲</SPAN>
+							<SPAN>註冊即表示您已閱讀並同意</SPAN>
+							<A href="/privacy.asp" class="text-primary text-gradient font-weight-bold">隱私權政策</A>
+							<SPAN>與</SPAN>
+							<A href="/terms.asp" class="text-primary text-gradient font-weight-bold">服務條款</A>
+							<SPAN>，並表示已滿18歲。</SPAN>
 						</DIV>
 						<DIV class="text-sm mx-auto">
 							<SPAN class="me-1">已是會員?</SPAN>
