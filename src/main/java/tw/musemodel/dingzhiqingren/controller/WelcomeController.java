@@ -1303,6 +1303,9 @@ public class WelcomeController {
 						loverService.calculateAge(peeker).toString()
 					);
 				}
+				if (peeker.getGender() && Objects.nonNull(peeker.getVip()) && peeker.getVip().after(new Date())) {
+					peekerElement.setAttribute("vip", null);
+				}
 			}
 		}
 

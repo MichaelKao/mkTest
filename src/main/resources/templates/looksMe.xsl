@@ -37,14 +37,19 @@
 				</DIV>
 				<DIV class="d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center">
 					<xsl:for-each select="peeker">
-						<DIV class="col-10 col-sm-8 col-md-5 card card-frame mb-3 mx-2">
+						<DIV class="col-11 col-sm-8 col-md-5 card card-frame mb-3 mx-2">
 							<DIV class="card-body d-flex align-items-center justify-content-around p-3 p-md-4">
 								<DIV>
 									<A href="/profile/{@identifier}/">
 										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="70"/>
 									</A>
 								</DIV>
-								<DIV class="ms-3">
+								<xsl:if test="@vip">
+									<DIV>
+										<IMG class="border-radius-md" src="/vip.svg" width="30"/>
+									</DIV>
+								</xsl:if>
+								<DIV>
 									<A class="h6" href="/profile/{@identifier}/">
 										<SPAN class="me-2">
 											<xsl:value-of select="@nickname"/>
