@@ -472,3 +472,21 @@ ADD COLUMN"nian_shou_ru"int2 REFERENCES"nian_shou_ru"("id")ON DELETE RESTRICT ON
 ADD COLUMN"ling_yong_qian"int2 REFERENCES"ling_yong_qian"("id")ON DELETE RESTRICT ON UPDATE CASCADE;
 COMMENT ON COLUMN"qing_ren"."nian_shou_ru"IS'男生年收入';
 COMMENT ON COLUMN"qing_ren"."ling_yong_qian"IS'女生期望零用錢';
+
+/**
+ * 甜心提取車馬費資訊
+ */
+CREATE TABLE"ti_qu_che_ma_fei"(
+	"id"serial PRIMARY KEY,
+	"honey"int2 NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"wire_transfer_bank_code"varchar,
+	"wire_transfer_branch_code"varchar,
+	"wire_transfer_account_name"varchar,
+	"wire_transfer_account_number"varchar
+);
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."id"IS'主鍵';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."honey"IS'情人';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_bank_code"IS'銀行代碼';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_branch_code"IS'分行代碼';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_account_name"IS'戶名';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_account_number"IS'匯款帳號';

@@ -114,7 +114,7 @@
 								</LI>
 								<xsl:if test="@male">
 									<LI class="nav-item">
-										<A class="nav-link nav-link-icon" href="/deposit.asp">
+										<A class="nav-link nav-link-icon" href="/recharge.asp">
 											<SPAN>儲值愛心</SPAN>
 										</A>
 									</LI>

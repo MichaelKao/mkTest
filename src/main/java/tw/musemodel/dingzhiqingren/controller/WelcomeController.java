@@ -1509,9 +1509,9 @@ public class WelcomeController {
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
-	@GetMapping(path = "/deposit.asp")
+	@GetMapping(path = "/recharge.asp")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView deposit(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView recharge(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -1524,7 +1524,7 @@ public class WelcomeController {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.deposit",
+			"title.recharge",
 			null,
 			locale
 		));
@@ -1568,7 +1568,7 @@ public class WelcomeController {
 			? historyRepository.sumByInitiativeHearts(me).toString() : "0"
 		);
 
-		ModelAndView modelAndView = new ModelAndView("deposit");
+		ModelAndView modelAndView = new ModelAndView("recharge");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}
@@ -2007,51 +2007,50 @@ public class WelcomeController {
 		return modelAndView;
 	}
 
-	/**
-	 * 隱私權政策
-	 *
-	 * @param authentication
-	 * @param locale
-	 * @return
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 */
-	@GetMapping(path = "/privacy.asp")
-	ModelAndView privacy(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	@GetMapping(path = "/withdrawal.asp")
+	ModelAndView withdrawal(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		if (servant.isNull(authentication)) {
+			return new ModelAndView("redirect:/");
+		}
+
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.privacy",
+			"title.withdrawal",
 			null,
 			locale
 		));
-		// 登入狀態
+
+		// 確認性別
+		Boolean meIsMale = loverService.isMale(me);
+
+		documentElement.setAttribute(
+			meIsMale ? "male" : "female",
+			null
+		);
+
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
 				authentication.getName()
 			);
-			// 本人
-			Lover me = loverService.loadByUsername(
-				authentication.getName()
-			);
-
-			// 確認性別
-			Boolean meIsMale = loverService.isMale(me);
-
-			documentElement.setAttribute(
-				meIsMale ? "male" : "female",
-				null
-			);
-
-			documentElement.setAttribute(
-				"identifier",
-				me.getIdentifier().toString()
-			);
 		}
 
-		ModelAndView modelAndView = new ModelAndView("privacy");
+		if (meIsMale) {
+			return new ModelAndView("redirect:/");
+		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
+
+		ModelAndView modelAndView = new ModelAndView("withdrawal");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}
