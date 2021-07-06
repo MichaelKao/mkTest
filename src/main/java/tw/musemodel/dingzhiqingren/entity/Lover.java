@@ -54,8 +54,6 @@ import org.hibernate.annotations.TypeDef;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Lover implements java.io.Serializable {
 
-	private static final long serialVersionUID = 5470899666401402787L;
-
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -194,6 +192,16 @@ public class Lover implements java.io.Serializable {
 	@ManyToMany(mappedBy = "following", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private Set<Lover> followed;
+
+	@JoinColumn(name = "nian_shou_ru", referencedColumnName = "id")
+	@ManyToOne
+	@JsonManagedReference
+	private AnnualIncome annualIncome;
+
+	@JoinColumn(name = "ling_yong_qian", referencedColumnName = "id")
+	@ManyToOne
+	@JsonManagedReference
+	private Allowance allowance;
 
 	/**
 	 * 默认构造器
@@ -667,6 +675,34 @@ public class Lover implements java.io.Serializable {
 	 */
 	public void setFollowed(Set<Lover> followed) {
 		this.followed = followed;
+	}
+
+	/**
+	 * @return 年收入
+	 */
+	public AnnualIncome getAnnualIncome() {
+		return annualIncome;
+	}
+
+	/**
+	 * @param annualIncome 年收入
+	 */
+	public void setAnnualIncome(AnnualIncome annualIncome) {
+		this.annualIncome = annualIncome;
+	}
+
+	/**
+	 * @return 零用錢
+	 */
+	public Allowance getAllowance() {
+		return allowance;
+	}
+
+	/**
+	 * @param allowance 零用錢
+	 */
+	public void setAllowance(Allowance allowance) {
+		this.allowance = allowance;
 	}
 
 	/**

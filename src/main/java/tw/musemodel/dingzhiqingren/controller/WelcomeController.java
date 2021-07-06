@@ -45,6 +45,8 @@ import tw.musemodel.dingzhiqingren.entity.Plan;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.SignUp;
+import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
+import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
@@ -96,6 +98,12 @@ public class WelcomeController {
 	@Autowired
 	private LineGivenRepository lineGivenRepository;
 
+	@Autowired
+	private AnnualIncomeRepository annualIncomeRepository;
+
+	@Autowired
+	private AllowanceRepository allowanceRepository;
+
 	/**
 	 * 首页
 	 *
@@ -128,10 +136,10 @@ public class WelcomeController {
 			);
 
 			// 確認性別
-			Boolean isMale = loverService.isMale(me);
+			Boolean meIsMale = loverService.isMale(me);
 
 			documentElement.setAttribute(
-				isMale ? "male" : "female",
+				meIsMale ? "male" : "female",
 				null
 			);
 
@@ -143,11 +151,11 @@ public class WelcomeController {
 			// 通知數、顯示的 lovers 資料
 			int announcement = 0;
 			List<Lover> lovers = new ArrayList<Lover>();
-			if (isMale) {
+			if (meIsMale) {
 				lovers = loverRepository.findAllByGender(false);
 				announcement = historyRepository.countByPassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
 			}
-			if (!isMale) {
+			if (!meIsMale) {
 				lovers = loverRepository.findAllByGender(true);
 				announcement = historyRepository.countByFemalePassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
 			}
@@ -761,10 +769,10 @@ public class WelcomeController {
 		));
 
 		// 確認性別
-		Boolean isMale = loverService.isMale(me);
+		Boolean meIsMale = loverService.isMale(me);
 
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
@@ -826,12 +834,7 @@ public class WelcomeController {
 		));
 
 		// 確認性別
-		Boolean isMale = loverService.isMale(me);
-
-		documentElement.setAttribute(
-			isMale ? "male" : "female",
-			null
-		);
+		Boolean meIsMale = loverService.isMale(me);
 
 		// 是否為 VIP
 		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
@@ -855,7 +858,7 @@ public class WelcomeController {
 		}
 
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
@@ -926,10 +929,10 @@ public class WelcomeController {
 		));
 
 		// 確認性別
-		Boolean isMale = loverService.isMale(me);
+		Boolean meIsMale = loverService.isMale(me);
 
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
@@ -984,7 +987,7 @@ public class WelcomeController {
 				toJSONObject().toString();
 		}
 
-		if (model.getInviteMeAsLineFriend().isBlank() || model.getInviteMeAsLineFriend().isEmpty()) {
+		if (!me.getGender() && (model.getInviteMeAsLineFriend().isBlank() || model.getInviteMeAsLineFriend().isEmpty())) {
 			return new JavaScriptObjectNotation().
 				withReason("請填入 LINE").
 				withResponse(false).
@@ -1048,6 +1051,14 @@ public class WelcomeController {
 			me.setDrinking(model.getDrinking());
 		}
 
+		if (Objects.nonNull(model.getAnnualIncome())) {
+			me.setAnnualIncome(model.getAnnualIncome());
+		}
+
+		if (Objects.nonNull(model.getAllowance())) {
+			me.setAllowance(model.getAllowance());
+		}
+
 		String aboutMe = model.getAboutMe();
 		me.setAboutMe(aboutMe);
 
@@ -1097,10 +1108,10 @@ public class WelcomeController {
 		));
 
 		// 確認性別
-		Boolean isMale = loverService.isMale(me);
+		Boolean meIsMale = loverService.isMale(me);
 
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
@@ -1205,8 +1216,8 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/looksMe.asp")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView
-		whoLooksMe(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView whoLooksMe(Authentication authentication, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -1225,10 +1236,10 @@ public class WelcomeController {
 		));
 
 		// 確認性別
-		Boolean isMale = loverService.isMale(me);
+		Boolean meIsMale = loverService.isMale(me);
 
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
@@ -1327,10 +1338,10 @@ public class WelcomeController {
 		));
 
 		// 確認性別
-		Boolean isMale = loverService.isMale(me);
+		Boolean meIsMale = loverService.isMale(me);
 
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
@@ -1512,10 +1523,10 @@ public class WelcomeController {
 		));
 
 		// 確認性別
-		Boolean isMale = loverService.isMale(me);
+		Boolean meIsMale = loverService.isMale(me);
 
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
@@ -1526,7 +1537,7 @@ public class WelcomeController {
 			);
 		}
 
-		if (!isMale) {
+		if (!meIsMale) {
 			return new ModelAndView("redirect:/");
 		}
 
@@ -1587,10 +1598,10 @@ public class WelcomeController {
 		));
 
 		// 確認性別
-		Boolean isMale = loverService.isMale(me);
+		Boolean meIsMale = loverService.isMale(me);
 
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
@@ -1650,10 +1661,10 @@ public class WelcomeController {
 		));
 
 		// 確認性別
-		Boolean isMale = loverService.isMale(me);
+		Boolean meIsMale = loverService.isMale(me);
 
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
@@ -1665,7 +1676,7 @@ public class WelcomeController {
 			);
 		}
 
-		if (!isMale) {
+		if (!meIsMale) {
 			return new ModelAndView("redirect:/");
 		}
 
@@ -1971,10 +1982,10 @@ public class WelcomeController {
 			);
 
 			// 確認性別
-			Boolean isMale = loverService.isMale(me);
+			Boolean meIsMale = loverService.isMale(me);
 
 			documentElement.setAttribute(
-				isMale ? "male" : "female",
+				meIsMale ? "male" : "female",
 				null
 			);
 
@@ -2020,10 +2031,10 @@ public class WelcomeController {
 			);
 
 			// 確認性別
-			Boolean isMale = loverService.isMale(me);
+			Boolean meIsMale = loverService.isMale(me);
 
 			documentElement.setAttribute(
-				isMale ? "male" : "female",
+				meIsMale ? "male" : "female",
 				null
 			);
 

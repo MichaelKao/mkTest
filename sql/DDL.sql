@@ -240,7 +240,7 @@ ORDER BY
 /**
  * 绿界
  */
-CREATE TABLE"yuepao"."lu_jie"(
+CREATE TABLE"lu_jie"(
 	"id"serial8 PRIMARY KEY,
 	"session_id"varchar,
 	--OrderInfo 订单资讯
@@ -374,9 +374,9 @@ COMMENT ON COLUMN"li_cheng"."zhao_hu_yu"IS'招呼语';
 /**
  * 生活照
  */
-CREATE TABLE"yuepao"."sheng_huo_zhao"(
+CREATE TABLE"sheng_huo_zhao"(
 	"id"serial2 PRIMARY KEY,
-        "qing_ren"int NOT NULL REFERENCES"yuepao"."qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+        "qing_ren"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
 	"shi_bie_ma"uuid NOT NULL UNIQUE,
 	"shi_chuo"timestamptz NOT NULL DEFAULT"now"()
 );
@@ -434,3 +434,41 @@ CREATE TABLE"shou_cang"(
 COMMENT ON TABLE"shou_cang"IS'收藏';
 COMMENT ON COLUMN"shou_cang"."shou_cang_de"IS'收藏的';
 COMMENT ON COLUMN"shou_cang"."bei_shou_cang"IS'被收藏的';
+
+/**
+ * 年收入
+ */
+CREATE TABLE"nian_shou_ru"(
+	"id"serial2 PRIMARY KEY,
+	"nian_shou_ru"varchar NOT NULL UNIQUE
+);
+COMMENT ON TABLE"nian_shou_ru"IS'男生年收入';
+COMMENT ON COLUMN"nian_shou_ru"."id"IS'主键';
+COMMENT ON COLUMN"nian_shou_ru"."nian_shou_ru"IS'男生年收入';
+--
+INSERT INTO"nian_shou_ru"("nian_shou_ru")VALUES
+(E'lessThan1million'),(E'1to2million'),
+(E'2to3million'),(E'3to4million'),
+(E'4to5million'),(E'moreThan5million');
+
+/**
+ * 零用錢
+ */
+CREATE TABLE"ling_yong_qian"(
+	"id"serial2 PRIMARY KEY,
+	"ling_yong_qian"varchar NOT NULL UNIQUE
+);
+COMMENT ON TABLE"ling_yong_qian"IS'女生期望零用錢';
+COMMENT ON COLUMN"ling_yong_qian"."id"IS'主键';
+COMMENT ON COLUMN"ling_yong_qian"."ling_yong_qian"IS'女生期望零用錢';
+--
+INSERT INTO"ling_yong_qian"("ling_yong_qian")VALUES
+(E'lessThan10thousand'),(E'10to30thousand'),
+(E'30to50thousand'),(E'50to70thousand'),
+(E'moreThan70thousand'),(E'negotiable');
+
+ALTER TABLE"qing_ren"
+ADD COLUMN"nian_shou_ru"int2 REFERENCES"nian_shou_ru"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+ADD COLUMN"ling_yong_qian"int2 REFERENCES"ling_yong_qian"("id")ON DELETE RESTRICT ON UPDATE CASCADE;
+COMMENT ON COLUMN"qing_ren"."nian_shou_ru"IS'男生年收入';
+COMMENT ON COLUMN"qing_ren"."ling_yong_qian"IS'女生期望零用錢';

@@ -267,6 +267,22 @@
 					<xsl:value-of select="drinking"/>
 				</SPAN>
 			</DIV>
+			<xsl:if test="gender/@gender = 'female'">
+				<DIV class="mb-2">
+					<SPAN class="font-weight-bold text-lg">期望零用金：</SPAN>
+					<SPAN>
+						<xsl:value-of select="allowance"/>
+					</SPAN>
+				</DIV>
+			</xsl:if>
+			<xsl:if test="gender/@gender = 'male'">
+				<DIV class="mb-2">
+					<SPAN class="font-weight-bold text-lg">年收入：</SPAN>
+					<SPAN>
+						<xsl:value-of select="annualIncome"/>
+					</SPAN>
+				</DIV>
+			</xsl:if>
 			<HR class="horizontal dark my-4"/>
 			<DIV class="mb-2">
 				<DIV class="font-weight-bold text-lg">關於我：</DIV>

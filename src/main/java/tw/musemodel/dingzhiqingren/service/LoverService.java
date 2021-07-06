@@ -41,6 +41,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.entity.Activation;
+import tw.musemodel.dingzhiqingren.entity.Allowance;
+import tw.musemodel.dingzhiqingren.entity.AnnualIncome;
 import tw.musemodel.dingzhiqingren.entity.Country;
 import tw.musemodel.dingzhiqingren.entity.LineUserProfile;
 import tw.musemodel.dingzhiqingren.entity.Lover;
@@ -52,6 +54,8 @@ import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.SignUp;
 import tw.musemodel.dingzhiqingren.repository.ActivationRepository;
+import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
+import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineUserProfileRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
@@ -120,6 +124,12 @@ public class LoverService {
 
 	@Autowired
 	private LineMessagingService lineMessagingService;
+
+	@Autowired
+	private AnnualIncomeRepository annualIncomeRepository;
+
+	@Autowired
+	private AllowanceRepository allowanceRepository;
 
 	public List<Lover> loadLovers() {
 		return loverRepository.findAll();
@@ -558,17 +568,22 @@ public class LoverService {
 		}
 
 		if (Objects.nonNull(lover.getGender())) {
+			Boolean gender = lover.getGender();
 			Element genderElement = document.createElement("gender");
 			genderElement.setTextContent(
-				lover.getGender() ? messageSource.getMessage(
-				"gender.male",
-				null,
-				locale
-			) : messageSource.getMessage(
-				"gender.female",
-				null,
-				locale
-			));
+				gender ? messageSource.getMessage(
+						"gender.male",
+						null,
+						locale
+					) : messageSource.getMessage(
+					"gender.female",
+					null,
+					locale
+				));
+			genderElement.setAttribute(
+				"gender",
+				gender ? "male" : "female"
+			);
 			loverElement.appendChild(genderElement);
 		}
 
@@ -654,6 +669,30 @@ public class LoverService {
 			loverElement.appendChild(drinkingElement);
 		}
 
+		if (lover.getGender() && Objects.nonNull(lover.getAnnualIncome())) {
+			Element annualIncomeElement = document.createElement("annualIncome");
+			AnnualIncome annualIncome = lover.getAnnualIncome();
+			annualIncomeElement.setTextContent(
+				messageSource.getMessage(
+					annualIncome.getName(),
+					null,
+					locale
+				));
+			loverElement.appendChild(annualIncomeElement);
+		}
+
+		if (!lover.getGender() && Objects.nonNull(lover.getAllowance())) {
+			Element allowanceElement = document.createElement("allowance");
+			Allowance allowance = lover.getAllowance();
+			allowanceElement.setTextContent(
+				messageSource.getMessage(
+					allowance.getName(),
+					null,
+					locale
+				));
+			loverElement.appendChild(allowanceElement);
+		}
+
 		if (Objects.nonNull(lover.getIdealConditions())) {
 			String html = servant.markdownToHtml(lover.getIdealConditions());
 			Element idealConditionsElement = document.createElement("idealConditions");
@@ -701,6 +740,16 @@ public class LoverService {
 			)
 		);
 		documentElement.appendChild(loverElement);
+
+		if (Objects.nonNull(lover.getGender())) {
+			Boolean gender = lover.getGender();
+			Element genderElement = document.createElement("gender");
+			genderElement.setAttribute(
+				"gender",
+				gender ? "male" : "female"
+			);
+			loverElement.appendChild(genderElement);
+		}
 
 		for (Lover.BodyType bodyType : Lover.BodyType.values()) {
 			Element bodyTypeElement = document.createElement("bodyType");
@@ -795,6 +844,48 @@ public class LoverService {
 				);
 			}
 			loverElement.appendChild(drinkingElement);
+		}
+
+		if (lover.getGender()) {
+			for (AnnualIncome annualIncome : annualIncomeRepository.findAllByOrderByIdAsc()) {
+				Element annualIncomeElement = document.createElement("annualIncome");
+				annualIncomeElement.setTextContent(
+					messageSource.getMessage(
+						annualIncome.getName(),
+						null,
+						locale
+					));
+				annualIncomeElement.setAttribute(
+					"annualIncomeID", annualIncome.getId().toString()
+				);
+				if (Objects.equals(lover.getAnnualIncome(), annualIncome)) {
+					annualIncomeElement.setAttribute(
+						"annualIncomeSelected", ""
+					);
+				}
+				loverElement.appendChild(annualIncomeElement);
+			}
+		}
+
+		if (!lover.getGender()) {
+			for (Allowance allowance : allowanceRepository.findAllByOrderByIdAsc()) {
+				Element allowanceElement = document.createElement("allowance");
+				allowanceElement.setTextContent(
+					messageSource.getMessage(
+						allowance.getName(),
+						null,
+						locale
+					));
+				allowanceElement.setAttribute(
+					"allowanceID", allowance.getId().toString()
+				);
+				if (Objects.equals(lover.getAllowance(), allowance)) {
+					allowanceElement.setAttribute(
+						"allowanceSelected", ""
+					);
+				}
+				loverElement.appendChild(allowanceElement);
+			}
 		}
 
 		if (Objects.nonNull(lover.getNickname())) {

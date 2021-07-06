@@ -140,6 +140,36 @@
 							</xsl:for-each>
 						</SELECT>
 					</DIV>
+					<xsl:if test="gender/@gender = 'male'">
+						<DIV class="form-group">
+							<LABEL for="annualIncome">年收入</LABEL>
+							<SELECT class="form-control" id="annualIncome" name="annualIncome">
+								<xsl:for-each select="annualIncome">
+									<OPTION value="{@annualIncomeID}">
+										<xsl:if test="@annualIncomeSelected">
+											<xsl:attribute name="selected"/>
+										</xsl:if>
+										<xsl:value-of select="."/>
+									</OPTION>
+								</xsl:for-each>
+							</SELECT>
+						</DIV>
+					</xsl:if>
+					<xsl:if test="gender/@gender = 'female'">
+						<DIV class="form-group">
+							<LABEL for="allowance">期望零用金</LABEL>
+							<SELECT class="form-control" id="allowance" name="allowance">
+								<xsl:for-each select="allowance">
+									<OPTION value="{@allowanceID}">
+										<xsl:if test="@allowanceSelected">
+											<xsl:attribute name="selected"/>
+										</xsl:if>
+										<xsl:value-of select="."/>
+									</OPTION>
+								</xsl:for-each>
+							</SELECT>
+						</DIV>
+					</xsl:if>
 					<DIV class="col-md-12 pe-2 mb-3">
 						<DIV class="form-group mb-0">
 							<LABEL for="aboutMe">關於我</LABEL>
