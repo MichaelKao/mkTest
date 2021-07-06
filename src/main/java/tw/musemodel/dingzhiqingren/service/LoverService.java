@@ -516,6 +516,10 @@ public class LoverService {
 				locale
 			));
 
+		if (lover.getGender() && Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date())) {
+			loverElement.setAttribute("vip", null);
+		}
+
 		Element profileImageElement = document.createElement("profileImage");
 		if (Objects.nonNull(lover.getProfileImage())) {
 			profileImageElement.setTextContent(

@@ -30,44 +30,44 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<HEADER class="header-2">
-				<DIV class="page-header section-height-75 relative" style="background-image: url('https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/COUPLE/COUPLE+(1).jpg')">
-					<DIV class="container text-center">
-						<DIV class="row">
-							<DIV class="col-10 col-md-6 text-center mx-auto">
-								<H2 class="text-white pt-3">訂製你的專屬情人</H2>
-								<DIV class="text-white mt-3">
-									<DIV>成熟穩重的男人</DIV>
-									<DIV>遇上充滿魅力的甜心寶貝</DIV>
-									<DIV>從此不再寂寞。</DIV>
+			<xsl:if test="not(@signIn)">
+				<HEADER class="header-2">
+					<DIV class="page-header section-height-75 relative" style="background-image: url('https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/COUPLE/COUPLE+(1).jpg')">
+						<DIV class="container text-center">
+							<DIV class="row">
+								<DIV class="col-10 col-md-6 text-center mx-auto">
+									<H2 class="text-white pt-3">訂製你的專屬情人</H2>
+									<DIV class="text-white mt-3">
+										<DIV>成熟穩重的男人</DIV>
+										<DIV>遇上充滿魅力的甜心寶貝</DIV>
+										<DIV>從此不再寂寞。</DIV>
+									</DIV>
 								</DIV>
 							</DIV>
+							<xsl:if test="not(@signIn)">
+								<DIV class="my-4">
+									<A class="btn btn-primary btn-round btn-sm mx-2" href="/signIn.asp">登入</A>
+									<A class="btn btn-primary btn-round btn-sm mx-2" href="/signUp.asp">註冊</A>
+								</DIV>
+							</xsl:if>
 						</DIV>
-						<xsl:if test="not(@signIn)">
-							<DIV class="my-4">
-								<A class="btn btn-primary btn-round btn-sm mx-2" href="/signIn.asp">登入</A>
-								<A class="btn btn-primary btn-round btn-sm mx-2" href="/signUp.asp">註冊</A>
-							</DIV>
-						</xsl:if>
+						<DIV class="position-absolute w-100 z-index-1 bottom-0">
+							<SVG class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+								<DEFS>
+									<PATH id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+								</DEFS>
+								<G class="moving-waves">
+									<use xlink:href="#gentle-wave" x="48" y="-1" fill="rgba(255,255,255,0.40" />
+									<use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.35)" />
+									<use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.25)" />
+									<use xlink:href="#gentle-wave" x="48" y="8" fill="rgba(255,255,255,0.20)" />
+									<use xlink:href="#gentle-wave" x="48" y="13" fill="rgba(255,255,255,0.15)" />
+									<use xlink:href="#gentle-wave" x="48" y="16" fill="rgba(255,255,255,0.95" />
+								</G>
+							</SVG>
+						</DIV>
 					</DIV>
-					<DIV class="position-absolute w-100 z-index-1 bottom-0">
-						<SVG class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
-							<DEFS>
-								<PATH id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
-							</DEFS>
-							<G class="moving-waves">
-								<use xlink:href="#gentle-wave" x="48" y="-1" fill="rgba(255,255,255,0.40" />
-								<use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.35)" />
-								<use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.25)" />
-								<use xlink:href="#gentle-wave" x="48" y="8" fill="rgba(255,255,255,0.20)" />
-								<use xlink:href="#gentle-wave" x="48" y="13" fill="rgba(255,255,255,0.15)" />
-								<use xlink:href="#gentle-wave" x="48" y="16" fill="rgba(255,255,255,0.95" />
-							</G>
-						</SVG>
-					</DIV>
-				</DIV>
-			</HEADER>
-			<xsl:if test="not(@signIn)">
+				</HEADER>
 				<SECTION class="pt-3 pb-4">
 					<DIV class="container">
 						<DIV class="row">
@@ -139,16 +139,21 @@
 				</SECTION>
 			</xsl:if>
 			<xsl:if test="@signIn">
-				<SECTION class="mt-4">
+				<DIV class="container py-7 px-0">
 					<H3 class="text-primary text-center">
 						<xsl:if test="@male">所有甜心</xsl:if>
 						<xsl:if test="@female">所有男仕</xsl:if>
 					</H3>
-					<DIV class="card">
-						<DIV class="d-flex flex-wrap justify-content-center my-5">
+					<DIV class="card col-11 col-md-8 mx-auto">
+						<DIV class="d-flex flex-wrap justify-content-center">
 							<xsl:for-each select="lover">
 								<A class="position-relative m-2" href="/profile/{identifier}/">
 									<IMG class="border-radius-md" src="{profileImage}" width="130"/>
+									<xsl:if test="@vip">
+										<DIV class="position-absolute top-0 right-0 d-flex text-light text-bold">
+											<IMG class="border-radius-md" src="/vip.svg" width="30"/>
+										</DIV>
+									</xsl:if>
 									<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
 										<SPAN class="bg-dark opacity-6 border-radius-md px-1">
 											<SPAN>
@@ -163,7 +168,7 @@
 							</xsl:for-each>
 						</DIV>
 					</DIV>
-				</SECTION>
+				</DIV>
 			</xsl:if>
 			<xsl:call-template name="bodyScriptTags"/>
 			<xsl:if test="@signIn">

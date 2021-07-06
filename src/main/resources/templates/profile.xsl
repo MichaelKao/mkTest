@@ -206,6 +206,11 @@
 				<DIV class="text-dark text-bold mx-1">
 					<xsl:value-of select="gender"/>
 				</DIV>
+				<xsl:if test="@vip">
+					<DIV class="mx-1">
+						<IMG class="border-radius-md" src="/vip.svg" width="35"/>
+					</DIV>
+				</xsl:if>
 			</DIV>
 			<DIV class="d-flex align-items-center">
 				<DIV class="text-dark text-bold me-1">

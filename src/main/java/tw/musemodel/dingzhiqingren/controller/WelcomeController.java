@@ -183,6 +183,10 @@ public class WelcomeController {
 					loverElement.appendChild(ageElement);
 				}
 
+				if (!meIsMale && Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date())) {
+					loverElement.setAttribute("vip", null);
+				}
+
 				Element identifierElement = document.createElement("identifier");
 				identifierElement.setTextContent(lover.getIdentifier().toString());
 				loverElement.appendChild(identifierElement);
