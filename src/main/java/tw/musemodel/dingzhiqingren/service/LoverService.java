@@ -509,9 +509,9 @@ public class LoverService {
 
 		// 上一次登入
 		loverElement.setAttribute(
-			"i18n-lastLogin",
+			"i18n-lastActive",
 			messageSource.getMessage(
-				"last.login",
+				"last.active",
 				null,
 				locale
 			));

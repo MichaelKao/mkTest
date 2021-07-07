@@ -92,7 +92,7 @@
 									<xsl:if test="@giveMeLineButton">
 										<DIV class="ms-0 ms-md-auto">
 											<INPUT name="whom" type="hidden" value="{@identifier}"/>
-											<BUTTON class="btn btn-success px-2 py-1 px-md-3 py-md-2 requestLine" type="button">要求 LINE</BUTTON>
+											<BUTTON class="btn btn-primary px-2 py-1 px-md-3 py-md-2 requestLine" type="button">要求 LINE</BUTTON>
 										</DIV>
 									</xsl:if>
 								</DIV>

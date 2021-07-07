@@ -214,7 +214,7 @@
 			</DIV>
 			<DIV class="d-flex align-items-center">
 				<DIV class="text-dark text-bold me-1">
-					<xsl:value-of select="@i18n-lastLogin"/>
+					<xsl:value-of select="@i18n-lastActive"/>
 				</DIV>
 				<DIV class="text-primary text-bold mx-1">
 					<xsl:value-of select="active"/>
