@@ -779,6 +779,10 @@ public class HistoryService {
 						"向您打招呼：",
 						activeLogs.getGreeting()
 					);
+					historyElement.setAttribute(
+						"giveMeLineButton",
+						null
+					);
 				}
 				if (!isMale) {
 					profileImage = passiveProfileImage;

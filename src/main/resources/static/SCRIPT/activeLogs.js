@@ -54,4 +54,36 @@ $(document).ready(function () {
 			);
 		return false;
 	});
+
+	var $modal = $('#modal');
+	var rqBtn;
+
+	$('.requestLine').click(function () {
+		$modal.modal('show');
+		rqBtn = this;
+	});
+
+	$('BUTTON.confirmBtn').click(function (event) {
+		event.preventDefault();
+		let confirmBtn = this;
+		$.post(
+			'/stalking.json',
+			{
+				whom: $(rqBtn).siblings().val(),
+				what: $('TEXTAREA[name="what"]').val()
+			},
+			function (data) {
+				if (data.response) {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+					$modal.modal('hide');
+				} else {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+				}
+			},
+			'json'
+			);
+		return false;
+	});
 });

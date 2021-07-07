@@ -1615,6 +1615,13 @@ public class WelcomeController {
 			null
 		);
 
+		if (meIsMale) {
+			documentElement.setAttribute(
+				"greeting",
+				me.getGreeting()
+			);
+		}
+
 		// 是否為 VIP
 		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
 			documentElement.setAttribute(
@@ -2010,6 +2017,16 @@ public class WelcomeController {
 		return modelAndView;
 	}
 
+	/**
+	 * 甜心提取車馬費
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
 	@GetMapping(path = "/withdrawal.asp")
 	ModelAndView withdrawal(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {

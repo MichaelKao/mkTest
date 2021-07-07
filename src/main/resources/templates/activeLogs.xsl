@@ -32,6 +32,32 @@
 				<H4 class="text-primary text-center">
 					<xsl:value-of select="@title"/>
 				</H4>
+				<DIV class="modal fade" id="modal" role="dialog" tabindex="-1">
+					<DIV class="modal-dialog" role="document">
+						<DIV class="modal-content">
+							<DIV class="modal-header">
+								<H5 class="modal-title">和女生要求Line</H5>
+								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
+							</DIV>
+							<DIV class="modal-body">
+								<DIV class="form-group col-8">
+									<LABEL class="h6" for="hello">招呼語</LABEL>
+									<TEXTAREA class="form-control" id="hello" name="what" type="text">
+										<xsl:value-of select="@greeting"/>
+									</TEXTAREA>
+								</DIV>
+							</DIV>
+							<DIV class="modal-footer">
+								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+									<xsl:value-of select="@i18n-cancel"/>
+								</BUTTON>
+								<BUTTON class="btn btn-primary confirmBtn" type="submit">
+									<xsl:value-of select="@i18n-confirm"/>
+								</BUTTON>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
 				<DIV class="d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center mt-3">
 					<DIV class="col-12 col-md-8 card card-frame mb-3 mx-2">
 						<xsl:for-each select="history">
@@ -61,6 +87,12 @@
 									<xsl:if test="@lineButton">
 										<DIV class="ms-0 ms-md-auto">
 											<A class="btn btn-success px-2 py-1 px-md-3 py-md-2" href="{@lineButton}">加入好友</A>
+										</DIV>
+									</xsl:if>
+									<xsl:if test="@giveMeLineButton">
+										<DIV class="ms-0 ms-md-auto">
+											<INPUT name="whom" type="hidden" value="{@identifier}"/>
+											<BUTTON class="btn btn-success px-2 py-1 px-md-3 py-md-2 requestLine" type="button">要求 LINE</BUTTON>
 										</DIV>
 									</xsl:if>
 								</DIV>
