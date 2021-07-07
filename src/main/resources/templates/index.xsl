@@ -25,7 +25,7 @@
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
 			<LINK href="/STYLE/index.css" rel="stylesheet"/>
-			<!--<LINK href="/manifest.json" rel="manifest"/>-->
+			<LINK href="/manifest.json" rel="manifest"/>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>

@@ -70,7 +70,8 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 						"/signIn.asp",
 						"/signUp.asp",
 						"/terms.asp",
-						"/privacy.asp"
+						"/privacy.asp",
+						"/manifest.json"
 					).permitAll().
 					anyRequest().authenticated()
 			).
