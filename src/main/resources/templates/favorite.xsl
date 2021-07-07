@@ -28,20 +28,27 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container py-8">
-				<DIV class="mb-4 text-center">
-					<H4 class="text-primary">我的收藏</H4>
+			<DIV class="container py-8 text-center">
+				<DIV class="mx-sm-5 mx-lg-12 mb-5">
+					<H4 class="text-primary">
+						<xsl:value-of select="@title"/>
+					</H4>
 					<HR class="horizontal dark"/>
 				</DIV>
-				<DIV class="d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center">
+				<DIV class="col-lg-8 mx-auto d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center">
 					<xsl:for-each select="follow">
-						<DIV class="col-10 col-sm-8 col-md-5 card card-frame mb-3 mx-2">
-							<DIV class="card-body d-flex align-items-center justify-content-around p-3 p-md-4">
+						<DIV class="col-11 col-sm-8 col-md-5 card card-frame mb-3 mx-2">
+							<DIV class="card-body d-flex align-items-center justify-content-evenly p-3 p-md-4">
 								<DIV>
 									<A href="/profile/{@identifier}/">
 										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="70"/>
 									</A>
 								</DIV>
+								<xsl:if test="@vip">
+									<DIV class="position-absolute top-0 left-0">
+										<IMG class="border-radius-md" src="/vip.svg" width="30"/>
+									</DIV>
+								</xsl:if>
 								<DIV class="ms-3">
 									<A class="h6" href="/profile/{@identifier}/">
 										<SPAN class="me-2">

@@ -35,17 +35,17 @@
 					</H4>
 					<HR class="horizontal dark"/>
 				</DIV>
-				<DIV class="d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center">
+				<DIV class="col-lg-9 mx-auto d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center">
 					<xsl:for-each select="peeker">
 						<DIV class="col-11 col-sm-8 col-md-5 card card-frame mb-3 mx-2">
-							<DIV class="card-body d-flex align-items-center justify-content-around p-3 p-md-4">
+							<DIV class="card-body d-flex align-items-center justify-content-evenly p-3 p-md-4">
 								<DIV>
 									<A href="/profile/{@identifier}/">
 										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="70"/>
 									</A>
 								</DIV>
 								<xsl:if test="@vip">
-									<DIV>
+									<DIV class="position-absolute top-0 left-0">
 										<IMG class="border-radius-md" src="/vip.svg" width="30"/>
 									</DIV>
 								</xsl:if>

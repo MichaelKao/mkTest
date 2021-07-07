@@ -1160,6 +1160,9 @@ public class WelcomeController {
 					loverService.calculateAge(followed).toString()
 				);
 			}
+			if (followed.getGender() && Objects.nonNull(followed.getVip()) && followed.getVip().after(new Date())) {
+				followElement.setAttribute("vip", null);
+			}
 		}
 
 		ModelAndView modelAndView = new ModelAndView("favorite");

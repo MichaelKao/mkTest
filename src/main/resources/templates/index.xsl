@@ -150,7 +150,7 @@
 								<A class="position-relative m-2" href="/profile/{identifier}/">
 									<IMG class="border-radius-md" src="{profileImage}" width="130"/>
 									<xsl:if test="@vip">
-										<DIV class="position-absolute top-0 right-0 d-flex text-light text-bold">
+										<DIV class="position-absolute top-0 right-0">
 											<IMG class="border-radius-md" src="/vip.svg" width="30"/>
 										</DIV>
 									</xsl:if>
