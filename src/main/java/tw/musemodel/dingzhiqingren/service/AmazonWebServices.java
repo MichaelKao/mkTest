@@ -8,8 +8,9 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.amazonaws.services.s3.model.CopyObjectResult;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
+import java.io.File;
 import java.io.IOException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -63,24 +64,18 @@ public class AmazonWebServices {
 	}
 
 	public JSONObject uploadPhotoToS3Bucket(MultipartFile multipartFile, String fileName, String bucketName) throws IOException {
-//		File file = new File(TEMP_DIRECTORY, Long.toString(
-//			System.currentTimeMillis()
-//		));
-//		multipartFile.transferTo(file);
-//		PutObjectResult putObjectResult = AMAZON_S3.putObject(
-//			new PutObjectRequest(
-//				BUCKET_NAME + bucketName,
-//				fileName,
-//				file
-//			)
-//		);
-//		file.delete();
-
-		ObjectMetadata data = new ObjectMetadata();
-		data.setContentType(multipartFile.getContentType());
-		data.setContentLength(multipartFile.getSize());
-		LOGGER.debug("測試{}", fileName);
-		PutObjectResult putObjectResult = AMAZON_S3.putObject(BUCKET_NAME + bucketName, fileName, multipartFile.getInputStream(), data);
+		File file = new File(TEMP_DIRECTORY, Long.toString(
+			System.currentTimeMillis()
+		));
+		multipartFile.transferTo(file);
+		PutObjectResult putObjectResult = AMAZON_S3.putObject(
+			new PutObjectRequest(
+				BUCKET_NAME + bucketName,
+				fileName,
+				file
+			)
+		);
+		file.delete();
 
 		return new JavaScriptObjectNotation().
 			withReason("Uploaded.").
