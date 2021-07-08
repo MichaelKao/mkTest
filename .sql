@@ -478,12 +478,13 @@ COMMENT ON COLUMN"qing_ren"."ling_yong_qian"IS'女生期望零用錢';
  */
 CREATE TABLE"ti_qu_che_ma_fei"(
 	"id"serial PRIMARY KEY,
-	"honey"int2 NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"honey"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
 	"wire_transfer_bank_code"varchar,
 	"wire_transfer_branch_code"varchar,
 	"wire_transfer_account_name"varchar,
 	"wire_transfer_account_number"varchar
 );
+COMMENT ON TABLE"ti_qu_che_ma_fei"IS'甜心提取車馬費資訊';
 COMMENT ON COLUMN"ti_qu_che_ma_fei"."id"IS'主鍵';
 COMMENT ON COLUMN"ti_qu_che_ma_fei"."honey"IS'情人';
 COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_bank_code"IS'銀行代碼';
@@ -495,10 +496,15 @@ ALTER TABLE"qing_ren"
 ADD COLUMN"shan_chu"varchar;
 COMMENT ON COLUMN"qing_ren"."shan_chu"IS'刪除';
 
-ALTER TABLE"gei_bu_gei_lai"
+ALTER TABLE"qing_ren" ALTER COLUMN"zhang_hao" DROP NOT NULL;
+
+ALTER TYPE"xing_wei" ADD VALUE 'PING_JIA';
+
+/**
+ * 星級評價
+ */
+ALTER TABLE"li_cheng"
 ADD COLUMN"xing_ji"int2,
-ADD COLUMN"ping_jia"varchar,
-ADD COLUMN"ping_jia_shi_chuo"timestamptz;
-COMMENT ON COLUMN"gei_bu_gei_lai"."xing_ji"IS'星級';
-COMMENT ON COLUMN"gei_bu_gei_lai"."ping_jia"IS'評價留言';
-COMMENT ON COLUMN"gei_bu_gei_lai"."ping_jia"IS'評價時間';
+ADD COLUMN"ping_jia"varchar;
+COMMENT ON COLUMN"li_cheng"."xing_ji"IS'星級';
+COMMENT ON COLUMN"li_cheng"."ping_jia"IS'評價留言';

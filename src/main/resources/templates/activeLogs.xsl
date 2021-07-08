@@ -24,6 +24,7 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
+			<LINK href="/STYLE/activeLogs.css" rel="stylesheet"/>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
@@ -51,7 +52,42 @@
 								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
 									<xsl:value-of select="@i18n-cancel"/>
 								</BUTTON>
-								<BUTTON class="btn btn-primary confirmBtn" type="submit">
+								<BUTTON class="btn btn-primary confirmBtn" type="button">
+									<xsl:value-of select="@i18n-confirm"/>
+								</BUTTON>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
+				<DIV class="modal fade" id="rateModal" role="dialog" tabindex="-1">
+					<DIV class="modal-dialog" role="document">
+						<DIV class="modal-content">
+							<DIV class="modal-header">
+								<H5 class="modal-title">給予對方評價</H5>
+								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
+							</DIV>
+							<DIV class="modal-body">
+								<DIV class="form-group col-8">
+									<DIV class="rating d-flex flex-row-reverse justify-content-end">
+										<INPUT class="d-none" id="rating-5" name="rating" required="" type="radio" value="5"/>
+										<LABEL for="rating-5"></LABEL>
+										<INPUT class="d-none" id="rating-4" name="rating" required="" type="radio" value="4"/>
+										<LABEL for="rating-4"></LABEL>
+										<INPUT class="d-none" id="rating-3" name="rating" required="" type="radio" value="3"/>
+										<LABEL for="rating-3"></LABEL>
+										<INPUT class="d-none" id="rating-2" name="rating" required="" type="radio" value="2"/>
+										<LABEL for="rating-2"></LABEL>
+										<INPUT class="d-none" id="rating-1" name="rating" required="" type="radio" value="1"/>
+										<LABEL for="rating-1"></LABEL>
+									</DIV>
+									<TEXTAREA class="form-control" name="comment" placeholder="留下評價..." type="text"></TEXTAREA>
+								</DIV>
+							</DIV>
+							<DIV class="modal-footer">
+								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+									<xsl:value-of select="@i18n-cancel"/>
+								</BUTTON>
+								<BUTTON class="btn btn-primary confirmBtn" type="button">
 									<xsl:value-of select="@i18n-confirm"/>
 								</BUTTON>
 							</DIV>
@@ -61,6 +97,7 @@
 				<DIV class="d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center mt-3">
 					<DIV class="col-12 col-md-8 card card-frame mb-3 mx-2">
 						<xsl:for-each select="history">
+							<INPUT name="whom" type="hidden" value="{@identifier}"/>
 							<DIV class="card-body d-flex align-items-center justify-content-start py-0">
 								<DIV>
 									<A href="/profile/{@identifier}/">
@@ -84,20 +121,16 @@
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 refuse" type="button">拒絕</BUTTON>
 										</DIV>
 									</xsl:if>
-									<xsl:if test="@addLineButton">
+									<xsl:if test="@rateButton">
 										<DIV class="ms-0 ms-md-auto">
-											<A class="btn btn-success px-2 py-1 px-md-3 py-md-2" href="{@lineButton}">加入好友</A>
+											<xsl:if test="@addLineButton">
+												<A class="btn btn-success px-2 py-1 px-md-3 py-md-2 me-1" href="{@lineButton}">加入好友</A>
+											</xsl:if>
+											<BUTTON class="btn btn-warning px-2 py-1 px-md-3 py-md-2 rate" type="button">評價</BUTTON>
 										</DIV>
 									</xsl:if>
 									<xsl:if test="@requestLineButton">
 										<DIV class="ms-0 ms-md-auto">
-											<INPUT name="whom" type="hidden" value="{@identifier}"/>
-											<BUTTON class="btn btn-primary px-2 py-1 px-md-3 py-md-2 requestLine" type="button">要求 LINE</BUTTON>
-										</DIV>
-									</xsl:if>
-									<xsl:if test="@rateButton">
-										<DIV class="ms-0 ms-md-auto">
-											<INPUT name="whom" type="hidden" value="{@identifier}"/>
 											<BUTTON class="btn btn-primary px-2 py-1 px-md-3 py-md-2 requestLine" type="button">要求 LINE</BUTTON>
 										</DIV>
 									</xsl:if>

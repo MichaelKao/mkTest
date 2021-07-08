@@ -69,7 +69,6 @@ public class Lover implements java.io.Serializable {
 	@JsonManagedReference
 	private Country country;
 
-	@Basic(optional = false)
 	@Column(name = "zhang_hao", nullable = false)
 	private String login;
 

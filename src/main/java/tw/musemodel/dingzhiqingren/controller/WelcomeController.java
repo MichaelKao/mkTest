@@ -1652,24 +1652,25 @@ public class WelcomeController {
 				"greeting",
 				me.getGreeting()
 			);
-			// 確認按鈕
-			documentElement.setAttribute(
-				"i18n-confirm",
-				messageSource.getMessage(
-					"confirm.submit",
-					null,
-					locale
-				));
-
-			// 取消按鈕
-			documentElement.setAttribute(
-				"i18n-cancel",
-				messageSource.getMessage(
-					"cancel",
-					null,
-					locale
-				));
 		}
+		// 確認按鈕
+		documentElement.setAttribute(
+			"i18n-confirm",
+			messageSource.getMessage(
+				"confirm.submit",
+				null,
+				locale
+			)
+		);
+
+		// 取消按鈕
+		documentElement.setAttribute(
+			"i18n-cancel",
+			messageSource.getMessage(
+				"cancel",
+				null,
+				locale
+			));
 
 		// 是否為 VIP
 		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
@@ -2035,7 +2036,7 @@ public class WelcomeController {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.privacy",
+			"title.terms",
 			null,
 			locale
 		));
@@ -2068,6 +2069,58 @@ public class WelcomeController {
 		}
 
 		ModelAndView modelAndView = new ModelAndView("terms");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
+	 * 隱私權政策
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/privacy.asp")
+	ModelAndView privacy(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.privacy",
+			null,
+			locale
+		));
+		// 登入狀態
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"signIn",
+				authentication.getName()
+			);
+			// 本人
+			Lover me = loverService.loadByUsername(
+				authentication.getName()
+			);
+			// 看頁面的時間
+			me.setActive(new Date(System.currentTimeMillis()));
+			me = loverService.saveLover(me);
+
+			// 確認性別
+			Boolean meIsMale = loverService.isMale(me);
+
+			documentElement.setAttribute(
+				meIsMale ? "male" : "female",
+				null
+			);
+
+			documentElement.setAttribute(
+				"identifier",
+				me.getIdentifier().toString()
+			);
+		}
+
+		ModelAndView modelAndView = new ModelAndView("privacy");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}
@@ -2149,13 +2202,59 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		me.setDelete(me.getLogin());
-		me.setLogin(" ");
+		me.setDelete(authentication.getName());
+		me.setLogin(null);
 		loverRepository.saveAndFlush(me);
 
 		return new JavaScriptObjectNotation().
 			withRedirect("/signOut.asp").
 			withResponse(true).
 			toJSONObject().toString();
+	}
+
+	/**
+	 * 星級評價
+	 *
+	 * @param rate
+	 * @param comment
+	 * @param whom
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/rate.json")
+	@Secured({"ROLE_YONGHU"})
+	@ResponseBody
+	String rate(@RequestParam Short rate, @RequestParam String comment,
+		@RequestParam UUID whom, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover initiate = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Lover passive = loverService.loadByIdentifier(whom);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = historyService.rate(
+				initiate,
+				passive,
+				rate,
+				comment,
+				locale
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
 	}
 }

@@ -81,6 +81,12 @@ public class History implements java.io.Serializable {
 	@Column(name = "zhao_hu_yu")
 	private String greeting;
 
+	@Column(name = "xing_ji")
+	private Short rate;
+
+	@Column(name = "ping_jia")
+	private String comment;
+
 	/**
 	 * 默认构造器
 	 */
@@ -271,6 +277,34 @@ public class History implements java.io.Serializable {
 	}
 
 	/**
+	 * @return 星級
+	 */
+	public Short getRate() {
+		return rate;
+	}
+
+	/**
+	 * @param rate 星級
+	 */
+	public void setRate(Short rate) {
+		this.rate = rate;
+	}
+
+	/**
+	 * @return 評價
+	 */
+	public String getComment() {
+		return comment;
+	}
+
+	/**
+	 * @param comment 評價
+	 */
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	/**
 	 * 行为
 	 *
 	 * @author p@musemodel.tw
@@ -287,7 +321,8 @@ public class History implements java.io.Serializable {
 		CHE_MA_FEI("CHE_MA_FEI", 8),//车马费
 		LAI_TUI_DIAN("LAI_TUI_DIAN", 9),//要求賴的退點
 		SHOU_CANG("SHOU_CANG", 10),//收藏
-		BU_SHOU_CANG("BU_SHOU_CANG", 11);//取消收藏
+		BU_SHOU_CANG("BU_SHOU_CANG", 11),//取消收藏
+		PING_JIA("PING_JIA", 12);//評價
 
 		private String label;
 

@@ -108,6 +108,8 @@ public class HistoryService {
 	 */
 	public static final Behavior BEHAVIOR_PEEK = Behavior.KAN_GUO_WO;
 
+	public static final Behavior BEHAVIOR_RATE = Behavior.PING_JIA;
+
 	/**
 	 * 车马费(男对女)
 	 *
@@ -484,6 +486,49 @@ public class HistoryService {
 			passive,
 			BEHAVIOR_PEEK
 		));
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			withResult(history.getOccurred()).
+			toJSONObject();
+	}
+
+	/**
+	 * 星級評價
+	 *
+	 * @param initiative
+	 * @param passive
+	 * @return
+	 */
+	@Transactional
+	public JSONObject rate(Lover initiative, Lover passive, Short rate, String comment, Locale locale) {
+		if (Objects.isNull(initiative)) {
+			throw new IllegalArgumentException("rate.initiativeMustntBeNull");
+		}
+		if (Objects.isNull(passive)) {
+			throw new IllegalArgumentException("rate.passiveMustntBeNull");
+		}
+		if (Objects.equals(initiative, passive)) {
+			throw new RuntimeException("rate.mustBeDifferent");
+		}
+		if (Objects.equals(initiative.getGender(), passive.getGender())) {
+			throw new RuntimeException("rate.mustBeStraight");
+		}
+		if (Objects.isNull(rate)) {
+			throw new RuntimeException("rate.rateMustntBeNull");
+		}
+		if (comment.isBlank() || comment.isEmpty()) {
+			throw new RuntimeException("rate.commentMustntBeNull");
+		}
+
+		History history = new History(
+			initiative,
+			passive,
+			BEHAVIOR_RATE
+		);
+		history.setRate(rate);
+		history.setComment(comment);
+		historyRepository.saveAndFlush(history);
+
 		return new JavaScriptObjectNotation().
 			withResponse(true).
 			withResult(history.getOccurred()).
