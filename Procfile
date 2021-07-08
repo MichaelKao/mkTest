@@ -1,1 +1,1 @@
-web:	java $JAVA_OPTS -jar target/executable.jar
+web:	java $JAVA_OPTS -jar target/application.jar
