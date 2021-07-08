@@ -494,3 +494,11 @@ COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_account_number"IS'匯款帳�
 ALTER TABLE"qing_ren"
 ADD COLUMN"shan_chu"varchar;
 COMMENT ON COLUMN"qing_ren"."shan_chu"IS'刪除';
+
+ALTER TABLE"gei_bu_gei_lai"
+ADD COLUMN"xing_ji"int2,
+ADD COLUMN"ping_jia"varchar,
+ADD COLUMN"ping_jia_shi_chuo"timestamptz;
+COMMENT ON COLUMN"gei_bu_gei_lai"."xing_ji"IS'星級';
+COMMENT ON COLUMN"gei_bu_gei_lai"."ping_jia"IS'評價留言';
+COMMENT ON COLUMN"gei_bu_gei_lai"."ping_jia"IS'評價時間';
