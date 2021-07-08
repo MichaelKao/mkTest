@@ -669,7 +669,7 @@ public class HistoryService {
 					);
 					if (Objects.isNull(activeLogs.getSeen())) {
 						historyElement.setAttribute(
-							"button",
+							"decideButton",
 							null
 						);
 					}
@@ -701,7 +701,7 @@ public class HistoryService {
 						"接受給您 Line"
 					);
 					historyElement.setAttribute(
-						"lineButton",
+						"addLineButton",
 						activeLogs.getInitiative().getInviteMeAsLineFriend()
 					);
 				}
@@ -715,6 +715,10 @@ public class HistoryService {
 						"給出 Line"
 					);
 				}
+				historyElement.setAttribute(
+					"rateButton",
+					null
+				);
 				historyElement.setAttribute(
 					"profileImage",
 					String.format(
@@ -780,7 +784,7 @@ public class HistoryService {
 						activeLogs.getGreeting()
 					);
 					historyElement.setAttribute(
-						"giveMeLineButton",
+						"requestLineButton",
 						null
 					);
 				}

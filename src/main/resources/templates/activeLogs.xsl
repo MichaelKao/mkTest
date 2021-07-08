@@ -77,19 +77,25 @@
 										</DIV>
 
 									</DIV>
-									<xsl:if test="@button">
+									<xsl:if test="@decideButton">
 										<DIV class="ms-0 ms-md-auto buttons">
 											<INPUT name="whom" type="hidden" value="{@identifier}"/>
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 accept" type="button">接受</BUTTON>
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 refuse" type="button">拒絕</BUTTON>
 										</DIV>
 									</xsl:if>
-									<xsl:if test="@lineButton">
+									<xsl:if test="@addLineButton">
 										<DIV class="ms-0 ms-md-auto">
 											<A class="btn btn-success px-2 py-1 px-md-3 py-md-2" href="{@lineButton}">加入好友</A>
 										</DIV>
 									</xsl:if>
-									<xsl:if test="@giveMeLineButton">
+									<xsl:if test="@requestLineButton">
+										<DIV class="ms-0 ms-md-auto">
+											<INPUT name="whom" type="hidden" value="{@identifier}"/>
+											<BUTTON class="btn btn-primary px-2 py-1 px-md-3 py-md-2 requestLine" type="button">要求 LINE</BUTTON>
+										</DIV>
+									</xsl:if>
+									<xsl:if test="@rateButton">
 										<DIV class="ms-0 ms-md-auto">
 											<INPUT name="whom" type="hidden" value="{@identifier}"/>
 											<BUTTON class="btn btn-primary px-2 py-1 px-md-3 py-md-2 requestLine" type="button">要求 LINE</BUTTON>
