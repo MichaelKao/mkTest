@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.6</version>
+		<version>2.5.2</version>
 		<relativePath/>
 	</parent>
 	<groupId>tw.musemodel</groupId>
-	<artifactId>dingzhiqingren</artifactId>
+	<artifactId>youngme-web</artifactId>
 	<version>1.0.0-RELEASE</version>
 	<name>订制情人</name>
 	<description>一起跑步呗！</description>
@@ -42,9 +42,19 @@
 			<version>1.11.852</version>
 		</dependency>
 		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+			<version>3.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>javase</artifactId>
+			<version>3.4.1</version>
+		</dependency>
+		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.9.0</version>
+			<version>2.10.0</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -117,7 +127,7 @@
 		<dependency>
 			<groupId>org.commonmark</groupId>
 			<artifactId>commonmark</artifactId>
-			<version>0.17.1</version>
+			<version>0.17.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -126,7 +136,7 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>executable</finalName>
+		<finalName>application</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
