@@ -203,6 +203,9 @@ public class Lover implements java.io.Serializable {
 	@JsonManagedReference
 	private Allowance allowance;
 
+	@Column(name = "shan_chu")
+	private String delete;
+
 	/**
 	 * 默认构造器
 	 */
@@ -703,6 +706,24 @@ public class Lover implements java.io.Serializable {
 	 */
 	public void setAllowance(Allowance allowance) {
 		this.allowance = allowance;
+	}
+
+	/**
+	 * 刪除帳號
+	 *
+	 * @return
+	 */
+	public String getDelete() {
+		return delete;
+	}
+
+	/**
+	 * 刪除帳號
+	 *
+	 * @param delete
+	 */
+	public void setDelete(String delete) {
+		this.delete = delete;
 	}
 
 	/**

@@ -490,3 +490,7 @@ COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_bank_code"IS'銀行代碼';
 COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_branch_code"IS'分行代碼';
 COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_account_name"IS'戶名';
 COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_account_number"IS'匯款帳號';
+
+ALTER TABLE"qing_ren"
+ADD COLUMN"shan_chu"varchar;
+COMMENT ON COLUMN"qing_ren"."shan_chu"IS'刪除';

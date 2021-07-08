@@ -29,6 +29,27 @@
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container py-7">
+				<DIV class="modal fade" id="modal" role="dialog" tabindex="-1">
+					<DIV class="modal-dialog" role="document">
+						<DIV class="modal-content">
+							<DIV class="modal-header">
+								<H5 class="modal-title">提醒！</H5>
+								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
+							</DIV>
+							<DIV class="modal-body">
+								<DIV class="form-group col-8">刪除帳號將無法再恢復，確定要刪除？</DIV>
+							</DIV>
+							<DIV class="modal-footer">
+								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+									<xsl:value-of select="@i18n-cancel"/>
+								</BUTTON>
+								<BUTTON class="btn btn-primary confirmBtn" type="button">
+									<xsl:value-of select="@i18n-confirm"/>
+								</BUTTON>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
 				<DIV class="card mx-md-7">
 					<xsl:apply-templates select="lover"/>
 				</DIV>
@@ -43,9 +64,14 @@
 	<xsl:template match="lover">
 		<FORM action="/me.asp" method="post">
 			<DIV class="card-body pt-1">
-				<A class="text-primary h2" href="/profile/">
-					<I class="fad fa-chevron-double-left"></I>
-				</A>
+				<DIV class="d-flex">
+					<A class="text-primary h2" href="/profile/">
+						<I class="fad fa-chevron-double-left"></I>
+					</A>
+					<DIV class="ms-auto">
+						<BUTTON class="btn btn-outline-primary deleteAccount" type="button">刪除帳號</BUTTON>
+					</DIV>
+				</DIV>
 				<DIV class="row mt-3">
 					<DIV class="col-md-12 mb-3">
 						<LABEL for="nickname">暱稱</LABEL>

@@ -745,6 +745,24 @@ public class LoverService {
 		);
 		documentElement.appendChild(loverElement);
 
+		// 確認按鈕
+		documentElement.setAttribute(
+			"i18n-confirm",
+			messageSource.getMessage(
+				"confirm.submit",
+				null,
+				locale
+			));
+
+		// 取消按鈕
+		documentElement.setAttribute(
+			"i18n-cancel",
+			messageSource.getMessage(
+				"cancel",
+				null,
+				locale
+			));
+
 		if (Objects.nonNull(lover.getGender())) {
 			Boolean gender = lover.getGender();
 			Element genderElement = document.createElement("gender");

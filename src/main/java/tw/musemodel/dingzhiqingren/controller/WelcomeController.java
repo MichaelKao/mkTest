@@ -1150,6 +1150,10 @@ public class WelcomeController {
 		Set<Lover> following = me.getFollowing();
 		for (Lover followed : following) {
 
+			if (Objects.nonNull(followed.getDelete())) {
+				continue;
+			}
+
 			Element followElement = document.createElement("follow");
 			documentElement.appendChild(followElement);
 			followElement.setAttribute(
@@ -1288,7 +1292,7 @@ public class WelcomeController {
 
 		Set<Lover> peekers = new HashSet<Lover>();
 		for (History history : histories) {
-			if (!peekers.contains(history.getInitiative())) {
+			if (!peekers.contains(history.getInitiative()) && Objects.isNull(history.getInitiative().getDelete())) {
 				peekers.add(history.getInitiative());
 				Lover peeker = history.getInitiative();
 				// 到訪次數
@@ -2127,5 +2131,31 @@ public class WelcomeController {
 		ModelAndView modelAndView = new ModelAndView("withdrawal");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
+	}
+
+	/**
+	 * 刪除帳號
+	 *
+	 * @param identifier
+	 * @param authentication
+	 * @return
+	 */
+	@PostMapping(path = "/deleteAccount")
+	@Secured({"ROLE_YONGHU"})
+	@ResponseBody
+	String deleteAccount(Authentication authentication) {
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		me.setDelete(me.getLogin());
+		me.setLogin(" ");
+		loverRepository.saveAndFlush(me);
+
+		return new JavaScriptObjectNotation().
+			withRedirect("/signOut.asp").
+			withResponse(true).
+			toJSONObject().toString();
 	}
 }
