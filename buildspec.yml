@@ -14,5 +14,8 @@ phases:
       - mvn clean package
 artifacts:
   files:
-    - target/executable.jar
+    - .ebextensions/client_max_body_size.config
+    - .ebextensions/nginx/conf.d/client_max_body_size.config
+    - .ebextensions/nginx/nginx.conf
+    - target/application.jar
   discard-paths: yes
