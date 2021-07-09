@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: .platform/nginx/conf.d/client_max_body_size.conf
+  - source: ./client_max_body_size.conf
     destination: /tmp
   - source: ./application.jar
     destination: /tmp
