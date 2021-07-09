@@ -205,6 +205,9 @@ public class Lover implements java.io.Serializable {
 	@Column(name = "shan_chu")
 	private String delete;
 
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "honey")
+	private WithdrawalInfo withdrawalInfo;
+
 	/**
 	 * 默认构造器
 	 */

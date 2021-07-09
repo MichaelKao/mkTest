@@ -37,7 +37,7 @@
 								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">
-								<DIV class="form-group col-8">刪除帳號將無法再恢復，確定要刪除？</DIV>
+								<DIV class="form-group col-8 text-warning">刪除帳號將無法再恢復，確定要刪除？</DIV>
 							</DIV>
 							<DIV class="modal-footer">
 								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">

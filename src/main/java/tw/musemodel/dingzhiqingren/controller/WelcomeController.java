@@ -2149,7 +2149,7 @@ public class WelcomeController {
 		me.setActive(new Date(System.currentTimeMillis()));
 		me = loverService.saveLover(me);
 
-		Document document = historyService.withdrawalDocument(me);
+		Document document = loverService.withdrawalDocument(me, locale);
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.withdrawal",
@@ -2184,6 +2184,50 @@ public class WelcomeController {
 		ModelAndView modelAndView = new ModelAndView("withdrawal");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
+	}
+
+	/**
+	 * 甜心提取車馬費
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/wireTransfer.json")
+	@Secured({"ROLE_YONGHU"})
+	@ResponseBody
+	String wireTransfer(@RequestParam String wireTransferBankCode, @RequestParam String wireTransferBranchCode,
+		@RequestParam String wireTransferAccountName, @RequestParam String wireTransferAccountNumber,
+		Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = loverService.wireTransfer(
+				wireTransferBankCode,
+				wireTransferBranchCode,
+				wireTransferAccountName,
+				wireTransferAccountNumber,
+				me,
+				locale
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
 	}
 
 	/**

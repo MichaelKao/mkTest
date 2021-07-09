@@ -473,10 +473,16 @@ ADD COLUMN"ling_yong_qian"int2 REFERENCES"ling_yong_qian"("id")ON DELETE RESTRIC
 COMMENT ON COLUMN"qing_ren"."nian_shou_ru"IS'男生年收入';
 COMMENT ON COLUMN"qing_ren"."ling_yong_qian"IS'女生期望零用錢';
 
+CREATE TYPE"ti_qu_feng_shi"AS ENUM(
+	'WIRE_TRANSFER',
+	'PAYPAL'
+);
+COMMENT ON TYPE"ti_qu_feng_shi"IS'車馬費提取方式';
+
 /**
  * 甜心提取車馬費資訊
  */
-CREATE TABLE"ti_qu_che_ma_fei"(
+CREATE TABLE"ti_qu_feng_shi_zi_xun"(
 	"id"serial PRIMARY KEY,
 	"honey"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
 	"wire_transfer_bank_code"varchar,
@@ -484,13 +490,32 @@ CREATE TABLE"ti_qu_che_ma_fei"(
 	"wire_transfer_account_name"varchar,
 	"wire_transfer_account_number"varchar
 );
-COMMENT ON TABLE"ti_qu_che_ma_fei"IS'甜心提取車馬費資訊';
+COMMENT ON TABLE"ti_qu_feng_shi_zi_xun"IS'甜心提取車馬費資訊';
+COMMENT ON COLUMN"ti_qu_feng_shi_zi_xun"."id"IS'主鍵';
+COMMENT ON COLUMN"ti_qu_feng_shi_zi_xun"."honey"IS'甜心';
+COMMENT ON COLUMN"ti_qu_feng_shi_zi_xun"."wire_transfer_bank_code"IS'銀行代碼';
+COMMENT ON COLUMN"ti_qu_feng_shi_zi_xun"."wire_transfer_branch_code"IS'分行代碼';
+COMMENT ON COLUMN"ti_qu_feng_shi_zi_xun"."wire_transfer_account_name"IS'戶名';
+COMMENT ON COLUMN"ti_qu_feng_shi_zi_xun"."wire_transfer_account_number"IS'匯款帳號';
+
+/**
+ * 甜心提取等待
+ */
+CREATE TABLE"ti_qu_che_ma_fei"(
+	"id"serial PRIMARY KEY,
+	"honey"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"jin_e"int,
+	"zhuang_tai"boolean,
+	"ti_qu_feng_shi" "ti_qu_feng_shi",
+	"shi_chuo"timestamptz
+);
+COMMENT ON TABLE"ti_qu_che_ma_fei"IS'甜心提取車馬費';
 COMMENT ON COLUMN"ti_qu_che_ma_fei"."id"IS'主鍵';
-COMMENT ON COLUMN"ti_qu_che_ma_fei"."honey"IS'情人';
-COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_bank_code"IS'銀行代碼';
-COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_branch_code"IS'分行代碼';
-COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_account_name"IS'戶名';
-COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_account_number"IS'匯款帳號';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."honey"IS'甜心';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."jin_e"IS'提取金額';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."zhuang_tai"IS'狀態';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."ti_qu_feng_shi"IS'提取方式';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."shi_chuo"IS'時間戳記';
 
 /**
  * 刪除帳號

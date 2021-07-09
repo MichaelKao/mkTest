@@ -51,6 +51,9 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.Role;
 import tw.musemodel.dingzhiqingren.entity.User;
+import tw.musemodel.dingzhiqingren.entity.WithdrawalInfo;
+import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
+import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
 import tw.musemodel.dingzhiqingren.event.SignedUpEvent;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
@@ -64,6 +67,9 @@ import tw.musemodel.dingzhiqingren.repository.LineUserProfileRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
+import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
+import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_FARE;
 
 /**
  * 服务层：情人
@@ -138,6 +144,12 @@ public class LoverService {
 
 	@Autowired
 	private HistoryRepository historyRepository;
+
+	@Autowired
+	private WithdrawalRecordRepository withdrawalRecordRepository;
+
+	@Autowired
+	private WithdrawalInfoRepository withdrawalInfoRepository;
 
 	public List<Lover> loadLovers() {
 		return loverRepository.findAll();
@@ -732,7 +744,7 @@ public class LoverService {
 					servant.toTaipeiZonedDateTime(
 						lover.getActive()
 					).withZoneSameInstant(Servant.ASIA_TAIPEI)
-				).replaceAll("\\+\\d{2}$", ""));
+				));
 			loverElement.appendChild(activeElement);
 		}
 
@@ -1011,5 +1023,150 @@ public class LoverService {
 		}
 
 		return document;
+	}
+
+	public Document withdrawalDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+
+		Long leftPoints = honeyLeftPoints(lover);
+		documentElement.setAttribute(
+			"points",
+			leftPoints.toString()
+		);
+
+		if (withdrawalInfoRepository.countByHoney(lover) > 0) {
+			Element wireElement = document.createElement("wire");
+			documentElement.appendChild(wireElement);
+			wireElement.setAttribute(
+				"bankCode",
+				withdrawalInfoRepository.findByHoney(lover).getWireTransferBankCode()
+			);
+			wireElement.setAttribute(
+				"branchCode",
+				withdrawalInfoRepository.findByHoney(lover).getWireTransferBranchCode()
+			);
+			wireElement.setAttribute(
+				"accountName",
+				withdrawalInfoRepository.findByHoney(lover).getWireTransferAccountName()
+			);
+			wireElement.setAttribute(
+				"accountNumber",
+				withdrawalInfoRepository.findByHoney(lover).getWireTransferAccountNumber()
+			);
+		}
+
+		for (WithdrawalRecord withdrawalRecord : withdrawalRecordRepository.findAllByHoneyOrderByTimestampDesc(lover)) {
+			Element recordElement = document.createElement("record");
+			documentElement.appendChild(recordElement);
+
+			recordElement.setAttribute(
+				"date",
+				DATE_TIME_FORMATTER.format(
+					servant.toTaipeiZonedDateTime(
+						withdrawalRecord.getTimestamp()
+					).withZoneSameInstant(Servant.ASIA_TAIPEI)
+				));
+
+			recordElement.setAttribute(
+				"way",
+				messageSource.getMessage(
+					withdrawalRecord.getWay().toString(),
+					null,
+					locale
+				));
+
+			recordElement.setAttribute(
+				"points",
+				withdrawalRecord.getPoints().toString()
+			);
+
+			if (Objects.nonNull(withdrawalRecord.getStatus())) {
+				recordElement.setAttribute(
+					"status",
+					withdrawalRecord.getStatus().toString()
+				);
+			}
+		}
+
+		return document;
+	}
+
+	/**
+	 * 使用銀行匯款提領車馬費
+	 *
+	 * @param wireTransferBankCode
+	 * @param wireTransferBranchCode
+	 * @param wireTransferAccountName
+	 * @param wireTransferAccountNumber
+	 * @param honey
+	 * @param locale
+	 * @return
+	 */
+	@Transactional
+	public JSONObject wireTransfer(String wireTransferBankCode, String wireTransferBranchCode,
+		String wireTransferAccountName, String wireTransferAccountNumber, Lover honey, Locale locale) {
+		if (Objects.isNull(wireTransferAccountName)) {
+			throw new IllegalArgumentException("wireTransfer.accountNameMustntBeNull");
+		}
+		if (Objects.isNull(wireTransferAccountNumber)) {
+			throw new IllegalArgumentException("wireTransfer.accountNumberMustntBeNull");
+		}
+		if (Objects.isNull(wireTransferBankCode)) {
+			throw new IllegalArgumentException("wireTransfer.bankCodeMustntBeNull");
+		}
+		if (Objects.isNull(wireTransferBranchCode)) {
+			throw new IllegalArgumentException("wireTransfer.branchCodeMustntBeNull");
+		}
+
+		Long leftPoints = honeyLeftPoints(honey);
+		WithdrawalRecord withdrawalRecord = new WithdrawalRecord(honey, leftPoints, WayOfWithdrawal.WIRE_TRANSFER);
+		withdrawalRecordRepository.saveAndFlush(withdrawalRecord);
+
+		WithdrawalInfo withdrawalInfo = null;
+		if (withdrawalInfoRepository.countByHoney(honey) > 0) {
+			withdrawalInfo = withdrawalInfoRepository.findByHoney(honey);
+			withdrawalInfo.setWireTransferAccountName(wireTransferAccountName);
+			withdrawalInfo.setWireTransferAccountNumber(wireTransferAccountNumber);
+			withdrawalInfo.setWireTransferBankCode(wireTransferBankCode);
+			withdrawalInfo.setWireTransferBranchCode(wireTransferBranchCode);
+		} else {
+			withdrawalInfo = new WithdrawalInfo(
+				honey,
+				wireTransferBankCode,
+				wireTransferBranchCode,
+				wireTransferAccountName,
+				wireTransferAccountNumber
+			);
+		}
+		withdrawalInfoRepository.saveAndFlush(withdrawalInfo);
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"wireTransfer.done",
+				null,
+				locale
+			)).
+			withResponse(true).
+			withResult(withdrawalRecord.getTimestamp()).
+			toJSONObject();
+	}
+
+	/**
+	 * 甜心剩餘的可提領車馬費
+	 *
+	 * @param honey
+	 * @return
+	 */
+	@Transactional
+	public Long honeyLeftPoints(Lover honey) {
+		Long sumPoints = historyRepository.sumByPassiveAndBehaviorHearts(honey, BEHAVIOR_FARE);
+		sumPoints = Objects.nonNull(sumPoints) ? -sumPoints : 0;
+		Long withdrawnPoints = withdrawalRecordRepository.sumPoinsByHoney(honey);
+		withdrawnPoints = Objects.nonNull(withdrawnPoints) ? withdrawnPoints : 0;
+
+		Long leftPoints = sumPoints - withdrawnPoints;
+
+		return leftPoints;
 	}
 }

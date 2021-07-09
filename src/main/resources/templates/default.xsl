@@ -112,6 +112,13 @@
 										</SPAN>
 									</A>
 								</LI>
+								<xsl:if test="@female">
+									<LI class="nav-item">
+										<A class="nav-link nav-link-icon" href="/withdrawal.asp">
+											<SPAN>提領車馬費</SPAN>
+										</A>
+									</LI>
+								</xsl:if>
 								<xsl:if test="@male">
 									<LI class="nav-item">
 										<A class="nav-link nav-link-icon" href="/recharge.asp">

@@ -150,7 +150,7 @@ public class HistoryService {
 			String.format(
 				"%s打賞車馬費%d給妳!",
 				initiative.getNickname(),
-				-points
+				points
 			));
 
 		return new JavaScriptObjectNotation().
@@ -926,21 +926,6 @@ public class HistoryService {
 				);
 			}
 		}
-		return document;
-	}
-
-	public Document withdrawalDocument(Lover lover) throws SAXException, IOException, ParserConfigurationException {
-		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-
-		Element pointsElement = document.createElement("points");
-		documentElement.appendChild(pointsElement);
-
-		Long pointsSum = historyRepository.sumByPassiveAndBehaviorHearts(lover, BEHAVIOR_FARE);
-		pointsElement.setTextContent(
-			Objects.nonNull(pointsSum) ? Long.toString(pointsSum) : "0"
-		);
-
 		return document;
 	}
 }
