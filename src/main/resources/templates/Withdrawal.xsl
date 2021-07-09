@@ -30,6 +30,9 @@
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container pt-8 pb-4">
 				<DIV class="text-center">
+					<H3 class="text-primary">
+						<xsl:value-of select="points"/>
+					</H3>
 					<H3 class="text-primary">甜心車馬費提取方式</H3>
 					<DIV>
 						<BUTTON class="btn btn-light text-lg collapseBtn m-1" data-bs-target="#collapse1" data-bs-toggle="collapse" type="button">銀行匯款</BUTTON>

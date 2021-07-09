@@ -2149,7 +2149,7 @@ public class WelcomeController {
 		me.setActive(new Date(System.currentTimeMillis()));
 		me = loverService.saveLover(me);
 
-		Document document = servant.parseDocument();
+		Document document = historyService.withdrawalDocument(me);
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.withdrawal",
@@ -2225,8 +2225,17 @@ public class WelcomeController {
 	@PostMapping(path = "/rate.json")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
-	String rate(@RequestParam Short rate, @RequestParam String comment,
+	String rate(@RequestParam String rate, @RequestParam String comment,
 		@RequestParam UUID whom, Authentication authentication, Locale locale) {
+		if (rate.isBlank() || rate.isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"rate.rateMustntBeNull",
+					null,
+					locale
+				)).
+				withResponse(false).toString();
+		}
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -2241,7 +2250,7 @@ public class WelcomeController {
 			jsonObject = historyService.rate(
 				initiate,
 				passive,
-				rate,
+				Short.parseShort(rate),
 				comment,
 				locale
 			);

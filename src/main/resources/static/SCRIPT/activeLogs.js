@@ -58,36 +58,34 @@ $(document).ready(function () {
 	var $modal = $('#modal');
 	var $rateModal = $('#rateModal');
 	var url;
+	var whom;
 
 	$('.requestLine').click(function () {
 		$modal.modal('show');
 		url = '/stalking.json';
+		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 	});
 	$('.rate').click(function () {
 		$rateModal.modal('show');
 		url = '/rate.json';
+		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 	});
 
-
 	$('BUTTON.confirmBtn').click(function (event) {
-		var whom = $('INPUT[name="whom"]').val();
-		var what = $('TEXTAREA[name="what"]').val();
-		var rate = $('INPUT[name="rating"]:checked').val();
-		var comment = $('TEXTAREA[name="comment"]').val()
-		console.log(url)
-		console.log('whom', $('INPUT[name="whom"]').val())
-		console.log('what', )
-		console.log('rate', $('INPUT[name="rating"]:checked').val())
-		console.log('comment', $('TEXTAREA[name="comment"]').val())
 		event.preventDefault();
-		let confirmBtn = this;
+		var rate = $('INPUT[name="rating"]:checked').val();
+		if (rate === undefined) {
+			rate = null;
+		}
+		console.log(whom)
+		console.log(rate)
 		$.post(
 			url,
 			{
-				whom: $('INPUT[name="whom"]').val(),
+				whom: whom,
 				what: $('TEXTAREA[name="what"]').val(),
-				rate: $('INPUT[name="rating"]:checked').val(),
-				comment: $('TEXTAREA[name="comment"]').val(),
+				rate: rate,
+				comment: $('TEXTAREA[name="comment"]').val()
 			},
 			function (data) {
 				if (data.response) {

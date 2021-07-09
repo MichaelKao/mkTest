@@ -492,12 +492,21 @@ COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_branch_code"IS'分行代碼';
 COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_account_name"IS'戶名';
 COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_account_number"IS'匯款帳號';
 
+/**
+ * 刪除帳號
+ */
 ALTER TABLE"qing_ren"
 ADD COLUMN"shan_chu"varchar;
 COMMENT ON COLUMN"qing_ren"."shan_chu"IS'刪除';
 
+/**
+ * 帳號 NOT NULL 拿掉，以便刪除時改 NULL
+ */
 ALTER TABLE"qing_ren" ALTER COLUMN"zhang_hao" DROP NOT NULL;
 
+/**
+ * 評價放進行為
+ */
 ALTER TYPE"xing_wei" ADD VALUE 'PING_JIA';
 
 /**

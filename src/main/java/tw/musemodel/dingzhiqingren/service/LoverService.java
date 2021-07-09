@@ -9,6 +9,7 @@ import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -44,6 +45,7 @@ import tw.musemodel.dingzhiqingren.entity.Activation;
 import tw.musemodel.dingzhiqingren.entity.Allowance;
 import tw.musemodel.dingzhiqingren.entity.AnnualIncome;
 import tw.musemodel.dingzhiqingren.entity.Country;
+import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.LineUserProfile;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
@@ -57,6 +59,7 @@ import tw.musemodel.dingzhiqingren.repository.ActivationRepository;
 import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
 import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
+import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineUserProfileRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
@@ -85,6 +88,8 @@ public class LoverService {
 			)
 		)).
 		withRegion(Regions.AP_SOUTHEAST_1).build();
+
+	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
@@ -130,6 +135,9 @@ public class LoverService {
 
 	@Autowired
 	private AllowanceRepository allowanceRepository;
+
+	@Autowired
+	private HistoryRepository historyRepository;
 
 	public List<Lover> loadLovers() {
 		return loverRepository.findAll();
@@ -720,12 +728,47 @@ public class LoverService {
 		if (Objects.nonNull(lover.getActive())) {
 			Element activeElement = document.createElement("active");
 			activeElement.setTextContent(
-				Servant.TAIWAN_DATE_TIME_FORMATTER.format(
+				DATE_TIME_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						lover.getActive()
 					).withZoneSameInstant(Servant.ASIA_TAIPEI)
 				).replaceAll("\\+\\d{2}$", ""));
 			loverElement.appendChild(activeElement);
+		}
+
+		List<History> rateList = historyRepository.findByPassiveAndBehavior(lover, History.Behavior.PING_JIA);
+		if (Objects.nonNull(rateList)) {
+			for (History rate : rateList) {
+				Element rateElement = document.createElement("rate");
+				loverElement.appendChild(rateElement);
+				rateElement.setAttribute(
+					"profileImage",
+					String.format(
+						"https://%s/profileImage/%s",
+						servant.STATIC_HOST,
+						rate.getInitiative().getProfileImage()
+					));
+				rateElement.setAttribute(
+					"nickname",
+					rate.getInitiative().getNickname()
+				);
+				rateElement.setAttribute(
+					"time",
+					DATE_TIME_FORMATTER.format(
+						servant.toTaipeiZonedDateTime(
+							rate.getOccurred()
+						).withZoneSameInstant(Servant.ASIA_TAIPEI)
+					).replaceAll("\\+\\d{2}$", "")
+				);
+				rateElement.setAttribute(
+					"rate",
+					rate.getRate().toString()
+				);
+				rateElement.setAttribute(
+					"comment",
+					rate.getComment()
+				);
+			}
 		}
 
 		return document;

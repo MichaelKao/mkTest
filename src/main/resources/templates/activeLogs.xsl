@@ -69,15 +69,15 @@
 							<DIV class="modal-body">
 								<DIV class="form-group col-8">
 									<DIV class="rating d-flex flex-row-reverse justify-content-end">
-										<INPUT class="d-none" id="rating-5" name="rating" required="" type="radio" value="5"/>
+										<INPUT class="d-none" id="rating-5" name="rating" type="radio" value="5"/>
 										<LABEL for="rating-5"></LABEL>
-										<INPUT class="d-none" id="rating-4" name="rating" required="" type="radio" value="4"/>
+										<INPUT class="d-none" id="rating-4" name="rating" type="radio" value="4"/>
 										<LABEL for="rating-4"></LABEL>
-										<INPUT class="d-none" id="rating-3" name="rating" required="" type="radio" value="3"/>
+										<INPUT class="d-none" id="rating-3" name="rating" type="radio" value="3"/>
 										<LABEL for="rating-3"></LABEL>
-										<INPUT class="d-none" id="rating-2" name="rating" required="" type="radio" value="2"/>
+										<INPUT class="d-none" id="rating-2" name="rating" type="radio" value="2"/>
 										<LABEL for="rating-2"></LABEL>
-										<INPUT class="d-none" id="rating-1" name="rating" required="" type="radio" value="1"/>
+										<INPUT class="d-none" id="rating-1" name="rating" type="radio" value="1"/>
 										<LABEL for="rating-1"></LABEL>
 									</DIV>
 									<TEXTAREA class="form-control" name="comment" placeholder="留下評價..." type="text"></TEXTAREA>
@@ -97,8 +97,8 @@
 				<DIV class="d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center mt-3">
 					<DIV class="col-12 col-md-8 card card-frame mb-3 mx-2">
 						<xsl:for-each select="history">
-							<INPUT name="whom" type="hidden" value="{@identifier}"/>
 							<DIV class="card-body d-flex align-items-center justify-content-start py-0">
+								<INPUT name="whom" type="hidden" value="{@identifier}"/>
 								<DIV>
 									<A href="/profile/{@identifier}/">
 										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="70"/>
@@ -116,7 +116,6 @@
 									</DIV>
 									<xsl:if test="@decideButton">
 										<DIV class="ms-0 ms-md-auto buttons">
-											<INPUT name="whom" type="hidden" value="{@identifier}"/>
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 accept" type="button">接受</BUTTON>
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 refuse" type="button">拒絕</BUTTON>
 										</DIV>

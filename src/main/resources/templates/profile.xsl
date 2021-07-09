@@ -191,6 +191,35 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</DIV>
+			<xsl:if test="rate">
+				<DIV class="moreThan768 mt-3">
+					<DIV class="text-primary h5">評價</DIV>
+					<xsl:for-each select="rate">
+						<DIV class="d-flex align-items-center">
+							<DIV class="col-3">
+								<IMG class="border-radius-md" src="{@profileImage}" width="50"/>
+							</DIV>
+							<DIV>
+								<DIV class="star text-lg" data-star="{@rate}"></DIV>
+								<DIV class="text-xs">
+									<xsl:value-of select="@nickname"/>
+								</DIV>
+								<DIV class="text-sm">
+									<xsl:choose>
+										<xsl:when test="(/document/@female) or (/document/@vip) or (/document/@me)">
+											<xsl:value-of select="@comment"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<SPAN>升級 VIP 查看</SPAN>
+										</xsl:otherwise>
+									</xsl:choose>
+								</DIV>
+							</DIV>
+						</DIV>
+						<HR class="horizontal dark my-2"/>
+					</xsl:for-each>
+				</DIV>
+			</xsl:if>
 		</DIV>
 		<DIV class="col-md-4 ms-4">
 			<DIV class="d-flex align-items-center">
@@ -288,7 +317,7 @@
 					</SPAN>
 				</DIV>
 			</xsl:if>
-			<HR class="horizontal dark my-4"/>
+			<HR class="horizontal dark my-3"/>
 			<DIV class="mb-2">
 				<DIV class="font-weight-bold text-lg">關於我：</DIV>
 				<DIV class="aboutMe">
@@ -301,6 +330,7 @@
 					<xsl:value-of disable-output-escaping="yes" select="idealConditions"/>
 				</DIV>
 			</DIV>
+			<DIV class="lessThan768"></DIV>
 		</DIV>
 	</xsl:template>
 </xsl:stylesheet>
