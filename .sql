@@ -507,6 +507,7 @@ CREATE TABLE"ti_qu_che_ma_fei"(
 	"jin_e"int,
 	"zhuang_tai"boolean,
 	"ti_qu_feng_shi" "ti_qu_feng_shi",
+	"shi_bai_yuan_yin"varchar
 	"shi_chuo"timestamptz
 );
 COMMENT ON TABLE"ti_qu_che_ma_fei"IS'甜心提取車馬費';
@@ -515,6 +516,7 @@ COMMENT ON COLUMN"ti_qu_che_ma_fei"."honey"IS'甜心';
 COMMENT ON COLUMN"ti_qu_che_ma_fei"."jin_e"IS'提取金額';
 COMMENT ON COLUMN"ti_qu_che_ma_fei"."zhuang_tai"IS'狀態';
 COMMENT ON COLUMN"ti_qu_che_ma_fei"."ti_qu_feng_shi"IS'提取方式';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."shi_bai_yuan_yin"IS'失敗原因';
 COMMENT ON COLUMN"ti_qu_che_ma_fei"."shi_chuo"IS'時間戳記';
 
 /**

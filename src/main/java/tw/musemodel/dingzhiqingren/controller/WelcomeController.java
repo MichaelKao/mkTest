@@ -151,6 +151,22 @@ public class WelcomeController {
 				me.getIdentifier().toString()
 			);
 
+			// 身分
+			boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+			boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+			if (isAlmighty) {
+				documentElement.setAttribute(
+					"almighty",
+					null
+				);
+			}
+			if (isFinance) {
+				documentElement.setAttribute(
+					"finance",
+					null
+				);
+			}
+
 			// 通知數、顯示的 lovers 資料
 			int announcement = 0;
 			List<Lover> lovers = new ArrayList<Lover>();
@@ -779,6 +795,22 @@ public class WelcomeController {
 			locale
 		));
 
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
+
 		// 確認性別
 		Boolean meIsMale = loverService.isMale(me);
 
@@ -832,6 +864,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+
 		// 看頁面的時間
 		me.setActive(new Date(System.currentTimeMillis()));
 		me = loverService.saveLover(me);
@@ -846,6 +879,22 @@ public class WelcomeController {
 			null,
 			locale
 		));
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
 
 		// 確認性別
 		Boolean meIsMale = loverService.isMale(me);
@@ -933,6 +982,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+
 		// 看頁面的時間
 		me.setActive(new Date(System.currentTimeMillis()));
 		me = loverService.saveLover(me);
@@ -944,6 +994,22 @@ public class WelcomeController {
 			null,
 			locale
 		));
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
 
 		// 確認性別
 		Boolean meIsMale = loverService.isMale(me);
@@ -1115,6 +1181,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+
 		// 看頁面的時間
 		me.setActive(new Date(System.currentTimeMillis()));
 		me = loverService.saveLover(me);
@@ -1126,6 +1193,22 @@ public class WelcomeController {
 			null,
 			locale
 		));
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
 
 		// 確認性別
 		Boolean meIsMale = loverService.isMale(me);
@@ -1253,6 +1336,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+
 		// 看頁面的時間
 		me.setActive(new Date(System.currentTimeMillis()));
 		me = loverService.saveLover(me);
@@ -1264,6 +1348,22 @@ public class WelcomeController {
 			null,
 			locale
 		));
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
 
 		// 確認性別
 		Boolean meIsMale = loverService.isMale(me);
@@ -1361,6 +1461,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+
 		// 看頁面的時間
 		me.setActive(new Date(System.currentTimeMillis()));
 		me = loverService.saveLover(me);
@@ -1372,6 +1473,22 @@ public class WelcomeController {
 			null,
 			locale
 		));
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
 
 		// 確認性別
 		Boolean meIsMale = loverService.isMale(me);
@@ -1549,6 +1666,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+
 		// 看頁面的時間
 		me.setActive(new Date(System.currentTimeMillis()));
 		me = loverService.saveLover(me);
@@ -1560,6 +1678,22 @@ public class WelcomeController {
 			null,
 			locale
 		));
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
 
 		// 確認性別
 		Boolean meIsMale = loverService.isMale(me);
@@ -1626,6 +1760,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+
 		// 看頁面的時間
 		me.setActive(new Date(System.currentTimeMillis()));
 		me = loverService.saveLover(me);
@@ -1638,6 +1773,22 @@ public class WelcomeController {
 			null,
 			locale
 		));
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
 
 		// 確認性別
 		Boolean meIsMale = loverService.isMale(me);
@@ -1718,6 +1869,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+
 		// 看頁面的時間
 		me.setActive(new Date(System.currentTimeMillis()));
 		me = loverService.saveLover(me);
@@ -1729,6 +1881,22 @@ public class WelcomeController {
 			null,
 			locale
 		));
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
 
 		// 確認性別
 		Boolean meIsMale = loverService.isMale(me);
@@ -2050,6 +2218,21 @@ public class WelcomeController {
 			Lover me = loverService.loadByUsername(
 				authentication.getName()
 			);
+			// 身分
+			boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+			boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+			if (isAlmighty) {
+				documentElement.setAttribute(
+					"almighty",
+					null
+				);
+			}
+			if (isFinance) {
+				documentElement.setAttribute(
+					"finance",
+					null
+				);
+			}
 			// 看頁面的時間
 			me.setActive(new Date(System.currentTimeMillis()));
 			me = loverService.saveLover(me);
@@ -2102,6 +2285,21 @@ public class WelcomeController {
 			Lover me = loverService.loadByUsername(
 				authentication.getName()
 			);
+			// 身分
+			boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+			boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+			if (isAlmighty) {
+				documentElement.setAttribute(
+					"almighty",
+					null
+				);
+			}
+			if (isFinance) {
+				documentElement.setAttribute(
+					"finance",
+					null
+				);
+			}
 			// 看頁面的時間
 			me.setActive(new Date(System.currentTimeMillis()));
 			me = loverService.saveLover(me);
@@ -2136,6 +2334,7 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/withdrawal.asp")
+	@Secured({"ROLE_YONGHU"})
 	ModelAndView withdrawal(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
@@ -2145,6 +2344,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+
 		// 看頁面的時間
 		me.setActive(new Date(System.currentTimeMillis()));
 		me = loverService.saveLover(me);
@@ -2156,6 +2356,22 @@ public class WelcomeController {
 			null,
 			locale
 		));
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
 
 		// 確認性別
 		Boolean meIsMale = loverService.isMale(me);

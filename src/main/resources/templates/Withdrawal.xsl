@@ -30,7 +30,7 @@
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container pt-8 pb-4">
 				<DIV class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-					<DIV class="modal-dialog" role="document">
+					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
 								<H5 class="modal-title" id="exampleModalLongTitle">請選擇提領方式</H5>
@@ -125,7 +125,7 @@
 				<DIV class="d-flex justify-content-center align-items-baseline">
 					<DIV>目前可提領的車馬費：<xsl:value-of select="@points"/></DIV>
 					<xsl:if test="@points != '0'">
-						<BUTTON class="btn btn-block btn-default ms-2 p-2" data-bs-toggle="modal" data-bs-target="#exampleModalLong" type="button">提領</BUTTON>
+						<BUTTON class="btn btn-block btn-light ms-2 p-2" data-bs-toggle="modal" data-bs-target="#exampleModalLong" type="button">提領</BUTTON>
 					</xsl:if>
 				</DIV>
 				<DIV class="card col-md-8 mx-auto">

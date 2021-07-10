@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.entity.Country;
+import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Role;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
@@ -226,5 +227,16 @@ public class Servant {
 
 	public ZonedDateTime toTaipeiZonedDateTime(Date date) {
 		return Servant.this.toTaipeiZonedDateTime(date.toInstant());
+	}
+
+	/**
+	 * 確認身分
+	 *
+	 * @param zhangHao
+	 * @param roleName
+	 * @return
+	 */
+	public boolean hasRole(Lover lover, String roleName) {
+		return Objects.nonNull(lover) && lover.getRoles().contains(roleRepository.findOneByTextualRepresentation(roleName));
 	}
 }

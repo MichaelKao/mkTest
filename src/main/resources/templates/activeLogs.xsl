@@ -33,8 +33,8 @@
 				<H4 class="text-primary text-center">
 					<xsl:value-of select="@title"/>
 				</H4>
-				<DIV class="modal fade" id="modal" role="dialog" tabindex="-1">
-					<DIV class="modal-dialog" role="document">
+				<DIV class="modal fade" id="modal">
+					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
 								<H5 class="modal-title">和女生要求Line</H5>
@@ -59,8 +59,8 @@
 						</DIV>
 					</DIV>
 				</DIV>
-				<DIV class="modal fade" id="rateModal" role="dialog" tabindex="-1">
-					<DIV class="modal-dialog" role="document">
+				<DIV class="modal fade" id="rateModal">
+					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
 								<H5 class="modal-title">給予對方評價</H5>

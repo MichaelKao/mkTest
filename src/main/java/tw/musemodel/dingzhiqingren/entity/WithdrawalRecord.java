@@ -64,6 +64,9 @@ public class WithdrawalRecord implements java.io.Serializable {
 	@Type(type = "pgsql_enum")
 	private WayOfWithdrawal way;
 
+	@Column(name = "shi_bai_yuan_yin")
+	private String failReason;
+
 	@Column(name = "shi_chuo", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timestamp;
@@ -190,6 +193,20 @@ public class WithdrawalRecord implements java.io.Serializable {
 	 */
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	/**
+	 * @return 失敗原因
+	 */
+	public String getFailReason() {
+		return failReason;
+	}
+
+	/**
+	 * @param failReason 失敗原因
+	 */
+	public void setFailReason(String failReason) {
+		this.failReason = failReason;
 	}
 
 	/**

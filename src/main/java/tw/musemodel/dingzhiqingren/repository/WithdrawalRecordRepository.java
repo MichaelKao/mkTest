@@ -19,4 +19,6 @@ public interface WithdrawalRecordRepository extends JpaRepository<WithdrawalReco
 	public Long sumPoinsByHoney(Lover honey);
 
 	public List<WithdrawalRecord> findAllByHoneyOrderByTimestampDesc(Lover honey);
+
+	public List<WithdrawalRecord> findAllByOrderByTimestampDesc();
 }

@@ -34,8 +34,8 @@
 					<xsl:apply-templates select="lover"/>
 				</DIV>
 				<xsl:if test="@male">
-					<DIV class="modal fade" id="giftModal" role="dialog" tabindex="-1">
-						<DIV class="modal-dialog" role="document">
+					<DIV class="modal fade" id="giftModal">
+						<DIV class="modal-dialog modal-dialog-centered">
 							<DIV class="modal-content">
 								<DIV class="modal-header">
 									<H5 class="modal-title">請輸入</H5>
@@ -59,8 +59,8 @@
 						</DIV>
 					</DIV>
 				</xsl:if>
-				<DIV class="modal fade" id="modal" role="dialog" tabindex="-1">
-					<DIV class="modal-dialog" role="document">
+				<DIV class="modal fade" id="modal">
+					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
 								<xsl:choose>

@@ -92,6 +92,26 @@
 										</DIV>
 									</DIV>
 								</LI>
+								<xsl:if test="@almighty or @finance">
+									<LI class="nav-item dropdown dropdown-hover">
+										<A class="nav-link cursor-pointer text-primary" id="dropdownMenuPages" data-bs-toggle="dropdown">
+											<SPAN class="me-1">後台</SPAN>
+											<I class="fas fa-chevron-down"></I>
+										</A>
+										<DIV class="dropdown-menu dropdown-menu-animation p-3 border-radius-lg mt-0 mt-lg-3">
+											<DIV class="d-none d-lg-block">
+												<A class="dropdown-item border-radius-md" href="/dashboard/withdrawal.asp">
+													<SPAN>甜心車馬費紀錄</SPAN>
+												</A>
+											</DIV>
+											<DIV class="d-lg-none">
+												<A class="dropdown-item border-radius-md" href="/dashboard/withdrawal.asp">
+													<SPAN>甜心車馬費紀錄</SPAN>
+												</A>
+											</DIV>
+										</DIV>
+									</LI>
+								</xsl:if>
 								<xsl:if test="@signIn">
 									<LI class="nav-item d-none d-lg-block">
 										<A class="nav-link nav-link-icon" href="/activeLogs.asp">
