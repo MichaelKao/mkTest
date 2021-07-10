@@ -5,3 +5,5 @@ files:
     destination: /tmp
   - source: ./application.jar
     destination: /tmp
+  - source: ./appspec.yml
+    destination: /tmp
