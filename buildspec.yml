@@ -20,6 +20,7 @@ artifacts:
     # - .platform/client_max_body_size.config
     # - .platform/nginx/nginx.conf
     # - .platform/nginx/conf.d/client_max_body_size.conf
+    - .platform/hooks/prebuild/client_max_body_size.sh
     # - Procfile
     - target/application.jar
   discard-paths: yes
