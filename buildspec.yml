@@ -14,13 +14,6 @@ phases:
       - mvn clean package
 artifacts:
   files:
-    # - .ebextensions/nginx/nginx.conf
-    # - .ebextensions/nginx/conf.d/client_max_body_size.conf
-    # - .ebextensions/proxy.config
-    # - .platform/client_max_body_size.config
-    # - .platform/nginx/nginx.conf
-    # - .platform/nginx/conf.d/client_max_body_size.conf
-    - .platform/hooks/prebuild/client_max_body_size.sh
-    # - Procfile
+    - .platform/hooks/postdeploy/client_max_body_size.sh
     - target/application.jar
   discard-paths: yes
