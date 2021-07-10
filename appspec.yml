@@ -1,9 +1,0 @@
-version: 0.0
-os: linux
-files:
-  - source: ./client_max_body_size.conf
-    destination: /var/proxy/staging/nginx/conf.d
-  - source: ./application.jar
-    destination: /tmp
-  - source: ./appspec.yml
-    destination: /tmp
