@@ -197,7 +197,7 @@ public class Servant {
 	 * @return HTML 语句
 	 */
 	public String markdownToHtml(String markdown) {
-		return HtmlRenderer.builder().build().render(
+		return HtmlRenderer.builder().softbreak("<br/>").build().render(
 			Parser.builder().build().parse(
 				markdown
 			)

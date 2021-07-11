@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -47,9 +48,11 @@ import tw.musemodel.dingzhiqingren.entity.AnnualIncome;
 import tw.musemodel.dingzhiqingren.entity.Country;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.LineUserProfile;
+import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.Role;
+import tw.musemodel.dingzhiqingren.entity.ServiceTag;
 import tw.musemodel.dingzhiqingren.entity.User;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalInfo;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
@@ -64,8 +67,10 @@ import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineUserProfileRepository;
+import tw.musemodel.dingzhiqingren.repository.LocationRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
+import tw.musemodel.dingzhiqingren.repository.ServiceTagRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
@@ -144,6 +149,12 @@ public class LoverService {
 
 	@Autowired
 	private HistoryRepository historyRepository;
+
+	@Autowired
+	private LocationRepository locationRepository;
+
+	@Autowired
+	private ServiceTagRepository serviceTagRepository;
 
 	@Autowired
 	private WithdrawalRecordRepository withdrawalRecordRepository;
@@ -565,15 +576,30 @@ public class LoverService {
 			loverElement.appendChild(pictureElement);
 		}
 
-		if (Objects.nonNull(lover.getLocation())) {
-			Element locationElement = document.createElement("location");
-			locationElement.setTextContent(
-				messageSource.getMessage(
-					lover.getLocation().getName(),
-					null,
-					locale
-				));
-			loverElement.appendChild(locationElement);
+		if (Objects.nonNull(lover.getLocations())) {
+			for (Location location : lover.getLocations()) {
+				Element locationElement = document.createElement("location");
+				locationElement.setTextContent(
+					messageSource.getMessage(
+						location.getName(),
+						null,
+						locale
+					));
+				loverElement.appendChild(locationElement);
+			}
+		}
+
+		if (Objects.nonNull(lover.getServices())) {
+			for (ServiceTag service : lover.getServices()) {
+				Element serviceElement = document.createElement("service");
+				serviceElement.setTextContent(
+					messageSource.getMessage(
+						service.getName(),
+						null,
+						locale
+					));
+				loverElement.appendChild(serviceElement);
+			}
 		}
 
 		if (Objects.nonNull(lover.getNickname())) {
@@ -923,6 +949,48 @@ public class LoverService {
 			loverElement.appendChild(drinkingElement);
 		}
 
+		for (Location location : locationRepository.findAll()) {
+			Element locationElement = document.createElement("location");
+			locationElement.setTextContent(
+				messageSource.getMessage(
+					location.getName(),
+					null,
+					locale
+				));
+			locationElement.setAttribute(
+				"locationID", location.getId().toString()
+			);
+			for (Location loc : lover.getLocations()) {
+				if (Objects.equals(loc, location)) {
+					locationElement.setAttribute(
+						"locationSelected", ""
+					);
+				}
+			}
+			loverElement.appendChild(locationElement);
+		}
+
+		for (ServiceTag service : serviceTagRepository.findAll()) {
+			Element serviceElement = document.createElement("service");
+			serviceElement.setTextContent(
+				messageSource.getMessage(
+					service.getName(),
+					null,
+					locale
+				));
+			serviceElement.setAttribute(
+				"serviceID", service.getId().toString()
+			);
+			for (ServiceTag ser : lover.getServices()) {
+				if (Objects.equals(ser, service)) {
+					serviceElement.setAttribute(
+						"serviceSelected", ""
+					);
+				}
+			}
+			loverElement.appendChild(serviceElement);
+		}
+
 		if (lover.getGender()) {
 			for (AnnualIncome annualIncome : annualIncomeRepository.findAllByOrderByIdAsc()) {
 				Element annualIncomeElement = document.createElement("annualIncome");
@@ -1168,5 +1236,64 @@ public class LoverService {
 		Long leftPoints = sumPoints - withdrawnPoints;
 
 		return leftPoints;
+	}
+
+	/**
+	 * 更新地點
+	 *
+	 * @param honey
+	 * @return
+	 */
+	@Transactional
+	public JSONObject updateLocation(Location location, Lover honey) {
+
+		Set<Location> locations = honey.getLocations();
+		for (Location loc : locations) {
+			if (Objects.equals(loc, location)) {
+				locations.remove(loc);
+				honey.setLocations(locations);
+				loverRepository.saveAndFlush(honey);
+				return new JavaScriptObjectNotation().
+					withResponse(true).
+					toJSONObject();
+			}
+		}
+
+		locations.add(location);
+		honey.setLocations(locations);
+		loverRepository.saveAndFlush(honey);
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			toJSONObject();
+	}
+
+	/**
+	 * 更新服務
+	 *
+	 * @param location
+	 * @param honey
+	 * @return
+	 */
+	@Transactional
+	public JSONObject updateService(ServiceTag service, Lover honey) {
+
+		Set<ServiceTag> services = honey.getServices();
+		for (ServiceTag ser : services) {
+			if (Objects.equals(ser, service)) {
+				services.remove(ser);
+				honey.setServices(services);
+				loverRepository.saveAndFlush(honey);
+				return new JavaScriptObjectNotation().
+					withResponse(true).
+					toJSONObject();
+			}
+		}
+
+		services.add(service);
+		honey.setServices(services);
+		loverRepository.saveAndFlush(honey);
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			toJSONObject();
 	}
 }

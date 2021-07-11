@@ -227,9 +227,6 @@
 					<xsl:value-of select="nickname"/>
 				</H3>
 				<DIV class="text-dark text-bold mx-1">
-					<xsl:value-of select="location"/>
-				</DIV>
-				<DIV class="text-dark text-bold mx-1">
 					<xsl:value-of select="age"/>
 				</DIV>
 				<DIV class="text-dark text-bold mx-1">
@@ -249,6 +246,23 @@
 					<xsl:value-of select="active"/>
 				</DIV>
 
+			</DIV>
+			<DIV class="mt-2">
+				<xsl:for-each select="location">
+					<SPAN class="me-1 badge bg-gradient-dark">
+						<xsl:value-of select="."/>
+					</SPAN>
+				</xsl:for-each>
+			</DIV>
+			<DIV class="mt-2">
+				<xsl:for-each select="service">
+					<SPAN class="me-1 badge bg-gradient-primary">
+						<SPAN>#</SPAN>
+						<SPAN>
+							<xsl:value-of select="."/>
+						</SPAN>
+					</SPAN>
+				</xsl:for-each>
 			</DIV>
 			<HR class="horizontal dark my-4"/>
 			<DIV class="mb-2">

@@ -28,9 +28,9 @@ import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 
 /**
- * 控制器：根
+ * 控制器：後台
  *
- * @author p@musemodel.tw
+ * @author m@musemodel.tw
  */
 @Controller
 @RequestMapping("/dashboard")

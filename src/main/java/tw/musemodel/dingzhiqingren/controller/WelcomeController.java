@@ -39,9 +39,11 @@ import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.LineGiven;
+import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.Plan;
+import tw.musemodel.dingzhiqingren.entity.ServiceTag;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.SignUp;
@@ -1099,6 +1101,10 @@ public class WelcomeController {
 		}
 
 		me.setNickname(model.getNickname());
+
+		if (Objects.nonNull(model.getLocation())) {
+			me.setLocation(model.getLocation());
+		}
 
 		if (Objects.nonNull(model.getHeight())) {
 			me.setHeight(model.getHeight());
@@ -2514,6 +2520,70 @@ public class WelcomeController {
 				comment,
 				locale
 			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
+	}
+
+	/**
+	 * 更新服務地區
+	 *
+	 * @param location
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/location.json")
+	@Secured({"ROLE_YONGHU"})
+	@ResponseBody
+	String loaction(@RequestParam Location location, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = loverService.updateLocation(location, me);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
+	}
+
+	@PostMapping(path = "/service.json")
+	@Secured({"ROLE_YONGHU"})
+	@ResponseBody
+	String loaction(@RequestParam ServiceTag service, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = loverService.updateService(service, me);
 		} catch (Exception exception) {
 			jsonObject = new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(

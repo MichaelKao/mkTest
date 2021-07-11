@@ -37,4 +37,42 @@ $(document).ready(function () {
 			);
 		return false;
 	});
+
+	$('INPUT.service').change(function () {
+		let input = this;
+		$.post(
+			'service.json',
+			{
+				service: $(this).val()
+			},
+			function (data) {
+				if (data.response) {
+				} else {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+				}
+			},
+			'json'
+			);
+		return false;
+	});
+
+	$('INPUT.location').change(function () {
+		let input = this;
+		$.post(
+			'location.json',
+			{
+				location: $(this).val()
+			},
+			function (data) {
+				if (data.response) {
+				} else {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+				}
+			},
+			'json'
+			);
+		return false;
+	});
 });

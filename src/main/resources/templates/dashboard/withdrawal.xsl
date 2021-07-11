@@ -102,9 +102,9 @@
 									<LI class="list-group-item border-0 d-flex p-3 mb-2 bg-gray-100 border-radius-lg">
 										<DIV class="d-flex flex-column">
 											<DIV class="mb-3 text-sm h6">
-												<SPAN>
+												<A href="/profile/{@identifier}/">
 													<xsl:value-of select="@name"/>
-												</SPAN>
+												</A>
 												<SPAN class="text-dark font-weight-bold ms-1 text-xs">
 													<xsl:value-of select="@date"/>
 												</SPAN>
@@ -172,9 +172,9 @@
 									<INPUT name="id" type="hidden" value="{@id}"/>
 									<LI class="list-group-item border-0 d-flex p-3 mb-2 bg-gray-100 border-radius-lg">
 										<DIV class="text-sm h6 m-0">
-											<SPAN>
+											<A href="/profile/{@identifier}/">
 												<xsl:value-of select="@name"/>
-											</SPAN>
+											</A>
 											<SPAN class="text-dark font-weight-bold ms-1 text-xs">
 												<xsl:value-of select="@date"/>
 											</SPAN>
@@ -210,9 +210,9 @@
 											<xsl:value-of select="@failReason"/>
 										</DIV>
 										<DIV class="text-sm h6 m-0 d-flex align-items-center">
-											<SPAN>
+											<A href="/profile/{@identifier}/">
 												<xsl:value-of select="@name"/>
-											</SPAN>
+											</A>
 											<SPAN class="text-dark font-weight-bold ms-1 text-xs">
 												<xsl:value-of select="@date"/>
 											</SPAN>

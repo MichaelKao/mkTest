@@ -64,6 +64,11 @@ public class DashboardService {
 			);
 
 			recordElement.setAttribute(
+				"identifier",
+				withdrawalRecord.getHoney().getIdentifier().toString()
+			);
+
+			recordElement.setAttribute(
 				"name",
 				withdrawalRecord.getHoney().getNickname()
 			);
