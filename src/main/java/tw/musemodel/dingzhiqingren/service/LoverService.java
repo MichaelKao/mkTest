@@ -7,7 +7,15 @@ import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.FormatException;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -18,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
@@ -275,6 +284,33 @@ public class LoverService {
 			return null;
 		}
 		return loverRepository.findById(user.getId()).orElseThrow();
+	}
+
+	public JSONObject qrCodeToString(InputStream inputStream, Locale locale) {
+		try {
+			return new JavaScriptObjectNotation().
+				withResult(new QRCodeReader().
+					decode(new BinaryBitmap(
+						new HybridBinarizer(
+							new BufferedImageLuminanceSource(
+								ImageIO.read(inputStream)
+							)
+						)
+					)).
+					getText()
+				).
+				withResponse(true).
+				toJSONObject();
+		} catch (NotFoundException | ChecksumException | FormatException | IOException exception) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"lineFriendInvitation.wrongQRCode",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
 	}
 
 	@Transactional
