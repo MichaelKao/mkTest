@@ -1,7 +1,7 @@
 $(document).ready(function () {
 	$('BUTTON.accept').click(function (event) {
 		event.preventDefault();
-		var whom = $(this).closest('DIV.buttons').find('INPUT').val();
+		var whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 
 		$.post(
 			"/stalked.json",
@@ -31,7 +31,7 @@ $(document).ready(function () {
 	});
 	$('BUTTON.refuse').click(function (event) {
 		event.preventDefault();
-		var whom = $(this).closest('DIV.buttons').find('INPUT').val();
+		var whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 
 		$.post(
 			"/notStalked.json",
