@@ -29,15 +29,15 @@
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container py-7">
-				<DIV class="modal fade" id="modal" role="dialog" tabindex="-1">
-					<DIV class="modal-dialog" role="document">
+				<DIV class="modal fade" id="modal">
+					<DIV class="modal-dialog modal-dialog-centered" role="document">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
 								<H5 class="modal-title">提醒！</H5>
 								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">
-								<DIV class="form-group col-8">刪除帳號將無法再恢復，確定要刪除？</DIV>
+								<DIV class="form-group col-8 text-warning">刪除帳號將無法再恢復，確定要刪除？</DIV>
 							</DIV>
 							<DIV class="modal-footer">
 								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
@@ -218,6 +218,40 @@
 							<TEXTAREA class="form-control" id="greeting" name="greeting" required="" rows="4">
 								<xsl:value-of select="greeting"/>
 							</TEXTAREA>
+						</DIV>
+					</DIV>
+					<DIV class="col-md-12 mb-3">
+						<LABEL>服務標籤</LABEL>
+						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
+							<xsl:for-each select="service">
+								<DIV class="form-check ms-2">
+									<INPUT class="form-check-input service" id="service{@serviceID}" type="checkbox" value="{@serviceID}">
+										<xsl:if test="@serviceSelected">
+											<xsl:attribute name="checked"/>
+										</xsl:if>
+									</INPUT>
+									<LABEL class="custom-control-label" for="service{@serviceID}">
+										<xsl:value-of select="."/>
+									</LABEL>
+								</DIV>
+							</xsl:for-each>
+						</DIV>
+					</DIV>
+					<DIV class="col-md-12 mb-3">
+						<LABEL>服務地區</LABEL>
+						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
+							<xsl:for-each select="location">
+								<DIV class="form-check ms-2">
+									<INPUT class="form-check-input location" id="location{@locationID}" type="checkbox" value="{@locationID}">
+										<xsl:if test="@locationSelected">
+											<xsl:attribute name="checked"/>
+										</xsl:if>
+									</INPUT>
+									<LABEL class="custom-control-label" for="location{@locationID}">
+										<xsl:value-of select="."/>
+									</LABEL>
+								</DIV>
+							</xsl:for-each>
 						</DIV>
 					</DIV>
 				</DIV>

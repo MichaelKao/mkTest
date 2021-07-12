@@ -42,11 +42,17 @@
 				</DIV>
 				<DIV class="card col-11 col-md-8 col-lg-6 mx-auto mt-3">
 					<DIV class="card-body pt-2">
-						<DIV class="h3 d-block text-darker my-2">馬上升級!</DIV>
-						<DIV id="ECPayPayment"></DIV>
-						<FORM action="" method="post" name="payment">
-							<BUTTON class="btn btn-outline-info btn-sm h6 text-info px-3 m-0" type="submit">付款</BUTTON>
-						</FORM>
+						<xsl:if test="not(@vip)">
+							<DIV class="h3 d-block text-darker my-2">馬上升級!</DIV>
+							<DIV id="ECPayPayment"></DIV>
+							<FORM action="" method="post" name="payment">
+								<BUTTON class="btn btn-outline-info btn-sm h6 text-info px-3 m-0" type="submit">付款</BUTTON>
+							</FORM>
+						</xsl:if>
+						<xsl:if test="@vip">
+							<DIV class="h3 d-block text-darker my-2">取消 VIP</DIV>
+							<BUTTON class="btn btn-primary" type="button">取消</BUTTON>
+						</xsl:if>
 					</DIV>
 				</DIV>
 			</DIV>

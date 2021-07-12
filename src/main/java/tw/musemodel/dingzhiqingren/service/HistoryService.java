@@ -108,6 +108,8 @@ public class HistoryService {
 	 */
 	public static final Behavior BEHAVIOR_PEEK = Behavior.KAN_GUO_WO;
 
+	public static final Behavior BEHAVIOR_RATE = Behavior.PING_JIA;
+
 	/**
 	 * 车马费(男对女)
 	 *
@@ -138,7 +140,7 @@ public class HistoryService {
 			initiative,
 			passive,
 			BEHAVIOR_FARE,
-			points
+			(short) -points
 		);
 		history = historyRepository.saveAndFlush(history);
 
@@ -490,6 +492,54 @@ public class HistoryService {
 			toJSONObject();
 	}
 
+	/**
+	 * 星級評價
+	 *
+	 * @param initiative
+	 * @param passive
+	 * @return
+	 */
+	@Transactional
+	public JSONObject rate(Lover initiative, Lover passive, Short rate, String comment, Locale locale) {
+		if (Objects.isNull(initiative)) {
+			throw new IllegalArgumentException("rate.initiativeMustntBeNull");
+		}
+		if (Objects.isNull(passive)) {
+			throw new IllegalArgumentException("rate.passiveMustntBeNull");
+		}
+		if (Objects.equals(initiative, passive)) {
+			throw new RuntimeException("rate.mustBeDifferent");
+		}
+		if (Objects.equals(initiative.getGender(), passive.getGender())) {
+			throw new RuntimeException("rate.mustBeStraight");
+		}
+		if (Objects.isNull(rate)) {
+			throw new RuntimeException("rate.rateMustntBeNull");
+		}
+		if (comment.isBlank() || comment.isEmpty()) {
+			throw new RuntimeException("rate.commentMustntBeNull");
+		}
+
+		History history = new History(
+			initiative,
+			passive,
+			BEHAVIOR_RATE
+		);
+		history.setRate(rate);
+		history.setComment(comment);
+		historyRepository.saveAndFlush(history);
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"rate.done",
+				null,
+				locale
+			)).
+			withResponse(true).
+			withResult(history.getOccurred()).
+			toJSONObject();
+	}
+
 	@Transactional(readOnly = true)
 	public Long points(Lover lover) {
 		if (Objects.isNull(lover)) {
@@ -556,6 +606,9 @@ public class HistoryService {
 			String identifier = null;
 			String profileImage = null;
 			String message = null;
+
+			Lover initiative = activeLogs.getInitiative();
+			Lover passive = activeLogs.getPassive();
 
 			Element historyElement = document.createElement("history");
 			documentElement.appendChild(historyElement);
@@ -704,6 +757,13 @@ public class HistoryService {
 						"addLineButton",
 						activeLogs.getInitiative().getInviteMeAsLineFriend()
 					);
+					if (Objects.isNull(
+						historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(passive, initiative, BEHAVIOR_RATE))) {
+						historyElement.setAttribute(
+							"rateButton",
+							null
+						);
+					}
 				}
 				if (!isMale) {
 					profileImage = passiveProfileImage;
@@ -714,11 +774,14 @@ public class HistoryService {
 						passiveNickname,
 						"給出 Line"
 					);
+					if (Objects.isNull(
+						historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(initiative, passive, BEHAVIOR_RATE))) {
+						historyElement.setAttribute(
+							"rateButton",
+							null
+						);
+					}
 				}
-				historyElement.setAttribute(
-					"rateButton",
-					null
-				);
 				historyElement.setAttribute(
 					"profileImage",
 					String.format(
@@ -783,10 +846,17 @@ public class HistoryService {
 						"向您打招呼：",
 						activeLogs.getGreeting()
 					);
-					historyElement.setAttribute(
-						"requestLineButton",
-						null
-					);
+					LineGiven lineGiven = null;
+					if (Objects.nonNull(lineGivenRepository.findByFemaleAndMale(initiative, passive))) {
+						lineGiven = lineGivenRepository.findByFemaleAndMale(initiative, passive);
+					}
+
+					if (Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse()) {
+						historyElement.setAttribute(
+							"requestLineButton",
+							null
+						);
+					}
 				}
 				if (!isMale) {
 					profileImage = passiveProfileImage;

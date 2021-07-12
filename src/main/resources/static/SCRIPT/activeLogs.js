@@ -56,27 +56,43 @@ $(document).ready(function () {
 	});
 
 	var $modal = $('#modal');
-	var rqBtn;
+	var $rateModal = $('#rateModal');
+	var url;
+	var whom;
 
 	$('.requestLine').click(function () {
 		$modal.modal('show');
-		rqBtn = this;
+		url = '/stalking.json';
+		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
+	});
+	$('.rate').click(function () {
+		$rateModal.modal('show');
+		url = '/rate.json';
+		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 	});
 
 	$('BUTTON.confirmBtn').click(function (event) {
 		event.preventDefault();
-		let confirmBtn = this;
+		var rate = $('INPUT[name="rating"]:checked').val();
+		if (rate === undefined) {
+			rate = null;
+		}
+		console.log(whom)
+		console.log(rate)
 		$.post(
-			'/stalking.json',
+			url,
 			{
-				whom: $(rqBtn).siblings().val(),
-				what: $('TEXTAREA[name="what"]').val()
+				whom: whom,
+				what: $('TEXTAREA[name="what"]').val(),
+				rate: rate,
+				comment: $('TEXTAREA[name="comment"]').val()
 			},
 			function (data) {
 				if (data.response) {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');
 					$modal.modal('hide');
+					$rateModal.modal('hide');
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');

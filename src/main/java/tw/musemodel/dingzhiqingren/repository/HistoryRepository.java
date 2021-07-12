@@ -34,6 +34,9 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 	@Query("SELECT SUM(h.points) FROM History h WHERE h.initiative = :initiative")
 	public Long sumByInitiativeHearts(Lover initiative);
 
+	@Query("SELECT SUM(h.points) FROM History h WHERE h.passive = :passive AND h.behavior = :behavior")
+	public Long sumByPassiveAndBehaviorHearts(Lover passive, Behavior behavior);
+
 	public List<History> findByInitiativeAndBehaviorNot(Lover initiative, Behavior behavior);
 
 	public List<History> findByPassiveAndBehaviorNot(Lover passive, Behavior behavior);
