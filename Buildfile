@@ -1,1 +1,1 @@
-postdeploy: /var/app/current/client_max_body_size.sh
+build: mvn assembly:assembly -DdescriptorId=jar-with-dependencies
