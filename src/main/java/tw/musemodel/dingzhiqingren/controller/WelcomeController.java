@@ -2596,4 +2596,34 @@ public class WelcomeController {
 		}
 		return jsonObject.toString();
 	}
+
+	@PostMapping(path = "/uploadIdentity")
+	@Secured({"ROLE_YONGHU"})
+	@ResponseBody
+	String uploadIdentity(@RequestParam("file") MultipartFile multipartFile, Authentication authentication, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		amazonWebServices.uploadPhotoToS3Bucket(
+			multipartFile,
+			me.getId().toString(),
+			"/identity"
+		);
+
+		me.setCertification(Boolean.FALSE);
+		loverRepository.saveAndFlush(me);
+
+		return new JavaScriptObjectNotation().
+			withReason(
+				messageSource.getMessage(
+					"uploadIdentity.done",
+					null,
+					locale
+				)).
+			withResponse(true).
+			withResult(me.toString()).
+			toJSONObject().toString();
+	}
 }

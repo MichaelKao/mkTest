@@ -224,6 +224,9 @@ public class Lover implements java.io.Serializable {
 	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<ServiceTag> services;
 
+	@Column(name = "an_xin")
+	private Boolean certification;
+
 	/**
 	 * 默认构造器
 	 */
@@ -784,6 +787,20 @@ public class Lover implements java.io.Serializable {
 	 */
 	public void setServices(Set<ServiceTag> services) {
 		this.services = services;
+	}
+
+	/**
+	 * @return 安心認證
+	 */
+	public Boolean getCertification() {
+		return certification;
+	}
+
+	/**
+	 * @param certification 安心認證
+	 */
+	public void setCertification(Boolean certification) {
+		this.certification = certification;
 	}
 
 	/**

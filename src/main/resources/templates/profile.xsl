@@ -200,20 +200,22 @@
 								<IMG class="border-radius-md" src="{@profileImage}" width="50"/>
 							</DIV>
 							<DIV>
-								<DIV class="star text-lg" data-star="{@rate}"></DIV>
-								<DIV class="text-xs">
-									<xsl:value-of select="@nickname"/>
-								</DIV>
-								<DIV class="text-sm">
-									<xsl:choose>
-										<xsl:when test="(/document/@female) or (/document/@vip) or (/document/@me)">
+								<xsl:choose>
+									<xsl:when test="(/document/@female) or (/document/@vip) or (/document/@me)">
+										<DIV class="star text-lg" data-star="{@rate}"></DIV>
+										<DIV class="text-xs">
+											<xsl:value-of select="@nickname"/>
+										</DIV>
+										<DIV class="text-sm">
 											<xsl:value-of select="@comment"/>
-										</xsl:when>
-										<xsl:otherwise>
-											<SPAN>升級 VIP 查看</SPAN>
-										</xsl:otherwise>
-									</xsl:choose>
-								</DIV>
+										</DIV>
+									</xsl:when>
+									<xsl:otherwise>
+										<SPAN>升級 VIP 查看</SPAN>
+									</xsl:otherwise>
+								</xsl:choose>
+
+
 							</DIV>
 						</DIV>
 						<HR class="horizontal dark my-2"/>
