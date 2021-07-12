@@ -34,8 +34,8 @@
 					<xsl:apply-templates select="lover"/>
 				</DIV>
 				<xsl:if test="@male">
-					<DIV class="modal fade" id="giftModal" role="dialog" tabindex="-1">
-						<DIV class="modal-dialog" role="document">
+					<DIV class="modal fade" id="giftModal">
+						<DIV class="modal-dialog modal-dialog-centered">
 							<DIV class="modal-content">
 								<DIV class="modal-header">
 									<H5 class="modal-title">請輸入</H5>
@@ -59,8 +59,8 @@
 						</DIV>
 					</DIV>
 				</xsl:if>
-				<DIV class="modal fade" id="modal" role="dialog" tabindex="-1">
-					<DIV class="modal-dialog" role="document">
+				<DIV class="modal fade" id="modal">
+					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
 								<xsl:choose>
@@ -191,15 +191,43 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</DIV>
+			<xsl:if test="rate">
+				<DIV class="moreThan768 mt-3">
+					<DIV class="text-primary h5">評價</DIV>
+					<xsl:for-each select="rate">
+						<DIV class="d-flex align-items-center">
+							<DIV class="col-3">
+								<IMG class="border-radius-md" src="{@profileImage}" width="50"/>
+							</DIV>
+							<DIV>
+								<xsl:choose>
+									<xsl:when test="(/document/@female) or (/document/@vip) or (/document/@me)">
+										<DIV class="star text-lg" data-star="{@rate}"></DIV>
+										<DIV class="text-xs">
+											<xsl:value-of select="@nickname"/>
+										</DIV>
+										<DIV class="text-sm">
+											<xsl:value-of select="@comment"/>
+										</DIV>
+									</xsl:when>
+									<xsl:otherwise>
+										<SPAN>升級 VIP 查看</SPAN>
+									</xsl:otherwise>
+								</xsl:choose>
+
+
+							</DIV>
+						</DIV>
+						<HR class="horizontal dark my-2"/>
+					</xsl:for-each>
+				</DIV>
+			</xsl:if>
 		</DIV>
 		<DIV class="col-md-4 ms-4">
 			<DIV class="d-flex align-items-center">
 				<H3 class="text-primary me-2">
 					<xsl:value-of select="nickname"/>
 				</H3>
-				<DIV class="text-dark text-bold mx-1">
-					<xsl:value-of select="location"/>
-				</DIV>
 				<DIV class="text-dark text-bold mx-1">
 					<xsl:value-of select="age"/>
 				</DIV>
@@ -220,6 +248,23 @@
 					<xsl:value-of select="active"/>
 				</DIV>
 
+			</DIV>
+			<DIV class="mt-2">
+				<xsl:for-each select="location">
+					<SPAN class="me-1 badge bg-gradient-dark">
+						<xsl:value-of select="."/>
+					</SPAN>
+				</xsl:for-each>
+			</DIV>
+			<DIV class="mt-2">
+				<xsl:for-each select="service">
+					<SPAN class="me-1 badge bg-gradient-primary">
+						<SPAN>#</SPAN>
+						<SPAN>
+							<xsl:value-of select="."/>
+						</SPAN>
+					</SPAN>
+				</xsl:for-each>
 			</DIV>
 			<HR class="horizontal dark my-4"/>
 			<DIV class="mb-2">
@@ -288,7 +333,7 @@
 					</SPAN>
 				</DIV>
 			</xsl:if>
-			<HR class="horizontal dark my-4"/>
+			<HR class="horizontal dark my-3"/>
 			<DIV class="mb-2">
 				<DIV class="font-weight-bold text-lg">關於我：</DIV>
 				<DIV class="aboutMe">
@@ -301,6 +346,7 @@
 					<xsl:value-of disable-output-escaping="yes" select="idealConditions"/>
 				</DIV>
 			</DIV>
+			<DIV class="lessThan768"></DIV>
 		</DIV>
 	</xsl:template>
 </xsl:stylesheet>

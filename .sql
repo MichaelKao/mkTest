@@ -474,30 +474,20 @@ COMMENT ON COLUMN"qing_ren"."nian_shou_ru"IS'男生年收入';
 COMMENT ON COLUMN"qing_ren"."ling_yong_qian"IS'女生期望零用錢';
 
 /**
- * 甜心提取車馬費資訊
+ * 刪除帳號
  */
-CREATE TABLE"ti_qu_che_ma_fei"(
-	"id"serial PRIMARY KEY,
-	"honey"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
-	"wire_transfer_bank_code"varchar,
-	"wire_transfer_branch_code"varchar,
-	"wire_transfer_account_name"varchar,
-	"wire_transfer_account_number"varchar
-);
-COMMENT ON TABLE"ti_qu_che_ma_fei"IS'甜心提取車馬費資訊';
-COMMENT ON COLUMN"ti_qu_che_ma_fei"."id"IS'主鍵';
-COMMENT ON COLUMN"ti_qu_che_ma_fei"."honey"IS'情人';
-COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_bank_code"IS'銀行代碼';
-COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_branch_code"IS'分行代碼';
-COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_account_name"IS'戶名';
-COMMENT ON COLUMN"ti_qu_che_ma_fei"."wire_transfer_account_number"IS'匯款帳號';
-
 ALTER TABLE"qing_ren"
 ADD COLUMN"shan_chu"varchar;
 COMMENT ON COLUMN"qing_ren"."shan_chu"IS'刪除';
 
+/**
+ * 帳號 NOT NULL 拿掉，以便刪除時改 NULL
+ */
 ALTER TABLE"qing_ren" ALTER COLUMN"zhang_hao" DROP NOT NULL;
 
+/**
+ * 評價放進行為
+ */
 ALTER TYPE"xing_wei" ADD VALUE 'PING_JIA';
 
 /**
@@ -508,3 +498,98 @@ ADD COLUMN"xing_ji"int2,
 ADD COLUMN"ping_jia"varchar;
 COMMENT ON COLUMN"li_cheng"."xing_ji"IS'星級';
 COMMENT ON COLUMN"li_cheng"."ping_jia"IS'評價留言';
+
+/**
+ * 車馬費提領方式
+ */
+CREATE TYPE"ti_qu_feng_shi"AS ENUM(
+	'WIRE_TRANSFER',
+	'PAYPAL'
+);
+COMMENT ON TYPE"ti_qu_feng_shi"IS'車馬費提取方式';
+
+/**
+ * 甜心提領車馬費資訊
+ */
+CREATE TABLE"ti_qu_feng_shi_zi_xun"(
+	"id"serial PRIMARY KEY,
+	"honey"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"wire_transfer_bank_code"varchar,
+	"wire_transfer_branch_code"varchar,
+	"wire_transfer_account_name"varchar,
+	"wire_transfer_account_number"varchar
+);
+COMMENT ON TABLE"ti_qu_feng_shi_zi_xun"IS'甜心提取車馬費資訊';
+COMMENT ON COLUMN"ti_qu_feng_shi_zi_xun"."id"IS'主鍵';
+COMMENT ON COLUMN"ti_qu_feng_shi_zi_xun"."honey"IS'甜心';
+COMMENT ON COLUMN"ti_qu_feng_shi_zi_xun"."wire_transfer_bank_code"IS'銀行代碼';
+COMMENT ON COLUMN"ti_qu_feng_shi_zi_xun"."wire_transfer_branch_code"IS'分行代碼';
+COMMENT ON COLUMN"ti_qu_feng_shi_zi_xun"."wire_transfer_account_name"IS'戶名';
+COMMENT ON COLUMN"ti_qu_feng_shi_zi_xun"."wire_transfer_account_number"IS'匯款帳號';
+
+/**
+ * 甜心提領車馬費紀錄
+ */
+CREATE TABLE"ti_qu_che_ma_fei"(
+	"id"serial PRIMARY KEY,
+	"honey"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"jin_e"int,
+	"zhuang_tai"boolean,
+	"ti_qu_feng_shi" "ti_qu_feng_shi",
+	"shi_bai_yuan_yin"varchar
+	"shi_chuo"timestamptz
+);
+COMMENT ON TABLE"ti_qu_che_ma_fei"IS'甜心提取車馬費';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."id"IS'主鍵';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."honey"IS'甜心';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."jin_e"IS'提取金額';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."zhuang_tai"IS'狀態';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."ti_qu_feng_shi"IS'提取方式';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."shi_bai_yuan_yin"IS'失敗原因';
+COMMENT ON COLUMN"ti_qu_che_ma_fei"."shi_chuo"IS'時間戳記';
+
+/**
+ * 服務
+ */
+CREATE TABLE"fu_wu"(
+	"id"serial2 PRIMARY KEY,
+	"fu_wu_biao_qian"varchar NOT NULL UNIQUE
+);
+COMMENT ON TABLE"fu_wu"IS'甜心提取車馬費';
+COMMENT ON COLUMN"fu_wu"."id"IS'主鍵';
+COMMENT ON COLUMN"fu_wu"."fu_wu_biao_qian"IS'服務標籤';
+--
+INSERT INTO"fu_wu"("fu_wu_biao_qian")VALUES
+(E'KAN_DIAN_YING'),--看電影
+(E'CHANG_GE'),--唱歌
+(E'GUANG_JIE'),--逛街
+(E'CHI_FAN'),--吃飯
+(E'WAN_YOU_XI'),--玩遊戲
+(E'QIN_MI_GUAN_XI'),--親密關係
+(E'KAN_YE_JING'),--看夜景
+(E'JIAN_JIA_ZHANG'),--見家長
+(E'XIN_LI_ZI_SHANG');--心理諮商
+
+/**
+ * 情人與服務
+ */
+CREATE TABLE"qing_ren_yu_fu_wu"(
+	"qing_ren"int8 NOT NULL REFERENCES"qing_ren"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
+	"fu_wu"int2 NOT NULL REFERENCES"fu_wu"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
+	PRIMARY KEY("qing_ren","fu_wu")
+);
+COMMENT ON TABLE"qing_ren_yu_fu_wu"IS'情人與服務';
+COMMENT ON COLUMN"qing_ren_yu_fu_wu"."qing_ren"IS'情人';
+COMMENT ON COLUMN"qing_ren_yu_fu_wu"."fu_wu"IS'服務';
+
+/**
+ * 情人與地區
+ */
+CREATE TABLE"qing_ren_yu_di_qu"(
+	"qing_ren"int8 NOT NULL REFERENCES"qing_ren"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
+	"di_qu"int2 NOT NULL REFERENCES"di_qu"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
+	PRIMARY KEY("qing_ren","di_qu")
+);
+COMMENT ON TABLE"qing_ren_yu_di_qu"IS'情人與地區';
+COMMENT ON COLUMN"qing_ren_yu_di_qu"."qing_ren"IS'情人';
+COMMENT ON COLUMN"qing_ren_yu_di_qu"."di_qu"IS'服務';

@@ -140,7 +140,7 @@ public class HistoryService {
 			initiative,
 			passive,
 			BEHAVIOR_FARE,
-			points
+			(short) -points
 		);
 		history = historyRepository.saveAndFlush(history);
 
@@ -530,6 +530,11 @@ public class HistoryService {
 		historyRepository.saveAndFlush(history);
 
 		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"rate.done",
+				null,
+				locale
+			)).
 			withResponse(true).
 			withResult(history.getOccurred()).
 			toJSONObject();
@@ -601,6 +606,9 @@ public class HistoryService {
 			String identifier = null;
 			String profileImage = null;
 			String message = null;
+
+			Lover initiative = activeLogs.getInitiative();
+			Lover passive = activeLogs.getPassive();
 
 			Element historyElement = document.createElement("history");
 			documentElement.appendChild(historyElement);
@@ -749,6 +757,13 @@ public class HistoryService {
 						"addLineButton",
 						activeLogs.getInitiative().getInviteMeAsLineFriend()
 					);
+					if (Objects.isNull(
+						historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(passive, initiative, BEHAVIOR_RATE))) {
+						historyElement.setAttribute(
+							"rateButton",
+							null
+						);
+					}
 				}
 				if (!isMale) {
 					profileImage = passiveProfileImage;
@@ -759,11 +774,14 @@ public class HistoryService {
 						passiveNickname,
 						"給出 Line"
 					);
+					if (Objects.isNull(
+						historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(initiative, passive, BEHAVIOR_RATE))) {
+						historyElement.setAttribute(
+							"rateButton",
+							null
+						);
+					}
 				}
-				historyElement.setAttribute(
-					"rateButton",
-					null
-				);
 				historyElement.setAttribute(
 					"profileImage",
 					String.format(
@@ -828,10 +846,17 @@ public class HistoryService {
 						"向您打招呼：",
 						activeLogs.getGreeting()
 					);
-					historyElement.setAttribute(
-						"requestLineButton",
-						null
-					);
+					LineGiven lineGiven = null;
+					if (Objects.nonNull(lineGivenRepository.findByFemaleAndMale(initiative, passive))) {
+						lineGiven = lineGivenRepository.findByFemaleAndMale(initiative, passive);
+					}
+
+					if (Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse()) {
+						historyElement.setAttribute(
+							"requestLineButton",
+							null
+						);
+					}
 				}
 				if (!isMale) {
 					profileImage = passiveProfileImage;

@@ -1,5 +1,23 @@
 $(document).ready(function () {
-	$('BUTTON.collapseBtn').click(function () {
-		$('DIV.show').attr('class', 'collapse');
+	$('FORM.wireTransfer').submit(function (event) {
+		event.preventDefault();
+		let form = this;
+		console.log($(form).serialize())
+		$.post(
+			$(form).attr('action'),
+			$(form).serialize(),
+			function (data) {
+				if (data.response) {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+					window.location.reload();
+				} else {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+				}
+			},
+			'json'
+			);
+		return false;
 	});
 });

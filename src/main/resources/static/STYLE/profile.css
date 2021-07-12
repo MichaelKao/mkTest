@@ -50,3 +50,7 @@ BUTTON.fav.liked i {
 .carousel A:hover {
 	color: #cb0c9f;
 }
+
+DIV.star {
+	color: #FF8C00;
+}
