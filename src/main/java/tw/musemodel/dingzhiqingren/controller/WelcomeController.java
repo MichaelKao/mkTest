@@ -2,6 +2,9 @@ package tw.musemodel.dingzhiqingren.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -1082,7 +1085,7 @@ public class WelcomeController {
 
 		if (!me.getGender() && (model.getInviteMeAsLineFriend().isBlank() || model.getInviteMeAsLineFriend().isEmpty())) {
 			return new JavaScriptObjectNotation().
-				withReason("請填入 LINE").
+				withReason("請上傳 LINE QRcode").
 				withResponse(false).
 				toJSONObject().toString();
 		}
@@ -2666,6 +2669,77 @@ public class WelcomeController {
 			withResponse(true).
 			withResult(me.toString()).
 			toJSONObject().toString();
+	}
+
+	/**
+	 * 上傳 LINE QRcode
+	 *
+	 * @param multipartFile
+	 * @param locale
+	 * @return
+	 * @throws URISyntaxException
+	 */
+	@PostMapping(path = "/isLine.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String isLine(@RequestParam(name = "file") MultipartFile multipartFile, Authentication authentication, Locale locale)
+		throws URISyntaxException {
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+		JavaScriptObjectNotation json = new JavaScriptObjectNotation();
+
+		String anchor;
+		try (InputStream inputStream = multipartFile.getInputStream()) {
+			JSONObject jsonObject = loverService.qrCodeToString(
+				inputStream,
+				locale
+			);
+			anchor = jsonObject.getString("result");
+			if (!jsonObject.getBoolean("response")) {
+				return json.
+					withReason(json.getReason()).
+					withResponse(false).
+					toString();
+			}
+		} catch (IOException ioException) {
+			return json.
+				withReason(ioException.getLocalizedMessage()).
+				withResponse(false).
+				toString();
+		}
+
+		URI uri = new URI(anchor);
+		json.setResult(uri);
+
+		String scheme = uri.getScheme();
+		if (!scheme.equalsIgnoreCase("http") && !scheme.equalsIgnoreCase("https")) {
+			return json.
+				withReason("lineFriendInvitation.wrongScheme").
+				withResponse(false).
+				toString();
+		}
+
+		if (uri.getHost().equalsIgnoreCase("line.me") || uri.getHost().equalsIgnoreCase("line.naver.jp")) {
+			boolean response = uri.getPath().matches("^/ti/[gp]/\\S{10}$");
+			json.setResponse(response);
+			if (!response) {
+				json.setReason("lineFriendInvitation.wrongPath");
+			}
+		} else if (uri.getHost().equalsIgnoreCase("lin.ee")) {
+			boolean response = uri.getPath().matches("^/ti/[gp]/\\S{10}$");
+			json.setResponse(response);
+			if (!response) {
+				json.setReason("lineFriendInvitation.wrongPath");
+			}
+		} else {
+			json.
+				withReason("lineFriendInvitation.wrongHost").
+				setResponse(false);
+		}
+		me.setInviteMeAsLineFriend(anchor);
+		loverRepository.saveAndFlush(me);
+
+		return json.toString();
 	}
 
 }

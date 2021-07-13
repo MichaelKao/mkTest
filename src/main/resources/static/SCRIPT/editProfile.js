@@ -6,10 +6,19 @@ $(document).ready(function () {
 	var input;
 	var $cropModal = $('#cropModal');
 	var cropper;
+	var photoType;
+	var modalRemarks = $('P.modalRemarks');
 
 	$('INPUT[name="image"]').on("change", function (e) {
 		var files = e.target.files;
 		input = this;
+		photoType = $(input).data('type');
+		if (photoType === 'certification') {
+			modalRemarks.text('註：須本人自拍並且手持證件');
+		}
+		if (photoType === 'qrcode') {
+			modalRemarks.text('註：僅能上傳 LINE QR code');
+		}
 
 		var done = function (url) {
 			this.value = '';
@@ -36,7 +45,8 @@ $(document).ready(function () {
 	$cropModal.on('shown.bs.modal', function () {
 		cropper = new Cropper(image, {
 			viewMode: 1,
-			dragMode: 'move'
+			dragMode: 'move',
+			autoCropArea: 1,
 		});
 	}).on('hidden.bs.modal', function () {
 		cropper.destroy();
@@ -92,8 +102,16 @@ $(document).ready(function () {
 		var file = new FormData();
 		file.append('file', blob);
 
+		var postUrl;
+		if (photoType === 'certification') {
+			postUrl = '/uploadIdentity';
+		}
+		if (photoType === 'qrcode') {
+			postUrl = '/isLine.json';
+		}
+
 		$.ajax({
-			url: '/uploadIdentity',
+			url: postUrl,
 			cache: false,
 			contentType: false,
 			processData: false,
@@ -101,10 +119,19 @@ $(document).ready(function () {
 			type: 'post',
 			success: function (data) {
 				$cropModal.modal('hide');
-				$('A.certification').css('display', 'none');
-				$('BUTTON.certification').attr('style', 'inline');
+				if (photoType === 'certification') {
+					$('A.certification').css('display', 'none');
+					$('BUTTON.certification').attr('style', 'inline');
+				}
+				if (photoType === 'qrcode') {
+					$('INPUT[name="lineLink"]').val(data.result);
+					$('INPUT[name="lineLink"]').css('display', 'inline');
+					$('DIV.uploadQrcode').css('display', 'none');
+				}
 			},
-			error: function () {
+			error: function (data) {
+				$('.toast-body').html(data.reason);
+				$('.toast').toast('show');
 				alert('上傳失敗');
 				$cropModal.modal('hide');
 				return false;

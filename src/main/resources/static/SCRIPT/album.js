@@ -107,7 +107,6 @@ $(document).ready(function () {
 		var file = new FormData();
 		file.append('file', blob);
 
-
 		var postUrl;
 		if (photoType === 'picture') {
 			postUrl = '/uploadPicture';

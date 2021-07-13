@@ -60,7 +60,7 @@
 								<BUTTON aria-label="Close" class="btn-close text-dark" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">
-								<P class="text-primary text-bold">註：須本人自拍並且手持證件</P>
+								<P class="text-primary text-bold modalRemarks"></P>
 								<DIV class="imgContainer">
 									<IMG alt="cropper" src="https://via.placeholder.com/200" id="image"/>
 								</DIV>
@@ -105,7 +105,7 @@
 						<xsl:choose>
 							<xsl:when test="not(certification)">
 								<LABEL>
-									<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
+									<INPUT accept="image/*" class="sr-only" data-type="certification" name="image" type="file"/>
 									<A class="btn btn-outline-info me-1 certification">
 										<IMG alt="approval" src="/accept.svg" width="17"/>
 										<SPAN class="ms-1">安心認證</SPAN>
@@ -149,12 +149,6 @@
 						<LABEL for="occupation">職業</LABEL>
 						<INPUT class="form-control" id="occupation" name="occupation" type="text" value="{occupation}"/>
 					</DIV>
-					<xsl:if test="/document/@female">
-						<DIV class="col-md-12 mb-3">
-							<LABEL for="inviteMeAsLineFriend">Line 好友連結</LABEL>
-							<INPUT class="form-control" id="inviteMeAsLineFriend" name="inviteMeAsLineFriend" required="" type="text" value="{inviteMeAsLineFriend}"/>
-						</DIV>
-					</xsl:if>
 					<DIV class="form-group">
 						<LABEL for="bodyType">體型</LABEL>
 						<SELECT class="form-control" id="bodyType" name="bodyType">
@@ -275,6 +269,19 @@
 						</DIV>
 					</DIV>
 					<xsl:if test="/document/@female">
+						<DIV class="col-md-12 mb-3">
+							<LABEL>Line 好友連結</LABEL>
+							<DIV class="uploadQrcode">
+								<LABEL>
+									<INPUT accept="image/*" class="sr-only" data-type="qrcode" name="image" type="file"/>
+									<A class="btn btn-primary p-1 me-1 certification">點擊上傳 QR code</A>
+								</LABEL>
+								<BUTTON class="btn btn-info p-1">如何取得 QR code?</BUTTON>
+							</DIV>
+							<DIV>
+								<INPUT class="form-control" name="inviteMeAsLineFriend" readonly="" required="" style="display: none;" type="text" value=""/>
+							</DIV>
+						</DIV>
 						<DIV class="col-md-12 mb-3">
 							<LABEL>服務標籤</LABEL>
 							<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
