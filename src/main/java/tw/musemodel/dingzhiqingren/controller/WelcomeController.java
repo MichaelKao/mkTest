@@ -120,8 +120,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/")
 	@ResponseBody
-	ModelAndView index(Authentication authentication, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView index(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -227,7 +226,7 @@ public class WelcomeController {
 				profileImageElement.setTextContent(
 					String.format(
 						"https://%s/profileImage/%s",
-						servant.STATIC_HOST,
+						Servant.STATIC_HOST,
 						lover.getProfileImage()
 					)
 				);
@@ -256,8 +255,7 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/activate.asp")
-	ModelAndView activate(Authentication authentication, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView activate(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			LOGGER.debug("已登入故激活页面重导至首页");
 			return new ModelAndView("redirect:/");
@@ -703,8 +701,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/signUp.asp")
 	@ResponseBody
-	String signUp(SignUp signUp, Authentication authentication, HttpServletRequest request, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
+	String signUp(SignUp signUp, Authentication authentication, HttpServletRequest request, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
@@ -867,8 +864,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/profile/{identifier}/")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView profile(@PathVariable UUID identifier, Authentication authentication, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView profile(@PathVariable UUID identifier, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -1189,8 +1185,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/favorite.asp")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView favorite(Authentication authentication, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView favorite(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -1351,8 +1346,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/looksMe.asp")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView whoLooksMe(Authentication authentication, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView whoLooksMe(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -1678,7 +1672,7 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 儲值愛心
+	 * 选择充值方案
 	 *
 	 * @param authentication
 	 * @param locale
@@ -1691,17 +1685,15 @@ public class WelcomeController {
 	@Secured({"ROLE_YONGHU"})
 	ModelAndView recharge(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
-			return new ModelAndView("redirect:/");
+			return servant.redirectToRoot();
 		}
 
-		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
-		);
+		);//我谁⁉️
 
-		// 看頁面的時間
 		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
+		me = loverService.saveLover(me);//最后造访时戳
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -1710,45 +1702,22 @@ public class WelcomeController {
 			null,
 			locale
 		));
-
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
-			documentElement.setAttribute(
-				"almighty",
-				null
-			);
-		}
-		if (isFinance) {
-			documentElement.setAttribute(
-				"finance",
-				null
-			);
-		}
-
-		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
-
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
-			null
+			"signIn",
+			authentication.getName()
 		);
-
-		if (!servant.isNull(authentication)) {
-			documentElement.setAttribute(
-				"signIn",
-				authentication.getName()
-			);
-		}
-
-		if (!meIsMale) {
-			return new ModelAndView("redirect:/");
-		}
-
 		documentElement.setAttribute(
 			"identifier",
 			me.getIdentifier().toString()
+		);
+
+		boolean isMale = me.getGender();
+		if (!isMale) {
+			return servant.redirectToRoot();
+		}//女性则重导向首页
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
 		);
 
 		for (Plan plan : planRepository.findAll()) {
@@ -1762,11 +1731,68 @@ public class WelcomeController {
 		Element heartsElement = document.createElement("hearts");
 		documentElement.appendChild(heartsElement);
 		heartsElement.setTextContent(
-			historyRepository.countByInitiative(me) > 0
-			? historyRepository.sumByInitiativeHearts(me).toString() : "0"
+			historyRepository.countByInitiative(me) > 0 ? historyRepository.sumByInitiativeHearts(me).toString() : "0"
 		);
 
 		ModelAndView modelAndView = new ModelAndView("recharge");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
+	 * 充值方案
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/recharge/{plan:\\d}.asp")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView recharge(@PathVariable Plan plan, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		if (servant.isNull(authentication)) {
+			return servant.redirectToRoot();
+		}
+
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);//我谁⁉️
+
+		me.setActive(new Date(System.currentTimeMillis()));
+		me = loverService.saveLover(me);//最后造访时戳
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.recharge",
+			null,
+			locale
+		));
+		documentElement.setAttribute(
+			"signIn",
+			authentication.getName()
+		);
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
+
+		boolean isMale = me.getGender();
+		if (!isMale) {
+			return servant.redirectToRoot();
+		}//女性则重导向首页
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
+
+		Element planElement = document.createElement("plan");
+		planElement.setAttribute("id", plan.getId().toString());
+		documentElement.appendChild(planElement);
+
+		ModelAndView modelAndView = new ModelAndView("inpay2/ECPayPayment");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}
@@ -1894,17 +1920,15 @@ public class WelcomeController {
 	@Secured({"ROLE_YONGHU"})
 	ModelAndView upgrade(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
-			return new ModelAndView("redirect:/");
+			return servant.redirectToRoot();
 		}
 
-		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
-		);
+		);//我谁⁉️
 
-		// 看頁面的時間
 		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
+		me = loverService.saveLover(me);//最后造访时戳
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -1913,54 +1937,33 @@ public class WelcomeController {
 			null,
 			locale
 		));
-
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
-			documentElement.setAttribute(
-				"almighty",
-				null
-			);
-		}
-		if (isFinance) {
-			documentElement.setAttribute(
-				"finance",
-				null
-			);
-		}
-
-		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
-
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
-			null
+			"signIn",
+			authentication.getName()
 		);
-
-		// 是否為 VIP
-		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
-			documentElement.setAttribute(
-				"vip",
-				null
-			);
-		}
-
-		if (!meIsMale) {
-			return new ModelAndView("redirect:/");
-		}
-
-		if (!servant.isNull(authentication)) {
-			documentElement.setAttribute(
-				"signIn",
-				authentication.getName()
-			);
-		}
-
 		documentElement.setAttribute(
 			"identifier",
 			me.getIdentifier().toString()
 		);
+
+		/*
+		 确认性别
+		 */
+		boolean isMale = me.getGender();
+		if (!isMale) {
+			return servant.redirectToRoot();
+		}//女性则重导向首页
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
+
+		if (loverService.isVIP(me)) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}//是否为 VIP⁉️
 
 		ModelAndView modelAndView = new ModelAndView("upgrade");
 		modelAndView.getModelMap().addAttribute(document);
@@ -2444,9 +2447,7 @@ public class WelcomeController {
 	@PostMapping(path = "/wireTransfer.json")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
-	String wireTransfer(@RequestParam String wireTransferBankCode, @RequestParam String wireTransferBranchCode,
-		@RequestParam String wireTransferAccountName, @RequestParam String wireTransferAccountNumber,
-		Authentication authentication, Locale locale) {
+	String wireTransfer(@RequestParam String wireTransferBankCode, @RequestParam String wireTransferBranchCode, @RequestParam String wireTransferAccountName, @RequestParam String wireTransferAccountNumber, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -2517,8 +2518,7 @@ public class WelcomeController {
 	@PostMapping(path = "/rate.json")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
-	String rate(@RequestParam String rate, @RequestParam String comment,
-		@RequestParam UUID whom, Authentication authentication, Locale locale) {
+	String rate(@RequestParam String rate, @RequestParam String comment, @RequestParam UUID whom, Authentication authentication, Locale locale) {
 		if (rate.isBlank() || rate.isEmpty()) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
@@ -2546,7 +2546,7 @@ public class WelcomeController {
 				comment,
 				locale
 			);
-		} catch (Exception exception) {
+		} catch (NumberFormatException exception) {
 			jsonObject = new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
 					exception.getMessage(),
@@ -2645,8 +2645,7 @@ public class WelcomeController {
 	@PostMapping(path = "/uploadIdentity")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
-	String uploadIdentity(@RequestParam("file") MultipartFile multipartFile, Authentication authentication, Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
+	String uploadIdentity(@RequestParam("file") MultipartFile multipartFile, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -2682,8 +2681,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/isLine.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String isLine(@RequestParam(name = "file") MultipartFile multipartFile, Authentication authentication, Locale locale)
-		throws URISyntaxException {
+	String isLine(@RequestParam(name = "file") MultipartFile multipartFile, Authentication authentication, Locale locale) throws URISyntaxException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);

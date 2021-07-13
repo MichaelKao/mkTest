@@ -539,14 +539,24 @@ public class LoverService {
 	}
 
 	/**
-	 * 確認性別
+	 * 是带把儿的吗
 	 *
-	 * @param lover
-	 * @return
+	 * @param lover 用户
+	 * @return 布尔值
 	 */
 	public Boolean isMale(Lover lover) {
 		Boolean isMale = lover.getGender();
 		return isMale;
+	}
+
+	/**
+	 * 是否为 VIP⁉️
+	 *
+	 * @param lover 用户
+	 * @return 布尔值
+	 */
+	public boolean isVIP(Lover lover) {
+		return Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date(System.currentTimeMillis()));
 	}
 
 	public Document readDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
@@ -1226,8 +1236,7 @@ public class LoverService {
 	 * @return
 	 */
 	@Transactional
-	public JSONObject wireTransfer(String wireTransferBankCode, String wireTransferBranchCode,
-		String wireTransferAccountName, String wireTransferAccountNumber, Lover honey, Locale locale) {
+	public JSONObject wireTransfer(String wireTransferBankCode, String wireTransferBranchCode, String wireTransferAccountName, String wireTransferAccountNumber, Lover honey, Locale locale) {
 		if (Objects.isNull(wireTransferAccountName)) {
 			throw new IllegalArgumentException("wireTransfer.accountNameMustntBeNull");
 		}

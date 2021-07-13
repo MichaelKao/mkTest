@@ -44,7 +44,7 @@
 					<DIV class="card-body pt-2">
 						<xsl:if test="not(@vip)">
 							<DIV class="h3 d-block text-darker my-2">馬上升級!</DIV>
-							<DIV id="ECPayPayment"></DIV>
+							<DIV id="ECPayPayment"/>
 							<FORM action="" method="post" name="payment">
 								<BUTTON class="btn btn-outline-info btn-sm h6 text-info px-3 m-0" type="submit">付款</BUTTON>
 							</FORM>
