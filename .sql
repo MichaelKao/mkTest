@@ -593,3 +593,10 @@ CREATE TABLE"qing_ren_yu_di_qu"(
 COMMENT ON TABLE"qing_ren_yu_di_qu"IS'情人與地區';
 COMMENT ON COLUMN"qing_ren_yu_di_qu"."qing_ren"IS'情人';
 COMMENT ON COLUMN"qing_ren_yu_di_qu"."di_qu"IS'服務';
+
+/**
+ * 安心認證欄位
+ */
+ALTER TABLE"qing_ren"
+ADD COLUMN"an_xin"bool;
+COMMENT ON COLUMN"qing_ren"."an_xin"IS'安心';

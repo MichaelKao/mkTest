@@ -124,15 +124,15 @@ $(document).ready(function () {
 					$('BUTTON.certification').attr('style', 'inline');
 				}
 				if (photoType === 'qrcode') {
-					$('INPUT[name="lineLink"]').val(data.result);
+					console.log(data.response)
+					$('INPUT[name="inviteMeAsLineFriend"]').val(data.result);
 					$('INPUT[name="lineLink"]').css('display', 'inline');
 					$('DIV.uploadQrcode').css('display', 'none');
 				}
 			},
 			error: function (data) {
-				$('.toast-body').html(data.reason);
+				$('.toast-body').html('上傳失敗');
 				$('.toast').toast('show');
-				alert('上傳失敗');
 				$cropModal.modal('hide');
 				return false;
 			}, xhr: function () {
