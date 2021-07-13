@@ -22,6 +22,7 @@ import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
+import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 import tw.musemodel.dingzhiqingren.service.DashboardService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
@@ -52,6 +53,9 @@ public class DashboardController {
 
 	@Autowired
 	private WithdrawalRecordRepository withdrawalRecordRepository;
+
+	@Autowired
+	private LoverRepository loverRepository;
 
 	/**
 	 * 甜心提取車馬費(財務後台)
@@ -156,6 +160,15 @@ public class DashboardController {
 			toJSONObject().toString();
 	}
 
+	/**
+	 * 匯款車馬費失敗
+	 *
+	 * @param withdrawalRecord
+	 * @param failReason
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
 	@PostMapping(path = "/fail.json")
 	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	@ResponseBody
@@ -171,6 +184,135 @@ public class DashboardController {
 
 		return new JavaScriptObjectNotation().
 			withReason("已通知甜心").
+			withResponse(true).
+			toJSONObject().toString();
+	}
+
+	/**
+	 * 安心認證審核
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/certification.asp")
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	ModelAndView certification(Authentication authentication, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
+		if (servant.isNull(authentication)) {
+			return new ModelAndView("redirect:/");
+		}
+
+		Document document = dashboardService.certificationDocument(locale);
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.certification",
+			null,
+			locale
+		));
+
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
+		if (!isFinance && !isAlmighty) {
+			return new ModelAndView("redirect:/");
+		}
+
+		// 確認性別
+		Boolean meIsMale = loverService.isMale(me);
+
+		documentElement.setAttribute(
+			meIsMale ? "male" : "female",
+			null
+		);
+
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"signIn",
+				authentication.getName()
+			);
+		}
+
+		if (meIsMale) {
+			return new ModelAndView("redirect:/");
+		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
+
+		ModelAndView modelAndView = new ModelAndView("dashboard/certification");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
+	 * 安心認證審核通過
+	 *
+	 * @param lover
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/identityPassed.json")
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	@ResponseBody
+	String identityPassed(@RequestParam("id") Lover lover, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+
+		lover.setCertification(Boolean.TRUE);
+		loverRepository.saveAndFlush(lover);
+
+		return new JavaScriptObjectNotation().
+			withReason("審核通過").
+			withResponse(true).
+			toJSONObject().toString();
+	}
+
+	/**
+	 * 安心認證審核不通過
+	 *
+	 * @param lover
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/identityFailed.json")
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	@ResponseBody
+	String identityFailed(@RequestParam("id") Lover lover, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+
+		lover.setCertification(null);
+		loverRepository.saveAndFlush(lover);
+
+		return new JavaScriptObjectNotation().
+			withReason("審核不通過").
 			withResponse(true).
 			toJSONObject().toString();
 	}

@@ -587,6 +587,14 @@ public class LoverService {
 			loverElement.setAttribute("vip", null);
 		}
 
+		if (Objects.nonNull(lover.getCertification())) {
+			Boolean certification = lover.getCertification();
+			loverElement.setAttribute(
+				"certification",
+				certification ? "true" : "false"
+			);
+		}
+
 		Element profileImageElement = document.createElement("profileImage");
 		if (Objects.nonNull(lover.getProfileImage())) {
 			profileImageElement.setTextContent(
@@ -888,6 +896,16 @@ public class LoverService {
 				gender ? "male" : "female"
 			);
 			loverElement.appendChild(genderElement);
+		}
+
+		if (Objects.nonNull(lover.getCertification())) {
+			Boolean certification = lover.getCertification();
+			Element certificationElement = document.createElement("certification");
+			certificationElement.setAttribute(
+				"certification",
+				certification ? "true" : "false"
+			);
+			loverElement.appendChild(certificationElement);
 		}
 
 		for (Lover.BodyType bodyType : Lover.BodyType.values()) {

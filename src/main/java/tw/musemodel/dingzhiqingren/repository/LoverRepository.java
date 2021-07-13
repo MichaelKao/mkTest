@@ -22,4 +22,6 @@ public interface LoverRepository extends JpaRepository<Lover, Integer> {
 
 	@Query("SELECT l FROM Lover l WHERE l.gender = :gender AND l.delete = null")
 	public List<Lover> findAllByGender(Boolean gender);
+
+	public List<Lover> findAllByCertification(Boolean certification);
 }

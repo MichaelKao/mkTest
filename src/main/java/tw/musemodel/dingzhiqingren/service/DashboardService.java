@@ -13,9 +13,11 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalInfo;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
+import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 
@@ -45,6 +47,9 @@ public class DashboardService {
 
 	@Autowired
 	private WithdrawalInfoRepository withdrawalInfoRepository;
+
+	@Autowired
+	private LoverRepository loverRepository;
 
 	public Document withdrawalDocument(Locale locale)
 		throws SAXException, IOException, ParserConfigurationException {
@@ -126,6 +131,28 @@ public class DashboardService {
 					withdrawalRecord.getStatus().toString()
 				);
 			}
+		}
+		return document;
+	}
+
+	public Document certificationDocument(Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+
+		for (Lover lover : loverRepository.findAllByCertification(Boolean.FALSE)) {
+			Element loverElement = document.createElement("lover");
+			documentElement.appendChild(loverElement);
+
+			loverElement.setAttribute(
+				"id",
+				lover.getId().toString()
+			);
+
+			loverElement.setAttribute(
+				"name",
+				lover.getNickname()
+			);
 		}
 		return document;
 	}

@@ -236,7 +236,12 @@
 				</DIV>
 				<xsl:if test="@vip">
 					<DIV class="mx-1">
-						<IMG class="border-radius-md" src="/vip.svg" width="35"/>
+						<IMG class="border-radius-md" src="/vip.svg" width="32"/>
+					</DIV>
+				</xsl:if>
+				<xsl:if test="@certification = 'true'">
+					<DIV class="mx-1">
+						<IMG class="border-radius-md" src="/accept.svg" width="32"/>
 					</DIV>
 				</xsl:if>
 			</DIV>

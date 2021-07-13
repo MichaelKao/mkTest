@@ -208,6 +208,14 @@ public class WelcomeController {
 					loverElement.setAttribute("vip", null);
 				}
 
+				if (Objects.nonNull(lover.getCertification())) {
+					Boolean certification = lover.getCertification();
+					loverElement.setAttribute(
+						"certification",
+						certification ? "true" : "false"
+					);
+				}
+
 				Element identifierElement = document.createElement("identifier");
 				identifierElement.setTextContent(lover.getIdentifier().toString());
 				loverElement.appendChild(identifierElement);
@@ -1272,6 +1280,13 @@ public class WelcomeController {
 			if (followed.getGender() && Objects.nonNull(followed.getVip()) && followed.getVip().after(new Date())) {
 				followElement.setAttribute("vip", null);
 			}
+			if (Objects.nonNull(followed.getCertification())) {
+				Boolean certification = followed.getCertification();
+				followElement.setAttribute(
+					"certification",
+					certification ? "true" : "false"
+				);
+			}
 		}
 
 		ModelAndView modelAndView = new ModelAndView("favorite");
@@ -1437,6 +1452,13 @@ public class WelcomeController {
 				}
 				if (peeker.getGender() && Objects.nonNull(peeker.getVip()) && peeker.getVip().after(new Date())) {
 					peekerElement.setAttribute("vip", null);
+				}
+				if (Objects.nonNull(peeker.getCertification())) {
+					Boolean certification = peeker.getCertification();
+					peekerElement.setAttribute(
+						"certification",
+						certification ? "true" : "false"
+					);
 				}
 			}
 		}
@@ -2569,6 +2591,14 @@ public class WelcomeController {
 		return jsonObject.toString();
 	}
 
+	/**
+	 * 更新服務標籤
+	 *
+	 * @param service
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
 	@PostMapping(path = "/service.json")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
@@ -2597,6 +2627,17 @@ public class WelcomeController {
 		return jsonObject.toString();
 	}
 
+	/**
+	 * 上傳手持身分證
+	 *
+	 * @param multipartFile
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
 	@PostMapping(path = "/uploadIdentity")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
@@ -2626,4 +2667,5 @@ public class WelcomeController {
 			withResult(me.toString()).
 			toJSONObject().toString();
 	}
+
 }

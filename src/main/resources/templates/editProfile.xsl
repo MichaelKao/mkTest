@@ -24,12 +24,14 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
+			<LINK crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.css" integrity="sha512-Aix44jXZerxlqPbbSLJ03lEsUch9H/CmnNfWxShD6vJBbboR+rPdDXmKN+/QjISWT80D4wMjtM4Kx7+xkLVywQ==" referrerpolicy="no-referrer" rel="stylesheet"/>
+			<LINK href="/STYLE/album.css" rel="stylesheet"/>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container py-7">
-				<DIV class="modal fade" id="modal">
+				<DIV class="modal fade" id="deleteModal">
 					<DIV class="modal-dialog modal-dialog-centered" role="document">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
@@ -50,11 +52,42 @@
 						</DIV>
 					</DIV>
 				</DIV>
+				<DIV class="modal fade" id="cropModal">
+					<DIV class="modal-dialog modal-dialog-centered">
+						<DIV class="modal-content">
+							<DIV class="modal-header">
+								<H5 class="modal-title" id="modalLabel">裁切照片</H5>
+								<BUTTON aria-label="Close" class="btn-close text-dark" data-bs-dismiss="modal" type="button"></BUTTON>
+							</DIV>
+							<DIV class="modal-body">
+								<P class="text-primary text-bold">註：須本人自拍並且手持證件</P>
+								<DIV class="imgContainer">
+									<IMG alt="cropper" src="https://via.placeholder.com/200" id="image"/>
+								</DIV>
+								<DIV class="progress-wrapper">
+									<DIV class="progress-info">
+										<DIV class="progress-percentage">
+											<span class="text-sm font-weight-bold">0%</span>
+										</DIV>
+									</DIV>
+									<DIV class="progress">
+										<DIV class="progress-bar bg-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></DIV>
+									</DIV>
+								</DIV>
+							</DIV>
+							<DIV class="modal-footer">
+								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消</BUTTON>
+								<BUTTON class="btn btn-primary" id="crop" type="button">完成</BUTTON>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
 				<DIV class="card mx-md-7">
 					<xsl:apply-templates select="lover"/>
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
+			<SCRIPT crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.js" integrity="sha512-E4KfIuQAc9ZX6zW1IUJROqxrBqJXPuEcDKP6XesMdu2OV4LW7pj8+gkkyx2y646xEV7yxocPbaTtk2LQIJewXw==" referrerpolicy="no-referrer"/>
 			<SCRIPT src="/SCRIPT/editProfile.js"/>
 			<xsl:if test="@signIn">
 				<SCRIPT src="/SCRIPT/websocket.js"/>
@@ -69,7 +102,28 @@
 						<I class="fad fa-chevron-double-left"></I>
 					</A>
 					<DIV class="ms-auto">
-						<BUTTON class="btn btn-outline-primary deleteAccount" type="button">刪除帳號</BUTTON>
+						<xsl:choose>
+							<xsl:when test="not(certification)">
+								<LABEL>
+									<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
+									<A class="btn btn-outline-info me-1 certification">
+										<IMG alt="approval" src="/accept.svg" width="17"/>
+										<SPAN class="ms-1">安心認證</SPAN>
+									</A>
+								</LABEL>
+								<BUTTON class="btn btn-outline-info me-1 certification" disabled="" style="display: none;">
+									<IMG alt="approval" src="/accept.svg" width="17"/>
+									<SPAN class="ms-1">待審核</SPAN>
+								</BUTTON>
+							</xsl:when>
+							<xsl:when test="certification and certification/@certification = 'false'">
+								<BUTTON class="btn btn-outline-info me-1" disabled="">
+									<IMG alt="approval" src="/accept.svg" width="17"/>
+									<SPAN class="ms-1">待審核</SPAN>
+								</BUTTON>
+							</xsl:when>
+						</xsl:choose>
+						<BUTTON class="btn btn-outline-primary" data-bs-target="#deleteModal" data-bs-toggle="modal" type="button">刪除帳號</BUTTON>
 					</DIV>
 				</DIV>
 				<DIV class="row mt-3">
@@ -220,40 +274,42 @@
 							</TEXTAREA>
 						</DIV>
 					</DIV>
-					<DIV class="col-md-12 mb-3">
-						<LABEL>服務標籤</LABEL>
-						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
-							<xsl:for-each select="service">
-								<DIV class="form-check ms-2">
-									<INPUT class="form-check-input service" id="service{@serviceID}" type="checkbox" value="{@serviceID}">
-										<xsl:if test="@serviceSelected">
-											<xsl:attribute name="checked"/>
-										</xsl:if>
-									</INPUT>
-									<LABEL class="custom-control-label" for="service{@serviceID}">
-										<xsl:value-of select="."/>
-									</LABEL>
-								</DIV>
-							</xsl:for-each>
+					<xsl:if test="/document/@female">
+						<DIV class="col-md-12 mb-3">
+							<LABEL>服務標籤</LABEL>
+							<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
+								<xsl:for-each select="service">
+									<DIV class="form-check ms-2">
+										<INPUT class="form-check-input service" id="service{@serviceID}" type="checkbox" value="{@serviceID}">
+											<xsl:if test="@serviceSelected">
+												<xsl:attribute name="checked"/>
+											</xsl:if>
+										</INPUT>
+										<LABEL class="custom-control-label" for="service{@serviceID}">
+											<xsl:value-of select="."/>
+										</LABEL>
+									</DIV>
+								</xsl:for-each>
+							</DIV>
 						</DIV>
-					</DIV>
-					<DIV class="col-md-12 mb-3">
-						<LABEL>服務地區</LABEL>
-						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
-							<xsl:for-each select="location">
-								<DIV class="form-check ms-2">
-									<INPUT class="form-check-input location" id="location{@locationID}" type="checkbox" value="{@locationID}">
-										<xsl:if test="@locationSelected">
-											<xsl:attribute name="checked"/>
-										</xsl:if>
-									</INPUT>
-									<LABEL class="custom-control-label" for="location{@locationID}">
-										<xsl:value-of select="."/>
-									</LABEL>
-								</DIV>
-							</xsl:for-each>
+						<DIV class="col-md-12 mb-3">
+							<LABEL>服務地區</LABEL>
+							<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
+								<xsl:for-each select="location">
+									<DIV class="form-check ms-2">
+										<INPUT class="form-check-input location" id="location{@locationID}" type="checkbox" value="{@locationID}">
+											<xsl:if test="@locationSelected">
+												<xsl:attribute name="checked"/>
+											</xsl:if>
+										</INPUT>
+										<LABEL class="custom-control-label" for="location{@locationID}">
+											<xsl:value-of select="."/>
+										</LABEL>
+									</DIV>
+								</xsl:for-each>
+							</DIV>
 						</DIV>
-					</DIV>
+					</xsl:if>
 				</DIV>
 				<DIV class="row">
 					<DIV class="col-md-6 text-right ms-auto">

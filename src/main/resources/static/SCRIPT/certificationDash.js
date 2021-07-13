@@ -2,16 +2,17 @@ $(document).ready(function () {
 
 	var id;
 
-	$('BUTTON.failReasonBtn').click(function () {
-		var reason = $(this).closest('LI').find('DIV.failReasonHidden').text();
-		$('DIV.reason').text(reason);
+	$('BUTTON.seePic').click(function () {
+		let button = this;
+		id = $(button).closest('TBODY').find('INPUT[name="id"]').val();
+		$('DIV.modal-body>IMG').attr('src', 'https://d35hi420xc5ji7.cloudfront.net/identity/' + id);
 	});
 
-	$('BUTTON.success').click(function () {
+	$('BUTTON.fail').click(function () {
 		let button = this;
-		id = $(button).closest('UL').find('INPUT[name="id"]').val();
+		id = $(button).closest('TBODY').find('INPUT[name="id"]').val();
 		$.post(
-			'/dashboard/success.json',
+			'/dashboard/identityFailed.json',
 			{
 				id: id
 			},
@@ -30,17 +31,12 @@ $(document).ready(function () {
 		return false;
 	});
 
-	$('BUTTON.fail').click(function () {
-		id = $(this).closest('UL').find('INPUT[name="id"]').val();
-	});
-
-	$('FORM.failForm').submit(function (event) {
-		event.preventDefault();
-		let form = this;
+	$('BUTTON.success').click(function () {
+		let button = this;
+		id = $(button).closest('TBODY').find('INPUT[name="id"]').val();
 		$.post(
-			$(form).attr('action'),
+			'/dashboard/identityPassed.json',
 			{
-				failReason: $('TEXTAREA[name="failReason"]').val(),
 				id: id
 			},
 			function (data) {
