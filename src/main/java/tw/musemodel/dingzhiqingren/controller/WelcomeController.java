@@ -1067,7 +1067,6 @@ public class WelcomeController {
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
 	String editProfile(Lover model, Authentication authentication, Locale locale) {
-		LOGGER.debug("測試{}");
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()

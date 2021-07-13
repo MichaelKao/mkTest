@@ -124,14 +124,12 @@ $(document).ready(function () {
 					$('BUTTON.certification').attr('style', 'inline');
 				}
 				if (photoType === 'qrcode') {
-					console.log(data.response)
 					$('INPUT[name="inviteMeAsLineFriend"]').val(data.result);
-					$('INPUT[name="lineLink"]').css('display', 'inline');
-					$('DIV.uploadQrcode').css('display', 'none');
+					$('INPUT[name="inviteMeAsLineFriend"]').css('display', 'inline');
 				}
 			},
-			error: function (data) {
-				$('.toast-body').html('上傳失敗');
+			error: function () {
+				$('.toast-body').html('QRcode 轉址失敗，請重新上傳');
 				$('.toast').toast('show');
 				$cropModal.modal('hide');
 				return false;

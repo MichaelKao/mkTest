@@ -256,14 +256,14 @@
 			</DIV>
 			<DIV class="mt-2">
 				<xsl:for-each select="location">
-					<SPAN class="me-1 badge bg-gradient-dark">
+					<SPAN class="me-1 badge bg-dark">
 						<xsl:value-of select="."/>
 					</SPAN>
 				</xsl:for-each>
 			</DIV>
 			<DIV class="mt-2">
 				<xsl:for-each select="service">
-					<SPAN class="me-1 badge bg-gradient-primary">
+					<SPAN class="me-1 badge bg-primary">
 						<SPAN>#</SPAN>
 						<SPAN>
 							<xsl:value-of select="."/>
