@@ -32,7 +32,7 @@
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container py-7">
 				<DIV class="modal fade" id="deleteModal">
-					<DIV class="modal-dialog modal-dialog-centered" role="document">
+					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
 								<H5 class="modal-title">提醒！</H5>
@@ -47,6 +47,24 @@
 								</BUTTON>
 								<BUTTON class="btn btn-primary confirmBtn" type="button">
 									<xsl:value-of select="@i18n-confirm"/>
+								</BUTTON>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
+				<DIV class="modal fade" id="qrcodeModal">
+					<DIV class="modal-dialog modal-dialog-centered">
+						<DIV class="modal-content">
+							<DIV class="modal-header">
+								<H5 class="modal-title">教學</H5>
+								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
+							</DIV>
+							<DIV class="modal-body">
+								<IMG alt="qrcode" src="/qrcode.png" style="max-width: 100%;"/>
+							</DIV>
+							<DIV class="modal-footer">
+								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+									<xsl:value-of select="@i18n-cancel"/>
 								</BUTTON>
 							</DIV>
 						</DIV>
@@ -111,18 +129,15 @@
 										<SPAN class="ms-1">安心認證</SPAN>
 									</A>
 								</LABEL>
-								<BUTTON class="btn btn-outline-info me-1 certification" disabled="" style="display: none;">
-									<IMG alt="approval" src="/accept.svg" width="17"/>
-									<SPAN class="ms-1">待審核</SPAN>
-								</BUTTON>
-							</xsl:when>
-							<xsl:when test="certification and certification/@certification = 'false'">
-								<BUTTON class="btn btn-outline-info me-1" disabled="">
-									<IMG alt="approval" src="/accept.svg" width="17"/>
-									<SPAN class="ms-1">待審核</SPAN>
-								</BUTTON>
 							</xsl:when>
 						</xsl:choose>
+						<BUTTON class="btn btn-outline-info me-1 certification" disabled="" style="display: none;">
+							<xsl:if test="certification and certification/@certification = 'false'">
+								<xsl:attribute name="style">display: inline;</xsl:attribute>
+							</xsl:if>
+							<IMG alt="approval" src="/accept.svg" width="17"/>
+							<SPAN class="ms-1">待審核</SPAN>
+						</BUTTON>
 						<BUTTON class="btn btn-outline-primary" data-bs-target="#deleteModal" data-bs-toggle="modal" type="button">刪除帳號</BUTTON>
 					</DIV>
 				</DIV>
@@ -276,10 +291,17 @@
 									<INPUT accept="image/*" class="sr-only" data-type="qrcode" name="image" type="file"/>
 									<A class="btn btn-primary p-1 me-1 certification">點擊上傳 QR code</A>
 								</LABEL>
-								<BUTTON class="btn btn-info p-1">如何取得 QR code?</BUTTON>
+								<BUTTON class="btn btn-info p-1" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">如何取得 QR code?</BUTTON>
 							</DIV>
 							<DIV>
-								<INPUT class="form-control" name="inviteMeAsLineFriend" readonly="" required="" style="display: none;" type="text" value=""/>
+								<INPUT class="form-control" name="inviteMeAsLineFriend" readonly="" required="" style="display: none;" type="text" value="">
+									<xsl:if test="inviteMeAsLineFriend">
+										<xsl:attribute name="style">display: inline;</xsl:attribute>
+										<xsl:attribute name="value">
+											<xsl:value-of select="inviteMeAsLineFriend"/>
+										</xsl:attribute>
+									</xsl:if>
+								</INPUT>
 							</DIV>
 						</DIV>
 						<DIV class="col-md-12 mb-3">
