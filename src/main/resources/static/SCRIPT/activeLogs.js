@@ -77,8 +77,6 @@ $(document).ready(function () {
 		if (rate === undefined) {
 			rate = null;
 		}
-		console.log(whom)
-		console.log(rate)
 		$.post(
 			url,
 			{
@@ -93,6 +91,26 @@ $(document).ready(function () {
 					$('.toast').toast('show');
 					$modal.modal('hide');
 					$rateModal.modal('hide');
+				} else {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+				}
+			},
+			'json'
+			);
+		return false;
+	});
+
+	$('BUTTON.openLine').click(function () {
+		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
+		$.post(
+			'/maleOpenLine.json',
+			{
+				whom: whom
+			},
+			function (data) {
+				if (data.response) {
+					location.href = data.redirect;
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');

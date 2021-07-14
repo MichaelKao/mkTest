@@ -23,6 +23,8 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 
 	public Long countByInitiativeAndBehaviorAndOccurredBetween(Lover initiative, Behavior behavior, Date occurredSince, Date occurredUntil);
 
+	public Long countByInitiativeAndPassiveAndBehaviorAndSeenNotNull(Lover initiative, Lover passive, Behavior behavior);
+
 	public int countByInitiative(Lover initiative);
 
 	@Query("SELECT COUNT(h.id) FROM History h WHERE h.passive = :passive AND h.behavior != :behavior1 AND h.behavior != :behavior2 AND h.seen is null")
@@ -42,4 +44,6 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 	public List<History> findByPassiveAndBehaviorNot(Lover passive, Behavior behavior);
 
 	public History findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(Lover initiative, Lover passive, Behavior behavior);
+
+	public History findByInitiativeAndPassiveAndBehavior(Lover initiative, Lover passive, Behavior behavior);
 }

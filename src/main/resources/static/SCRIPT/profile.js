@@ -95,4 +95,24 @@ $(document).ready(function () {
 			$('DIV.lessThan768').empty()
 		}
 	}
+
+	$('BUTTON.openLine').click(function () {
+		console.log($('INPUT[name="whom"]').val())
+		$.post(
+			'/maleOpenLine.json',
+			{
+				whom: $('INPUT[name="whom"]').val(),
+			},
+			function (data) {
+				if (data.response) {
+					location.href = data.redirect;
+				} else {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+				}
+			},
+			'json'
+			);
+		return false;
+	});
 });

@@ -108,10 +108,10 @@ public class DashboardController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -120,10 +120,6 @@ public class DashboardController {
 				"signIn",
 				authentication.getName()
 			);
-		}
-
-		if (meIsMale) {
-			return new ModelAndView("redirect:/");
 		}
 
 		documentElement.setAttribute(
@@ -239,10 +235,10 @@ public class DashboardController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -251,10 +247,6 @@ public class DashboardController {
 				"signIn",
 				authentication.getName()
 			);
-		}
-
-		if (meIsMale) {
-			return new ModelAndView("redirect:/");
 		}
 
 		documentElement.setAttribute(
