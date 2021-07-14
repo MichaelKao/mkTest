@@ -3,6 +3,7 @@ package tw.musemodel.dingzhiqingren.service;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -209,6 +210,10 @@ public class HistoryService {
 				//女生已經同意給過 LINE
 				throw new RuntimeException("gimmeYourLineInvitation.femaleHasGivenLine");
 			} else {
+				//離上一次拒絕不到24小時
+				if (within24hrsFromLastRefused(initiative, passive)) {
+					throw new RuntimeException("gimmeYourLineInvitation.within24hrsFromLastRefused");
+				}
 				//被拒絕過
 				lineGiven.setResponse(null);
 				lineGivenRepository.saveAndFlush(lineGiven);
@@ -958,6 +963,12 @@ public class HistoryService {
 		return document;
 	}
 
+	/**
+	 * 男生開啟 LINE 未超過上限值
+	 *
+	 * @param male
+	 * @return
+	 */
 	public boolean withinRequiredLimit(Lover male) {
 		long currentTimeMillis = System.currentTimeMillis();
 		Long dailyCount = historyRepository.countByInitiativeAndBehaviorAndOccurredBetween(
@@ -968,4 +979,19 @@ public class HistoryService {
 		);
 		return loverService.isVIP(male) && Objects.nonNull(dailyCount) && dailyCount < VIP_DAILY_TOLERANCE;
 	}
+
+	public boolean within24hrsFromLastRefused(Lover male, Lover female) {
+		Date refusedDate = null;
+		Date nowDate = null;
+		History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(female, male, BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
+		if (Objects.nonNull(history)) {
+			Calendar refused = Calendar.getInstance();
+			refused.setTime(history.getOccurred());
+			refused.add(Calendar.HOUR, 24);
+			refusedDate = refused.getTime();
+			nowDate = new Date();
+		}
+		return nowDate.before(refusedDate);
+	}
+
 }
