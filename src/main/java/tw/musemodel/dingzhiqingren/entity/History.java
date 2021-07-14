@@ -319,7 +319,7 @@ public class History implements java.io.Serializable {
 		DA_ZHAO_HU("DA_ZHAO_HU", 6),//打招呼
 		KAN_GUO_WO("KAN_GUO_WO", 7),//看过我
 		CHE_MA_FEI("CHE_MA_FEI", 8),//车马费
-		LAI_TUI_DIAN("LAI_TUI_DIAN", 9),//要求賴的退點
+		LAI_KOU_DIAN("LAI_KOU_DIAN", 9),//要求賴扣點
 		SHOU_CANG("SHOU_CANG", 10),//收藏
 		BU_SHOU_CANG("BU_SHOU_CANG", 11),//取消收藏
 		PING_JIA("PING_JIA", 12);//評價

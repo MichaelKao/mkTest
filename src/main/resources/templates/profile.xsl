@@ -152,26 +152,35 @@
 								</BUTTON>
 							</DIV>
 							<DIV>
-								<A class="btn btn-icon-only btn-link ms-4">
-									<xsl:choose>
-										<xsl:when test="/document/@male">
+								<xsl:choose>
+									<xsl:when test="/document/@accepted">
+										<BUTTON class="btn btn-icon-only btn-link ms-4 openLine" type="button">
+											<I class="fad fa-comment-plus font40"></I>
+										</BUTTON>
+									</xsl:when>
+									<xsl:otherwise>
+										<A class="btn btn-icon-only btn-link ms-4">
 											<xsl:choose>
-												<xsl:when test="/document/@match">
-													<xsl:attribute name="href">
-														<xsl:value-of select="/document/@match"/>
-													</xsl:attribute>
+												<xsl:when test="/document/@male">
+													<xsl:choose>
+														<xsl:when test="/document/@matched">
+															<xsl:attribute name="href">
+																<xsl:value-of select="/document/@matched"/>
+															</xsl:attribute>
+														</xsl:when>
+														<xsl:otherwise>
+															<xsl:attribute name="id">giveMeLine</xsl:attribute>
+														</xsl:otherwise>
+													</xsl:choose>
 												</xsl:when>
 												<xsl:otherwise>
-													<xsl:attribute name="id">giveMeLine</xsl:attribute>
+													<xsl:attribute name="id">greeting</xsl:attribute>
 												</xsl:otherwise>
 											</xsl:choose>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:attribute name="id">greeting</xsl:attribute>
-										</xsl:otherwise>
-									</xsl:choose>
-									<I class="fad fa-comment-plus font40"></I>
-								</A>
+											<I class="fad fa-comment-plus font40"></I>
+										</A>
+									</xsl:otherwise>
+								</xsl:choose>
 							</DIV>
 							<xsl:if test="/document/@male">
 								<DIV>

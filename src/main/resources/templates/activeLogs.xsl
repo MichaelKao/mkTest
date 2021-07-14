@@ -123,7 +123,12 @@
 									<xsl:if test="@rateButton">
 										<DIV class="ms-0 ms-md-auto">
 											<xsl:if test="@addLineButton">
-												<A class="btn btn-success px-2 py-1 px-md-3 py-md-2 me-1" href="{@lineButton}">加入好友</A>
+												<BUTTON class="btn btn-success px-2 py-1 px-md-3 py-md-2 me-1 openLine" type="button">
+													<SPAN>加入好友</SPAN>
+													<xsl:if test="@remindDeduct">
+														<DIV class="text-xxs">需 30 愛心</DIV>
+													</xsl:if>
+												</BUTTON>
 											</xsl:if>
 											<BUTTON class="btn btn-warning px-2 py-1 px-md-3 py-md-2 rate" type="button">評價</BUTTON>
 										</DIV>

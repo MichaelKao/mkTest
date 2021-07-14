@@ -600,3 +600,5 @@ COMMENT ON COLUMN"qing_ren_yu_di_qu"."di_qu"IS'服務';
 ALTER TABLE"qing_ren"
 ADD COLUMN"an_xin"bool;
 COMMENT ON COLUMN"qing_ren"."an_xin"IS'安心';
+
+ALTER TYPE"xing_wei" RENAME VALUE"LAI_TUI_DIAN" TO"LAI_KOU_DIAN";

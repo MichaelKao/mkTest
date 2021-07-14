@@ -176,11 +176,11 @@ public class WelcomeController {
 			List<Lover> lovers = new ArrayList<Lover>();
 			if (gender) {
 				lovers = loverRepository.findAllByGender(false);
-				announcement = historyRepository.countByPassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
+				announcement = historyRepository.countByPassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_KOU_DIAN);
 			}
 			if (!gender) {
 				lovers = loverRepository.findAllByGender(true);
-				announcement = historyRepository.countByFemalePassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
+				announcement = historyRepository.countByFemalePassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_KOU_DIAN);
 			}
 
 			if (announcement > 0) {
@@ -934,12 +934,22 @@ public class WelcomeController {
 			null
 		);
 
-		// 是否已交換過 LINE
-		LineGiven lineGiven = lineGivenRepository.findByFemaleAndMale(lover, me);
-		if (Objects.nonNull(lineGiven)) {
-			if (Objects.nonNull(lineGiven.getResponse())) {
+		if (gender) {
+			// 是否已交換過 LINE
+			LineGiven lineGiven = lineGivenRepository.findByFemaleAndMale(lover, me);
+			History history = historyRepository.findByInitiativeAndPassiveAndBehavior(me, lover, Behavior.LAI_KOU_DIAN);
+
+			if (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse())
+				&& lineGiven.getResponse() && Objects.isNull(history)) {
 				documentElement.setAttribute(
-					lineGiven.getResponse() ? "match" : "noMatch",
+					"accepted",
+					null
+				);
+			}
+
+			if (Objects.nonNull(history)) {
+				documentElement.setAttribute(
+					"matched",
 					lover.getInviteMeAsLineFriend()
 				);
 			}
@@ -2740,4 +2750,36 @@ public class WelcomeController {
 		return json.toString();
 	}
 
+	@PostMapping(path = "/maleOpenLine.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String openLine(@RequestParam("whom") UUID femaleUUID, Authentication authentication, Locale locale) {
+
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover male = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Lover female = loverService.loadByIdentifier(femaleUUID);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = historyService.openLine(
+				male,
+				female,
+				locale
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
+	}
 }
