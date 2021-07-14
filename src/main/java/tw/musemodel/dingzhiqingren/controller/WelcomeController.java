@@ -143,10 +143,10 @@ public class WelcomeController {
 			me = loverService.saveLover(me);
 
 			// 確認性別
-			Boolean meIsMale = loverService.isMale(me);
+			Boolean gender = me.getGender();
 
 			documentElement.setAttribute(
-				meIsMale ? "male" : "female",
+				gender ? "male" : "female",
 				null
 			);
 
@@ -174,11 +174,11 @@ public class WelcomeController {
 			// 通知數、顯示的 lovers 資料
 			int announcement = 0;
 			List<Lover> lovers = new ArrayList<Lover>();
-			if (meIsMale) {
+			if (gender) {
 				lovers = loverRepository.findAllByGender(false);
 				announcement = historyRepository.countByPassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
 			}
-			if (!meIsMale) {
+			if (!gender) {
 				lovers = loverRepository.findAllByGender(true);
 				announcement = historyRepository.countByFemalePassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
 			}
@@ -206,7 +206,7 @@ public class WelcomeController {
 					loverElement.appendChild(ageElement);
 				}
 
-				if (!meIsMale && Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date())) {
+				if (loverService.isVIP(lover)) {
 					loverElement.setAttribute("vip", null);
 				}
 
@@ -822,10 +822,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -906,10 +906,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
-		// 是否為 VIP
-		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+		// 本人是否為 VIP
+		if (loverService.isVIP(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -930,7 +930,7 @@ public class WelcomeController {
 		}
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -1021,15 +1021,15 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
-		// 是否為 VIP
-		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+		// 本人是否為 VIP
+		if (loverService.isVIP(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -1223,10 +1223,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -1275,7 +1275,7 @@ public class WelcomeController {
 					loverService.calculateAge(followed).toString()
 				);
 			}
-			if (followed.getGender() && Objects.nonNull(followed.getVip()) && followed.getVip().after(new Date())) {
+			if (followed.getGender() && loverService.isVIP(followed)) {
 				followElement.setAttribute("vip", null);
 			}
 			if (Objects.nonNull(followed.getCertification())) {
@@ -1384,10 +1384,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -1447,7 +1447,7 @@ public class WelcomeController {
 						loverService.calculateAge(peeker).toString()
 					);
 				}
-				if (peeker.getGender() && Objects.nonNull(peeker.getVip()) && peeker.getVip().after(new Date())) {
+				if (peeker.getGender() && loverService.isVIP(peeker)) {
 					peekerElement.setAttribute("vip", null);
 				}
 				if (Objects.nonNull(peeker.getCertification())) {
@@ -1516,10 +1516,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -1848,14 +1848,14 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
-		if (meIsMale) {
+		if (gender) {
 			documentElement.setAttribute(
 				"greeting",
 				me.getGreeting()
@@ -1880,8 +1880,8 @@ public class WelcomeController {
 				locale
 			));
 
-		// 是否為 VIP
-		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+		// 本人是否為 VIP
+		if (loverService.isVIP(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -2272,10 +2272,10 @@ public class WelcomeController {
 			me = loverService.saveLover(me);
 
 			// 確認性別
-			Boolean meIsMale = loverService.isMale(me);
+			Boolean gender = me.getGender();
 
 			documentElement.setAttribute(
-				meIsMale ? "male" : "female",
+				gender ? "male" : "female",
 				null
 			);
 
@@ -2339,10 +2339,10 @@ public class WelcomeController {
 			me = loverService.saveLover(me);
 
 			// 確認性別
-			Boolean meIsMale = loverService.isMale(me);
+			Boolean gender = me.getGender();
 
 			documentElement.setAttribute(
-				meIsMale ? "male" : "female",
+				gender ? "male" : "female",
 				null
 			);
 
@@ -2408,10 +2408,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -2422,7 +2422,7 @@ public class WelcomeController {
 			);
 		}
 
-		if (meIsMale) {
+		if (gender) {
 			return new ModelAndView("redirect:/");
 		}
 

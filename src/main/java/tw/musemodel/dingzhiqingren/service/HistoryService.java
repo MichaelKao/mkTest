@@ -214,29 +214,28 @@ public class HistoryService {
 				lineGivenRepository.saveAndFlush(lineGiven);
 			}
 		}
-		short cost = COST_GIMME_YOUR_LINE_INVITATION;
-		long currentTimeMillis = System.currentTimeMillis();
-		Date vip = initiative.getVip();
-		if (Objects.nonNull(vip) && vip.after(new Date(currentTimeMillis))) {
-			Long dailyCount = historyRepository.countByInitiativeAndBehaviorAndOccurredBetween(
-				initiative,
-				BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
-				Servant.minimumToday(currentTimeMillis),
-				Servant.maximumToday(currentTimeMillis)
-			);
-			if (Objects.isNull(dailyCount) || dailyCount <= VIP_DAILY_TOLERANCE) {
-				cost = 0;
-			}
-		} else {
-			if (points(initiative) < Math.abs(cost)) {
-				throw new RuntimeException("gimmeYourLineInvitation.insufficientPoints");//点数不足
-			}
-		}
+//		short cost = COST_GIMME_YOUR_LINE_INVITATION;
+//		long currentTimeMillis = System.currentTimeMillis();
+//		Date vip = initiative.getVip();
+//		if (Objects.nonNull(vip) && vip.after(new Date(currentTimeMillis))) {
+//			Long dailyCount = historyRepository.countByInitiativeAndBehaviorAndOccurredBetween(
+//				initiative,
+//				BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
+//				Servant.minimumToday(currentTimeMillis),
+//				Servant.maximumToday(currentTimeMillis)
+//			);
+//			if (Objects.isNull(dailyCount) || dailyCount <= VIP_DAILY_TOLERANCE) {
+//				cost = 0;
+//			}
+//		} else {
+//			if (points(initiative) < Math.abs(cost)) {
+//				throw new RuntimeException("gimmeYourLineInvitation.insufficientPoints");//点数不足
+//			}
+//		}
 		History history = new History(
 			initiative,
 			passive,
-			BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
-			cost
+			BEHAVIOR_GIMME_YOUR_LINE_INVITATION
 		);
 		history.setGreeting(greetingMessage);
 		history = historyRepository.saveAndFlush(history);
@@ -584,12 +583,12 @@ public class HistoryService {
 		Element documentElement = document.getDocumentElement();
 
 		// 確認性別
-		Boolean isMale = loverService.isMale(lover);
+		Boolean gender = lover.getGender();
 
 		List<Activity> activeLogsList = findActiveLogsOrderByOccurredDesc(lover);
 
 		for (Activity activeLogs : activeLogsList) {
-			if (!isMale && activeLogs.getBehavior() == BEHAVIOR_LAI_TUI_DIAN) {
+			if (!gender && activeLogs.getBehavior() == BEHAVIOR_LAI_TUI_DIAN) {
 				continue;
 			}
 			String initiativeIdentifier = activeLogs.getInitiative().getIdentifier().toString();
@@ -618,7 +617,7 @@ public class HistoryService {
 					.format(activeLogs.getOccurred()
 					));
 			if (activeLogs.getBehavior() == BEHAVIOR_CHARGED) {
-				if (isMale) {
+				if (gender) {
 					profileImage = initiativeProfileImage;
 					message = String.format(
 						"%s%d%s",
@@ -646,7 +645,7 @@ public class HistoryService {
 				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_MONTHLY_CHARGED) {
-				if (isMale) {
+				if (gender) {
 					profileImage = initiativeProfileImage;
 					message = String.format(
 						"%s",
@@ -672,7 +671,7 @@ public class HistoryService {
 				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_LAI_TUI_DIAN) {
-				if (isMale) {
+				if (gender) {
 					profileImage = initiativeProfileImage;
 					message = String.format(
 						"%s%s%s%d",
@@ -701,7 +700,7 @@ public class HistoryService {
 				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_GIMME_YOUR_LINE_INVITATION) {
-				if (isMale) {
+				if (gender) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
@@ -711,7 +710,7 @@ public class HistoryService {
 						"要求 LINE"
 					);
 				}
-				if (!isMale) {
+				if (!gender) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
@@ -745,7 +744,7 @@ public class HistoryService {
 				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_INVITE_ME_AS_LINE_FRIEND) {
-				if (isMale) {
+				if (gender) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
@@ -765,7 +764,7 @@ public class HistoryService {
 						);
 					}
 				}
-				if (!isMale) {
+				if (!gender) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
@@ -800,7 +799,7 @@ public class HistoryService {
 				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND) {
-				if (isMale) {
+				if (gender) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
@@ -809,7 +808,7 @@ public class HistoryService {
 						"拒絕給您 Line"
 					);
 				}
-				if (!isMale) {
+				if (!gender) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
@@ -837,7 +836,7 @@ public class HistoryService {
 				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_GREETING) {
-				if (isMale) {
+				if (gender) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
@@ -858,7 +857,7 @@ public class HistoryService {
 						);
 					}
 				}
-				if (!isMale) {
+				if (!gender) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
@@ -886,7 +885,7 @@ public class HistoryService {
 				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_FARE) {
-				if (isMale) {
+				if (gender) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
@@ -897,7 +896,7 @@ public class HistoryService {
 						"車馬費"
 					);
 				}
-				if (!isMale) {
+				if (!gender) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
