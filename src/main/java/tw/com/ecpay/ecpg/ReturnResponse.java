@@ -421,14 +421,14 @@ public class ReturnResponse {
 			}
 
 			/**
-			 * @return 特店交易編號
+			 * @return 特店交易编号
 			 */
 			public String getMerchantTradeNo() {
 				return merchantTradeNo;
 			}
 
 			/**
-			 * @param merchantTradeNo 特店交易編號
+			 * @param merchantTradeNo 特店交易编号
 			 */
 			public void setMerchantTradeNo(String merchantTradeNo) {
 				this.merchantTradeNo = merchantTradeNo;

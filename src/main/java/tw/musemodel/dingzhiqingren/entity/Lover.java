@@ -54,6 +54,8 @@ import org.hibernate.annotations.TypeDef;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Lover implements java.io.Serializable {
 
+	private static final long serialVersionUID = 7620248150717440860L;
+
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

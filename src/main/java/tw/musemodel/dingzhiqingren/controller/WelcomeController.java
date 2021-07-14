@@ -176,11 +176,11 @@ public class WelcomeController {
 			List<Lover> lovers = new ArrayList<Lover>();
 			if (meIsMale) {
 				lovers = loverRepository.findAllByGender(false);
-				announcement = historyRepository.countByPassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
+				announcement = historyRepository.countByPassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_KOU_DIAN);
 			}
 			if (!meIsMale) {
 				lovers = loverRepository.findAllByGender(true);
-				announcement = historyRepository.countByFemalePassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_TUI_DIAN);
+				announcement = historyRepository.countByFemalePassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_KOU_DIAN);
 			}
 
 			if (announcement > 0) {

@@ -1,7 +1,6 @@
 package tw.musemodel.dingzhiqingren.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.util.Locale;
 import java.util.UUID;
 import javax.servlet.http.HttpSession;
@@ -62,12 +61,12 @@ public class InPay2Controller {
 	 */
 	@PostMapping(path = "/createPayment/{payToken}.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String createPeriodPayment(@PathVariable final String payToken, final HttpSession session) {
+	String createPayment(@PathVariable final String payToken, final HttpSession session) {
 		return inpay2Service.createPayment(payToken, session);
 	}
 
 	/**
-	 * 取得厂商验证码。
+	 * 取得厂商验证码(信用卡定期定额)。
 	 *
 	 * @param session 分配给会话的标识符
 	 * @param locale 语言环境
@@ -76,12 +75,15 @@ public class InPay2Controller {
 	 */
 	@PostMapping(path = "/getPeriodTokenByTrade.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String getPeriodTokenByTrade(final HttpSession session, Locale locale) throws JsonProcessingException {
-		return inpay2Service.getPeriodTokenByTrade(session);
+	String getPeriodTokenByTrade(final @RequestParam UUID me, final HttpSession session) throws JsonProcessingException {
+		return inpay2Service.getPeriodTokenByTrade(
+			loverService.loadByIdentifier(me),
+			session
+		);
 	}
 
 	/**
-	 * 取得厂商验证码。
+	 * 取得厂商验证码(付款选择清单)。
 	 *
 	 * @param session 分配给会话的标识符
 	 * @return 厂商验证码 JSON 对象

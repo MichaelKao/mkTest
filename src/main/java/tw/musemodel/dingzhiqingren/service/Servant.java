@@ -67,6 +67,11 @@ public class Servant {
 	public final static String LOCALHOST = System.getenv("LOCALHOST");
 
 	/**
+	 * 30 天的毫秒数
+	 */
+	public final static Long MILLISECONDS_OF_30_DAYS = 2592000000L;
+
+	/**
 	 * 万能天神
 	 */
 	public final static String ROLE_ADMINISTRATOR = "ROLE_ALMIGHTY";
@@ -80,6 +85,11 @@ public class Servant {
 	 * 一般用户
 	 */
 	public final static String ROLE_ADVENTURER = "ROLE_YONGHU";
+
+	/**
+	 * 静态资源网域
+	 */
+	public static final String STATIC_HOST = System.getenv("STATIC_HOST");
 
 	/**
 	 * 中华民族日期时间格式化器
@@ -110,8 +120,6 @@ public class Servant {
 	 * 服务器时区
 	 */
 	public static final ZoneId ZONE_ID = ZoneId.of(System.getenv("ZONE_ID"));
-
-	public static final String STATIC_HOST = System.getenv("STATIC_HOST");
 
 	/**
 	 * 一天最晚的时戳
@@ -166,7 +174,9 @@ public class Servant {
 	}
 
 	public Role getRole(String textualRepresentation) {
-		return roleRepository.findOneByTextualRepresentation(textualRepresentation);
+		return roleRepository.findOneByTextualRepresentation(
+			textualRepresentation
+		);
 	}
 
 	public Document newDocument() throws ParserConfigurationException {

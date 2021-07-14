@@ -96,7 +96,7 @@ public class HistoryService {
 	/**
 	 * 历程：賴要求的退點(拒絕或過期)
 	 */
-	public static final Behavior BEHAVIOR_LAI_TUI_DIAN = Behavior.LAI_TUI_DIAN;
+	public static final Behavior BEHAVIOR_LAI_TUI_DIAN = Behavior.LAI_KOU_DIAN;
 
 	/**
 	 * 历程：月费行为
