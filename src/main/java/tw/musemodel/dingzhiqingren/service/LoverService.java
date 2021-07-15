@@ -106,8 +106,7 @@ public class LoverService {
 				AWS_ACCESS_KEY_ID,
 				AWS_SECRET_ACCESS_KEY
 			)
-		)).
-		withRegion(Regions.AP_SOUTHEAST_1).build();
+		)).withRegion(Regions.AP_SOUTHEAST_1).build();
 
 	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -536,6 +535,17 @@ public class LoverService {
 			string,
 			expiry
 		));
+	}
+
+	/**
+	 * 是带把儿的吗
+	 *
+	 * @param lover 用户
+	 * @return 布尔值
+	 */
+	public Boolean isMale(Lover lover) {
+		Boolean isMale = lover.getGender();
+		return isMale;
 	}
 
 	/**
@@ -1298,7 +1308,6 @@ public class LoverService {
 	 */
 	@Transactional
 	public JSONObject updateLocation(Location location, Lover honey) {
-
 		Set<Location> locations = honey.getLocations();
 		for (Location loc : locations) {
 			if (Objects.equals(loc, location)) {
@@ -1328,7 +1337,6 @@ public class LoverService {
 	 */
 	@Transactional
 	public JSONObject updateService(ServiceTag service, Lover honey) {
-
 		Set<ServiceTag> services = honey.getServices();
 		for (ServiceTag ser : services) {
 			if (Objects.equals(ser, service)) {

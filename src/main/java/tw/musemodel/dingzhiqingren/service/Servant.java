@@ -1,5 +1,7 @@
 package tw.musemodel.dingzhiqingren.service;
 
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -59,12 +61,21 @@ public class Servant {
 	/**
 	 * 东八时区
 	 */
-	public static final ZoneId ASIA_TAIPEI = ZoneId.of("Asia/Taipei");
+	public final static ZoneId ASIA_TAIPEI = ZoneId.of("Asia/Taipei");
+
+	public final static JsonMapper JSON_MAPPER = new JsonMapper();
+
+	public final static ObjectWriter JSON_WRITER_WITH_DEFAULT_PRETTY_PRINTER = new JsonMapper().writerWithDefaultPrettyPrinter();
 
 	/**
 	 * 本地服务器域名
 	 */
 	public final static String LOCALHOST = System.getenv("LOCALHOST");
+
+	/**
+	 * 30 天的毫秒数
+	 */
+	public final static Long MILLISECONDS_OF_30_DAYS = 2592000000L;
 
 	/**
 	 * 万能天神
@@ -80,6 +91,11 @@ public class Servant {
 	 * 一般用户
 	 */
 	public final static String ROLE_ADVENTURER = "ROLE_YONGHU";
+
+	/**
+	 * 静态资源网域
+	 */
+	public static final String STATIC_HOST = System.getenv("STATIC_HOST");
 
 	/**
 	 * 中华民族日期时间格式化器
@@ -110,8 +126,6 @@ public class Servant {
 	 * 服务器时区
 	 */
 	public static final ZoneId ZONE_ID = ZoneId.of(System.getenv("ZONE_ID"));
-
-	public static final String STATIC_HOST = System.getenv("STATIC_HOST");
 
 	/**
 	 * 一天最晚的时戳
@@ -166,7 +180,9 @@ public class Servant {
 	}
 
 	public Role getRole(String textualRepresentation) {
-		return roleRepository.findOneByTextualRepresentation(textualRepresentation);
+		return roleRepository.findOneByTextualRepresentation(
+			textualRepresentation
+		);
 	}
 
 	public Document newDocument() throws ParserConfigurationException {

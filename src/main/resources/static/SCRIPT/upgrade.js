@@ -8,6 +8,9 @@ $(document).ready(function () {
 			}
 			$.post(
 				'/inpay2/getPeriodTokenByTrade.json',
+				{
+					me: $('#me').val()
+				},
 				function (data) {
 					if (data.RtnCode === 1) {
 						try {
@@ -49,7 +52,7 @@ $(document).ready(function () {
 					paymentInfo.PaymentType
 				);
 				$.post(
-					`/inpay2/createPeriodPayment/${payToken}.json`,
+					`/inpay2/createPayment/${payToken}.json`,
 					function (data) {
 						console.log(data);
 						if (data.ThreeDInfo.ThreeDURL) {

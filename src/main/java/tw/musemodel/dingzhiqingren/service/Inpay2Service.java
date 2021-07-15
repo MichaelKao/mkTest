@@ -47,10 +47,12 @@ import tw.com.ecpay.ecpg.TokenRequest.Data.ConsumerInfo;
 import tw.com.ecpay.ecpg.TokenRequest.Data.OrderInfo;
 import tw.com.ecpay.ecpg.TokenRequest.RqHeader;
 import tw.com.ecpay.ecpg.TokenResponse;
+import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.LuJie;
 import tw.musemodel.dingzhiqingren.entity.Plan;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
+import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LuJieRepository;
 import tw.musemodel.dingzhiqingren.repository.PlanRepository;
 
@@ -63,6 +65,16 @@ import tw.musemodel.dingzhiqingren.repository.PlanRepository;
 public class Inpay2Service {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(Inpay2Service.class);
+
+	/**
+	 * 定期定额执行次数
+	 */
+	private final static Short EXEC_TIMES = Short.parseShort(System.getenv("EXEC_TIMES"));
+
+	/**
+	 * 定期定额执行频率
+	 */
+	private final static Short FREQUENCY = Short.parseShort(System.getenv("FREQUENCY"));
 
 	private final static JsonMapper JSON_MAPPER = new JsonMapper();
 
@@ -82,9 +94,22 @@ public class Inpay2Service {
 
 	private final static String INPAY2_TRANSFORMATION = "AES/CBC/PKCS5Padding";
 
-	private static final SimpleDateFormat SIMPLEDATEFORMAT_MERCHANTTRADEDATE = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	/**
+	 * 定期定额周期种类
+	 */
+	private final static String PERIOD_TYPE = System.getenv("PERIOD_TYPE");
 
-	private static final SimpleDateFormat SIMPLEDATEFORMAT_MERCHANTTRADENO = new SimpleDateFormat("yyww'YOUNG'");
+	private final static SimpleDateFormat SIMPLEDATEFORMAT_MERCHANTTRADEDATE = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+	private final static SimpleDateFormat SIMPLEDATEFORMAT_MERCHANTTRADENO = new SimpleDateFormat("yyww'YOUNG'");
+
+	/**
+	 * 定期定额每次授权金额
+	 */
+	public final static Integer VIP_AMOUNT = Integer.parseInt(System.getenv("VIP_AMOUNT"));
+
+	@Autowired
+	private HistoryRepository historyRepository;
 
 	@Autowired
 	private LuJieRepository luJieRepository;
@@ -92,6 +117,15 @@ public class Inpay2Service {
 	@Autowired
 	private PlanRepository planRepository;
 
+	@Autowired
+	private LoverService loverService;
+
+	/**
+	 * 指定初始化向量。
+	 *
+	 * @return 初始化向量
+	 * @throws UnsupportedEncodingException
+	 */
 	private IvParameterSpec getIvParameterSpec() throws UnsupportedEncodingException {
 		StringBuilder stringBuilder = new StringBuilder(16);
 		stringBuilder.append(INPAY2_HASH_IV);
@@ -106,6 +140,12 @@ public class Inpay2Service {
 		));
 	}
 
+	/**
+	 * 构造密钥。
+	 *
+	 * @return 密钥
+	 * @throws UnsupportedEncodingException
+	 */
 	private SecretKeySpec getSecretKeySpec() throws UnsupportedEncodingException {
 		StringBuilder stringBuilder = new StringBuilder(16);
 		stringBuilder.append(INPAY2_HASH_KEY);
@@ -182,7 +222,7 @@ public class Inpay2Service {
 				LOGGER.info(
 					String.format(
 						"请求厂商验证码时发生不明的异常！\n%s.httpPost(\n\tString requestBody = {}\n);",
-						getClass().getName()
+						getClass()
 					),
 					requestBody
 				);
@@ -199,7 +239,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"建立 http post 请求时发生异常！\n%s.httpPost(\n\tString requestBody = {}\n);",
-					getClass().getName()
+					getClass()
 				),
 				requestBody,
 				exception
@@ -209,7 +249,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"输入输出异常！\n%s.httpPost(\n\tString requestBody = {}\n);",
-					getClass().getName()
+					getClass()
 				),
 				requestBody,
 				ioException
@@ -296,7 +336,7 @@ public class Inpay2Service {
 		LOGGER.debug(
 			String.format(
 				"建立交易 輸入參數\n%s.createPayment(\n\tString payToken = {}\n\tHttpSession session = {}\n);\n交易編號：{}",
-				getClass().getName()
+				getClass()
 			),
 			payToken,
 			session,
@@ -317,7 +357,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"生成建立交易请求对象时发生序列化异常！\n%s.createPayment(\n\tString payToken = {}\n\tHttpSession session = {}\n);",
-					getClass().getName()
+					getClass()
 				),
 				payToken,
 				session,
@@ -338,7 +378,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"生成建立交易请求对象时发生加密异常！\n%s.createPayment(\n\tString payToken = {}\n\tHttpSession session = {}\n);",
-					getClass().getName()
+					getClass()
 				),
 				payToken,
 				session,
@@ -357,7 +397,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"建立交易请求时发生序列化异常！\n%s.createPayment(\n\tString payToken = {}\n\tHttpSession session = {}\n);",
-					getClass().getName()
+					getClass()
 				),
 				payToken,
 				session,
@@ -370,7 +410,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"建立交易！\n%s.createPayment(\n\tString payToken = {}\n\tHttpSession session = {}\n);",
-					getClass().getName()
+					getClass()
 				),
 				payToken,
 				session,
@@ -387,7 +427,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"生成建立交易响应对象时发生反序列化异常！\n%s.createPayment(\n\tString payToken = {}\n\tHttpSession session = {}\n);",
-					getClass().getName()
+					getClass()
 				),
 				payToken,
 				session,
@@ -397,7 +437,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"生成建立交易响应对象时发生解密异常！\n%s.createPayment(\n\tString payToken = {}\n\tHttpSession session = {}\n);",
-					getClass().getName()
+					getClass()
 				),
 				payToken,
 				session,
@@ -409,18 +449,27 @@ public class Inpay2Service {
 	}
 
 	/**
-	 * 取得厂商验证码(信用卡定期定额)
+	 * 取得厂商验证码(信用卡定期定额)。
 	 *
+	 * @param lover 用户
 	 * @param session 分配给会话的标识符
 	 * @return 绿界回传厂商验证码对象字符串
 	 * @throws com.fasterxml.jackson.core.JsonProcessingException
 	 */
-	public String getPeriodTokenByTrade(final HttpSession session) throws JsonProcessingException {
-		final Long currentTimeMillis = System.currentTimeMillis();
-		final String merchantTradeNo = generateMerchantTradeNo(currentTimeMillis);
+	public String getPeriodTokenByTrade(Lover lover, final HttpSession session) throws JsonProcessingException {
+		final Long currentTimeMillis = System.currentTimeMillis();//当前
+		final String merchantTradeNo = generateMerchantTradeNo(currentTimeMillis);//特店交易编号
 		LuJie luJie = new LuJie();
-		luJie.setSessionId(session.getId());
-		luJie.setMerchantTradeNo(merchantTradeNo);
+		luJie.setSessionId(session.getId());//会话的标识符
+		luJie.setMerchantTradeNo(merchantTradeNo);//特店交易编号
+		luJie.setTotalAmount(VIP_AMOUNT);//订单资讯：交易金额
+		luJie.setItemName("vip");//订单资讯：商品名称
+		luJie.setMerchantMemberId(lover.getIdentifier().toString());//消费者资讯：消费者会员编号
+		luJie.setCustomField(String.format(
+			"%s%s",
+			lover.getCountry().getCallingCode(),
+			lover.getLogin()
+		));//厂商自订栏位：消费者会员编号
 		luJie = luJieRepository.saveAndFlush(luJie);
 
 		TokenRequest.Data tokenRequestData = new TokenRequest.Data(
@@ -430,48 +479,44 @@ public class Inpay2Service {
 		);
 
 		tokenRequestData.setOrderInfo(tokenRequestData.new OrderInfo(
-			generateMerchantTradeDate(currentTimeMillis),
-			luJie.getMerchantTradeNo(),
-			1688,//TODO：JPA
+			generateMerchantTradeDate(currentTimeMillis),//厂商交易时间
+			luJie.getMerchantTradeNo(),//特店交易编号
+			VIP_AMOUNT,//交易金额
 			String.format(
 				"https://%s/inpay2/return.asp",
 				Servant.LOCALHOST
-			),
-			"交易描述",//TODO：JPA
-			"商品名称"//TODO：JPA
+			),//付款回传结果
+			"升级为 VIP",//升级为 VIP
+			"升级为 VIP"//升级为 VIP
 		));
 
 		CardInfo cardInfo = tokenRequestData.new CardInfo(
 			String.format(
 				"https://%s/inpay2/orderResult.asp",
 				Servant.LOCALHOST
-			)
+			)//3D 验证回传付款结果网址
 		);
-		cardInfo.setPeriodAmount((short) 1688);
-		cardInfo.setPeriodType("D");//M
-		cardInfo.setFrequency((short) 1);
-		cardInfo.setExecTimes((short) 3);//99
-		cardInfo.setPeriodReturnUrl(
-			String.format(
-				"https://%s/inpay2/periodReturn.asp",
-				Servant.LOCALHOST
-			)
-		);
+		cardInfo.setPeriodAmount(VIP_AMOUNT.shortValue());//定期定额每次授权金额
+		cardInfo.setPeriodType(PERIOD_TYPE);//定期定额周期种类
+		cardInfo.setFrequency(FREQUENCY);//定期定额执行频率
+		cardInfo.setExecTimes(EXEC_TIMES);//定期定额执行次数
+		cardInfo.setPeriodReturnUrl(String.format(
+			"https://%s/inpay2/periodReturn.asp",
+			Servant.LOCALHOST
+		));//定期定额执行结果回应端点
 		tokenRequestData.setCardInfo(cardInfo);
 
 		ConsumerInfo consumerInfo = tokenRequestData.new ConsumerInfo();
-		consumerInfo.setMerchantMemberId("test123456");//TODO：JPA
+		consumerInfo.setMerchantMemberId(
+			lover.getIdentifier().toString()
+		);//消费者会员编号
 		tokenRequestData.setConsumerInfo(consumerInfo);
-		LOGGER.debug(
-			String.format(
-				"生成厂商验证码请求对象！\n%s.getTokenByTrade();\n{}\n交易編號：{}",
-				getClass().getName()
-			),
-			JSON_MAPPER.writeValueAsString(
-				tokenRequestData
-			),
-			merchantTradeNo
-		);
+
+		tokenRequestData.setCustomField(String.format(
+			"%s%s",
+			lover.getCountry().getCallingCode(),
+			lover.getLogin()
+		));//厂商自订栏位
 
 		String tokenRequestDataString;
 		try {
@@ -482,7 +527,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"生成厂商验证码请求对象时发生序列化异常！\n%s.getTokenByTrade();",
-					getClass().getName()
+					getClass()
 				),
 				jsonProcessingException
 			);
@@ -503,7 +548,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"生成厂商验证码请求对象时发生加密异常！\n%s.getTokenByTrade();",
-					getClass().getName()
+					getClass()
 				),
 				exception
 			);
@@ -520,7 +565,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"建立厂商验证码请求时发生序列化异常！\n%s.getTokenByTrade();",
-					getClass().getName()
+					getClass()
 				),
 				jsonProcessingException
 			);
@@ -528,16 +573,6 @@ public class Inpay2Service {
 		}
 
 		try {
-			LOGGER.debug(
-				String.format(
-					"生成厂商验证码请求！\n%s.getTokenByTrade();\n{}",
-					getClass().getName()
-				),
-				decrypt(JSON_MAPPER.readValue(
-					responseBody,
-					TokenResponse.class
-				).getData())
-			);
 			return decrypt(JSON_MAPPER.readValue(
 				responseBody,
 				TokenResponse.class
@@ -546,7 +581,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"生成厂商验证码响应对象时发生反序列化异常！\n%s.getTokenByTrade();",
-					getClass().getName()
+					getClass()
 				),
 				jsonProcessingException
 			);
@@ -554,7 +589,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"生成厂商验证码响应对象时发生解密异常！\n%s.getTokenByTrade();",
-					getClass().getName()
+					getClass()
 				),
 				exception
 			);
@@ -563,7 +598,7 @@ public class Inpay2Service {
 	}
 
 	/**
-	 * 取得厂商验证码(付款选择清单)
+	 * 取得厂商验证码(付款选择清单)。
 	 *
 	 * @param plan 充值方案
 	 * @param lover 用户
@@ -571,12 +606,21 @@ public class Inpay2Service {
 	 * @return 绿界回传厂商验证码对象字符串
 	 * @throws com.fasterxml.jackson.core.JsonProcessingException
 	 */
-	public String getTokenByTrade(Plan plan, Lover lover, final HttpSession session) throws JsonProcessingException {
+	public String getTokenByTrade(final Plan plan, final Lover lover, final HttpSession session) throws JsonProcessingException {
 		final Long currentTimeMillis = System.currentTimeMillis();//当前
 		final String merchantTradeNo = generateMerchantTradeNo(currentTimeMillis);//特店交易编号
+		final int amount = plan.getAmount();//充值交易金额
 		LuJie luJie = new LuJie();
 		luJie.setSessionId(session.getId());//会话的标识符
 		luJie.setMerchantTradeNo(merchantTradeNo);//特店交易编号
+		luJie.setTotalAmount(amount);//订单资讯：交易金额
+		luJie.setItemName(plan.getId().toString());//订单资讯：商品名称
+		luJie.setMerchantMemberId(lover.getIdentifier().toString());//消费者资讯：消费者会员编号
+		luJie.setCustomField(String.format(
+			"%s%s",
+			lover.getCountry().getCallingCode(),
+			lover.getLogin()
+		));//厂商自订栏位：消费者会员编号
 		luJie = luJieRepository.saveAndFlush(luJie);
 
 		/*
@@ -587,7 +631,7 @@ public class Inpay2Service {
 			(short) 0,//不记忆卡号
 			(short) 2//付款选择清单
 		);
-		tokenRequestData.setChoosePaymentList("1,3,4");
+		tokenRequestData.setChoosePaymentList("1,3,4");//欲使用的付款方式：信用卡一次付清、ATM、超商代码
 
 		/*
 		 订单资讯
@@ -595,7 +639,7 @@ public class Inpay2Service {
 		tokenRequestData.setOrderInfo(tokenRequestData.new OrderInfo(
 			generateMerchantTradeDate(currentTimeMillis),//厂商交易时间
 			luJie.getMerchantTradeNo(),//特店交易编号
-			plan.getAmount(),//交易金额
+			amount,//交易金额
 			String.format(
 				"https://%s/inpay2/return.asp",
 				Servant.LOCALHOST
@@ -631,14 +675,17 @@ public class Inpay2Service {
 		 消费者资讯
 		 */
 		ConsumerInfo consumerInfo = tokenRequestData.new ConsumerInfo();
-		consumerInfo.setMerchantMemberId(lover.getIdentifier().toString());//消费者会员编号
+		consumerInfo.setMerchantMemberId(
+			lover.getIdentifier().toString()
+		);//消费者会员编号
 		consumerInfo.setName(lover.getNickname());//信用卡持卡人姓名
 		tokenRequestData.setConsumerInfo(consumerInfo);
+
 		tokenRequestData.setCustomField(String.format(
-			"+%s-%s",
+			"%s%s",
 			lover.getCountry().getCallingCode(),
 			lover.getLogin()
-		));//信用卡持卡人电话
+		));//厂商自订栏位
 
 		/*
 		 加密后数据
@@ -652,7 +699,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"生成厂商验证码请求对象时发生序列化异常！\n%s.getTokenByTrade();",
-					getClass().getName()
+					getClass()
 				),
 				jsonProcessingException
 			);
@@ -676,7 +723,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"生成厂商验证码请求对象时发生加密异常！\n%s.getTokenByTrade();",
-					getClass().getName()
+					getClass()
 				),
 				exception
 			);
@@ -693,7 +740,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"建立厂商验证码请求时发生序列化异常！\n%s.getTokenByTrade();",
-					getClass().getName()
+					getClass()
 				),
 				jsonProcessingException
 			);
@@ -701,16 +748,6 @@ public class Inpay2Service {
 		}
 
 		try {
-			LOGGER.debug(
-				String.format(
-					"生成厂商验证码请求！\n%s.getTokenByTrade();\n{}",
-					getClass().getName()
-				),
-				decrypt(JSON_MAPPER.readValue(
-					responseBody,
-					TokenResponse.class
-				).getData())
-			);
 			return decrypt(JSON_MAPPER.readValue(
 				responseBody,
 				TokenResponse.class
@@ -719,7 +756,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"生成厂商验证码响应对象时发生反序列化异常！\n%s.getTokenByTrade();",
-					getClass().getName()
+					getClass()
 				),
 				jsonProcessingException
 			);
@@ -727,7 +764,7 @@ public class Inpay2Service {
 			LOGGER.info(
 				String.format(
 					"生成厂商验证码响应对象时发生解密异常！\n%s.getTokenByTrade();",
-					getClass().getName()
+					getClass()
 				),
 				exception
 			);
@@ -735,6 +772,20 @@ public class Inpay2Service {
 		return null;
 	}
 
+	/**
+	 * 显示付款结果给用户。
+	 *
+	 * @param resultData 绿界一次性反馈付款结果
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchPaddingException
+	 * @throws InvalidKeyException
+	 * @throws InvalidAlgorithmParameterException
+	 * @throws UnsupportedEncodingException
+	 * @throws IllegalBlockSizeException
+	 * @throws BadPaddingException
+	 */
 	public JSONObject handleOrderResult(String resultData) throws JsonProcessingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
 		OrderResultResponse orderResultResponse = JSON_MAPPER.readValue(
 			resultData,
@@ -750,14 +801,6 @@ public class Inpay2Service {
 		OrderResultResponse.Data data = JSON_MAPPER.readValue(
 			decrypted,
 			OrderResultResponse.Data.class
-		);
-		LOGGER.info(
-			String.format(
-				"绿界以幕前方式传送付款结果。\n%s#handleOrderResult(\n\tString resultData = {}\n);\n{}",
-				getClass().getName()
-			),
-			resultData,
-			decrypted
 		);
 		OrderResultResponse.Data.OrderInfo orderInfo = data.getOrderInfo();
 		String merchantTradeNo = orderInfo.getMerchantTradeNo();
@@ -809,6 +852,20 @@ public class Inpay2Service {
 			toJSONObject();
 	}
 
+	/**
+	 * 第二(含)次后授权成功时，付款结果参数会回传到此端点。
+	 *
+	 * @param requestBody 付款结果
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchPaddingException
+	 * @throws InvalidKeyException
+	 * @throws InvalidAlgorithmParameterException
+	 * @throws UnsupportedEncodingException
+	 * @throws IllegalBlockSizeException
+	 * @throws BadPaddingException
+	 */
 	public JSONObject handlePeriodReturn(String requestBody) throws JsonProcessingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
 		ReturnResponse returnResponse = JSON_MAPPER.readValue(
 			requestBody,
@@ -820,54 +877,99 @@ public class Inpay2Service {
 				withResponse(false).
 				toJSONObject();
 		}
-		String decrypted = decrypt(returnResponse.getData());
+
 		ReturnResponse.Data data = JSON_MAPPER.readValue(
-			decrypted,
+			decrypt(returnResponse.getData()),//解密后的数据
 			ReturnResponse.Data.class
 		);
-		LOGGER.info(
-			String.format(
-				"绿界以幕后方式传送第 n 次授權付款结果。\n%s#handlePeriodReturn(\n\tString requestBody = {}\n);\n{}",
-				getClass().getName()
-			),
-			requestBody,
-			decrypted
-		);
-		ReturnResponse.Data.OrderInfo orderInfo = data.getOrderInfo();
-		LuJie luJie = new LuJie();
-		luJie.setMerchantTradeNo(orderInfo.getMerchantTradeNo());
-		luJie.setTradeNo(orderInfo.getTradeNo());
-		luJie.setPaymentDate(orderInfo.getPaymentDate());
-		luJie.setTradeAmt(orderInfo.getTradeAmt());
-		luJie.setPaymentType(orderInfo.getPaymentType());
-		luJie.setTradeDate(orderInfo.getTradeDate());
-		luJie.setChargeFee(orderInfo.getChargeFee());
-		luJie.setTradeStatus(orderInfo.getTradeStatus());
+
+		ReturnResponse.Data.OrderInfo orderInfo = data.getOrderInfo();//订单资讯
+		String merchantTradeNo = orderInfo.getMerchantTradeNo(),//特店交易编号
+			username = data.getCustomField();//厂商自订栏位：消费者会员编号
+
+		/*
+		 绿界交易纪录
+		 */
+		LuJie luJie = luJieRepository.findOneByMerchantTradeNo(
+			merchantTradeNo//特店交易编号
+		).orElse(new LuJie());
+		luJie.setMerchantTradeNo(merchantTradeNo);//特店交易编号
+		luJie.setTradeNo(orderInfo.getTradeNo());//订单资讯：绿界交易编号
+		luJie.setPaymentDate(orderInfo.getPaymentDate());//订单资讯：付款时间
+		luJie.setTradeAmt(orderInfo.getTradeAmt());//订单资讯：交易金额
+		luJie.setPaymentType(orderInfo.getPaymentType());//订单资讯：付款方式
+		luJie.setTradeDate(orderInfo.getTradeDate());//订单资讯：订单成立时间
+		luJie.setChargeFee(orderInfo.getChargeFee());////订单资讯：手续费
+		luJie.setTradeStatus(orderInfo.getTradeStatus());//订单资讯：交易状态 
+		luJie.setCustomField(username);//特店自订栏位：厂商自订栏位
+
 		ReturnResponse.Data.CardInfo cardInfo = data.getCardInfo();
 		if (Objects.nonNull(cardInfo)) {
-			luJie.setAuthCode(cardInfo.getAuthCode());
-			luJie.setGwsr(cardInfo.getGwsr());
-			luJie.setProcessDate(cardInfo.getProcessDate());
-			luJie.setAmount(cardInfo.getAmount());
-			luJie.setEci(cardInfo.getEci());
-			luJie.setCard6No(cardInfo.getCard6No());
-			luJie.setCard4No(cardInfo.getCard4No());
-			luJie.setStage(cardInfo.getStage());
-			luJie.setStast(cardInfo.getStast());
-			luJie.setStaed(cardInfo.getStaed());
-			luJie.setPeriodType(cardInfo.getPeriodType());
-			luJie.setFrequency(cardInfo.getFrequency());
-			luJie.setExecTimes(cardInfo.getExecTimes());
-			luJie.setPeriodAmount(cardInfo.getPeriodAmount());
-			luJie.setTotalSuccessTimes(cardInfo.getTotalSuccessTimes());
+			luJie.setAuthCode(cardInfo.getAuthCode());//信用卡资讯：银行授权码
+			luJie.setGwsr(cardInfo.getGwsr());//信用卡资讯：授权交易单号
+			luJie.setProcessDate(cardInfo.getProcessDate());//信用卡资讯：交易时间
+			luJie.setAmount(cardInfo.getAmount());//信用卡资讯：金额
+			luJie.setEci(cardInfo.getEci());//信用卡资讯：3D(VBV) 回传值
+			luJie.setCard6No(cardInfo.getCard6No());//信用卡资讯：信用卡卡号前六码
+			luJie.setCard4No(cardInfo.getCard4No());//信用卡资讯：信用卡卡号末四码
+			luJie.setStage(cardInfo.getStage());//信用卡资讯：分期期数
+			luJie.setStast(cardInfo.getStast());//信用卡资讯：首期金额
+			luJie.setStaed(cardInfo.getStaed());//信用卡资讯：各期金额
+			luJie.setPeriodType(cardInfo.getPeriodType());//信用卡资讯：定期定额周期种类 
+			luJie.setFrequency(cardInfo.getFrequency());//信用卡资讯：定期定额执行频率
+			luJie.setExecTimes(cardInfo.getExecTimes());//信用卡资讯：定期定额执行次数 
+			luJie.setPeriodAmount(cardInfo.getPeriodAmount());//信用卡资讯：定期定额每次授权金额 
+			luJie.setTotalSuccessTimes(cardInfo.getTotalSuccessTimes());//目前已成功授权的次数
 		}
 		luJie = luJieRepository.saveAndFlush(luJie);
+
+		Lover lover = loverService.loadByUsername(username);
+		long currentTimeMillis = System.currentTimeMillis();
+		Date vipDuration = lover.getVip();
+		if (Objects.isNull(vipDuration) || vipDuration.before(new Date(currentTimeMillis))) {
+			/*
+			 未曾是 VIP 或曾是 VIP 但已逾期
+			 */
+			vipDuration = new Date(
+				currentTimeMillis + Servant.MILLISECONDS_OF_30_DAYS
+			);//从当前时戳加 30 天
+		} else {
+			/*
+			 曾是 VIP 但尚未逾期
+			 */
+			vipDuration = new Date(
+				vipDuration.getTime() + Servant.MILLISECONDS_OF_30_DAYS
+			);//再延期 30 天
+		}
+		lover.setVip(vipDuration);
+		lover = loverService.saveLover(lover);
+
+		historyRepository.saveAndFlush(new History(
+			lover,
+			new Date(currentTimeMillis),
+			luJie
+		));
+
 		return new JavaScriptObjectNotation().
 			withResponse(true).
 			withResult(luJie).
 			toJSONObject();
 	}
 
+	/**
+	 * 第一次授权成功时，付款结果参数会回传到此端点。
+	 *
+	 * @param requestBody 付款结果
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchPaddingException
+	 * @throws InvalidKeyException
+	 * @throws InvalidAlgorithmParameterException
+	 * @throws UnsupportedEncodingException
+	 * @throws IllegalBlockSizeException
+	 * @throws BadPaddingException
+	 */
 	public JSONObject handleReturn(String requestBody) throws JsonProcessingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
 		ReturnResponse returnResponse = JSON_MAPPER.readValue(
 			requestBody,
@@ -879,63 +981,136 @@ public class Inpay2Service {
 				withResponse(false).
 				toJSONObject();
 		}
-		String decrypted = decrypt(returnResponse.getData());
+
 		ReturnResponse.Data data = JSON_MAPPER.readValue(
-			decrypted,
+			decrypt(returnResponse.getData()),//解密后的数据
 			ReturnResponse.Data.class
 		);
-		LOGGER.info(
-			String.format(
-				"绿界以幕后方式传送付款结果。\n%s#handleReturn(\n\tString requestBody = {}\n);\n{}",
-				getClass().getName()
-			),
-			requestBody,
-			decrypted
-		);
-		ReturnResponse.Data.OrderInfo orderInfo = data.getOrderInfo();
-		String merchantTradeNo = orderInfo.getMerchantTradeNo();
+
+		ReturnResponse.Data.OrderInfo orderInfo = data.getOrderInfo();//订单资讯
+		String merchantTradeNo = orderInfo.getMerchantTradeNo(),//特店交易编号
+			username = data.getCustomField();//厂商自订栏位：消费者会员编号
+
+		/*
+		 绿界交易纪录
+		 */
 		LuJie luJie = luJieRepository.findOneByMerchantTradeNo(
-			merchantTradeNo
+			merchantTradeNo//特店交易编号
 		).orElseThrow();
-		luJie.setTradeNo(orderInfo.getTradeNo());
-		luJie.setPaymentDate(orderInfo.getPaymentDate());
-		luJie.setTradeAmt(orderInfo.getTradeAmt());
-		luJie.setPaymentType(orderInfo.getPaymentType());
-		luJie.setTradeDate(orderInfo.getTradeDate());
-		luJie.setChargeFee(orderInfo.getChargeFee());
-		luJie.setTradeStatus(orderInfo.getTradeStatus());
+		luJie.setTradeNo(orderInfo.getTradeNo());//订单资讯：绿界交易编号
+		luJie.setPaymentDate(orderInfo.getPaymentDate());//订单资讯：付款时间
+		luJie.setTradeAmt(orderInfo.getTradeAmt());//订单资讯：交易金额
+		luJie.setPaymentType(orderInfo.getPaymentType());//订单资讯：付款方式
+		luJie.setTradeDate(orderInfo.getTradeDate());//订单资讯：订单成立时间
+		luJie.setChargeFee(orderInfo.getChargeFee());////订单资讯：手续费
+		luJie.setTradeStatus(orderInfo.getTradeStatus());//订单资讯：交易状态 
+		luJie.setCustomField(data.getCustomField());//特店自订栏位：厂商自订栏位
+
+		/*
+		 ATM 资讯
+		 */
 		ReturnResponse.Data.ATMInfo atmInfo = data.getATMInfo();
 		if (Objects.nonNull(atmInfo)) {
-			luJie.setATMAccBank(atmInfo.getATMAccBank());
-			luJie.setATMAccNo(atmInfo.getATMAccNo());
+			luJie.setATMAccBank(atmInfo.getATMAccBank());//ATM 资讯：付款人银行代码
+			luJie.setATMAccNo(atmInfo.getATMAccNo());//ATM 资讯：付款人银行帐号后五码
 		}
+
+		/*
+		 超商条码资讯
+		 */
 		ReturnResponse.Data.BarcodeInfo barcodeInfo = data.getBarcodeInfo();
 		if (Objects.nonNull(barcodeInfo)) {
-			luJie.setBarcodeInfoPayFrom(barcodeInfo.getPayFrom());
+			luJie.setBarcodeInfoPayFrom(barcodeInfo.getPayFrom());//超商条码资讯：缴费超商
 		}
+
+		/*
+		 超商代码资讯
+		 */
 		ReturnResponse.Data.CVSInfo cvsInfo = data.getCVSInfo();
 		if (Objects.nonNull(cvsInfo)) {
-			luJie.setCVSInfoPayFrom(cvsInfo.getPayFrom());
-			luJie.setPaymentNo(cvsInfo.getPaymentNo());
+			luJie.setCVSInfoPayFrom(cvsInfo.getPayFrom());//超商代码资讯：缴费超商
+			luJie.setPaymentNo(cvsInfo.getPaymentNo());//超商代码资讯：缴费代码
 		}
+
+		/*
+		 信用卡授權資訊
+		 */
 		ReturnResponse.Data.CardInfo cardInfo = data.getCardInfo();
 		if (Objects.nonNull(cardInfo)) {
-			luJie.setAuthCode(cardInfo.getAuthCode());
-			luJie.setGwsr(cardInfo.getGwsr());
-			luJie.setProcessDate(cardInfo.getProcessDate());
-			luJie.setAmount(cardInfo.getAmount());
-			luJie.setEci(cardInfo.getEci());
-			luJie.setCard6No(cardInfo.getCard6No());
-			luJie.setCard4No(cardInfo.getCard4No());
-			luJie.setStage(cardInfo.getStage());
-			luJie.setStast(cardInfo.getStast());
-			luJie.setStaed(cardInfo.getStaed());
-			luJie.setPeriodType(cardInfo.getPeriodType());
-			luJie.setFrequency(cardInfo.getFrequency());
-			luJie.setExecTimes(cardInfo.getExecTimes());
-			luJie.setPeriodAmount(cardInfo.getPeriodAmount());
+			luJie.setAuthCode(cardInfo.getAuthCode());//信用卡资讯：银行授权码
+			luJie.setGwsr(cardInfo.getGwsr());//信用卡资讯：授权交易单号
+			luJie.setProcessDate(cardInfo.getProcessDate());//信用卡资讯：交易时间
+			luJie.setAmount(cardInfo.getAmount());//信用卡资讯：金额
+			luJie.setEci(cardInfo.getEci());//信用卡资讯：3D(VBV) 回传值
+			luJie.setCard6No(cardInfo.getCard6No());//信用卡资讯：信用卡卡号前六码
+			luJie.setCard4No(cardInfo.getCard4No());//信用卡资讯：信用卡卡号末四码
+			luJie.setStage(cardInfo.getStage());//信用卡资讯：分期期数 
+			luJie.setStast(cardInfo.getStast());//信用卡资讯：首期金额
+			luJie.setStaed(cardInfo.getStaed());//信用卡资讯：各期金额
+			luJie.setPeriodType(cardInfo.getPeriodType());//信用卡资讯：定期定额周期种类
+			luJie.setFrequency(cardInfo.getFrequency());//信用卡资讯：定期定额执行频率
+			luJie.setExecTimes(cardInfo.getExecTimes());//信用卡资讯：定期定额执行次数
+			luJie.setPeriodAmount(cardInfo.getPeriodAmount());//信用卡资讯：定期定额每次授权金额
 		}
 		luJie = luJieRepository.saveAndFlush(luJie);
+
+		String itemName = luJie.getItemName();
+		if (Objects.isNull(itemName)) {
+			throw new RuntimeException("inpay2.returnUrl.itemNameNotFound");
+		}
+		Plan plan;
+		try {
+			plan = planRepository.findById(
+				Short.parseShort(itemName)
+			).orElse(null);
+		} catch (NumberFormatException ignore) {
+			plan = null;
+		}
+
+		History history;
+		Lover lover = loverService.loadByUsername(username);
+		long currentTimeMillis = System.currentTimeMillis();
+		if (Objects.isNull(plan) && itemName.equalsIgnoreCase("vip")) {
+			/*
+			 升级为 VIP
+			 */
+			Date vipDuration = lover.getVip();
+			if (Objects.isNull(vipDuration) || vipDuration.before(new Date(currentTimeMillis))) {
+				/*
+				 未曾是 VIP 或曾是 VIP 但已逾期
+				 */
+				vipDuration = new Date(
+					currentTimeMillis + Servant.MILLISECONDS_OF_30_DAYS
+				);//从当前时戳加 30 天
+			} else {
+				/*
+				 曾是 VIP 但尚未逾期
+				 */
+				vipDuration = new Date(
+					vipDuration.getTime() + Servant.MILLISECONDS_OF_30_DAYS
+				);//再延期 30 天
+			}
+			lover.setVip(vipDuration);
+			lover = loverService.saveLover(lover);
+
+			history = new History(
+				lover,
+				new Date(currentTimeMillis),
+				luJie
+			);
+		} else {
+			/*
+			 充值
+			 */
+			history = new History(
+				lover,
+				new Date(currentTimeMillis),
+				plan.getPoints(),
+				luJie
+			);
+		}
+		historyRepository.saveAndFlush(history);
+
 		return new JavaScriptObjectNotation().
 			withResponse(true).
 			withResult(luJie).

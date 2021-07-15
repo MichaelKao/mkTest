@@ -1,7 +1,7 @@
 package tw.musemodel.dingzhiqingren.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -190,7 +190,7 @@ public class LuJie implements java.io.Serializable {
 	private String customField;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "luJie")
-	@JsonBackReference
+	@JsonIgnore
 	private Collection<History> histories;
 
 	/**

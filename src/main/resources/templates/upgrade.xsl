@@ -28,6 +28,7 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
+			<INPUT id="me" type="hidden" value="{@identifier}"/>
 			<DIV class="container py-8">
 				<DIV class="card col-11 col-md-8 col-lg-6 mx-auto">
 					<DIV class="card-body pt-2">

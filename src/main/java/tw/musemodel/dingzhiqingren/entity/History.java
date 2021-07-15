@@ -96,6 +96,38 @@ public class History implements java.io.Serializable {
 	}
 
 	/**
+	 * 构造器：适用于「升级为 VIP」。
+	 *
+	 * @param initiative 用户(应限男性)
+	 * @param behavior 行为
+	 * @param occurred 时戳
+	 * @param luJie 绿界
+	 */
+	public History(Lover initiative, Date occurred, LuJie luJie) {
+		this.initiative = initiative;
+		this.behavior = Behavior.YUE_FEI;
+		this.occurred = occurred;
+		points = 0;
+		this.luJie = luJie;
+	}
+
+	/**
+	 * 构造器：适用于「充值」。
+	 *
+	 * @param initiative 用户(应限男性)
+	 * @param occurred 时戳
+	 * @param points 点数
+	 * @param luJie 绿界
+	 */
+	public History(Lover initiative, Date occurred, short points, LuJie luJie) {
+		this.initiative = initiative;
+		this.behavior = Behavior.CHU_ZHI;
+		this.occurred = occurred;
+		this.points = points;
+		this.luJie = luJie;
+	}
+
+	/**
 	 * 构造器：适用于「看过我」。
 	 *
 	 * @param initiative 主动方
@@ -311,18 +343,54 @@ public class History implements java.io.Serializable {
 	 */
 	public enum Behavior {
 
-		YUE_FEI("YUE_FEI", 1),//月费
-		CHU_ZHI("CHU_ZHI", 2),//充值
-		JI_WO_LAI("JI_WO_LAI", 3),//给我赖
-		JI_NI_LAI("JI_NI_LAI", 4),//给你赖
-		BU_JI_LAI("BU_JI_LAI", 5),//不给赖
-		DA_ZHAO_HU("DA_ZHAO_HU", 6),//打招呼
-		KAN_GUO_WO("KAN_GUO_WO", 7),//看过我
-		CHE_MA_FEI("CHE_MA_FEI", 8),//车马费
-		LAI_KOU_DIAN("LAI_KOU_DIAN", 9),//要求賴扣點
-		SHOU_CANG("SHOU_CANG", 10),//收藏
-		BU_SHOU_CANG("BU_SHOU_CANG", 11),//取消收藏
-		PING_JIA("PING_JIA", 12);//評價
+		/**
+		 * 月费
+		 */
+		YUE_FEI("YUE_FEI", 1),
+		/**
+		 * 充值
+		 */
+		CHU_ZHI("CHU_ZHI", 2),
+		/**
+		 * 给我赖(男士向甜心索取)
+		 */
+		JI_WO_LAI("JI_WO_LAI", 3),
+		/**
+		 * 给你赖(甜心诱惑男士向其索取)
+		 */
+		JI_NI_LAI("JI_NI_LAI", 4),
+		/**
+		 * 不给赖(甜心拒绝给男士)
+		 */
+		BU_JI_LAI("BU_JI_LAI", 5),
+		/**
+		 * 打招呼
+		 */
+		DA_ZHAO_HU("DA_ZHAO_HU", 6),
+		/**
+		 * 看过我
+		 */
+		KAN_GUO_WO("KAN_GUO_WO", 7),
+		/**
+		 * 车马费
+		 */
+		CHE_MA_FEI("CHE_MA_FEI", 8),
+		/**
+		 * 赖扣点
+		 */
+		LAI_KOU_DIAN("LAI_KOU_DIAN", 9),
+		/**
+		 * 收藏
+		 */
+		SHOU_CANG("SHOU_CANG", 10),
+		/**
+		 * 取消收藏
+		 */
+		BU_SHOU_CANG("BU_SHOU_CANG", 11),
+		/**
+		 * 评价
+		 */
+		PING_JIA("PING_JIA", 12);
 
 		private String label;
 

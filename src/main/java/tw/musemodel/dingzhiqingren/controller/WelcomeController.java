@@ -138,15 +138,12 @@ public class WelcomeController {
 			Lover me = loverService.loadByUsername(
 				authentication.getName()
 			);
-			// 看頁面的時間
-			me.setActive(new Date(System.currentTimeMillis()));
-			me = loverService.saveLover(me);
 
 			// 確認性別
-			Boolean gender = me.getGender();
+			Boolean meIsMale = loverService.isMale(me);
 
 			documentElement.setAttribute(
-				gender ? "male" : "female",
+				meIsMale ? "male" : "female",
 				null
 			);
 
@@ -174,11 +171,11 @@ public class WelcomeController {
 			// 通知數、顯示的 lovers 資料
 			int announcement = 0;
 			List<Lover> lovers = new ArrayList<Lover>();
-			if (gender) {
+			if (meIsMale) {
 				lovers = loverRepository.findAllByGender(false);
 				announcement = historyRepository.countByPassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_KOU_DIAN);
 			}
-			if (!gender) {
+			if (!meIsMale) {
 				lovers = loverRepository.findAllByGender(true);
 				announcement = historyRepository.countByFemalePassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_KOU_DIAN);
 			}
@@ -206,7 +203,7 @@ public class WelcomeController {
 					loverElement.appendChild(ageElement);
 				}
 
-				if (loverService.isVIP(lover)) {
+				if (!meIsMale && Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date())) {
 					loverElement.setAttribute("vip", null);
 				}
 
@@ -793,10 +790,6 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
-
 		Document document = loverService.readDocument(me, locale);
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -822,10 +815,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean gender = me.getGender();
+		Boolean meIsMale = loverService.isMale(me);
 
 		documentElement.setAttribute(
-			gender ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
@@ -874,10 +867,6 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
-
 		// 識別碼的帳號
 		Lover lover = loverService.loadByIdentifier(identifier);
 
@@ -906,10 +895,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean gender = me.getGender();
+		Boolean meIsMale = loverService.isMale(me);
 
-		// 本人是否為 VIP
-		if (loverService.isVIP(me)) {
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -930,26 +919,16 @@ public class WelcomeController {
 		}
 
 		documentElement.setAttribute(
-			gender ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
-		if (gender) {
-			// 是否已交換過 LINE
-			LineGiven lineGiven = lineGivenRepository.findByFemaleAndMale(lover, me);
-			History history = historyRepository.findByInitiativeAndPassiveAndBehavior(me, lover, Behavior.LAI_KOU_DIAN);
-
-			if (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse())
-				&& lineGiven.getResponse() && Objects.isNull(history)) {
+		// 是否已交換過 LINE
+		LineGiven lineGiven = lineGivenRepository.findByFemaleAndMale(lover, me);
+		if (Objects.nonNull(lineGiven)) {
+			if (Objects.nonNull(lineGiven.getResponse())) {
 				documentElement.setAttribute(
-					"accepted",
-					null
-				);
-			}
-
-			if (Objects.nonNull(history)) {
-				documentElement.setAttribute(
-					"matched",
+					lineGiven.getResponse() ? "match" : "noMatch",
 					lover.getInviteMeAsLineFriend()
 				);
 			}
@@ -1002,10 +981,6 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
-
 		Document document = loverService.writeDocument(me, locale);
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -1031,15 +1006,15 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean gender = me.getGender();
+		Boolean meIsMale = loverService.isMale(me);
 
 		documentElement.setAttribute(
-			gender ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
-		// 本人是否為 VIP
-		if (loverService.isVIP(me)) {
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -1204,10 +1179,6 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
-
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -1233,10 +1204,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean gender = me.getGender();
+		Boolean meIsMale = loverService.isMale(me);
 
 		documentElement.setAttribute(
-			gender ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
@@ -1285,7 +1256,7 @@ public class WelcomeController {
 					loverService.calculateAge(followed).toString()
 				);
 			}
-			if (followed.getGender() && loverService.isVIP(followed)) {
+			if (followed.getGender() && Objects.nonNull(followed.getVip()) && followed.getVip().after(new Date())) {
 				followElement.setAttribute("vip", null);
 			}
 			if (Objects.nonNull(followed.getCertification())) {
@@ -1365,10 +1336,6 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
-
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -1394,10 +1361,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean gender = me.getGender();
+		Boolean meIsMale = loverService.isMale(me);
 
 		documentElement.setAttribute(
-			gender ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
@@ -1457,7 +1424,7 @@ public class WelcomeController {
 						loverService.calculateAge(peeker).toString()
 					);
 				}
-				if (peeker.getGender() && loverService.isVIP(peeker)) {
+				if (peeker.getGender() && Objects.nonNull(peeker.getVip()) && peeker.getVip().after(new Date())) {
 					peekerElement.setAttribute("vip", null);
 				}
 				if (Objects.nonNull(peeker.getCertification())) {
@@ -1497,10 +1464,6 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
-
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -1526,10 +1489,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean gender = me.getGender();
+		Boolean meIsMale = loverService.isMale(me);
 
 		documentElement.setAttribute(
-			gender ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
@@ -1701,9 +1664,6 @@ public class WelcomeController {
 			authentication.getName()
 		);//我谁⁉️
 
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);//最后造访时戳
-
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -1769,9 +1729,6 @@ public class WelcomeController {
 			authentication.getName()
 		);//我谁⁉️
 
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);//最后造访时戳
-
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -1828,10 +1785,6 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
-
 		Document document = historyService.historiesToDocument(me);
 		Element documentElement = document.getDocumentElement();
 
@@ -1858,14 +1811,14 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean gender = me.getGender();
+		Boolean meIsMale = loverService.isMale(me);
 
 		documentElement.setAttribute(
-			gender ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
-		if (gender) {
+		if (meIsMale) {
 			documentElement.setAttribute(
 				"greeting",
 				me.getGreeting()
@@ -1890,8 +1843,8 @@ public class WelcomeController {
 				locale
 			));
 
-		// 本人是否為 VIP
-		if (loverService.isVIP(me)) {
+		// 是否為 VIP
+		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -1935,9 +1888,6 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);//我谁⁉️
-
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);//最后造访时戳
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -2277,15 +2227,12 @@ public class WelcomeController {
 					null
 				);
 			}
-			// 看頁面的時間
-			me.setActive(new Date(System.currentTimeMillis()));
-			me = loverService.saveLover(me);
 
 			// 確認性別
-			Boolean gender = me.getGender();
+			Boolean meIsMale = loverService.isMale(me);
 
 			documentElement.setAttribute(
-				gender ? "male" : "female",
+				meIsMale ? "male" : "female",
 				null
 			);
 
@@ -2344,15 +2291,12 @@ public class WelcomeController {
 					null
 				);
 			}
-			// 看頁面的時間
-			me.setActive(new Date(System.currentTimeMillis()));
-			me = loverService.saveLover(me);
 
 			// 確認性別
-			Boolean gender = me.getGender();
+			Boolean meIsMale = loverService.isMale(me);
 
 			documentElement.setAttribute(
-				gender ? "male" : "female",
+				meIsMale ? "male" : "female",
 				null
 			);
 
@@ -2389,10 +2333,6 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
-
 		Document document = loverService.withdrawalDocument(me, locale);
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -2418,10 +2358,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean gender = me.getGender();
+		Boolean meIsMale = loverService.isMale(me);
 
 		documentElement.setAttribute(
-			gender ? "male" : "female",
+			meIsMale ? "male" : "female",
 			null
 		);
 
@@ -2432,7 +2372,7 @@ public class WelcomeController {
 			);
 		}
 
-		if (gender) {
+		if (meIsMale) {
 			return new ModelAndView("redirect:/");
 		}
 
@@ -2750,36 +2690,4 @@ public class WelcomeController {
 		return json.toString();
 	}
 
-	@PostMapping(path = "/maleOpenLine.json", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	String openLine(@RequestParam("whom") UUID femaleUUID, Authentication authentication, Locale locale) {
-
-		if (servant.isNull(authentication)) {
-			return servant.mustBeAuthenticated(locale);
-		}
-		Lover male = loverService.loadByUsername(
-			authentication.getName()
-		);
-
-		Lover female = loverService.loadByIdentifier(femaleUUID);
-
-		JSONObject jsonObject;
-		try {
-			jsonObject = historyService.openLine(
-				male,
-				female,
-				locale
-			);
-		} catch (Exception exception) {
-			jsonObject = new JavaScriptObjectNotation().
-				withReason(messageSource.getMessage(
-					exception.getMessage(),
-					null,
-					locale
-				)).
-				withResponse(false).
-				toJSONObject();
-		}
-		return jsonObject.toString();
-	}
 }
