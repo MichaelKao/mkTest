@@ -1,7 +1,7 @@
 package tw.musemodel.dingzhiqingren.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,7 +17,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
 /**
@@ -27,11 +26,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(name = "lu_jie", uniqueConstraints = {
-	@UniqueConstraint(columnNames = {
-		"\"MerchantTradeDate\""
-	})
-})
+@Table(name = "lu_jie")
 @JsonIdentityInfo(
 	generator = ObjectIdGenerators.PropertyGenerator.class,
 	property = "id"
@@ -190,7 +185,7 @@ public class LuJie implements java.io.Serializable {
 	private String customField;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "luJie")
-	@JsonIgnore
+	@JsonBackReference
 	private Collection<History> histories;
 
 	/**
