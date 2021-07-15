@@ -1,21 +1,17 @@
 package tw.musemodel.dingzhiqingren.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
@@ -189,10 +185,9 @@ public class LuJie implements java.io.Serializable {
 	@Size(max = 200)
 	private String customField;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "luJie")
-	@JsonIgnore
-	private Collection<History> histories;
-
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "luJie")
+//	@JsonIgnore
+//	private Collection<History> histories;
 	/**
 	 * 默认构造器
 	 */
@@ -784,17 +779,17 @@ public class LuJie implements java.io.Serializable {
 		this.customField = customField;
 	}
 
-	/**
-	 * @return 历程
-	 */
-	public Collection<History> getHistories() {
-		return histories;
-	}
-
-	/**
-	 * @param histories 历程
-	 */
-	public void setHistories(Collection<History> histories) {
-		this.histories = histories;
-	}
+//	/**
+//	 * @return 历程
+//	 */
+//	public Collection<History> getHistories() {
+//		return histories;
+//	}
+//
+//	/**
+//	 * @param histories 历程
+//	 */
+//	public void setHistories(Collection<History> histories) {
+//		this.histories = histories;
+//	}
 }

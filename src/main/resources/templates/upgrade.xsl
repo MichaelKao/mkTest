@@ -24,6 +24,7 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
+			<LINK href="/STYLE/ECPayPayment.css" rel="stylesheet"/>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
@@ -35,9 +36,9 @@
 						<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">訂製情人</SPAN>
 						<DIV class="h3 d-block text-darker my-2">解鎖 VIP</DIV>
 						<P class="card-description mb-4">
-							<DIV>1. 查看有哪些女生曾到訪觀看自介</DIV>
-							<DIV>2. 每日可跟女生要求 10 次加入 Line 好友</DIV>
-							<DIV>3. 可打賞車馬費給女生</DIV>
+							<DIV>1. 每日可加入 10 次女生的 Line 好友</DIV>
+							<DIV>2. 排序提高</DIV>
+							<DIV>3. 可觀看女生的評價</DIV>
 						</P>
 					</DIV>
 				</DIV>
@@ -55,6 +56,13 @@
 							<BUTTON class="btn btn-primary" type="button">取消</BUTTON>
 						</xsl:if>
 					</DIV>
+				</DIV>
+			</DIV>
+			<DIV class="loadingWrap">
+				<DIV class="loading">
+					<DIV class="round"></DIV>
+					<DIV class="round ms-1"></DIV>
+					<DIV class="round ms-1"></DIV>
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>

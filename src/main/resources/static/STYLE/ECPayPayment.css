@@ -1,0 +1,50 @@
+.round {
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	border-radius: 15px;
+	background-color: #CB0C9F;
+}
+
+.loading .round:nth-last-child(1) {
+	animation: loadingAnimation 0.6s 0.1s linear infinite;
+}
+.loading .round:nth-last-child(2) {
+	animation: loadingAnimation 0.6s 0.2s linear infinite;
+}
+.loading .round:nth-last-child(3) {
+	animation: loadingAnimation 0.6s 0.3s linear infinite;
+}
+
+.loadingWrap {
+	display: none;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #CCCCCCAA;
+	z-index: 99999;
+}
+
+.loading {
+	position: fixed;
+	margin: auto;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 70px;
+	height: 50px;
+}
+
+@keyframes loadingAnimation {
+	0 {
+		transform: translate(0, 0);
+	}
+	50% {
+		transform: translate(0, 15px);
+	}
+	100% {
+		transform: translate(0, 0);
+	}
+}

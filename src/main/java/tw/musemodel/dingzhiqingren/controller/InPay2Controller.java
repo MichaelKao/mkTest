@@ -2,6 +2,7 @@ package tw.musemodel.dingzhiqingren.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.UUID;
 import javax.servlet.http.HttpSession;
 import org.json.JSONObject;
@@ -12,6 +13,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Plan;
 import tw.musemodel.dingzhiqingren.service.Inpay2Service;
 import tw.musemodel.dingzhiqingren.service.LoverService;
@@ -106,8 +109,13 @@ public class InPay2Controller {
 	 * @return 给绿界的响应
 	 */
 	@PostMapping(path = "/orderResult.asp")
-	ModelAndView orderResult(@RequestParam("ResultData") String resultData, Locale locale) throws Exception {
+	ModelAndView orderResult(@RequestParam("ResultData") String resultData, Locale locale, Authentication authentication) throws Exception {
 		JSONObject jSONObject = inpay2Service.handleOrderResult(resultData);
+
+		// 本人
+		Lover me = loverService.loadByUsername(
+			jSONObject.getJSONObject("result").getString("customField")
+		);
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -117,19 +125,108 @@ public class InPay2Controller {
 			locale
 		));
 
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
+
+		// 確認性別
+		Boolean meIsMale = loverService.isMale(me);
+
+		documentElement.setAttribute(
+			meIsMale ? "male" : "female",
+			null
+		);
+
+		// 登入中
+		documentElement.setAttribute(
+			"signIn",
+			null
+		);
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
+
+		String itemName = jSONObject.getJSONObject("result").getString("itemName");
 		if (jSONObject.getBoolean("response")) {
-			documentElement.setAttribute("message", "付款成功");
-			documentElement.setAttribute("reason", "已成功支付 1688 元!");
+			documentElement.setAttribute(
+				"date",
+				jSONObject.getJSONObject("result").getString("paymentDate")
+			);
+			documentElement.setAttribute(
+				"message",
+				messageSource.getMessage(
+					"payment.success",
+					null,
+					locale
+				));
+			documentElement.setAttribute(
+				"amount",
+				jSONObject.getJSONObject("result").get("totalAmount").toString()
+			);
+			String result = null;
+			if (Objects.equals(itemName, "1")) {
+				result = messageSource.getMessage(
+					"recharge.3000",
+					null,
+					locale
+				);
+			}
+			if (Objects.equals(itemName, "2")) {
+				result = messageSource.getMessage(
+					"recharge.5000",
+					null,
+					locale
+				);
+			}
+			if (Objects.equals(itemName, "3")) {
+				result = messageSource.getMessage(
+					"recharge.10000",
+					null,
+					locale
+				);
+			}
+			if (Objects.equals(itemName, "vip")) {
+				result = messageSource.getMessage(
+					"upgrade.vip",
+					null,
+					locale
+				);
+			}
+			documentElement.setAttribute("result", result);
 			documentElement.setAttribute("redirect", "/");
 		}
 
 		if (!jSONObject.getBoolean("response")) {
 			documentElement.setAttribute("fail", null);
-			documentElement.setAttribute("message", "付款失敗");
-			documentElement.setAttribute("reason", jSONObject.getString("reason"));
-			documentElement.setAttribute("redirect", "/upgrade.asp");
-		}
+			documentElement.setAttribute(
+				"message",
+				messageSource.getMessage(
+					"payment.failed",
+					null,
+					locale
+				));
+			documentElement.setAttribute("reason", jSONObject.get("reason").toString());
 
+			if (Objects.equals(itemName, "vip")) {
+				documentElement.setAttribute("redirect", "/upgrade.asp");
+			} else {
+				documentElement.setAttribute("redirect", "/recharge.asp");
+			}
+		}
 		ModelAndView modelAndView = new ModelAndView("orderResult");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;

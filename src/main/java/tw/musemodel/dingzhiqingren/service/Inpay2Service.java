@@ -659,7 +659,7 @@ public class Inpay2Service {
 		);
 		tokenRequestData.setCardInfo(cardInfo);
 
-		/*		
+		/*
 		 允许缴费有效天数为 1 天
 		 */
 		ATMInfo atmInfo = tokenRequestData.new ATMInfo();
@@ -900,7 +900,7 @@ public class Inpay2Service {
 		luJie.setPaymentType(orderInfo.getPaymentType());//订单资讯：付款方式
 		luJie.setTradeDate(orderInfo.getTradeDate());//订单资讯：订单成立时间
 		luJie.setChargeFee(orderInfo.getChargeFee());////订单资讯：手续费
-		luJie.setTradeStatus(orderInfo.getTradeStatus());//订单资讯：交易状态 
+		luJie.setTradeStatus(orderInfo.getTradeStatus());//订单资讯：交易状态
 		luJie.setCustomField(username);//特店自订栏位：厂商自订栏位
 
 		ReturnResponse.Data.CardInfo cardInfo = data.getCardInfo();
@@ -915,10 +915,10 @@ public class Inpay2Service {
 			luJie.setStage(cardInfo.getStage());//信用卡资讯：分期期数
 			luJie.setStast(cardInfo.getStast());//信用卡资讯：首期金额
 			luJie.setStaed(cardInfo.getStaed());//信用卡资讯：各期金额
-			luJie.setPeriodType(cardInfo.getPeriodType());//信用卡资讯：定期定额周期种类 
+			luJie.setPeriodType(cardInfo.getPeriodType());//信用卡资讯：定期定额周期种类
 			luJie.setFrequency(cardInfo.getFrequency());//信用卡资讯：定期定额执行频率
-			luJie.setExecTimes(cardInfo.getExecTimes());//信用卡资讯：定期定额执行次数 
-			luJie.setPeriodAmount(cardInfo.getPeriodAmount());//信用卡资讯：定期定额每次授权金额 
+			luJie.setExecTimes(cardInfo.getExecTimes());//信用卡资讯：定期定额执行次数
+			luJie.setPeriodAmount(cardInfo.getPeriodAmount());//信用卡资讯：定期定额每次授权金额
 			luJie.setTotalSuccessTimes(cardInfo.getTotalSuccessTimes());//目前已成功授权的次数
 		}
 		luJie = luJieRepository.saveAndFlush(luJie);
@@ -1003,7 +1003,7 @@ public class Inpay2Service {
 		luJie.setPaymentType(orderInfo.getPaymentType());//订单资讯：付款方式
 		luJie.setTradeDate(orderInfo.getTradeDate());//订单资讯：订单成立时间
 		luJie.setChargeFee(orderInfo.getChargeFee());////订单资讯：手续费
-		luJie.setTradeStatus(orderInfo.getTradeStatus());//订单资讯：交易状态 
+		luJie.setTradeStatus(orderInfo.getTradeStatus());//订单资讯：交易状态
 		luJie.setCustomField(data.getCustomField());//特店自订栏位：厂商自订栏位
 
 		/*
@@ -1044,7 +1044,7 @@ public class Inpay2Service {
 			luJie.setEci(cardInfo.getEci());//信用卡资讯：3D(VBV) 回传值
 			luJie.setCard6No(cardInfo.getCard6No());//信用卡资讯：信用卡卡号前六码
 			luJie.setCard4No(cardInfo.getCard4No());//信用卡资讯：信用卡卡号末四码
-			luJie.setStage(cardInfo.getStage());//信用卡资讯：分期期数 
+			luJie.setStage(cardInfo.getStage());//信用卡资讯：分期期数
 			luJie.setStast(cardInfo.getStast());//信用卡资讯：首期金额
 			luJie.setStaed(cardInfo.getStaed());//信用卡资讯：各期金额
 			luJie.setPeriodType(cardInfo.getPeriodType());//信用卡资讯：定期定额周期种类

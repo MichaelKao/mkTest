@@ -24,47 +24,66 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
-			<STYLE>.successIcon{font-size: 60px;}</STYLE>
+			<STYLE>BODY{background: #F3F3F3 !important;} .resultIcon{font-size: 60px;}</STYLE>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container py-8">
-				<DIV class="card w-80 mx-auto">
-					<DIV class="row justify-content-center text-center">
-						<DIV class="col-lg-6">
-							<DIV class="text-gradient text-primary mb-0 h1 successIcon">
-								<xsl:choose>
-									<xsl:when test="@fail">
-										<I class="fal fa-exclamation-circle"></I>
-									</xsl:when>
-									<xsl:otherwise>
-										<I class="fal fa-check-circle"></I>
-									</xsl:otherwise>
-								</xsl:choose>
-							</DIV>
-							<H1 class="text-primary text-gradient">
-								<xsl:value-of select="@message"/>
-							</H1>
-							<P class="lead text-primary">
-								<xsl:value-of select="@reason"/>
-							</P>
+			<DIV class="container pt-9 pb-5 pt-md-10 pb-mb-5">
+				<DIV class="card col-12 col-md-7 mx-auto">
+					<DIV class="bg-gradient-primary border-radius-lg py-3 w-85 mt-n5 mx-auto text-center">
+						<DIV class="text-light mb-0 h1 resultIcon">
+							<xsl:choose>
+								<xsl:when test="@fail">
+									<I class="fal fa-exclamation-circle"></I>
+								</xsl:when>
+								<xsl:otherwise>
+									<I class="fal fa-check-circle"></I>
+								</xsl:otherwise>
+							</xsl:choose>
 						</DIV>
+						<H1 class="text-light">
+							<xsl:value-of select="@message"/>
+						</H1>
 					</DIV>
-				</DIV>
-				<DIV class="row justify-content-center text-center">
-					<xsl:if test="not(@fail)">
-						<DIV class="h4 mt-5">
-							<DIV>您已成為 VIP</DIV>
-							<DIV>馬上搜尋心儀對象</DIV>
-						</DIV>
-					</xsl:if>
-					<A class="h1 text-info text-gradient" href="">
-						<xsl:attribute name="href">
-							<xsl:value-of select="@redirect"/>
-						</xsl:attribute>
-						<I class="fal fa-house-return"></I>
-					</A>
+					<DIV class="mx-auto my-5">
+						<xsl:if test="not(@fail)">
+							<DIV class="d-flex mb-2">
+								<DIV>交易時間：</DIV>
+								<DIV class="text-primary text-gradient">
+									<xsl:value-of select="@date"/>
+								</DIV>
+							</DIV>
+							<DIV class="d-flex mb-2">
+								<DIV>支付金額：</DIV>
+								<DIV class="text-primary text-gradient">
+									<xsl:value-of select="@amount"/>
+								</DIV>
+							</DIV>
+							<DIV class="d-flex mb-2">
+								<DIV>付款項目：</DIV>
+								<DIV class="text-primary text-gradient">
+									<xsl:value-of select="@result"/>
+								</DIV>
+							</DIV>
+						</xsl:if>
+						<xsl:if test="@fail">
+							<DIV class="d-flex mb-2">
+								<DIV>失敗原因：</DIV>
+								<DIV class="text-primary text-gradient">
+									<xsl:value-of select="@reason"/>
+								</DIV>
+							</DIV>
+						</xsl:if>
+					</DIV>
+					<DIV class="mx-auto text-center">
+						<A class="btn btn-outline-dark">
+							<xsl:attribute name="href">
+								<xsl:value-of select="@redirect"/>
+							</xsl:attribute>
+							<SPAN>確認</SPAN>
+						</A>
+					</DIV>
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>

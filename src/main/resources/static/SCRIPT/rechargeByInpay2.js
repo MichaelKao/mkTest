@@ -32,12 +32,13 @@ $(document).ready(function () {
 					}
 				},
 				'json'
-			);
+				);
 		}
 	);
 
 	$('FORM[name="payment"]').submit(function (event) {
 		event.preventDefault();
+		$('DIV.loadingWrap').css('display', 'block');
 		let form = this;
 		try {
 			ECPay.getPayToken(function (paymentInfo, errMsg) {
@@ -48,10 +49,10 @@ $(document).ready(function () {
 				let payToken = paymentInfo.PayToken;
 				$(form.payToken).val(
 					payToken
-				);
+					);
 				$(form.paymentType).val(
 					paymentInfo.PaymentType
-				);
+					);
 				$.post(
 					`/inpay2/createPayment/${payToken}.json`,
 					function (data) {
@@ -63,7 +64,7 @@ $(document).ready(function () {
 						}
 					},
 					'json'
-				);
+					);
 			});
 		} catch (error) {
 			alert(error);
