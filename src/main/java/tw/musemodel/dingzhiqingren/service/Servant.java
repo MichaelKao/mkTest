@@ -1,5 +1,7 @@
 package tw.musemodel.dingzhiqingren.service;
 
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -59,7 +61,11 @@ public class Servant {
 	/**
 	 * 东八时区
 	 */
-	public static final ZoneId ASIA_TAIPEI = ZoneId.of("Asia/Taipei");
+	public final static ZoneId ASIA_TAIPEI = ZoneId.of("Asia/Taipei");
+
+	public final static JsonMapper JSON_MAPPER = new JsonMapper();
+
+	public final static ObjectWriter JSON_WRITER_WITH_DEFAULT_PRETTY_PRINTER = new JsonMapper().writerWithDefaultPrettyPrinter();
 
 	/**
 	 * 本地服务器域名

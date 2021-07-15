@@ -138,9 +138,6 @@ public class WelcomeController {
 			Lover me = loverService.loadByUsername(
 				authentication.getName()
 			);
-			// 看頁面的時間
-			me.setActive(new Date(System.currentTimeMillis()));
-			me = loverService.saveLover(me);
 
 			// 確認性別
 			Boolean meIsMale = loverService.isMale(me);
@@ -793,10 +790,6 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
-
 		Document document = loverService.readDocument(me, locale);
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -873,10 +866,6 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
 
 		// 識別碼的帳號
 		Lover lover = loverService.loadByIdentifier(identifier);
@@ -991,10 +980,6 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
 
 		Document document = loverService.writeDocument(me, locale);
 		Element documentElement = document.getDocumentElement();
@@ -1194,10 +1179,6 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
-
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -1355,10 +1336,6 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
-
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -1486,10 +1463,6 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -1691,9 +1664,6 @@ public class WelcomeController {
 			authentication.getName()
 		);//我谁⁉️
 
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);//最后造访时戳
-
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -1759,9 +1729,6 @@ public class WelcomeController {
 			authentication.getName()
 		);//我谁⁉️
 
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);//最后造访时戳
-
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -1817,10 +1784,6 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
 
 		Document document = historyService.historiesToDocument(me);
 		Element documentElement = document.getDocumentElement();
@@ -1925,9 +1888,6 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);//我谁⁉️
-
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);//最后造访时戳
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -2267,9 +2227,6 @@ public class WelcomeController {
 					null
 				);
 			}
-			// 看頁面的時間
-			me.setActive(new Date(System.currentTimeMillis()));
-			me = loverService.saveLover(me);
 
 			// 確認性別
 			Boolean meIsMale = loverService.isMale(me);
@@ -2334,9 +2291,6 @@ public class WelcomeController {
 					null
 				);
 			}
-			// 看頁面的時間
-			me.setActive(new Date(System.currentTimeMillis()));
-			me = loverService.saveLover(me);
 
 			// 確認性別
 			Boolean meIsMale = loverService.isMale(me);
@@ -2378,10 +2332,6 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-
-		// 看頁面的時間
-		me.setActive(new Date(System.currentTimeMillis()));
-		me = loverService.saveLover(me);
 
 		Document document = loverService.withdrawalDocument(me, locale);
 		Element documentElement = document.getDocumentElement();
