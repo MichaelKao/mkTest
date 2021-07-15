@@ -170,6 +170,10 @@
 								</A>
 							</xsl:for-each>
 						</DIV>
+						<DIV class="my-3 text-center">
+							<IMG class="border-radius-md" src="/accept.svg" width="25"/>
+							<SPAN class="text-sm text-info text-bold ms-1">已通過本人安心認證</SPAN>
+						</DIV>
 					</DIV>
 				</DIV>
 			</xsl:if>
