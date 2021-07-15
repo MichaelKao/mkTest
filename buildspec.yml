@@ -14,12 +14,6 @@ phases:
       - mvn package
 artifacts:
   files:
-<<<<<<< HEAD
-    # - .platform/hooks/postdeploy/client_max_body_size.sh
-    - .platform/00_myconf.config
-    - .platform/nginx/conf.d/proxy.conf
-=======
     - Procfile
->>>>>>> dev
     - target/application.jar
   # discard-paths: yes
