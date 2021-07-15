@@ -3,6 +3,7 @@ package tw.musemodel.dingzhiqingren.service;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -94,9 +95,9 @@ public class HistoryService {
 	public static final Behavior BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND = Behavior.BU_JI_LAI;
 
 	/**
-	 * 历程：賴要求的退點(拒絕或過期)
+	 * 历程：賴要求的扣點(VIP超多要求上限)
 	 */
-	public static final Behavior BEHAVIOR_LAI_TUI_DIAN = Behavior.LAI_TUI_DIAN;
+	public static final Behavior BEHAVIOR_LAI_KOU_DIAN = Behavior.LAI_KOU_DIAN;
 
 	/**
 	 * 历程：月费行为
@@ -140,7 +141,7 @@ public class HistoryService {
 			initiative,
 			passive,
 			BEHAVIOR_FARE,
-			points
+			(short) -points
 		);
 		history = historyRepository.saveAndFlush(history);
 
@@ -209,34 +210,19 @@ public class HistoryService {
 				//女生已經同意給過 LINE
 				throw new RuntimeException("gimmeYourLineInvitation.femaleHasGivenLine");
 			} else {
+				//離上一次拒絕不到24小時
+				if (within24hrsFromLastRefused(initiative, passive)) {
+					throw new RuntimeException("gimmeYourLineInvitation.within24hrsFromLastRefused");
+				}
 				//被拒絕過
 				lineGiven.setResponse(null);
 				lineGivenRepository.saveAndFlush(lineGiven);
 			}
 		}
-		short cost = COST_GIMME_YOUR_LINE_INVITATION;
-		long currentTimeMillis = System.currentTimeMillis();
-		Date vip = initiative.getVip();
-		if (Objects.nonNull(vip) && vip.after(new Date(currentTimeMillis))) {
-			Long dailyCount = historyRepository.countByInitiativeAndBehaviorAndOccurredBetween(
-				initiative,
-				BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
-				Servant.minimumToday(currentTimeMillis),
-				Servant.maximumToday(currentTimeMillis)
-			);
-			if (Objects.isNull(dailyCount) || dailyCount <= VIP_DAILY_TOLERANCE) {
-				cost = 0;
-			}
-		} else {
-			if (points(initiative) < Math.abs(cost)) {
-				throw new RuntimeException("gimmeYourLineInvitation.insufficientPoints");//点数不足
-			}
-		}
 		History history = new History(
 			initiative,
 			passive,
-			BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
-			cost
+			BEHAVIOR_GIMME_YOUR_LINE_INVITATION
 		);
 		history.setGreeting(greetingMessage);
 		history = historyRepository.saveAndFlush(history);
@@ -353,7 +339,6 @@ public class HistoryService {
 			passive,
 			BEHAVIOR_INVITE_ME_AS_LINE_FRIEND
 		);
-		history.setGreeting(inviteMeAsLineFriend);
 		history = historyRepository.saveAndFlush(history);
 
 		// 推送通知給男生
@@ -432,16 +417,6 @@ public class HistoryService {
 				initiative.getNickname()
 			));
 
-		if (historySeen.getPoints() == -30) {
-			History historyTuiDian = new History(
-				passive,
-				initiative,
-				BEHAVIOR_LAI_TUI_DIAN
-			);
-			historyTuiDian.setPoints((short) 30);
-			historyRepository.saveAndFlush(historyTuiDian);
-		}
-
 		LineGiven lineGiven = new LineGiven(
 			new LineGivenPK(initiative.getId(), passive.getId()),
 			false
@@ -493,6 +468,55 @@ public class HistoryService {
 	}
 
 	/**
+	 * 打開女生的 LINE
+	 *
+	 * @param male
+	 * @param female
+	 * @return
+	 */
+	@Transactional
+	public JSONObject openLine(Lover male, Lover female, Locale locale) {
+		if (loverService.isVIP(male)) {
+			if (!withinRequiredLimit(male)) {
+				Short cost = COST_GIMME_YOUR_LINE_INVITATION;
+				if (points(male) < Math.abs(cost)) {
+					throw new RuntimeException("openLine.insufficientPoints");//点数不足
+				}
+				historyRepository.saveAndFlush(new History(
+					male,
+					female,
+					BEHAVIOR_LAI_KOU_DIAN,
+					cost
+				));
+			} else if (withinRequiredLimit(male)) {
+				historyRepository.saveAndFlush(new History(
+					male,
+					female,
+					BEHAVIOR_LAI_KOU_DIAN,
+					(short) 0
+				));
+			}
+		} else if (!loverService.isVIP(male)) {
+			throw new RuntimeException("openLine.upgardeVipToOpen");
+		}
+
+		History historySeen
+			= historyRepository.findByInitiativeAndPassiveAndBehavior(female, male, BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
+		historySeen.setSeen(new Date(System.currentTimeMillis()));
+		historyRepository.saveAndFlush(historySeen);
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"openLine.done",
+				null,
+				locale
+			)).
+			withResponse(true).
+			withRedirect(female.getInviteMeAsLineFriend()).
+			toJSONObject();
+	}
+
+	/**
 	 * 星級評價
 	 *
 	 * @param initiative
@@ -530,6 +554,11 @@ public class HistoryService {
 		historyRepository.saveAndFlush(history);
 
 		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"rate.done",
+				null,
+				locale
+			)).
 			withResponse(true).
 			withResult(history.getOccurred()).
 			toJSONObject();
@@ -579,12 +608,12 @@ public class HistoryService {
 		Element documentElement = document.getDocumentElement();
 
 		// 確認性別
-		Boolean isMale = loverService.isMale(lover);
+		Boolean gender = lover.getGender();
 
 		List<Activity> activeLogsList = findActiveLogsOrderByOccurredDesc(lover);
 
 		for (Activity activeLogs : activeLogsList) {
-			if (!isMale && activeLogs.getBehavior() == BEHAVIOR_LAI_TUI_DIAN) {
+			if (!gender && activeLogs.getBehavior() == BEHAVIOR_LAI_KOU_DIAN) {
 				continue;
 			}
 			String initiativeIdentifier = activeLogs.getInitiative().getIdentifier().toString();
@@ -602,6 +631,9 @@ public class HistoryService {
 			String profileImage = null;
 			String message = null;
 
+			Lover initiative = activeLogs.getInitiative();
+			Lover passive = activeLogs.getPassive();
+
 			Element historyElement = document.createElement("history");
 			documentElement.appendChild(historyElement);
 			historyElement.setAttribute(
@@ -610,7 +642,7 @@ public class HistoryService {
 					.format(activeLogs.getOccurred()
 					));
 			if (activeLogs.getBehavior() == BEHAVIOR_CHARGED) {
-				if (isMale) {
+				if (gender) {
 					profileImage = initiativeProfileImage;
 					message = String.format(
 						"%s%d%s",
@@ -638,7 +670,7 @@ public class HistoryService {
 				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_MONTHLY_CHARGED) {
-				if (isMale) {
+				if (gender) {
 					profileImage = initiativeProfileImage;
 					message = String.format(
 						"%s",
@@ -663,8 +695,8 @@ public class HistoryService {
 					identifier
 				);
 			}
-			if (activeLogs.getBehavior() == BEHAVIOR_LAI_TUI_DIAN) {
-				if (isMale) {
+			if (activeLogs.getBehavior() == BEHAVIOR_LAI_KOU_DIAN) {
+				if (gender) {
 					profileImage = initiativeProfileImage;
 					message = String.format(
 						"%s%s%s%d",
@@ -693,7 +725,7 @@ public class HistoryService {
 				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_GIMME_YOUR_LINE_INVITATION) {
-				if (isMale) {
+				if (gender) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
@@ -703,7 +735,7 @@ public class HistoryService {
 						"要求 LINE"
 					);
 				}
-				if (!isMale) {
+				if (!gender) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
@@ -737,7 +769,7 @@ public class HistoryService {
 				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_INVITE_ME_AS_LINE_FRIEND) {
-				if (isMale) {
+				if (gender) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
@@ -745,12 +777,29 @@ public class HistoryService {
 						initiativeNickname,
 						"接受給您 Line"
 					);
-					historyElement.setAttribute(
-						"addLineButton",
-						activeLogs.getInitiative().getInviteMeAsLineFriend()
-					);
+					LineGiven lineGiven = lineGivenRepository.findByFemaleAndMale(initiative, passive);
+					if (Objects.nonNull(lineGiven) && lineGiven.getResponse()
+						&& historyRepository.countByInitiativeAndPassiveAndBehaviorAndSeenNotNull(initiative, passive, BEHAVIOR_INVITE_ME_AS_LINE_FRIEND) < 1) {
+						historyElement.setAttribute(
+							"addLineButton",
+							activeLogs.getInitiative().getInviteMeAsLineFriend()
+						);
+						if (loverService.isVIP(passive) && !withinRequiredLimit(passive)) {
+							historyElement.setAttribute(
+								"remindDeduct",
+								null
+							);
+						}
+					}
+					if (Objects.isNull(
+						historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(passive, initiative, BEHAVIOR_RATE))) {
+						historyElement.setAttribute(
+							"rateButton",
+							null
+						);
+					}
 				}
-				if (!isMale) {
+				if (!gender) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
@@ -759,11 +808,14 @@ public class HistoryService {
 						passiveNickname,
 						"給出 Line"
 					);
+					if (Objects.isNull(
+						historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(initiative, passive, BEHAVIOR_RATE))) {
+						historyElement.setAttribute(
+							"rateButton",
+							null
+						);
+					}
 				}
-				historyElement.setAttribute(
-					"rateButton",
-					null
-				);
 				historyElement.setAttribute(
 					"profileImage",
 					String.format(
@@ -782,7 +834,7 @@ public class HistoryService {
 				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND) {
-				if (isMale) {
+				if (gender) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
@@ -791,7 +843,7 @@ public class HistoryService {
 						"拒絕給您 Line"
 					);
 				}
-				if (!isMale) {
+				if (!gender) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
@@ -819,7 +871,7 @@ public class HistoryService {
 				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_GREETING) {
-				if (isMale) {
+				if (gender) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
@@ -828,12 +880,19 @@ public class HistoryService {
 						"向您打招呼：",
 						activeLogs.getGreeting()
 					);
-					historyElement.setAttribute(
-						"requestLineButton",
-						null
-					);
+					LineGiven lineGiven = null;
+					if (Objects.nonNull(lineGivenRepository.findByFemaleAndMale(initiative, passive))) {
+						lineGiven = lineGivenRepository.findByFemaleAndMale(initiative, passive);
+					}
+
+					if (Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse()) {
+						historyElement.setAttribute(
+							"requestLineButton",
+							null
+						);
+					}
 				}
-				if (!isMale) {
+				if (!gender) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
@@ -861,7 +920,7 @@ public class HistoryService {
 				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_FARE) {
-				if (isMale) {
+				if (gender) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
@@ -872,7 +931,7 @@ public class HistoryService {
 						"車馬費"
 					);
 				}
-				if (!isMale) {
+				if (!gender) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
@@ -903,4 +962,36 @@ public class HistoryService {
 		}
 		return document;
 	}
+
+	/**
+	 * 男生開啟 LINE 未超過上限值
+	 *
+	 * @param male
+	 * @return
+	 */
+	public boolean withinRequiredLimit(Lover male) {
+		long currentTimeMillis = System.currentTimeMillis();
+		Long dailyCount = historyRepository.countByInitiativeAndBehaviorAndOccurredBetween(
+			male,
+			BEHAVIOR_LAI_KOU_DIAN,
+			Servant.minimumToday(currentTimeMillis),
+			Servant.maximumToday(currentTimeMillis)
+		);
+		return loverService.isVIP(male) && Objects.nonNull(dailyCount) && dailyCount < VIP_DAILY_TOLERANCE;
+	}
+
+	public boolean within24hrsFromLastRefused(Lover male, Lover female) {
+		Date refusedDate = null;
+		Date nowDate = null;
+		History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(female, male, BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
+		if (Objects.nonNull(history)) {
+			Calendar refused = Calendar.getInstance();
+			refused.setTime(history.getOccurred());
+			refused.add(Calendar.HOUR, 24);
+			refusedDate = refused.getTime();
+			nowDate = new Date();
+		}
+		return nowDate.before(refusedDate);
+	}
+
 }

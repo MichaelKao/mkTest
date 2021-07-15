@@ -24,20 +24,22 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
+			<LINK crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.css" integrity="sha512-Aix44jXZerxlqPbbSLJ03lEsUch9H/CmnNfWxShD6vJBbboR+rPdDXmKN+/QjISWT80D4wMjtM4Kx7+xkLVywQ==" referrerpolicy="no-referrer" rel="stylesheet"/>
+			<LINK href="/STYLE/album.css" rel="stylesheet"/>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container py-7">
-				<DIV class="modal fade" id="modal" role="dialog" tabindex="-1">
-					<DIV class="modal-dialog" role="document">
+				<DIV class="modal fade" id="deleteModal">
+					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
 								<H5 class="modal-title">提醒！</H5>
 								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">
-								<DIV class="form-group col-8">刪除帳號將無法再恢復，確定要刪除？</DIV>
+								<DIV class="form-group col-8 text-warning">刪除帳號將無法再恢復，確定要刪除？</DIV>
 							</DIV>
 							<DIV class="modal-footer">
 								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
@@ -50,11 +52,60 @@
 						</DIV>
 					</DIV>
 				</DIV>
+				<DIV class="modal fade" id="qrcodeModal">
+					<DIV class="modal-dialog modal-dialog-centered">
+						<DIV class="modal-content">
+							<DIV class="modal-header">
+								<H5 class="modal-title">教學</H5>
+								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
+							</DIV>
+							<DIV class="modal-body">
+								<IMG alt="qrcode" src="/qrcode.png" style="max-width: 100%;"/>
+							</DIV>
+							<DIV class="modal-footer">
+								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+									<xsl:value-of select="@i18n-cancel"/>
+								</BUTTON>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
+				<DIV class="modal fade" id="cropModal">
+					<DIV class="modal-dialog modal-dialog-centered">
+						<DIV class="modal-content">
+							<DIV class="modal-header">
+								<H5 class="modal-title" id="modalLabel">裁切照片</H5>
+								<BUTTON aria-label="Close" class="btn-close text-dark" data-bs-dismiss="modal" type="button"></BUTTON>
+							</DIV>
+							<DIV class="modal-body">
+								<P class="text-primary text-bold modalRemarks"></P>
+								<DIV class="imgContainer">
+									<IMG alt="cropper" src="https://via.placeholder.com/200" id="image"/>
+								</DIV>
+								<DIV class="progress-wrapper">
+									<DIV class="progress-info">
+										<DIV class="progress-percentage">
+											<span class="text-sm font-weight-bold">0%</span>
+										</DIV>
+									</DIV>
+									<DIV class="progress">
+										<DIV class="progress-bar bg-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></DIV>
+									</DIV>
+								</DIV>
+							</DIV>
+							<DIV class="modal-footer">
+								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消</BUTTON>
+								<BUTTON class="btn btn-primary" id="crop" type="button">完成</BUTTON>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
 				<DIV class="card mx-md-7">
 					<xsl:apply-templates select="lover"/>
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
+			<SCRIPT crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.js" integrity="sha512-E4KfIuQAc9ZX6zW1IUJROqxrBqJXPuEcDKP6XesMdu2OV4LW7pj8+gkkyx2y646xEV7yxocPbaTtk2LQIJewXw==" referrerpolicy="no-referrer"/>
 			<SCRIPT src="/SCRIPT/editProfile.js"/>
 			<xsl:if test="@signIn">
 				<SCRIPT src="/SCRIPT/websocket.js"/>
@@ -69,7 +120,25 @@
 						<I class="fad fa-chevron-double-left"></I>
 					</A>
 					<DIV class="ms-auto">
-						<BUTTON class="btn btn-outline-primary deleteAccount" type="button">刪除帳號</BUTTON>
+						<xsl:choose>
+							<xsl:when test="not(certification)">
+								<LABEL>
+									<INPUT accept="image/*" class="sr-only" data-type="certification" name="image" type="file"/>
+									<A class="btn btn-outline-info me-1 certification">
+										<IMG alt="approval" src="/accept.svg" width="17"/>
+										<SPAN class="ms-1">安心認證</SPAN>
+									</A>
+								</LABEL>
+							</xsl:when>
+						</xsl:choose>
+						<BUTTON class="btn btn-outline-info me-1 certification" disabled="" style="display: none;">
+							<xsl:if test="certification and certification/@certification = 'false'">
+								<xsl:attribute name="style">display: inline;</xsl:attribute>
+							</xsl:if>
+							<IMG alt="approval" src="/accept.svg" width="17"/>
+							<SPAN class="ms-1">待審核</SPAN>
+						</BUTTON>
+						<BUTTON class="btn btn-outline-primary" data-bs-target="#deleteModal" data-bs-toggle="modal" type="button">刪除帳號</BUTTON>
 					</DIV>
 				</DIV>
 				<DIV class="row mt-3">
@@ -95,12 +164,6 @@
 						<LABEL for="occupation">職業</LABEL>
 						<INPUT class="form-control" id="occupation" name="occupation" type="text" value="{occupation}"/>
 					</DIV>
-					<xsl:if test="/document/@female">
-						<DIV class="col-md-12 mb-3">
-							<LABEL for="inviteMeAsLineFriend">Line 好友連結</LABEL>
-							<INPUT class="form-control" id="inviteMeAsLineFriend" name="inviteMeAsLineFriend" required="" type="text" value="{inviteMeAsLineFriend}"/>
-						</DIV>
-					</xsl:if>
 					<DIV class="form-group">
 						<LABEL for="bodyType">體型</LABEL>
 						<SELECT class="form-control" id="bodyType" name="bodyType">
@@ -220,6 +283,62 @@
 							</TEXTAREA>
 						</DIV>
 					</DIV>
+					<xsl:if test="/document/@female">
+						<DIV class="col-md-12 mb-3">
+							<LABEL>Line 好友連結</LABEL>
+							<DIV class="uploadQrcode">
+								<LABEL>
+									<INPUT accept="image/*" class="sr-only" data-type="qrcode" name="image" type="file"/>
+									<A class="btn btn-primary p-1 me-1 certification">點擊上傳 QR code</A>
+								</LABEL>
+								<BUTTON class="btn btn-info p-1" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">如何取得 QR code?</BUTTON>
+							</DIV>
+							<DIV>
+								<INPUT class="form-control" name="inviteMeAsLineFriend" readonly="" required="" style="display: none;" type="text" value="">
+									<xsl:if test="inviteMeAsLineFriend">
+										<xsl:attribute name="style">display: inline;</xsl:attribute>
+										<xsl:attribute name="value">
+											<xsl:value-of select="inviteMeAsLineFriend"/>
+										</xsl:attribute>
+									</xsl:if>
+								</INPUT>
+							</DIV>
+						</DIV>
+						<DIV class="col-md-12 mb-3">
+							<LABEL>服務標籤</LABEL>
+							<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
+								<xsl:for-each select="service">
+									<DIV class="form-check ms-2">
+										<INPUT class="form-check-input service" id="service{@serviceID}" type="checkbox" value="{@serviceID}">
+											<xsl:if test="@serviceSelected">
+												<xsl:attribute name="checked"/>
+											</xsl:if>
+										</INPUT>
+										<LABEL class="custom-control-label" for="service{@serviceID}">
+											<xsl:value-of select="."/>
+										</LABEL>
+									</DIV>
+								</xsl:for-each>
+							</DIV>
+						</DIV>
+						<DIV class="col-md-12 mb-3">
+							<LABEL>服務地區</LABEL>
+							<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
+								<xsl:for-each select="location">
+									<DIV class="form-check ms-2">
+										<INPUT class="form-check-input location" id="location{@locationID}" type="checkbox" value="{@locationID}">
+											<xsl:if test="@locationSelected">
+												<xsl:attribute name="checked"/>
+											</xsl:if>
+										</INPUT>
+										<LABEL class="custom-control-label" for="location{@locationID}">
+											<xsl:value-of select="."/>
+										</LABEL>
+									</DIV>
+								</xsl:for-each>
+							</DIV>
+						</DIV>
+					</xsl:if>
 				</DIV>
 				<DIV class="row">
 					<DIV class="col-md-6 text-right ms-auto">

@@ -38,7 +38,7 @@
 							</DIV>
 							<DIV class="modal-body">
 								<BUTTON class="btn btn-light collapsed me-2" data-bs-target="#collapseOne" data-bs-toggle="collapse" type="button">銀行匯款</BUTTON>
-								<BUTTON class="btn btn-light" data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">Paypal</BUTTON>
+								<!--<BUTTON class="btn btn-light" data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">Paypal</BUTTON>-->
 								<DIV class="accordion" id="accordionRental">
 									<DIV class="accordion-item mb-3">
 										<DIV class="accordion-collapse collapse" data-bs-parent="#accordionRental" id="collapseOne">

@@ -7,8 +7,17 @@ import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.FormatException;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -17,7 +26,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
@@ -44,11 +55,17 @@ import tw.musemodel.dingzhiqingren.entity.Activation;
 import tw.musemodel.dingzhiqingren.entity.Allowance;
 import tw.musemodel.dingzhiqingren.entity.AnnualIncome;
 import tw.musemodel.dingzhiqingren.entity.Country;
+import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.LineUserProfile;
+import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.Role;
+import tw.musemodel.dingzhiqingren.entity.ServiceTag;
 import tw.musemodel.dingzhiqingren.entity.User;
+import tw.musemodel.dingzhiqingren.entity.WithdrawalInfo;
+import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
+import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
 import tw.musemodel.dingzhiqingren.event.SignedUpEvent;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
@@ -57,10 +74,16 @@ import tw.musemodel.dingzhiqingren.repository.ActivationRepository;
 import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
 import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
+import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineUserProfileRepository;
+import tw.musemodel.dingzhiqingren.repository.LocationRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
+import tw.musemodel.dingzhiqingren.repository.ServiceTagRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
+import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
+import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_FARE;
 
 /**
  * 服务层：情人
@@ -85,6 +108,8 @@ public class LoverService {
 			)
 		)).
 		withRegion(Regions.AP_SOUTHEAST_1).build();
+
+	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
@@ -130,6 +155,21 @@ public class LoverService {
 
 	@Autowired
 	private AllowanceRepository allowanceRepository;
+
+	@Autowired
+	private HistoryRepository historyRepository;
+
+	@Autowired
+	private LocationRepository locationRepository;
+
+	@Autowired
+	private ServiceTagRepository serviceTagRepository;
+
+	@Autowired
+	private WithdrawalRecordRepository withdrawalRecordRepository;
+
+	@Autowired
+	private WithdrawalInfoRepository withdrawalInfoRepository;
 
 	public List<Lover> loadLovers() {
 		return loverRepository.findAll();
@@ -275,6 +315,33 @@ public class LoverService {
 			return null;
 		}
 		return loverRepository.findById(user.getId()).orElseThrow();
+	}
+
+	public JSONObject qrCodeToString(InputStream inputStream, Locale locale) {
+		try {
+			return new JavaScriptObjectNotation().
+				withResult(new QRCodeReader().
+					decode(new BinaryBitmap(
+						new HybridBinarizer(
+							new BufferedImageLuminanceSource(
+								ImageIO.read(inputStream)
+							)
+						)
+					)).
+					getText()
+				).
+				withResponse(true).
+				toJSONObject();
+		} catch (NotFoundException | ChecksumException | FormatException | IOException exception) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"lineFriendInvitation.wrongQRCode",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
 	}
 
 	@Transactional
@@ -472,14 +539,13 @@ public class LoverService {
 	}
 
 	/**
-	 * 確認性別
+	 * 是否为 VIP⁉️
 	 *
-	 * @param lover
-	 * @return
+	 * @param lover 用户
+	 * @return 布尔值
 	 */
-	public Boolean isMale(Lover lover) {
-		Boolean isMale = lover.getGender();
-		return isMale;
+	public boolean isVIP(Lover lover) {
+		return Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date(System.currentTimeMillis()));
 	}
 
 	public Document readDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
@@ -520,6 +586,14 @@ public class LoverService {
 			loverElement.setAttribute("vip", null);
 		}
 
+		if (Objects.nonNull(lover.getCertification())) {
+			Boolean certification = lover.getCertification();
+			loverElement.setAttribute(
+				"certification",
+				certification ? "true" : "false"
+			);
+		}
+
 		Element profileImageElement = document.createElement("profileImage");
 		if (Objects.nonNull(lover.getProfileImage())) {
 			profileImageElement.setTextContent(
@@ -545,15 +619,30 @@ public class LoverService {
 			loverElement.appendChild(pictureElement);
 		}
 
-		if (Objects.nonNull(lover.getLocation())) {
-			Element locationElement = document.createElement("location");
-			locationElement.setTextContent(
-				messageSource.getMessage(
-					lover.getLocation().getName(),
-					null,
-					locale
-				));
-			loverElement.appendChild(locationElement);
+		if (Objects.nonNull(lover.getLocations())) {
+			for (Location location : lover.getLocations()) {
+				Element locationElement = document.createElement("location");
+				locationElement.setTextContent(
+					messageSource.getMessage(
+						location.getName(),
+						null,
+						locale
+					));
+				loverElement.appendChild(locationElement);
+			}
+		}
+
+		if (Objects.nonNull(lover.getServices())) {
+			for (ServiceTag service : lover.getServices()) {
+				Element serviceElement = document.createElement("service");
+				serviceElement.setTextContent(
+					messageSource.getMessage(
+						service.getName(),
+						null,
+						locale
+					));
+				loverElement.appendChild(serviceElement);
+			}
 		}
 
 		if (Objects.nonNull(lover.getNickname())) {
@@ -720,12 +809,47 @@ public class LoverService {
 		if (Objects.nonNull(lover.getActive())) {
 			Element activeElement = document.createElement("active");
 			activeElement.setTextContent(
-				Servant.TAIWAN_DATE_TIME_FORMATTER.format(
+				DATE_TIME_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						lover.getActive()
 					).withZoneSameInstant(Servant.ASIA_TAIPEI)
-				).replaceAll("\\+\\d{2}$", ""));
+				));
 			loverElement.appendChild(activeElement);
+		}
+
+		List<History> rateList = historyRepository.findByPassiveAndBehavior(lover, History.Behavior.PING_JIA);
+		if (Objects.nonNull(rateList)) {
+			for (History rate : rateList) {
+				Element rateElement = document.createElement("rate");
+				loverElement.appendChild(rateElement);
+				rateElement.setAttribute(
+					"profileImage",
+					String.format(
+						"https://%s/profileImage/%s",
+						servant.STATIC_HOST,
+						rate.getInitiative().getProfileImage()
+					));
+				rateElement.setAttribute(
+					"nickname",
+					rate.getInitiative().getNickname()
+				);
+				rateElement.setAttribute(
+					"time",
+					DATE_TIME_FORMATTER.format(
+						servant.toTaipeiZonedDateTime(
+							rate.getOccurred()
+						).withZoneSameInstant(Servant.ASIA_TAIPEI)
+					).replaceAll("\\+\\d{2}$", "")
+				);
+				rateElement.setAttribute(
+					"rate",
+					rate.getRate().toString()
+				);
+				rateElement.setAttribute(
+					"comment",
+					rate.getComment()
+				);
+			}
 		}
 
 		return document;
@@ -771,6 +895,16 @@ public class LoverService {
 				gender ? "male" : "female"
 			);
 			loverElement.appendChild(genderElement);
+		}
+
+		if (Objects.nonNull(lover.getCertification())) {
+			Boolean certification = lover.getCertification();
+			Element certificationElement = document.createElement("certification");
+			certificationElement.setAttribute(
+				"certification",
+				certification ? "true" : "false"
+			);
+			loverElement.appendChild(certificationElement);
 		}
 
 		for (Lover.BodyType bodyType : Lover.BodyType.values()) {
@@ -866,6 +1000,48 @@ public class LoverService {
 				);
 			}
 			loverElement.appendChild(drinkingElement);
+		}
+
+		for (Location location : locationRepository.findAll()) {
+			Element locationElement = document.createElement("location");
+			locationElement.setTextContent(
+				messageSource.getMessage(
+					location.getName(),
+					null,
+					locale
+				));
+			locationElement.setAttribute(
+				"locationID", location.getId().toString()
+			);
+			for (Location loc : lover.getLocations()) {
+				if (Objects.equals(loc, location)) {
+					locationElement.setAttribute(
+						"locationSelected", ""
+					);
+				}
+			}
+			loverElement.appendChild(locationElement);
+		}
+
+		for (ServiceTag service : serviceTagRepository.findAll()) {
+			Element serviceElement = document.createElement("service");
+			serviceElement.setTextContent(
+				messageSource.getMessage(
+					service.getName(),
+					null,
+					locale
+				));
+			serviceElement.setAttribute(
+				"serviceID", service.getId().toString()
+			);
+			for (ServiceTag ser : lover.getServices()) {
+				if (Objects.equals(ser, service)) {
+					serviceElement.setAttribute(
+						"serviceSelected", ""
+					);
+				}
+			}
+			loverElement.appendChild(serviceElement);
 		}
 
 		if (lover.getGender()) {
@@ -968,5 +1144,208 @@ public class LoverService {
 		}
 
 		return document;
+	}
+
+	public Document withdrawalDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+
+		Long leftPoints = honeyLeftPoints(lover);
+		documentElement.setAttribute(
+			"points",
+			leftPoints.toString()
+		);
+
+		if (withdrawalInfoRepository.countByHoney(lover) > 0) {
+			Element wireElement = document.createElement("wire");
+			documentElement.appendChild(wireElement);
+			wireElement.setAttribute(
+				"bankCode",
+				withdrawalInfoRepository.findByHoney(lover).getWireTransferBankCode()
+			);
+			wireElement.setAttribute(
+				"branchCode",
+				withdrawalInfoRepository.findByHoney(lover).getWireTransferBranchCode()
+			);
+			wireElement.setAttribute(
+				"accountName",
+				withdrawalInfoRepository.findByHoney(lover).getWireTransferAccountName()
+			);
+			wireElement.setAttribute(
+				"accountNumber",
+				withdrawalInfoRepository.findByHoney(lover).getWireTransferAccountNumber()
+			);
+		}
+
+		for (WithdrawalRecord withdrawalRecord : withdrawalRecordRepository.findAllByHoneyOrderByTimestampDesc(lover)) {
+			Element recordElement = document.createElement("record");
+			documentElement.appendChild(recordElement);
+
+			recordElement.setAttribute(
+				"date",
+				DATE_TIME_FORMATTER.format(
+					servant.toTaipeiZonedDateTime(
+						withdrawalRecord.getTimestamp()
+					).withZoneSameInstant(Servant.ASIA_TAIPEI)
+				));
+
+			recordElement.setAttribute(
+				"way",
+				messageSource.getMessage(
+					withdrawalRecord.getWay().toString(),
+					null,
+					locale
+				));
+
+			recordElement.setAttribute(
+				"points",
+				withdrawalRecord.getPoints().toString()
+			);
+
+			if (Objects.nonNull(withdrawalRecord.getStatus())) {
+				recordElement.setAttribute(
+					"status",
+					withdrawalRecord.getStatus().toString()
+				);
+			}
+		}
+
+		return document;
+	}
+
+	/**
+	 * 使用銀行匯款提領車馬費
+	 *
+	 * @param wireTransferBankCode
+	 * @param wireTransferBranchCode
+	 * @param wireTransferAccountName
+	 * @param wireTransferAccountNumber
+	 * @param honey
+	 * @param locale
+	 * @return
+	 */
+	@Transactional
+	public JSONObject wireTransfer(String wireTransferBankCode, String wireTransferBranchCode, String wireTransferAccountName, String wireTransferAccountNumber, Lover honey, Locale locale) {
+		if (Objects.isNull(wireTransferAccountName)) {
+			throw new IllegalArgumentException("wireTransfer.accountNameMustntBeNull");
+		}
+		if (Objects.isNull(wireTransferAccountNumber)) {
+			throw new IllegalArgumentException("wireTransfer.accountNumberMustntBeNull");
+		}
+		if (Objects.isNull(wireTransferBankCode)) {
+			throw new IllegalArgumentException("wireTransfer.bankCodeMustntBeNull");
+		}
+		if (Objects.isNull(wireTransferBranchCode)) {
+			throw new IllegalArgumentException("wireTransfer.branchCodeMustntBeNull");
+		}
+
+		Long leftPoints = honeyLeftPoints(honey);
+		WithdrawalRecord withdrawalRecord = new WithdrawalRecord(honey, leftPoints, WayOfWithdrawal.WIRE_TRANSFER);
+		withdrawalRecordRepository.saveAndFlush(withdrawalRecord);
+
+		WithdrawalInfo withdrawalInfo = null;
+		if (withdrawalInfoRepository.countByHoney(honey) > 0) {
+			withdrawalInfo = withdrawalInfoRepository.findByHoney(honey);
+			withdrawalInfo.setWireTransferAccountName(wireTransferAccountName);
+			withdrawalInfo.setWireTransferAccountNumber(wireTransferAccountNumber);
+			withdrawalInfo.setWireTransferBankCode(wireTransferBankCode);
+			withdrawalInfo.setWireTransferBranchCode(wireTransferBranchCode);
+		} else {
+			withdrawalInfo = new WithdrawalInfo(
+				honey,
+				wireTransferBankCode,
+				wireTransferBranchCode,
+				wireTransferAccountName,
+				wireTransferAccountNumber
+			);
+		}
+		withdrawalInfoRepository.saveAndFlush(withdrawalInfo);
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"wireTransfer.done",
+				null,
+				locale
+			)).
+			withResponse(true).
+			withResult(withdrawalRecord.getTimestamp()).
+			toJSONObject();
+	}
+
+	/**
+	 * 甜心剩餘的可提領車馬費
+	 *
+	 * @param honey
+	 * @return
+	 */
+	@Transactional
+	public Long honeyLeftPoints(Lover honey) {
+		Long sumPoints = historyRepository.sumByPassiveAndBehaviorHearts(honey, BEHAVIOR_FARE);
+		sumPoints = Objects.nonNull(sumPoints) ? -sumPoints : 0;
+		Long withdrawnPoints = withdrawalRecordRepository.sumPoinsByHoney(honey);
+		withdrawnPoints = Objects.nonNull(withdrawnPoints) ? withdrawnPoints : 0;
+
+		Long leftPoints = sumPoints - withdrawnPoints;
+
+		return leftPoints;
+	}
+
+	/**
+	 * 更新地點
+	 *
+	 * @param honey
+	 * @return
+	 */
+	@Transactional
+	public JSONObject updateLocation(Location location, Lover honey) {
+
+		Set<Location> locations = honey.getLocations();
+		for (Location loc : locations) {
+			if (Objects.equals(loc, location)) {
+				locations.remove(loc);
+				honey.setLocations(locations);
+				loverRepository.saveAndFlush(honey);
+				return new JavaScriptObjectNotation().
+					withResponse(true).
+					toJSONObject();
+			}
+		}
+
+		locations.add(location);
+		honey.setLocations(locations);
+		loverRepository.saveAndFlush(honey);
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			toJSONObject();
+	}
+
+	/**
+	 * 更新服務
+	 *
+	 * @param location
+	 * @param honey
+	 * @return
+	 */
+	@Transactional
+	public JSONObject updateService(ServiceTag service, Lover honey) {
+
+		Set<ServiceTag> services = honey.getServices();
+		for (ServiceTag ser : services) {
+			if (Objects.equals(ser, service)) {
+				services.remove(ser);
+				honey.setServices(services);
+				loverRepository.saveAndFlush(honey);
+				return new JavaScriptObjectNotation().
+					withResponse(true).
+					toJSONObject();
+			}
+		}
+
+		services.add(service);
+		honey.setServices(services);
+		loverRepository.saveAndFlush(honey);
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			toJSONObject();
 	}
 }

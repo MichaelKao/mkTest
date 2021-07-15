@@ -1,7 +1,9 @@
 package tw.musemodel.dingzhiqingren.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.util.Locale;
+import java.util.UUID;
 import javax.servlet.http.HttpSession;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -21,7 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import tw.musemodel.dingzhiqingren.entity.Plan;
 import tw.musemodel.dingzhiqingren.service.Inpay2Service;
+import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 
 /**
@@ -46,6 +50,9 @@ public class InPay2Controller {
 	@Autowired
 	private Inpay2Service inpay2Service;
 
+	@Autowired
+	private LoverService loverService;
+
 	/**
 	 * 建立交易。
 	 *
@@ -55,7 +62,7 @@ public class InPay2Controller {
 	 */
 	@PostMapping(path = "/createPayment/{payToken}.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String createPayment(@PathVariable final String payToken, final HttpSession session) {
+	String createPeriodPayment(@PathVariable final String payToken, final HttpSession session) {
 		return inpay2Service.createPayment(payToken, session);
 	}
 
@@ -67,14 +74,27 @@ public class InPay2Controller {
 	 * @return 厂商验证码 JSON 对象
 	 * @throws com.​fasterxml.​jackson.​coreJsonProcessingException
 	 */
+	@PostMapping(path = "/getPeriodTokenByTrade.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String getPeriodTokenByTrade(final HttpSession session, Locale locale) throws JsonProcessingException {
+		return inpay2Service.getPeriodTokenByTrade(session);
+	}
+
+	/**
+	 * 取得厂商验证码。
+	 *
+	 * @param session 分配给会话的标识符
+	 * @return 厂商验证码 JSON 对象
+	 * @throws com.​fasterxml.​jackson.​coreJsonProcessingException
+	 */
 	@PostMapping(path = "/getTokenByTrade.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String getTokenByTrade(final HttpSession session, Locale locale) throws JsonProcessingException {
-		LOGGER.debug(
-			"語系：{}",
-			locale
+	String getTokenByTrade(final @RequestParam UUID me, final @RequestParam Plan plan, final HttpSession session) throws JsonProcessingException {
+		return inpay2Service.getTokenByTrade(
+			plan,
+			loverService.loadByIdentifier(me),
+			session
 		);
-		return inpay2Service.getTokenByTrade(session);
 	}
 
 	/**
@@ -83,14 +103,8 @@ public class InPay2Controller {
 	 * @param resultData 付款结果
 	 * @return 给绿界的响应
 	 */
-//	@PostMapping(path = "/orderResult.asp", produces = MediaType.APPLICATION_JSON_VALUE)
-//	@ResponseBody
-//	String handleOrderResult(@RequestParam("ResultData") String resultData) throws Exception {
-//		return inpay2Service.handleOrderResult(resultData).toString();
-//	}
 	@PostMapping(path = "/orderResult.asp")
 	ModelAndView orderResult(@RequestParam("ResultData") String resultData, Locale locale) throws Exception {
-
 		JSONObject jSONObject = inpay2Service.handleOrderResult(resultData);
 
 		Document document = servant.parseDocument();

@@ -205,6 +205,28 @@ public class Lover implements java.io.Serializable {
 	@Column(name = "shan_chu")
 	private String delete;
 
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "honey")
+	private WithdrawalInfo withdrawalInfo;
+
+	@JoinTable(
+		name = "qing_ren_yu_di_qu",
+		joinColumns = @JoinColumn(name = "qing_ren", referencedColumnName = "id"),
+		inverseJoinColumns = @JoinColumn(name = "di_qu", referencedColumnName = "id"))
+	@JsonIgnore
+	@ManyToMany(fetch = FetchType.EAGER)
+	private Set<Location> locations;
+
+	@JoinTable(
+		name = "qing_ren_yu_fu_wu",
+		joinColumns = @JoinColumn(name = "qing_ren", referencedColumnName = "id"),
+		inverseJoinColumns = @JoinColumn(name = "fu_wu", referencedColumnName = "id"))
+	@JsonIgnore
+	@ManyToMany(fetch = FetchType.EAGER)
+	private Set<ServiceTag> services;
+
+	@Column(name = "an_xin")
+	private Boolean certification;
+
 	/**
 	 * 默认构造器
 	 */
@@ -723,6 +745,62 @@ public class Lover implements java.io.Serializable {
 	 */
 	public void setDelete(String delete) {
 		this.delete = delete;
+	}
+
+	/**
+	 * @return 提領資訊
+	 */
+	public WithdrawalInfo getWithdrawalInfo() {
+		return withdrawalInfo;
+	}
+
+	/**
+	 * @param withdrawalInfo 提領資訊
+	 */
+	public void setWithdrawalInfo(WithdrawalInfo withdrawalInfo) {
+		this.withdrawalInfo = withdrawalInfo;
+	}
+
+	/**
+	 * @return 地點
+	 */
+	public Set<Location> getLocations() {
+		return locations;
+	}
+
+	/**
+	 * @param locations 地點
+	 */
+	public void setLocations(Set<Location> locations) {
+		this.locations = locations;
+	}
+
+	/**
+	 * @return 服務
+	 */
+	public Set<ServiceTag> getServices() {
+		return services;
+	}
+
+	/**
+	 * @param services 服務
+	 */
+	public void setServices(Set<ServiceTag> services) {
+		this.services = services;
+	}
+
+	/**
+	 * @return 安心認證
+	 */
+	public Boolean getCertification() {
+		return certification;
+	}
+
+	/**
+	 * @param certification 安心認證
+	 */
+	public void setCertification(Boolean certification) {
+		this.certification = certification;
 	}
 
 	/**

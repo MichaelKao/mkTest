@@ -59,7 +59,7 @@
 										<SPAN>NT$</SPAN>
 										<xsl:value-of select="@amount"/>
 									</SPAN>
-									<BUTTON class="ms-auto btn btn-sm btn-outline-info px-3 px-sm-4 m-0" type="button">選擇</BUTTON>
+									<A class="ms-auto btn btn-sm btn-outline-info px-3 px-sm-4 m-0" href="/recharge/{position()}.asp">選擇</A>
 								</DIV>
 							</DIV>
 						</DIV>

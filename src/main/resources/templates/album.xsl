@@ -39,7 +39,7 @@
 					<DIV class="h4 text-primary mb-3 d-flex align-items-baseline">
 						<SPAN>大頭貼</SPAN>
 						<LABEL>
-							<INPUT accept="image/*" class="sr-only" data-type="profileImage"  name="image" type="file"/>
+							<INPUT accept="image/*" class="sr-only" data-type="profileImage" name="image" type="file"/>
 							<I class="far fa-pen h4"></I>
 						</LABEL>
 					</DIV>
@@ -66,8 +66,8 @@
 						</xsl:for-each>
 					</DIV>
 				</ARTICLE>
-				<DIV class="modal" id="confirmModal" role="dialog" tabindex="-1">
-					<DIV class="modal-dialog" role="document">
+				<DIV class="modal fade" id="confirmModal">
+					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
 								<H5 class="modal-title">提醒</H5>
@@ -83,12 +83,12 @@
 						</DIV>
 					</DIV>
 				</DIV>
-				<DIV aria-labelledby="modalLabel" aria-hidden="true" class="modal fade" id="modal" role="dialog" tabindex="-1">
-					<DIV class="modal-dialog" role="document">
+				<DIV class="modal fade" id="cropModal">
+					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
 								<H5 class="modal-title" id="modalLabel">裁切照片</H5>
-								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
+								<BUTTON aria-label="Close" class="btn-close text-dark" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">
 								<DIV class="imgContainer">

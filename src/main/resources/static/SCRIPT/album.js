@@ -4,7 +4,7 @@ $(document).ready(function () {
 
 	var image = document.getElementById('image');
 	var input;
-	var $modal = $('#modal');
+	var $cropModal = $('#cropModal');
 	var cropper;
 	var photoType;
 
@@ -16,7 +16,7 @@ $(document).ready(function () {
 		var done = function (url) {
 			this.value = '';
 			image.src = url;
-			$modal.modal('show');
+			$cropModal.modal('show');
 		};
 		var reader;
 		var file;
@@ -35,7 +35,7 @@ $(document).ready(function () {
 		}
 	});
 
-	$modal.on('shown.bs.modal', function () {
+	$cropModal.on('shown.bs.modal', function () {
 		cropper = new Cropper(image, {
 			viewMode: 1,
 			dragMode: 'move',
@@ -47,7 +47,7 @@ $(document).ready(function () {
 			highlight: false,
 			cropBoxMovable: false,
 			cropBoxResizable: false,
-			toggleDragModeOnDblclick: false,
+			toggleDragModeOnDblclick: false
 		});
 	}).on('hidden.bs.modal', function () {
 		cropper.destroy();
@@ -94,7 +94,7 @@ $(document).ready(function () {
 				var OK = uploadpic(blob);
 				if (!OK && typeof (OK) != "undefined") {
 					alert('上傳失敗');
-					$modal.modal('hide');
+					$cropModal.modal('hide');
 				}
 
 				input.value = '';
@@ -106,7 +106,6 @@ $(document).ready(function () {
 
 		var file = new FormData();
 		file.append('file', blob);
-
 
 		var postUrl;
 		if (photoType === 'picture') {
@@ -127,11 +126,11 @@ $(document).ready(function () {
 				if (photoType === 'picture') {
 					window.location.reload();
 				}
-				$modal.modal('hide');
+				$cropModal.modal('hide');
 			},
 			error: function () {
 				alert('上傳失敗');
-				$modal.modal('hide');
+				$cropModal.modal('hide');
 				return false;
 			}, xhr: function () {
 				var xhr = new window.XMLHttpRequest();
@@ -146,7 +145,7 @@ $(document).ready(function () {
 				return xhr;
 			}
 		}).fail(function () {
-			$modal.modal('hide');
+			$cropModal.modal('hide');
 		});
 	}
 

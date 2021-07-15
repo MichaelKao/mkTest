@@ -44,12 +44,19 @@
 										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="70"/>
 									</A>
 								</DIV>
-								<xsl:if test="@vip">
-									<DIV class="position-absolute top-0 left-0">
-										<IMG class="border-radius-md" src="/vip.svg" width="30"/>
-									</DIV>
-								</xsl:if>
 								<DIV>
+									<DIV class="d-flex justify-content-around">
+										<xsl:if test="@vip">
+											<DIV>
+												<IMG class="border-radius-md" src="/vip.svg" width="30"/>
+											</DIV>
+										</xsl:if>
+										<xsl:if test="@certification = 'true'">
+											<DIV>
+												<IMG class="border-radius-md" src="/accept.svg" width="30"/>
+											</DIV>
+										</xsl:if>
+									</DIV>
 									<A class="h6" href="/profile/{@identifier}/">
 										<SPAN class="me-2">
 											<xsl:value-of select="@nickname"/>

@@ -149,11 +149,14 @@
 							<xsl:for-each select="lover">
 								<A class="position-relative m-2" href="/profile/{identifier}/">
 									<IMG class="border-radius-md" src="{profileImage}" width="130"/>
-									<xsl:if test="@vip">
-										<DIV class="position-absolute top-0 right-0">
-											<IMG class="border-radius-md" src="/vip.svg" width="30"/>
-										</DIV>
-									</xsl:if>
+									<DIV class="position-absolute top-0 right-0 text-center" style="width: 25px;">
+										<xsl:if test="@vip">
+											<IMG class="border-radius-md" src="/vip.svg" width="25"/>
+										</xsl:if>
+										<xsl:if test="@certification = 'true'">
+											<IMG class="border-radius-md" src="/accept.svg" width="25"/>
+										</xsl:if>
+									</DIV>
 									<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
 										<SPAN class="bg-dark opacity-6 border-radius-md px-1">
 											<SPAN>

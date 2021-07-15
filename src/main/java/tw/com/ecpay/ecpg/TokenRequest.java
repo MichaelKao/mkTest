@@ -833,6 +833,7 @@ public class TokenRequest {
 			 * 默认构造器
 			 */
 			public ATMInfo() {
+				expireDate = 1;
 			}
 
 			/**
@@ -920,6 +921,7 @@ public class TokenRequest {
 			 * 默认构造器
 			 */
 			public CVSInfo() {
+				storeExpireDate = 1440;
 			}
 
 			/**
