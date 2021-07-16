@@ -112,11 +112,6 @@ public class InPay2Controller {
 	ModelAndView orderResult(@RequestParam("ResultData") String resultData, Locale locale, Authentication authentication) throws Exception {
 		JSONObject jSONObject = inpay2Service.handleOrderResult(resultData);
 
-		// 本人
-		Lover me = loverService.loadByUsername(
-			jSONObject.getJSONObject("result").getString("customField")
-		);
-
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
@@ -124,6 +119,11 @@ public class InPay2Controller {
 			null,
 			locale
 		));
+
+		// 本人
+		Lover me = loverService.loadByUsername(
+			jSONObject.getJSONObject("result").getString("customField")
+		);
 
 		// 身分
 		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
@@ -142,10 +142,10 @@ public class InPay2Controller {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean isMale = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			isMale ? "male" : "female",
 			null
 		);
 
@@ -220,12 +220,7 @@ public class InPay2Controller {
 					locale
 				));
 			documentElement.setAttribute("reason", jSONObject.get("reason").toString());
-
-			if (Objects.equals(itemName, "vip")) {
-				documentElement.setAttribute("redirect", "/upgrade.asp");
-			} else {
-				documentElement.setAttribute("redirect", "/recharge.asp");
-			}
+			documentElement.setAttribute("redirect", "/");
 		}
 		ModelAndView modelAndView = new ModelAndView("orderResult");
 		modelAndView.getModelMap().addAttribute(document);

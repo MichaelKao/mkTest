@@ -791,12 +791,6 @@ public class Inpay2Service {
 			resultData,
 			OrderResultResponse.class
 		);
-		if (orderResultResponse.getTransCode() != 1) {
-			return new JavaScriptObjectNotation().
-				withReason(orderResultResponse.getTransMsg()).
-				withResponse(false).
-				toJSONObject();
-		}
 		String decrypted = decrypt(orderResultResponse.getData());
 		OrderResultResponse.Data data = JSON_MAPPER.readValue(
 			decrypted,
@@ -807,6 +801,20 @@ public class Inpay2Service {
 		LuJie luJie = luJieRepository.findOneByMerchantTradeNo(
 			merchantTradeNo
 		).orElseThrow();
+		if (orderResultResponse.getTransCode() != 1) {
+			return new JavaScriptObjectNotation().
+				withReason(orderResultResponse.getTransMsg()).
+				withResponse(false).
+				withResult(luJie).
+				toJSONObject();
+		}
+		if (data.getRtnCode() != 1) {
+			return new JavaScriptObjectNotation().
+				withReason(data.getRtnMsg()).
+				withResponse(false).
+				withResult(luJie).
+				toJSONObject();
+		}
 		luJie.setTradeNo(orderInfo.getTradeNo());
 		luJie.setPaymentDate(orderInfo.getPaymentDate());
 		luJie.setTradeAmt(orderInfo.getTradeAmt());
@@ -882,6 +890,12 @@ public class Inpay2Service {
 			decrypt(returnResponse.getData()),//解密后的数据
 			ReturnResponse.Data.class
 		);
+		if (data.getRtnCode() != 1) {
+			return new JavaScriptObjectNotation().
+				withReason(data.getRtnMsg()).
+				withResponse(false).
+				toJSONObject();
+		}
 
 		ReturnResponse.Data.OrderInfo orderInfo = data.getOrderInfo();//订单资讯
 		String merchantTradeNo = orderInfo.getMerchantTradeNo(),//特店交易编号
@@ -986,6 +1000,12 @@ public class Inpay2Service {
 			decrypt(returnResponse.getData()),//解密后的数据
 			ReturnResponse.Data.class
 		);
+		if (data.getRtnCode() != 1) {
+			return new JavaScriptObjectNotation().
+				withReason(data.getRtnMsg()).
+				withResponse(false).
+				toJSONObject();
+		}
 
 		ReturnResponse.Data.OrderInfo orderInfo = data.getOrderInfo();//订单资讯
 		String merchantTradeNo = orderInfo.getMerchantTradeNo(),//特店交易编号

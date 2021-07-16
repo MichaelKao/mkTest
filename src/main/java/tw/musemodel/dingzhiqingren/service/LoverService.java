@@ -538,17 +538,6 @@ public class LoverService {
 	}
 
 	/**
-	 * 是带把儿的吗
-	 *
-	 * @param lover 用户
-	 * @return 布尔值
-	 */
-	public Boolean isMale(Lover lover) {
-		Boolean isMale = lover.getGender();
-		return isMale;
-	}
-
-	/**
 	 * 是否为 VIP⁉️
 	 *
 	 * @param lover 用户

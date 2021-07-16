@@ -140,10 +140,10 @@ public class WelcomeController {
 			);
 
 			// 確認性別
-			Boolean meIsMale = loverService.isMale(me);
+			Boolean gender = me.getGender();
 
 			documentElement.setAttribute(
-				meIsMale ? "male" : "female",
+				gender ? "male" : "female",
 				null
 			);
 
@@ -171,11 +171,11 @@ public class WelcomeController {
 			// 通知數、顯示的 lovers 資料
 			int announcement = 0;
 			List<Lover> lovers = new ArrayList<Lover>();
-			if (meIsMale) {
+			if (gender) {
 				lovers = loverRepository.findAllByGender(false);
 				announcement = historyRepository.countByPassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_KOU_DIAN);
 			}
-			if (!meIsMale) {
+			if (!gender) {
 				lovers = loverRepository.findAllByGender(true);
 				announcement = historyRepository.countByFemalePassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_KOU_DIAN);
 			}
@@ -203,7 +203,7 @@ public class WelcomeController {
 					loverElement.appendChild(ageElement);
 				}
 
-				if (!meIsMale && Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date())) {
+				if (!gender && loverService.isVIP(lover)) {
 					loverElement.setAttribute("vip", null);
 				}
 
@@ -815,10 +815,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -895,10 +895,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
-		// 是否為 VIP
-		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+		// 本人是否為 VIP
+		if (loverService.isVIP(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -919,16 +919,26 @@ public class WelcomeController {
 		}
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
-		// 是否已交換過 LINE
-		LineGiven lineGiven = lineGivenRepository.findByFemaleAndMale(lover, me);
-		if (Objects.nonNull(lineGiven)) {
-			if (Objects.nonNull(lineGiven.getResponse())) {
+		if (gender) {
+			// 是否已交換過 LINE
+			LineGiven lineGiven = lineGivenRepository.findByFemaleAndMale(lover, me);
+			History history = historyRepository.findByInitiativeAndPassiveAndBehavior(me, lover, Behavior.LAI_KOU_DIAN);
+
+			if (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse())
+				&& lineGiven.getResponse() && Objects.isNull(history)) {
 				documentElement.setAttribute(
-					lineGiven.getResponse() ? "match" : "noMatch",
+					"accepted",
+					null
+				);
+			}
+
+			if (Objects.nonNull(history)) {
+				documentElement.setAttribute(
+					"matched",
 					lover.getInviteMeAsLineFriend()
 				);
 			}
@@ -1006,15 +1016,15 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
-		// 是否為 VIP
-		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+		// 本人是否為 VIP
+		if (loverService.isVIP(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -1204,10 +1214,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -1256,7 +1266,7 @@ public class WelcomeController {
 					loverService.calculateAge(followed).toString()
 				);
 			}
-			if (followed.getGender() && Objects.nonNull(followed.getVip()) && followed.getVip().after(new Date())) {
+			if (followed.getGender() && loverService.isVIP(followed)) {
 				followElement.setAttribute("vip", null);
 			}
 			if (Objects.nonNull(followed.getCertification())) {
@@ -1361,10 +1371,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -1424,7 +1434,7 @@ public class WelcomeController {
 						loverService.calculateAge(peeker).toString()
 					);
 				}
-				if (peeker.getGender() && Objects.nonNull(peeker.getVip()) && peeker.getVip().after(new Date())) {
+				if (peeker.getGender() && loverService.isVIP(peeker)) {
 					peekerElement.setAttribute("vip", null);
 				}
 				if (Objects.nonNull(peeker.getCertification())) {
@@ -1489,10 +1499,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -1680,12 +1690,12 @@ public class WelcomeController {
 			me.getIdentifier().toString()
 		);
 
-		boolean isMale = me.getGender();
-		if (!isMale) {
+		boolean gender = me.getGender();
+		if (!gender) {
 			return servant.redirectToRoot();
 		}//女性则重导向首页
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -1745,12 +1755,12 @@ public class WelcomeController {
 			me.getIdentifier().toString()
 		);
 
-		boolean isMale = me.getGender();
-		if (!isMale) {
+		boolean gender = me.getGender();
+		if (!gender) {
 			return servant.redirectToRoot();
 		}//女性则重导向首页
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -1811,14 +1821,14 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
-		if (meIsMale) {
+		if (gender) {
 			documentElement.setAttribute(
 				"greeting",
 				me.getGreeting()
@@ -1843,8 +1853,8 @@ public class WelcomeController {
 				locale
 			));
 
-		// 是否為 VIP
-		if (Objects.nonNull(me.getVip()) && me.getVip().after(new Date())) {
+		// 本人是否為 VIP
+		if (loverService.isVIP(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -1908,12 +1918,12 @@ public class WelcomeController {
 		/*
 		 确认性别
 		 */
-		boolean isMale = me.getGender();
-		if (!isMale) {
+		boolean gender = me.getGender();
+		if (!gender) {
 			return servant.redirectToRoot();
 		}//女性则重导向首页
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -2229,10 +2239,10 @@ public class WelcomeController {
 			}
 
 			// 確認性別
-			Boolean meIsMale = loverService.isMale(me);
+			Boolean gender = me.getGender();
 
 			documentElement.setAttribute(
-				meIsMale ? "male" : "female",
+				gender ? "male" : "female",
 				null
 			);
 
@@ -2293,10 +2303,10 @@ public class WelcomeController {
 			}
 
 			// 確認性別
-			Boolean meIsMale = loverService.isMale(me);
+			Boolean gender = me.getGender();
 
 			documentElement.setAttribute(
-				meIsMale ? "male" : "female",
+				gender ? "male" : "female",
 				null
 			);
 
@@ -2358,10 +2368,10 @@ public class WelcomeController {
 		}
 
 		// 確認性別
-		Boolean meIsMale = loverService.isMale(me);
+		Boolean gender = me.getGender();
 
 		documentElement.setAttribute(
-			meIsMale ? "male" : "female",
+			gender ? "male" : "female",
 			null
 		);
 
@@ -2372,7 +2382,7 @@ public class WelcomeController {
 			);
 		}
 
-		if (meIsMale) {
+		if (gender) {
 			return new ModelAndView("redirect:/");
 		}
 
@@ -2690,4 +2700,36 @@ public class WelcomeController {
 		return json.toString();
 	}
 
+	@PostMapping(path = "/maleOpenLine.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String openLine(@RequestParam("whom") UUID femaleUUID, Authentication authentication, Locale locale) {
+
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover male = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Lover female = loverService.loadByIdentifier(femaleUUID);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = historyService.openLine(
+				male,
+				female,
+				locale
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
+	}
 }
