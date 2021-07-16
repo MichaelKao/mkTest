@@ -37,7 +37,7 @@ $(document).ready(function () {
 
 	$('FORM[name="payment"]').submit(function (event) {
 		event.preventDefault();
-		$('DIV.loadingWrap').css('display', 'block');
+
 		let form = this;
 		try {
 			ECPay.getPayToken(function (paymentInfo, errMsg) {
@@ -45,6 +45,7 @@ $(document).ready(function () {
 					alert(errMsg);
 					return false;
 				}
+				$('DIV.loadingWrap').css('display', 'block');
 				let payToken = paymentInfo.PayToken;
 				$(form.payToken).val(
 					payToken
