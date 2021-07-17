@@ -2,7 +2,6 @@ $(document).ready(function () {
 	$('FORM.wireTransfer').submit(function (event) {
 		event.preventDefault();
 		let form = this;
-		console.log($(form).serialize())
 		$.post(
 			$(form).attr('action'),
 			$(form).serialize(),

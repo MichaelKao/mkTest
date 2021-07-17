@@ -13,15 +13,8 @@ $(document).ready(function () {
 			{
 				identifier: $('INPUT[name="whom"]').val()
 			},
-			(data) => {
-			if (data.response) {
-				$('.toast-body').html(data.reason);
-				$('.toast').toast('show');
-			}
-		},
 			'json'
 			);
-
 	});
 
 	var $giftModal = $('#giftModal');

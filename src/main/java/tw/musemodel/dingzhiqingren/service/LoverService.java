@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -51,11 +52,13 @@ import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import tw.musemodel.dingzhiqingren.Specifications;
 import tw.musemodel.dingzhiqingren.entity.Activation;
 import tw.musemodel.dingzhiqingren.entity.Allowance;
 import tw.musemodel.dingzhiqingren.entity.AnnualIncome;
 import tw.musemodel.dingzhiqingren.entity.Country;
 import tw.musemodel.dingzhiqingren.entity.History;
+import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.LineUserProfile;
 import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
@@ -1344,5 +1347,53 @@ public class LoverService {
 		return new JavaScriptObjectNotation().
 			withResponse(true).
 			toJSONObject();
+	}
+
+	/**
+	 * 通知數
+	 *
+	 * @param lover
+	 * @return
+	 */
+	public int annoucementCount(Lover lover) {
+		int announcement = annoucementHistories(lover).size();
+		return announcement;
+	}
+
+	/**
+	 * 通知的歷程 List
+	 *
+	 * @param lover
+	 * @return
+	 */
+	public List<History> annoucementHistories(Lover lover) {
+		List<Behavior> behaviors = behaviorsOfAnnocement(lover);
+		return historyRepository.findAll(Specifications.passive(lover, behaviors));
+	}
+
+	/**
+	 * 需通知的行為
+	 *
+	 * @param lover
+	 * @return
+	 */
+	public List<Behavior> behaviorsOfAnnocement(Lover lover) {
+		Boolean gender = lover.getGender();
+		List<Behavior> behaviors = new ArrayList<Behavior>();
+		behaviors.add(History.Behavior.AN_XIN_CHENG_GONG);
+		behaviors.add(History.Behavior.AN_XIN_SHI_BAI);
+		if (gender) {
+			behaviors.add(History.Behavior.JI_NI_LAI);
+			behaviors.add(History.Behavior.BU_JI_LAI);
+			behaviors.add(History.Behavior.DA_ZHAO_HU);
+
+		}
+		if (!gender) {
+			behaviors.add(History.Behavior.JI_WO_LAI);
+			behaviors.add(History.Behavior.CHE_MA_FEI);
+			behaviors.add(History.Behavior.TI_LING_SHI_BAI);
+			behaviors.add(History.Behavior.TI_LING_CHENG_GONG);
+		}
+		return behaviors;
 	}
 }

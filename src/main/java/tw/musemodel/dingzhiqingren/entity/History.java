@@ -87,6 +87,10 @@ public class History implements java.io.Serializable {
 	@Column(name = "ping_jia")
 	private String comment;
 
+	@Column(name = "hui_ying")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date reply;
+
 	/**
 	 * 默认构造器
 	 */
@@ -337,6 +341,20 @@ public class History implements java.io.Serializable {
 	}
 
 	/**
+	 * @return 回應
+	 */
+	public Date getReply() {
+		return reply;
+	}
+
+	/**
+	 * @param reply 回應
+	 */
+	public void setReply(Date reply) {
+		this.reply = reply;
+	}
+
+	/**
 	 * 行为
 	 *
 	 * @author p@musemodel.tw
@@ -390,7 +408,23 @@ public class History implements java.io.Serializable {
 		/**
 		 * 评价
 		 */
-		PING_JIA("PING_JIA", 12);
+		PING_JIA("PING_JIA", 12),
+		/**
+		 * 提領失敗
+		 */
+		TI_LING_SHI_BAI("TI_LING_SHI_BAI", 13),
+		/**
+		 * 提領成功
+		 */
+		TI_LING_CHENG_GONG("TI_LING_CHENG_GONG", 14),
+		/**
+		 * 安心認證通過
+		 */
+		AN_XIN_SHI_BAI("AN_XIN_SHI_BAI", 15),
+		/**
+		 * 安心認證不通過
+		 */
+		AN_XIN_CHENG_GONG("AN_XIN_CHENG_GONG", 16);
 
 		private String label;
 

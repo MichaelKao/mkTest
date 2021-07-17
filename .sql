@@ -602,3 +602,18 @@ ADD COLUMN"an_xin"bool;
 COMMENT ON COLUMN"qing_ren"."an_xin"IS'安心';
 
 ALTER TYPE"xing_wei" RENAME VALUE 'LAI_TUI_DIAN' TO 'LAI_KOU_DIAN';
+
+/**
+ * 歷程回應欄位
+ */
+ALTER TABLE"li_cheng"
+ADD COLUMN"hui_ying"timestamptz;
+COMMENT ON COLUMN"li_cheng"."hui_ying"IS'回應';
+
+/**
+ * 提領失敗
+ */
+ALTER TYPE"xing_wei" ADD VALUE 'TI_LING_SHI_BAI';
+ALTER TYPE"xing_wei" ADD VALUE 'TI_LING_CHENG_GONG';
+ALTER TYPE"xing_wei" ADD VALUE 'AN_XIN_SHI_BAI';
+ALTER TYPE"xing_wei" ADD VALUE 'AN_XIN_CHENG_GONG';

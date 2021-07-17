@@ -38,11 +38,12 @@
 						<xsl:if test="@signIn">
 							<A class="d-lg-none" href="/activeLogs.asp">
 								<I class="fal fa-bell"></I>
-								<xsl:if test="@announcement">
-									<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement">
+								<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
+									<xsl:if test="@announcement">
+										<xsl:attribute name="style">display: inline;</xsl:attribute>
 										<xsl:value-of select="@announcement"/>
-									</SPAN>
-								</xsl:if>
+									</xsl:if>
+								</SPAN>
 							</A>
 						</xsl:if>
 						<BUTTON class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation">
@@ -122,11 +123,12 @@
 									<LI class="nav-item d-none d-lg-block">
 										<A class="nav-link nav-link-icon" href="/activeLogs.asp">
 											<I class="fal fa-bell"></I>
-											<xsl:if test="@announcement">
-												<SPAN class="text-xs text-light bg-warning border-radius-md ms-n1 announcement">
+											<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
+												<xsl:if test="@announcement">
+													<xsl:attribute name="style">display: inline;</xsl:attribute>
 													<xsl:value-of select="@announcement"/>
-												</SPAN>
-											</xsl:if>
+												</xsl:if>
+											</SPAN>
 										</A>
 									</LI>
 								</xsl:if>

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
+import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 
 /**
  * 服务层：历程
@@ -60,6 +62,9 @@ public class HistoryService {
 
 	@Autowired
 	private LoverService loverService;
+
+	@Autowired
+	private LoverRepository loverRepository;
 
 	@Autowired
 	private WebSocketServer webSocketServer;
@@ -109,7 +114,40 @@ public class HistoryService {
 	 */
 	public static final Behavior BEHAVIOR_PEEK = Behavior.KAN_GUO_WO;
 
+	/**
+	 * 历程：評價
+	 */
 	public static final Behavior BEHAVIOR_RATE = Behavior.PING_JIA;
+
+	/**
+	 * 历程：收藏
+	 */
+	public static final Behavior BEHAVIOR_FOLLOW = Behavior.SHOU_CANG;
+
+	/**
+	 * 历程：不收藏
+	 */
+	public static final Behavior BEHAVIOR_UNFOLLOW = Behavior.BU_SHOU_CANG;
+
+	/**
+	 * 历程：提領成功
+	 */
+	public static final Behavior BEHAVIOR_WITHDRAWAL_SUCCESS = Behavior.TI_LING_CHENG_GONG;
+
+	/**
+	 * 历程：提領失敗
+	 */
+	public static final Behavior BEHAVIOR_WITHDRAWAL_FAIL = Behavior.TI_LING_SHI_BAI;
+
+	/**
+	 * 历程：安心認證通過
+	 */
+	public static final Behavior BEHAVIOR_CERTIFICATION_SUCCESS = Behavior.AN_XIN_CHENG_GONG;
+
+	/**
+	 * 历程：安心認證不通過
+	 */
+	public static final Behavior BEHAVIOR_CERTIFICATION_FAIL = Behavior.AN_XIN_SHI_BAI;
 
 	/**
 	 * 车马费(男对女)
@@ -350,11 +388,11 @@ public class HistoryService {
 				initiative.getNickname()
 			));
 
-		History historySeen = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
+		History historyReply = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
 			passive, initiative, BEHAVIOR_GIMME_YOUR_LINE_INVITATION
 		);
-		historySeen.setSeen(new Date(System.currentTimeMillis()));
-		historyRepository.saveAndFlush(historySeen);
+		historyReply.setReply(new Date(System.currentTimeMillis()));
+		historyRepository.saveAndFlush(historyReply);
 
 		LineGiven lineGiven = new LineGiven(
 			new LineGivenPK(initiative.getId(), passive.getId()),
@@ -403,12 +441,12 @@ public class HistoryService {
 		);
 		history = historyRepository.saveAndFlush(history);
 
-		// 把男生的要求轉為已讀
-		History historySeen = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
+		// 把男生的要求轉為已回應
+		History historyReply = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
 			passive, initiative, BEHAVIOR_GIMME_YOUR_LINE_INVITATION
 		);
-		historySeen.setSeen(new Date(System.currentTimeMillis()));
-		historyRepository.saveAndFlush(historySeen);
+		historyReply.setReply(new Date(System.currentTimeMillis()));
+		historyRepository.saveAndFlush(historyReply);
 
 		// 推送通知給男生
 		webSocketServer.sendNotification(
@@ -501,10 +539,10 @@ public class HistoryService {
 			throw new RuntimeException("openLine.upgardeVipToOpen");
 		}
 
-		History historySeen
+		History historyReply
 			= historyRepository.findByInitiativeAndPassiveAndBehavior(female, male, BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
-		historySeen.setSeen(new Date(System.currentTimeMillis()));
-		historyRepository.saveAndFlush(historySeen);
+		historyReply.setReply(new Date(System.currentTimeMillis()));
+		historyRepository.saveAndFlush(historyReply);
 
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
@@ -565,6 +603,67 @@ public class HistoryService {
 			toJSONObject();
 	}
 
+	/**
+	 * 收藏
+	 *
+	 * @param initiative
+	 * @param passive
+	 * @param locale
+	 * @return
+	 */
+	public JSONObject follow(Lover initiative, Lover passive, Locale locale) {
+		if (Objects.isNull(initiative)) {
+			throw new IllegalArgumentException("follow.initiativeMustntBeNull");
+		}
+		if (Objects.isNull(passive)) {
+			throw new IllegalArgumentException("follow.passiveMustntBeNull");
+		}
+		if (Objects.equals(initiative, passive)) {
+			throw new RuntimeException("follow.mustBeDifferent");
+		}
+		if (Objects.equals(initiative.getGender(), passive.getGender())) {
+			throw new RuntimeException("follow.mustBeStraight");
+		}
+
+		Set<Lover> following = initiative.getFollowing();
+		for (Lover followed : following) {
+			if (Objects.equals(passive, followed)) {
+				following.remove(followed);
+				initiative.setFollowing(following);
+				loverRepository.saveAndFlush(initiative);
+				return new JavaScriptObjectNotation().
+					withReason(messageSource.getMessage(
+						"unfollow.done",
+						null,
+						locale
+					)).
+					withResponse(true).
+					toJSONObject();
+			}
+		}
+
+		following.add(passive);
+		initiative.setFollowing(following);
+		loverRepository.saveAndFlush(initiative);
+
+		History history = new History(
+			initiative,
+			passive,
+			BEHAVIOR_FOLLOW
+		);
+		historyRepository.saveAndFlush(history);
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"follow.done",
+				null,
+				locale
+			)).
+			withResponse(true).
+			withResult(history.getOccurred()).
+			toJSONObject();
+	}
+
 	@Transactional(readOnly = true)
 	public Long points(Lover lover) {
 		if (Objects.isNull(lover)) {
@@ -576,7 +675,7 @@ public class HistoryService {
 	public List<Activity> findActiveLogsOrderByOccurredDesc(Lover lover) {
 		List<Activity> list = new ArrayList<Activity>();
 
-		for (History history : historyRepository.findByInitiativeAndBehaviorNot(lover, Behavior.KAN_GUO_WO)) {
+		for (History history : historyRepository.findByInitiativeAndBehaviorNot(lover, BEHAVIOR_PEEK)) {
 			Activity activeLogs = new Activity(
 				lover,
 				history.getPassive(),
@@ -584,11 +683,12 @@ public class HistoryService {
 				history.getOccurred(),
 				history.getPoints(),
 				history.getGreeting(),
-				history.getSeen()
+				history.getSeen(),
+				history.getReply()
 			);
 			list.add(activeLogs);
 		}
-		for (History history : historyRepository.findByPassiveAndBehaviorNot(lover, Behavior.KAN_GUO_WO)) {
+		for (History history : historyRepository.findByPassiveAndBehaviorNot(lover, BEHAVIOR_PEEK)) {
 			Activity activeLogs = new Activity(
 				history.getInitiative(),
 				lover,
@@ -596,7 +696,8 @@ public class HistoryService {
 				history.getOccurred(),
 				history.getPoints(),
 				history.getGreeting(),
-				history.getSeen()
+				history.getSeen(),
+				history.getReply()
 			);
 			list.add(activeLogs);
 		}
@@ -611,176 +712,90 @@ public class HistoryService {
 		// 確認性別
 		Boolean isMale = lover.getGender();
 
+		// 將通知已讀
+		List<History> histories = loverService.annoucementHistories(lover);
+		for (History history : histories) {
+			history.setSeen(new Date(System.currentTimeMillis()));
+			historyRepository.saveAndFlush(history);
+		}
+
 		List<Activity> activeLogsList = findActiveLogsOrderByOccurredDesc(lover);
 
 		for (Activity activeLogs : activeLogsList) {
-			if (!isMale && activeLogs.getBehavior() == BEHAVIOR_LAI_KOU_DIAN) {
-				continue;
-			}
-			String initiativeIdentifier = activeLogs.getInitiative().getIdentifier().toString();
-			String initiativeProfileImage = activeLogs.getInitiative().getProfileImage();
-			String initiativeNickname = activeLogs.getInitiative().getNickname();
+			Lover initiative = activeLogs.getInitiative();
+			Lover passive = activeLogs.getPassive();
+			String initiativeIdentifier = initiative.getIdentifier().toString();
+			String initiativeProfileImage = initiative.getProfileImage();
+			String initiativeNickname = initiative.getNickname();
 			String passiveIdentifier = null;
 			String passiveProfileImage = null;
 			String passiveNickname = null;
 			if (Objects.nonNull(activeLogs.getPassive())) {
-				passiveIdentifier = activeLogs.getPassive().getIdentifier().toString();
-				passiveProfileImage = activeLogs.getPassive().getProfileImage();
-				passiveNickname = activeLogs.getPassive().getNickname();
+				passiveIdentifier = passive.getIdentifier().toString();
+				passiveProfileImage = passive.getProfileImage();
+				passiveNickname = passive.getNickname();
 			}
 			String identifier = null;
 			String profileImage = null;
 			String message = null;
 
-			Lover initiative = activeLogs.getInitiative();
-			Lover passive = activeLogs.getPassive();
-
 			Element historyElement = document.createElement("history");
 			documentElement.appendChild(historyElement);
-			historyElement.setAttribute(
-				"time",
-				new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-					.format(activeLogs.getOccurred()
-					));
 			if (activeLogs.getBehavior() == BEHAVIOR_CHARGED) {
 				if (isMale) {
 					profileImage = initiativeProfileImage;
 					message = String.format(
-						"%s%d%s",
-						"您儲值了",
-						Math.abs(activeLogs.getPoints()),
-						"愛心點數"
+						"您儲值了 %d 愛心",
+						Math.abs(activeLogs.getPoints())
 					);
 					identifier = initiativeIdentifier;
 				}
-				historyElement.setAttribute(
-					"profileImage",
-					String.format(
-						"https://%s/profileImage/%s",
-						servant.STATIC_HOST,
-						profileImage
-					)
-				);
-				historyElement.setAttribute(
-					"message",
-					message
-				);
-				historyElement.setAttribute(
-					"identifier",
-					identifier
-				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_MONTHLY_CHARGED) {
 				if (isMale) {
 					profileImage = initiativeProfileImage;
 					message = String.format(
-						"%s",
 						"升級 VIP 費用扣款 $1688"
 					);
 					identifier = initiativeIdentifier;
 				}
-				historyElement.setAttribute(
-					"profileImage",
-					String.format(
-						"https://%s/profileImage/%s",
-						servant.STATIC_HOST,
-						profileImage
-					)
-				);
-				historyElement.setAttribute(
-					"message",
-					message
-				);
-				historyElement.setAttribute(
-					"identifier",
-					identifier
-				);
-			}
-			if (activeLogs.getBehavior() == BEHAVIOR_LAI_KOU_DIAN) {
-				if (isMale) {
-					profileImage = initiativeProfileImage;
-					message = String.format(
-						"%s%s%s%d",
-						"您向",
-						passiveNickname,
-						"要 Line 不成功, 而退點",
-						activeLogs.getPoints()
-					);
-					identifier = initiativeIdentifier;
-				}
-				historyElement.setAttribute(
-					"profileImage",
-					String.format(
-						"https://%s/profileImage/%s",
-						servant.STATIC_HOST,
-						profileImage
-					)
-				);
-				historyElement.setAttribute(
-					"message",
-					message
-				);
-				historyElement.setAttribute(
-					"identifier",
-					identifier
-				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_GIMME_YOUR_LINE_INVITATION) {
 				if (isMale) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
-						"%s%s%s",
-						"您已向",
-						passiveNickname,
-						"要求 LINE"
+						"您已向 %s 要求 LINE",
+						passiveNickname
 					);
 				}
 				if (!isMale) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
-						"%s%s%s",
+						"%s向您要求 LINE：%s",
 						initiativeNickname,
-						"向您要求 Line：",
 						activeLogs.getGreeting()
 					);
-					if (Objects.isNull(activeLogs.getSeen())) {
+					if (Objects.isNull(activeLogs.getReply())) {
 						historyElement.setAttribute(
 							"decideButton",
 							null
 						);
 					}
 				}
-				historyElement.setAttribute(
-					"profileImage",
-					String.format(
-						"https://%s/profileImage/%s",
-						servant.STATIC_HOST,
-						profileImage
-					)
-				);
-				historyElement.setAttribute(
-					"message",
-					message
-				);
-				historyElement.setAttribute(
-					"identifier",
-					identifier
-				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_INVITE_ME_AS_LINE_FRIEND) {
 				if (isMale) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
-						"%s%s",
-						initiativeNickname,
-						"接受給您 Line"
+						"%s同意給您 LINE",
+						initiativeNickname
 					);
 					LineGiven lineGiven = lineGivenRepository.findByFemaleAndMale(initiative, passive);
 					if (Objects.nonNull(lineGiven) && lineGiven.getResponse()
-						&& historyRepository.countByInitiativeAndPassiveAndBehaviorAndSeenNotNull(initiative, passive, BEHAVIOR_INVITE_ME_AS_LINE_FRIEND) < 1) {
+						&& historyRepository.countByInitiativeAndPassiveAndBehaviorAndReplyNotNull(initiative, passive, BEHAVIOR_INVITE_ME_AS_LINE_FRIEND) < 1) {
 						historyElement.setAttribute(
 							"addLineButton",
 							activeLogs.getInitiative().getInviteMeAsLineFriend()
@@ -804,10 +819,8 @@ public class HistoryService {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
-						"%s%s%s",
-						"您已答應",
-						passiveNickname,
-						"給出 Line"
+						"您已同意給 %s LINE",
+						passiveNickname
 					);
 					if (Objects.isNull(
 						historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(initiative, passive, BEHAVIOR_RATE))) {
@@ -817,76 +830,36 @@ public class HistoryService {
 						);
 					}
 				}
-				historyElement.setAttribute(
-					"profileImage",
-					String.format(
-						"https://%s/profileImage/%s",
-						servant.STATIC_HOST,
-						profileImage
-					)
-				);
-				historyElement.setAttribute(
-					"message",
-					message
-				);
-				historyElement.setAttribute(
-					"identifier",
-					identifier
-				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND) {
 				if (isMale) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
-						"%s%s",
-						initiativeNickname,
-						"拒絕給您 Line"
+						"%s拒絕給您 LINE",
+						initiativeNickname
 					);
 				}
 				if (!isMale) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
-						"%s%s%s",
-						"您已拒絕",
-						passiveNickname,
-						"給出 Line"
+						"您已拒絕給 %s LINE",
+						passiveNickname
 					);
 				}
-				historyElement.setAttribute(
-					"profileImage",
-					String.format(
-						"https://%s/profileImage/%s",
-						servant.STATIC_HOST,
-						profileImage
-					)
-				);
-				historyElement.setAttribute(
-					"message",
-					message
-				);
-				historyElement.setAttribute(
-					"identifier",
-					identifier
-				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_GREETING) {
 				if (isMale) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
-						"%s%s%s",
+						"%s向您打招呼：%s",
 						initiativeNickname,
-						"向您打招呼：",
 						activeLogs.getGreeting()
 					);
-					LineGiven lineGiven = null;
-					if (Objects.nonNull(lineGivenRepository.findByFemaleAndMale(initiative, passive))) {
-						lineGiven = lineGivenRepository.findByFemaleAndMale(initiative, passive);
-					}
-
-					if (Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse()) {
+					LineGiven lineGiven = lineGivenRepository.findByFemaleAndMale(initiative, passive);
+					if (Objects.isNull(lineGiven) || (Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse())) {
 						historyElement.setAttribute(
 							"requestLineButton",
 							null
@@ -897,69 +870,122 @@ public class HistoryService {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
-						"%s%s%s",
-						"您已向",
-						passiveNickname,
-						"打招呼"
+						"您已向 %s 打招呼",
+						passiveNickname
 					);
 				}
-				historyElement.setAttribute(
-					"profileImage",
-					String.format(
-						"https://%s/profileImage/%s",
-						servant.STATIC_HOST,
-						profileImage
-					)
-				);
-				historyElement.setAttribute(
-					"message",
-					message
-				);
-				historyElement.setAttribute(
-					"identifier",
-					identifier
-				);
+			}
+			if (activeLogs.getBehavior() == BEHAVIOR_LAI_KOU_DIAN) {
+				if (isMale) {
+					profileImage = passiveProfileImage;
+					message = String.format(
+						"您取得 %s 的 Line，扣 %d 點",
+						passiveNickname,
+						Math.abs(activeLogs.getPoints())
+					);
+					identifier = passiveIdentifier;
+				}
+				if (!isMale) {
+					profileImage = initiativeProfileImage;
+					identifier = initiativeIdentifier;
+					message = String.format(
+						"%s加了您的 LINE",
+						initiativeNickname
+					);
+				}
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_FARE) {
 				if (isMale) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
-						"%s%s%d%s",
-						"您給了",
+						"您給了%s %d 車馬費",
 						passiveNickname,
-						Math.abs(activeLogs.getPoints()),
-						"車馬費"
+						Math.abs(activeLogs.getPoints())
 					);
 				}
 				if (!isMale) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
-						"%s%s%d%s",
-						"您收到了來自",
+						"您收到了來自%s的 %d 車馬費",
 						initiativeNickname,
-						Math.abs(activeLogs.getPoints()),
-						"車馬費"
+						Math.abs(activeLogs.getPoints())
 					);
 				}
-				historyElement.setAttribute(
-					"profileImage",
-					String.format(
-						"https://%s/profileImage/%s",
-						servant.STATIC_HOST,
-						profileImage
-					)
-				);
-				historyElement.setAttribute(
-					"message",
-					message
-				);
-				historyElement.setAttribute(
-					"identifier",
-					identifier
+			}
+			if (activeLogs.getBehavior() == BEHAVIOR_FOLLOW) {
+				if (Objects.equals(lover, initiative)) {
+					profileImage = passiveProfileImage;
+					identifier = passiveIdentifier;
+					message = String.format(
+						"您收藏了%s",
+						passiveNickname
+					);
+				} else {
+					profileImage = initiativeProfileImage;
+					identifier = initiativeIdentifier;
+					message = String.format(
+						"%s收藏了您",
+						initiativeNickname
+					);
+				}
+			}
+			if (activeLogs.getBehavior() == BEHAVIOR_WITHDRAWAL_SUCCESS) {
+				profileImage = passiveProfileImage;
+				identifier = passiveIdentifier;
+				message = String.format(
+					"您提領的 %s 車馬費已成功匯款!",
+					activeLogs.getGreeting()
 				);
 			}
+			if (activeLogs.getBehavior() == BEHAVIOR_WITHDRAWAL_FAIL) {
+				profileImage = passiveProfileImage;
+				identifier = passiveIdentifier;
+				message = String.format(
+					"您欲提領的車馬費失敗，原因：%s",
+					activeLogs.getGreeting()
+				);
+			}
+			if (activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_SUCCESS) {
+				profileImage = passiveProfileImage;
+				message = String.format(
+					"您已通過安心認證審核!"
+				);
+				identifier = passiveIdentifier;
+			}
+			if (activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_FAIL) {
+				profileImage = passiveProfileImage;
+				message = String.format(
+					"您申請的安心認證不通過，請重新上傳正確手持證件照!"
+				);
+				identifier = passiveIdentifier;
+			}
+			// 歷程時間
+			historyElement.setAttribute(
+				"time",
+				new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+					.format(activeLogs.getOccurred())
+			);
+			// 顯示的大頭貼
+			historyElement.setAttribute(
+				"profileImage",
+				String.format(
+					"https://%s/profileImage/%s",
+					servant.STATIC_HOST,
+					profileImage
+				)
+			);
+			// 歷程內容
+			historyElement.setAttribute(
+				"message",
+				message
+			);
+			// 識別碼(個人檔案連結用)
+			historyElement.setAttribute(
+				"identifier",
+				identifier
+			);
 		}
 		return document;
 	}
@@ -981,6 +1007,13 @@ public class HistoryService {
 		return loverService.isVIP(male) && Objects.nonNull(dailyCount) && dailyCount < VIP_DAILY_TOLERANCE;
 	}
 
+	/**
+	 * 距離上次被拒絕 24 小時內
+	 *
+	 * @param male
+	 * @param female
+	 * @return
+	 */
 	public boolean within24hrsFromLastRefused(Lover male, Lover female) {
 		Date refusedDate = null;
 		Date nowDate = null;

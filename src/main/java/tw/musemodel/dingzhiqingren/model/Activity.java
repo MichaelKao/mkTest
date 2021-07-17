@@ -1,7 +1,6 @@
 package tw.musemodel.dingzhiqingren.model;
 
 import java.util.Date;
-import javax.validation.constraints.NotNull;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 
@@ -24,18 +23,20 @@ public class Activity implements Comparable<Activity> {
 
 	private String greeting;
 
+	private Date seen;
+
+	private Date reply;
+
 	@Override
 	public int compareTo(Activity other) {
 		return occurred.compareTo(other.occurred);
 	}
 
-	@NotNull
-	private Date seen;
-
 	public Activity() {
 	}
 
-	public Activity(Lover initiative, Lover passive, Behavior behavior, Date occurred, Short points, String greeting, Date seen) {
+	public Activity(Lover initiative, Lover passive, Behavior behavior,
+		Date occurred, Short points, String greeting, Date seen, Date reply) {
 		this.initiative = initiative;
 		this.passive = passive;
 		this.behavior = behavior;
@@ -43,6 +44,7 @@ public class Activity implements Comparable<Activity> {
 		this.points = points;
 		this.greeting = greeting;
 		this.seen = seen;
+		this.reply = reply;
 	}
 
 	public Lover getInitiative() {
@@ -99,5 +101,13 @@ public class Activity implements Comparable<Activity> {
 
 	public void setSeen(Date seen) {
 		this.seen = seen;
+	}
+
+	public Date getReply() {
+		return reply;
+	}
+
+	public void setReply(Date reply) {
+		this.reply = reply;
 	}
 }

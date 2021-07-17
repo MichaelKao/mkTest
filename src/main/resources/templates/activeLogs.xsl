@@ -101,7 +101,7 @@
 								<INPUT name="whom" type="hidden" value="{@identifier}"/>
 								<DIV>
 									<A href="/profile/{@identifier}/">
-										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="70"/>
+										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="60"/>
 									</A>
 								</DIV>
 								<DIV class="ms-4 w-100 d-flex flex-column flex-md-row">
@@ -109,7 +109,7 @@
 										<SPAN class="text-xs font-weight-bold my-2">
 											<xsl:value-of select="@time"/>
 										</SPAN>
-										<DIV class="text-dark">
+										<DIV class="text-dark text-sm">
 											<xsl:value-of select="@message"/>
 										</DIV>
 

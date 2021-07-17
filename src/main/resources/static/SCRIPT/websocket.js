@@ -21,6 +21,16 @@ $(document).ready(function () {
 	socket.onmessage = function (msg) {
 		$('.toast-body').html(msg.data);
 		$('.toast').toast('show');
+		var count;
+		var $announcement = $('.announcement');
+		// 增加通知數
+		if (isNaN(parseInt($announcement.html()))) {
+			count = 1;
+			$announcement.attr('style', 'display: inline;');
+		} else {
+			count = parseInt($('.announcement').html()) + 1;
+		}
+		$('.announcement').html(count);
 	};
 
 	//關閉事件

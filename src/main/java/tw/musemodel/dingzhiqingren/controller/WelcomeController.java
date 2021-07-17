@@ -168,22 +168,19 @@ public class WelcomeController {
 				);
 			}
 
-			// 通知數、顯示的 lovers 資料
-			int announcement = 0;
 			List<Lover> lovers = new ArrayList<Lover>();
 			if (gender) {
-				lovers = loverRepository.findAllByGender(false);
-				announcement = historyRepository.countByPassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_KOU_DIAN);
+				lovers = loverRepository.findAllByGender(false);// 顯示在首頁的甜心
 			}
 			if (!gender) {
-				lovers = loverRepository.findAllByGender(true);
-				announcement = historyRepository.countByFemalePassive(me, Behavior.KAN_GUO_WO, Behavior.LAI_KOU_DIAN);
+				lovers = loverRepository.findAllByGender(true);// 顯示在首頁的男士
 			}
 
-			if (announcement > 0) {
+			// 通知數
+			if (loverService.annoucementCount(me) > 0) {
 				documentElement.setAttribute(
 					"announcement",
-					Integer.toString(announcement)
+					Integer.toString(loverService.annoucementCount(me))
 				);
 			}
 
@@ -814,6 +811,14 @@ public class WelcomeController {
 			);
 		}
 
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
 		// 確認性別
 		Boolean gender = me.getGender();
 
@@ -891,6 +896,14 @@ public class WelcomeController {
 			documentElement.setAttribute(
 				"finance",
 				null
+			);
+		}
+
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
 			);
 		}
 
@@ -1012,6 +1025,14 @@ public class WelcomeController {
 			documentElement.setAttribute(
 				"finance",
 				null
+			);
+		}
+
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
 			);
 		}
 
@@ -1221,6 +1242,14 @@ public class WelcomeController {
 			null
 		);
 
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
@@ -1293,7 +1322,7 @@ public class WelcomeController {
 	@PostMapping(path = "/favorite.json")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
-	String favorite(@RequestParam UUID identifier, Authentication authentication) {
+	String favorite(@RequestParam UUID identifier, Authentication authentication, Locale locale) {
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -1302,26 +1331,24 @@ public class WelcomeController {
 		// 識別碼的帳號
 		Lover lover = loverService.loadByIdentifier(identifier);
 
-		Set<Lover> following = me.getFollowing();
-		for (Lover followed : following) {
-			if (Objects.equals(lover, followed)) {
-				following.remove(followed);
-				me.setFollowing(following);
-				loverRepository.saveAndFlush(me);
-				return new JavaScriptObjectNotation().
-					withReason("已取消收藏" + followed.getNickname()).
-					withResponse(true).
-					toJSONObject().toString();
-			}
+		JSONObject jsonObject;
+		try {
+			jsonObject = historyService.follow(
+				me,
+				lover,
+				locale
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
 		}
-
-		following.add(lover);
-		me.setFollowing(following);
-		loverRepository.saveAndFlush(me);
-		return new JavaScriptObjectNotation().
-			withReason("已收藏" + lover.getNickname()).
-			withResponse(true).
-			toJSONObject().toString();
+		return jsonObject.toString();
 	}
 
 	/**
@@ -1377,6 +1404,14 @@ public class WelcomeController {
 			gender ? "male" : "female",
 			null
 		);
+
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
 
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
@@ -1505,6 +1540,14 @@ public class WelcomeController {
 			gender ? "male" : "female",
 			null
 		);
+
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
 
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
@@ -1699,6 +1742,14 @@ public class WelcomeController {
 			null
 		);
 
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
 		for (Plan plan : planRepository.findAll()) {
 			Element planElement = document.createElement("plan");
 			planElement.setAttribute("points", Short.toString(plan.getPoints()));
@@ -1764,6 +1815,14 @@ public class WelcomeController {
 			null
 		);
 
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
 		Element planElement = document.createElement("plan");
 		planElement.setAttribute("id", plan.getId().toString());
 		documentElement.appendChild(planElement);
@@ -1827,6 +1886,14 @@ public class WelcomeController {
 			gender ? "male" : "female",
 			null
 		);
+
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
 
 		if (gender) {
 			documentElement.setAttribute(
@@ -1926,6 +1993,14 @@ public class WelcomeController {
 			gender ? "male" : "female",
 			null
 		);
+
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
 
 		if (loverService.isVIP(me)) {
 			documentElement.setAttribute(
@@ -2246,6 +2321,14 @@ public class WelcomeController {
 				null
 			);
 
+			// 通知數
+			if (loverService.annoucementCount(me) > 0) {
+				documentElement.setAttribute(
+					"announcement",
+					Integer.toString(loverService.annoucementCount(me))
+				);
+			}
+
 			documentElement.setAttribute(
 				"identifier",
 				me.getIdentifier().toString()
@@ -2309,6 +2392,14 @@ public class WelcomeController {
 				gender ? "male" : "female",
 				null
 			);
+
+			// 通知數
+			if (loverService.annoucementCount(me) > 0) {
+				documentElement.setAttribute(
+					"announcement",
+					Integer.toString(loverService.annoucementCount(me))
+				);
+			}
 
 			documentElement.setAttribute(
 				"identifier",
@@ -2374,6 +2465,14 @@ public class WelcomeController {
 			gender ? "male" : "female",
 			null
 		);
+
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
 
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(

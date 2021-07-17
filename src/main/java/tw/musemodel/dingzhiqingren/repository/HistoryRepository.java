@@ -3,6 +3,7 @@ package tw.musemodel.dingzhiqingren.repository;
 import java.util.Date;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import tw.musemodel.dingzhiqingren.entity.History;
@@ -15,7 +16,7 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
  * @author p@musemodel.tw
  */
 @Repository
-public interface HistoryRepository extends JpaRepository<History, Long> {
+public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpecificationExecutor<History> {
 
 	public List<History> findByPassiveAndBehavior(Lover passive, Behavior behavior);
 
@@ -23,7 +24,7 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 
 	public Long countByInitiativeAndBehaviorAndOccurredBetween(Lover initiative, Behavior behavior, Date occurredSince, Date occurredUntil);
 
-	public Long countByInitiativeAndPassiveAndBehaviorAndSeenNotNull(Lover initiative, Lover passive, Behavior behavior);
+	public Long countByInitiativeAndPassiveAndBehaviorAndReplyNotNull(Lover initiative, Lover passive, Behavior behavior);
 
 	public int countByInitiative(Lover initiative);
 

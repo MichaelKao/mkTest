@@ -19,9 +19,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import tw.musemodel.dingzhiqingren.WebSocketServer;
+import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
+import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 import tw.musemodel.dingzhiqingren.service.DashboardService;
@@ -56,6 +59,12 @@ public class DashboardController {
 
 	@Autowired
 	private LoverRepository loverRepository;
+
+	@Autowired
+	private HistoryRepository historyRepository;
+
+	@Autowired
+	private WebSocketServer webSocketServer;
 
 	/**
 	 * 甜心提取車馬費(財務後台)
@@ -147,8 +156,32 @@ public class DashboardController {
 			return servant.mustBeAuthenticated(locale);
 		}
 
+		// 財務
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		// 甜心
+		Lover honey = withdrawalRecord.getHoney();
+
 		withdrawalRecord.setStatus(Boolean.TRUE);
 		withdrawalRecordRepository.saveAndFlush(withdrawalRecord);
+
+		History history = new History(
+			me,
+			honey,
+			History.Behavior.TI_LING_CHENG_GONG
+		);
+		history.setGreeting(withdrawalRecord.getPoints().toString());
+		history = historyRepository.saveAndFlush(history);
+
+		// 推送通知給甜心
+		webSocketServer.sendNotification(
+			honey.getIdentifier().toString(),
+			String.format(
+				"您提領的車馬費 %d 已匯款成功!",
+				withdrawalRecord.getPoints()
+			));
 
 		return new JavaScriptObjectNotation().
 			withReason("已撥款成功").
@@ -174,9 +207,36 @@ public class DashboardController {
 			return servant.mustBeAuthenticated(locale);
 		}
 
+		// 財務
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		// 甜心
+		Lover honey = withdrawalRecord.getHoney();
+
 		withdrawalRecord.setStatus(Boolean.FALSE);
 		withdrawalRecord.setFailReason(failReason);
 		withdrawalRecordRepository.saveAndFlush(withdrawalRecord);
+
+		withdrawalRecord.setStatus(Boolean.TRUE);
+		withdrawalRecordRepository.saveAndFlush(withdrawalRecord);
+
+		History history = new History(
+			me,
+			honey,
+			History.Behavior.TI_LING_SHI_BAI
+		);
+		history.setGreeting(failReason);
+		history = historyRepository.saveAndFlush(history);
+
+		// 推送通知給甜心
+		webSocketServer.sendNotification(
+			honey.getIdentifier().toString(),
+			String.format(
+				"您提領的車馬費 %d 失敗!",
+				withdrawalRecord.getPoints()
+			));
 
 		return new JavaScriptObjectNotation().
 			withReason("已通知甜心").
@@ -275,8 +335,27 @@ public class DashboardController {
 			return servant.mustBeAuthenticated(locale);
 		}
 
+		// 後台人員
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
 		lover.setCertification(Boolean.TRUE);
 		loverRepository.saveAndFlush(lover);
+
+		History history = new History(
+			me,
+			lover,
+			History.Behavior.AN_XIN_CHENG_GONG
+		);
+		history = historyRepository.saveAndFlush(history);
+
+		// 推送通知給情人
+		webSocketServer.sendNotification(
+			lover.getIdentifier().toString(),
+			String.format(
+				"您已通過安心認證!"
+			));
 
 		return new JavaScriptObjectNotation().
 			withReason("審核通過").
@@ -299,6 +378,25 @@ public class DashboardController {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
+
+		// 後台人員
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		History history = new History(
+			me,
+			lover,
+			History.Behavior.AN_XIN_SHI_BAI
+		);
+		history = historyRepository.saveAndFlush(history);
+
+		// 推送通知給情人
+		webSocketServer.sendNotification(
+			lover.getIdentifier().toString(),
+			String.format(
+				"您申請的安心認證失敗!"
+			));
 
 		lover.setCertification(null);
 		loverRepository.saveAndFlush(lover);
