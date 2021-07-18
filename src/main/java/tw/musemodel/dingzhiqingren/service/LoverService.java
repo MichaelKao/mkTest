@@ -819,7 +819,7 @@ public class LoverService {
 			loverElement.appendChild(activeElement);
 		}
 
-		List<History> rateList = historyRepository.findByPassiveAndBehavior(lover, History.Behavior.PING_JIA);
+		List<History> rateList = historyRepository.findByPassiveAndBehaviorOrderByOccurredDesc(lover, History.Behavior.PING_JIA);
 		if (Objects.nonNull(rateList)) {
 			for (History rate : rateList) {
 				Element rateElement = document.createElement("rate");

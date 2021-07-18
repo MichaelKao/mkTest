@@ -45,32 +45,36 @@
 									</A>
 								</DIV>
 								<DIV>
-									<DIV class="d-flex justify-content-around">
-										<xsl:if test="@vip">
-											<DIV>
-												<IMG class="border-radius-md" src="/vip.svg" width="30"/>
-											</DIV>
-										</xsl:if>
-										<xsl:if test="@certification = 'true'">
-											<DIV>
-												<IMG class="border-radius-md" src="/accept.svg" width="30"/>
-											</DIV>
-										</xsl:if>
-									</DIV>
-									<A class="h6" href="/profile/{@identifier}/">
+									<A class="h6 d-flex align-items-end justify-content-center" href="/profile/{@identifier}/">
 										<SPAN class="me-2">
 											<xsl:value-of select="@nickname"/>
 										</SPAN>
 										<SPAN>
 											<xsl:value-of select="@age"/>
 										</SPAN>
+										<xsl:if test="@vip">
+											<SPAN class="ms-1">
+												<IMG class="border-radius-md" src="/vip.svg" width="27"/>
+											</SPAN>
+										</xsl:if>
+										<xsl:if test="@certification = 'true'">
+											<SPAN class="ms-1">
+												<IMG class="border-radius-md" src="/accept.svg" width="27"/>
+											</SPAN>
+										</xsl:if>
 									</A>
-									<DIV>
-										<SPAN class="me-1">到訪了</SPAN>
+									<DIV class="text-xs text-primary text-gradient text-bold">
+										<SPAN class="me-1">共到訪了</SPAN>
 										<SPAN>
 											<xsl:value-of select="@times"/>
 										</SPAN>
 										<SPAN class="ms-1">次</SPAN>
+									</DIV>
+									<DIV class="text-xs">
+										<SPAN class="me-1">最近一次</SPAN>
+										<SPAN>
+											<xsl:value-of select="@date"/>
+										</SPAN>
 									</DIV>
 								</DIV>
 							</DIV>

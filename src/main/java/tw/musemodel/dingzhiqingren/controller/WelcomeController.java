@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -1425,7 +1426,7 @@ public class WelcomeController {
 			me.getIdentifier().toString()
 		);
 
-		List<History> histories = historyRepository.findByPassiveAndBehavior(
+		List<History> histories = historyRepository.findByPassiveAndBehaviorOrderByOccurredDesc(
 			me,
 			Behavior.KAN_GUO_WO
 		);
@@ -1441,6 +1442,13 @@ public class WelcomeController {
 				);
 				Element peekerElement = document.createElement("peeker");
 				documentElement.appendChild(peekerElement);
+				peekerElement.setAttribute(
+					"date",
+					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+						servant.toTaipeiZonedDateTime(
+							history.getOccurred()
+						).withZoneSameInstant(Servant.ASIA_TAIPEI)
+					));
 				peekerElement.setAttribute(
 					"times",
 					times.toString()
