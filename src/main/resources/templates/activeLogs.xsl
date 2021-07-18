@@ -52,7 +52,7 @@
 								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
 									<xsl:value-of select="@i18n-cancel"/>
 								</BUTTON>
-								<BUTTON class="btn btn-primary confirmBtn" type="button">
+								<BUTTON class="btn btn-primary requestLineBtn" type="button">
 									<xsl:value-of select="@i18n-confirm"/>
 								</BUTTON>
 							</DIV>
@@ -87,7 +87,7 @@
 								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
 									<xsl:value-of select="@i18n-cancel"/>
 								</BUTTON>
-								<BUTTON class="btn btn-primary confirmBtn" type="button">
+								<BUTTON class="btn btn-primary confirmBtn commentBtn" type="button">
 									<xsl:value-of select="@i18n-confirm"/>
 								</BUTTON>
 							</DIV>
@@ -120,19 +120,19 @@
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 refuse" type="button">拒絕</BUTTON>
 										</DIV>
 									</xsl:if>
-									<xsl:if test="@rateButton">
-										<DIV class="ms-0 ms-md-auto">
-											<xsl:if test="@addLineButton">
-												<BUTTON class="btn btn-success px-2 py-1 px-md-3 py-md-2 me-1 openLine" type="button">
-													<SPAN>加入好友</SPAN>
-													<xsl:if test="@remindDeduct">
-														<DIV class="text-xxs">需 30 愛心</DIV>
-													</xsl:if>
-												</BUTTON>
-											</xsl:if>
+									<DIV class="ms-0 ms-md-auto">
+										<xsl:if test="@addLineButton">
+											<BUTTON class="btn btn-success px-2 py-1 px-md-3 py-md-2 me-1 openLine" type="button">
+												<SPAN>加入好友</SPAN>
+												<xsl:if test="@remindDeduct">
+													<DIV class="text-xxs">需 30 愛心</DIV>
+												</xsl:if>
+											</BUTTON>
+										</xsl:if>
+										<xsl:if test="@rateButton">
 											<BUTTON class="btn btn-warning px-2 py-1 px-md-3 py-md-2 rate" type="button">評價</BUTTON>
-										</DIV>
-									</xsl:if>
+										</xsl:if>
+									</DIV>
 									<xsl:if test="@requestLineButton">
 										<DIV class="ms-0 ms-md-auto">
 											<BUTTON class="btn btn-primary px-2 py-1 px-md-3 py-md-2 requestLine" type="button">要求 LINE</BUTTON>

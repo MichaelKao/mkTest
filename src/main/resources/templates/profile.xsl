@@ -38,12 +38,12 @@
 						<DIV class="modal-dialog modal-dialog-centered">
 							<DIV class="modal-content">
 								<DIV class="modal-header">
-									<H5 class="modal-title">請輸入</H5>
+									<H5 class="modal-title">車馬費</H5>
 									<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
 								</DIV>
 								<DIV class="modal-body">
-									<DIV class="form-group col-6">
-										<LABEL class="h6" for="gift">車馬費</LABEL>
+									<DIV class="form-group">
+										<LABEL class="text-xs" for="gift">使用平台支付不必擔心私下給甜心爽約，可檢舉查證屬實退回</LABEL>
 										<INPUT class="form-control" id="gift" name="howMany" required="" type="number"/>
 									</DIV>
 								</DIV>
@@ -75,7 +75,14 @@
 							</DIV>
 							<DIV class="modal-body">
 								<DIV class="form-group col-8">
-									<LABEL class="h6" for="hello">招呼語</LABEL>
+									<xsl:choose>
+										<xsl:when test="@male">
+											<LABEL class="h6" for="hello">請用一句話打動甜心</LABEL>
+										</xsl:when>
+										<xsl:otherwise>
+											<LABEL class="h6" for="hello">招呼語</LABEL>
+										</xsl:otherwise>
+									</xsl:choose>
 									<TEXTAREA class="form-control" id="hello" name="what" type="text">
 										<xsl:value-of select="lover/greeting"/>
 									</TEXTAREA>

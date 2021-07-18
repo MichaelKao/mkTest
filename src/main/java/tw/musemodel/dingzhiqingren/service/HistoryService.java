@@ -582,6 +582,9 @@ public class HistoryService {
 		if (comment.isBlank() || comment.isEmpty()) {
 			throw new RuntimeException("rate.commentMustntBeNull");
 		}
+		if (historyRepository.countByInitiativeAndPassiveAndBehavior(initiative, passive, BEHAVIOR_RATE) > 0) {
+			throw new RuntimeException("rate.onlyCanRateOnce");
+		}
 
 		History history = new History(
 			initiative,
@@ -724,6 +727,14 @@ public class HistoryService {
 		for (Activity activeLogs : activeLogsList) {
 			Lover initiative = activeLogs.getInitiative();
 			Lover passive = activeLogs.getPassive();
+			// 這幾個行為主動者不須通知
+			if (activeLogs.getBehavior() == BEHAVIOR_RATE || activeLogs.getBehavior() == BEHAVIOR_FOLLOW
+				|| activeLogs.getBehavior() == BEHAVIOR_WITHDRAWAL_FAIL || activeLogs.getBehavior() == BEHAVIOR_WITHDRAWAL_SUCCESS
+				|| activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_FAIL || activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_SUCCESS) {
+				if (Objects.equals(lover, initiative)) {
+					continue;
+				}
+			}
 			String initiativeIdentifier = initiative.getIdentifier().toString();
 			String initiativeProfileImage = initiative.getProfileImage();
 			String initiativeNickname = initiative.getNickname();
@@ -914,22 +925,21 @@ public class HistoryService {
 					);
 				}
 			}
+			if (activeLogs.getBehavior() == BEHAVIOR_RATE) {
+				profileImage = initiativeProfileImage;
+				identifier = initiativeIdentifier;
+				message = String.format(
+					"%s給予您評價",
+					initiativeNickname
+				);
+			}
 			if (activeLogs.getBehavior() == BEHAVIOR_FOLLOW) {
-				if (Objects.equals(lover, initiative)) {
-					profileImage = passiveProfileImage;
-					identifier = passiveIdentifier;
-					message = String.format(
-						"您收藏了%s",
-						passiveNickname
-					);
-				} else {
-					profileImage = initiativeProfileImage;
-					identifier = initiativeIdentifier;
-					message = String.format(
-						"%s收藏了您",
-						initiativeNickname
-					);
-				}
+				profileImage = initiativeProfileImage;
+				identifier = initiativeIdentifier;
+				message = String.format(
+					"%s收藏了您",
+					initiativeNickname
+				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_WITHDRAWAL_SUCCESS) {
 				profileImage = passiveProfileImage;

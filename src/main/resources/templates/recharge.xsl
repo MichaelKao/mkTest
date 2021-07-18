@@ -33,6 +33,7 @@
 					<H4 class="text-primary">
 						<xsl:value-of select="@title"/>
 					</H4>
+					<P class="text-sm px-3">使用平台支付不必擔心私下給甜心爽約，可檢舉查證屬實退回</P>
 					<HR class="horizontal dark"/>
 				</DIV>
 				<DIV class="text-center h5">

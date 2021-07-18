@@ -2604,7 +2604,7 @@ public class WelcomeController {
 				comment,
 				locale
 			);
-		} catch (NumberFormatException exception) {
+		} catch (Exception exception) {
 			jsonObject = new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
 					exception.getMessage(),
