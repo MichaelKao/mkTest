@@ -12,7 +12,6 @@ import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 
 /**
- *
  * @author m@musemodel.tw
  */
 public class Specifications {

@@ -13,6 +13,7 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 /**
+ * 给不给赖
  *
  * @author m@musemodel.tw
  */

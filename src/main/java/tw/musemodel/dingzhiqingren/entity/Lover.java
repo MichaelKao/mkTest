@@ -78,84 +78,150 @@ public class Lover implements java.io.Serializable {
 	@JsonIgnore
 	private String shadow;
 
+	/**
+	 * 激活
+	 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "lover")
 	private Activation activation;
 
+	/**
+	 * LINE 用户信息
+	 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "lover")
 	private LineUserProfile lineUserProfile;
 
+	/**
+	 * 最后活跃时间
+	 */
 	@Column(name = "huo_yue")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date active;
 
+	/**
+	 * VIP 有效期
+	 */
 	@Column(name = "dao_qi")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date vip;
 
+	/**
+	 * 地区
+	 */
 	@JoinColumn(name = "di_qu", referencedColumnName = "id")
 	@ManyToOne
 	@JsonManagedReference
 	private Location location;
 
+	/**
+	 * 昵称
+	 */
 	@Column(name = "ni_cheng")
 	private String nickname;
 
+	/**
+	 * 生日
+	 */
 	@Column(name = "sheng_ri")
 	@Temporal(TemporalType.DATE)
 	private Date birthday;
 
+	/**
+	 * 性别
+	 */
 	@Column(name = "xing_bie")
 	private Boolean gender;
 
+	/**
+	 * 大头
+	 */
 	@Column(name = "da_tou")
 	private String profileImage;
 
+	/**
+	 * 自介
+	 */
 	@Column(name = "zi_jie")
 	private String aboutMe;
 
+	/**
+	 * 招呼语
+	 */
 	@Column(name = "ha_luo")
 	private String greeting;
 
+	/**
+	 * 体型
+	 */
 	@Column(name = "ti_xing")
 	@Enumerated(EnumType.STRING)
 	@Type(type = "pgsql_enum")
 	private BodyType bodyType;
 
+	/**
+	 * 身高
+	 */
 	@Column(name = "shen_gao")
 	private Short height;
 
+	/**
+	 * 体重
+	 */
 	@Column(name = "ti_zhong")
 	private Short weight;
 
+	/**
+	 * 学历
+	 */
 	@Column(name = "xue_li")
 	@Enumerated(EnumType.STRING)
 	@Type(type = "pgsql_enum")
 	private Education education;
 
+	/**
+	 * 婚姻
+	 */
 	@Column(name = "hun_yin")
 	@Enumerated(EnumType.STRING)
 	@Type(type = "pgsql_enum")
 	private Marriage marriage;
 
+	/**
+	 * 职业
+	 */
 	@Column(name = "zhi_ye")
 	private String occupation;
 
+	/**
+	 * 抽烟
+	 */
 	@Column(name = "chou_yan")
 	@Enumerated(EnumType.STRING)
 	@Type(type = "pgsql_enum")
 	private Smoking smoking;
 
+	/**
+	 * 饮酒
+	 */
 	@Column(name = "yin_jiu")
 	@Enumerated(EnumType.STRING)
 	@Type(type = "pgsql_enum")
 	private Drinking drinking;
 
+	/**
+	 * 添加 LINE 好友的链结
+	 */
 	@Column(name = "tian_jia_hao_you")
 	private String inviteMeAsLineFriend;
 
+	/**
+	 * 理想对象条件
+	 */
 	@Column(name = "li_xiang_dui_xiang")
 	private String idealConditions;
 
+	/**
+	 * 身份
+	 */
 	@JoinTable(
 		name = "shou_quan",
 		joinColumns = {
@@ -169,6 +235,9 @@ public class Lover implements java.io.Serializable {
 	@JsonManagedReference
 	private Collection<Role> roles;
 
+	/**
+	 * 生活照
+	 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "lover")
 	@JsonBackReference
 	private Collection<Picture> pictures;
@@ -177,55 +246,90 @@ public class Lover implements java.io.Serializable {
 	@JsonIgnore
 	private Set<LineGiven> femaleSet;
 
+	/**
+	 * (甜心)给了哪些男士赖
+	 */
 	@OneToMany(mappedBy = "male")
 	@JsonIgnore
 	private Set<LineGiven> maleSet;
 
+	/**
+	 * 收藏
+	 */
 	@JoinTable(name = "shou_cang",
 		joinColumns = {
-			@JoinColumn(name = "shou_cang_de", referencedColumnName = "id", nullable = false)},
+			@JoinColumn(name = "shou_cang_de", referencedColumnName = "id", nullable = false)
+		},
 		inverseJoinColumns = {
-			@JoinColumn(name = "bei_shou_cang", referencedColumnName = "id", nullable = false)})
+			@JoinColumn(name = "bei_shou_cang", referencedColumnName = "id", nullable = false)
+		}
+	)
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JsonIgnore
 	private Set<Lover> following;
 
+	/**
+	 * 被收藏
+	 */
 	@ManyToMany(mappedBy = "following", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private Set<Lover> followed;
 
+	/**
+	 * 年收入
+	 */
 	@JoinColumn(name = "nian_shou_ru", referencedColumnName = "id")
 	@ManyToOne
 	@JsonManagedReference
 	private AnnualIncome annualIncome;
 
+	/**
+	 * 零用钱
+	 */
 	@JoinColumn(name = "ling_yong_qian", referencedColumnName = "id")
 	@ManyToOne
 	@JsonManagedReference
 	private Allowance allowance;
 
+	/**
+	 * 砍号
+	 */
 	@Column(name = "shan_chu")
 	private String delete;
 
+	/**
+	 * 提取车马费信息
+	 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "honey")
 	private WithdrawalInfo withdrawalInfo;
 
+	/**
+	 * 出没地区
+	 */
 	@JoinTable(
 		name = "qing_ren_yu_di_qu",
 		joinColumns = @JoinColumn(name = "qing_ren", referencedColumnName = "id"),
-		inverseJoinColumns = @JoinColumn(name = "di_qu", referencedColumnName = "id"))
-	@JsonIgnore
+		inverseJoinColumns = @JoinColumn(name = "di_qu", referencedColumnName = "id")
+	)
 	@ManyToMany(fetch = FetchType.EAGER)
+	@JsonIgnore
 	private Set<Location> locations;
 
+	/**
+	 * 通过安心认证
+	 */
 	@JoinTable(
 		name = "qing_ren_yu_fu_wu",
 		joinColumns = @JoinColumn(name = "qing_ren", referencedColumnName = "id"),
-		inverseJoinColumns = @JoinColumn(name = "fu_wu", referencedColumnName = "id"))
-	@JsonIgnore
+		inverseJoinColumns = @JoinColumn(name = "fu_wu", referencedColumnName = "id")
+	)
 	@ManyToMany(fetch = FetchType.EAGER)
+	@JsonIgnore
 	private Set<ServiceTag> services;
 
+	/**
+	 * 通过安心认证
+	 */
 	@Column(name = "an_xin")
 	private Boolean certification;
 
