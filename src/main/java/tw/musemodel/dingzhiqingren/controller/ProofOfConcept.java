@@ -5,28 +5,24 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
 import javax.xml.parsers.ParserConfigurationException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-import tw.musemodel.dingzhiqingren.service.AmazonWebServices;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import tw.musemodel.dingzhiqingren.service.Servant;
 
@@ -40,12 +36,6 @@ import tw.musemodel.dingzhiqingren.service.Servant;
 public class ProofOfConcept {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(ProofOfConcept.class);
-
-	@Autowired
-	private AmazonWebServices amazonWebServices;
-
-	@Autowired
-	private Servant servant;
 
 	private static final String TEMP_DIRECTORY = System.getProperty("java.io.tmpdir");
 
@@ -68,17 +58,18 @@ public class ProofOfConcept {
 
 	@PostMapping(path = "/upload")
 	@ResponseBody
-	ModelAndView uploadProfileImage(@RequestParam("file") MultipartFile multipartFile, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	void uploadProfileImage(@RequestParam("file") MultipartFile multipartFile) throws SAXException, IOException, ParserConfigurationException {
 
+		LOGGER.debug("[上傳]準備上傳伺服器。{}", multipartFile);
 		File file = new File(TEMP_DIRECTORY, Long.toString(
 			System.currentTimeMillis()
 		));
 		multipartFile.transferTo(file);
-		LOGGER.debug("[上傳]上傳伺服器成功，準備上傳S3。");
+		LOGGER.debug("[上傳]上傳伺服器成功，準備上傳S3。{}", file);
 
 		PutObjectResult putObjectResult = AMAZON_S3.putObject(
 			new PutObjectRequest(
-				BUCKET_NAME + "/profileImage",
+				BUCKET_NAME,
 				"test",
 				file
 			)
@@ -86,16 +77,20 @@ public class ProofOfConcept {
 		LOGGER.debug("[上傳]上傳S3成功\n{}", putObjectResult);
 		file.delete();
 		LOGGER.debug("[上傳]刪除伺服器檔案成功");
+	}
 
-		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
+	@PostMapping(path = "/uploadS3")
+	@ResponseBody
+	void uploadDirectly(@RequestPart(value = "file") MultipartFile multipartFile) throws IOException {
 
-		ModelAndView modelAndView = new ModelAndView("upload");
-		modelAndView.
-			getModelMap().
-			addAttribute(document);
-		LOGGER.debug("[上傳]上傳{}", modelAndView);
-		return modelAndView;
+		LOGGER.debug("[上傳S3]準備上傳S3。{}", multipartFile);
+		ObjectMetadata data = new ObjectMetadata();
+		data.setContentType(multipartFile.getContentType());
+		data.setContentLength(multipartFile.getSize());
+		LOGGER.debug("[上傳S3]設定完ObjectMetadata。{}", data);
+		AMAZON_S3.putObject(BUCKET_NAME, "testS3", multipartFile.getInputStream(), data);
+		LOGGER.debug("[上傳S3]完成上傳。");
+
 	}
 
 	@PostMapping(path = "/github")
