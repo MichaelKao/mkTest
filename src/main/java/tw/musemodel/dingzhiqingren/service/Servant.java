@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -19,6 +20,11 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import org.slf4j.Logger;
@@ -66,6 +72,11 @@ public class Servant {
 	public final static JsonMapper JSON_MAPPER = new JsonMapper();
 
 	public final static ObjectWriter JSON_WRITER_WITH_DEFAULT_PRETTY_PRINTER = new JsonMapper().writerWithDefaultPrettyPrinter();
+
+	/**
+	 * 透过 LINE 接收其它网站服务通知
+	 */
+	public final static String LINE_NOTIFY_ACCESS_TOKEN = System.getenv("LINE_NOTIFY_ACCESS_TOKEN");
 
 	/**
 	 * 本地服务器域名
@@ -126,6 +137,55 @@ public class Servant {
 	 * 服务器时区
 	 */
 	public static final ZoneId ZONE_ID = ZoneId.of(System.getenv("ZONE_ID"));
+
+	/**
+	 * 透过 LINE 接收其它网站服务通知。
+	 *
+	 * @param message 最多 1000 个字符
+	 * @return
+	 */
+	public static String lineNotify(final String message) {
+		try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
+			HttpPost httpPost = new HttpPost(
+				new URIBuilder("https://notify-api.line.me/api/notify").
+					setParameters(
+						new BasicNameValuePair(
+							"message",
+							message
+						),
+						new BasicNameValuePair(
+							"notificationDisabled",
+							"true"
+						)
+					).
+					build()
+			);
+			httpPost.setHeader(
+				"Content-Type",
+				"application/x-www-form-urlencoded"
+			);
+			httpPost.setHeader(
+				"Authorization",
+				String.format(
+					"Bearer %s",
+					LINE_NOTIFY_ACCESS_TOKEN
+				)
+			);
+			closeableHttpClient.execute(httpPost);
+			closeableHttpClient.close();
+		} catch (URISyntaxException | IOException exception) {
+			LOGGER.info(
+				String.format(
+					"%s.notify(\n\t%s = {});",
+					Servant.class,
+					String.class
+				),
+				message,
+				exception
+			);
+		}
+		return message;
+	}
 
 	/**
 	 * 一天最晚的时戳
