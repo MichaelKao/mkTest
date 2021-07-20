@@ -316,7 +316,7 @@ public class Lover implements java.io.Serializable {
 	private Set<Location> locations;
 
 	/**
-	 * 通过安心认证
+	 * 服务(分类)标签
 	 */
 	@JoinTable(
 		name = "qing_ren_yu_fu_wu",
