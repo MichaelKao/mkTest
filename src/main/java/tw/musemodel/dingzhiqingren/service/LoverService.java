@@ -86,7 +86,7 @@ import tw.musemodel.dingzhiqingren.repository.ServiceTagRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_FARE;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
 
 /**
  * 服务层：情人
@@ -1179,37 +1179,45 @@ public class LoverService {
 			);
 		}
 
-		for (WithdrawalRecord withdrawalRecord : withdrawalRecordRepository.findAllByHoneyOrderByTimestampDesc(lover)) {
+		for (History history : historyRepository.findByPassiveAndBehaviorOrderByOccurredDesc(lover, BEHAVIOR_FARE)) {
 			Element recordElement = document.createElement("record");
 			documentElement.appendChild(recordElement);
+
+			recordElement.setAttribute(
+				"historyId",
+				history.getId().toString()
+			);
 
 			recordElement.setAttribute(
 				"date",
 				DATE_TIME_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
-						withdrawalRecord.getTimestamp()
+						history.getOccurred()
 					).withZoneSameInstant(Servant.ASIA_TAIPEI)
 				));
 
 			recordElement.setAttribute(
-				"way",
+				"male",
+				history.getInitiative().getNickname()
+			);
+
+			recordElement.setAttribute(
+				"maleId",
+				history.getInitiative().getIdentifier().toString()
+			);
+
+			recordElement.setAttribute(
+				"type",
 				messageSource.getMessage(
-					withdrawalRecord.getWay().toString(),
+					history.getBehavior().name(),
 					null,
 					locale
 				));
 
 			recordElement.setAttribute(
 				"points",
-				withdrawalRecord.getPoints().toString()
+				Integer.toString(Math.abs(history.getPoints()))
 			);
-
-			if (Objects.nonNull(withdrawalRecord.getStatus())) {
-				recordElement.setAttribute(
-					"status",
-					withdrawalRecord.getStatus().toString()
-				);
-			}
 		}
 
 		return document;
@@ -1227,7 +1235,8 @@ public class LoverService {
 	 * @return
 	 */
 	@Transactional
-	public JSONObject wireTransfer(String wireTransferBankCode, String wireTransferBranchCode, String wireTransferAccountName, String wireTransferAccountNumber, Lover honey, Locale locale) {
+	public JSONObject wireTransfer(String wireTransferBankCode, String wireTransferBranchCode, String wireTransferAccountName,
+		String wireTransferAccountNumber, History history, Lover honey, Locale locale) {
 		if (Objects.isNull(wireTransferAccountName)) {
 			throw new IllegalArgumentException("wireTransfer.accountNameMustntBeNull");
 		}
@@ -1242,7 +1251,7 @@ public class LoverService {
 		}
 
 		Long leftPoints = honeyLeftPoints(honey);
-		WithdrawalRecord withdrawalRecord = new WithdrawalRecord(honey, leftPoints, WayOfWithdrawal.WIRE_TRANSFER);
+		WithdrawalRecord withdrawalRecord = new WithdrawalRecord(honey, leftPoints, WayOfWithdrawal.WIRE_TRANSFER, history);
 		withdrawalRecordRepository.saveAndFlush(withdrawalRecord);
 
 		WithdrawalInfo withdrawalInfo = null;
@@ -1380,19 +1389,19 @@ public class LoverService {
 	public List<Behavior> behaviorsOfAnnocement(Lover lover) {
 		Boolean gender = lover.getGender();
 		List<Behavior> behaviors = new ArrayList<Behavior>();
-		behaviors.add(History.Behavior.AN_XIN_CHENG_GONG);
-		behaviors.add(History.Behavior.AN_XIN_SHI_BAI);
+		behaviors.add(BEHAVIOR_CERTIFICATION_SUCCESS);
+		behaviors.add(BEHAVIOR_CERTIFICATION_FAIL);
 		if (gender) {
-			behaviors.add(History.Behavior.JI_NI_LAI);
-			behaviors.add(History.Behavior.BU_JI_LAI);
-			behaviors.add(History.Behavior.DA_ZHAO_HU);
+			behaviors.add(BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
+			behaviors.add(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
+			behaviors.add(BEHAVIOR_GREETING);
 
 		}
 		if (!gender) {
-			behaviors.add(History.Behavior.JI_WO_LAI);
-			behaviors.add(History.Behavior.CHE_MA_FEI);
-			behaviors.add(History.Behavior.TI_LING_SHI_BAI);
-			behaviors.add(History.Behavior.TI_LING_CHENG_GONG);
+			behaviors.add(BEHAVIOR_GIMME_YOUR_LINE_INVITATION);
+			behaviors.add(BEHAVIOR_FARE);
+			behaviors.add(BEHAVIOR_WITHDRAWAL_FAIL);
+			behaviors.add(BEHAVIOR_WITHDRAWAL_SUCCESS);
 		}
 		return behaviors;
 	}

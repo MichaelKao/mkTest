@@ -1,4 +1,7 @@
 $(document).ready(function () {
+	$('BUTTON.withdrawal').click(function () {
+		$('INPUT[name="historyId"]').val($(this).siblings('INPUT.historyId').val());
+	});
 	$('FORM.wireTransfer').submit(function (event) {
 		event.preventDefault();
 		let form = this;

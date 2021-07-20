@@ -41,12 +41,13 @@
 								<!--<BUTTON class="btn btn-light" data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">Paypal</BUTTON>-->
 								<DIV class="accordion" id="accordionRental">
 									<DIV class="accordion-item mb-3">
-										<DIV class="accordion-collapse collapse" data-bs-parent="#accordionRental" id="collapseOne">
+										<DIV class="accordion-collapse collapse show" data-bs-parent="#accordionRental" id="collapseOne">
 											<DIV class="accordion-body text-sm opacity-8">
 												<DIV class="text-center">
 													<H3 class="text-gradient text-primary">銀行匯款</H3>
 												</DIV>
 												<FORM action="/wireTransfer.json" class="wireTransfer" method="post">
+													<INPUT name="historyId" type="hidden" value=""/>
 													<DIV class="card-body pb-2">
 														<DIV class="row">
 															<DIV class="col-md-6">
@@ -91,6 +92,7 @@
 													<H3 class="text-gradient text-primary">Paypal</H3>
 												</DIV>
 												<FORM action="" method="post">
+													<INPUT name="historyId" type="hidden" value=""/>
 													<DIV class="card-body pb-2">
 														<DIV class="row">
 															<DIV class="col-md-6">
@@ -123,10 +125,8 @@
 					</DIV>
 				</DIV>
 				<DIV class="d-flex justify-content-center align-items-baseline">
-					<DIV>目前可提領的車馬費：<xsl:value-of select="@points"/></DIV>
-					<xsl:if test="@points != '0'">
-						<BUTTON class="btn btn-block btn-light ms-2 p-2" data-bs-toggle="modal" data-bs-target="#exampleModalLong" type="button">提領</BUTTON>
-					</xsl:if>
+					<DIV>目前可提領的總車馬費：<xsl:value-of select="@points"/></DIV>
+					<BUTTON class="btn btn-block btn-light m-0 p-1 withdrawal" data-bs-toggle="modal" data-bs-target="#exampleModalLong" type="button">提領</BUTTON>
 				</DIV>
 				<DIV class="card col-md-8 mx-auto">
 					<DIV class="table-responsive">
@@ -134,28 +134,34 @@
 							<THEAD>
 								<TR>
 									<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
-									<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">提領金額</TH>
-									<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">狀態</TH>
+									<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
+									<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
+									<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
 								</TR>
 							</THEAD>
 							<TBODY>
 								<xsl:for-each select="record">
 									<TR>
 										<TD class="text-sm text-center">
-											<P class="text-xs font-weight-bold mb-0">
+											<SPAN class="text-xs font-weight-bold">
 												<xsl:value-of select="@date"/>
-											</P>
-											<P class="text-xs text-secondary mb-0">
-												<xsl:value-of select="@way"/>
-											</P>
+											</SPAN>
+										</TD>
+										<TD class="text-sm text-center">
+											<A class="text-secondary text-xs font-weight-bold" href="/profile/{@maleId}/">
+												<xsl:value-of select="@male"/>
+											</A>
+										</TD>
+										<TD class="text-sm text-center">
+											<SPAN class="text-secondary text-xs font-weight-bold">
+												<xsl:value-of select="@type"/>
+											</SPAN>
 										</TD>
 										<TD class="text-sm text-center">
 											<SPAN class="text-secondary text-xs font-weight-bold">
 												<xsl:value-of select="@points"/>
 											</SPAN>
-										</TD>
-										<TD class="text-sm text-center">
-											<xsl:choose>
+											<!--											<xsl:choose>
 												<xsl:when test="@status = 'true'">
 													<SPAN class="badge bg-gradient-success">已完成</SPAN>
 												</xsl:when>
@@ -165,7 +171,7 @@
 												<xsl:otherwise>
 													<SPAN class="badge bg-gradient-info">等待中</SPAN>
 												</xsl:otherwise>
-											</xsl:choose>
+											</xsl:choose>-->
 										</TD>
 									</TR>
 								</xsl:for-each>

@@ -33,7 +33,7 @@
 			<INPUT name="identifier" type="hidden" value="{@identifier}"/>
 			<NAV class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
 				<DIV class="container-fluid">
-					<A class="navbar-brand font-weight-bolder ms-sm-3" href="/">訂製情人</A>
+					<A class="navbar-brand font-weight-bolder ms-sm-3" href="/">Young Me 甜蜜約會</A>
 					<DIV>
 						<xsl:if test="@signIn">
 							<A class="d-lg-none" href="/activeLogs.asp">
@@ -191,6 +191,10 @@
 	</xsl:template>
 
 	<xsl:template name="headLinkTags">
+		<LINK href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+		<LINK href="/apple-touch-icon.png" rel="apple-touch-startup-image"/>
+		<LINK href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
+		<LINK href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
 		<LINK href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet"/>
 		<LINK href="/STYLE/soft-design-system.css" rel="stylesheet"/>
 		<LINK href="/STYLE/default.css" rel="stylesheet"/>

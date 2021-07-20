@@ -2434,7 +2434,7 @@ public class WelcomeController {
 	@Secured({"ROLE_YONGHU"})
 	ModelAndView withdrawal(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
-			return new ModelAndView("redirect:/");
+			servant.redirectToRoot();
 		}
 
 		// 本人
@@ -2489,8 +2489,9 @@ public class WelcomeController {
 			);
 		}
 
+		// 男仕返回首頁
 		if (gender) {
-			return new ModelAndView("redirect:/");
+			servant.redirectToRoot();
 		}
 
 		documentElement.setAttribute(
@@ -2504,7 +2505,7 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 甜心提取車馬費
+	 * 甜心提取車馬費(銀行匯款)
 	 *
 	 * @param authentication
 	 * @param locale
@@ -2513,7 +2514,9 @@ public class WelcomeController {
 	@PostMapping(path = "/wireTransfer.json")
 	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
-	String wireTransfer(@RequestParam String wireTransferBankCode, @RequestParam String wireTransferBranchCode, @RequestParam String wireTransferAccountName, @RequestParam String wireTransferAccountNumber, Authentication authentication, Locale locale) {
+	String wireTransfer(@RequestParam String wireTransferBankCode, @RequestParam String wireTransferBranchCode,
+		@RequestParam String wireTransferAccountName, @RequestParam String wireTransferAccountNumber,
+		@RequestParam("historyId") History history, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -2529,6 +2532,7 @@ public class WelcomeController {
 				wireTransferBranchCode,
 				wireTransferAccountName,
 				wireTransferAccountNumber,
+				history,
 				me,
 				locale
 			);
@@ -2807,6 +2811,14 @@ public class WelcomeController {
 		return json.toString();
 	}
 
+	/**
+	 * 男士打開已同意的LINE連結
+	 *
+	 * @param femaleUUID
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
 	@PostMapping(path = "/maleOpenLine.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	String openLine(@RequestParam("whom") UUID femaleUUID, Authentication authentication, Locale locale) {

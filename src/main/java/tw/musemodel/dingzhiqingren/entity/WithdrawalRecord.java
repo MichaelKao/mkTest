@@ -71,6 +71,11 @@ public class WithdrawalRecord implements java.io.Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timestamp;
 
+	@Basic(optional = false)
+	@JoinColumn(name = "li_cheng", nullable = false, referencedColumnName = "id")
+	@ManyToOne
+	private History history;
+
 	/**
 	 * 默认构造器
 	 */
@@ -79,11 +84,12 @@ public class WithdrawalRecord implements java.io.Serializable {
 		timestamp = new Date(System.currentTimeMillis());
 	}
 
-	public WithdrawalRecord(Lover honey, Long points, WayOfWithdrawal way) {
+	public WithdrawalRecord(Lover honey, Long points, WayOfWithdrawal way, History history) {
 		this();
 		this.honey = honey;
 		this.points = points;
 		this.way = way;
+		this.history = history;
 	}
 
 	@Override
@@ -207,6 +213,20 @@ public class WithdrawalRecord implements java.io.Serializable {
 	 */
 	public void setFailReason(String failReason) {
 		this.failReason = failReason;
+	}
+
+	/**
+	 * @return 歷程
+	 */
+	public History getHistory() {
+		return history;
+	}
+
+	/**
+	 * @param history 歷程
+	 */
+	public void setHistory(History history) {
+		this.history = history;
 	}
 
 	/**
