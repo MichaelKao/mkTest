@@ -3,6 +3,7 @@ package tw.musemodel.dingzhiqingren.repository;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import tw.musemodel.dingzhiqingren.entity.Country;
@@ -14,7 +15,7 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
  * @author p@musemodel.tw
  */
 @Repository
-public interface LoverRepository extends JpaRepository<Lover, Integer> {
+public interface LoverRepository extends JpaRepository<Lover, Integer>, JpaSpecificationExecutor<Lover> {
 
 	public long countByCountryAndLogin(Country country, String login);
 

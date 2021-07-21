@@ -51,8 +51,6 @@ import tw.musemodel.dingzhiqingren.entity.ServiceTag;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.SignUp;
-import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
-import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
@@ -103,12 +101,6 @@ public class WelcomeController {
 
 	@Autowired
 	private LineGivenRepository lineGivenRepository;
-
-	@Autowired
-	private AnnualIncomeRepository annualIncomeRepository;
-
-	@Autowired
-	private AllowanceRepository allowanceRepository;
 
 	/**
 	 * 首页
@@ -205,8 +197,8 @@ public class WelcomeController {
 					loverElement.setAttribute("vip", null);
 				}
 
-				if (Objects.nonNull(lover.getCertification())) {
-					Boolean certification = lover.getCertification();
+				if (Objects.nonNull(lover.getRelief())) {
+					Boolean certification = lover.getRelief();
 					loverElement.setAttribute(
 						"certification",
 						certification ? "true" : "false"
@@ -1081,8 +1073,8 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@PostMapping(path = "/me.asp")
-	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
 	String editProfile(Lover model, Authentication authentication, Locale locale) {
 		// 本人
 		Lover me = loverService.loadByUsername(
@@ -1280,7 +1272,7 @@ public class WelcomeController {
 				"profileImage",
 				String.format(
 					"https://%s/profileImage/%s",
-					servant.STATIC_HOST,
+					Servant.STATIC_HOST,
 					followed.getProfileImage()
 				)
 			);
@@ -1299,8 +1291,8 @@ public class WelcomeController {
 			if (followed.getGender() && loverService.isVIP(followed)) {
 				followElement.setAttribute("vip", null);
 			}
-			if (Objects.nonNull(followed.getCertification())) {
-				Boolean certification = followed.getCertification();
+			if (Objects.nonNull(followed.getRelief())) {
+				Boolean certification = followed.getRelief();
 				followElement.setAttribute(
 					"certification",
 					certification ? "true" : "false"
@@ -1321,8 +1313,8 @@ public class WelcomeController {
 	 * @return
 	 */
 	@PostMapping(path = "/favorite.json")
-	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
 	String favorite(@RequestParam UUID identifier, Authentication authentication, Locale locale) {
 		// 本人
 		Lover me = loverService.loadByUsername(
@@ -1480,8 +1472,8 @@ public class WelcomeController {
 				if (peeker.getGender() && loverService.isVIP(peeker)) {
 					peekerElement.setAttribute("vip", null);
 				}
-				if (Objects.nonNull(peeker.getCertification())) {
-					Boolean certification = peeker.getCertification();
+				if (Objects.nonNull(peeker.getRelief())) {
+					Boolean certification = peeker.getRelief();
 					peekerElement.setAttribute(
 						"certification",
 						certification ? "true" : "false"
@@ -2512,8 +2504,8 @@ public class WelcomeController {
 	 * @return
 	 */
 	@PostMapping(path = "/wireTransfer.json")
-	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
 	String wireTransfer(@RequestParam String wireTransferBankCode, @RequestParam String wireTransferBranchCode,
 		@RequestParam String wireTransferAccountName, @RequestParam String wireTransferAccountNumber,
 		Authentication authentication, Locale locale) {
@@ -2556,8 +2548,8 @@ public class WelcomeController {
 	 * @return
 	 */
 	@PostMapping(path = "/deleteAccount")
-	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
 	String deleteAccount(Authentication authentication) {
 		// 本人
 		Lover me = loverService.loadByUsername(
@@ -2637,8 +2629,8 @@ public class WelcomeController {
 	 * @return
 	 */
 	@PostMapping(path = "/location.json")
-	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
 	String loaction(@RequestParam Location location, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -2673,8 +2665,8 @@ public class WelcomeController {
 	 * @return
 	 */
 	@PostMapping(path = "/service.json")
-	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
 	String loaction(@RequestParam ServiceTag service, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -2712,8 +2704,8 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@PostMapping(path = "/uploadIdentity")
-	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
 	String uploadIdentity(@RequestParam("file") MultipartFile multipartFile, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -2725,7 +2717,7 @@ public class WelcomeController {
 			"/identity"
 		);
 
-		me.setCertification(Boolean.FALSE);
+		me.setRelief(false);
 		loverRepository.saveAndFlush(me);
 
 		return new JavaScriptObjectNotation().
@@ -2734,7 +2726,8 @@ public class WelcomeController {
 					"uploadIdentity.done",
 					null,
 					locale
-				)).
+				)
+			).
 			withResponse(true).
 			withResult(me.toString()).
 			toJSONObject().toString();
@@ -2821,7 +2814,6 @@ public class WelcomeController {
 	@PostMapping(path = "/maleOpenLine.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	String openLine(@RequestParam("whom") UUID femaleUUID, Authentication authentication, Locale locale) {
-
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}

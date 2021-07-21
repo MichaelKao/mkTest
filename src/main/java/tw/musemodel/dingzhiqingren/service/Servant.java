@@ -51,9 +51,9 @@ import tw.musemodel.dingzhiqingren.repository.RoleRepository;
 @Service
 public class Servant {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(Servant.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Servant.class);
 
-	private final static String EMPTY_DOCUMENT_URI = "classpath:/skeleton/default.xml";
+	private static final String EMPTY_DOCUMENT_URI = "classpath:/skeleton/default.xml";
 
 	@Autowired
 	private MessageSource messageSource;
@@ -67,41 +67,41 @@ public class Servant {
 	/**
 	 * 东八时区
 	 */
-	public final static ZoneId ASIA_TAIPEI = ZoneId.of("Asia/Taipei");
+	public static final ZoneId ASIA_TAIPEI = ZoneId.of("Asia/Taipei");
 
-	public final static JsonMapper JSON_MAPPER = new JsonMapper();
+	public static final JsonMapper JSON_MAPPER = new JsonMapper();
 
-	public final static ObjectWriter JSON_WRITER_WITH_DEFAULT_PRETTY_PRINTER = new JsonMapper().writerWithDefaultPrettyPrinter();
+	public static final ObjectWriter JSON_WRITER_WITH_DEFAULT_PRETTY_PRINTER = new JsonMapper().writerWithDefaultPrettyPrinter();
 
 	/**
 	 * 透过 LINE 接收其它网站服务通知
 	 */
-	public final static String LINE_NOTIFY_ACCESS_TOKEN = System.getenv("LINE_NOTIFY_ACCESS_TOKEN");
+	public static final String LINE_NOTIFY_ACCESS_TOKEN = System.getenv("LINE_NOTIFY_ACCESS_TOKEN");
 
 	/**
 	 * 本地服务器域名
 	 */
-	public final static String LOCALHOST = System.getenv("LOCALHOST");
+	public static final String LOCALHOST = System.getenv("LOCALHOST");
 
 	/**
 	 * 30 天的毫秒数
 	 */
-	public final static Long MILLISECONDS_OF_30_DAYS = 2592000000L;
+	public static final Long MILLISECONDS_OF_30_DAYS = 2592000000L;
 
 	/**
 	 * 万能天神
 	 */
-	public final static String ROLE_ADMINISTRATOR = "ROLE_ALMIGHTY";
+	public static final String ROLE_ADMINISTRATOR = "ROLE_ALMIGHTY";
 
 	/**
 	 * 财务会计
 	 */
-	public final static String ROLE_ACCOUNTANT = "ROLE_FINANCE";
+	public static final String ROLE_ACCOUNTANT = "ROLE_FINANCE";
 
 	/**
 	 * 一般用户
 	 */
-	public final static String ROLE_ADVENTURER = "ROLE_YONGHU";
+	public static final String ROLE_ADVENTURER = "ROLE_YONGHU";
 
 	/**
 	 * 静态资源网域
@@ -131,7 +131,7 @@ public class Servant {
 	/**
 	 * 一种针对 Unicode 的可变长度字符编码
 	 */
-	public final static Charset UTF_8 = StandardCharsets.UTF_8;
+	public static final Charset UTF_8 = StandardCharsets.UTF_8;
 
 	/**
 	 * 服务器时区

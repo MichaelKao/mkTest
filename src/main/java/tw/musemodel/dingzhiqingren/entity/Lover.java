@@ -316,7 +316,7 @@ public class Lover implements java.io.Serializable {
 	private Set<Location> locations;
 
 	/**
-	 * 通过安心认证
+	 * 服务(分类)标签
 	 */
 	@JoinTable(
 		name = "qing_ren_yu_fu_wu",
@@ -331,7 +331,7 @@ public class Lover implements java.io.Serializable {
 	 * 通过安心认证
 	 */
 	@Column(name = "an_xin")
-	private Boolean certification;
+	private Boolean relief;
 
 	/**
 	 * 默认构造器
@@ -898,15 +898,15 @@ public class Lover implements java.io.Serializable {
 	/**
 	 * @return 安心認證
 	 */
-	public Boolean getCertification() {
-		return certification;
+	public Boolean getRelief() {
+		return relief;
 	}
 
 	/**
-	 * @param certification 安心認證
+	 * @param relief 安心認證
 	 */
-	public void setCertification(Boolean certification) {
-		this.certification = certification;
+	public void setRelief(Boolean relief) {
+		this.relief = relief;
 	}
 
 	/**
