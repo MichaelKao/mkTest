@@ -2516,7 +2516,7 @@ public class WelcomeController {
 	@ResponseBody
 	String wireTransfer(@RequestParam String wireTransferBankCode, @RequestParam String wireTransferBranchCode,
 		@RequestParam String wireTransferAccountName, @RequestParam String wireTransferAccountNumber,
-		@RequestParam("historyId") History history, Authentication authentication, Locale locale) {
+		Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -2532,7 +2532,6 @@ public class WelcomeController {
 				wireTransferBranchCode,
 				wireTransferAccountName,
 				wireTransferAccountNumber,
-				history,
 				me,
 				locale
 			);

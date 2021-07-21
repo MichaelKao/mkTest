@@ -78,7 +78,7 @@
 								<BUTTON aria-label="Close" class="btn-close text-dark" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">
-								<P class="text-primary text-bold modalRemarks"></P>
+								<P class="text-primary text-bold">註：僅能上傳 LINE QR code</P>
 								<DIV class="imgContainer">
 									<IMG alt="cropper" src="https://via.placeholder.com/200" id="image"/>
 								</DIV>
@@ -120,24 +120,6 @@
 						<I class="fad fa-chevron-double-left"></I>
 					</A>
 					<DIV class="ms-auto">
-						<xsl:choose>
-							<xsl:when test="not(certification)">
-								<LABEL>
-									<INPUT accept="image/*" class="sr-only" data-type="certification" name="image" type="file"/>
-									<A class="btn btn-outline-info me-1 certification">
-										<IMG alt="approval" src="/accept.svg" width="17"/>
-										<SPAN class="ms-1">安心認證</SPAN>
-									</A>
-								</LABEL>
-							</xsl:when>
-						</xsl:choose>
-						<BUTTON class="btn btn-outline-info me-1 certification" disabled="" style="display: none;">
-							<xsl:if test="certification and certification/@certification = 'false'">
-								<xsl:attribute name="style">display: inline;</xsl:attribute>
-							</xsl:if>
-							<IMG alt="approval" src="/accept.svg" width="17"/>
-							<SPAN class="ms-1">待審核</SPAN>
-						</BUTTON>
 						<BUTTON class="btn btn-outline-primary" data-bs-target="#deleteModal" data-bs-toggle="modal" type="button">刪除帳號</BUTTON>
 					</DIV>
 				</DIV>
@@ -288,8 +270,8 @@
 							<LABEL>Line 好友連結</LABEL>
 							<DIV class="uploadQrcode">
 								<LABEL>
-									<INPUT accept="image/*" class="sr-only" data-type="qrcode" name="image" type="file"/>
-									<A class="btn btn-primary p-1 me-1 certification">點擊上傳 QR code</A>
+									<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
+									<A class="btn btn-primary p-1 me-1">點擊上傳 QR code</A>
 								</LABEL>
 								<BUTTON class="btn btn-info p-1" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">如何取得 QR code?</BUTTON>
 							</DIV>

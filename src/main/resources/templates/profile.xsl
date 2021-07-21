@@ -24,6 +24,7 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
+			<LINK crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.css" integrity="sha512-Aix44jXZerxlqPbbSLJ03lEsUch9H/CmnNfWxShD6vJBbboR+rPdDXmKN+/QjISWT80D4wMjtM4Kx7+xkLVywQ==" referrerpolicy="no-referrer" rel="stylesheet"/>
 			<LINK href="/STYLE/profile.css" rel="stylesheet"/>
 		</HEAD>
 		<BODY>
@@ -99,9 +100,45 @@
 						</DIV>
 					</DIV>
 				</DIV>
+				<DIV class="modal fade" id="cropModal">
+					<DIV class="modal-dialog modal-dialog-centered">
+						<DIV class="modal-content">
+							<DIV class="modal-header">
+								<DIV class="modal-title h5" id="modalLabel">
+									<IMG alt="certification" src="/accept.svg" width="30"/>
+									<SPAN class="ms-1">手持證件安心認證</SPAN>
+								</DIV>
+								<BUTTON aria-label="Close" class="btn-close text-dark" data-bs-dismiss="modal" type="button"></BUTTON>
+							</DIV>
+							<DIV class="modal-body">
+								<P class="text-primary text-bold">上傳本人自拍並且手持證件，通過安心認證增加真實性！</P>
+								<LABEL>
+									<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
+									<A class="btn btn-outline-info">上傳手持證件</A>
+								</LABEL>
+								<DIV class="result"></DIV>
+								<DIV class="progress-wrapper">
+									<DIV class="progress-info">
+										<DIV class="progress-percentage">
+											<span class="text-sm font-weight-bold">0%</span>
+										</DIV>
+									</DIV>
+									<DIV class="progress">
+										<DIV class="progress-bar bg-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></DIV>
+									</DIV>
+								</DIV>
+							</DIV>
+							<DIV class="modal-footer">
+								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消</BUTTON>
+								<BUTTON class="btn btn-primary" id="cropBtn" type="button" style="display: none;">上傳</BUTTON>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/profile.js"/>
+			<SCRIPT crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.js" integrity="sha512-E4KfIuQAc9ZX6zW1IUJROqxrBqJXPuEcDKP6XesMdu2OV4LW7pj8+gkkyx2y646xEV7yxocPbaTtk2LQIJewXw==" referrerpolicy="no-referrer"/>
 			<xsl:if test="@signIn">
 				<SCRIPT src="/SCRIPT/websocket.js"/>
 			</xsl:if>
@@ -261,6 +298,19 @@
 					</DIV>
 				</xsl:if>
 			</DIV>
+			<xsl:if test="not(@certification) or @certification = 'false'">
+				<DIV class="ms-auto">
+					<BUTTON class="btn btn-outline-info p-1 certification" data-bs-target="#cropModal" data-bs-toggle="modal" type="button">
+						<xsl:if test="@certification = 'false'">
+							<xsl:attribute name="disabled">true</xsl:attribute>
+							<SPAN>安心認證審核中</SPAN>
+						</xsl:if>
+						<xsl:if test="not(@certification)">
+							<SPAN>進行安心認證</SPAN>
+						</xsl:if>
+					</BUTTON>
+				</DIV>
+			</xsl:if>
 			<DIV class="d-flex align-items-center">
 				<DIV class="text-dark text-bold me-1">
 					<xsl:value-of select="@i18n-lastActive"/>

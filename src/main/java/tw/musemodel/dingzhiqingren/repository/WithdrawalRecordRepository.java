@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 
@@ -21,4 +22,6 @@ public interface WithdrawalRecordRepository extends JpaRepository<WithdrawalReco
 	public List<WithdrawalRecord> findAllByHoneyOrderByTimestampDesc(Lover honey);
 
 	public List<WithdrawalRecord> findAllByOrderByTimestampDesc();
+
+	public WithdrawalRecord findByHistory(History history);
 }
