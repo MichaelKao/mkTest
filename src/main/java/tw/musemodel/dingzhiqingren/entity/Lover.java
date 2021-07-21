@@ -334,6 +334,13 @@ public class Lover implements java.io.Serializable {
 	private Boolean relief;
 
 	/**
+	 * 註冊时间
+	 */
+	@Column(name = "zhu_ce_shi_chuo")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date signUp;
+
+	/**
 	 * 默认构造器
 	 */
 	public Lover() {
@@ -907,6 +914,20 @@ public class Lover implements java.io.Serializable {
 	 */
 	public void setRelief(Boolean relief) {
 		this.relief = relief;
+	}
+
+	/**
+	 * @return 註冊時戳
+	 */
+	public Date getSignUp() {
+		return signUp;
+	}
+
+	/**
+	 * @param signUp 註冊時戳
+	 */
+	public void setSignUp(Date signUp) {
+		this.signUp = signUp;
 	}
 
 	/**

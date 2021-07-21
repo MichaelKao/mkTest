@@ -298,7 +298,7 @@
 					</DIV>
 				</xsl:if>
 			</DIV>
-			<xsl:if test="not(@certification) or @certification = 'false'">
+			<xsl:if test="(/document/@me) and (not(@certification) or @certification = 'false')">
 				<DIV class="ms-auto">
 					<BUTTON class="btn btn-outline-info p-1 certification" data-bs-target="#cropModal" data-bs-toggle="modal" type="button">
 						<xsl:if test="@certification = 'false'">

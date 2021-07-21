@@ -611,7 +611,7 @@ ADD COLUMN"hui_ying"timestamptz;
 COMMENT ON COLUMN"li_cheng"."hui_ying"IS'回應';
 
 /**
- * 提領失敗
+ * 提領、安心認證結果
  */
 ALTER TYPE"xing_wei" ADD VALUE 'TI_LING_SHI_BAI';
 ALTER TYPE"xing_wei" ADD VALUE 'TI_LING_CHENG_GONG';
@@ -635,3 +635,10 @@ COMMENT ON COLUMN"ti_ling"."jin_e"IS'提取金額';
 COMMENT ON COLUMN"ti_ling"."zhuang_tai"IS'狀態';
 COMMENT ON COLUMN"ti_ling"."ti_qu_feng_shi"IS'提取方式';
 COMMENT ON COLUMN"ti_ling"."shi_chuo"IS'時間戳記';
+
+/**
+ * 情人加註冊時戳
+ */
+ALTER TABLE"qing_ren"
+ADD COLUMN"zhu_ce_shi_chuo"timestamptz NOT NULL DEFAULT"now"();
+COMMENT ON COLUMN"qing_ren"."zhu_ce_shi_chuo"IS'註冊時戳';

@@ -19,7 +19,7 @@ public interface WithdrawalRecordRepository extends JpaRepository<WithdrawalReco
 	@Query("SELECT SUM(wr.points) FROM WithdrawalRecord wr WHERE wr.honey = :honey AND (wr.status = null OR wr.status = 'true')")
 	public Long sumPoinsByHoney(Lover honey);
 
-	public List<WithdrawalRecord> findAllByHoneyOrderByTimestampDesc(Lover honey);
+	public List<WithdrawalRecord> findAllByHoneyAndStatusOrderByTimestampDesc(Lover honey, Boolean status);
 
 	public List<WithdrawalRecord> findAllByOrderByTimestampDesc();
 

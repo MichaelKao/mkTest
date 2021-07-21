@@ -259,7 +259,14 @@
 					</DIV>
 					<DIV class="col-md-12 pe-2 mb-3">
 						<DIV class="form-group mb-0">
-							<LABEL for="greeting">打招呼</LABEL>
+							<LABEL for="greeting">
+								<xsl:if test="gender/@gender = 'female'">
+									<SPAN>與男仕打招呼</SPAN>
+								</xsl:if>
+								<xsl:if test="gender/@gender = 'male'">
+									<SPAN>用一句話介紹自己來打動甜心</SPAN>
+								</xsl:if>
+							</LABEL>
 							<TEXTAREA class="form-control" id="greeting" name="greeting" required="" rows="4">
 								<xsl:value-of select="greeting"/>
 							</TEXTAREA>
