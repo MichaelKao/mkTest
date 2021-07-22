@@ -40,6 +40,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -1498,56 +1500,86 @@ public class LoverService {
 	}
 
 	/**
+	 * @param p 第几页
+	 * @param s 每页几笔
 	 * @return 通过安心认证的甜心们
 	 */
-	public Collection<Lover> femalesOnTheWall() {
+	public Page<Lover> femalesOnTheWall(int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.relievingOnTheWall(false)
+			LoverSpecification.relievingOnTheWall(false),
+			PageRequest.of(p, s)
 		);
 	}
 
 	/**
+	 * @param p 第几页
+	 * @param s 每页几笔
 	 * @return 以活跃排序的甜心们
 	 */
-	public Collection<Lover> latestActiveFemalesOnTheWall() {
+	public Page<Lover> latestActiveFemalesOnTheWall(int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.latestActiveOnTheWall(false)
+			LoverSpecification.latestActiveOnTheWall(false),
+			PageRequest.of(p, s)
 		);
 	}
 
 	/**
+	 * @param p 第几页
+	 * @param s 每页几笔
 	 * @return 以活跃排序的男士们
 	 */
-	public Collection<Lover> latestActiveMalesOnTheWall() {
+	public Page<Lover> latestActiveMalesOnTheWall(int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.latestActiveOnTheWall(true)
+			LoverSpecification.latestActiveOnTheWall(true),
+			PageRequest.of(p, s)
 		);
 	}
 
 	/**
+	 * @param p 第几页
+	 * @param s 每页几笔
 	 * @return 以註冊时间排序的甜心们
 	 */
-	public Collection<Lover> latestRegisteredFemalesOnTheWall() {
+	public Page<Lover> latestRegisteredFemalesOnTheWall(int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.latestRegisteredOnTheWall(false)
+			LoverSpecification.latestRegisteredOnTheWall(false),
+			PageRequest.of(p, s)
 		);
 	}
 
 	/**
+	 * @param p 第几页
+	 * @param s 每页几笔
 	 * @return 以註冊时间排序的男士们
 	 */
-	public Collection<Lover> latestRegisteredMalesOnTheWall() {
+	public Page<Lover> latestRegisteredMalesOnTheWall(int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.latestRegisteredOnTheWall(true)
+			LoverSpecification.latestRegisteredOnTheWall(true),
+			PageRequest.of(p, s)
 		);
 	}
 
 	/**
+	 * @param p 第几页
+	 * @param s 每页几笔
 	 * @return 通过安心认证的男士们
 	 */
-	public Collection<Lover> malesOnTheWall() {
+	public Page<Lover> malesOnTheWall(int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.relievingOnTheWall(true)
+			LoverSpecification.relievingOnTheWall(true),
+			PageRequest.of(p, s)
+		);
+	}
+
+	/**
+	 * @param p 第几页
+	 * @param s 每页几笔
+	 * @return 通过安心认证的男士们
+	 */
+	public Page<Lover> vipOnTheWall(int p, int s) {
+		return loverRepository.findAll(
+			LoverSpecification.vipOnTheWall(),
+			PageRequest.of(p, s)
 		);
 	}
 }

@@ -32,7 +32,6 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
-import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
 /**
  * 控制器：概念验证
@@ -129,8 +128,8 @@ public class ProofOfConcept {
 	 */
 	@GetMapping(path = "/femalesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	Collection<Lover> femalesOnTheWall() {
-		return loverService.femalesOnTheWall();
+	Collection<Lover> femalesOnTheWall(@RequestParam(defaultValue = "0") final int p, @RequestParam(defaultValue = "3") final int s) {
+		return loverService.femalesOnTheWall(p, s).toList();
 	}
 
 	/**
@@ -138,8 +137,8 @@ public class ProofOfConcept {
 	 */
 	@GetMapping(path = "/latestActiveFemalesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	Collection<Lover> latestActiveFemalesOnTheWall() {
-		return loverService.latestActiveFemalesOnTheWall();
+	Collection<Lover> latestActiveFemalesOnTheWall(@RequestParam(defaultValue = "0") final int p, @RequestParam(defaultValue = "3") final int s) {
+		return loverService.latestActiveFemalesOnTheWall(p, s).toList();
 	}
 
 	/**
@@ -147,8 +146,8 @@ public class ProofOfConcept {
 	 */
 	@GetMapping(path = "/latestActiveMalesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	Collection<Lover> latestActiveMalesOnTheWall() {
-		return loverService.latestActiveMalesOnTheWall();
+	Collection<Lover> latestActiveMalesOnTheWall(@RequestParam(defaultValue = "0") final int p, @RequestParam(defaultValue = "3") final int s) {
+		return loverService.latestActiveMalesOnTheWall(p, s).toList();
 	}
 
 	/**
@@ -156,8 +155,8 @@ public class ProofOfConcept {
 	 */
 	@GetMapping(path = "/latestRegisteredFemalesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	Collection<Lover> latestRegisteredFemalesOnTheWall() {
-		return loverService.latestRegisteredFemalesOnTheWall();
+	Collection<Lover> latestRegisteredFemalesOnTheWall(@RequestParam(defaultValue = "0") final int p, @RequestParam(defaultValue = "3") final int s) {
+		return loverService.latestRegisteredFemalesOnTheWall(p, s).toList();
 	}
 
 	/**
@@ -165,8 +164,8 @@ public class ProofOfConcept {
 	 */
 	@GetMapping(path = "/latestRegisteredMalesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	Collection<Lover> latestRegisteredMalesOnTheWall() {
-		return loverService.latestRegisteredMalesOnTheWall();
+	Collection<Lover> latestRegisteredMalesOnTheWall(@RequestParam(defaultValue = "0") final int p, @RequestParam(defaultValue = "3") final int s) {
+		return loverService.latestRegisteredMalesOnTheWall(p, s).toList();
 	}
 
 	/**
@@ -174,8 +173,8 @@ public class ProofOfConcept {
 	 */
 	@GetMapping(path = "/malesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	Collection<Lover> malesOnTheWall() {
-		return loverService.malesOnTheWall();
+	Collection<Lover> malesOnTheWall(@RequestParam(defaultValue = "0") final int p, @RequestParam(defaultValue = "3") final int s) {
+		return loverService.malesOnTheWall(p, s).toList();
 	}
 
 	/**
@@ -183,9 +182,7 @@ public class ProofOfConcept {
 	 */
 	@GetMapping(path = "/vipOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	Collection<Lover> vipOnTheWall() {
-		return loverRepository.findAll(
-			LoverSpecification.vipOnTheWall()
-		);
+	Collection<Lover> vipOnTheWall(@RequestParam(defaultValue = "0") final int p, @RequestParam(defaultValue = "3") final int s) {
+		return loverService.vipOnTheWall(p, s).toList();
 	}
 }

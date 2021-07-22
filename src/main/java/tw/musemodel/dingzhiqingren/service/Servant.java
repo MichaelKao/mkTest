@@ -89,6 +89,11 @@ public class Servant {
 	public static final Long MILLISECONDS_OF_30_DAYS = 2592000000L;
 
 	/**
+	 * 涂鸦墙各区块每夜几笔
+	 */
+	public static final Integer PAGE_SIZE_ON_THE_WALL = Integer.valueOf(System.getenv("PAGE_SIZE_ON_THE_WALL"));
+
+	/**
 	 * 万能天神
 	 */
 	public static final String ROLE_ADMINISTRATOR = "ROLE_ALMIGHTY";
