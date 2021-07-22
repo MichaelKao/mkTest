@@ -116,7 +116,7 @@ public class DashboardService {
 			if (Objects.nonNull(withdrawalRecord.getStatus()) && !withdrawalRecord.getStatus()) {
 				recordElement.setAttribute(
 					"failReason",
-					withdrawalRecord.getFailReason()
+					null
 				);
 			}
 

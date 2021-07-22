@@ -72,11 +72,11 @@
 					<DIV class="container">
 						<DIV class="row">
 							<DIV class="col-lg-9 z-index-2 border-radius-xl mt-n8 mx-auto py-3 blur shadow-blur">
+								<H4 class="text-center">約會玩法使用步驟</H4>
 								<DIV class="row">
 									<DIV class="col-4 position-relative">
 										<DIV class="p-1 text-center">
 											<H3 class="text-gradient text-primary text-">1</H3>
-											<H6 class="mt-3">手機註冊</H6>
 											<P class="text-sm">僅需使用手機號碼簡單註冊</P>
 										</DIV>
 										<HR class="vertical dark"/>
@@ -84,7 +84,6 @@
 									<DIV class="col-4 position-relative">
 										<DIV class="p-1 text-center">
 											<H3 class="text-gradient text-primary">2</H3>
-											<H6 class="mt-3">編輯資料</H6>
 											<P class="text-sm">編輯你/妳的個人資料</P>
 										</DIV>
 										<HR class="vertical dark"/>
@@ -92,7 +91,6 @@
 									<DIV class="col-4">
 										<DIV class="p-1 text-center">
 											<H3 class="text-gradient text-primary">3</H3>
-											<H6 class="mt-3">尋找對象</H6>
 											<P class="text-sm">馬上就能尋找心儀對象</P>
 										</DIV>
 									</DIV>
@@ -144,11 +142,15 @@
 						<xsl:if test="@male">所有甜心</xsl:if>
 						<xsl:if test="@female">所有男仕</xsl:if>
 					</H3>
+					<DIV class="my-3 text-center">
+						<IMG class="border-radius-md" src="/accept.svg" width="25"/>
+						<SPAN class="text-sm text-info text-bold ms-1">已通過本人安心認證</SPAN>
+					</DIV>
 					<DIV class="card col-11 col-md-8 mx-auto">
 						<DIV class="d-flex flex-wrap justify-content-center">
 							<xsl:for-each select="lover">
 								<A class="position-relative m-2" href="/profile/{identifier}/">
-									<IMG class="border-radius-md" src="{profileImage}" width="130"/>
+									<IMG class="border-radius-md" src="{profileImage}" width="155"/>
 									<DIV class="position-absolute top-0 right-0 text-center" style="width: 25px;">
 										<xsl:if test="@vip">
 											<IMG class="border-radius-md" src="/vip.svg" width="25"/>
@@ -169,10 +171,6 @@
 									</DIV>
 								</A>
 							</xsl:for-each>
-						</DIV>
-						<DIV class="my-3 text-center">
-							<IMG class="border-radius-md" src="/accept.svg" width="25"/>
-							<SPAN class="text-sm text-info text-bold ms-1">已通過本人安心認證</SPAN>
 						</DIV>
 					</DIV>
 				</DIV>

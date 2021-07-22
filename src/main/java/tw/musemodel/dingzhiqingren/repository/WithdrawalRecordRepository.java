@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 
@@ -18,7 +19,9 @@ public interface WithdrawalRecordRepository extends JpaRepository<WithdrawalReco
 	@Query("SELECT SUM(wr.points) FROM WithdrawalRecord wr WHERE wr.honey = :honey AND (wr.status = null OR wr.status = 'true')")
 	public Long sumPoinsByHoney(Lover honey);
 
-	public List<WithdrawalRecord> findAllByHoneyOrderByTimestampDesc(Lover honey);
+	public List<WithdrawalRecord> findAllByHoneyAndStatusOrderByTimestampDesc(Lover honey, Boolean status);
 
 	public List<WithdrawalRecord> findAllByOrderByTimestampDesc();
+
+	public WithdrawalRecord findByHistory(History history);
 }

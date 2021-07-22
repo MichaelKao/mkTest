@@ -216,7 +216,6 @@ public class DashboardController {
 		Lover honey = withdrawalRecord.getHoney();
 
 		withdrawalRecord.setStatus(Boolean.FALSE);
-		withdrawalRecord.setFailReason(failReason);
 		withdrawalRecordRepository.saveAndFlush(withdrawalRecord);
 
 		withdrawalRecord.setStatus(Boolean.TRUE);

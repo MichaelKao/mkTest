@@ -75,7 +75,7 @@
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
-								<H5 class="modal-title">審核不通過</H5>
+								<H5 class="modal-title">手持證件</H5>
 							</DIV>
 							<DIV class="modal-body">
 								<IMG alt="identity" src="" style="max-width: 100%;"/>

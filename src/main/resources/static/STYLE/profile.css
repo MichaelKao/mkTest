@@ -10,6 +10,10 @@
 	}
 }
 
+.result IMG {
+	max-width: 100%;
+}
+
 I.font40 {
 	font-size: 40px !important;
 }

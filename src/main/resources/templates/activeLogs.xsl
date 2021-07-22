@@ -129,6 +129,11 @@
 												</xsl:if>
 											</BUTTON>
 										</xsl:if>
+										<xsl:if test="@matched">
+											<A class="btn btn-success px-2 py-1 px-md-3 py-md-2 me-1 openLine" href="{@matched}" type="button">
+												<SPAN>加入好友</SPAN>
+											</A>
+										</xsl:if>
 										<xsl:if test="@rateButton">
 											<BUTTON class="btn btn-warning px-2 py-1 px-md-3 py-md-2 rate" type="button">評價</BUTTON>
 										</xsl:if>

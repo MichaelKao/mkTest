@@ -804,12 +804,18 @@ public class HistoryService {
 						"%s同意給您 LINE",
 						initiativeNickname
 					);
+					if (Objects.nonNull(historyRepository.findByInitiativeAndPassiveAndBehavior(passive, initiative, BEHAVIOR_LAI_KOU_DIAN))) {
+						historyElement.setAttribute(
+							"matched",
+							initiative.getInviteMeAsLineFriend()
+						);
+					}
 					LineGiven lineGiven = lineGivenRepository.findByFemaleAndMale(initiative, passive);
 					if (Objects.nonNull(lineGiven) && lineGiven.getResponse()
 						&& historyRepository.countByInitiativeAndPassiveAndBehaviorAndReplyNotNull(initiative, passive, BEHAVIOR_INVITE_ME_AS_LINE_FRIEND) < 1) {
 						historyElement.setAttribute(
 							"addLineButton",
-							activeLogs.getInitiative().getInviteMeAsLineFriend()
+							null
 						);
 						if (loverService.isVIP(passive) && !withinRequiredLimit(passive)) {
 							historyElement.setAttribute(

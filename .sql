@@ -611,13 +611,34 @@ ADD COLUMN"hui_ying"timestamptz;
 COMMENT ON COLUMN"li_cheng"."hui_ying"IS'回應';
 
 /**
- * 提領失敗
+ * 提領、安心認證結果
  */
 ALTER TYPE"xing_wei" ADD VALUE 'TI_LING_SHI_BAI';
 ALTER TYPE"xing_wei" ADD VALUE 'TI_LING_CHENG_GONG';
 ALTER TYPE"xing_wei" ADD VALUE 'AN_XIN_SHI_BAI';
 ALTER TYPE"xing_wei" ADD VALUE 'AN_XIN_CHENG_GONG';
 
-ALTER TABLE"ti_qu_che_ma_fei"
-ADD COLUMN"li_cheng"int8 NOT NULL REFERENCES"li_cheng"("id")ON UPDATE CASCADE ON DELETE RESTRICT;
-COMMENT ON COLUMN"ti_qu_che_ma_fei"."li_cheng"IS'歷程';
+DROP TABLE"ti_qu_che_ma_fei";
+
+CREATE TABLE"ti_ling"(
+	"id"int8 PRIMARY KEY REFERENCES"li_cheng"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"honey"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"jin_e"int,
+	"zhuang_tai"boolean,
+	"ti_qu_feng_shi" "ti_qu_feng_shi",
+	"shi_chuo"timestamptz
+);
+COMMENT ON TABLE"ti_ling"IS'甜心提取車馬費';
+COMMENT ON COLUMN"ti_ling"."id"IS'主鍵';
+COMMENT ON COLUMN"ti_ling"."honey"IS'甜心';
+COMMENT ON COLUMN"ti_ling"."jin_e"IS'提取金額';
+COMMENT ON COLUMN"ti_ling"."zhuang_tai"IS'狀態';
+COMMENT ON COLUMN"ti_ling"."ti_qu_feng_shi"IS'提取方式';
+COMMENT ON COLUMN"ti_ling"."shi_chuo"IS'時間戳記';
+
+/**
+ * 情人加註冊時戳
+ */
+ALTER TABLE"qing_ren"
+ADD COLUMN"zhu_ce_shi_chuo"timestamptz NOT NULL DEFAULT"now"();
+COMMENT ON COLUMN"qing_ren"."zhu_ce_shi_chuo"IS'註冊時戳';

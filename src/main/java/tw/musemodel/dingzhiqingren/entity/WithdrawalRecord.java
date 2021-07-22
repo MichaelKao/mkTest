@@ -8,15 +8,15 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,7 +30,7 @@ import org.hibernate.annotations.TypeDef;
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(name = "ti_qu_che_ma_fei")
+@Table(name = "ti_ling")
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
 @JsonIdentityInfo(
 	generator = ObjectIdGenerators.PropertyGenerator.class,
@@ -43,9 +43,12 @@ public class WithdrawalRecord implements java.io.Serializable {
 
 	@Basic(optional = false)
 	@Column(nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
-	private Integer id;
+	private Long id;
+
+	@JoinColumn(name = "id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
+	@OneToOne(cascade = CascadeType.ALL, optional = false)
+	private History history;
 
 	@Basic(optional = false)
 	@JoinColumn(name = "honey", nullable = false, referencedColumnName = "id")
@@ -54,7 +57,7 @@ public class WithdrawalRecord implements java.io.Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "jin_e", nullable = false)
-	private Long points;
+	private Short points;
 
 	@Column(name = "zhuang_tai", nullable = false)
 	private Boolean status;
@@ -64,17 +67,9 @@ public class WithdrawalRecord implements java.io.Serializable {
 	@Type(type = "pgsql_enum")
 	private WayOfWithdrawal way;
 
-	@Column(name = "shi_bai_yuan_yin")
-	private String failReason;
-
 	@Column(name = "shi_chuo", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timestamp;
-
-	@Basic(optional = false)
-	@JoinColumn(name = "li_cheng", nullable = false, referencedColumnName = "id")
-	@ManyToOne
-	private History history;
 
 	/**
 	 * 默认构造器
@@ -84,12 +79,11 @@ public class WithdrawalRecord implements java.io.Serializable {
 		timestamp = new Date(System.currentTimeMillis());
 	}
 
-	public WithdrawalRecord(Lover honey, Long points, WayOfWithdrawal way, History history) {
+	public WithdrawalRecord(Lover honey, Short points, WayOfWithdrawal way) {
 		this();
 		this.honey = honey;
 		this.points = points;
 		this.way = way;
-		this.history = history;
 	}
 
 	@Override
@@ -120,15 +114,29 @@ public class WithdrawalRecord implements java.io.Serializable {
 	/**
 	 * @return 主鍵
 	 */
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
 	/**
 	 * @param id 主鍵
 	 */
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
+	}
+
+	/**
+	 * @return 歷程
+	 */
+	public History getHistory() {
+		return history;
+	}
+
+	/**
+	 * @param history 歷程
+	 */
+	public void setHistory(History history) {
+		this.history = history;
 	}
 
 	/**
@@ -148,14 +156,14 @@ public class WithdrawalRecord implements java.io.Serializable {
 	/**
 	 * @return 提領金額
 	 */
-	public Long getPoints() {
+	public Short getPoints() {
 		return points;
 	}
 
 	/**
 	 * @param points 提領金額
 	 */
-	public void setPoints(Long points) {
+	public void setPoints(Short points) {
 		this.points = points;
 	}
 
@@ -199,34 +207,6 @@ public class WithdrawalRecord implements java.io.Serializable {
 	 */
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
-	}
-
-	/**
-	 * @return 失敗原因
-	 */
-	public String getFailReason() {
-		return failReason;
-	}
-
-	/**
-	 * @param failReason 失敗原因
-	 */
-	public void setFailReason(String failReason) {
-		this.failReason = failReason;
-	}
-
-	/**
-	 * @return 歷程
-	 */
-	public History getHistory() {
-		return history;
-	}
-
-	/**
-	 * @param history 歷程
-	 */
-	public void setHistory(History history) {
-		this.history = history;
 	}
 
 	/**

@@ -900,16 +900,6 @@ public class LoverService {
 			loverElement.appendChild(genderElement);
 		}
 
-		if (Objects.nonNull(lover.getRelief())) {
-			Boolean certification = lover.getRelief();
-			Element certificationElement = document.createElement("certification");
-			certificationElement.setAttribute(
-				"certification",
-				certification ? "true" : "false"
-			);
-			loverElement.appendChild(certificationElement);
-		}
-
 		for (Lover.BodyType bodyType : Lover.BodyType.values()) {
 			Element bodyTypeElement = document.createElement("bodyType");
 			bodyTypeElement.setTextContent(
@@ -1153,7 +1143,7 @@ public class LoverService {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 
-		Long leftPoints = honeyLeftPoints(lover);
+		Long leftPoints = honeyLeftPointsBefore7Days(lover);
 		documentElement.setAttribute(
 			"points",
 			leftPoints.toString()
@@ -1180,14 +1170,18 @@ public class LoverService {
 			);
 		}
 
-		for (History history : historyRepository.findByPassiveAndBehaviorOrderByOccurredDesc(lover, BEHAVIOR_FARE)) {
+		documentElement.setAttribute(
+			"before7days",
+			DATE_TIME_FORMATTER.format(
+				servant.toTaipeiZonedDateTime(
+					before7DaysAgo()
+				).withZoneSameInstant(Servant.ASIA_TAIPEI)
+			));
+
+		// 目前可提領的紀錄
+		for (History history : historyRepository.findAll(Specifications.withdrawal(lover))) {
 			Element recordElement = document.createElement("record");
 			documentElement.appendChild(recordElement);
-
-			recordElement.setAttribute(
-				"historyId",
-				history.getId().toString()
-			);
 
 			recordElement.setAttribute(
 				"date",
@@ -1215,9 +1209,84 @@ public class LoverService {
 					locale
 				));
 
+			Short points = Objects.equals(history.getBehavior().name(), "CHE_MA_FEI") ? history.getPoints() : (short) (history.getPoints() / 2);
 			recordElement.setAttribute(
 				"points",
-				Integer.toString(Math.abs(history.getPoints()))
+				Integer.toString(Math.abs(points))
+			);
+		}
+
+		// 等待匯款中的記錄
+		for (WithdrawalRecord withdrawalRecord : withdrawalRecordRepository.findAllByHoneyAndStatusOrderByTimestampDesc(lover, null)) {
+			Element recordElement = document.createElement("withdrawalRecord");
+			documentElement.appendChild(recordElement);
+
+			recordElement.setAttribute(
+				"date",
+				DATE_TIME_FORMATTER.format(
+					servant.toTaipeiZonedDateTime(
+						withdrawalRecord.getHistory().getOccurred()
+					).withZoneSameInstant(Servant.ASIA_TAIPEI)
+				));
+
+			recordElement.setAttribute(
+				"male",
+				withdrawalRecord.getHistory().getInitiative().getNickname()
+			);
+
+			recordElement.setAttribute(
+				"maleId",
+				withdrawalRecord.getHistory().getInitiative().getIdentifier().toString()
+			);
+
+			recordElement.setAttribute(
+				"type",
+				messageSource.getMessage(
+					withdrawalRecord.getHistory().getBehavior().name(),
+					null,
+					locale
+				));
+
+			recordElement.setAttribute(
+				"points",
+				Short.toString(withdrawalRecord.getPoints())
+			);
+		}
+
+		// 提領歷史紀錄
+		for (WithdrawalRecord withdrawalRecord : withdrawalRecordRepository.findAllByHoneyAndStatusOrderByTimestampDesc(lover, true)) {
+			Element recordElement = document.createElement("historyRecord");
+			documentElement.appendChild(recordElement);
+
+			recordElement.setAttribute(
+				"date",
+				DATE_TIME_FORMATTER.format(
+					servant.toTaipeiZonedDateTime(
+						withdrawalRecord.getHistory().getOccurred()
+					).withZoneSameInstant(Servant.ASIA_TAIPEI)
+				));
+
+			recordElement.setAttribute(
+				"male",
+				withdrawalRecord.getHistory().getInitiative().getNickname()
+			);
+
+			recordElement.setAttribute(
+				"maleId",
+				withdrawalRecord.getHistory().getInitiative().getIdentifier().toString()
+			);
+
+			recordElement.setAttribute(
+				"type",
+				messageSource.getMessage(
+					withdrawalRecord.getHistory().getBehavior().name(),
+					null,
+					locale
+				));
+
+			recordElement.setAttribute(
+				"points",
+				Short.toString(withdrawalRecord.getPoints())
 			);
 		}
 
@@ -1236,7 +1305,8 @@ public class LoverService {
 	 * @return
 	 */
 	@Transactional
-	public JSONObject wireTransfer(String wireTransferBankCode, String wireTransferBranchCode, String wireTransferAccountName, String wireTransferAccountNumber, History history, Lover honey, Locale locale) {
+	public JSONObject wireTransfer(String wireTransferBankCode, String wireTransferBranchCode, String wireTransferAccountName,
+		String wireTransferAccountNumber, Lover honey, Locale locale) {
 		if (Objects.isNull(wireTransferAccountName)) {
 			throw new IllegalArgumentException("wireTransfer.accountNameMustntBeNull");
 		}
@@ -1250,9 +1320,14 @@ public class LoverService {
 			throw new IllegalArgumentException("wireTransfer.branchCodeMustntBeNull");
 		}
 
-		Long leftPoints = honeyLeftPoints(honey);
-		WithdrawalRecord withdrawalRecord = new WithdrawalRecord(honey, leftPoints, WayOfWithdrawal.WIRE_TRANSFER, history);
-		withdrawalRecordRepository.saveAndFlush(withdrawalRecord);
+		Long leftPoints = honeyLeftPointsBefore7Days(honey);
+
+		for (History history : historyRepository.findAll(Specifications.withdrawal(honey))) {
+			Short points = Objects.equals(history.getBehavior(), BEHAVIOR_FARE) ? history.getPoints() : (short) (history.getPoints() / 2);
+			WithdrawalRecord withdrawalRecord = new WithdrawalRecord(honey, (short) -points, WayOfWithdrawal.WIRE_TRANSFER);
+			withdrawalRecord.setId(history.getId());
+			withdrawalRecordRepository.saveAndFlush(withdrawalRecord);
+		}
 
 		WithdrawalInfo withdrawalInfo = null;
 		if (withdrawalInfoRepository.countByHoney(honey) > 0) {
@@ -1279,7 +1354,6 @@ public class LoverService {
 				locale
 			)).
 			withResponse(true).
-			withResult(withdrawalRecord.getTimestamp()).
 			toJSONObject();
 	}
 
@@ -1290,15 +1364,32 @@ public class LoverService {
 	 * @return
 	 */
 	@Transactional
-	public Long honeyLeftPoints(Lover honey) {
-		Long sumPoints = historyRepository.sumByPassiveAndBehaviorHearts(honey, BEHAVIOR_FARE);
-		sumPoints = Objects.nonNull(sumPoints) ? -sumPoints : 0;
+	public Long honeyLeftPointsBefore7Days(Lover honey) {
+		List<History> fareList = historyRepository.findByPassiveAndBehaviorAndOccurredBefore(honey, BEHAVIOR_FARE, before7DaysAgo());
+		Long fareSum = 0L;
+		for (History history : fareList) {
+			fareSum += Math.abs(history.getPoints());
+		}
+		List<History> lineList = historyRepository.findByPassiveAndBehaviorAndOccurredBefore(honey, BEHAVIOR_LAI_KOU_DIAN, before7DaysAgo());
+		Long lineSum = 0L;
+		for (History history : lineList) {
+			lineSum += Math.abs(history.getPoints()) / 2;
+		}
 		Long withdrawnPoints = withdrawalRecordRepository.sumPoinsByHoney(honey);
 		withdrawnPoints = Objects.nonNull(withdrawnPoints) ? withdrawnPoints : 0;
 
-		Long leftPoints = sumPoints - withdrawnPoints;
+		Long leftPoints = (fareSum + lineSum) - withdrawnPoints;
 
 		return leftPoints;
+	}
+
+	public Date before7DaysAgo() {
+		Calendar cal = Calendar.getInstance();
+		cal.getTime();
+		cal.add(Calendar.DAY_OF_MONTH, -7);
+		Date sevenDaysAgo = cal.getTime();
+
+		return sevenDaysAgo;
 	}
 
 	/**
