@@ -134,6 +134,24 @@ public class ProofOfConcept {
 	}
 
 	/**
+	 * @return 首頁上的活跃男士區塊
+	 */
+	@GetMapping(path = "/latestActiveFemalesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	Collection<Lover> latestActiveFemalesOnTheWall() {
+		return loverService.latestActiveFemalesOnTheWall();
+	}
+
+	/**
+	 * @return 首頁上的活跃男士區塊
+	 */
+	@GetMapping(path = "/latestActiveMalesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	Collection<Lover> latestActiveMalesOnTheWall() {
+		return loverService.latestActiveMalesOnTheWall();
+	}
+
+	/**
 	 * @return 首頁上的安心男士區塊
 	 */
 	@GetMapping(path = "/malesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)

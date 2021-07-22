@@ -1498,6 +1498,24 @@ public class LoverService {
 	}
 
 	/**
+	 * @return 以活跃排序的甜心们
+	 */
+	public Collection<Lover> latestActiveFemalesOnTheWall() {
+		return loverRepository.findAll(
+			LoverSpecification.latestActiveOnTheWall(false)
+		);
+	}
+
+	/**
+	 * @return 以活跃排序的男士们
+	 */
+	public Collection<Lover> latestActiveMalesOnTheWall() {
+		return loverRepository.findAll(
+			LoverSpecification.latestActiveOnTheWall(true)
+		);
+	}
+
+	/**
 	 * @return 通过安心认证的甜心们
 	 */
 	public Collection<Lover> femalesOnTheWall() {

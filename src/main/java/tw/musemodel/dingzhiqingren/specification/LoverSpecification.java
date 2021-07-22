@@ -79,6 +79,31 @@ public class LoverSpecification {
 	 * @param gender 性别
 	 * @return 未封号的(甜心|男士)们
 	 */
+	public static Specification<Lover> latestActiveOnTheWall(boolean gender) {
+		return (root, criteriaQuery, criteriaBuilder) -> {
+			criteriaQuery.orderBy(
+				criteriaBuilder.desc(
+					root.get(Lover_.active)
+				)
+			);//以活跃降幂排序
+			return criteriaBuilder.and(
+				criteriaBuilder.isNull(
+					root.get(Lover_.delete)
+				),//未封号
+				criteriaBuilder.equal(
+					root.get(Lover_.gender),
+					gender
+				)//性别
+			);
+		};
+	}
+
+	/**
+	 * 未封号并通过安心认证的情人们，以活跃降幂排序；适用于首页。
+	 *
+	 * @param gender 性别
+	 * @return 未封号的(甜心|男士)们
+	 */
 	public static Specification<Lover> relievingOnTheWall(boolean gender) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
 			criteriaQuery.orderBy(
