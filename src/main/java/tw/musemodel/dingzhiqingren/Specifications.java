@@ -65,6 +65,7 @@ public class Specifications {
 	}
 
 	/**
+	 * 甜心目前可以提領的紀錄
 	 *
 	 * @param passive
 	 * @return
@@ -89,9 +90,15 @@ public class Specifications {
 				)
 			);
 			predicates.add(
-				criteriaBuilder.equal(
-					historyRoot.get("behavior"),
-					Behavior.LAI_KOU_DIAN
+				criteriaBuilder.and(
+					criteriaBuilder.equal(
+						historyRoot.get("behavior"),
+						Behavior.LAI_KOU_DIAN
+					),
+					criteriaBuilder.equal(
+						historyRoot.get("points"),
+						-100
+					)
 				)
 			);
 

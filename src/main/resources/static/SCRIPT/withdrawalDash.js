@@ -1,19 +1,13 @@
 $(document).ready(function () {
 
-	var id;
-
-	$('BUTTON.failReasonBtn').click(function () {
-		var reason = $(this).closest('LI').find('DIV.failReasonHidden').text();
-		$('DIV.reason').text(reason);
-	});
-
 	$('BUTTON.success').click(function () {
 		let button = this;
-		id = $(button).closest('UL').find('INPUT[name="id"]').val();
 		$.post(
-			'/dashboard/success.json',
+			'/dashboard/withdrawalSuccess.json',
 			{
-				id: id
+				identifier: $(button).siblings('INPUT[name="identifier"]').val(),
+				status: $(button).siblings('INPUT[name="status"]').val(),
+				timestamp: $(button).siblings('INPUT[name="timestamp"]').val()
 			},
 			function (data) {
 				if (data.response) {
@@ -31,17 +25,13 @@ $(document).ready(function () {
 	});
 
 	$('BUTTON.fail').click(function () {
-		id = $(this).closest('UL').find('INPUT[name="id"]').val();
-	});
-
-	$('FORM.failForm').submit(function (event) {
-		event.preventDefault();
-		let form = this;
+		let button = this;
 		$.post(
-			$(form).attr('action'),
+			'/dashboard/withdrawalFail.json',
 			{
-				failReason: $('TEXTAREA[name="failReason"]').val(),
-				id: id
+				identifier: $(button).siblings('INPUT[name="identifier"]').val(),
+				status: $(button).siblings('INPUT[name="status"]').val(),
+				timestamp: $(button).siblings('INPUT[name="timestamp"]').val()
 			},
 			function (data) {
 				if (data.response) {

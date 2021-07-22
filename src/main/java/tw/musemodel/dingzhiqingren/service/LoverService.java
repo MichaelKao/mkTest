@@ -71,6 +71,7 @@ import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
 import tw.musemodel.dingzhiqingren.event.SignedUpEvent;
 import tw.musemodel.dingzhiqingren.model.Activated;
+import tw.musemodel.dingzhiqingren.model.EachWithdrawal;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.SignUp;
 import tw.musemodel.dingzhiqingren.repository.ActivationRepository;
@@ -1215,78 +1216,78 @@ public class LoverService {
 			);
 		}
 
-		// 等待匯款中的記錄
-		for (WithdrawalRecord withdrawalRecord : withdrawalRecordRepository.findAllByHoneyAndStatusOrderByTimestampDesc(lover, null)) {
-			Element recordElement = document.createElement("withdrawalRecord");
-			documentElement.appendChild(recordElement);
-
-			recordElement.setAttribute(
-				"date",
-				DATE_TIME_FORMATTER.format(
-					servant.toTaipeiZonedDateTime(
-						withdrawalRecord.getHistory().getOccurred()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI)
-				));
-
-			recordElement.setAttribute(
-				"male",
-				withdrawalRecord.getHistory().getInitiative().getNickname()
-			);
-
-			recordElement.setAttribute(
-				"maleId",
-				withdrawalRecord.getHistory().getInitiative().getIdentifier().toString()
-			);
-
-			recordElement.setAttribute(
-				"type",
-				messageSource.getMessage(
-					withdrawalRecord.getHistory().getBehavior().name(),
-					null,
-					locale
-				));
-
-			recordElement.setAttribute(
-				"points",
-				Short.toString(withdrawalRecord.getPoints())
-			);
-		}
-
-		// 提領歷史紀錄
-		for (WithdrawalRecord withdrawalRecord : withdrawalRecordRepository.findAllByHoneyAndStatusOrderByTimestampDesc(lover, true)) {
+		// 等待匯款中的記錄、提領歷史紀錄
+		for (EachWithdrawal eachWithdrawal : withdrawalRecordRepository.findHoneyAllGroupByHoneyAndStatusAndWayAndTimeStamp(lover)) {
 			Element recordElement = document.createElement("historyRecord");
 			documentElement.appendChild(recordElement);
 
+			Lover honey = eachWithdrawal.getHoney();
+
+			recordElement.setAttribute(
+				"way",
+				messageSource.getMessage(
+					eachWithdrawal.getWay().name(),
+					null,
+					locale
+				)
+			);
+
+			Date timestamp = eachWithdrawal.getTimestamp();
 			recordElement.setAttribute(
 				"date",
 				DATE_TIME_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
-						withdrawalRecord.getHistory().getOccurred()
+						timestamp
 					).withZoneSameInstant(Servant.ASIA_TAIPEI)
 				));
 
 			recordElement.setAttribute(
-				"male",
-				withdrawalRecord.getHistory().getInitiative().getNickname()
-			);
-
-			recordElement.setAttribute(
-				"maleId",
-				withdrawalRecord.getHistory().getInitiative().getIdentifier().toString()
-			);
-
-			recordElement.setAttribute(
-				"type",
-				messageSource.getMessage(
-					withdrawalRecord.getHistory().getBehavior().name(),
-					null,
-					locale
-				));
-
-			recordElement.setAttribute(
 				"points",
-				Short.toString(withdrawalRecord.getPoints())
+				eachWithdrawal.getPoints().toString()
 			);
+
+			Boolean status = eachWithdrawal.getStatus();
+			recordElement.setAttribute(
+				"status",
+				status.toString()
+			);
+
+			for (WithdrawalRecord withdrawalRecord
+				: withdrawalRecordRepository.findByHoneyAndStatusAndTimestamp(honey, status, timestamp)) {
+				Element historyElement = document.createElement("history");
+				recordElement.appendChild(historyElement);
+				historyElement.setAttribute(
+					"date",
+					DATE_TIME_FORMATTER.format(
+						servant.toTaipeiZonedDateTime(
+							withdrawalRecord.getHistory().getOccurred()
+						).withZoneSameInstant(Servant.ASIA_TAIPEI)
+					));
+
+				historyElement.setAttribute(
+					"male",
+					withdrawalRecord.getHistory().getInitiative().getNickname()
+				);
+
+				historyElement.setAttribute(
+					"maleId",
+					withdrawalRecord.getHistory().getInitiative().getIdentifier().toString()
+				);
+
+				historyElement.setAttribute(
+					"type",
+					messageSource.getMessage(
+						withdrawalRecord.getHistory().getBehavior().name(),
+						null,
+						locale
+					));
+
+				historyElement.setAttribute(
+					"points",
+					Short.toString(withdrawalRecord.getPoints())
+				);
+
+			}
 		}
 
 		return document;
@@ -1306,24 +1307,24 @@ public class LoverService {
 	@Transactional
 	public JSONObject wireTransfer(String wireTransferBankCode, String wireTransferBranchCode, String wireTransferAccountName,
 		String wireTransferAccountNumber, Lover honey, Locale locale) {
-		if (Objects.isNull(wireTransferAccountName)) {
+		if (wireTransferAccountName.isBlank() || wireTransferAccountName.isEmpty()) {
 			throw new IllegalArgumentException("wireTransfer.accountNameMustntBeNull");
 		}
-		if (Objects.isNull(wireTransferAccountNumber)) {
+		if (wireTransferAccountNumber.isBlank() || wireTransferAccountNumber.isEmpty()) {
 			throw new IllegalArgumentException("wireTransfer.accountNumberMustntBeNull");
 		}
-		if (Objects.isNull(wireTransferBankCode)) {
+		if (wireTransferBankCode.isBlank() || wireTransferBankCode.isEmpty()) {
 			throw new IllegalArgumentException("wireTransfer.bankCodeMustntBeNull");
 		}
-		if (Objects.isNull(wireTransferBranchCode)) {
+		if (wireTransferBranchCode.isBlank() || wireTransferBranchCode.isEmpty()) {
 			throw new IllegalArgumentException("wireTransfer.branchCodeMustntBeNull");
 		}
 
 		Long leftPoints = honeyLeftPointsBefore7Days(honey);
-
+		Date current = new Date(System.currentTimeMillis());
 		for (History history : historyRepository.findAll(Specifications.withdrawal(honey))) {
 			Short points = Objects.equals(history.getBehavior(), BEHAVIOR_FARE) ? history.getPoints() : (short) (history.getPoints() / 2);
-			WithdrawalRecord withdrawalRecord = new WithdrawalRecord(honey, (short) -points, WayOfWithdrawal.WIRE_TRANSFER);
+			WithdrawalRecord withdrawalRecord = new WithdrawalRecord(honey, (short) -points, WayOfWithdrawal.WIRE_TRANSFER, current);
 			withdrawalRecord.setId(history.getId());
 			withdrawalRecordRepository.saveAndFlush(withdrawalRecord);
 		}

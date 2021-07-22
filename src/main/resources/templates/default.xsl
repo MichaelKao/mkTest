@@ -102,7 +102,7 @@
 										<DIV class="dropdown-menu dropdown-menu-animation p-3 border-radius-lg mt-0 mt-lg-3">
 											<DIV class="d-none d-lg-block">
 												<A class="dropdown-item border-radius-md" href="/dashboard/withdrawal.asp">
-													<SPAN>甜心車馬費紀錄</SPAN>
+													<SPAN>甜心提領紀錄</SPAN>
 												</A>
 												<A class="dropdown-item border-radius-md" href="/dashboard/certification.asp">
 													<SPAN>安心認證審核</SPAN>
@@ -110,7 +110,7 @@
 											</DIV>
 											<DIV class="d-lg-none">
 												<A class="dropdown-item border-radius-md" href="/dashboard/withdrawal.asp">
-													<SPAN>甜心車馬費紀錄</SPAN>
+													<SPAN>甜心提領紀錄</SPAN>
 												</A>
 												<A class="dropdown-item border-radius-md" href="/dashboard/certification.asp">
 													<SPAN>安心認證審核</SPAN>

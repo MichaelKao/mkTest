@@ -56,6 +56,7 @@ import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
 import tw.musemodel.dingzhiqingren.repository.PlanRepository;
+import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 import tw.musemodel.dingzhiqingren.service.AmazonWebServices;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
@@ -101,6 +102,9 @@ public class WelcomeController {
 
 	@Autowired
 	private LineGivenRepository lineGivenRepository;
+
+	@Autowired
+	private WithdrawalRecordRepository withdrawalRecordRepository;
 
 	/**
 	 * 首页

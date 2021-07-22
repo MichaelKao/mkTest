@@ -1,7 +1,10 @@
 package tw.musemodel.dingzhiqingren.controller;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import javax.xml.parsers.ParserConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,10 +151,11 @@ public class DashboardController {
 	 * @param locale
 	 * @return
 	 */
-	@PostMapping(path = "/success.json")
+	@PostMapping(path = "/withdrawalSuccess.json")
 	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	@ResponseBody
-	String success(@RequestParam("id") WithdrawalRecord withdrawalRecord, Authentication authentication, Locale locale) {
+	String success(@RequestParam UUID identifier, @RequestParam Boolean status,
+		@RequestParam Long timestamp, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -162,25 +166,35 @@ public class DashboardController {
 		);
 
 		// 甜心
-		Lover honey = withdrawalRecord.getHoney();
+		Lover honey = loverService.loadByIdentifier(identifier);
 
-		withdrawalRecord.setStatus(Boolean.TRUE);
-		withdrawalRecordRepository.saveAndFlush(withdrawalRecord);
+		Date current = new Date(timestamp);
+		List<WithdrawalRecord> withdrawalRecords
+			= withdrawalRecordRepository.findByHoneyAndStatusAndTimestamp(honey, status, current);
+
+		int totalPoints = 0;
+		for (WithdrawalRecord withdrawalRecord : withdrawalRecords) {
+			totalPoints += withdrawalRecord.getPoints();
+			withdrawalRecord.setStatus(Boolean.TRUE);
+			withdrawalRecordRepository.save(withdrawalRecord);
+		}
+
+		withdrawalRecordRepository.flush();
 
 		History history = new History(
 			me,
 			honey,
 			History.Behavior.TI_LING_CHENG_GONG
 		);
-		history.setGreeting(withdrawalRecord.getPoints().toString());
-		history = historyRepository.saveAndFlush(history);
+		history.setGreeting(Integer.toString(totalPoints));
+		historyRepository.saveAndFlush(history);
 
 		// 推送通知給甜心
 		webSocketServer.sendNotification(
 			honey.getIdentifier().toString(),
 			String.format(
 				"您提領的車馬費 %d 已匯款成功!",
-				withdrawalRecord.getPoints()
+				totalPoints
 			));
 
 		return new JavaScriptObjectNotation().
@@ -198,11 +212,11 @@ public class DashboardController {
 	 * @param locale
 	 * @return
 	 */
-	@PostMapping(path = "/fail.json")
+	@PostMapping(path = "/withdrawalFail.json")
 	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	@ResponseBody
-	String fail(@RequestParam("id") WithdrawalRecord withdrawalRecord, @RequestParam String failReason,
-		Authentication authentication, Locale locale) {
+	String fail(@RequestParam UUID identifier, @RequestParam Boolean status,
+		@RequestParam Long timestamp, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -213,28 +227,24 @@ public class DashboardController {
 		);
 
 		// 甜心
-		Lover honey = withdrawalRecord.getHoney();
+		Lover honey = loverService.loadByIdentifier(identifier);
+		Date current = new Date(timestamp);
+		withdrawalRecordRepository.deleteByHoneyAndStatusAndTimestamp(honey, status, current);
 
-		withdrawalRecord.setStatus(Boolean.FALSE);
-		withdrawalRecordRepository.saveAndFlush(withdrawalRecord);
-
-		withdrawalRecord.setStatus(Boolean.TRUE);
-		withdrawalRecordRepository.saveAndFlush(withdrawalRecord);
+		withdrawalRecordRepository.flush();
 
 		History history = new History(
 			me,
 			honey,
 			History.Behavior.TI_LING_SHI_BAI
 		);
-		history.setGreeting(failReason);
-		history = historyRepository.saveAndFlush(history);
+		historyRepository.saveAndFlush(history);
 
 		// 推送通知給甜心
 		webSocketServer.sendNotification(
 			honey.getIdentifier().toString(),
 			String.format(
-				"您提領的車馬費 %d 失敗!",
-				withdrawalRecord.getPoints()
+				"您欲提領的車馬費失敗!"
 			));
 
 		return new JavaScriptObjectNotation().

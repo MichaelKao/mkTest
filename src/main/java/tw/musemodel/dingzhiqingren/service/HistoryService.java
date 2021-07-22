@@ -959,8 +959,7 @@ public class HistoryService {
 				profileImage = passiveProfileImage;
 				identifier = passiveIdentifier;
 				message = String.format(
-					"您欲提領的車馬費失敗，原因：%s",
-					activeLogs.getGreeting()
+					"您欲提領的車馬費失敗，請重新提領。"
 				);
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_SUCCESS) {
