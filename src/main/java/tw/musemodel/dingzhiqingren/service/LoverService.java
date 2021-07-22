@@ -88,6 +88,7 @@ import tw.musemodel.dingzhiqingren.repository.UserRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
+import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
 /**
  * 服务层：情人
@@ -1495,5 +1496,59 @@ public class LoverService {
 			behaviors.add(BEHAVIOR_WITHDRAWAL_SUCCESS);
 		}
 		return behaviors;
+	}
+
+	/**
+	 * @return 通过安心认证的甜心们
+	 */
+	public Collection<Lover> femalesOnTheWall() {
+		return loverRepository.findAll(
+			LoverSpecification.relievingOnTheWall(false)
+		);
+	}
+
+	/**
+	 * @return 以活跃排序的甜心们
+	 */
+	public Collection<Lover> latestActiveFemalesOnTheWall() {
+		return loverRepository.findAll(
+			LoverSpecification.latestActiveOnTheWall(false)
+		);
+	}
+
+	/**
+	 * @return 以活跃排序的男士们
+	 */
+	public Collection<Lover> latestActiveMalesOnTheWall() {
+		return loverRepository.findAll(
+			LoverSpecification.latestActiveOnTheWall(true)
+		);
+	}
+
+	/**
+	 * @return 以註冊时间排序的甜心们
+	 */
+	public Collection<Lover> latestRegisteredFemalesOnTheWall() {
+		return loverRepository.findAll(
+			LoverSpecification.latestRegisteredOnTheWall(false)
+		);
+	}
+
+	/**
+	 * @return 以註冊时间排序的男士们
+	 */
+	public Collection<Lover> latestRegisteredMalesOnTheWall() {
+		return loverRepository.findAll(
+			LoverSpecification.latestRegisteredOnTheWall(true)
+		);
+	}
+
+	/**
+	 * @return 通过安心认证的男士们
+	 */
+	public Collection<Lover> malesOnTheWall() {
+		return loverRepository.findAll(
+			LoverSpecification.relievingOnTheWall(true)
+		);
 	}
 }

@@ -642,3 +642,27 @@ COMMENT ON COLUMN"ti_ling"."shi_chuo"IS'時間戳記';
 ALTER TABLE"qing_ren"
 ADD COLUMN"zhu_ce_shi_chuo"timestamptz NOT NULL DEFAULT"now"();
 COMMENT ON COLUMN"qing_ren"."zhu_ce_shi_chuo"IS'註冊時戳';
+
+CREATE OR REPLACE VIEW"首页的贵宾们"AS
+SELECT*
+FROM"qing_ren"
+WHERE"shan_chu"IS NULL--未封号
+AND"xing_bie"='true'--男士
+AND"dao_qi">"now"()--贵宾有效期须在目前之后
+ORDER BY"huo_yue"DESC;--以活跃降幂排序
+
+CREATE OR REPLACE VIEW"首页的安心甜心们"AS
+SELECT*
+FROM"qing_ren"
+WHERE"shan_chu"IS NULL--未封号
+AND"xing_bie"='false'--甜心
+AND"an_xin"='true'--通过安心认证
+ORDER BY"huo_yue"DESC;--以活跃降幂排序
+
+CREATE OR REPLACE VIEW"首页的安心男士们"AS
+SELECT*
+FROM"qing_ren"
+WHERE"shan_chu"IS NULL--未封号
+AND"xing_bie"='true'--男士
+AND"an_xin"='true'--通过安心认证
+ORDER BY"huo_yue"DESC;--以活跃降幂排序

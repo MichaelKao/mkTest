@@ -338,7 +338,7 @@ public class Lover implements java.io.Serializable {
 	 */
 	@Column(name = "zhu_ce_shi_chuo")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date signUp;
+	private Date registered;
 
 	/**
 	 * 默认构造器
@@ -919,15 +919,15 @@ public class Lover implements java.io.Serializable {
 	/**
 	 * @return 註冊時戳
 	 */
-	public Date getSignUp() {
-		return signUp;
+	public Date getRegistered() {
+		return registered;
 	}
 
 	/**
-	 * @param signUp 註冊時戳
+	 * @param registered 註冊時戳
 	 */
-	public void setSignUp(Date signUp) {
-		this.signUp = signUp;
+	public void setRegistered(Date registered) {
+		this.registered = registered;
 	}
 
 	/**
