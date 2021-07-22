@@ -1498,6 +1498,15 @@ public class LoverService {
 	}
 
 	/**
+	 * @return 通过安心认证的甜心们
+	 */
+	public Collection<Lover> femalesOnTheWall() {
+		return loverRepository.findAll(
+			LoverSpecification.relievingOnTheWall(false)
+		);
+	}
+
+	/**
 	 * @return 以活跃排序的甜心们
 	 */
 	public Collection<Lover> latestActiveFemalesOnTheWall() {
@@ -1516,11 +1525,20 @@ public class LoverService {
 	}
 
 	/**
-	 * @return 通过安心认证的甜心们
+	 * @return 以註冊时间排序的甜心们
 	 */
-	public Collection<Lover> femalesOnTheWall() {
+	public Collection<Lover> latestRegisteredFemalesOnTheWall() {
 		return loverRepository.findAll(
-			LoverSpecification.relievingOnTheWall(false)
+			LoverSpecification.latestRegisteredOnTheWall(false)
+		);
+	}
+
+	/**
+	 * @return 以註冊时间排序的男士们
+	 */
+	public Collection<Lover> latestRegisteredMalesOnTheWall() {
+		return loverRepository.findAll(
+			LoverSpecification.latestRegisteredOnTheWall(true)
 		);
 	}
 

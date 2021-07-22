@@ -134,7 +134,7 @@ public class ProofOfConcept {
 	}
 
 	/**
-	 * @return 首頁上的活跃男士區塊
+	 * @return 首頁上的甜心活跃區塊
 	 */
 	@GetMapping(path = "/latestActiveFemalesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -143,12 +143,30 @@ public class ProofOfConcept {
 	}
 
 	/**
-	 * @return 首頁上的活跃男士區塊
+	 * @return 首頁上的男士活跃區塊
 	 */
 	@GetMapping(path = "/latestActiveMalesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	Collection<Lover> latestActiveMalesOnTheWall() {
 		return loverService.latestActiveMalesOnTheWall();
+	}
+
+	/**
+	 * @return 首頁上的甜心註冊时间區塊
+	 */
+	@GetMapping(path = "/latestRegisteredFemalesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	Collection<Lover> latestRegisteredFemalesOnTheWall() {
+		return loverService.latestRegisteredFemalesOnTheWall();
+	}
+
+	/**
+	 * @return 首頁上的男士註冊时间區塊
+	 */
+	@GetMapping(path = "/latestRegisteredMalesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	Collection<Lover> latestRegisteredMalesOnTheWall() {
+		return loverService.latestRegisteredMalesOnTheWall();
 	}
 
 	/**
