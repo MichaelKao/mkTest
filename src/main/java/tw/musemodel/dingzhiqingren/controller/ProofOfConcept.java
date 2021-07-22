@@ -13,10 +13,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +28,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
-import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
+import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
@@ -69,6 +66,9 @@ public class ProofOfConcept {
 
 	@Autowired
 	private LoverRepository loverRepository;
+
+	@Autowired
+	private LoverService loverService;
 
 	@PostMapping(path = "/upload")
 	@ResponseBody
@@ -124,20 +124,32 @@ public class ProofOfConcept {
 		);
 	}
 
-	@GetMapping(path = "/area.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	/**
+	 * @return 首頁上的安心甜心區塊
+	 */
+	@GetMapping(path = "/femalesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	Set<Lover> area(@RequestParam List<Location> locations) {
-		List<Lover> lovers = new ArrayList<>();
-		for (Location location : locations) {
-			lovers.addAll(
-				loverRepository.findAll(
-					LoverSpecification.appearedAreas(
-						true,
-						location
-					)
-				)
-			);
-		}
-		return new HashSet<>(lovers);
+	Collection<Lover> femalesOnTheWall() {
+		return loverService.femalesOnTheWall();
+	}
+
+	/**
+	 * @return 首頁上的安心男士區塊
+	 */
+	@GetMapping(path = "/malesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	Collection<Lover> malesOnTheWall() {
+		return loverService.malesOnTheWall();
+	}
+
+	/**
+	 * @return 首頁上的貴賓區塊
+	 */
+	@GetMapping(path = "/vipOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	Collection<Lover> vipOnTheWall() {
+		return loverRepository.findAll(
+			LoverSpecification.vipOnTheWall()
+		);
 	}
 }

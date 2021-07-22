@@ -140,7 +140,7 @@ public class DashboardService {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 
-		for (Lover lover : loverRepository.findAllByCertification(Boolean.FALSE)) {
+		for (Lover lover : loverRepository.findAllByRelief(Boolean.FALSE)) {
 			Element loverElement = document.createElement("lover");
 			documentElement.appendChild(loverElement);
 

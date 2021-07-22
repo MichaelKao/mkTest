@@ -340,7 +340,7 @@ public class DashboardController {
 			authentication.getName()
 		);
 
-		lover.setCertification(Boolean.TRUE);
+		lover.setRelief(Boolean.TRUE);
 		loverRepository.saveAndFlush(lover);
 
 		History history = new History(
@@ -398,7 +398,7 @@ public class DashboardController {
 				"您申請的安心認證失敗!"
 			));
 
-		lover.setCertification(null);
+		lover.setRelief(null);
 		loverRepository.saveAndFlush(lover);
 
 		return new JavaScriptObjectNotation().

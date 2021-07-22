@@ -87,6 +87,7 @@ import tw.musemodel.dingzhiqingren.repository.UserRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
+import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
 /**
  * 服务层：情人
@@ -588,8 +589,8 @@ public class LoverService {
 			loverElement.setAttribute("vip", null);
 		}
 
-		if (Objects.nonNull(lover.getCertification())) {
-			Boolean certification = lover.getCertification();
+		if (Objects.nonNull(lover.getRelief())) {
+			Boolean certification = lover.getRelief();
 			loverElement.setAttribute(
 				"certification",
 				certification ? "true" : "false"
@@ -899,8 +900,8 @@ public class LoverService {
 			loverElement.appendChild(genderElement);
 		}
 
-		if (Objects.nonNull(lover.getCertification())) {
-			Boolean certification = lover.getCertification();
+		if (Objects.nonNull(lover.getRelief())) {
+			Boolean certification = lover.getRelief();
 			Element certificationElement = document.createElement("certification");
 			certificationElement.setAttribute(
 				"certification",
@@ -1235,8 +1236,7 @@ public class LoverService {
 	 * @return
 	 */
 	@Transactional
-	public JSONObject wireTransfer(String wireTransferBankCode, String wireTransferBranchCode, String wireTransferAccountName,
-		String wireTransferAccountNumber, History history, Lover honey, Locale locale) {
+	public JSONObject wireTransfer(String wireTransferBankCode, String wireTransferBranchCode, String wireTransferAccountName, String wireTransferAccountNumber, History history, Lover honey, Locale locale) {
 		if (Objects.isNull(wireTransferAccountName)) {
 			throw new IllegalArgumentException("wireTransfer.accountNameMustntBeNull");
 		}
@@ -1404,5 +1404,23 @@ public class LoverService {
 			behaviors.add(BEHAVIOR_WITHDRAWAL_SUCCESS);
 		}
 		return behaviors;
+	}
+
+	/**
+	 * @return 通过安心认证的甜心们
+	 */
+	public Collection<Lover> femalesOnTheWall() {
+		return loverRepository.findAll(
+			LoverSpecification.relievingOnTheWall(false)
+		);
+	}
+
+	/**
+	 * @return 通过安心认证的男士们
+	 */
+	public Collection<Lover> malesOnTheWall() {
+		return loverRepository.findAll(
+			LoverSpecification.relievingOnTheWall(true)
+		);
 	}
 }
