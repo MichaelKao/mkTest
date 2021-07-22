@@ -666,3 +666,21 @@ WHERE"shan_chu"IS NULL--未封号
 AND"xing_bie"='true'--男士
 AND"an_xin"='true'--通过安心认证
 ORDER BY"huo_yue"DESC;--以活跃降幂排序
+
+/**
+ * 情人的相處關係列舉
+ */
+CREATE TYPE"xiang_chu_guan_xi"AS ENUM(
+	'CHANG_QI',
+	'DUAN_QI',
+	'CHANG_DUAN_JIE_KE',
+	'DAN_CI_YUE_HUI'
+);
+COMMENT ON TYPE"xiang_chu_guan_xi"IS'相處關係';
+
+/**
+ * 情人的相處關係欄位
+ */
+ALTER TABLE"qing_ren"
+ADD COLUMN"xiang_chu_guan_xi" "xiang_chu_guan_xi";
+COMMENT ON COLUMN"qing_ren"."xiang_chu_guan_xi"IS'相處關係';

@@ -211,6 +211,19 @@
 							</xsl:for-each>
 						</SELECT>
 					</DIV>
+					<DIV class="form-group">
+						<LABEL for="relationship">相處關係</LABEL>
+						<SELECT class="form-control" id="relationship" name="relationship">
+							<xsl:for-each select="relationship">
+								<OPTION value="{@relationshipEnum}">
+									<xsl:if test="@relationshipSelected">
+										<xsl:attribute name="selected"/>
+									</xsl:if>
+									<xsl:value-of select="."/>
+								</OPTION>
+							</xsl:for-each>
+						</SELECT>
+					</DIV>
 					<xsl:if test="gender/@gender = 'male'">
 						<DIV class="form-group">
 							<LABEL for="annualIncome">年收入</LABEL>

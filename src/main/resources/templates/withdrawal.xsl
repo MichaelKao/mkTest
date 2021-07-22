@@ -131,10 +131,10 @@
 				<DIV class="accordion" id="accordionRental2">
 					<DIV class="accordion-item mb-3">
 						<DIV class="accordion-collapse collapse show" data-bs-parent="#accordionRental2" id="collapseOne">
-							<DIV class="accordion-body text-sm opacity-8 p-0 mt-3">
+							<DIV class="accordion-body text-sm opacity-8 p-0 mt-3 col-md-8 mx-auto">
 								<DIV class="card p-3">
 									<DIV class="d-flex justify-content-center align-items-baseline">
-										<DIV class="text-bold text-primary">目前可提領的總車馬費：<xsl:value-of select="@points"/></DIV>
+										<DIV class="text-bold text-primary">目前可提領的總費用：<xsl:value-of select="@points"/></DIV>
 										<xsl:if test="(@points &gt; 0)">
 											<BUTTON class="btn btn-block btn-dark m-0 p-1 withdrawal ms-1" data-bs-toggle="modal" data-bs-target="#exampleModalLong" type="button">提領</BUTTON>
 										</xsl:if>
@@ -183,99 +183,154 @@
 								</DIV>
 								<DIV class="card p-3 mt-3">
 									<DIV class="text-center text-primary h4">等待中</DIV>
-									<TABLE class="table align-items-center mb-0">
-										<THEAD>
-											<TR>
-												<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
-												<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
-												<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
-												<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
-											</TR>
-										</THEAD>
-										<TBODY>
-											<xsl:for-each select="withdrawalRecord">
-												<TR>
-													<TD class="text-sm text-center">
-														<SPAN class="text-xs font-weight-bold">
+									<UL class="list-group">
+										<xsl:for-each select="historyRecord">
+											<xsl:if test="@status = 'false'">
+												<LI class="list-group-item border-0 d-flex p-3 mb-2 bg-gray-100 border-radius-lg">
+													<DIV class="text-sm h6 m-0">
+														<SPAN>
+															<xsl:value-of select="@way"/>
+														</SPAN>
+														<SPAN class="text-dark font-weight-bold ms-1 text-xs">
 															<xsl:value-of select="@date"/>
 														</SPAN>
-													</TD>
-													<TD class="text-sm text-center">
-														<A class="text-secondary text-xs font-weight-bold" href="/profile/{@maleId}/">
-															<xsl:value-of select="@male"/>
-														</A>
-													</TD>
-													<TD class="text-sm text-center">
-														<SPAN class="text-secondary text-xs font-weight-bold">
-															<xsl:value-of select="@type"/>
-														</SPAN>
-													</TD>
-													<TD class="text-sm text-center">
-														<SPAN class="text-secondary text-xs font-weight-bold">
-															<xsl:value-of select="@points"/>
-														</SPAN>
-													</TD>
-												</TR>
-											</xsl:for-each>
-										</TBODY>
-									</TABLE>
+
+													</DIV>
+													<DIV class="ms-auto d-flex align-items-center">
+														<DIV>
+															<SPAN class="text-xs">金額：</SPAN>
+															<SPAN class="text-dark font-weight-bold text-sm">
+																<xsl:value-of select="@points"/>
+															</SPAN>
+														</DIV>
+														<BUTTON class="btn btn-info p-1 mb-0 ms-1 details" data-bs-toggle="collapse" data-bs-target="#success{position()}" type="button">
+															<I class="fas fa-eye me-1"></I>
+															<SPAN>明細</SPAN>
+														</BUTTON>
+													</DIV>
+												</LI>
+												<DIV class="collapse border-radius-lg" id="success{position()}">
+													<LI class="list-group-item border-0 d-flex p-2 p-md-3 mb-2 bg-gray-100">
+														<TABLE class="table align-items-center mb-0">
+															<THEAD>
+																<TR>
+																	<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
+																	<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
+																	<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
+																	<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
+																</TR>
+															</THEAD>
+															<TBODY>
+																<xsl:for-each select="history">
+																	<TR>
+																		<TD class="text-sm text-center">
+																			<SPAN class="text-xs font-weight-bold">
+																				<xsl:value-of select="@date"/>
+																			</SPAN>
+																		</TD>
+																		<TD class="text-sm text-center">
+																			<A class="text-secondary text-xs font-weight-bold" href="/profile/{@maleId}/">
+																				<xsl:value-of select="@male"/>
+																			</A>
+																		</TD>
+																		<TD class="text-sm text-center">
+																			<SPAN class="text-secondary text-xs font-weight-bold">
+																				<xsl:value-of select="@type"/>
+																			</SPAN>
+																		</TD>
+																		<TD class="text-sm text-center">
+																			<SPAN class="text-secondary text-xs font-weight-bold">
+																				<xsl:value-of select="@points"/>
+																			</SPAN>
+																		</TD>
+																	</TR>
+																</xsl:for-each>
+															</TBODY>
+														</TABLE>
+													</LI>
+												</DIV>
+											</xsl:if>
+										</xsl:for-each>
+									</UL>
 								</DIV>
 							</DIV>
 						</DIV>
 					</DIV>
 					<DIV class="accordion-item mb-3">
 						<DIV class="accordion-collapse collapse" data-bs-parent="#accordionRental2" id="collapseTwo">
-							<DIV class="accordion-body text-sm opacity-8 p-0">
+							<DIV class="accordion-body text-sm opacity-8 p-0 col-md-8 mx-auto">
 								<DIV class="text-center">
 									<H4 class="text-gradient text-primary">歷史紀錄</H4>
 								</DIV>
-								<TABLE class="table align-items-center mb-0">
-									<THEAD>
-										<TR>
-											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
-											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
-											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
-											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
-										</TR>
-									</THEAD>
-									<TBODY>
-										<xsl:for-each select="historyRecord">
-											<TR>
-												<TD class="text-sm text-center">
-													<SPAN class="text-xs font-weight-bold">
+								<UL class="list-group">
+									<xsl:for-each select="historyRecord">
+										<xsl:if test="@status = 'true'">
+											<LI class="list-group-item border-0 d-flex p-3 mb-2 bg-gray-100 border-radius-lg">
+												<DIV class="text-sm h6 m-0">
+													<SPAN>
+														<xsl:value-of select="@way"/>
+													</SPAN>
+													<SPAN class="text-dark font-weight-bold ms-1 text-xs">
 														<xsl:value-of select="@date"/>
 													</SPAN>
-												</TD>
-												<TD class="text-sm text-center">
-													<A class="text-secondary text-xs font-weight-bold" href="/profile/{@maleId}/">
-														<xsl:value-of select="@male"/>
-													</A>
-												</TD>
-												<TD class="text-sm text-center">
-													<SPAN class="text-secondary text-xs font-weight-bold">
-														<xsl:value-of select="@type"/>
-													</SPAN>
-												</TD>
-												<TD class="text-sm text-center">
-													<SPAN class="text-secondary text-xs font-weight-bold">
-														<xsl:value-of select="@points"/>
-													</SPAN>
-													<!--											<xsl:choose>
-														<xsl:when test="@status = 'true'">
-															<SPAN class="badge bg-gradient-success">已完成</SPAN>
-														</xsl:when>
-														<xsl:when test="@status = 'false'">
-															<SPAN class="badge bg-gradient-warning">審核失敗</SPAN>
-														</xsl:when>
-														<xsl:otherwise>
-															<SPAN class="badge bg-gradient-info">等待中</SPAN>
-														</xsl:otherwise>
-													</xsl:choose>-->
-												</TD>
-											</TR>
-										</xsl:for-each>
-									</TBODY>
-								</TABLE>
+
+												</DIV>
+												<DIV class="ms-auto d-flex align-items-center">
+													<DIV>
+														<SPAN class="text-xs">金額：</SPAN>
+														<SPAN class="text-dark font-weight-bold text-sm">
+															<xsl:value-of select="@points"/>
+														</SPAN>
+													</DIV>
+													<BUTTON class="btn btn-info p-1 mb-0 ms-1" data-bs-toggle="collapse" data-bs-target="#success{position()}" type="button">
+														<I class="fas fa-eye me-1"></I>
+														<SPAN>明細</SPAN>
+													</BUTTON>
+												</DIV>
+											</LI>
+											<DIV class="collapse border-radius-lg" id="success{position()}">
+												<LI class="list-group-item border-0 d-flex p-2 p-md-3 mb-2 bg-gray-100">
+													<TABLE class="table align-items-center mb-0">
+														<THEAD>
+															<TR>
+																<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
+																<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
+																<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
+																<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
+															</TR>
+														</THEAD>
+														<TBODY>
+															<xsl:for-each select="history">
+																<TR>
+																	<TD class="text-sm text-center">
+																		<SPAN class="text-xs font-weight-bold">
+																			<xsl:value-of select="@date"/>
+																		</SPAN>
+																	</TD>
+																	<TD class="text-sm text-center">
+																		<A class="text-secondary text-xs font-weight-bold" href="/profile/{@maleId}/">
+																			<xsl:value-of select="@male"/>
+																		</A>
+																	</TD>
+																	<TD class="text-sm text-center">
+																		<SPAN class="text-secondary text-xs font-weight-bold">
+																			<xsl:value-of select="@type"/>
+																		</SPAN>
+																	</TD>
+																	<TD class="text-sm text-center">
+																		<SPAN class="text-secondary text-xs font-weight-bold">
+																			<xsl:value-of select="@points"/>
+																		</SPAN>
+																	</TD>
+																</TR>
+															</xsl:for-each>
+														</TBODY>
+													</TABLE>
+												</LI>
+											</DIV>
+										</xsl:if>
+									</xsl:for-each>
+								</UL>
 							</DIV>
 						</DIV>
 					</DIV>

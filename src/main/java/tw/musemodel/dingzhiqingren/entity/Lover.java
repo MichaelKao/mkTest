@@ -341,6 +341,14 @@ public class Lover implements java.io.Serializable {
 	private Date registered;
 
 	/**
+	 * 相處關係
+	 */
+	@Column(name = "xiang_chu_guan_xi")
+	@Enumerated(EnumType.STRING)
+	@Type(type = "pgsql_enum")
+	private Relationship relationship;
+
+	/**
 	 * 默认构造器
 	 */
 	public Lover() {
@@ -931,6 +939,20 @@ public class Lover implements java.io.Serializable {
 	}
 
 	/**
+	 * @return 相處關係
+	 */
+	public Relationship getRelationship() {
+		return relationship;
+	}
+
+	/**
+	 * @param relationship 相處關係
+	 */
+	public void setRelationship(Relationship relationship) {
+		this.relationship = relationship;
+	}
+
+	/**
 	 * 体型
 	 *
 	 * @author m@musemodel.tw
@@ -1037,6 +1059,28 @@ public class Lover implements java.io.Serializable {
 		private int index;
 
 		private Drinking(String label, int index) {
+			this.label = label;
+			this.index = index;
+		}
+	}
+
+	/**
+	 * 相處關係
+	 *
+	 * @author m@musemodel.tw
+	 */
+	public enum Relationship {
+
+		CHANG_QI("長期", 1),
+		DUAN_QI("短期", 2),
+		CHANG_DUAN_JIE_KE("長短皆可", 3),
+		DAN_CI_YUE_HUI("單次約會", 4);
+
+		private String label;
+
+		private int index;
+
+		private Relationship(String label, int index) {
 			this.label = label;
 			this.index = index;
 		}

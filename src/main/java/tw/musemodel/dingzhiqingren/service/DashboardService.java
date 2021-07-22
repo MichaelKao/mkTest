@@ -2,6 +2,7 @@ package tw.musemodel.dingzhiqingren.service;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,6 +18,7 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalInfo;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
+import tw.musemodel.dingzhiqingren.model.EachWithdrawal;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
@@ -59,37 +61,40 @@ public class DashboardService {
 		Element recordsElement = document.createElement("records");
 		documentElement.appendChild(recordsElement);
 
-		for (WithdrawalRecord withdrawalRecord : withdrawalRecordRepository.findAllByOrderByTimestampDesc()) {
+		for (EachWithdrawal eachWithdrawal : withdrawalRecordRepository.findAllGroupByHoneyAndStatusAndWayAndTimeStamp()) {
 			Element recordElement = document.createElement("record");
 			recordsElement.appendChild(recordElement);
 
-			recordElement.setAttribute(
-				"id",
-				withdrawalRecord.getId().toString()
-			);
-
+			Lover honey = eachWithdrawal.getHoney();
 			recordElement.setAttribute(
 				"identifier",
-				withdrawalRecord.getHoney().getIdentifier().toString()
+				honey.getIdentifier().toString()
 			);
 
 			recordElement.setAttribute(
 				"name",
-				withdrawalRecord.getHoney().getNickname()
+				honey.getNickname()
 			);
 
 			recordElement.setAttribute(
 				"date",
 				DATE_TIME_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
-						withdrawalRecord.getTimestamp()
+						eachWithdrawal.getTimestamp()
 					).withZoneSameInstant(Servant.ASIA_TAIPEI)
 				));
 
-			if (Objects.isNull(withdrawalRecord.getStatus()) && Objects.equals(withdrawalRecord.getWay(), WayOfWithdrawal.WIRE_TRANSFER)) {
+			Date timestamp = eachWithdrawal.getTimestamp();
+			long epoch = timestamp.getTime();
+			recordElement.setAttribute(
+				"timestamp",
+				Long.toString(epoch)
+			);
+
+			if (!eachWithdrawal.getStatus() && Objects.equals(eachWithdrawal.getWay(), WayOfWithdrawal.WIRE_TRANSFER)) {
 				Element wireTransferElement = document.createElement("wireTransfer");
 				recordElement.appendChild(wireTransferElement);
-				WithdrawalInfo withdrawalInfo = withdrawalInfoRepository.findByHoney(withdrawalRecord.getHoney());
+				WithdrawalInfo withdrawalInfo = withdrawalInfoRepository.findByHoney(eachWithdrawal.getHoney());
 				wireTransferElement.setAttribute(
 					"bankCode",
 					withdrawalInfo.getWireTransferBankCode()
@@ -108,28 +113,57 @@ public class DashboardService {
 				);
 			}
 
-			if (Objects.equals(withdrawalRecord.getWay(), WayOfWithdrawal.PAYPAL)) {
+			if (Objects.equals(eachWithdrawal.getWay(), WayOfWithdrawal.PAYPAL)) {
 				Element paypalElement = document.createElement("paypal");
 				recordElement.appendChild(paypalElement);
 			}
 
-			if (Objects.nonNull(withdrawalRecord.getStatus()) && !withdrawalRecord.getStatus()) {
-				recordElement.setAttribute(
-					"failReason",
-					null
-				);
-			}
-
 			recordElement.setAttribute(
 				"points",
-				withdrawalRecord.getPoints().toString()
+				eachWithdrawal.getPoints().toString()
 			);
 
-			if (Objects.nonNull(withdrawalRecord.getStatus())) {
-				recordElement.setAttribute(
-					"status",
-					withdrawalRecord.getStatus().toString()
+			Boolean status = eachWithdrawal.getStatus();
+			recordElement.setAttribute(
+				"status",
+				status.toString()
+			);
+
+			for (WithdrawalRecord withdrawalRecord
+				: withdrawalRecordRepository.findByHoneyAndStatusAndTimestamp(honey, status, timestamp)) {
+				Element historyElement = document.createElement("history");
+				recordElement.appendChild(historyElement);
+				historyElement.setAttribute(
+					"date",
+					DATE_TIME_FORMATTER.format(
+						servant.toTaipeiZonedDateTime(
+							withdrawalRecord.getHistory().getOccurred()
+						).withZoneSameInstant(Servant.ASIA_TAIPEI)
+					));
+
+				historyElement.setAttribute(
+					"male",
+					withdrawalRecord.getHistory().getInitiative().getNickname()
 				);
+
+				historyElement.setAttribute(
+					"maleId",
+					withdrawalRecord.getHistory().getInitiative().getIdentifier().toString()
+				);
+
+				historyElement.setAttribute(
+					"type",
+					messageSource.getMessage(
+						withdrawalRecord.getHistory().getBehavior().name(),
+						null,
+						locale
+					));
+
+				historyElement.setAttribute(
+					"points",
+					Short.toString(withdrawalRecord.getPoints())
+				);
+
 			}
 		}
 		return document;

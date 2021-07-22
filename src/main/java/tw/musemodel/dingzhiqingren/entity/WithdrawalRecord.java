@@ -75,15 +75,15 @@ public class WithdrawalRecord implements java.io.Serializable {
 	 * 默认构造器
 	 */
 	public WithdrawalRecord() {
-		status = null;
-		timestamp = new Date(System.currentTimeMillis());
+		status = false;
 	}
 
-	public WithdrawalRecord(Lover honey, Short points, WayOfWithdrawal way) {
+	public WithdrawalRecord(Lover honey, Short points, WayOfWithdrawal way, Date timestamp) {
 		this();
 		this.honey = honey;
 		this.points = points;
 		this.way = way;
+		this.timestamp = timestamp;
 	}
 
 	@Override
