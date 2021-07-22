@@ -766,6 +766,17 @@ public class LoverService {
 			loverElement.appendChild(drinkingElement);
 		}
 
+		if (Objects.nonNull(lover.getRelationship())) {
+			Element relationshipElement = document.createElement("relationship");
+			relationshipElement.setTextContent(
+				messageSource.getMessage(
+					lover.getRelationship().toString(),
+					null,
+					locale
+				));
+			loverElement.appendChild(relationshipElement);
+		}
+
 		if (lover.getGender() && Objects.nonNull(lover.getAnnualIncome())) {
 			Element annualIncomeElement = document.createElement("annualIncome");
 			AnnualIncome annualIncome = lover.getAnnualIncome();
@@ -994,6 +1005,25 @@ public class LoverService {
 				);
 			}
 			loverElement.appendChild(drinkingElement);
+		}
+
+		for (Lover.Relationship relationship : Lover.Relationship.values()) {
+			Element relationshipElement = document.createElement("relationship");
+			relationshipElement.setTextContent(
+				messageSource.getMessage(
+					relationship.toString(),
+					null,
+					locale
+				));
+			relationshipElement.setAttribute(
+				"relationshipEnum", relationship.toString()
+			);
+			if (Objects.equals(lover.getRelationship(), relationship)) {
+				relationshipElement.setAttribute(
+					"relationshipSelected", ""
+				);
+			}
+			loverElement.appendChild(relationshipElement);
 		}
 
 		for (Location location : locationRepository.findAll()) {

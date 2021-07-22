@@ -388,6 +388,12 @@
 					<xsl:value-of select="drinking"/>
 				</SPAN>
 			</DIV>
+			<DIV class="mb-2">
+				<SPAN class="font-weight-bold text-lg">相處關係：</SPAN>
+				<SPAN>
+					<xsl:value-of select="relationship"/>
+				</SPAN>
+			</DIV>
 			<xsl:if test="gender/@gender = 'female'">
 				<DIV class="mb-2">
 					<SPAN class="font-weight-bold text-lg">期望零用金：</SPAN>

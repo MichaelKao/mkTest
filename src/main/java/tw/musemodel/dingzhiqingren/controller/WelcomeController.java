@@ -1160,6 +1160,10 @@ public class WelcomeController {
 			me.setDrinking(model.getDrinking());
 		}
 
+		if (Objects.nonNull(model.getRelationship())) {
+			me.setRelationship(model.getRelationship());
+		}
+
 		if (Objects.nonNull(model.getAnnualIncome())) {
 			me.setAnnualIncome(model.getAnnualIncome());
 		}
