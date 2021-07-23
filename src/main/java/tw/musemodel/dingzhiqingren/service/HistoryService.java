@@ -229,7 +229,7 @@ public class HistoryService {
 		if (Objects.isNull(greetingMessage) || greetingMessage.isBlank()) { //招呼語不能為空
 			throw new RuntimeException("gimmeYourLineInvitation.greetingMessageMustntBeNull");
 		}
-		LineGiven lineGiven = lineGivenRepository.findByFemaleAndMale(passive, initiative);
+		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(passive, initiative);
 		if (Objects.isNull(lineGiven)) {
 			//第一次
 			lineGivenRepository.saveAndFlush(
@@ -810,7 +810,7 @@ public class HistoryService {
 							initiative.getInviteMeAsLineFriend()
 						);
 					}
-					LineGiven lineGiven = lineGivenRepository.findByFemaleAndMale(initiative, passive);
+					LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(initiative, passive);
 					if (Objects.nonNull(lineGiven) && lineGiven.getResponse()
 						&& historyRepository.countByInitiativeAndPassiveAndBehaviorAndReplyNotNull(initiative, passive, BEHAVIOR_INVITE_ME_AS_LINE_FRIEND) < 1) {
 						historyElement.setAttribute(
@@ -875,7 +875,7 @@ public class HistoryService {
 						initiativeNickname,
 						activeLogs.getGreeting()
 					);
-					LineGiven lineGiven = lineGivenRepository.findByFemaleAndMale(initiative, passive);
+					LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(initiative, passive);
 					if (Objects.isNull(lineGiven) || (Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse())) {
 						historyElement.setAttribute(
 							"requestLineButton",

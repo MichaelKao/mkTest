@@ -38,12 +38,12 @@ public class LineGiven implements java.io.Serializable {
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "nu_sheng", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
 	@MapsId("femaleId")
-	private Lover female;
+	private Lover girl;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "nan_sheng", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
 	@MapsId("maleId")
-	private Lover male;
+	private Lover guy;
 
 	public LineGiven() {
 	}
@@ -114,28 +114,28 @@ public class LineGiven implements java.io.Serializable {
 	/**
 	 * @return 女生
 	 */
-	public Lover getFemale() {
-		return female;
+	public Lover getGirl() {
+		return girl;
 	}
 
 	/**
-	 * @param female 女生
+	 * @param girl 女生
 	 */
-	public void setFemale(Lover female) {
-		this.female = female;
+	public void setGirl(Lover girl) {
+		this.girl = girl;
 	}
 
 	/**
 	 * @return 男生
 	 */
-	public Lover getMale() {
-		return male;
+	public Lover getGuy() {
+		return guy;
 	}
 
 	/**
-	 * @param male 男生
+	 * @param guy 男生
 	 */
-	public void setMale(Lover male) {
-		this.male = male;
+	public void setGuy(Lover guy) {
+		this.guy = guy;
 	}
 }
