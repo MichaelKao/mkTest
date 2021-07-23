@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -495,6 +496,7 @@ public class LoverService {
 		lover.setAboutMe("嗨，我正在尋找對象");
 		lover.setIdealConditions("找合得來的人");
 		lover.setGreeting("嗨！我想認識你！");
+		lover.setRegistered(new Date(System.currentTimeMillis()));
 		lover = loverRepository.saveAndFlush(lover);
 
 		applicationEventPublisher.publishEvent(new SignedUpEvent(
@@ -1353,7 +1355,6 @@ public class LoverService {
 			throw new IllegalArgumentException("wireTransfer.branchCodeMustntBeNull");
 		}
 
-		Long leftPoints = honeyLeftPointsBefore7Days(honey);
 		Date current = new Date(System.currentTimeMillis());
 		for (History history : historyRepository.findAll(Specifications.withdrawal(honey))) {
 			Short points = Objects.equals(history.getBehavior(), BEHAVIOR_FARE) ? history.getPoints() : (short) (history.getPoints() / 2);
@@ -1531,6 +1532,140 @@ public class LoverService {
 	}
 
 	/**
+	 * 首頁的列表 document
+	 *
+	 * @param document
+	 * @param lover
+	 * @return
+	 */
+	public Document indexDocument(Document document, Lover lover) {
+		Element documentElement = document.getDocumentElement();
+		Element areaElement = document.createElement("area");
+		documentElement.appendChild(areaElement);
+
+		// 確認性別
+		Boolean isMale = lover.getGender();
+
+		// 貴賓會員
+		Element vipElement = document.createElement("vip");
+		// 安心認證
+		Element reliefElement = document.createElement("relief");
+		// 最新活躍
+		Element activeElement = document.createElement("active");
+		// 最近註冊
+		Element registerElement = document.createElement("register");
+
+		// 男仕顯示的列表
+		if (isMale) {
+			// 通過安心認證的甜心
+			reliefElement = indexElement(document, reliefElement, femalesOnTheWall(0, 3));
+			areaElement.appendChild(reliefElement);
+			// 最新活躍(使用)時間
+			activeElement = indexElement(document, activeElement, latestActiveFemalesOnTheWall(0, 3));
+			areaElement.appendChild(activeElement);
+			// 最近註冊
+			registerElement = indexElement(document, registerElement, latestRegisteredFemalesOnTheWall(0, 3));
+			areaElement.appendChild(registerElement);
+		}
+		// 甜心顯示的列表
+		if (!isMale) {
+			// 貴賓會員的男仕
+			vipElement = indexElement(document, vipElement, vipOnTheWall(0, 3));
+			areaElement.appendChild(vipElement);
+			// 通過安心認證的男仕
+			reliefElement = indexElement(document, reliefElement, malesOnTheWall(0, 3));
+			areaElement.appendChild(reliefElement);
+			// 最新活躍(使用)時間
+			activeElement = indexElement(document, activeElement, latestActiveMalesOnTheWall(0, 3));
+			areaElement.appendChild(activeElement);
+			// 最近註冊
+			registerElement = indexElement(document, registerElement, latestRegisteredMalesOnTheWall(0, 3));
+			areaElement.appendChild(registerElement);
+		}
+		return document;
+	}
+
+	/**
+	 * 首頁的列表 Element
+	 *
+	 * @param document
+	 * @param element
+	 * @param list
+	 * @return
+	 */
+	public Element indexElement(Document document, Element element, Page<Lover> page) {
+		if (page.getTotalPages() <= 1) {
+			element.setAttribute("lastPage", null);
+		}
+		for (Lover lover : page.getContent()) {
+			Element sectionElement = document.createElement("section");
+			element.appendChild(sectionElement);
+			if (Objects.nonNull(lover.getNickname())) {
+				Element nicknameElement = document.createElement("nickname");
+				nicknameElement.setTextContent(lover.getNickname());
+				sectionElement.appendChild(nicknameElement);
+			}
+			if (isVIP(lover)) {
+				sectionElement.setAttribute("vip", null);
+			}
+			if (Objects.nonNull(lover.getRelief())) {
+				Boolean relief = lover.getRelief();
+				sectionElement.setAttribute(
+					"relief",
+					relief ? "true" : "false"
+				);
+			}
+			Element ageElement = document.createElement("age");
+			ageElement.setTextContent(calculateAge(lover).toString());
+			sectionElement.appendChild(ageElement);
+
+			Element identifierElement = document.createElement("identifier");
+			identifierElement.setTextContent(lover.getIdentifier().toString());
+			sectionElement.appendChild(identifierElement);
+
+			Element profileImageElement = document.createElement("profileImage");
+			profileImageElement.setTextContent(
+				String.format(
+					"https://%s/profileImage/%s",
+					Servant.STATIC_HOST,
+					lover.getProfileImage()
+				)
+			);
+			sectionElement.appendChild(profileImageElement);
+		}
+		return element;
+	}
+
+	/**
+	 * 看更多甜心/男仕
+	 *
+	 * @param page
+	 * @return
+	 */
+	public JSONArray seeMore(Page<Lover> page) {
+		JSONArray jSONArray = new JSONArray();
+		for (Lover lover : page.getContent()) {
+			JSONObject json = new JSONObject();
+			json.put("nickname", lover.getNickname());
+			if (isVIP(lover)) {
+				json.put("vip", true);
+			}
+			if (Objects.nonNull(lover.getRelief()) && lover.getRelief()) {
+				json.put("relief", true);
+			}
+			json.put("age", calculateAge(lover));
+			json.put("identifier", lover.getIdentifier());
+			json.put("profileImage", String.format(
+				"https://%s/profileImage/%s",
+				Servant.STATIC_HOST,
+				lover.getProfileImage()
+			));
+			jSONArray.put(json);
+		}
+		return jSONArray;
+	}
+
+	/**
 	 * @param p 第几页
 	 * @param s 每页几笔
 	 * @return 通过安心认证的甜心们
@@ -1605,7 +1740,7 @@ public class LoverService {
 	/**
 	 * @param p 第几页
 	 * @param s 每页几笔
-	 * @return 通过安心认证的男士们
+	 * @return 貴賓男士们
 	 */
 	public Page<Lover> vipOnTheWall(int p, int s) {
 		return loverRepository.findAll(

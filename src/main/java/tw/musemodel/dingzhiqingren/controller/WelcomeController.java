@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -18,11 +17,13 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -165,13 +166,8 @@ public class WelcomeController {
 				);
 			}
 
-			List<Lover> lovers = new ArrayList<Lover>();
-			if (gender) {
-				lovers = loverRepository.findAllByGender(false);// 顯示在首頁的甜心
-			}
-			if (!gender) {
-				lovers = loverRepository.findAllByGender(true);// 顯示在首頁的男士
-			}
+			// 登入後的甜心或男仕列表
+			document = loverService.indexDocument(document, me);
 
 			// 通知數
 			if (loverService.annoucementCount(me) > 0) {
@@ -179,49 +175,6 @@ public class WelcomeController {
 					"announcement",
 					Integer.toString(loverService.annoucementCount(me))
 				);
-			}
-
-			for (Lover lover : lovers) {
-				Element loverElement = document.createElement("lover");
-				documentElement.appendChild(loverElement);
-
-				if (Objects.nonNull(lover.getNickname())) {
-					Element nicknameElement = document.createElement("nickname");
-					nicknameElement.setTextContent(lover.getNickname());
-					loverElement.appendChild(nicknameElement);
-				}
-
-				if (Objects.nonNull(lover.getBirthday())) {
-					Element ageElement = document.createElement("age");
-					ageElement.setTextContent(loverService.calculateAge(lover).toString());
-					loverElement.appendChild(ageElement);
-				}
-
-				if (!gender && loverService.isVIP(lover)) {
-					loverElement.setAttribute("vip", null);
-				}
-
-				if (Objects.nonNull(lover.getRelief())) {
-					Boolean certification = lover.getRelief();
-					loverElement.setAttribute(
-						"certification",
-						certification ? "true" : "false"
-					);
-				}
-
-				Element identifierElement = document.createElement("identifier");
-				identifierElement.setTextContent(lover.getIdentifier().toString());
-				loverElement.appendChild(identifierElement);
-
-				Element profileImageElement = document.createElement("profileImage");
-				profileImageElement.setTextContent(
-					String.format(
-						"https://%s/profileImage/%s",
-						Servant.STATIC_HOST,
-						lover.getProfileImage()
-					)
-				);
-				loverElement.appendChild(profileImageElement);
 			}
 		}
 
@@ -232,6 +185,55 @@ public class WelcomeController {
 			addAttribute(messageSource);
 		LOGGER.debug("首頁\n\n{}", modelAndView);
 		return modelAndView;
+	}
+
+	@PostMapping(path = "/seeMoreLover.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
+	String seeMoreLover(Authentication authentication, @RequestParam int p, @RequestParam String type) throws JsonProcessingException {
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Boolean isMale = me.getGender();
+
+		Page<Lover> page = null;
+		if (isMale) {
+			if ("relief".equals(type)) {
+				page = loverService.femalesOnTheWall(p, 3);
+			}
+			if ("active".equals(type)) {
+				page = loverService.latestActiveFemalesOnTheWall(p, 3);
+			}
+			if ("register".equals(type)) {
+				page = loverService.latestRegisteredFemalesOnTheWall(p, 3);
+			}
+		}
+		if (!isMale) {
+			if ("vip".equals(type)) {
+				page = loverService.vipOnTheWall(p, 3);
+			}
+			if ("relief".equals(type)) {
+				page = loverService.malesOnTheWall(p, 3);
+			}
+			if ("active".equals(type)) {
+				page = loverService.latestActiveMalesOnTheWall(p, 3);
+			}
+			if ("register".equals(type)) {
+				page = loverService.latestRegisteredMalesOnTheWall(p, 3);
+			}
+		}
+		JSONArray jSONArray = loverService.seeMore(page);
+		JSONObject jSONObject = new JSONObject();
+
+		if (page.getTotalPages() == p + 1) {
+			jSONObject.put("lastPage", true);
+		}
+
+		return jSONObject.put("response", true).
+			put("result", jSONArray).
+			toString();
 	}
 
 	/**

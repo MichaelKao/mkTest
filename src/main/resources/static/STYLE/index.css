@@ -25,3 +25,12 @@
 	left: 22px;
 	z-index: -1;
 }
+
+SECTION.fixed-bottom, UL.mobileMode A:first-child {
+	border-radius: 30px;
+}
+
+UL.mobileMode A.active {
+	background: #CB0C9F;
+	color: #E9ECEF;
+}

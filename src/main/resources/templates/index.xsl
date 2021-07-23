@@ -137,48 +137,196 @@
 				</SECTION>
 			</xsl:if>
 			<xsl:if test="@signIn">
-				<DIV class="container py-7 px-0">
-					<H3 class="text-primary text-center">
-						<xsl:if test="@male">所有甜心</xsl:if>
-						<xsl:if test="@female">所有男仕</xsl:if>
-					</H3>
-					<DIV class="my-3 text-center">
-						<IMG class="border-radius-md" src="/accept.svg" width="25"/>
-						<SPAN class="text-sm text-info text-bold ms-1">已通過本人安心認證</SPAN>
-					</DIV>
-					<DIV class="card col-11 col-md-8 mx-auto">
-						<DIV class="d-flex flex-wrap justify-content-center">
-							<xsl:for-each select="lover">
-								<A class="position-relative m-2" href="/profile/{identifier}/">
-									<IMG class="border-radius-md" src="{profileImage}" width="155"/>
-									<DIV class="position-absolute top-0 right-0 text-center" style="width: 25px;">
-										<xsl:if test="@vip">
-											<IMG class="border-radius-md" src="/vip.svg" width="25"/>
-										</xsl:if>
-										<xsl:if test="@certification = 'true'">
-											<IMG class="border-radius-md" src="/accept.svg" width="25"/>
-										</xsl:if>
-									</DIV>
-									<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
-										<SPAN class="bg-dark opacity-6 border-radius-md px-1">
-											<SPAN>
-												<xsl:value-of select="nickname"/>
-											</SPAN>
-											<SPAN class="ms-2">
-												<xsl:value-of select="age"/>
-											</SPAN>
-										</SPAN>
-									</DIV>
-								</A>
-							</xsl:for-each>
-						</DIV>
-					</DIV>
+				<DIV class="container px-0 px-md-3 py-7">
+					<INPUT name="gender" type="hidden">
+						<xsl:if test="@male">
+							<xsl:attribute name="value">male</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="@female">
+							<xsl:attribute name="value">female</xsl:attribute>
+						</xsl:if>
+					</INPUT>
+					<xsl:apply-templates select="area"/>
 				</DIV>
 			</xsl:if>
 			<xsl:call-template name="bodyScriptTags"/>
+			<SCRIPT src="/SCRIPT/index.js"/>
 			<xsl:if test="@signIn">
 				<SCRIPT src="/SCRIPT/websocket.js"/>
 			</xsl:if>
 		</BODY>
+	</xsl:template>
+	<xsl:template match="area">
+		<xsl:if test="vip">
+			<ARTICLE class="col-md-8 border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
+				<DIV class="d-flex m-2 align-items-center">
+					<DIV class="badge bg-gradient-primary text-lg m-2">貴賓會員</DIV>
+					<xsl:if test="not(vip/@lastPage)">
+						<BUTTON class="ms-auto btn btn-link text-lg seeMoreBtn" data-type="vip" data-page="0">看更多<I class="far fa-angle-double-right ms-1"></I></BUTTON>
+					</xsl:if>
+				</DIV>
+				<DIV class="d-flex flex-wrap justify-content-start mx-2 vip">
+					<xsl:for-each select="vip/section">
+						<A class="position-relative m-1" href="/profile/{identifier}/">
+							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
+							<DIV class="position-absolute top-0 right-0 text-center" style="width: 25px;">
+								<xsl:if test="@vip">
+									<IMG class="border-radius-md" src="/vip.svg" width="25"/>
+								</xsl:if>
+								<xsl:if test="@relief = 'true'">
+									<IMG class="border-radius-md" src="/accept.svg" width="25"/>
+								</xsl:if>
+							</DIV>
+							<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
+								<SPAN class="bg-dark opacity-6 border-radius-md px-1">
+									<SPAN>
+										<xsl:value-of select="nickname"/>
+									</SPAN>
+									<SPAN class="ms-2">
+										<xsl:value-of select="age"/>
+									</SPAN>
+								</SPAN>
+							</DIV>
+						</A>
+					</xsl:for-each>
+				</DIV>
+			</ARTICLE>
+		</xsl:if>
+		<xsl:if test="relief">
+			<ARTICLE class="col-md-8 border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
+				<DIV class="d-flex m-2 align-items-center">
+					<DIV class="badge bg-gradient-primary text-lg m-2">通過安心認證</DIV>
+					<xsl:if test="not(relief/@lastPage)">
+						<BUTTON class="ms-auto btn btn-link text-lg seeMoreBtn" data-type="relief" data-page="0">看更多<I class="far fa-angle-double-right ms-1"></I></BUTTON>
+					</xsl:if>
+				</DIV>
+				<DIV class="d-flex flex-wrap justify-content-start mx-2 relief">
+					<xsl:for-each select="relief/section">
+						<A class="position-relative m-1" href="/profile/{identifier}/">
+							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
+							<DIV class="position-absolute top-0 right-0 text-center" style="width: 25px;">
+								<xsl:if test="@vip">
+									<IMG class="border-radius-md" src="/vip.svg" width="25"/>
+								</xsl:if>
+								<xsl:if test="@relief = 'true'">
+									<IMG class="border-radius-md" src="/accept.svg" width="25"/>
+								</xsl:if>
+							</DIV>
+							<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
+								<SPAN class="bg-dark opacity-6 border-radius-md px-1">
+									<SPAN>
+										<xsl:value-of select="nickname"/>
+									</SPAN>
+									<SPAN class="ms-2">
+										<xsl:value-of select="age"/>
+									</SPAN>
+								</SPAN>
+							</DIV>
+						</A>
+					</xsl:for-each>
+				</DIV>
+			</ARTICLE>
+		</xsl:if>
+		<xsl:if test="active">
+			<ARTICLE class="col-md-8 border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
+				<DIV class="d-flex m-2 align-items-center">
+					<DIV class="badge bg-gradient-primary text-lg m-2">最近活躍</DIV>
+					<xsl:if test="not(active/@lastPage)">
+						<BUTTON class="ms-auto btn btn-link text-lg seeMoreBtn" data-type="active" data-page="0">看更多<I class="far fa-angle-double-right ms-1"></I></BUTTON>
+					</xsl:if>
+				</DIV>
+				<DIV class="d-flex flex-wrap justify-content-start mx-2 active">
+					<xsl:for-each select="active/section">
+						<A class="position-relative m-1" href="/profile/{identifier}/">
+							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
+							<DIV class="position-absolute top-0 right-0 text-center" style="width: 25px;">
+								<xsl:if test="@vip">
+									<IMG class="border-radius-md" src="/vip.svg" width="25"/>
+								</xsl:if>
+								<xsl:if test="@relief = 'true'">
+									<IMG class="border-radius-md" src="/accept.svg" width="25"/>
+								</xsl:if>
+							</DIV>
+							<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
+								<SPAN class="bg-dark opacity-6 border-radius-md px-1">
+									<SPAN>
+										<xsl:value-of select="nickname"/>
+									</SPAN>
+									<SPAN class="ms-2">
+										<xsl:value-of select="age"/>
+									</SPAN>
+								</SPAN>
+							</DIV>
+						</A>
+					</xsl:for-each>
+				</DIV>
+			</ARTICLE>
+		</xsl:if>
+		<xsl:if test="register">
+			<ARTICLE class="col-md-8 border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
+				<DIV class="d-flex m-2 align-items-center">
+					<DIV class="badge bg-gradient-primary text-lg">最新註冊</DIV>
+					<xsl:if test="not(register/@lastPage)">
+						<BUTTON class="ms-auto btn btn-link text-lg seeMoreBtn" data-type="register" data-page="0">看更多<I class="far fa-angle-double-right ms-1"></I></BUTTON>
+					</xsl:if>
+				</DIV>
+				<DIV class="d-flex flex-wrap justify-content-start mx-2 register">
+					<xsl:for-each select="register/section">
+						<A class="position-relative m-1" href="/profile/{identifier}/">
+							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
+							<DIV class="position-absolute top-0 right-0 text-center" style="width: 25px;">
+								<xsl:if test="@vip">
+									<IMG class="border-radius-md" src="/vip.svg" width="25"/>
+								</xsl:if>
+								<xsl:if test="@relief = 'true'">
+									<IMG class="border-radius-md" src="/accept.svg" width="25"/>
+								</xsl:if>
+							</DIV>
+							<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
+								<SPAN class="bg-dark opacity-6 border-radius-md px-1">
+									<SPAN>
+										<xsl:value-of select="nickname"/>
+									</SPAN>
+									<SPAN class="ms-2">
+										<xsl:value-of select="age"/>
+									</SPAN>
+								</SPAN>
+							</DIV>
+						</A>
+					</xsl:for-each>
+				</DIV>
+			</ARTICLE>
+		</xsl:if>
+		<ARTICLE class="d-block d-md-none text-center">
+			<DIV class="d-flex flex-wrap justify-content-center mobileMode"></DIV>
+			<BUTTON class="btn btn-link text-lg seeMoreBtn" id="mobileMode"  data-page="0">看更多<I class="far fa-angle-double-right ms-1"></I></BUTTON>
+		</ARTICLE>
+		<SECTION class="fixed-bottom d-block d-md-none bg-light border-top m-2">
+			<UL class="navbar-nav flex-row mobileMode">
+				<xsl:if test="vip">
+					<LI class="nav-item col-3 text-center">
+						<A class="nav-link cursor-pointer vipA mobileModeA" data-type="vip">VIP</A>
+					</LI>
+				</xsl:if>
+				<LI class="nav-item col-4 text-center">
+					<xsl:if test="vip">
+						<xsl:attribute name="class">nav-item col-3 text-center</xsl:attribute>
+					</xsl:if>
+					<A class="nav-link cursor-pointer reliefA mobileModeA" data-type="relief">安心</A>
+				</LI>
+				<LI class="nav-item col-4 text-center">
+					<xsl:if test="vip">
+						<xsl:attribute name="class">nav-item col-3 text-center</xsl:attribute>
+					</xsl:if>
+					<A class="nav-link cursor-pointer mobileModeA" data-type="active">活躍</A>
+				</LI>
+				<LI class="nav-item col-4 text-center">
+					<xsl:if test="vip">
+						<xsl:attribute name="class">nav-item col-3 text-center</xsl:attribute>
+					</xsl:if>
+					<A class="nav-link cursor-pointer mobileModeA" data-type="register">新會員</A>
+				</LI>
+			</UL>
+		</SECTION>
 	</xsl:template>
 </xsl:stylesheet>
