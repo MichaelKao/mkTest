@@ -2783,32 +2783,8 @@ public class WelcomeController {
 		}
 
 		URI uri = new URI(anchor);
-		json.setResult(uri);
-
-		String scheme = uri.getScheme();
-		if (!scheme.equalsIgnoreCase("http") && !scheme.equalsIgnoreCase("https")) {
-			return json.
-				withReason("lineFriendInvitation.wrongScheme").
-				withResponse(false).
-				toString();
-		}
-
-		if (uri.getHost().equalsIgnoreCase("line.me") || uri.getHost().equalsIgnoreCase("line.naver.jp")) {
-			boolean response = uri.getPath().matches("^/ti/[gp]/\\S{10}$");
-			json.setResponse(response);
-			if (!response) {
-				json.setReason("lineFriendInvitation.wrongPath");
-			}
-		} else if (uri.getHost().equalsIgnoreCase("lin.ee")) {
-			boolean response = uri.getPath().matches("^/ti/[gp]/\\S{10}$");
-			json.setResponse(response);
-			if (!response) {
-				json.setReason("lineFriendInvitation.wrongPath");
-			}
-		} else {
-			json.
-				withReason("lineFriendInvitation.wrongHost").
-				setResponse(false);
+		if (Servant.isLine(uri) || Servant.isWeChat(uri)) {
+			json.setResult(uri);
 		}
 		me.setInviteMeAsLineFriend(anchor);
 		loverRepository.saveAndFlush(me);
