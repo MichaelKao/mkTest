@@ -322,19 +322,19 @@
 			</DIV>
 			<DIV class="mt-2">
 				<xsl:for-each select="location">
-					<SPAN class="me-1 badge bg-dark">
+					<A class="me-1 badge bg-dark" href="/search.json?location={@id}">
 						<xsl:value-of select="."/>
-					</SPAN>
+					</A>
 				</xsl:for-each>
 			</DIV>
 			<DIV class="mt-2">
 				<xsl:for-each select="service">
-					<SPAN class="me-1 badge bg-primary">
+					<A class="me-1 badge bg-primary" href="/search.json?serviceTag={@id}">
 						<SPAN>#</SPAN>
 						<SPAN>
 							<xsl:value-of select="."/>
 						</SPAN>
-					</SPAN>
+					</A>
 				</xsl:for-each>
 			</DIV>
 			<HR class="horizontal dark my-4"/>

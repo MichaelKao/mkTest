@@ -630,6 +630,7 @@ public class LoverService {
 		if (Objects.nonNull(lover.getLocations())) {
 			for (Location location : lover.getLocations()) {
 				Element locationElement = document.createElement("location");
+				locationElement.setAttribute("id", location.getId().toString());
 				locationElement.setTextContent(
 					messageSource.getMessage(
 						location.getName(),
@@ -643,6 +644,7 @@ public class LoverService {
 		if (Objects.nonNull(lover.getServices())) {
 			for (ServiceTag service : lover.getServices()) {
 				Element serviceElement = document.createElement("service");
+				serviceElement.setAttribute("id", service.getId().toString());
 				serviceElement.setTextContent(
 					messageSource.getMessage(
 						service.getName(),
@@ -1529,6 +1531,54 @@ public class LoverService {
 			behaviors.add(BEHAVIOR_WITHDRAWAL_SUCCESS);
 		}
 		return behaviors;
+	}
+
+	public Document loversSimpleInfo(Document document, Collection<Lover> lovers) {
+		Element documentElement = document.getDocumentElement();
+
+		for (Lover lover : lovers) {
+			if (Objects.nonNull(lover.getDelete())) {
+				continue;
+			}
+			Element loverElement = document.createElement("lover");
+			documentElement.appendChild(loverElement);
+			loverElement.setAttribute(
+				"identifier",
+				lover.getIdentifier().toString()
+			);
+			loverElement.setAttribute(
+				"profileImage",
+				String.format(
+					"https://%s/profileImage/%s",
+					Servant.STATIC_HOST,
+					lover.getProfileImage()
+				)
+			);
+			if (Objects.nonNull(lover.getNickname())) {
+				loverElement.setAttribute(
+					"nickname",
+					lover.getNickname()
+				);
+			}
+			if (Objects.nonNull(lover.getBirthday())) {
+				loverElement.setAttribute(
+					"age",
+					calculateAge(lover).toString()
+				);
+			}
+			if (isVIP(lover)) {
+				loverElement.setAttribute("vip", null);
+			}
+			if (Objects.nonNull(lover.getRelief())) {
+				Boolean relief = lover.getRelief();
+				loverElement.setAttribute(
+					"relief",
+					relief ? "true" : "false"
+				);
+			}
+		}
+
+		return document;
 	}
 
 	/**

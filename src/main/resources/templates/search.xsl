@@ -31,20 +31,24 @@
 			<DIV class="container py-8 text-center">
 				<DIV class="mx-sm-5 mx-lg-12 mb-3">
 					<H4 class="text-primary">
-						<xsl:value-of select="@title"/>
+						<SPAN>搜尋</SPAN>
+						<SPAN class="mx-1">
+							<xsl:value-of select="@searchName"/>
+						</SPAN>
+						<SPAN>結果(<xsl:value-of select="@count"/>筆)</SPAN>
 					</H4>
 					<HR class="horizontal dark"/>
 				</DIV>
 				<DIV class="col-lg-9 mx-auto d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center">
-					<xsl:for-each select="peeker">
-						<DIV class="col-11 col-sm-8 col-md-5 card card-frame mb-3 mx-2">
-							<DIV class="card-body d-flex align-items-center justify-content-evenly p-3 p-md-4">
+					<xsl:for-each select="lover">
+						<DIV class="col-11 col-sm-8 card card-frame mb-2">
+							<DIV class="card-body d-flex align-items-center p-3">
 								<DIV>
 									<A href="/profile/{@identifier}/">
 										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="70"/>
 									</A>
 								</DIV>
-								<DIV>
+								<DIV class="ms-4">
 									<A class="h6 d-flex align-items-end justify-content-center" href="/profile/{@identifier}/">
 										<SPAN class="me-2">
 											<xsl:value-of select="@nickname"/>
@@ -53,29 +57,16 @@
 											<xsl:value-of select="@age"/>
 										</SPAN>
 										<xsl:if test="@vip">
-											<SPAN class="ms-1">
+											<SPAN class="ms-2">
 												<IMG class="border-radius-md" src="/vip.svg" width="27"/>
 											</SPAN>
 										</xsl:if>
 										<xsl:if test="@relief = 'true'">
-											<SPAN class="ms-1">
+											<SPAN class="ms-2">
 												<IMG class="border-radius-md" src="/accept.svg" width="27"/>
 											</SPAN>
 										</xsl:if>
 									</A>
-									<DIV class="text-xs text-primary text-gradient text-bold">
-										<SPAN class="me-1">共到訪了</SPAN>
-										<SPAN>
-											<xsl:value-of select="@times"/>
-										</SPAN>
-										<SPAN class="ms-1">次</SPAN>
-									</DIV>
-									<DIV class="text-xs">
-										<SPAN class="me-1">最近一次</SPAN>
-										<SPAN>
-											<xsl:value-of select="@date"/>
-										</SPAN>
-									</DIV>
 								</DIV>
 							</DIV>
 						</DIV>

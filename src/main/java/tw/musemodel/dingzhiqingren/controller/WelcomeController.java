@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -62,6 +63,7 @@ import tw.musemodel.dingzhiqingren.service.AmazonWebServices;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
+import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
 /**
  * 控制器：根
@@ -187,6 +189,15 @@ public class WelcomeController {
 		return modelAndView;
 	}
 
+	/**
+	 * 首頁更多甜心/男仕
+	 *
+	 * @param authentication
+	 * @param p
+	 * @param type
+	 * @return
+	 * @throws JsonProcessingException
+	 */
 	@PostMapping(path = "/seeMoreLover.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
@@ -1266,49 +1277,7 @@ public class WelcomeController {
 		);
 
 		Set<Lover> following = me.getFollowing();
-		for (Lover followed : following) {
-
-			if (Objects.nonNull(followed.getDelete())) {
-				continue;
-			}
-
-			Element followElement = document.createElement("follow");
-			documentElement.appendChild(followElement);
-			followElement.setAttribute(
-				"identifier",
-				followed.getIdentifier().toString()
-			);
-			followElement.setAttribute(
-				"profileImage",
-				String.format(
-					"https://%s/profileImage/%s",
-					Servant.STATIC_HOST,
-					followed.getProfileImage()
-				)
-			);
-			if (Objects.nonNull(followed.getNickname())) {
-				followElement.setAttribute(
-					"nickname",
-					followed.getNickname()
-				);
-			}
-			if (Objects.nonNull(followed.getBirthday())) {
-				followElement.setAttribute(
-					"age",
-					loverService.calculateAge(followed).toString()
-				);
-			}
-			if (followed.getGender() && loverService.isVIP(followed)) {
-				followElement.setAttribute("vip", null);
-			}
-			if (Objects.nonNull(followed.getRelief())) {
-				Boolean certification = followed.getRelief();
-				followElement.setAttribute(
-					"certification",
-					certification ? "true" : "false"
-				);
-			}
-		}
+		document = loverService.loversSimpleInfo(document, following);
 
 		ModelAndView modelAndView = new ModelAndView("favorite");
 		modelAndView.getModelMap().addAttribute(document);
@@ -1483,10 +1452,10 @@ public class WelcomeController {
 					peekerElement.setAttribute("vip", null);
 				}
 				if (Objects.nonNull(peeker.getRelief())) {
-					Boolean certification = peeker.getRelief();
+					Boolean relief = peeker.getRelief();
 					peekerElement.setAttribute(
-						"certification",
-						certification ? "true" : "false"
+						"relief",
+						relief ? "true" : "false"
 					);
 				}
 			}
@@ -2851,5 +2820,114 @@ public class WelcomeController {
 				toJSONObject();
 		}
 		return jsonObject.toString();
+	}
+
+	/**
+	 * 搜尋頁
+	 *
+	 * @param location
+	 * @param serviceTag
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/search.json")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView search(@RequestParam(required = false) Location location, @RequestParam(required = false) ServiceTag serviceTag,
+		Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
+
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.search",
+			null,
+			locale
+		));
+
+		documentElement.setAttribute(
+			"signIn",
+			authentication.getName()
+		);
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
+
+		// 確認性別
+		Boolean isMale = me.getGender();
+
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
+
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
+
+		Collection<Lover> lovers = loverRepository.findAll(
+			LoverSpecification.search(!isMale, location, serviceTag));
+
+		document = loverService.loversSimpleInfo(document, lovers);
+
+		// 搜尋到幾筆資料
+		documentElement.setAttribute(
+			"count",
+			Integer.toString(lovers.size())
+		);
+
+		String searchName = null;
+		if (Objects.nonNull(location)) {
+			searchName = messageSource.getMessage(
+				location.getName(),
+				null,
+				locale
+			);
+		}
+		if (Objects.nonNull(serviceTag)) {
+			searchName = messageSource.getMessage(
+				serviceTag.getName(),
+				null,
+				locale
+			);
+		}
+		documentElement.setAttribute(
+			"searchName",
+			searchName
+		);
+
+		ModelAndView modelAndView = new ModelAndView("search");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
 	}
 }

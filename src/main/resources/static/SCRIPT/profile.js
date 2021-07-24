@@ -212,7 +212,6 @@ $(document).ready(function () {
 	});
 
 	$('BUTTON.openLine').click(function () {
-		console.log($('INPUT[name="whom"]').val())
 		$.post(
 			'/maleOpenLine.json',
 			{

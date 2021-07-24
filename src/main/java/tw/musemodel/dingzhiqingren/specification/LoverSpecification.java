@@ -76,7 +76,7 @@ public class LoverSpecification {
 			/*
 			 服务
 			 */
-			if (Objects.nonNull(location)) {
+			if (Objects.nonNull(serviceTag)) {
 				Subquery<ServiceTag> subqueryServiceTag = criteriaQuery.subquery(
 					ServiceTag.class
 				);

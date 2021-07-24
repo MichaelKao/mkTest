@@ -29,14 +29,14 @@
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container py-8 text-center">
-				<DIV class="mx-sm-5 mx-lg-12 mb-5">
+				<DIV class="mx-sm-5 mx-lg-12 mb-3">
 					<H4 class="text-primary">
 						<xsl:value-of select="@title"/>
 					</H4>
 					<HR class="horizontal dark"/>
 				</DIV>
 				<DIV class="col-lg-8 mx-auto d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center">
-					<xsl:for-each select="follow">
+					<xsl:for-each select="lover">
 						<DIV class="col-11 col-sm-8 col-md-5 card card-frame mb-3 mx-2">
 							<DIV class="card-body d-flex align-items-center justify-content-evenly p-3 p-md-4">
 								<DIV>
@@ -51,7 +51,7 @@
 												<IMG class="border-radius-md" src="/vip.svg" width="30"/>
 											</DIV>
 										</xsl:if>
-										<xsl:if test="@certification = 'true'">
+										<xsl:if test="@relief = 'true'">
 											<DIV>
 												<IMG class="border-radius-md" src="/accept.svg" width="30"/>
 											</DIV>
