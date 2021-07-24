@@ -1533,6 +1533,13 @@ public class LoverService {
 		return behaviors;
 	}
 
+	/**
+	 * 收藏/搜尋頁面的情人基本資訊
+	 *
+	 * @param document
+	 * @param lovers
+	 * @return
+	 */
 	public Document loversSimpleInfo(Document document, Collection<Lover> lovers) {
 		Element documentElement = document.getDocumentElement();
 

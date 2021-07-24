@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -142,6 +143,34 @@ public class Servant {
 	 * 服务器时区
 	 */
 	public static final ZoneId ZONE_ID = ZoneId.of(System.getenv("ZONE_ID"));
+
+	public static final boolean isLine(URI uri) {
+		String scheme = uri.getScheme();
+		if (!scheme.equalsIgnoreCase("http") && !scheme.equalsIgnoreCase("https")) {
+			return false;
+		}
+
+		String host = uri.getHost();
+		if (host.equalsIgnoreCase("line.me") || host.equalsIgnoreCase("line.naver.jp") || host.equalsIgnoreCase("lin.ee")) {
+			return uri.getPath().matches("^/ti/[gp]/\\S{10}$");
+		}
+
+		return false;
+	}
+
+	public static final boolean isWeChat(URI uri) {
+		String scheme = uri.getScheme();
+		if (!scheme.equalsIgnoreCase("http") && !scheme.equalsIgnoreCase("https")) {
+			return false;
+		}
+
+		String host = uri.getHost();
+		if (host.equalsIgnoreCase("u.wechat.com")) {
+			return uri.getPath().matches("^/\\S{23}$");
+		}
+
+		return false;
+	}
 
 	/**
 	 * 透过 LINE 接收其它网站服务通知。

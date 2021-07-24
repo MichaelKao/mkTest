@@ -1,6 +1,10 @@
 package tw.musemodel.dingzhiqingren.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.qrcode.QRCodeWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -16,6 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
 import org.json.JSONArray;
@@ -58,7 +63,6 @@ import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
 import tw.musemodel.dingzhiqingren.repository.PlanRepository;
-import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 import tw.musemodel.dingzhiqingren.service.AmazonWebServices;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
@@ -105,9 +109,6 @@ public class WelcomeController {
 
 	@Autowired
 	private LineGivenRepository lineGivenRepository;
-
-	@Autowired
-	private WithdrawalRecordRepository withdrawalRecordRepository;
 
 	/**
 	 * 首页
@@ -948,7 +949,7 @@ public class WelcomeController {
 
 		if (gender) {
 			// 是否已交換過 LINE
-			LineGiven lineGiven = lineGivenRepository.findByFemaleAndMale(lover, me);
+			LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(lover, me);
 			History history = historyRepository.findByInitiativeAndPassiveAndBehavior(me, lover, Behavior.LAI_KOU_DIAN);
 
 			if (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse())
@@ -2749,32 +2750,8 @@ public class WelcomeController {
 		}
 
 		URI uri = new URI(anchor);
-		json.setResult(uri);
-
-		String scheme = uri.getScheme();
-		if (!scheme.equalsIgnoreCase("http") && !scheme.equalsIgnoreCase("https")) {
-			return json.
-				withReason("lineFriendInvitation.wrongScheme").
-				withResponse(false).
-				toString();
-		}
-
-		if (uri.getHost().equalsIgnoreCase("line.me") || uri.getHost().equalsIgnoreCase("line.naver.jp")) {
-			boolean response = uri.getPath().matches("^/ti/[gp]/\\S{10}$");
-			json.setResponse(response);
-			if (!response) {
-				json.setReason("lineFriendInvitation.wrongPath");
-			}
-		} else if (uri.getHost().equalsIgnoreCase("lin.ee")) {
-			boolean response = uri.getPath().matches("^/ti/[gp]/\\S{10}$");
-			json.setResponse(response);
-			if (!response) {
-				json.setReason("lineFriendInvitation.wrongPath");
-			}
-		} else {
-			json.
-				withReason("lineFriendInvitation.wrongHost").
-				setResponse(false);
+		if (Servant.isLine(uri) || Servant.isWeChat(uri)) {
+			json.setResult(uri);
 		}
 		me.setInviteMeAsLineFriend(anchor);
 		loverRepository.saveAndFlush(me);
@@ -2929,5 +2906,38 @@ public class WelcomeController {
 		ModelAndView modelAndView = new ModelAndView("search");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
+	}
+
+	@GetMapping(path = "/{girl}.png", produces = MediaType.IMAGE_PNG_VALUE)
+	@Secured({"ROLE_YONGHU"})
+	void erWeiMa(@PathVariable final UUID identifier, Authentication authentication, HttpServletResponse response) throws IOException, WriterException {
+		if (servant.isNull(authentication)) {
+			return;
+		}
+		Lover guy = loverService.loadByUsername(
+			authentication.getName()
+		);
+		Lover girl = loverService.loadByIdentifier(identifier);
+		if (Objects.isNull(girl)) {
+			return;
+		}
+
+		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(girl, guy);
+		if (Objects.nonNull(lineGiven)) {
+			Boolean agreed = lineGiven.getResponse();
+			if (Objects.nonNull(agreed) && agreed) {
+				response.setHeader("Content-Disposition", "inline");
+				MatrixToImageWriter.writeToStream(
+					new QRCodeWriter().encode(
+						girl.getInviteMeAsLineFriend(),
+						BarcodeFormat.QR_CODE,
+						256,
+						256
+					),
+					"png",
+					response.getOutputStream()
+				);
+			}
+		}
 	}
 }

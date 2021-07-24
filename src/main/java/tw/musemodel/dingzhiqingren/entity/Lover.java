@@ -242,16 +242,19 @@ public class Lover implements java.io.Serializable {
 	@JsonBackReference
 	private Collection<Picture> pictures;
 
-	@OneToMany(mappedBy = "female")
+	/**
+	 * 哪些甜心给了(男士)即时通信
+	 */
+	@OneToMany(mappedBy = "girl")
 	@JsonIgnore
-	private Set<LineGiven> femaleSet;
+	private Set<LineGiven> girls;
 
 	/**
-	 * (甜心)给了哪些男士赖
+	 * (甜心)给了哪些男士即时通信
 	 */
-	@OneToMany(mappedBy = "male")
+	@OneToMany(mappedBy = "guy")
 	@JsonIgnore
-	private Set<LineGiven> maleSet;
+	private Set<LineGiven> guys;
 
 	/**
 	 * 收藏
@@ -778,20 +781,32 @@ public class Lover implements java.io.Serializable {
 		this.pictures = pictures;
 	}
 
-	public Set<LineGiven> getFemaleSet() {
-		return femaleSet;
+	/**
+	 * @return 哪些甜心给了(男士)即时通信
+	 */
+	public Set<LineGiven> getGirls() {
+		return girls;
 	}
 
-	public void setFemaleSet(Set<LineGiven> femaleSet) {
-		this.femaleSet = femaleSet;
+	/**
+	 * @param girls 哪些甜心给了(男士)即时通信
+	 */
+	public void setGirls(Set<LineGiven> girls) {
+		this.girls = girls;
 	}
 
-	public Set<LineGiven> getMaleSet() {
-		return maleSet;
+	/**
+	 * @return (甜心)给了哪些男士即时通信
+	 */
+	public Set<LineGiven> getGuys() {
+		return guys;
 	}
 
-	public void setMaleSet(Set<LineGiven> maleSet) {
-		this.maleSet = maleSet;
+	/**
+	 * @param guys (甜心)给了哪些男士即时通信
+	 */
+	public void setGuys(Set<LineGiven> guys) {
+		this.guys = guys;
 	}
 
 	/**

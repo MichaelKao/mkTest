@@ -14,5 +14,5 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 @Repository
 public interface LineGivenRepository extends JpaRepository<LineGiven, LineGivenPK> {
 
-	public LineGiven findByFemaleAndMale(Lover female, Lover male);
+	public LineGiven findByGirlAndGuy(Lover girl, Lover guy);
 }
