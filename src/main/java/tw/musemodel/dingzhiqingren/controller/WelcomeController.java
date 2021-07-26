@@ -2918,6 +2918,15 @@ public class WelcomeController {
 		return modelAndView;
 	}
 
+	/**
+	 * 顯示二維碼
+	 *
+	 * @param girlIdentifier
+	 * @param authentication
+	 * @param response
+	 * @throws IOException
+	 * @throws WriterException
+	 */
 	@GetMapping(path = "/{girlIdentifier}.png", produces = MediaType.IMAGE_PNG_VALUE)
 	@Secured({"ROLE_YONGHU"})
 	void erWeiMa(@PathVariable final UUID girlIdentifier, Authentication authentication, HttpServletResponse response) throws IOException, WriterException {
