@@ -36,7 +36,7 @@
 						<DIV class="modal-content">
 							<DIV class="modal-header">
 								<H5 class="modal-title">提醒！</H5>
-								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
+								<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">
 								<DIV class="form-group col-8 text-warning">刪除帳號將無法再恢復，確定要刪除？</DIV>
@@ -57,10 +57,24 @@
 						<DIV class="modal-content">
 							<DIV class="modal-header">
 								<H5 class="modal-title">教學</H5>
-								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
+								<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">
-								<IMG alt="qrcode" src="/qrcode.png" style="max-width: 100%;"/>
+								<BUTTON class="btn btn-light collapsed me-2" data-bs-target="#line" data-bs-toggle="collapse" type="button">LINE</BUTTON>
+								<BUTTON class="btn btn-light" data-bs-target="#wechat" data-bs-toggle="collapse" type="button">微信WeChat</BUTTON>
+								<DIV class="accordion" id="accordionRental">
+									<DIV class="accordion-item mb-3">
+										<DIV class="accordion-collapse collapse" data-bs-parent="#accordionRental" id="line">
+											<IMG alt="qrcode" src="/IMAGE/line.png" style="max-width: 100%;"/>
+										</DIV>
+									</DIV>
+									<DIV class="accordion-item mb-3">
+										<DIV class="accordion-collapse collapse" data-bs-parent="#accordionRental" id="wechat">
+											<IMG alt="qrcode" src="/IMAGE/wechat.png" style="max-width: 100%;"/>
+										</DIV>
+									</DIV>
+								</DIV>
+
 							</DIV>
 							<DIV class="modal-footer">
 								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
@@ -78,7 +92,7 @@
 								<BUTTON aria-label="Close" class="btn-close text-dark" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">
-								<P class="text-primary text-bold">註：僅能上傳 LINE QR code</P>
+								<P class="text-primary text-bold">註：僅能上傳 LINE 或微信的 QR code</P>
 								<DIV class="imgContainer">
 									<IMG alt="cropper" src="https://via.placeholder.com/200" id="image"/>
 								</DIV>
@@ -287,13 +301,14 @@
 					</DIV>
 					<xsl:if test="/document/@female">
 						<DIV class="col-md-12 mb-3">
-							<LABEL>Line 好友連結</LABEL>
-							<DIV class="uploadQrcode">
+							<LABEL>LINE/微信WeChat</LABEL>
+							<P class="text-xs m-1 mb-1">與男仕聯繫的通訊軟體 (擇一上傳 QR Code)</P>
+							<DIV class="uploadQrcode ">
 								<LABEL>
 									<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
-									<A class="btn btn-primary p-1 me-1">點擊上傳 QR code</A>
+									<A class="btn btn-primary p-1 me-1 mb-0">點擊上傳 QR code</A>
 								</LABEL>
-								<BUTTON class="btn btn-info p-1" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">如何取得 QR code?</BUTTON>
+								<BUTTON class="btn btn-info p-1 mb-0 ms-1" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">如何取得 QR code?</BUTTON>
 							</DIV>
 							<DIV>
 								<INPUT class="form-control" name="inviteMeAsLineFriend" readonly="" required="" style="display: none;" type="text" value="">

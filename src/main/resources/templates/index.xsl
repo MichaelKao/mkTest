@@ -32,6 +32,7 @@
 			<xsl:call-template name="bootstrapToast"/>
 			<xsl:if test="not(@signIn)">
 				<HEADER class="header-2">
+					<INPUT name="signIn" type="hidden" value="false"/>
 					<DIV class="page-header section-height-75 relative" style="background-image: url('https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/COUPLE/COUPLE+(1).jpg')">
 						<DIV class="container text-center">
 							<DIV class="row">
@@ -137,6 +138,7 @@
 				</SECTION>
 			</xsl:if>
 			<xsl:if test="@signIn">
+				<INPUT name="signIn" type="hidden" value="true"/>
 				<DIV class="container px-0 px-md-3 py-7">
 					<INPUT name="gender" type="hidden">
 						<xsl:if test="@male">

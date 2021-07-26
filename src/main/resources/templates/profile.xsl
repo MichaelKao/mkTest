@@ -40,7 +40,7 @@
 							<DIV class="modal-content">
 								<DIV class="modal-header">
 									<H5 class="modal-title">車馬費</H5>
-									<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
+									<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
 								</DIV>
 								<DIV class="modal-body">
 									<DIV class="form-group">
@@ -72,7 +72,7 @@
 										<H5 class="modal-title">和男生打招呼</H5>
 									</xsl:otherwise>
 								</xsl:choose>
-								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
+								<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">
 								<DIV class="form-group col-8">
@@ -104,11 +104,11 @@
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
-								<DIV class="modal-title h5" id="modalLabel">
-									<IMG alt="certification" src="/accept.svg" width="30"/>
+								<DIV class="modal-title h5">
+									<IMG alt="relief" src="/accept.svg" width="30"/>
 									<SPAN class="ms-1">手持證件安心認證</SPAN>
 								</DIV>
-								<BUTTON aria-label="Close" class="btn-close text-dark" data-bs-dismiss="modal" type="button"></BUTTON>
+								<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">
 								<P class="text-primary text-bold">上傳本人自拍並且手持證件，通過安心認證增加真實性！</P>
@@ -267,8 +267,6 @@
 										<SPAN>升級 VIP 查看</SPAN>
 									</xsl:otherwise>
 								</xsl:choose>
-
-
 							</DIV>
 						</DIV>
 						<HR class="horizontal dark my-2"/>
@@ -292,20 +290,32 @@
 						<IMG class="border-radius-md" src="/vip.svg" width="32"/>
 					</DIV>
 				</xsl:if>
-				<xsl:if test="@certification = 'true'">
+				<xsl:if test="@relief = 'true'">
 					<DIV class="mx-1">
 						<IMG class="border-radius-md" src="/accept.svg" width="32"/>
 					</DIV>
 				</xsl:if>
+				<xsl:if test="@socialMedia">
+					<DIV class="mx-1">
+						<IMG class="border-radius-md" src="" width="32">
+							<xsl:if test="@socialMedia = 'line'">
+								<xsl:attribute name="src">/line.svg</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="@socialMedia = 'weChat'">
+								<xsl:attribute name="src">/wechat.svg</xsl:attribute>
+							</xsl:if>
+						</IMG>
+					</DIV>
+				</xsl:if>
 			</DIV>
-			<xsl:if test="(/document/@me) and (not(@certification) or @certification = 'false')">
+			<xsl:if test="(/document/@me) and (not(@relief) or @relief = 'false')">
 				<DIV class="ms-auto">
-					<BUTTON class="btn btn-outline-info p-1 certification" data-bs-target="#cropModal" data-bs-toggle="modal" type="button">
-						<xsl:if test="@certification = 'false'">
+					<BUTTON class="btn btn-outline-info p-1 relief" data-bs-target="#cropModal" data-bs-toggle="modal" type="button">
+						<xsl:if test="@relief = 'false'">
 							<xsl:attribute name="disabled">true</xsl:attribute>
 							<SPAN>安心認證審核中</SPAN>
 						</xsl:if>
-						<xsl:if test="not(@certification)">
+						<xsl:if test="not(@relief)">
 							<SPAN>進行安心認證</SPAN>
 						</xsl:if>
 					</BUTTON>

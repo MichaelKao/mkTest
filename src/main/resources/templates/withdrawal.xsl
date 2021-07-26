@@ -33,8 +33,8 @@
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
-								<H5 class="modal-title" id="exampleModalLongTitle">請選擇提領方式</H5>
-								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
+								<H5 class="modal-title">請選擇提領方式</H5>
+								<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">
 								<BUTTON class="btn btn-light collapsed me-2" data-bs-target="#collapseWire" data-bs-toggle="collapse" type="button">銀行匯款</BUTTON>

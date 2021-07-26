@@ -4,7 +4,7 @@ $(document).ready(function () {
 	let type;
 	let wrap;
 
-	if (isMobile()) {
+	if (isMobile() && $('INPUT[name="signIn"]').val() === 'true') {
 		if ($('INPUT[name="gender"]').val() === 'male') {
 			$('A.reliefA').addClass('active');
 			document.querySelector("DIV.mobileMode").innerHTML = document.querySelector("DIV.relief").innerHTML;

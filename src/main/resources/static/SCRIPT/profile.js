@@ -34,7 +34,7 @@ $(document).ready(function () {
 	var input;
 	var $cropModal = $('#cropModal');
 	var cropper;
-	var certification = document.querySelector('.certification');
+	var relief = document.querySelector('.relief');
 
 	$('INPUT[name="image"]').on("change", function (e) {
 		var files = e.target.files;
@@ -123,8 +123,8 @@ $(document).ready(function () {
 			data: file,
 			type: 'post',
 			success: function (data) {
-				$(certification).attr('disabled', 'ture');
-				$(certification).text('安心認證審核中');
+				$(relief).attr('disabled', 'ture');
+				$(relief).text('安心認證審核中');
 				$cropModal.modal('hide');
 			},
 			error: function (error) {

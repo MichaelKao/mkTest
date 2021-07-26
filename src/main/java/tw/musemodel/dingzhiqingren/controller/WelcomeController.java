@@ -960,10 +960,20 @@ public class WelcomeController {
 				);
 			}
 
+			Boolean isLine = servant.isLine(URI.create(lover.getInviteMeAsLineFriend()));
+			Boolean isWeChat = servant.isWeChat(URI.create(lover.getInviteMeAsLineFriend()));
+			String redirect = null;
+			if (isLine) {
+				redirect = lover.getInviteMeAsLineFriend();
+			}
+			if (isWeChat) {
+				redirect = String.format("/%s.png", lover
+					.getIdentifier());
+			}
 			if (Objects.nonNull(history)) {
 				documentElement.setAttribute(
 					"matched",
-					lover.getInviteMeAsLineFriend()
+					redirect
 				);
 			}
 		}
@@ -2908,16 +2918,16 @@ public class WelcomeController {
 		return modelAndView;
 	}
 
-	@GetMapping(path = "/{girl}.png", produces = MediaType.IMAGE_PNG_VALUE)
+	@GetMapping(path = "/{girlIdentifier}.png", produces = MediaType.IMAGE_PNG_VALUE)
 	@Secured({"ROLE_YONGHU"})
-	void erWeiMa(@PathVariable final UUID identifier, Authentication authentication, HttpServletResponse response) throws IOException, WriterException {
+	void erWeiMa(@PathVariable final UUID girlIdentifier, Authentication authentication, HttpServletResponse response) throws IOException, WriterException {
 		if (servant.isNull(authentication)) {
 			return;
 		}
 		Lover guy = loverService.loadByUsername(
 			authentication.getName()
 		);
-		Lover girl = loverService.loadByIdentifier(identifier);
+		Lover girl = loverService.loadByIdentifier(girlIdentifier);
 		if (Objects.isNull(girl)) {
 			return;
 		}

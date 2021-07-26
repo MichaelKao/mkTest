@@ -1,6 +1,7 @@
 package tw.musemodel.dingzhiqingren.service;
 
 import java.io.IOException;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -515,7 +516,12 @@ public class HistoryService {
 	 */
 	@Transactional
 	public JSONObject openLine(Lover male, Lover female, Locale locale) {
-		if (loverService.isVIP(male)) {
+		History history = historyRepository.findByInitiativeAndPassiveAndBehavior(male, female, BEHAVIOR_LAI_KOU_DIAN);
+		if (loverService.isVIP(male) && Objects.isNull(history)) {
+			History historyReply
+				= historyRepository.findByInitiativeAndPassiveAndBehavior(female, male, BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
+			historyReply.setReply(new Date(System.currentTimeMillis()));
+			historyRepository.saveAndFlush(historyReply);
 			if (!withinRequiredLimit(male)) {
 				Short cost = COST_GIMME_YOUR_LINE_INVITATION;
 				if (points(male) < Math.abs(cost)) {
@@ -539,10 +545,15 @@ public class HistoryService {
 			throw new RuntimeException("openLine.upgardeVipToOpen");
 		}
 
-		History historyReply
-			= historyRepository.findByInitiativeAndPassiveAndBehavior(female, male, BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
-		historyReply.setReply(new Date(System.currentTimeMillis()));
-		historyRepository.saveAndFlush(historyReply);
+		Boolean isLine = servant.isLine(URI.create(female.getInviteMeAsLineFriend()));
+		Boolean isWeChat = servant.isWeChat(URI.create(female.getInviteMeAsLineFriend()));
+		String redirect = null;
+		if (isLine) {
+			redirect = female.getInviteMeAsLineFriend();
+		}
+		if (isWeChat) {
+			redirect = String.format("/%s.png", female.getIdentifier());
+		}
 
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
@@ -551,7 +562,7 @@ public class HistoryService {
 				locale
 			)).
 			withResponse(true).
-			withRedirect(female.getInviteMeAsLineFriend()).
+			withRedirect(redirect).
 			toJSONObject();
 	}
 
@@ -804,15 +815,8 @@ public class HistoryService {
 						"%s同意給您 LINE",
 						initiativeNickname
 					);
-					if (Objects.nonNull(historyRepository.findByInitiativeAndPassiveAndBehavior(passive, initiative, BEHAVIOR_LAI_KOU_DIAN))) {
-						historyElement.setAttribute(
-							"matched",
-							initiative.getInviteMeAsLineFriend()
-						);
-					}
 					LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(initiative, passive);
-					if (Objects.nonNull(lineGiven) && lineGiven.getResponse()
-						&& historyRepository.countByInitiativeAndPassiveAndBehaviorAndReplyNotNull(initiative, passive, BEHAVIOR_INVITE_ME_AS_LINE_FRIEND) < 1) {
+					if (Objects.nonNull(lineGiven) && lineGiven.getResponse()) {
 						historyElement.setAttribute(
 							"addLineButton",
 							null

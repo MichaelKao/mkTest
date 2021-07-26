@@ -16,6 +16,7 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -595,10 +596,21 @@ public class LoverService {
 		}
 
 		if (Objects.nonNull(lover.getRelief())) {
-			Boolean certification = lover.getRelief();
+			Boolean relief = lover.getRelief();
 			loverElement.setAttribute(
-				"certification",
-				certification ? "true" : "false"
+				"relief",
+				relief ? "true" : "false"
+			);
+		}
+
+		if (!lover.getGender()) {
+			String uri = lover.getInviteMeAsLineFriend();
+			Boolean isLine = servant.isLine(URI.create(uri));
+			Boolean isWeChat = servant.isWeChat(URI.create(uri));
+
+			loverElement.setAttribute(
+				"socialMedia",
+				isLine ? "line" : "weChat"
 			);
 		}
 
