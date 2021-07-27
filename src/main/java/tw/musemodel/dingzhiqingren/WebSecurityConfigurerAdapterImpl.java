@@ -59,24 +59,20 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 		httpSecurity.
 			authorizeRequests(
 				authorizeRequests -> authorizeRequests.
+					/*
+					 无须认证但需取得识别
+					 */
 					antMatchers(
 						"/",
 						"/activate.asp",
 						"/activate.json",
 						"/activated.asp",
 						"/authentication.json",
+						"/notify-bot.line.me/**",
 						"/reactivate.asp",
 						"/reactivate.json",
 						"/signIn.asp",
-						"/signUp.asp",
-						"/terms.asp",
-						"/privacy.asp",
-						"/manifest.json",
-						"/favicon-32x32.png",
-						"/favicon-16x16.png",
-						"/android-chrome-192x192.png",
-						"/android-chrome-512x512.png",
-						"/apple-touch-icon.png"
+						"/signUp.asp"
 					).permitAll().
 					anyRequest().authenticated()
 			).
@@ -129,15 +125,24 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 	 */
 	@Override
 	public void configure(WebSecurity webSecurity) throws Exception {
+		/*
+		 无须认证且无需取得识别
+		 */
 		webSecurity.
 			ignoring().
 			antMatchers(
 				"/*.html",
+				"/*.png",
+				"/IMAGE/**",
 				"/SCRIPT/**",
 				"/STYLE/**",
 				"/error",
+				"/favicon.ico",
 				"/inpay2/**",
+				"/manifest.json",
 				"/poc/**",
+				"/privacy.asp",
+				"/terms.asp",
 				"/webhook/**"
 			);
 		LOGGER.debug(

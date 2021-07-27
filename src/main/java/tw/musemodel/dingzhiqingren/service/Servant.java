@@ -261,6 +261,15 @@ public class Servant {
 		).toInstant().toEpochMilli());
 	}
 
+	/**
+	 * 重定向到首页
+	 *
+	 * @return org.​springframework.​web.​servlet.ModelAndView
+	 */
+	public static ModelAndView redirectToRoot() {
+		return new ModelAndView("redirect:/");
+	}
+
 	public List<Country> getCountries() {
 		return countryRepository.findAll();
 	}
@@ -289,15 +298,6 @@ public class Servant {
 
 	public Document parseDocument(String uri) throws SAXException, IOException, ParserConfigurationException {
 		return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(uri);
-	}
-
-	/**
-	 * 重定向到首页
-	 *
-	 * @return org.​springframework.​web.​servlet.ModelAndView
-	 */
-	public ModelAndView redirectToRoot() {
-		return new ModelAndView("redirect:/");
 	}
 
 	/**
