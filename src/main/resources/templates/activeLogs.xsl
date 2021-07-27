@@ -59,6 +59,30 @@
 						</DIV>
 					</DIV>
 				</DIV>
+				<DIV class="modal fade" id="weChatModel">
+					<DIV class="modal-dialog modal-dialog-centered">
+						<DIV class="modal-content">
+							<DIV class="modal-header">
+								<H5 class="modal-title">WeChat 微信 QRcode</H5>
+								<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
+							</DIV>
+							<DIV class="modal-body">
+								<DIV class="form-group col-8">
+									<P>需截圖或下載 QRCode，並且用微信 APP 加入好友</P>
+									<FORM action="/download.asp" method="post">
+										<IMG alt="weChatQRCode" class="weChatQRcode" src=""/>
+										<BUTTON class="download" type="button">download</BUTTON>
+									</FORM>
+								</DIV>
+							</DIV>
+							<DIV class="modal-footer">
+								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+									<xsl:value-of select="@i18n-cancel"/>
+								</BUTTON>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
 				<DIV class="modal fade" id="rateModal">
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">

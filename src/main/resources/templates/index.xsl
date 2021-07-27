@@ -197,7 +197,7 @@
 		<xsl:if test="relief">
 			<ARTICLE class="col-md-8 border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
 				<DIV class="d-flex m-2 align-items-center">
-					<DIV class="badge bg-gradient-primary text-lg m-2">通過安心認證</DIV>
+					<DIV class="badge bg-gradient-primary text-lg m-2">安心認證</DIV>
 					<xsl:if test="not(relief/@lastPage)">
 						<BUTTON class="ms-auto btn btn-link text-lg seeMoreBtn" data-type="relief" data-page="0">看更多<I class="far fa-angle-double-right ms-1"></I></BUTTON>
 					</xsl:if>

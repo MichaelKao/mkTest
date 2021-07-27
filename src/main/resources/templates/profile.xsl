@@ -66,7 +66,7 @@
 							<DIV class="modal-header">
 								<xsl:choose>
 									<xsl:when test="@male">
-										<H5 class="modal-title">和女生要求Line</H5>
+										<H5 class="modal-title">和女生要求通訊軟體</H5>
 									</xsl:when>
 									<xsl:otherwise>
 										<H5 class="modal-title">和男生打招呼</H5>

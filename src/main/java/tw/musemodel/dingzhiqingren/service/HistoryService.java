@@ -563,6 +563,7 @@ public class HistoryService {
 			)).
 			withResponse(true).
 			withRedirect(redirect).
+			withResult(isLine ? "isLine" : "isWeChat").
 			toJSONObject();
 	}
 
@@ -787,7 +788,7 @@ public class HistoryService {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
-						"您已向 %s 要求 LINE",
+						"您已向 %s 要求通訊軟體",
 						passiveNickname
 					);
 				}
@@ -795,7 +796,7 @@ public class HistoryService {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
-						"%s向您要求 LINE：%s",
+						"%s向您要求通訊軟體：%s",
 						initiativeNickname,
 						activeLogs.getGreeting()
 					);
@@ -812,7 +813,7 @@ public class HistoryService {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
-						"%s同意給您 LINE",
+						"%s同意給您通訊軟體",
 						initiativeNickname
 					);
 					LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(initiative, passive);
@@ -840,7 +841,7 @@ public class HistoryService {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
-						"您已同意給 %s LINE",
+						"您已同意給 %s 通訊軟體",
 						passiveNickname
 					);
 					if (Objects.isNull(
@@ -857,7 +858,7 @@ public class HistoryService {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
-						"%s拒絕給您 LINE",
+						"%s拒絕給您通訊軟體",
 						initiativeNickname
 					);
 				}
@@ -865,7 +866,7 @@ public class HistoryService {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
-						"您已拒絕給 %s LINE",
+						"您已拒絕給 %s 通訊軟體",
 						passiveNickname
 					);
 				}
@@ -900,7 +901,7 @@ public class HistoryService {
 				if (isMale) {
 					profileImage = passiveProfileImage;
 					message = String.format(
-						"您取得 %s 的 Line，扣 %d 點",
+						"您取得 %s 的通訊軟體，扣 %d 點",
 						passiveNickname,
 						Math.abs(activeLogs.getPoints())
 					);
@@ -910,7 +911,7 @@ public class HistoryService {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
-						"%s加了您的 LINE",
+						"%s加了您的通訊軟體",
 						initiativeNickname
 					);
 				}
@@ -1010,7 +1011,7 @@ public class HistoryService {
 	}
 
 	/**
-	 * 男生開啟 LINE 未超過上限值
+	 * 男生開啟 加入通訊軟體 未超過上限值
 	 *
 	 * @param male
 	 * @return

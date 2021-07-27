@@ -130,12 +130,30 @@ $(document).ready(function () {
 				whom: whom
 			},
 			function (data) {
-				if (data.response) {
+				if (data.response && data.result === 'isLine') {
 					location.href = data.redirect;
+				} else if (data.response && data.result === 'isWeChat') {
+					var src = 'https://' + location.hostname + data.redirect;
+					$('#weChatModel').modal('show');
+					$('.weChatQRcode').attr('src', src);
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');
 				}
+			},
+			'json'
+			);
+		return false;
+	});
+
+	$('BUTTON.download').click(function () {
+		$.post(
+			'/download.asp',
+			{
+				url: $('IMG.weChatQRcode').attr('src')
+			},
+			function (data) {
+
 			},
 			'json'
 			);

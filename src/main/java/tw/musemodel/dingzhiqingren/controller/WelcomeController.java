@@ -2959,4 +2959,12 @@ public class WelcomeController {
 			}
 		}
 	}
+
+	@PostMapping(path = "/download.asp", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String download(@RequestParam String url, Authentication authentication) throws IOException {
+
+		return new JavaScriptObjectNotation().
+			withResponse(true).toString();
+	}
 }
