@@ -684,3 +684,13 @@ COMMENT ON TYPE"xiang_chu_guan_xi"IS'相處關係';
 ALTER TABLE"qing_ren"
 ADD COLUMN"xiang_chu_guan_xi" "xiang_chu_guan_xi";
 COMMENT ON COLUMN"qing_ren"."xiang_chu_guan_xi"IS'相處關係';
+
+CREATE TABLE"line_notify_authentication"(
+	"id"serial PRIMARY KEY,
+	"state"varchar NOT NULL,
+	"sucker"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE
+);
+COMMENT ON TABLE"line_notify_authentication"IS'透过 LINE 接收网站服务通知';
+COMMENT ON COLUMN"line_notify_authentication"."id"IS'主键';
+COMMENT ON COLUMN"line_notify_authentication"."state"IS'响应 CSRF 攻击的令牌';
+COMMENT ON COLUMN"line_notify_authentication"."sucker"IS'情人';
