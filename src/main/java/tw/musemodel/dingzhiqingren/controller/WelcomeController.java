@@ -5,10 +5,13 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.qrcode.QRCodeWriter;
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
@@ -2958,13 +2961,5 @@ public class WelcomeController {
 				);
 			}
 		}
-	}
-
-	@PostMapping(path = "/download.asp", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	String download(@RequestParam String url, Authentication authentication) throws IOException {
-
-		return new JavaScriptObjectNotation().
-			withResponse(true).toString();
 	}
 }

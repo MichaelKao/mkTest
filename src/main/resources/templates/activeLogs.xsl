@@ -63,16 +63,17 @@
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
-								<H5 class="modal-title">WeChat 微信 QRcode</H5>
+								<H5 class="modal-title">請等待微信 WeCaht QRcode 出現</H5>
 								<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">
-								<DIV class="form-group col-8">
-									<P>需截圖或下載 QRCode，並且用微信 APP 加入好友</P>
-									<FORM action="/download.asp" method="post">
+								<DIV class="form-group">
+									<P>使用微信 APP 掃描加入好友</P>
+									<P>若是用手機，需以截圖或下載 QRCode 的方式使用微信 APP 加入好友</P>
+									<P class="text-primary">點擊 QRcode 可直接下載</P>
+									<A class="weChatQRcode" href="" download="weChatQRcode.png">
 										<IMG alt="weChatQRCode" class="weChatQRcode" src=""/>
-										<BUTTON class="download" type="button">download</BUTTON>
-									</FORM>
+									</A>
 								</DIV>
 							</DIV>
 							<DIV class="modal-footer">
@@ -144,19 +145,19 @@
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 refuse" type="button">拒絕</BUTTON>
 										</DIV>
 									</xsl:if>
-									<DIV class="ms-0 ms-md-auto">
-										<xsl:if test="@addLineButton">
+									<xsl:if test="@addLineButton">
+										<DIV class="ms-0 ms-md-auto">
 											<BUTTON class="btn btn-success px-2 py-1 px-md-3 py-md-2 me-1 openLine" type="button">
 												<SPAN>加入好友</SPAN>
 												<xsl:if test="@remindDeduct">
 													<DIV class="text-xxs">需 30 愛心</DIV>
 												</xsl:if>
 											</BUTTON>
-										</xsl:if>
-										<xsl:if test="@rateButton">
-											<BUTTON class="btn btn-warning px-2 py-1 px-md-3 py-md-2 rate" type="button">評價</BUTTON>
-										</xsl:if>
-									</DIV>
+											<xsl:if test="@rateButton">
+												<BUTTON class="btn btn-warning px-2 py-1 px-md-3 py-md-2 rate" type="button">評價</BUTTON>
+											</xsl:if>
+										</DIV>
+									</xsl:if>
 									<xsl:if test="@requestLineButton">
 										<DIV class="ms-0 ms-md-auto">
 											<BUTTON class="btn btn-primary px-2 py-1 px-md-3 py-md-2 requestLine" type="button">要求 LINE</BUTTON>
