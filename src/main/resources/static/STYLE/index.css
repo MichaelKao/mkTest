@@ -1,8 +1,8 @@
 .manPic {
 	width: 200px;
-	background-image: url('https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/MAN/MAN+(3).jpg');
+	background-image: url('https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/MAN/MAN+(8).jpg');
 	background-position: center;
-	background-size: 250px;
+	background-size: 300px;
 }
 
 .manPicFrame {
@@ -14,9 +14,9 @@
 
 .womanPic {
 	width: 200px;
-	background-image: url('https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(8).jpg');
+	background-image: url('https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(13).jpg');
 	background-position: center;
-	background-size: 250px;
+	background-size: 200px;
 }
 
 .womanPicFrame {

@@ -2962,4 +2962,69 @@ public class WelcomeController {
 			}
 		}
 	}
+
+	@GetMapping(path = "/groupGreeting.asp")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView groupGreeting(@RequestParam(required = false) Location location, @RequestParam(required = false) ServiceTag serviceTag,
+		Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
+
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.groupGreeting",
+			null,
+			locale
+		));
+
+		documentElement.setAttribute(
+			"signIn",
+			authentication.getName()
+		);
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
+
+		// 確認性別
+		Boolean isMale = me.getGender();
+
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
+
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
+
+		ModelAndView modelAndView = new ModelAndView("groupGreeting");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
 }
