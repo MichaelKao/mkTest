@@ -352,6 +352,12 @@ public class Lover implements java.io.Serializable {
 	private Relationship relationship;
 
 	/**
+	 * 相處關係
+	 */
+	@Column(name = "line_notify_access_token")
+	private String lineNotifyAccessToken;
+
+	/**
 	 * 默认构造器
 	 */
 	public Lover() {
@@ -965,6 +971,20 @@ public class Lover implements java.io.Serializable {
 	 */
 	public void setRelationship(Relationship relationship) {
 		this.relationship = relationship;
+	}
+
+	/**
+	 * @return LINE 网站服务通知访问令牌
+	 */
+	public String getLineNotifyAccessToken() {
+		return lineNotifyAccessToken;
+	}
+
+	/**
+	 * @param lineNotifyAccessToken LINE 网站服务通知访问令牌
+	 */
+	public void setLineNotifyAccessToken(String lineNotifyAccessToken) {
+		this.lineNotifyAccessToken = lineNotifyAccessToken;
 	}
 
 	/**

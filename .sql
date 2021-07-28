@@ -685,6 +685,9 @@ ALTER TABLE"qing_ren"
 ADD COLUMN"xiang_chu_guan_xi" "xiang_chu_guan_xi";
 COMMENT ON COLUMN"qing_ren"."xiang_chu_guan_xi"IS'相處關係';
 
+/**
+ * 透过 LINE 接收网站服务通知
+ */
 CREATE TABLE"line_notify_authentication"(
 	"id"serial PRIMARY KEY,
 	"state"varchar NOT NULL,
@@ -699,3 +702,10 @@ COMMENT ON COLUMN"line_notify_authentication"."sucker"IS'情人';
  * 群發行為
  */
 ALTER TYPE"xing_wei" ADD VALUE 'QUN_FA';
+
+/**
+ * 情人添加：LINE 网站服务通知访问令牌
+ */
+ALTER TABLE"qing_ren"
+ADD COLUMN"line_notify_access_token"text;
+COMMENT ON COLUMN"qing_ren"."line_notify_access_token"IS'LINE 网站服务通知访问令牌';

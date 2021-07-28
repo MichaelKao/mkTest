@@ -1,8 +1,11 @@
 package tw.musemodel.dingzhiqingren.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -94,7 +97,11 @@ public class Activation implements Serializable {
 
 	@Override
 	public String toString() {
-		return "tw.musemodel.dingzhiqingren.entity.Activation[ id=" + id + " ]";
+		try {
+			return new JsonMapper().writeValueAsString(this);
+		} catch (JsonProcessingException ignore) {
+			return Objects.isNull(id) ? "null" : id.toString();
+		}
 	}
 
 	/**

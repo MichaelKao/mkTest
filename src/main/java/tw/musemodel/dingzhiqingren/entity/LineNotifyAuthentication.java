@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(name = "line_notify_authentication", schema = "public")
+@Table(name = "line_notify_authentication")
 public class LineNotifyAuthentication implements java.io.Serializable {
 
 	private static final long serialVersionUID = -5683882748788156154L;
@@ -38,8 +38,8 @@ public class LineNotifyAuthentication implements java.io.Serializable {
 	private String state;
 
 	@Basic(optional = false)
-	@JoinColumn(name = "sucker", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-	@ManyToOne
+	@JoinColumn(name = "sucker", nullable = false, referencedColumnName = "id")
+	@ManyToOne(optional = false)
 	@NotNull
 	private Lover sucker;
 
