@@ -222,15 +222,22 @@ $(document).ready(function () {
 		return false;
 	});
 
-	$('BUTTON.openLine').click(function () {
+	$('A#openLine').click(function () {
+		whom = $('INPUT[name="whom"]').val();
 		$.post(
 			'/maleOpenLine.json',
 			{
-				whom: $('INPUT[name="whom"]').val(),
+				whom: whom
 			},
 			function (data) {
-				if (data.response) {
+				alert('1')
+				if (data.response && data.result === 'isLine') {
 					location.href = data.redirect;
+				} else if (data.response && data.result === 'isWeChat') {
+					var src = 'https://' + location.hostname + data.redirect;
+					$('IMG.weChatQRcode').attr('src', src);
+					$('A.weChatQRcode').attr('href', src);
+					$('#weChatModel').modal('show');
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');

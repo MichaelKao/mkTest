@@ -34,7 +34,7 @@
 				<DIV class="row justify-content-center">
 					<xsl:apply-templates select="lover"/>
 				</DIV>
-				<xsl:if test="@male">
+				<xsl:if test="@male and not(@me)">
 					<DIV class="modal fade" id="giftModal">
 						<DIV class="modal-dialog modal-dialog-centered">
 							<DIV class="modal-content">
@@ -60,82 +60,113 @@
 						</DIV>
 					</DIV>
 				</xsl:if>
-				<DIV class="modal fade" id="modal">
-					<DIV class="modal-dialog modal-dialog-centered">
-						<DIV class="modal-content">
-							<DIV class="modal-header">
-								<xsl:choose>
-									<xsl:when test="@male">
-										<H5 class="modal-title">和女生要求通訊軟體</H5>
-									</xsl:when>
-									<xsl:otherwise>
-										<H5 class="modal-title">和男生打招呼</H5>
-									</xsl:otherwise>
-								</xsl:choose>
-								<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
+				<xsl:if test="@male and not(@me)">
+					<DIV class="modal fade" id="weChatModel">
+						<DIV class="modal-dialog modal-dialog-centered">
+							<DIV class="modal-content">
+								<DIV class="modal-header">
+									<H5 class="modal-title">微信 WeCaht QRcode</H5>
+									<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
+								</DIV>
+								<DIV class="modal-body">
+									<DIV class="form-group">
+										<P>使用微信 APP 掃描加入好友</P>
+										<P>若是用手機，需以截圖或下載 QRCode 的方式使用微信 APP 加入好友</P>
+										<P class="text-primary">點擊 QRcode 可直接下載</P>
+										<A class="weChatQRcode" href="" download="weChatQRcode.png">
+											<IMG alt="weChatQRCode" class="weChatQRcode" src=""/>
+										</A>
+									</DIV>
+								</DIV>
+								<DIV class="modal-footer">
+									<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+										<xsl:value-of select="@i18n-cancel"/>
+									</BUTTON>
+								</DIV>
 							</DIV>
-							<DIV class="modal-body">
-								<DIV class="form-group col-8">
+						</DIV>
+					</DIV>
+				</xsl:if>
+				<xsl:if test="not(@me)">
+					<DIV class="modal fade" id="modal">
+						<DIV class="modal-dialog modal-dialog-centered">
+							<DIV class="modal-content">
+								<DIV class="modal-header">
 									<xsl:choose>
 										<xsl:when test="@male">
-											<LABEL class="h6" for="hello">請用一句話打動甜心</LABEL>
+											<H5 class="modal-title">和女生要求通訊軟體</H5>
 										</xsl:when>
 										<xsl:otherwise>
-											<LABEL class="h6" for="hello">招呼語</LABEL>
+											<H5 class="modal-title">和男生打招呼</H5>
 										</xsl:otherwise>
 									</xsl:choose>
-									<TEXTAREA class="form-control" id="hello" name="what" type="text">
-										<xsl:value-of select="lover/greeting"/>
-									</TEXTAREA>
+									<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
 								</DIV>
-							</DIV>
-							<DIV class="modal-footer">
-								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
-									<xsl:value-of select="@i18n-cancel"/>
-								</BUTTON>
-								<BUTTON class="btn btn-primary confirmBtn" type="submit">
-									<xsl:value-of select="@i18n-confirm"/>
-								</BUTTON>
+								<DIV class="modal-body">
+									<DIV class="form-group col-8">
+										<xsl:choose>
+											<xsl:when test="@male">
+												<LABEL class="h6" for="hello">請用一句話打動甜心</LABEL>
+											</xsl:when>
+											<xsl:otherwise>
+												<LABEL class="h6" for="hello">招呼語</LABEL>
+											</xsl:otherwise>
+										</xsl:choose>
+										<TEXTAREA class="form-control" id="hello" name="what" type="text">
+											<xsl:value-of select="lover/greeting"/>
+										</TEXTAREA>
+									</DIV>
+								</DIV>
+								<DIV class="modal-footer">
+									<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+										<xsl:value-of select="@i18n-cancel"/>
+									</BUTTON>
+									<BUTTON class="btn btn-primary confirmBtn" type="submit">
+										<xsl:value-of select="@i18n-confirm"/>
+									</BUTTON>
+								</DIV>
 							</DIV>
 						</DIV>
 					</DIV>
-				</DIV>
-				<DIV class="modal fade" id="cropModal">
-					<DIV class="modal-dialog modal-dialog-centered">
-						<DIV class="modal-content">
-							<DIV class="modal-header">
-								<DIV class="modal-title h5">
-									<IMG alt="relief" src="/accept.svg" width="30"/>
-									<SPAN class="ms-1">手持證件安心認證</SPAN>
+				</xsl:if>
+				<xsl:if test="@me">
+					<DIV class="modal fade" id="cropModal">
+						<DIV class="modal-dialog modal-dialog-centered">
+							<DIV class="modal-content">
+								<DIV class="modal-header">
+									<DIV class="modal-title h5">
+										<IMG alt="relief" src="/accept.svg" width="30"/>
+										<SPAN class="ms-1">手持證件安心認證</SPAN>
+									</DIV>
+									<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
 								</DIV>
-								<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
-							</DIV>
-							<DIV class="modal-body">
-								<P class="text-primary text-bold">上傳本人自拍並且手持證件，通過安心認證增加真實性！</P>
-								<P class="text-primary text-bold">此照片不會對外顯示，請安心上傳。</P>
-								<LABEL>
-									<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
-									<A class="btn btn-outline-info">上傳手持證件</A>
-								</LABEL>
-								<DIV class="result"></DIV>
-								<DIV class="progress-wrapper">
-									<DIV class="progress-info">
-										<DIV class="progress-percentage">
-											<span class="text-sm font-weight-bold">0%</span>
+								<DIV class="modal-body">
+									<P class="text-primary text-bold">上傳本人自拍並且手持證件，通過安心認證增加真實性！</P>
+									<P class="text-primary text-bold">此照片不會對外顯示，請安心上傳。</P>
+									<LABEL>
+										<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
+										<A class="btn btn-outline-info">上傳手持證件</A>
+									</LABEL>
+									<DIV class="result"></DIV>
+									<DIV class="progress-wrapper">
+										<DIV class="progress-info">
+											<DIV class="progress-percentage">
+												<span class="text-sm font-weight-bold">0%</span>
+											</DIV>
+										</DIV>
+										<DIV class="progress">
+											<DIV class="progress-bar bg-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></DIV>
 										</DIV>
 									</DIV>
-									<DIV class="progress">
-										<DIV class="progress-bar bg-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></DIV>
-									</DIV>
 								</DIV>
-							</DIV>
-							<DIV class="modal-footer">
-								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消</BUTTON>
-								<BUTTON class="btn btn-primary" id="cropBtn" type="button" style="display: none;">上傳</BUTTON>
+								<DIV class="modal-footer">
+									<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消</BUTTON>
+									<BUTTON class="btn btn-primary" id="cropBtn" type="button" style="display: none;">上傳</BUTTON>
+								</DIV>
 							</DIV>
 						</DIV>
 					</DIV>
-				</DIV>
+				</xsl:if>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/profile.js"/>
@@ -197,35 +228,24 @@
 								</BUTTON>
 							</DIV>
 							<DIV>
-								<xsl:choose>
-									<xsl:when test="/document/@accepted">
-										<BUTTON class="btn btn-icon-only btn-link ms-4 openLine" type="button">
-											<I class="fad fa-comment-plus font40"></I>
-										</BUTTON>
-									</xsl:when>
-									<xsl:otherwise>
-										<A class="btn btn-icon-only btn-link ms-4">
+								<A class="btn btn-icon-only btn-link ms-4">
+									<xsl:choose>
+										<xsl:when test="/document/@male">
 											<xsl:choose>
-												<xsl:when test="/document/@male">
-													<xsl:choose>
-														<xsl:when test="/document/@matched">
-															<xsl:attribute name="href">
-																<xsl:value-of select="/document/@matched"/>
-															</xsl:attribute>
-														</xsl:when>
-														<xsl:otherwise>
-															<xsl:attribute name="id">giveMeLine</xsl:attribute>
-														</xsl:otherwise>
-													</xsl:choose>
+												<xsl:when test="/document/@matched">
+													<xsl:attribute name="id">openLine</xsl:attribute>
 												</xsl:when>
 												<xsl:otherwise>
-													<xsl:attribute name="id">greeting</xsl:attribute>
+													<xsl:attribute name="id">giveMeLine</xsl:attribute>
 												</xsl:otherwise>
 											</xsl:choose>
-											<I class="fad fa-comment-plus font40"></I>
-										</A>
-									</xsl:otherwise>
-								</xsl:choose>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:attribute name="id">greeting</xsl:attribute>
+										</xsl:otherwise>
+									</xsl:choose>
+									<I class="fad fa-comment-plus font40"></I>
+								</A>
 							</DIV>
 							<xsl:if test="/document/@male">
 								<DIV>

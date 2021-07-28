@@ -953,32 +953,13 @@ public class WelcomeController {
 		);
 
 		if (gender) {
-			// 是否已交換過 LINE
-			LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(lover, me);
+			// 是否已交換 LINE
 			History history = historyRepository.findByInitiativeAndPassiveAndBehavior(me, lover, Behavior.LAI_KOU_DIAN);
 
-			if (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse())
-				&& lineGiven.getResponse() && Objects.isNull(history)) {
-				documentElement.setAttribute(
-					"accepted",
-					null
-				);
-			}
-
-			Boolean isLine = servant.isLine(URI.create(lover.getInviteMeAsLineFriend()));
-			Boolean isWeChat = servant.isWeChat(URI.create(lover.getInviteMeAsLineFriend()));
-			String redirect = null;
-			if (isLine) {
-				redirect = lover.getInviteMeAsLineFriend();
-			}
-			if (isWeChat) {
-				redirect = String.format("/%s.png", lover
-					.getIdentifier());
-			}
 			if (Objects.nonNull(history)) {
 				documentElement.setAttribute(
 					"matched",
-					redirect
+					null
 				);
 			}
 		}

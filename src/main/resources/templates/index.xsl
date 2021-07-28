@@ -139,6 +139,29 @@
 			</xsl:if>
 			<xsl:if test="@signIn">
 				<INPUT name="signIn" type="hidden" value="true"/>
+				<DIV class="modal fade show" id="lineNotifyModal">
+					<DIV class="modal-dialog modal-dialog-centered">
+						<DIV class="modal-content">
+							<DIV class="modal-header">
+								<BUTTON class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
+							</DIV>
+							<DIV class="modal-body">
+								<DIV class="form-group">
+									<LABEL class="text-xs" for="gift">使用平台支付不必擔心私下給甜心爽約，可檢舉查證屬實退回</LABEL>
+									<INPUT class="form-control" id="gift" name="howMany" required="" type="number"/>
+								</DIV>
+							</DIV>
+							<DIV class="modal-footer">
+								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+									<xsl:value-of select="@i18n-cancel"/>
+								</BUTTON>
+								<BUTTON class="btn btn-primary confirmBtn" type="submit">
+									<xsl:value-of select="@i18n-confirm"/>
+								</BUTTON>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
 				<DIV class="container px-0 px-md-3 py-7">
 					<INPUT name="gender" type="hidden">
 						<xsl:if test="@male">

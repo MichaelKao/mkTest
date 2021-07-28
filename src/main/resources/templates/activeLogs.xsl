@@ -63,7 +63,7 @@
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
-								<H5 class="modal-title">請等待微信 WeCaht QRcode 出現</H5>
+								<H5 class="modal-title">微信 WeCaht QRcode</H5>
 								<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">

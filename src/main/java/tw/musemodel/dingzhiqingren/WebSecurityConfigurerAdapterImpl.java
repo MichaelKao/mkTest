@@ -72,7 +72,8 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 						"/reactivate.asp",
 						"/reactivate.json",
 						"/signIn.asp",
-						"/signUp.asp"
+						"/signUp.asp",
+						"/*.png"
 					).permitAll().
 					anyRequest().authenticated()
 			).
@@ -132,7 +133,6 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 			ignoring().
 			antMatchers(
 				"/*.html",
-				"/*.png",
 				"/IMAGE/**",
 				"/SCRIPT/**",
 				"/STYLE/**",
