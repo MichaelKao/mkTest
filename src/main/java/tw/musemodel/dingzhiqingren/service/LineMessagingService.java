@@ -171,6 +171,7 @@ public class LineMessagingService {
 	 * @param sucker 情人
 	 * @return 重定向网址
 	 */
+	@Transactional
 	public URI requestNotifyIntegration(String sessionId, Lover sucker) {
 		OAuthAuthorizationCode oAuthAuthorizationCode = new OAuthAuthorizationCode(
 			LINE_NOTIFY_CLIENT_ID,
