@@ -112,6 +112,7 @@
 							</DIV>
 							<DIV class="modal-body">
 								<P class="text-primary text-bold">上傳本人自拍並且手持證件，通過安心認證增加真實性！</P>
+								<P class="text-primary text-bold">此照片不會對外顯示，請安心上傳。</P>
 								<LABEL>
 									<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
 									<A class="btn btn-outline-info">上傳手持證件</A>
@@ -229,7 +230,7 @@
 							<xsl:if test="/document/@male">
 								<DIV>
 									<BUTTON class="btn btn-icon-only btn-link mx-4 gift" type="button">
-										<I class="fad fa-gift font40"></I>
+										<I class="fad fa-taxi font40"></I>
 									</BUTTON>
 								</DIV>
 							</xsl:if>

@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
@@ -68,6 +69,7 @@ import tw.musemodel.dingzhiqingren.repository.PictureRepository;
 import tw.musemodel.dingzhiqingren.repository.PlanRepository;
 import tw.musemodel.dingzhiqingren.service.AmazonWebServices;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_GROUP_GREETING;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
@@ -2829,7 +2831,9 @@ public class WelcomeController {
 	@Secured({"ROLE_YONGHU"})
 	ModelAndView search(@RequestParam(required = false) Location location, @RequestParam(required = false) ServiceTag serviceTag,
 		Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
-
+		if (servant.isNull(authentication)) {
+			servant.redirectToRoot();
+		}
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -2963,10 +2967,26 @@ public class WelcomeController {
 		}
 	}
 
+	/**
+	 * 群發打招呼
+	 *
+	 * @param location
+	 * @param serviceTag
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
 	@GetMapping(path = "/groupGreeting.asp")
 	@Secured({"ROLE_YONGHU"})
 	ModelAndView groupGreeting(@RequestParam(required = false) Location location, @RequestParam(required = false) ServiceTag serviceTag,
 		Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
+		if (servant.isNull(authentication)) {
+			servant.redirectToRoot();
+		}
 
 		// 本人
 		Lover me = loverService.loadByUsername(
@@ -3010,6 +3030,11 @@ public class WelcomeController {
 			null
 		);
 
+		// 男仕不需群發打招呼
+		if (isMale) {
+			servant.redirectToRoot();
+		}
+
 		// 通知數
 		if (loverService.annoucementCount(me) > 0) {
 			documentElement.setAttribute(
@@ -3023,8 +3048,42 @@ public class WelcomeController {
 			me.getIdentifier().toString()
 		);
 
+		documentElement.setAttribute(
+			"greeting",
+			me.getGreeting()
+		);
+
+		document = loverService.groupGreetingDocument(document, me);
+
 		ModelAndView modelAndView = new ModelAndView("groupGreeting");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
+	}
+
+	@PostMapping(path = "/groupGreeting.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String groupGreeting(Authentication authentication, String greetingMessage, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = loverService.groupGreeting(me, greetingMessage, locale);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
 	}
 }

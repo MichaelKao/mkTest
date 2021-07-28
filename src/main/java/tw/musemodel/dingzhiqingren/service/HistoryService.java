@@ -151,6 +151,11 @@ public class HistoryService {
 	public static final Behavior BEHAVIOR_CERTIFICATION_FAIL = Behavior.AN_XIN_SHI_BAI;
 
 	/**
+	 * 历程：甜心群發打招呼
+	 */
+	public static final Behavior BEHAVIOR_GROUP_GREETING = Behavior.QUN_FA;
+
+	/**
 	 * 车马费(男对女)
 	 *
 	 * @param initiative 男生
@@ -720,6 +725,7 @@ public class HistoryService {
 		return list;
 	}
 
+	// 歷程 document
 	public Document historiesToDocument(Lover lover) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -742,7 +748,8 @@ public class HistoryService {
 			// 這幾個行為主動者不須通知
 			if (activeLogs.getBehavior() == BEHAVIOR_RATE || activeLogs.getBehavior() == BEHAVIOR_FOLLOW
 				|| activeLogs.getBehavior() == BEHAVIOR_WITHDRAWAL_FAIL || activeLogs.getBehavior() == BEHAVIOR_WITHDRAWAL_SUCCESS
-				|| activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_FAIL || activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_SUCCESS) {
+				|| activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_FAIL || activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_SUCCESS
+				|| activeLogs.getBehavior() == BEHAVIOR_GROUP_GREETING) {
 				if (Objects.equals(lover, initiative)) {
 					continue;
 				}
@@ -871,7 +878,7 @@ public class HistoryService {
 					);
 				}
 			}
-			if (activeLogs.getBehavior() == BEHAVIOR_GREETING) {
+			if (activeLogs.getBehavior() == BEHAVIOR_GREETING || activeLogs.getBehavior() == BEHAVIOR_GROUP_GREETING) {
 				if (isMale) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;

@@ -424,7 +424,11 @@ public class History implements java.io.Serializable {
 		/**
 		 * 安心認證不通過
 		 */
-		AN_XIN_CHENG_GONG("AN_XIN_CHENG_GONG", 16);
+		AN_XIN_CHENG_GONG("AN_XIN_CHENG_GONG", 16),
+		/**
+		 * 群發
+		 */
+		QUN_FA("QUN_FA", 17);
 
 		private String label;
 

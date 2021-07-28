@@ -42,5 +42,9 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
 
 	public History findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(Lover initiative, Lover passive, Behavior behavior);
 
+	public History findTop1ByInitiativeAndBehaviorOrderByIdDesc(Lover initiative, Behavior behavior);
+
 	public History findByInitiativeAndPassiveAndBehavior(Lover initiative, Lover passive, Behavior behavior);
+
+	public List<History> findByInitiativeAndBehaviorAndOccurredGreaterThanOrderByOccurredDesc(Lover initiative, Behavior behavior, Date occurred);
 }

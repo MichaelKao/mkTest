@@ -73,9 +73,11 @@
 											<A class="dropdown-item border-radius-md" href="/looksMe.asp">
 												<SPAN>誰看過我</SPAN>
 											</A>
-											<A class="dropdown-item border-radius-md" href="/activeLogs.asp">
-												<SPAN>動態紀錄</SPAN>
-											</A>
+											<xsl:if test="@female">
+												<A class="dropdown-item border-radius-md" href="/groupGreeting.asp">
+													<SPAN>群發打招呼</SPAN>
+												</A>
+											</xsl:if>
 										</DIV>
 										<DIV class="d-lg-none">
 											<A class="dropdown-item border-radius-md" href="/profile/">
@@ -87,9 +89,11 @@
 											<A class="dropdown-item border-radius-md" href="/looksMe.asp">
 												<SPAN>誰看過我</SPAN>
 											</A>
-											<A class="dropdown-item border-radius-md" href="/activeLogs.asp">
-												<SPAN>動態紀錄</SPAN>
-											</A>
+											<xsl:if test="@female">
+												<A class="dropdown-item border-radius-md" href="/groupGreeting.asp">
+													<SPAN>群發打招呼</SPAN>
+												</A>
+											</xsl:if>
 										</DIV>
 									</DIV>
 								</LI>

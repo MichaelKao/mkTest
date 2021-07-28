@@ -338,24 +338,24 @@
 								</xsl:for-each>
 							</DIV>
 						</DIV>
-						<DIV class="col-md-12 mb-3">
-							<LABEL>服務地區</LABEL>
-							<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
-								<xsl:for-each select="location">
-									<DIV class="form-check ms-2">
-										<INPUT class="form-check-input location" id="location{@locationID}" type="checkbox" value="{@locationID}">
-											<xsl:if test="@locationSelected">
-												<xsl:attribute name="checked"/>
-											</xsl:if>
-										</INPUT>
-										<LABEL class="custom-control-label" for="location{@locationID}">
-											<xsl:value-of select="."/>
-										</LABEL>
-									</DIV>
-								</xsl:for-each>
-							</DIV>
-						</DIV>
 					</xsl:if>
+					<DIV class="col-md-12 mb-3">
+						<LABEL>服務地區</LABEL>
+						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
+							<xsl:for-each select="location">
+								<DIV class="form-check ms-2">
+									<INPUT class="form-check-input location" id="location{@locationID}" type="checkbox" value="{@locationID}">
+										<xsl:if test="@locationSelected">
+											<xsl:attribute name="checked"/>
+										</xsl:if>
+									</INPUT>
+									<LABEL class="custom-control-label" for="location{@locationID}">
+										<xsl:value-of select="."/>
+									</LABEL>
+								</DIV>
+							</xsl:for-each>
+						</DIV>
+					</DIV>
 				</DIV>
 				<DIV class="row">
 					<DIV class="col-md-6 text-right ms-auto">

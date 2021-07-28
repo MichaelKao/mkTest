@@ -694,3 +694,8 @@ COMMENT ON TABLE"line_notify_authentication"IS'透过 LINE 接收网站服务通
 COMMENT ON COLUMN"line_notify_authentication"."id"IS'主键';
 COMMENT ON COLUMN"line_notify_authentication"."state"IS'响应 CSRF 攻击的令牌';
 COMMENT ON COLUMN"line_notify_authentication"."sucker"IS'情人';
+
+/**
+ * 群發行為
+ */
+ALTER TYPE"xing_wei" ADD VALUE 'QUN_FA';

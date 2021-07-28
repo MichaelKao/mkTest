@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,6 +58,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.Specifications;
+import tw.musemodel.dingzhiqingren.WebSocketServer;
 import tw.musemodel.dingzhiqingren.entity.Activation;
 import tw.musemodel.dingzhiqingren.entity.Allowance;
 import tw.musemodel.dingzhiqingren.entity.AnnualIncome;
@@ -119,6 +121,8 @@ public class LoverService {
 
 	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+	private final static Short NUMBER_OF_GROUP_GREETING = Short.valueOf(System.getenv("NUMBER_OF_GROUP_GREETING"));
+
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
 
@@ -178,6 +182,9 @@ public class LoverService {
 
 	@Autowired
 	private WithdrawalInfoRepository withdrawalInfoRepository;
+
+	@Autowired
+	private WebSocketServer webSocketServer;
 
 	public List<Lover> loadLovers() {
 		return loverRepository.findAll();
@@ -1816,5 +1823,128 @@ public class LoverService {
 			LoverSpecification.vipOnTheWall(),
 			PageRequest.of(p, s)
 		);
+	}
+
+	public JSONObject groupGreeting(Lover female, String greetingMessage, Locale locale) {
+		if (Objects.isNull(greetingMessage) || greetingMessage.isBlank()) { //招呼語不能為空
+			throw new RuntimeException("greet.greetingMessageMustntBeNull");
+		}
+		if (within24hrsFromLastGroupGreeting(female)) { //24小時內已群發過打招呼
+			throw new RuntimeException("groupGreeting.within24hrsHasSent");
+		}
+
+		Set<Location> locations = female.getLocations();
+		List<Lover> lovers = loverRepository.findAll(LoverSpecification.malesListForGroupGreeting(true, locations));
+		Date current = new Date(System.currentTimeMillis());
+		int count = 0;
+		for (Lover male : lovers) {
+			// 發給 30 位男仕
+			if (count >= NUMBER_OF_GROUP_GREETING) {
+				break;
+			}
+			count += 1;
+			History history = new History(
+				female,
+				male,
+				Behavior.QUN_FA,
+				(short) 0
+			);
+			history.setOccurred(current);
+			history.setGreeting(greetingMessage);
+			historyRepository.save(history);
+			// 推送通知給男生
+			webSocketServer.sendNotification(
+				male.getIdentifier().toString(),
+				String.format(
+					"%s向你打招呼：「%s」",
+					female.getNickname(),
+					greetingMessage
+				));
+		}
+		historyRepository.flush();
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"groupGreeting.done",
+				null,
+				locale
+			)).
+			withResponse(true).
+			withRedirect("/").
+			toJSONObject();
+	}
+
+	public Document groupGreetingDocument(Document document, Lover female) {
+		Element documentElement = document.getDocumentElement();
+
+		History lastHistory = historyRepository.findTop1ByInitiativeAndBehaviorOrderByIdDesc(female, BEHAVIOR_GROUP_GREETING);
+		if (Objects.nonNull(lastHistory)) {
+			Boolean within24hr = within24hrsFromLastGroupGreeting(female);
+			if (within24hr) {
+				documentElement.setAttribute(
+					"within24hr",
+					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+						.format(lastHistory.getOccurred())
+				);
+			}
+		}
+
+		Calendar cal = Calendar.getInstance();
+		cal.getTime();
+		cal.add(Calendar.DAY_OF_MONTH, -5);
+		Date fiveDaysAgo = cal.getTime();
+
+		// 查看五天內的招呼紀錄
+		List<History> histories = historyRepository.findByInitiativeAndBehaviorAndOccurredGreaterThanOrderByOccurredDesc(female, BEHAVIOR_GROUP_GREETING, fiveDaysAgo);
+		for (History history : histories) {
+			Element historyElement = document.createElement("history");
+			documentElement.appendChild(historyElement);
+			historyElement.setAttribute("date", DATE_TIME_FORMATTER.format(
+				servant.toTaipeiZonedDateTime(
+					history.getOccurred()
+				).withZoneSameInstant(Servant.ASIA_TAIPEI)
+			));
+
+			Lover male = history.getPassive();
+
+			historyElement.setAttribute("nickname", male.getNickname());
+			historyElement.setAttribute("age", calculateAge(male).toString());
+			historyElement.setAttribute("profileImage", male.getProfileImage());
+			historyElement.setAttribute("identifier", male.getIdentifier().toString());
+			if (isVIP(history.getPassive())) {
+				historyElement.setAttribute("vip", null);
+			}
+			if (Objects.nonNull(male.getRelief())) {
+				Boolean relief = male.getRelief();
+				historyElement.setAttribute(
+					"relief",
+					relief ? "true" : "false"
+				);
+			}
+			historyElement.setAttribute(
+				"profileImage",
+				String.format(
+					"https://%s/profileImage/%s",
+					Servant.STATIC_HOST,
+					male.getProfileImage()
+				)
+			);
+		}
+
+		return document;
+	}
+
+	public boolean within24hrsFromLastGroupGreeting(Lover female) {
+		Date gpDate = null;
+		Date nowDate = null;
+		History history = historyRepository.findTop1ByInitiativeAndBehaviorOrderByIdDesc(female, BEHAVIOR_GROUP_GREETING);
+		if (Objects.nonNull(history)) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(history.getOccurred());
+			calendar.add(Calendar.HOUR, 24);
+			gpDate = calendar.getTime();
+			nowDate = new Date();
+		}
+		return nowDate.before(gpDate);
 	}
 }

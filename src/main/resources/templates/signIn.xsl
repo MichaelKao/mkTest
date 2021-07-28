@@ -81,7 +81,7 @@
 					<DIV class="card-footer text-center pt-0 px-lg-2 px-1">
 						<P class="text-sm mx-auto">
 							<SPAN class="me-1">還沒有帳號嗎?</SPAN>
-							<A href="/signUp.asp" class="text-primary text-gradient font-weight-bold">馬上註冊</A>
+							<A href="/signUp.asp" class="text-primary text-gradient font-weight-bold">免費註冊</A>
 						</P>
 					</DIV>
 				</DIV>
