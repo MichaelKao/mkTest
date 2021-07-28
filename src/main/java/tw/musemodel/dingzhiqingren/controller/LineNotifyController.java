@@ -48,10 +48,10 @@ public class LineNotifyController {
 	 * @param authentication 认证
 	 * @return 重定向
 	 */
-	@GetMapping(path = "/oauth/authorize")
+	@GetMapping(path = "/authorize.asp")
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView oauthAuthorize(HttpSession session, Authentication authentication) {
+	ModelAndView authorize(HttpSession session, Authentication authentication) {
 		if (servant.isNull(authentication)) {
 			Servant.redirectToRoot();
 		}
@@ -75,8 +75,8 @@ public class LineNotifyController {
 	 * @param oAuthAuthorizationCode OAuth2 Authorization Code
 	 * @return org.​springframework.​http.​ResponseEntity
 	 */
-	@PostMapping(path = "/oauth/authorize")
-	ResponseEntity<String> oauthAuthorize(OAuthAuthorizationCode oAuthAuthorizationCode) {
+	@PostMapping(path = "/authorize.asp")
+	ResponseEntity<String> authorized(OAuthAuthorizationCode oAuthAuthorizationCode) {
 		JavaScriptObjectNotation json = lineMessagingService.requestNotifyAccessToken(
 			oAuthAuthorizationCode
 		);
