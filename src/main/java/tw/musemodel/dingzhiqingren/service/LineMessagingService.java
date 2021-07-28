@@ -34,49 +34,33 @@ public class LineMessagingService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LineMessagingService.class);
 
+	/**
+	 * Access Token
+	 */
 	private static final String LINE_NOTIFY_ACCESS_TOKEN = System.getenv("LINE_NOTIFY_ACCESS_TOKEN");
 
+	/**
+	 * Client ID
+	 */
 	private static final String LINE_NOTIFY_CLIENT_ID = System.getenv("LINE_NOTIFY_CLIENT_ID");
 
+	/**
+	 * Client Secret
+	 */
 	private static final String LINE_NOTIFY_CLIENT_SECRET = System.getenv("LINE_NOTIFY_CLIENT_SECRET");
 
-	private static final String LINE_NOTIFY_ENDPOINT_HOST = System.getenv("LINE_NOTIFY_ENDPOINT_HOST");
-
 	/**
-	 * 重定向 URI
+	 * Host name for authentication API endpoint
 	 */
-	private static URI redirectUri;
-
-	static {
-		try {
-			redirectUri = new URIBuilder().
-				setScheme("https").
-				setHost(Servant.LOCALHOST).
-				setPath("/notify-bot.line.me/oauth/authorize").
-				build();
-		} catch (URISyntaxException uriSyntaxException) {
-			LOGGER.info(
-				String.format(
-					"无法解析生成的重定向 URI\n%s#redirectUri",
-					URI.class
-				),
-				uriSyntaxException
-			);
-		}
-	}
-
-	@Autowired
-	private LoverService loverService;
-
-	@Autowired
-	private LineNotifyAuthenticationRepository lineNotifyAuthenticationRepository;
+	private static final String LINE_NOTIFY_ENDPOINT_HOST = System.getenv("LINE_NOTIFY_ENDPOINT_HOST");
 
 	/**
 	 * LINE Notify 服务。
 	 *
+	 * @param accessToken 访问令牌
 	 * @param message 1000 characters max
 	 */
-	public void notify(String message) {
+	private static void notify(String accessToken, String message) {
 		try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
 			HttpPost httpPost = new HttpPost(
 				new URIBuilder("https://notify-api.line.me/api/notify").
@@ -96,7 +80,7 @@ public class LineMessagingService {
 				"Authorization",
 				String.format(
 					"Bearer %s",
-					LINE_NOTIFY_ACCESS_TOKEN
+					accessToken
 				)
 			);
 			closeableHttpClient.execute(httpPost);
@@ -105,12 +89,79 @@ public class LineMessagingService {
 			LOGGER.info(
 				String.format(
 					"%s.notify(\n\tString message = {}\n);",
-					getClass().getName()
+					LineMessagingService.class
 				),
 				message,
 				exception
 			);
 		}
+	}
+
+	/**
+	 * 用户号服务
+	 */
+	@Autowired
+	private LoverService loverService;
+
+	/**
+	 * LINE 通知数据访问对象
+	 */
+	@Autowired
+	private LineNotifyAuthenticationRepository lineNotifyAuthenticationRepository;
+
+	/**
+	 * 重定向 URI
+	 */
+	public static URI redirectUri;
+
+	/**
+	 * 初始化重定向 URI
+	 */
+	static {
+		try {
+			redirectUri = new URIBuilder().
+				setScheme("https").
+				setHost(Servant.LOCALHOST).
+				setPath("/notify-bot.line.me/authorize.asp").
+				build();
+		} catch (URISyntaxException uriSyntaxException) {
+			LOGGER.info(
+				String.format(
+					"无法解析生成的重定向 URI\n%s#redirectUri",
+					URI.class
+				),
+				uriSyntaxException
+			);
+		}
+	}
+
+	/**
+	 * LINE Notify 服务。
+	 *
+	 * @param message 最多 1000 个字符
+	 */
+	public static void notify(String message) {
+		notify(LINE_NOTIFY_ACCESS_TOKEN, message);
+	}
+
+	/**
+	 * LINE Notify 服务。
+	 *
+	 * @param sucker 接收人
+	 * @param message 最多 1000 个字符
+	 */
+	@Transactional(readOnly = true)
+	public static void notify(Lover sucker, String message) {
+		if (Objects.isNull(sucker)) {
+			throw new IllegalArgumentException("接收人不得为空值❗️");
+		}
+
+		final String lineNotifyAccessToken = sucker.getLineNotifyAccessToken();
+		if (Objects.isNull(lineNotifyAccessToken)) {
+			throw new NullPointerException("访问令牌不得为空值❗️");
+		}
+
+		notify(lineNotifyAccessToken, message);
 	}
 
 	/**
