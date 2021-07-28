@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -403,7 +402,7 @@ public class LoverService {
 		activation = activationRepository.saveAndFlush(activation);
 
 		// 暫時將激活碼送到 Line notify
-		lineMessagingService.notify(String.format(
+		LineMessagingService.notify(String.format(
 			"手機號碼 %s 的激活碼：%s️",
 			String.format(
 				"0%s",
@@ -537,7 +536,7 @@ public class LoverService {
 		Date expiry = calendar.getTime();
 
 		// 暫時將激活碼送到 Line notify
-		lineMessagingService.notify(String.format(
+		LineMessagingService.notify(String.format(
 			"手機號碼 %s 的激活碼：%s️",
 			String.format(
 				"0%s",
