@@ -2,7 +2,7 @@ package tw.musemodel.dingzhiqingren.controller;
 
 import java.net.URI;
 import javax.servlet.http.HttpSession;
-import me.line.notifybot.OAuthAuthorizeResponse;
+import me.line.notifybot.OAuthAuthorizationCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +13,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.service.LineMessagingService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 
 /**
+ * 控制器：透过 LINE 接收网站服务通知
  *
  * @author p@musemodel.tw
  */
@@ -40,15 +41,22 @@ public class LineNotifyController {
 	@Autowired
 	private LoverService loverService;
 
+	/**
+	 * 授权 LINE 接收网站服务通知。
+	 *
+	 * @param session HTTP session
+	 * @param authentication 认证
+	 * @return 重定向
+	 */
 	@GetMapping(path = "/oauth/authorize")
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView lineNotify(HttpSession session, Authentication authentication) {
+	ModelAndView oauthAuthorize(HttpSession session, Authentication authentication) {
 		if (servant.isNull(authentication)) {
 			Servant.redirectToRoot();
 		}
 
-		URI uri = lineMessagingService.notifyAuthorize(
+		URI uri = lineMessagingService.requestNotifyIntegration(
 			session.getId(),
 			loverService.loadByUsername(
 				authentication.getName()
@@ -61,13 +69,20 @@ public class LineNotifyController {
 		));
 	}
 
+	/**
+	 * 请求访问令牌。
+	 *
+	 * @param oAuthAuthorizationCode OAuth2 Authorization Code
+	 * @return org.​springframework.​http.​ResponseEntity
+	 */
 	@PostMapping(path = "/oauth/authorize")
-	ResponseEntity<String> oauthAuthorize(OAuthAuthorizeResponse oAuthAuthorizeResponse, @RequestBody String payload) {
-		LOGGER.info(
-			"第六十三行\n\n{}\n\n{}\n",
-			oAuthAuthorizeResponse,
-			payload
+	ResponseEntity<String> oauthAuthorize(OAuthAuthorizationCode oAuthAuthorizationCode) {
+		JavaScriptObjectNotation json = lineMessagingService.requestNotifyAccessToken(
+			oAuthAuthorizationCode
 		);
-		return new ResponseEntity<String>(HttpStatus.OK);
+		if (json.isResponse()) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 }

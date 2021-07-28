@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -20,7 +21,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(name = "line_notify_authentication", catalog = "youngme", schema = "public")
+@Table(name = "line_notify_authentication")
 public class LineNotifyAuthentication implements java.io.Serializable {
 
 	private static final long serialVersionUID = -5683882748788156154L;
@@ -37,8 +38,8 @@ public class LineNotifyAuthentication implements java.io.Serializable {
 	private String state;
 
 	@Basic(optional = false)
-	@Column(nullable = false)
-	@ManyToOne
+	@JoinColumn(name = "sucker", nullable = false, referencedColumnName = "id")
+	@ManyToOne(optional = false)
 	@NotNull
 	private Lover sucker;
 

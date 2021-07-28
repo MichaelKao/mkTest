@@ -4,19 +4,24 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
-import me.line.notifybot.OAuthAuthorizeRequest;
-import me.line.notifybot.OAuthAuthorizeResponse;
+import me.line.notifybot.OAuthAccessToken;
+import me.line.notifybot.OAuthAuthorizationCode;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tw.musemodel.dingzhiqingren.entity.LineNotifyAuthentication;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.LineNotifyAuthenticationRepository;
 
 /**
@@ -37,6 +42,9 @@ public class LineMessagingService {
 
 	private static final String LINE_NOTIFY_ENDPOINT_HOST = System.getenv("LINE_NOTIFY_ENDPOINT_HOST");
 
+	/**
+	 * 重定向 URI
+	 */
 	private static URI redirectUri;
 
 	static {
@@ -49,13 +57,16 @@ public class LineMessagingService {
 		} catch (URISyntaxException uriSyntaxException) {
 			LOGGER.info(
 				String.format(
-					"生成的重定向 URI\n%s#redirectUri 无法解析",
+					"无法解析生成的重定向 URI\n%s#redirectUri",
 					URI.class
 				),
 				uriSyntaxException
 			);
 		}
 	}
+
+	@Autowired
+	private LoverService loverService;
 
 	@Autowired
 	private LineNotifyAuthenticationRepository lineNotifyAuthenticationRepository;
@@ -102,19 +113,27 @@ public class LineMessagingService {
 		}
 	}
 
-	public URI notifyAuthorize(String sessionId, Lover sucker) {
-		OAuthAuthorizeRequest oAuthAuthorizeRequest = new OAuthAuthorizeRequest();
-		oAuthAuthorizeRequest.setClientId(LINE_NOTIFY_CLIENT_ID);
-		oAuthAuthorizeRequest.setRedirectUri(redirectUri);
-		oAuthAuthorizeRequest.setState(String.format(
-			"%s%d",
-			sessionId,
-			System.currentTimeMillis()
-		));
+	/**
+	 * 请求授权码。
+	 *
+	 * @param sessionId HTTP session 识别键
+	 * @param sucker 情人
+	 * @return 重定向网址
+	 */
+	public URI requestNotifyIntegration(String sessionId, Lover sucker) {
+		OAuthAuthorizationCode oAuthAuthorizationCode = new OAuthAuthorizationCode(
+			LINE_NOTIFY_CLIENT_ID,
+			redirectUri,
+			String.format(
+				"%s%d",
+				sessionId,
+				System.currentTimeMillis()
+			)
+		);
 
 		lineNotifyAuthenticationRepository.saveAndFlush(
 			new LineNotifyAuthentication(
-				oAuthAuthorizeRequest.getState(),
+				oAuthAuthorizationCode.getState(),
 				sucker
 			)
 		);
@@ -122,35 +141,40 @@ public class LineMessagingService {
 		URI uri;
 		try {
 			uri = new URIBuilder().
-				setScheme("https").
+				setScheme(Servant.SCHEME_HTTPS).
 				setHost(LINE_NOTIFY_ENDPOINT_HOST).
 				setPath("/oauth/authorize").
 				setParameters(
 					new BasicNameValuePair(
 						"response_type",
-						oAuthAuthorizeRequest.getResponseType()
+						oAuthAuthorizationCode.
+							getResponseType()
 					),
 					new BasicNameValuePair(
 						"client_id",
-						oAuthAuthorizeRequest.getClientId()
+						oAuthAuthorizationCode.
+							getClientId()
 					),
 					new BasicNameValuePair(
 						"redirect_uri",
-						oAuthAuthorizeRequest.
+						oAuthAuthorizationCode.
 							getRedirectUri().
 							toString()
 					),
 					new BasicNameValuePair(
 						"scope",
-						oAuthAuthorizeRequest.getScope()
+						oAuthAuthorizationCode.
+							getScope()
 					),
 					new BasicNameValuePair(
 						"state",
-						oAuthAuthorizeRequest.getState()
+						oAuthAuthorizationCode.
+							getState()
 					),
 					new BasicNameValuePair(
 						"response_mode",
-						oAuthAuthorizeRequest.getResponseMode()
+						oAuthAuthorizationCode.
+							getResponseMode()
 					)
 				).
 				build();
@@ -167,22 +191,115 @@ public class LineMessagingService {
 		return uri;
 	}
 
-	public void notifyToken(OAuthAuthorizeResponse oAuthAuthorizeResponse) {
-		if (Objects.nonNull(oAuthAuthorizeResponse.getError())) {
-			oAuthAuthorizeResponse.getErrorDescription();
-			return;
+	/**
+	 * 请求访问令牌。
+	 *
+	 * @param oAuthAuthorizationCode
+	 * @return 杰森格式对象
+	 */
+	@Transactional
+	public JavaScriptObjectNotation requestNotifyAccessToken(OAuthAuthorizationCode oAuthAuthorizationCode) {
+		if (Objects.nonNull(oAuthAuthorizationCode.getError())) {
+			return new JavaScriptObjectNotation().
+				withReason(
+					oAuthAuthorizationCode.getErrorDescription()
+				).
+				withResponse(false);
 		}
 
-		Lover sucker = lineNotifyAuthenticationRepository.
-			findOneByState(
-				oAuthAuthorizeResponse.getState()
-			).
-			orElseThrow().
-			getSucker();
+		String code = oAuthAuthorizationCode.getCode();
+		OAuthAccessToken oAuthAccessToken = new OAuthAccessToken(
+			code,
+			redirectUri,
+			LINE_NOTIFY_CLIENT_ID,
+			LINE_NOTIFY_CLIENT_SECRET
+		);
 
-		String code = oAuthAuthorizeResponse.getCode();
-		//TODO:	取得 access token
-		//TODO:	儲存 access token
-		//TODO:	刪除紀錄
+		try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
+			HttpPost httpPost = new HttpPost(new URIBuilder().
+				setScheme(Servant.SCHEME_HTTPS).
+				setHost(LINE_NOTIFY_ENDPOINT_HOST).
+				setPath("/oauth/token").
+				setParameters(
+					new BasicNameValuePair(
+						"grant_type",
+						oAuthAccessToken.
+							getGrantType()
+					),
+					new BasicNameValuePair(
+						"code",
+						oAuthAccessToken.
+							getCode()
+					),
+					new BasicNameValuePair(
+						"redirect_uri",
+						oAuthAccessToken.
+							getRedirectUri().
+							toString()
+					),
+					new BasicNameValuePair(
+						"client_id",
+						oAuthAccessToken.
+							getClientId()
+					),
+					new BasicNameValuePair(
+						"client_secret",
+						oAuthAccessToken.
+							getClientSecret()
+					)
+				).
+				build()
+			);
+			httpPost.addHeader(new BasicHeader("Content-Type", "application/x-www-form-urlencoded"));
+			CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
+			switch (closeableHttpResponse.getStatusLine().getStatusCode()) {
+				case HttpStatus.SC_OK:
+					break;
+				default:
+					return new JavaScriptObjectNotation().
+						withReason(
+							Servant.JSON_MAPPER.readValue(
+								closeableHttpResponse.
+									getEntity().
+									getContent(),
+								OAuthAccessToken.class
+							).getMessage()
+						).
+						withResponse(false);
+			}
+
+			Lover sucker = lineNotifyAuthenticationRepository.
+				findOneByState(
+					oAuthAuthorizationCode.getState()
+				).
+				orElseThrow().
+				getSucker();
+			sucker.setLineNotifyAccessToken(
+				Servant.JSON_MAPPER.readValue(
+					closeableHttpResponse.
+						getEntity().
+						getContent(),
+					OAuthAccessToken.class
+				).getAccessToken()
+			);
+			lineNotifyAuthenticationRepository.
+				deleteBySucker(sucker);//清除此人的请求数据
+
+			loverService.saveLover(sucker);
+			return new JavaScriptObjectNotation().
+				withResponse(true).
+				withResult(
+					Servant.JSON_MAPPER.readValue(
+						closeableHttpResponse.
+							getEntity().
+							getContent(),
+						OAuthAccessToken.class
+					)
+				);
+		} catch (Exception exception) {
+			return new JavaScriptObjectNotation().
+				withReason(exception.getLocalizedMessage()).
+				withResponse(false);
+		}
 	}
 }

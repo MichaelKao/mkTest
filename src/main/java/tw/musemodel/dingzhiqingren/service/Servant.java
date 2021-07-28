@@ -112,6 +112,11 @@ public class Servant {
 	/**
 	 * 静态资源网域
 	 */
+	public static final String SCHEME_HTTPS = "https";
+
+	/**
+	 * 静态资源网域
+	 */
 	public static final String STATIC_HOST = System.getenv("STATIC_HOST");
 
 	/**
