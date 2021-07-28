@@ -67,18 +67,18 @@ $(document).ready(function () {
 		$('#crop').html('請稍後...');
 		$('#crop').attr('disabled', 'true');
 
-		if (image.width < image.height && image.width < 900) {
+		if (image.width < image.height && image.width < 800) {
 			CutWidth = image.width;
 			CutHeight = image.width;
-		} else if (image.height < image.width && image.height < 900) {
+		} else if (image.height < image.width && image.height < 800) {
 			CutWidth = image.height;
 			CutHeight = image.height;
 		} else if (image.width < 100 && image.height < 100) {
 			alert('解析度太低');
 			return;
 		} else {
-			CutWidth = 900;
-			CutHeight = 900;
+			CutWidth = 800;
+			CutHeight = 800;
 		}
 		if (cropper) {
 			canvas = cropper.getCroppedCanvas({
@@ -128,8 +128,9 @@ $(document).ready(function () {
 				}
 				$cropModal.modal('hide');
 			},
-			error: function () {
-				alert('上傳失敗');
+			error: function (request, status, error) {
+				$('.toast-body').html('上傳失敗');
+				$('.toast').toast('show');
 				$cropModal.modal('hide');
 				return false;
 			}, xhr: function () {

@@ -73,7 +73,6 @@ $(document).ready(function () {
 
 	$cropModal.on('hidden.bs.modal', function () {
 		if (cropper) {
-			console.log(cropper.getCroppedCanvas())
 			cropper.destroy();
 			cropper = null;
 			input.value = '';
@@ -93,12 +92,24 @@ $(document).ready(function () {
 		$(cropBtn).html('請稍後...');
 		$(cropBtn).attr('disabled', 'true');
 
+		if (image.width < image.height && image.width < 800) {
+			CutWidth = image.width;
+			CutHeight = image.width;
+		} else if (image.height < image.width && image.height < 800) {
+			CutWidth = image.height;
+			CutHeight = image.height;
+		} else if (image.width < 100 && image.height < 100) {
+			alert('解析度太低');
+			return;
+		} else {
+			CutWidth = 800;
+			CutHeight = 800;
+		}
 		if (cropper) {
 			canvas = cropper.getCroppedCanvas({
 				width: CutWidth,
 				height: CutHeight,
 			});
-
 			canvas.toBlob(function (blob) {
 				var OK = uploadpic(blob);
 				if (!OK && typeof (OK) != 'undefined') {
@@ -127,8 +138,8 @@ $(document).ready(function () {
 				$(relief).text('安心認證審核中');
 				$cropModal.modal('hide');
 			},
-			error: function (error) {
-				$('.toast-body').html(error);
+			error: function (request, status, error) {
+				$('.toast-body').html('上傳失敗');
 				$('.toast').toast('show');
 				$cropModal.modal('hide');
 				return false;

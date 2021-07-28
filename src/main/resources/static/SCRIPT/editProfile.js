@@ -106,7 +106,7 @@ $(document).ready(function () {
 				$('INPUT[name="inviteMeAsLineFriend"]').val(data.result);
 				$('INPUT[name="inviteMeAsLineFriend"]').css('display', 'inline');
 			},
-			error: function () {
+			error: function (request, status, error) {
 				$('.toast-body').html('QRcode 轉址失敗，請重新上傳');
 				$('.toast').toast('show');
 				$cropModal.modal('hide');

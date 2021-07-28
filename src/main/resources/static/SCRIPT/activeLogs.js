@@ -134,8 +134,9 @@ $(document).ready(function () {
 					location.href = data.redirect;
 				} else if (data.response && data.result === 'isWeChat') {
 					var src = 'https://' + location.hostname + data.redirect;
+					$('IMG.weChatQRcode').attr('src', src);
+					$('A.weChatQRcode').attr('href', src);
 					$('#weChatModel').modal('show');
-					$('.weChatQRcode').attr('src', src);
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');
@@ -146,17 +147,4 @@ $(document).ready(function () {
 		return false;
 	});
 
-	$('BUTTON.download').click(function () {
-		$.post(
-			'/download.asp',
-			{
-				url: $('IMG.weChatQRcode').attr('src')
-			},
-			function (data) {
-
-			},
-			'json'
-			);
-		return false;
-	});
 });

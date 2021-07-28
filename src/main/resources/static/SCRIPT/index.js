@@ -190,7 +190,7 @@ $(document).ready(function () {
 		var screenHeight = $(window).height();
 
 		// 根據 screen 判斷
-		if (screenWidth < 769 && screenHeight < 800) {
+		if (screenWidth < 769 && screenHeight < 950) {
 			mobileFlag = true;
 		}
 
