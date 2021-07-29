@@ -85,16 +85,6 @@ public class LineNotifyController {
 	 * @param oAuthAuthorizationCode OAuth2 Authorization Code
 	 * @return org.​springframework.​http.​ResponseEntity
 	 */
-//	@PostMapping(path = "/authorize.asp")
-//	ResponseEntity<String> authorized(AuthorizationCode oAuthAuthorizationCode) {
-//		JavaScriptObjectNotation json = lineMessagingService.requestNotifyAccessToken(
-//			oAuthAuthorizationCode
-//		);
-//		if (json.isResponse()) {
-//			return new ResponseEntity<>(HttpStatus.OK);
-//		}
-//		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//	}
 	@PostMapping(path = "/authorize.asp")
 	@ResponseBody
 	ModelAndView authorized(AuthorizationCode oAuthAuthorizationCode) throws SAXException, IOException, ParserConfigurationException {
@@ -115,12 +105,24 @@ public class LineNotifyController {
 		return modelAndView;
 	}
 
+	/**
+	 * 实作后删除
+	 *
+	 * @param sucker
+	 * @return
+	 */
 	@GetMapping(path = "/{sucker}/status.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	String status(@PathVariable Lover sucker) {
 		return lineMessagingService.notifyStatus(sucker).toString();
 	}
 
+	/**
+	 * 实作后删除
+	 *
+	 * @param sucker
+	 * @return
+	 */
 	@GetMapping(path = "/{sucker}/revoke.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	String revoke(@PathVariable Lover sucker) {
