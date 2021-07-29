@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
-import me.line.notifybot.OAuthAuthorizationCode;
+import me.line.notifybot.oauth.AuthorizationCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +86,7 @@ public class LineNotifyController {
 	 * @return org.​springframework.​http.​ResponseEntity
 	 */
 //	@PostMapping(path = "/authorize.asp")
-//	ResponseEntity<String> authorized(OAuthAuthorizationCode oAuthAuthorizationCode) {
+//	ResponseEntity<String> authorized(AuthorizationCode oAuthAuthorizationCode) {
 //		JavaScriptObjectNotation json = lineMessagingService.requestNotifyAccessToken(
 //			oAuthAuthorizationCode
 //		);
@@ -97,7 +97,7 @@ public class LineNotifyController {
 //	}
 	@PostMapping(path = "/authorize.asp")
 	@ResponseBody
-	ModelAndView authorized(OAuthAuthorizationCode oAuthAuthorizationCode) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView authorized(AuthorizationCode oAuthAuthorizationCode) throws SAXException, IOException, ParserConfigurationException {
 		JavaScriptObjectNotation json = lineMessagingService.requestNotifyAccessToken(
 			oAuthAuthorizationCode
 		);
@@ -118,6 +118,12 @@ public class LineNotifyController {
 	@GetMapping(path = "/{sucker}/status.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	String status(@PathVariable Lover sucker) {
-		return LineMessagingService.notifyStatus(sucker).toString();
+		return lineMessagingService.notifyStatus(sucker).toString();
+	}
+
+	@GetMapping(path = "/{sucker}/revoke.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String revoke(@PathVariable Lover sucker) {
+		return lineMessagingService.notifyRevoke(sucker).toString();
 	}
 }
