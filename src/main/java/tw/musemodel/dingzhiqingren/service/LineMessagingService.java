@@ -377,9 +377,10 @@ public class LineMessagingService {
 							withResult(statusCode);
 				}
 			}
-			Status status = Servant.JSON_MAPPER.readValue(closeableHttpResponse.
-				getEntity().
-				getContent(),
+			Status status = Servant.JSON_MAPPER.readValue(
+				closeableHttpResponse.
+					getEntity().
+					getContent(),
 				Status.class
 			);
 
