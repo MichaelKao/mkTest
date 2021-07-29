@@ -403,7 +403,7 @@ public class LoverService {
 		activation = activationRepository.saveAndFlush(activation);
 
 		// 暫時將激活碼送到 Line notify
-		LineMessagingService.notify(String.format(
+		lineMessagingService.notify(String.format(
 			"手機號碼 %s 的激活碼：%s️",
 			String.format(
 				"0%s",
@@ -537,7 +537,7 @@ public class LoverService {
 		Date expiry = calendar.getTime();
 
 		// 暫時將激活碼送到 Line notify
-		LineMessagingService.notify(String.format(
+		lineMessagingService.notify(String.format(
 			"手機號碼 %s 的激活碼：%s️",
 			String.format(
 				"0%s",
