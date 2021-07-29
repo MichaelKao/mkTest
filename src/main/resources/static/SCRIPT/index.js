@@ -4,6 +4,8 @@ $(document).ready(function () {
 	let type;
 	let wrap;
 
+	$('#lineNotifyModal').modal('show');
+
 	if (isMobile() && $('INPUT[name="signIn"]').val() === 'true') {
 		if ($('INPUT[name="gender"]').val() === 'male') {
 			$('A.reliefA').addClass('active');

@@ -325,13 +325,14 @@ public class LineMessagingService {
 				).
 				orElseThrow().
 				getSucker();
+			oAuthAccessToken = Servant.JSON_MAPPER.readValue(
+				closeableHttpResponse.
+					getEntity().
+					getContent(),
+				OAuthAccessToken.class
+			);
 			sucker.setLineNotifyAccessToken(
-				Servant.JSON_MAPPER.readValue(
-					closeableHttpResponse.
-						getEntity().
-						getContent(),
-					OAuthAccessToken.class
-				).getAccessToken()
+				oAuthAccessToken.getAccessToken()
 			);
 			lineNotifyAuthenticationRepository.
 				deleteBySucker(sucker);//清除此人的请求数据
@@ -339,14 +340,7 @@ public class LineMessagingService {
 			loverService.saveLover(sucker);
 			return new JavaScriptObjectNotation().
 				withResponse(true).
-				withResult(
-					Servant.JSON_MAPPER.readValue(
-						closeableHttpResponse.
-							getEntity().
-							getContent(),
-						OAuthAccessToken.class
-					)
-				);
+				withResult(oAuthAccessToken);
 		} catch (Exception exception) {
 			return new JavaScriptObjectNotation().
 				withReason(exception.getLocalizedMessage()).

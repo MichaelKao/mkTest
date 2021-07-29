@@ -65,7 +65,7 @@
 						<DIV class="modal-dialog modal-dialog-centered">
 							<DIV class="modal-content">
 								<DIV class="modal-header">
-									<H5 class="modal-title">微信 WeCaht QRcode</H5>
+									<H5 class="modal-title">微信 WeChat QRcode</H5>
 									<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
 								</DIV>
 								<DIV class="modal-body">
@@ -318,14 +318,12 @@
 				</xsl:if>
 				<xsl:if test="@socialMedia">
 					<DIV class="mx-1">
-						<IMG class="border-radius-md" src="" width="32">
-							<xsl:if test="@socialMedia = 'line'">
-								<xsl:attribute name="src">/line.svg</xsl:attribute>
-							</xsl:if>
-							<xsl:if test="@socialMedia = 'weChat'">
-								<xsl:attribute name="src">/wechat.svg</xsl:attribute>
-							</xsl:if>
-						</IMG>
+						<xsl:if test="@socialMedia = 'line'">
+							<IMG class="border-radius-md" src="/line.svg" width="32"/>
+						</xsl:if>
+						<xsl:if test="@socialMedia = 'weChat'">
+							<IMG class="border-radius-md" src="/wechat.svg" width="32"/>
+						</xsl:if>
 					</DIV>
 				</xsl:if>
 			</DIV>

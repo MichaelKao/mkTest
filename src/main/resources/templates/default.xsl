@@ -78,6 +78,9 @@
 													<SPAN>群發打招呼</SPAN>
 												</A>
 											</xsl:if>
+											<A class="dropdown-item border-radius-md" href="/setting.asp">
+												<SPAN>進階設定</SPAN>
+											</A>
 										</DIV>
 										<DIV class="d-lg-none">
 											<A class="dropdown-item border-radius-md" href="/profile/">
@@ -94,6 +97,9 @@
 													<SPAN>群發打招呼</SPAN>
 												</A>
 											</xsl:if>
+											<A class="dropdown-item border-radius-md" href="/setting.asp">
+												<SPAN>進階設定</SPAN>
+											</A>
 										</DIV>
 									</DIV>
 								</LI>

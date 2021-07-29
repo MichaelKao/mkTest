@@ -184,6 +184,14 @@ public class WelcomeController {
 					Integer.toString(loverService.annoucementCount(me))
 				);
 			}
+
+			// 有無連動 LINE notify
+			if (Objects.nonNull(me.getLineNotifyAccessToken())) {
+				documentElement.setAttribute(
+					"lineNotify",
+					null
+				);
+			}
 		}
 
 		ModelAndView modelAndView = new ModelAndView("index");
@@ -3041,6 +3049,14 @@ public class WelcomeController {
 		return modelAndView;
 	}
 
+	/**
+	 * 群發打招呼
+	 *
+	 * @param authentication
+	 * @param greetingMessage
+	 * @param locale
+	 * @return
+	 */
 	@PostMapping(path = "/groupGreeting.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	String groupGreeting(Authentication authentication, String greetingMessage, Locale locale) {
@@ -3066,5 +3082,79 @@ public class WelcomeController {
 				toJSONObject();
 		}
 		return jsonObject.toString();
+	}
+
+	@GetMapping(path = "/setting.asp")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView setting(Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
+		if (servant.isNull(authentication)) {
+			servant.redirectToRoot();
+		}
+
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.setting",
+			null,
+			locale
+		));
+
+		documentElement.setAttribute(
+			"signIn",
+			authentication.getName()
+		);
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
+
+		// 確認性別
+		Boolean isMale = me.getGender();
+
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
+
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
+
+		if (Objects.nonNull(me.getLineNotifyAccessToken())) {
+			documentElement.setAttribute(
+				"lineNotify",
+				null
+			);
+		}
+
+		ModelAndView modelAndView = new ModelAndView("setting");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
 	}
 }

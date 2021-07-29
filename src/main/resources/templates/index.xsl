@@ -137,31 +137,30 @@
 					</DIV>
 				</SECTION>
 			</xsl:if>
-			<xsl:if test="@signIn">
-				<INPUT name="signIn" type="hidden" value="true"/>
-				<DIV class="modal fade show" id="lineNotifyModal">
+			<xsl:if test="not(@lineNotify) and @signIn">
+				<DIV class="modal fade" id="lineNotifyModal" aria-modal="true" role="dialog" style="display: block;">
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
-							<DIV class="modal-header">
-								<BUTTON class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
-							</DIV>
 							<DIV class="modal-body">
-								<DIV class="form-group">
-									<LABEL class="text-xs" for="gift">使用平台支付不必擔心私下給甜心爽約，可檢舉查證屬實退回</LABEL>
-									<INPUT class="form-control" id="gift" name="howMany" required="" type="number"/>
+								<DIV class="d-flex">
+									<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
 								</DIV>
-							</DIV>
-							<DIV class="modal-footer">
-								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
-									<xsl:value-of select="@i18n-cancel"/>
-								</BUTTON>
-								<BUTTON class="btn btn-primary confirmBtn" type="submit">
-									<xsl:value-of select="@i18n-confirm"/>
-								</BUTTON>
+								<DIV class="mt-3 text-center">
+									<I class="far fa-bell-on text-success mb-1" style="font-size: 50px;"></I>
+									<H4>接收Line Notify即時通知?</H4>
+									<P>這是LINE官方推出的新功能，若是有通知則可以推送到您的LINE上，第一時間收到通知消息，隱私又安全。</P>
+								</DIV>
+								<DIV class="text-center">
+									<A class="btn btn-primary mx-2" href="/notify-bot.line.me/authorize.asp">接收</A>
+									<BUTTON class="btn btn-secondary mx-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+								</DIV>
 							</DIV>
 						</DIV>
 					</DIV>
 				</DIV>
+			</xsl:if>
+			<xsl:if test="@signIn">
+				<INPUT name="signIn" type="hidden" value="true"/>
 				<DIV class="container px-0 px-md-3 py-7">
 					<INPUT name="gender" type="hidden">
 						<xsl:if test="@male">
