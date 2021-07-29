@@ -1,4 +1,4 @@
-package me.line.notifybot;
+package me.line.notifybot.oauth;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,7 +12,7 @@ import java.net.URI;
  * @author p@musemodel.tw
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OAuthAccessToken {
+public class AccessToken {
 
 	/**
 	 * Assigns "authorization_code"
@@ -60,7 +60,7 @@ public class OAuthAccessToken {
 	/**
 	 * 默认建构子
 	 */
-	public OAuthAccessToken() {
+	public AccessToken() {
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class OAuthAccessToken {
 	 * @param clientId 客户端 ID
 	 * @param clientSecret 密钥
 	 */
-	public OAuthAccessToken(String code, URI redirectUri, String clientId, String clientSecret) {
+	public AccessToken(String code, URI redirectUri, String clientId, String clientSecret) {
 		grantType = "authorization_code";
 		this.code = code;
 		this.redirectUri = redirectUri;

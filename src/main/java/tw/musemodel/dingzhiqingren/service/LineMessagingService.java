@@ -4,10 +4,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
-import me.line.notifybot.OAuthAccessToken;
-import me.line.notifybot.OAuthAuthorizationCode;
-import me.line.notifybot.OAuthStatus;
-import org.apache.commons.io.IOUtils;
+import me.line.notifybot.api.Notify;
+import me.line.notifybot.oauth.AccessToken;
+import me.line.notifybot.oauth.AuthorizationCode;
+import me.line.notifybot.api.Revoke;
+import me.line.notifybot.api.Status;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -44,6 +45,16 @@ public class LineMessagingService {
 	private static final String LINE_NOTIFY_ACCESS_TOKEN = System.getenv("LINE_NOTIFY_ACCESS_TOKEN");
 
 	/**
+	 * Host name for authentication API endpoint
+	 */
+	private static final String LINE_NOTIFY_API_ENDPOINT_HOST = System.getenv("LINE_NOTIFY_API_ENDPOINT_HOST");
+
+	/**
+	 * Host name for notification API endpoint
+	 */
+	private static final String LINE_NOTIFY_BOT_ENDPOINT_HOST = System.getenv("LINE_NOTIFY_BOT_ENDPOINT_HOST");
+
+	/**
 	 * Client ID
 	 */
 	private static final String LINE_NOTIFY_CLIENT_ID = System.getenv("LINE_NOTIFY_CLIENT_ID");
@@ -54,22 +65,19 @@ public class LineMessagingService {
 	private static final String LINE_NOTIFY_CLIENT_SECRET = System.getenv("LINE_NOTIFY_CLIENT_SECRET");
 
 	/**
-	 * Host name for authentication API endpoint
-	 */
-	private static final String LINE_NOTIFY_ENDPOINT_HOST = System.getenv("LINE_NOTIFY_ENDPOINT_HOST");
-
-	/**
 	 * LINE Notify 服务。
 	 *
 	 * @param accessToken 访问令牌
 	 * @param message 1000 characters max
 	 */
-	private static void notify(String accessToken, String message) {
+	@SuppressWarnings("ConvertToTryWithResources")
+	@Transactional(readOnly = true)
+	private static JavaScriptObjectNotation notify(String accessToken, String message) {
 		try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
 			HttpPost httpPost = new HttpPost(
 				new URIBuilder().
 					setScheme(Servant.SCHEME_HTTPS).
-					setHost(LINE_NOTIFY_ENDPOINT_HOST).
+					setHost(LINE_NOTIFY_BOT_ENDPOINT_HOST).
 					setPath("/api/notify").
 					setParameters(
 						new BasicNameValuePair(
@@ -79,19 +87,59 @@ public class LineMessagingService {
 					).
 					build()
 			);
-			httpPost.setHeader(
+			httpPost.setHeader(new BasicHeader(
 				HttpHeaders.CONTENT_TYPE,
 				"application/x-www-form-urlencoded"
-			);
-			httpPost.setHeader(
+			));
+			httpPost.setHeader(new BasicHeader(
 				HttpHeaders.AUTHORIZATION,
 				String.format(
 					"Bearer %s",
 					accessToken
 				)
+			));
+
+			CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
+			Integer statusCode = closeableHttpResponse.getStatusLine().getStatusCode();
+			if (HttpStatus.SC_OK != statusCode) {
+				closeableHttpResponse.close();
+
+				switch (statusCode) {
+					case HttpStatus.SC_BAD_REQUEST:
+						return new JavaScriptObjectNotation().
+							withReason("Bad request").
+							withResponse(false).
+							withResult(statusCode);
+					case HttpStatus.SC_UNAUTHORIZED:
+						return new JavaScriptObjectNotation().
+							withReason("Invalid access token").
+							withResponse(false).
+							withResult(statusCode);
+					case HttpStatus.SC_INTERNAL_SERVER_ERROR:
+						return new JavaScriptObjectNotation().
+							withReason("Failure due to server error").
+							withResponse(false).
+							withResult(statusCode);
+					default:
+						return new JavaScriptObjectNotation().
+							withReason("Processed over time or stopped").
+							withResponse(false).
+							withResult(statusCode);
+				}
+			}
+			Notify notify = Servant.JSON_MAPPER.readValue(
+				closeableHttpResponse.
+					getEntity().
+					getContent(),
+				Notify.class
 			);
-			closeableHttpClient.execute(httpPost);
+
+			closeableHttpResponse.close();
 			closeableHttpClient.close();
+			return new JavaScriptObjectNotation().
+				withReason(notify.getMessage()).
+				withResponse(200 == notify.getStatus()).
+				withResult(notify);
 		} catch (URISyntaxException | IOException exception) {
 			LOGGER.info(
 				String.format(
@@ -104,6 +152,9 @@ public class LineMessagingService {
 				message,
 				exception
 			);
+			return new JavaScriptObjectNotation().
+				withReason(exception.getLocalizedMessage()).
+				withResponse(false);
 		}
 	}
 
@@ -150,6 +201,7 @@ public class LineMessagingService {
 	 *
 	 * @param message 最多 1000 个字符
 	 */
+	@Transactional(readOnly = true)
 	public static void notify(String message) {
 		notify(LINE_NOTIFY_ACCESS_TOKEN, message);
 	}
@@ -175,13 +227,105 @@ public class LineMessagingService {
 	}
 
 	/**
+	 * 通过禁用访问令牌访问 API 来撤销通知配置。
+	 *
+	 * @param sucker 情人
+	 * @return 杰森格式对象
+	 */
+	@SuppressWarnings("ConvertToTryWithResources")
+	@Transactional
+	public JavaScriptObjectNotation notifyRevoke(Lover sucker) {
+		if (Objects.isNull(sucker)) {
+			return new JavaScriptObjectNotation().
+				withResponse(false).
+				withResult(sucker);
+		}
+
+		final String lineNotifyAccessToken = sucker.getLineNotifyAccessToken();
+		if (Objects.isNull(lineNotifyAccessToken)) {
+			return new JavaScriptObjectNotation().
+				withResponse(false).
+				withResult(sucker);
+		}
+
+		try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
+			HttpPost httpPost = new HttpPost(
+				new URIBuilder().
+					setScheme(Servant.SCHEME_HTTPS).
+					setHost(LINE_NOTIFY_API_ENDPOINT_HOST).
+					setPath("/api/revoke").
+					build()
+			);
+			httpPost.setHeader(new BasicHeader(
+				HttpHeaders.CONTENT_TYPE,
+				"application/x-www-form-urlencoded"
+			));
+			httpPost.setHeader(new BasicHeader(
+				HttpHeaders.AUTHORIZATION,
+				String.format(
+					"Bearer %s",
+					lineNotifyAccessToken
+				)
+			));
+
+			CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
+			Integer statusCode = closeableHttpResponse.getStatusLine().getStatusCode();
+			if (HttpStatus.SC_OK != statusCode) {
+				closeableHttpResponse.close();
+
+				switch (statusCode) {
+					case HttpStatus.SC_UNAUTHORIZED:
+						return new JavaScriptObjectNotation().
+							withReason("Invalid access token").
+							withResponse(false).
+							withResult(statusCode);
+					default:
+						return new JavaScriptObjectNotation().
+							withReason("Processed over time or stopped").
+							withResponse(false).
+							withResult(statusCode);
+				}
+			}
+			Revoke revoke = Servant.JSON_MAPPER.readValue(
+				closeableHttpResponse.
+					getEntity().
+					getContent(),
+				Revoke.class
+			);
+
+			sucker.setLineNotifyAccessToken("");
+			loverService.saveLover(sucker);
+
+			closeableHttpResponse.close();
+			closeableHttpClient.close();
+			return new JavaScriptObjectNotation().
+				withReason(revoke.getMessage()).
+				withResponse(200 == revoke.getStatus()).
+				withResult(revoke);
+		} catch (URISyntaxException | IOException exception) {
+			LOGGER.info(
+				String.format(
+					"%s.notifyRevoke(\n\t%s sucker = {}\n);",
+					LineMessagingService.class,
+					Lover.class
+				),
+				sucker,
+				exception
+			);
+			return new JavaScriptObjectNotation().
+				withReason(exception.getLocalizedMessage()).
+				withResponse(false);
+		}
+	}
+
+	/**
 	 * 检查连接状态和访问令牌的有效性。
 	 *
 	 * @param sucker 情人
 	 * @return 杰森格式对象
 	 */
 	@SuppressWarnings("ConvertToTryWithResources")
-	public static JavaScriptObjectNotation notifyStatus(Lover sucker) {
+	public JavaScriptObjectNotation notifyStatus(Lover sucker) {
 		if (Objects.isNull(sucker)) {
 			return new JavaScriptObjectNotation().
 				withResponse(false).
@@ -199,54 +343,55 @@ public class LineMessagingService {
 			HttpGet httpGet = new HttpGet(
 				new URIBuilder().
 					setScheme(Servant.SCHEME_HTTPS).
-					setHost(LINE_NOTIFY_ENDPOINT_HOST).
+					setHost(LINE_NOTIFY_API_ENDPOINT_HOST).
 					setPath("/api/status").
 					build()
 			);
-			httpGet.setHeader(
-				HttpHeaders.ACCEPT,
-				"*/*"
-			);
-			httpGet.setHeader(
+			httpGet.setHeader(new BasicHeader(
 				HttpHeaders.AUTHORIZATION,
 				String.format(
 					"Bearer %s",
 					lineNotifyAccessToken
 				)
-			);
+			));
+
 			CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpGet);
 			Integer statusCode = closeableHttpResponse.getStatusLine().getStatusCode();
-			switch (statusCode) {
-				case HttpStatus.SC_OK:
-					break;
-				default:
-					return new JavaScriptObjectNotation().
-						withResponse(false).
-						withResult(statusCode);
-			}
-			String payload = IOUtils.toString(
-				closeableHttpResponse.
-					getEntity().
-					getContent(),
-				Servant.UTF_8
-			);
-			LOGGER.info("第二一三行\n\n{}\n", payload);
+			if (HttpStatus.SC_OK != statusCode) {
+				closeableHttpResponse.close();
 
-			OAuthStatus oAuthStatus = Servant.JSON_MAPPER.readValue(
-				payload,
-				OAuthStatus.class
+				sucker.setLineNotifyAccessToken("");
+				loverService.saveLover(sucker);
+
+				switch (statusCode) {
+					case HttpStatus.SC_UNAUTHORIZED:
+						return new JavaScriptObjectNotation().
+							withReason("Invalid access token").
+							withResponse(false).
+							withResult(statusCode);
+					default:
+						return new JavaScriptObjectNotation().
+							withReason("Processed over time or stopped").
+							withResponse(false).
+							withResult(statusCode);
+				}
+			}
+			Status status = Servant.JSON_MAPPER.readValue(closeableHttpResponse.
+				getEntity().
+				getContent(),
+				Status.class
 			);
 
 			closeableHttpResponse.close();
 			closeableHttpClient.close();
 			return new JavaScriptObjectNotation().
-				withReason(oAuthStatus.getMessage()).
-				withResponse(200 == oAuthStatus.getStatus()).
-				withResult(oAuthStatus);
+				withReason(status.getMessage()).
+				withResponse(200 == status.getStatus()).
+				withResult(status);
 		} catch (URISyntaxException | IOException exception) {
 			LOGGER.info(
 				String.format(
-					"%s.notify(\n\t%s sucker = {}\n);",
+					"%s.notifyStatus(\n\t%s sucker = {}\n);",
 					LineMessagingService.class,
 					Lover.class
 				),
@@ -268,7 +413,7 @@ public class LineMessagingService {
 	 */
 	@Transactional
 	public URI requestNotifyIntegration(String sessionId, Lover sucker) {
-		OAuthAuthorizationCode oAuthAuthorizationCode = new OAuthAuthorizationCode(
+		AuthorizationCode authorizationCode = new AuthorizationCode(
 			LINE_NOTIFY_CLIENT_ID,
 			redirectUri,
 			String.format(
@@ -280,7 +425,7 @@ public class LineMessagingService {
 
 		lineNotifyAuthenticationRepository.saveAndFlush(
 			new LineNotifyAuthentication(
-				oAuthAuthorizationCode.getState(),
+				authorizationCode.getState(),
 				sucker
 			)
 		);
@@ -289,38 +434,38 @@ public class LineMessagingService {
 		try {
 			uri = new URIBuilder().
 				setScheme(Servant.SCHEME_HTTPS).
-				setHost(LINE_NOTIFY_ENDPOINT_HOST).
+				setHost(LINE_NOTIFY_BOT_ENDPOINT_HOST).
 				setPath("/oauth/authorize").
 				setParameters(
 					new BasicNameValuePair(
 						"response_type",
-						oAuthAuthorizationCode.
+						authorizationCode.
 							getResponseType()
 					),
 					new BasicNameValuePair(
 						"client_id",
-						oAuthAuthorizationCode.
+						authorizationCode.
 							getClientId()
 					),
 					new BasicNameValuePair(
 						"redirect_uri",
-						oAuthAuthorizationCode.
+						authorizationCode.
 							getRedirectUri().
 							toString()
 					),
 					new BasicNameValuePair(
 						"scope",
-						oAuthAuthorizationCode.
+						authorizationCode.
 							getScope()
 					),
 					new BasicNameValuePair(
 						"state",
-						oAuthAuthorizationCode.
+						authorizationCode.
 							getState()
 					),
 					new BasicNameValuePair(
 						"response_mode",
-						oAuthAuthorizationCode.
+						authorizationCode.
 							getResponseMode()
 					)
 				).
@@ -345,17 +490,19 @@ public class LineMessagingService {
 	 * @return 杰森格式对象
 	 */
 	@Transactional
-	public JavaScriptObjectNotation requestNotifyAccessToken(OAuthAuthorizationCode oAuthAuthorizationCode) {
+	@SuppressWarnings("ConvertToTryWithResources")
+	public JavaScriptObjectNotation requestNotifyAccessToken(AuthorizationCode oAuthAuthorizationCode) {
 		if (Objects.nonNull(oAuthAuthorizationCode.getError())) {
 			return new JavaScriptObjectNotation().
 				withReason(
-					oAuthAuthorizationCode.getErrorDescription()
+					oAuthAuthorizationCode.
+						getErrorDescription()
 				).
 				withResponse(false);
 		}
 
 		String code = oAuthAuthorizationCode.getCode();
-		OAuthAccessToken oAuthAccessToken = new OAuthAccessToken(
+		AccessToken accessToken = new AccessToken(
 			code,
 			redirectUri,
 			LINE_NOTIFY_CLIENT_ID,
@@ -365,60 +512,66 @@ public class LineMessagingService {
 		try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
 			HttpPost httpPost = new HttpPost(new URIBuilder().
 				setScheme(Servant.SCHEME_HTTPS).
-				setHost(LINE_NOTIFY_ENDPOINT_HOST).
+				setHost(LINE_NOTIFY_BOT_ENDPOINT_HOST).
 				setPath("/oauth/token").
 				setParameters(
 					new BasicNameValuePair(
 						"grant_type",
-						oAuthAccessToken.
+						accessToken.
 							getGrantType()
 					),
 					new BasicNameValuePair(
 						"code",
-						oAuthAccessToken.
+						accessToken.
 							getCode()
 					),
 					new BasicNameValuePair(
 						"redirect_uri",
-						oAuthAccessToken.
+						accessToken.
 							getRedirectUri().
 							toString()
 					),
 					new BasicNameValuePair(
 						"client_id",
-						oAuthAccessToken.
+						accessToken.
 							getClientId()
 					),
 					new BasicNameValuePair(
 						"client_secret",
-						oAuthAccessToken.
+						accessToken.
 							getClientSecret()
 					)
 				).
 				build()
 			);
-			httpPost.setHeader(
-				new BasicHeader(
-					HttpHeaders.CONTENT_TYPE,
-					"application/x-www-form-urlencoded"
-				)
-			);
+			httpPost.setHeader(new BasicHeader(
+				HttpHeaders.CONTENT_TYPE,
+				"application/x-www-form-urlencoded"
+			));
+
 			CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
-			switch (closeableHttpResponse.getStatusLine().getStatusCode()) {
-				case HttpStatus.SC_OK:
-					break;
-				default:
-					return new JavaScriptObjectNotation().
-						withReason(
-							Servant.JSON_MAPPER.readValue(
-								closeableHttpResponse.
-									getEntity().
-									getContent(),
-								OAuthAccessToken.class
-							).getMessage()
-						).
-						withResponse(false);
+			Integer statusCode = closeableHttpResponse.getStatusLine().getStatusCode();
+			if (HttpStatus.SC_OK != statusCode) {
+				closeableHttpResponse.close();
+
+				switch (statusCode) {
+					case HttpStatus.SC_BAD_REQUEST:
+						return new JavaScriptObjectNotation().
+							withReason("Bad request").
+							withResponse(false).
+							withResult(statusCode);
+					default:
+						return new JavaScriptObjectNotation().
+							withReason("Processed over time or stopped").
+							withResponse(false).
+							withResult(statusCode);
+				}
 			}
+			accessToken = Servant.JSON_MAPPER.readValue(closeableHttpResponse.
+				getEntity().
+				getContent(),
+				AccessToken.class
+			);
 
 			Lover sucker = lineNotifyAuthenticationRepository.
 				findOneByState(
@@ -426,22 +579,19 @@ public class LineMessagingService {
 				).
 				orElseThrow().
 				getSucker();
-			oAuthAccessToken = Servant.JSON_MAPPER.readValue(
-				closeableHttpResponse.
-					getEntity().
-					getContent(),
-				OAuthAccessToken.class
-			);
 			sucker.setLineNotifyAccessToken(
-				oAuthAccessToken.getAccessToken()
+				accessToken.getAccessToken()
 			);
+			loverService.saveLover(sucker);
 			lineNotifyAuthenticationRepository.
 				deleteBySucker(sucker);//清除此人的请求数据
 
-			loverService.saveLover(sucker);
+			closeableHttpResponse.close();
+			closeableHttpClient.close();
 			return new JavaScriptObjectNotation().
+				withReason(accessToken.getMessage()).
 				withResponse(true).
-				withResult(oAuthAccessToken);
+				withResult(accessToken);
 		} catch (Exception exception) {
 			return new JavaScriptObjectNotation().
 				withReason(exception.getLocalizedMessage()).
