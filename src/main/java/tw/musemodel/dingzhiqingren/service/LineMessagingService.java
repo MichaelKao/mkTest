@@ -71,7 +71,6 @@ public class LineMessagingService {
 	 * @param message 1000 characters max
 	 */
 	@SuppressWarnings("ConvertToTryWithResources")
-	@Transactional(readOnly = true)
 	private static JavaScriptObjectNotation notify(String accessToken, String message) {
 		try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
 			HttpPost httpPost = new HttpPost(
@@ -197,7 +196,7 @@ public class LineMessagingService {
 	}
 
 	/**
-	 * LINE Notify 服务。
+	 * LINE Notify 服务；开发人员用。
 	 *
 	 * @param message 最多 1000 个字符
 	 */
@@ -207,13 +206,13 @@ public class LineMessagingService {
 	}
 
 	/**
-	 * LINE Notify 服务。
+	 * LINE Notify 服务；一般用户号用。
 	 *
-	 * @param sucker 接收人
+	 * @param sucker 用户号
 	 * @param message 最多 1000 个字符
 	 */
 	@Transactional(readOnly = true)
-	public static void notify(Lover sucker, String message) {
+	public void notify(Lover sucker, String message) {
 		if (Objects.isNull(sucker)) {
 			throw new IllegalArgumentException("接收人不得为空值❗️");
 		}
@@ -223,7 +222,9 @@ public class LineMessagingService {
 			throw new NullPointerException("访问令牌不得为空值❗️");
 		}
 
-		notify(lineNotifyAccessToken, message);
+		if (notifyStatus(sucker).isResponse()) {
+			notify(lineNotifyAccessToken, message);
+		}
 	}
 
 	/**
