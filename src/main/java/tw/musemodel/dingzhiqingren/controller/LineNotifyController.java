@@ -79,6 +79,12 @@ public class LineNotifyController {
 		));
 	}
 
+	/**
+	 * 请求访问令牌。
+	 *
+	 * @param oAuthAuthorizationCode OAuth2 Authorization Code
+	 * @return org.​springframework.​http.​ResponseEntity
+	 */
 	@PostMapping(path = "/authorize.asp")
 	ModelAndView authorized(AuthorizationCode oAuthAuthorizationCode) throws SAXException, IOException, ParserConfigurationException {
 		JavaScriptObjectNotation json = lineMessagingService.requestNotifyAccessToken(
@@ -98,12 +104,24 @@ public class LineNotifyController {
 		return modelAndView;
 	}
 
+	/**
+	 * 实作后删除
+	 *
+	 * @param sucker
+	 * @return
+	 */
 	@GetMapping(path = "/{sucker}/status.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	String status(@PathVariable Lover sucker) {
 		return lineMessagingService.notifyStatus(sucker).toString();
 	}
 
+	/**
+	 * 实作后删除
+	 *
+	 * @param sucker
+	 * @return
+	 */
 	@GetMapping(path = "/{sucker}/revoke.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	String revoke(@PathVariable Lover sucker) {

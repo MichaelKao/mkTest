@@ -3085,6 +3085,17 @@ public class WelcomeController {
 		return jsonObject.toString();
 	}
 
+	/**
+	 * 設定
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
 	@GetMapping(path = "/setting.asp")
 	@Secured({"ROLE_YONGHU"})
 	ModelAndView setting(Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
