@@ -70,6 +70,9 @@ public class HistoryService {
 	@Autowired
 	private WebSocketServer webSocketServer;
 
+	@Autowired
+	private LineMessagingService lineMessagingService;
+
 	/**
 	 * 历程：充值行为
 	 */
@@ -193,9 +196,15 @@ public class HistoryService {
 		webSocketServer.sendNotification(
 			passive.getIdentifier().toString(),
 			String.format(
-				"%s打賞車馬費%d給妳!",
+				"%s給了妳車馬費%d!",
 				initiative.getNickname(),
 				points
+			));
+		// LINE Notify
+		lineMessagingService.notify(
+			passive,
+			String.format(
+				"有一位男仕給妳車馬費！馬上查看 https://jkfans.ngrok.io/activeLogs.asp"
 			));
 
 		return new JavaScriptObjectNotation().
@@ -275,9 +284,15 @@ public class HistoryService {
 		webSocketServer.sendNotification(
 			passive.getIdentifier().toString(),
 			String.format(
-				"%s和妳要求LINE：「%s」",
+				"%s和妳要求通訊軟體：「%s」",
 				initiative.getNickname(),
 				greetingMessage
+			));
+		// LINE Notify
+		lineMessagingService.notify(
+			passive,
+			String.format(
+				"您收到一位男仕的通訊軟體要求！馬上查看 https://jkfans.ngrok.io/activeLogs.asp"
 			));
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
@@ -334,6 +349,12 @@ public class HistoryService {
 				initiative.getNickname(),
 				greetingMessage
 			));
+		// LINE Notify
+		lineMessagingService.notify(
+			passive,
+			String.format(
+				"有位甜心向你打招呼！馬上查看 https://jkfans.ngrok.io/activeLogs.asp"
+			));
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
 				"greet.done",
@@ -367,12 +388,6 @@ public class HistoryService {
 		if (Objects.equals(passive.getGender(), false)) {
 			throw new RuntimeException("inviteMeAsLineFriend.passiveMustBeMale");
 		}
-		//TODO:	男生有要求过吗？女生已给过吗？
-		//Long inviteMeAsLineFriendCount = historyRepository.countByInitiativeAndPassiveAndBehavior(
-		//	initiative,
-		//	passive,
-		//	BEHAVIOR_INVITE_ME_AS_LINE_FRIEND
-		//);
 		String inviteMeAsLineFriend = initiative.getInviteMeAsLineFriend();
 		if (Objects.isNull(inviteMeAsLineFriend) || inviteMeAsLineFriend.isBlank()) {
 			throw new RuntimeException("inviteMeAsLineFriend.mustntBeNull");
@@ -390,8 +405,14 @@ public class HistoryService {
 		webSocketServer.sendNotification(
 			passive.getIdentifier().toString(),
 			String.format(
-				"%s已答應給你LINE!",
+				"%s已答應給你通訊軟體!",
 				initiative.getNickname()
+			));
+		// LINE Notify
+		lineMessagingService.notify(
+			passive,
+			String.format(
+				"有位甜心答應給你通訊軟體！馬上查看 https://jkfans.ngrok.io/activeLogs.asp"
 			));
 
 		History historyReply = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
@@ -460,6 +481,12 @@ public class HistoryService {
 			String.format(
 				"%s已拒絕給你LINE!",
 				initiative.getNickname()
+			));
+		// LINE Notify
+		lineMessagingService.notify(
+			passive,
+			String.format(
+				"有位甜心拒絕給你通訊軟體..馬上查看 https://jkfans.ngrok.io/activeLogs.asp"
 			));
 
 		LineGiven lineGiven = new LineGiven(

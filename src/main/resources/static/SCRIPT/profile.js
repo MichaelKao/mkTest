@@ -230,7 +230,6 @@ $(document).ready(function () {
 				whom: whom
 			},
 			function (data) {
-				alert('1')
 				if (data.response && data.result === 'isLine') {
 					location.href = data.redirect;
 				} else if (data.response && data.result === 'isWeChat') {
