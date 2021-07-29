@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -93,5 +94,11 @@ public class LineNotifyController {
 		ModelAndView modelAndView = new ModelAndView("lineNotifyCallback");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
+	}
+
+	@GetMapping(path = "/{sucker}/status.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String status(@PathVariable Lover sucker) {
+		return LineMessagingService.notifyStatus(sucker).toString();
 	}
 }
