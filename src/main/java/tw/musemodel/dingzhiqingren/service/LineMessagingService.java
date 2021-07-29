@@ -76,7 +76,7 @@ public class LineMessagingService {
 			HttpPost httpPost = new HttpPost(
 				new URIBuilder().
 					setScheme(Servant.SCHEME_HTTPS).
-					setHost(LINE_NOTIFY_BOT_ENDPOINT_HOST).
+					setHost(LINE_NOTIFY_API_ENDPOINT_HOST).
 					setPath("/api/notify").
 					setParameters(
 						new BasicNameValuePair(
