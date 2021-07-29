@@ -6,8 +6,12 @@ import java.net.URISyntaxException;
 import java.util.Objects;
 import me.line.notifybot.OAuthAccessToken;
 import me.line.notifybot.OAuthAuthorizationCode;
+import me.line.notifybot.OAuthStatus;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -63,7 +67,10 @@ public class LineMessagingService {
 	private static void notify(String accessToken, String message) {
 		try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
 			HttpPost httpPost = new HttpPost(
-				new URIBuilder("https://notify-api.line.me/api/notify").
+				new URIBuilder().
+					setScheme(Servant.SCHEME_HTTPS).
+					setHost(LINE_NOTIFY_ENDPOINT_HOST).
+					setPath("/api/notify").
 					setParameters(
 						new BasicNameValuePair(
 							"message",
@@ -73,11 +80,11 @@ public class LineMessagingService {
 					build()
 			);
 			httpPost.setHeader(
-				"Content-Type",
+				HttpHeaders.CONTENT_TYPE,
 				"application/x-www-form-urlencoded"
 			);
 			httpPost.setHeader(
-				"Authorization",
+				HttpHeaders.AUTHORIZATION,
 				String.format(
 					"Bearer %s",
 					accessToken
@@ -88,9 +95,12 @@ public class LineMessagingService {
 		} catch (URISyntaxException | IOException exception) {
 			LOGGER.info(
 				String.format(
-					"%s.notify(\n\tString message = {}\n);",
-					LineMessagingService.class
+					"%s.notify(\n\t%s accessToken = {},\n\t%s message = {}\n);",
+					LineMessagingService.class,
+					String.class,
+					String.class
 				),
+				accessToken,
 				message,
 				exception
 			);
@@ -162,6 +172,91 @@ public class LineMessagingService {
 		}
 
 		notify(lineNotifyAccessToken, message);
+	}
+
+	/**
+	 * 检查连接状态和访问令牌的有效性。
+	 *
+	 * @param sucker 情人
+	 * @return 杰森格式对象
+	 */
+	@SuppressWarnings("ConvertToTryWithResources")
+	public static JavaScriptObjectNotation notifyStatus(Lover sucker) {
+		if (Objects.isNull(sucker)) {
+			return new JavaScriptObjectNotation().
+				withResponse(false).
+				withResult(sucker);
+		}
+
+		final String lineNotifyAccessToken = sucker.getLineNotifyAccessToken();
+		if (Objects.isNull(lineNotifyAccessToken)) {
+			return new JavaScriptObjectNotation().
+				withResponse(false).
+				withResult(sucker);
+		}
+
+		try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
+			HttpGet httpGet = new HttpGet(
+				new URIBuilder().
+					setScheme(Servant.SCHEME_HTTPS).
+					setHost(LINE_NOTIFY_ENDPOINT_HOST).
+					setPath("/api/status").
+					build()
+			);
+			httpGet.setHeader(
+				HttpHeaders.ACCEPT,
+				"*/*"
+			);
+			httpGet.setHeader(
+				HttpHeaders.AUTHORIZATION,
+				String.format(
+					"Bearer %s",
+					lineNotifyAccessToken
+				)
+			);
+			CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpGet);
+			Integer statusCode = closeableHttpResponse.getStatusLine().getStatusCode();
+			switch (statusCode) {
+				case HttpStatus.SC_OK:
+					break;
+				default:
+					return new JavaScriptObjectNotation().
+						withResponse(false).
+						withResult(statusCode);
+			}
+			String payload = IOUtils.toString(
+				closeableHttpResponse.
+					getEntity().
+					getContent(),
+				Servant.UTF_8
+			);
+			LOGGER.info("第二一三行\n\n{}\n", payload);
+
+			OAuthStatus oAuthStatus = Servant.JSON_MAPPER.readValue(
+				payload,
+				OAuthStatus.class
+			);
+
+			closeableHttpResponse.close();
+			closeableHttpClient.close();
+			return new JavaScriptObjectNotation().
+				withReason(oAuthStatus.getMessage()).
+				withResponse(200 == oAuthStatus.getStatus()).
+				withResult(oAuthStatus);
+		} catch (URISyntaxException | IOException exception) {
+			LOGGER.info(
+				String.format(
+					"%s.notify(\n\t%s sucker = {}\n);",
+					LineMessagingService.class,
+					Lover.class
+				),
+				sucker,
+				exception
+			);
+			return new JavaScriptObjectNotation().
+				withReason(exception.getLocalizedMessage()).
+				withResponse(false);
+		}
 	}
 
 	/**
@@ -302,7 +397,12 @@ public class LineMessagingService {
 				).
 				build()
 			);
-			httpPost.addHeader(new BasicHeader("Content-Type", "application/x-www-form-urlencoded"));
+			httpPost.setHeader(
+				new BasicHeader(
+					HttpHeaders.CONTENT_TYPE,
+					"application/x-www-form-urlencoded"
+				)
+			);
 			CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
 			switch (closeableHttpResponse.getStatusLine().getStatusCode()) {
 				case HttpStatus.SC_OK:

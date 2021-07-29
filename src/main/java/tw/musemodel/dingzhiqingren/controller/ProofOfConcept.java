@@ -1,21 +1,19 @@
 package tw.musemodel.dingzhiqingren.controller;
 
+import java.awt.geom.Point2D;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import javax.servlet.http.HttpSession;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import tw.musemodel.dingzhiqingren.entity.Lover;
-import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 
 /**
@@ -49,5 +47,21 @@ public class ProofOfConcept {
 			"來自 GitHub 的網勾\n\n有效载荷：\n{}\n",
 			payload
 		);
+	}
+
+	@GetMapping(path = "/angle.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String angle(@RequestParam Double x1, @RequestParam Double y1, @RequestParam Double x2, @RequestParam Double y2) {
+		Point2D pointA = new Point2D.Double(x1, y1),
+			pointB = new Point2D.Double(x2, y2);
+		double radian = Math.atan2(
+			(pointB.getY() - pointA.getY()),
+			(pointB.getX() - pointA.getX())
+		);
+		double theta = radian * (180 / Math.PI);
+		return new JSONObject().
+			put("弧度", radian).
+			put("角度", theta).
+			toString();
 	}
 }
