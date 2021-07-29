@@ -54,14 +54,26 @@
 					</DIV>
 					<DIV class="mx-auto my-4 h3">
 						<i class="far fa-bell-on me-1" aria-hidden="true"></i>
-						<xsl:choose>
-							<xsl:when test="@result = 'false'">
-								<SPAN>LINE Notify 連動失敗</SPAN>
-							</xsl:when>
-							<xsl:otherwise>
-								<SPAN>LINE Notify 連動成功</SPAN>
-							</xsl:otherwise>
-						</xsl:choose>
+						<xsl:if test="not(@revoke)">
+							<xsl:choose>
+								<xsl:when test="@result = 'false'">
+									<SPAN>LINE Notify 連動失敗</SPAN>
+								</xsl:when>
+								<xsl:otherwise>
+									<SPAN>LINE Notify 連動成功</SPAN>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:if>
+						<xsl:if test="@revoke">
+							<xsl:choose>
+								<xsl:when test="@result = 'false'">
+									<SPAN>LINE Notify 解除綁定失敗</SPAN>
+								</xsl:when>
+								<xsl:otherwise>
+									<SPAN>LINE Notify 已取消綁定</SPAN>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:if>
 					</DIV>
 					<DIV class="mx-auto text-center">
 						<A class="btn btn-outline-dark text-lg" href="/">

@@ -187,7 +187,9 @@ public class WelcomeController {
 			}
 
 			// 有無連動 LINE notify
-			if (Objects.nonNull(me.getLineNotifyAccessToken())) {
+			if (Objects.nonNull(me.getLineNotifyAccessToken())
+				&& !me.getLineNotifyAccessToken().isBlank()
+				&& !me.getLineNotifyAccessToken().isEmpty()) {
 				documentElement.setAttribute(
 					"lineNotify",
 					null
@@ -3158,7 +3160,10 @@ public class WelcomeController {
 			me.getIdentifier().toString()
 		);
 
-		if (Objects.nonNull(me.getLineNotifyAccessToken())) {
+		// 有無連動 LINE notify
+		if (Objects.nonNull(me.getLineNotifyAccessToken())
+			&& !me.getLineNotifyAccessToken().isBlank()
+			&& !me.getLineNotifyAccessToken().isEmpty()) {
 			documentElement.setAttribute(
 				"lineNotify",
 				null

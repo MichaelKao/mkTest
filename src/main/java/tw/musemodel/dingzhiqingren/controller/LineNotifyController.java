@@ -48,9 +48,6 @@ public class LineNotifyController {
 	@Autowired
 	private LoverService loverService;
 
-	@Autowired
-	private MessageSource messageSource;
-
 	/**
 	 * 授权 LINE 接收网站服务通知。
 	 *
@@ -116,15 +113,32 @@ public class LineNotifyController {
 		return lineMessagingService.notifyStatus(sucker).toString();
 	}
 
-	/**
-	 * 实作后删除
-	 *
-	 * @param sucker
-	 * @return
-	 */
-	@GetMapping(path = "/{sucker}/revoke.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/revoke.asp", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String revoke(@PathVariable Lover sucker) {
-		return lineMessagingService.notifyRevoke(sucker).toString();
+	ModelAndView revoke(Authentication authentication) throws SAXException, IOException, ParserConfigurationException {
+
+		Lover sucker = loverService.loadByUsername(
+			authentication.getName()
+		);
+		JavaScriptObjectNotation json = lineMessagingService.notifyRevoke(
+			sucker
+		);
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+
+		documentElement.setAttribute(
+			"result",
+			Boolean.toString(json.isResponse())
+		);
+
+		documentElement.setAttribute(
+			"revoke",
+			null
+		);
+
+		ModelAndView modelAndView = new ModelAndView("lineNotifyCallback");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
 	}
 }

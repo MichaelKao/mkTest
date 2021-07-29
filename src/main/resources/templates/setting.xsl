@@ -51,7 +51,7 @@
 											<A class="btn btn-link m-0 px-3 text-lg" href="/notify-bot.line.me/authorize.asp">綁定</A>
 										</xsl:when>
 										<xsl:otherwise>
-											<BUTTON class="btn btn-link m-0 px-3 text-lg">取消綁定</BUTTON>
+											<A class="btn btn-link m-0 px-3 text-lg" href="/notify-bot.line.me/revoke.asp">取消綁定</A>
 										</xsl:otherwise>
 									</xsl:choose>
 								</DIV>
