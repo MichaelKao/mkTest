@@ -76,24 +76,7 @@ public class LineNotifyController {
 		));
 	}
 
-	/**
-	 * 请求访问令牌。
-	 *
-	 * @param oAuthAuthorizationCode OAuth2 Authorization Code
-	 * @return org.​springframework.​http.​ResponseEntity
-	 */
-//	@PostMapping(path = "/authorize.asp")
-//	ResponseEntity<String> authorized(OAuthAuthorizationCode oAuthAuthorizationCode) {
-//		JavaScriptObjectNotation json = lineMessagingService.requestNotifyAccessToken(
-//			oAuthAuthorizationCode
-//		);
-//		if (json.isResponse()) {
-//			return new ResponseEntity<>(HttpStatus.OK);
-//		}
-//		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//	}
 	@PostMapping(path = "/authorize.asp")
-	@ResponseBody
 	ModelAndView authorized(OAuthAuthorizationCode oAuthAuthorizationCode) throws SAXException, IOException, ParserConfigurationException {
 		JavaScriptObjectNotation json = lineMessagingService.requestNotifyAccessToken(
 			oAuthAuthorizationCode

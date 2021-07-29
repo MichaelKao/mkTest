@@ -70,7 +70,7 @@
 									</DIV>
 									<DIV class="accordion-item mb-3">
 										<DIV class="accordion-collapse collapse" data-bs-parent="#accordionRental" id="wechat">
-											<IMG alt="qrcode" src="/IMAGE/wechat.png" style="max-width: 100%;"/>
+											<IMG alt="qrcode" src="/IMAGE/weChat.png" style="max-width: 100%;"/>
 										</DIV>
 									</DIV>
 								</DIV>
@@ -310,7 +310,7 @@
 								</LABEL>
 								<BUTTON class="btn btn-info p-1 mb-0 ms-1" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">如何取得 QR code?</BUTTON>
 							</DIV>
-							<DIV>
+							<DIV class="mt-1">
 								<INPUT class="form-control" name="inviteMeAsLineFriend" readonly="" required="" style="display: none;" type="text" value="">
 									<xsl:if test="inviteMeAsLineFriend">
 										<xsl:attribute name="style">display: inline;</xsl:attribute>

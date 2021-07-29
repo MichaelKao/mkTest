@@ -137,13 +137,13 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 				"/SCRIPT/**",
 				"/STYLE/**",
 				"/error",
-				"/favicon.ico",
 				"/inpay2/**",
 				"/manifest.json",
 				"/poc/**",
 				"/privacy.asp",
 				"/terms.asp",
-				"/webhook/**"
+				"/webhook/**",
+				"/ICON/**"
 			);
 		LOGGER.debug(
 			String.format(
