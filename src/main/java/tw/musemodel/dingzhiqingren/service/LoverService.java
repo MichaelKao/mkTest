@@ -93,6 +93,7 @@ import tw.musemodel.dingzhiqingren.repository.UserRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
+import static tw.musemodel.dingzhiqingren.service.Servant.PAGE_SIZE_ON_THE_WALL;
 import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
 /**
@@ -1633,28 +1634,28 @@ public class LoverService {
 		// 男仕顯示的列表
 		if (isMale) {
 			// 通過安心認證的甜心
-			reliefElement = indexElement(document, reliefElement, femalesOnTheWall(0, 3));
+			reliefElement = indexElement(document, reliefElement, femalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL));
 			areaElement.appendChild(reliefElement);
 			// 最新活躍(使用)時間
-			activeElement = indexElement(document, activeElement, latestActiveFemalesOnTheWall(0, 3));
+			activeElement = indexElement(document, activeElement, latestActiveFemalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL));
 			areaElement.appendChild(activeElement);
 			// 最近註冊
-			registerElement = indexElement(document, registerElement, latestRegisteredFemalesOnTheWall(0, 3));
+			registerElement = indexElement(document, registerElement, latestRegisteredFemalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL));
 			areaElement.appendChild(registerElement);
 		}
 		// 甜心顯示的列表
 		if (!isMale) {
 			// 貴賓會員的男仕
-			vipElement = indexElement(document, vipElement, vipOnTheWall(0, 3));
+			vipElement = indexElement(document, vipElement, vipOnTheWall(0, PAGE_SIZE_ON_THE_WALL));
 			areaElement.appendChild(vipElement);
 			// 通過安心認證的男仕
-			reliefElement = indexElement(document, reliefElement, malesOnTheWall(0, 3));
+			reliefElement = indexElement(document, reliefElement, malesOnTheWall(0, PAGE_SIZE_ON_THE_WALL));
 			areaElement.appendChild(reliefElement);
 			// 最新活躍(使用)時間
-			activeElement = indexElement(document, activeElement, latestActiveMalesOnTheWall(0, 3));
+			activeElement = indexElement(document, activeElement, latestActiveMalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL));
 			areaElement.appendChild(activeElement);
 			// 最近註冊
-			registerElement = indexElement(document, registerElement, latestRegisteredMalesOnTheWall(0, 3));
+			registerElement = indexElement(document, registerElement, latestRegisteredMalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL));
 			areaElement.appendChild(registerElement);
 		}
 		return document;

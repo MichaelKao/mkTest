@@ -72,6 +72,7 @@ import tw.musemodel.dingzhiqingren.service.HistoryService;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_GROUP_GREETING;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
+import static tw.musemodel.dingzhiqingren.service.Servant.PAGE_SIZE_ON_THE_WALL;
 import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
 /**
@@ -226,27 +227,27 @@ public class WelcomeController {
 		Page<Lover> page = null;
 		if (isMale) {
 			if ("relief".equals(type)) {
-				page = loverService.femalesOnTheWall(p, 3);
+				page = loverService.femalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
 			}
 			if ("active".equals(type)) {
-				page = loverService.latestActiveFemalesOnTheWall(p, 3);
+				page = loverService.latestActiveFemalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
 			}
 			if ("register".equals(type)) {
-				page = loverService.latestRegisteredFemalesOnTheWall(p, 3);
+				page = loverService.latestRegisteredFemalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
 			}
 		}
 		if (!isMale) {
 			if ("vip".equals(type)) {
-				page = loverService.vipOnTheWall(p, 3);
+				page = loverService.vipOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
 			}
 			if ("relief".equals(type)) {
-				page = loverService.malesOnTheWall(p, 3);
+				page = loverService.malesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
 			}
 			if ("active".equals(type)) {
-				page = loverService.latestActiveMalesOnTheWall(p, 3);
+				page = loverService.latestActiveMalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
 			}
 			if ("register".equals(type)) {
-				page = loverService.latestRegisteredMalesOnTheWall(p, 3);
+				page = loverService.latestRegisteredMalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
 			}
 		}
 		JSONArray jSONArray = loverService.seeMore(page);
