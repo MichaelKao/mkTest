@@ -93,7 +93,7 @@
 						</DIV>
 					</DIV>
 				</DIV>
-				<DIV class="card mx-md-7">
+				<DIV class="card mt-5 mx-md-7">
 					<DIV class="text-center">
 						<H4 class="text-primary">
 							<xsl:value-of select="@title"/>
