@@ -212,7 +212,7 @@
 
 	<xsl:template name="headMetaTags">
 		<META content="IE=edge" http-equiv="X-UA-Compatible"/>
-		<META content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport"/>
+		<META content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=0, user-scalable=no, shrink-to-fit=no" name="viewport"/>
 	</xsl:template>
 
 	<xsl:template name="bootstrapToast">
