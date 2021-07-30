@@ -136,6 +136,7 @@
 						</DIV>
 					</DIV>
 				</SECTION>
+				<xsl:call-template name="footer"/>
 			</xsl:if>
 			<xsl:if test="not(@lineNotify) and @signIn">
 				<DIV class="modal fade" id="lineNotifyModal" tabindex="-1">
@@ -190,7 +191,7 @@
 						<BUTTON class="ms-auto btn btn-link text-lg seeMoreBtn" data-type="vip" data-page="0">看更多<I class="far fa-angle-double-right ms-1"></I></BUTTON>
 					</xsl:if>
 				</DIV>
-				<DIV class="d-flex flex-wrap justify-content-start mx-2 vip">
+				<DIV class="d-flex flex-wrap justify-content-center mx-2 vip">
 					<xsl:for-each select="vip/section">
 						<A class="position-relative m-1" href="/profile/{identifier}/">
 							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
@@ -225,7 +226,7 @@
 						<BUTTON class="ms-auto btn btn-link text-lg seeMoreBtn" data-type="relief" data-page="0">看更多<I class="far fa-angle-double-right ms-1"></I></BUTTON>
 					</xsl:if>
 				</DIV>
-				<DIV class="d-flex flex-wrap justify-content-start mx-2 relief">
+				<DIV class="d-flex flex-wrap justify-content-center mx-2 relief">
 					<xsl:for-each select="relief/section">
 						<A class="position-relative m-1" href="/profile/{identifier}/">
 							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
@@ -260,7 +261,7 @@
 						<BUTTON class="ms-auto btn btn-link text-lg seeMoreBtn" data-type="active" data-page="0">看更多<I class="far fa-angle-double-right ms-1"></I></BUTTON>
 					</xsl:if>
 				</DIV>
-				<DIV class="d-flex flex-wrap justify-content-start mx-2 active">
+				<DIV class="d-flex flex-wrap justify-content-center mx-2 active">
 					<xsl:for-each select="active/section">
 						<A class="position-relative m-1" href="/profile/{identifier}/">
 							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
@@ -295,7 +296,7 @@
 						<BUTTON class="ms-auto btn btn-link text-lg seeMoreBtn" data-type="register" data-page="0">看更多<I class="far fa-angle-double-right ms-1"></I></BUTTON>
 					</xsl:if>
 				</DIV>
-				<DIV class="d-flex flex-wrap justify-content-start mx-2 register">
+				<DIV class="d-flex flex-wrap justify-content-center mx-2 register">
 					<xsl:for-each select="register/section">
 						<A class="position-relative m-1" href="/profile/{identifier}/">
 							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
