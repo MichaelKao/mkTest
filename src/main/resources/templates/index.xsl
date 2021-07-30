@@ -23,9 +23,9 @@
 			<TITLE>
 				<xsl:value-of select="@title"/>
 			</TITLE>
+			<LINK href="/manifest.json" rel="manifest"/>
 			<xsl:call-template name="headLinkTags"/>
 			<LINK href="/STYLE/index.css" rel="stylesheet"/>
-			<LINK href="/manifest.json" rel="manifest"/>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
@@ -138,7 +138,7 @@
 				</SECTION>
 			</xsl:if>
 			<xsl:if test="not(@lineNotify) and @signIn">
-				<DIV class="modal fade" id="lineNotifyModal" aria-modal="true" role="dialog" style="display: block;">
+				<DIV class="modal fade" id="lineNotifyModal" tabindex="-1">
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-body">

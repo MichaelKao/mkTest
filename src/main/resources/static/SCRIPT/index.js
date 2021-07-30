@@ -4,7 +4,9 @@ $(document).ready(function () {
 	let type;
 	let wrap;
 
-	$('#lineNotifyModal').modal('show');
+	if ($('INPUT[name="signIn"]').val() === 'true') {
+		showModal();
+	}
 
 	if (isMobile() && $('INPUT[name="signIn"]').val() === 'true') {
 		if ($('INPUT[name="gender"]').val() === 'male') {
@@ -50,14 +52,12 @@ $(document).ready(function () {
 						'width': '152'
 					});
 					$(outterA).append(IMG);
-
 					let iconDiv = document.createElement('DIV');
 					$(iconDiv).attr({
 						'class': 'position-absolute top-0 right-0 text-center',
 						'style': 'width: 25px;'
 					});
 					$(outterA).append(iconDiv);
-
 					if (item.vip) {
 						let vipImg = document.createElement('IMG');
 						$(vipImg).attr({
@@ -81,7 +81,6 @@ $(document).ready(function () {
 					let infoDiv = document.createElement('DIV');
 					$(infoDiv).attr('class', 'position-absolute bottom-0 right-0 d-flex text-light text-bold');
 					$(outterA).append(infoDiv);
-
 					let infoSpan = document.createElement('SPAN');
 					$(infoSpan).attr('class', 'bg-dark opacity-6 border-radius-md px-1');
 					$(infoSpan).html(item.nickname + ' ' + item.age);
@@ -127,14 +126,12 @@ $(document).ready(function () {
 						'width': '152'
 					});
 					$(outterA).append(IMG);
-
 					let iconDiv = document.createElement('DIV');
 					$(iconDiv).attr({
 						'class': 'position-absolute top-0 right-0 text-center',
 						'style': 'width: 25px;'
 					});
 					$(outterA).append(iconDiv);
-
 					if (item.vip) {
 						let vipImg = document.createElement('IMG');
 						$(vipImg).attr({
@@ -158,7 +155,6 @@ $(document).ready(function () {
 					let infoDiv = document.createElement('DIV');
 					$(infoDiv).attr('class', 'position-absolute bottom-0 right-0 d-flex text-light text-bold');
 					$(outterA).append(infoDiv);
-
 					let infoSpan = document.createElement('SPAN');
 					$(infoSpan).attr('class', 'bg-dark opacity-6 border-radius-md px-1');
 					$(infoSpan).html(item.nickname + ' ' + item.age);
@@ -177,10 +173,8 @@ $(document).ready(function () {
 	});
 
 	function isMobile() {
-
 		var mobileAgents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
 		var mobileFlag = false;
-
 		// 根據 userAgent 判斷是否是手機
 		for (var v = 0; v < mobileAgents.length; v++) {
 			if (navigator.userAgent.indexOf(mobileAgents[v]) > 0) {
@@ -190,12 +184,37 @@ $(document).ready(function () {
 		}
 		var screenWidth = $(window).width();
 		var screenHeight = $(window).height();
-
 		// 根據 screen 判斷
 		if (screenWidth < 769 && screenHeight < 950) {
 			mobileFlag = true;
 		}
 
 		return mobileFlag;
+	}
+
+	function getCookie(cname) {
+		var name = cname + '=';
+		var ca = document.cookie.split(';');
+		for (var i = 0; i < ca.length; i++) {
+			var c = ca[i].trim();
+			if (c.indexOf(name) == 0)
+				return c.substring(name.length, c.length);
+		}
+		return '';
+	}
+
+	function setCookie(cname, cvalue, expireMinute) {
+		var d = new Date();
+		d.setTime(d.getTime() + (expireMinute * 60 * 1000));
+		var expires = "expires=" + d.toGMTString();
+		document.cookie = cname + "=" + cvalue + "; " + expires;
+	}
+
+	function showModal() {
+		if (getCookie('youngMeLineNotifyModal') === '') {
+			$('#lineNotifyModal').modal('show');
+			setCookie('youngMeLineNotifyModal', 'NO', 1 * 60 * 24);
+			return;
+		}
 	}
 });

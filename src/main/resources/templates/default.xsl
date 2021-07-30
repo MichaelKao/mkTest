@@ -201,10 +201,16 @@
 	</xsl:template>
 
 	<xsl:template name="headLinkTags">
-		<LINK href="/ICON/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-		<LINK href="/ICON/apple-touch-icon.png" rel="apple-touch-startup-image"/>
-		<LINK href="/ICON/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
-		<LINK href="/ICON/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
+		<LINK href="/ICON/favicon.ico" rel="icon" type="image/x-icon"/>
+		<LINK href="/ICON/apple-touch-icon.png" rel="apple-touch-icon"/>
+		<LINK href="/ICON/apple-touch-icon-57x57.png" rel="apple-touch-icon" sizes="57x57"/>
+		<LINK href="/ICON/apple-touch-icon-72x72.png" rel="apple-touch-icon" sizes="72x72"/>
+		<LINK href="/ICON/apple-touch-icon-76x76.png" rel="apple-touch-icon" sizes="76x76"/>
+		<LINK href="/ICON/apple-touch-icon-114x114.png" rel="apple-touch-icon" sizes="114x114"/>
+		<LINK href="/ICON/apple-touch-icon-120x120.png" rel="apple-touch-icon" sizes="120x120"/>
+		<LINK href="/ICON/apple-touch-icon-144x144.png" rel="apple-touch-icon" sizes="144x144"/>
+		<LINK href="/ICON/apple-touch-icon-152x152.png" rel="apple-touch-icon" sizes="152x152"/>
+		<LINK href="/ICON/apple-touch-icon-180x180.png" rel="apple-touch-icon" sizes="180x180"/>
 		<LINK href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet"/>
 		<LINK href="/STYLE/soft-design-system.css" rel="stylesheet"/>
 		<LINK href="/STYLE/default.css" rel="stylesheet"/>
@@ -212,7 +218,7 @@
 
 	<xsl:template name="headMetaTags">
 		<META content="IE=edge" http-equiv="X-UA-Compatible"/>
-		<META content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=0, user-scalable=no, shrink-to-fit=no" name="viewport"/>
+		<META content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
 	</xsl:template>
 
 	<xsl:template name="bootstrapToast">
