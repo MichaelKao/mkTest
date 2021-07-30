@@ -171,6 +171,7 @@
 						</xsl:if>
 					</INPUT>
 					<xsl:apply-templates select="area"/>
+					<xsl:call-template name="footer"/>
 				</DIV>
 			</xsl:if>
 			<xsl:call-template name="bodyScriptTags"/>

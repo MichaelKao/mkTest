@@ -167,6 +167,7 @@
 						</DIV>
 					</DIV>
 				</xsl:if>
+				<xsl:call-template name="footer"/>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/profile.js"/>

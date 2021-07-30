@@ -31,7 +31,7 @@
 	<xsl:template name="navbar">
 		<DIV class="container position-sticky z-index-sticky top-0">
 			<INPUT name="identifier" type="hidden" value="{@identifier}"/>
-			<NAV class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
+			<NAV class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-1 py-md-3 start-0 end-0 mx-3">
 				<DIV class="container-fluid">
 					<A class="navbar-brand font-weight-bolder ms-sm-3" href="/">Young Me 甜蜜約會</A>
 					<DIV>
@@ -228,5 +228,18 @@
 				<DIV class="toast-body text-light"/>
 			</DIV>
 		</DIV>
+	</xsl:template>
+
+	<xsl:template name="footer">
+		<FOOTER class="text-xs my-4">
+			<DIV class="text-center">
+				<I class="fal fa-copyright me-1"></I>
+				<SPAN>2021 Young Me 甜蜜約會</SPAN>
+			</DIV>
+			<DIV class="text-center">
+				<A class="m-2 text-secondary" href="/privacy.asp">隱私政策</A>
+				<A class="m-2 text-secondary" href="/terms.asp">服務條款</A>
+			</DIV>
+		</FOOTER>
 	</xsl:template>
 </xsl:stylesheet>

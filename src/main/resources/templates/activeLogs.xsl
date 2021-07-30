@@ -169,6 +169,7 @@
 						</xsl:for-each>
 					</DIV>
 				</DIV>
+				<xsl:call-template name="footer"/>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/activeLogs.js"/>

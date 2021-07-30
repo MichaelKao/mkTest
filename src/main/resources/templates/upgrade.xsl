@@ -57,6 +57,7 @@
 						</xsl:if>
 					</DIV>
 				</DIV>
+				<xsl:call-template name="footer"/>
 			</DIV>
 			<DIV class="loadingWrap">
 				<DIV class="loading">

@@ -94,8 +94,15 @@
 					</DIV>
 				</DIV>
 				<DIV class="card mx-md-7">
+					<DIV class="text-center">
+						<H4 class="text-primary">
+							<xsl:value-of select="@title"/>
+						</H4>
+						<HR class="horizontal dark"/>
+					</DIV>
 					<xsl:apply-templates select="lover"/>
 				</DIV>
+				<xsl:call-template name="footer"/>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.js" integrity="sha512-E4KfIuQAc9ZX6zW1IUJROqxrBqJXPuEcDKP6XesMdu2OV4LW7pj8+gkkyx2y646xEV7yxocPbaTtk2LQIJewXw==" referrerpolicy="no-referrer"/>
@@ -108,11 +115,6 @@
 	<xsl:template match="lover">
 		<FORM action="/me.asp" method="post">
 			<DIV class="card-body pt-1">
-				<DIV class="d-flex">
-					<A class="text-primary h2" href="/profile/">
-						<I class="fad fa-chevron-double-left"></I>
-					</A>
-				</DIV>
 				<DIV class="row mt-3">
 					<DIV class="col-md-12 mb-3">
 						<LABEL for="nickname">暱稱</LABEL>
@@ -333,12 +335,10 @@
 						</DIV>
 					</DIV>
 				</DIV>
-				<DIV class="row">
-					<DIV class="col-md-6 text-right ms-auto">
-						<BUTTON class="btn btn-round bg-gradient-primary mb-0" type="submit">
-							<xsl:value-of select="@i18n-submit"/>
-						</BUTTON>
-					</DIV>
+				<DIV class="text-center">
+					<BUTTON class="btn btn-round bg-gradient-primary mb-0" type="submit">
+						<xsl:value-of select="@i18n-submit"/>
+					</BUTTON>
 				</DIV>
 			</DIV>
 		</FORM>

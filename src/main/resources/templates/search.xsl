@@ -72,6 +72,7 @@
 						</DIV>
 					</xsl:for-each>
 				</DIV>
+				<xsl:call-template name="footer"/>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<xsl:if test="@signIn">

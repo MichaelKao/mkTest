@@ -106,6 +106,7 @@
 						</xsl:if>
 					</DIV>
 				</DIV>
+				<xsl:call-template name="footer"/>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/groupGreeting.js"/>

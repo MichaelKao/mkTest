@@ -29,7 +29,7 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container pt-9 pb-5 pt-md-10 pb-mb-5">
+			<DIV class="container py-8 px-3">
 				<DIV class="modal fade" id="deleteModal">
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
@@ -58,7 +58,7 @@
 				<DIV class="col-lg-8 mx-auto d-flex justify-content-center align-items-center">
 					<DIV class="col-12 col-md-8 card card-frame">
 						<DIV class="card-title"></DIV>
-						<DIV class="card-body">
+						<DIV class="card-body p-3">
 							<DIV class="d-flex justify-content-center align-items-center">
 								<DIV class="text-bold">
 									<I class="far fa-bell-on text-lg me-1" style="color: #00B900;"></I>
@@ -87,6 +87,7 @@
 						</DIV>
 					</DIV>
 				</DIV>
+				<xsl:call-template name="footer"/>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/setting.js"/>
