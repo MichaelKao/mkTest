@@ -201,7 +201,7 @@
 	</xsl:template>
 
 	<xsl:template name="headLinkTags">
-		<LINK href="/ICON/favicon.ico" rel="icon" type="image/x-icon"/>
+		<LINK href="/favicon.ico" rel="icon" type="image/x-icon"/>
 		<LINK href="/ICON/apple-touch-icon.png" rel="apple-touch-icon"/>
 		<LINK href="/ICON/apple-touch-icon-57x57.png" rel="apple-touch-icon" sizes="57x57"/>
 		<LINK href="/ICON/apple-touch-icon-72x72.png" rel="apple-touch-icon" sizes="72x72"/>
