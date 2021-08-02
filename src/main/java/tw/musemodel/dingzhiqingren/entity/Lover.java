@@ -366,7 +366,7 @@ public class Lover implements java.io.Serializable {
 	/**
 	 * 相處關係
 	 */
-	@Column(name = "tui_jian_ren")
+	@JoinColumn(name = "tui_jian_ren", referencedColumnName = "id")
 	@ManyToOne
 	@JsonManagedReference
 	private Lover referrer;
