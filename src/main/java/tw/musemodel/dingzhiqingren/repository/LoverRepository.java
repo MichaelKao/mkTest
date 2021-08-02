@@ -19,6 +19,8 @@ public interface LoverRepository extends JpaRepository<Lover, Integer>, JpaSpeci
 
 	public long countByCountryAndLogin(Country country, String login);
 
+	public long countByReferralCode(String referralCode);
+
 	public Lover findOneByIdentifier(UUID identifier);
 
 	@Query("SELECT l FROM Lover l WHERE l.gender = :gender AND l.delete = null")
