@@ -36,7 +36,7 @@
 						<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">訂製情人</SPAN>
 						<DIV class="h3 d-block text-darker my-2">解鎖 VIP</DIV>
 						<P class="card-description mb-4">
-							<DIV>1. 每日可加入 10 次女生的 Line 好友</DIV>
+							<DIV>1. 每日可加入 10 次女生的通訊軟體</DIV>
 							<DIV>2. 排序提高</DIV>
 							<DIV>3. 可觀看女生的評價</DIV>
 						</P>

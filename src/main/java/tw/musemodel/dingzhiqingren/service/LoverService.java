@@ -1860,6 +1860,12 @@ public class LoverService {
 					female.getNickname(),
 					greetingMessage
 				));
+			lineMessagingService.notify(
+				male,
+				String.format(
+					"有位甜心向你打招呼！馬上查看 https://%s/activeLogs.asp",
+					servant.LOCALHOST
+				));
 		}
 		historyRepository.flush();
 

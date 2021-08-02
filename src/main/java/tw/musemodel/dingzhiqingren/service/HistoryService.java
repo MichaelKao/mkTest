@@ -204,7 +204,8 @@ public class HistoryService {
 		lineMessagingService.notify(
 			passive,
 			String.format(
-				"有一位男仕給妳車馬費！馬上查看 https://jkfans.ngrok.io/activeLogs.asp"
+				"有一位男仕給妳車馬費！馬上查看 https://%s/activeLogs.asp",
+				servant.LOCALHOST
 			));
 
 		return new JavaScriptObjectNotation().
@@ -288,12 +289,15 @@ public class HistoryService {
 				initiative.getNickname(),
 				greetingMessage
 			));
+
 		// LINE Notify
 		lineMessagingService.notify(
 			passive,
 			String.format(
-				"您收到一位男仕的通訊軟體要求！馬上查看 https://jkfans.ngrok.io/activeLogs.asp"
+				"您收到一位男仕的通訊軟體要求！馬上查看 https://%s/activeLogs.asp",
+				servant.LOCALHOST
 			));
+
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
 				"gimmeYourLineInvitation.done",
@@ -353,8 +357,10 @@ public class HistoryService {
 		lineMessagingService.notify(
 			passive,
 			String.format(
-				"有位甜心向你打招呼！馬上查看 https://jkfans.ngrok.io/activeLogs.asp"
+				"有位甜心向你打招呼！馬上查看 https://%s/activeLogs.asp",
+				servant.LOCALHOST
 			));
+
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
 				"greet.done",
@@ -412,7 +418,8 @@ public class HistoryService {
 		lineMessagingService.notify(
 			passive,
 			String.format(
-				"有位甜心答應給你通訊軟體！馬上查看 https://jkfans.ngrok.io/activeLogs.asp"
+				"有位甜心答應給你通訊軟體！馬上查看 https://%s/activeLogs.asp",
+				servant.LOCALHOST
 			));
 
 		History historyReply = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
@@ -486,7 +493,8 @@ public class HistoryService {
 		lineMessagingService.notify(
 			passive,
 			String.format(
-				"有位甜心拒絕給你通訊軟體..馬上查看 https://jkfans.ngrok.io/activeLogs.asp"
+				"有位甜心拒絕給你通訊軟體..馬上查看 https://%s/activeLogs.asp",
+				servant.LOCALHOST
 			));
 
 		LineGiven lineGiven = new LineGiven(

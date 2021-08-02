@@ -299,24 +299,24 @@
 								</INPUT>
 							</DIV>
 						</DIV>
-						<DIV class="col-md-12 mb-3">
-							<LABEL>服務標籤</LABEL>
-							<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
-								<xsl:for-each select="service">
-									<DIV class="form-check ms-2">
-										<INPUT class="form-check-input service" id="service{@serviceID}" type="checkbox" value="{@serviceID}">
-											<xsl:if test="@serviceSelected">
-												<xsl:attribute name="checked"/>
-											</xsl:if>
-										</INPUT>
-										<LABEL class="custom-control-label" for="service{@serviceID}">
-											<xsl:value-of select="."/>
-										</LABEL>
-									</DIV>
-								</xsl:for-each>
-							</DIV>
-						</DIV>
 					</xsl:if>
+					<DIV class="col-md-12 mb-3">
+						<LABEL>服務標籤</LABEL>
+						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
+							<xsl:for-each select="service">
+								<DIV class="form-check ms-2">
+									<INPUT class="form-check-input service" id="service{@serviceID}" type="checkbox" value="{@serviceID}">
+										<xsl:if test="@serviceSelected">
+											<xsl:attribute name="checked"/>
+										</xsl:if>
+									</INPUT>
+									<LABEL class="custom-control-label" for="service{@serviceID}">
+										<xsl:value-of select="."/>
+									</LABEL>
+								</DIV>
+							</xsl:for-each>
+						</DIV>
+					</DIV>
 					<DIV class="col-md-12 mb-3">
 						<LABEL>服務地區</LABEL>
 						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">

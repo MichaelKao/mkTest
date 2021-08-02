@@ -37,12 +37,12 @@
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-header">
-								<H5 class="modal-title">和女生要求Line</H5>
+								<H5 class="modal-title">和女生要求通訊軟體</H5>
 								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
 							<DIV class="modal-body">
 								<DIV class="form-group col-8">
-									<LABEL class="h6" for="hello">招呼語</LABEL>
+									<LABEL class="h6" for="hello">請用一句話打動甜心</LABEL>
 									<TEXTAREA class="form-control" id="hello" name="what" type="text">
 										<xsl:value-of select="@greeting"/>
 									</TEXTAREA>
@@ -160,7 +160,7 @@
 									</xsl:if>
 									<xsl:if test="@requestLineButton">
 										<DIV class="ms-0 ms-md-auto">
-											<BUTTON class="btn btn-primary px-2 py-1 px-md-3 py-md-2 requestLine" type="button">要求 LINE</BUTTON>
+											<BUTTON class="btn btn-primary px-2 py-1 px-md-3 py-md-2 requestLine" type="button">要求通訊軟體</BUTTON>
 										</DIV>
 									</xsl:if>
 								</DIV>

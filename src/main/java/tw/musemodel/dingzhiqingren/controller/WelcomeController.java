@@ -1115,7 +1115,7 @@ public class WelcomeController {
 
 		if (!me.getGender() && (model.getInviteMeAsLineFriend().isBlank() || model.getInviteMeAsLineFriend().isEmpty())) {
 			return new JavaScriptObjectNotation().
-				withReason("請上傳 LINE QRcode").
+				withReason("請上傳 LINE 或 WeChat 的 QRcode").
 				withResponse(false).
 				toJSONObject().toString();
 		}
@@ -3062,7 +3062,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/groupGreeting.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String groupGreeting(Authentication authentication, String greetingMessage, Locale locale) {
+	String groupGreeting(Authentication authentication, @RequestParam String greetingMessage, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
