@@ -1754,6 +1754,18 @@ public class LoverService {
 	}
 
 	/**
+	 * 这家伙有没有配置 LINE Notify⁉️
+	 *
+	 * @param sucker 甜心或男仕
+	 * @return 布林值
+	 */
+	@Transactional(readOnly = true)
+	public boolean hasLineNotify(Lover sucker) {
+		String lineNotifyAccessToken = sucker.getLineNotifyAccessToken();
+		return Objects.nonNull(lineNotifyAccessToken) && !lineNotifyAccessToken.isBlank();
+	}
+
+	/**
 	 * @param p 第几页
 	 * @param s 每页几笔
 	 * @return 以活跃排序的甜心们
