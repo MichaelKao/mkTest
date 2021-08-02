@@ -578,7 +578,8 @@ public class LoverService {
 				"confirm.submit",
 				null,
 				locale
-			));
+			)
+		);
 
 		// 取消按鈕
 		documentElement.setAttribute(
@@ -587,7 +588,8 @@ public class LoverService {
 				"cancel",
 				null,
 				locale
-			));
+			)
+		);
 
 		// 上一次登入
 		loverElement.setAttribute(
@@ -596,7 +598,8 @@ public class LoverService {
 				"last.active",
 				null,
 				locale
-			));
+			)
+		);
 
 		if (lover.getGender() && Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date())) {
 			loverElement.setAttribute("vip", null);
@@ -606,14 +609,14 @@ public class LoverService {
 			Boolean relief = lover.getRelief();
 			loverElement.setAttribute(
 				"relief",
-				relief ? "true" : "false"
+				relief.toString()
 			);
 		}
 
 		if (!lover.getGender()) {
 			String uri = lover.getInviteMeAsLineFriend();
-			Boolean isLine = servant.isLine(URI.create(uri));
-			Boolean isWeChat = servant.isWeChat(URI.create(uri));
+			Boolean isLine = Servant.isLine(URI.create(uri));
+			Boolean isWeChat = Servant.isWeChat(URI.create(uri));
 
 			LOGGER.debug("甜心是留賴{}", isLine);
 			LOGGER.debug("甜心是留微信{}", isWeChat);
@@ -629,7 +632,7 @@ public class LoverService {
 			profileImageElement.setTextContent(
 				String.format(
 					"https://%s/profileImage/%s",
-					servant.STATIC_HOST,
+					Servant.STATIC_HOST,
 					lover.getProfileImage()
 				)
 			);
@@ -642,7 +645,7 @@ public class LoverService {
 			pictureElement.setTextContent(
 				String.format(
 					"https://%s/pictures/%s",
-					servant.STATIC_HOST,
+					Servant.STATIC_HOST,
 					picture.getIdentifier().toString()
 				)
 			);
@@ -658,7 +661,8 @@ public class LoverService {
 						location.getName(),
 						null,
 						locale
-					));
+					)
+				);
 				loverElement.appendChild(locationElement);
 			}
 		}
@@ -672,7 +676,8 @@ public class LoverService {
 						service.getName(),
 						null,
 						locale
-					));
+					)
+				);
 				loverElement.appendChild(serviceElement);
 			}
 		}
@@ -704,7 +709,8 @@ public class LoverService {
 					"gender.female",
 					null,
 					locale
-				));
+				)
+			);
 			genderElement.setAttribute(
 				"gender",
 				gender ? "male" : "female"
@@ -751,7 +757,8 @@ public class LoverService {
 					lover.getEducation().toString(),
 					null,
 					locale
-				));
+				)
+			);
 			loverElement.appendChild(educationElement);
 		}
 
@@ -762,7 +769,8 @@ public class LoverService {
 					lover.getMarriage().toString(),
 					null,
 					locale
-				));
+				)
+			);
 			loverElement.appendChild(marriageElement);
 		}
 
@@ -779,7 +787,8 @@ public class LoverService {
 					lover.getSmoking().toString(),
 					null,
 					locale
-				));
+				)
+			);
 			loverElement.appendChild(smokingElement);
 		}
 
@@ -790,7 +799,8 @@ public class LoverService {
 					lover.getDrinking().toString(),
 					null,
 					locale
-				));
+				)
+			);
 			loverElement.appendChild(drinkingElement);
 		}
 
@@ -801,7 +811,8 @@ public class LoverService {
 					lover.getRelationship().toString(),
 					null,
 					locale
-				));
+				)
+			);
 			loverElement.appendChild(relationshipElement);
 		}
 
@@ -813,7 +824,8 @@ public class LoverService {
 					annualIncome.getName(),
 					null,
 					locale
-				));
+				)
+			);
 			loverElement.appendChild(annualIncomeElement);
 		}
 
@@ -825,7 +837,8 @@ public class LoverService {
 					allowance.getName(),
 					null,
 					locale
-				));
+				)
+			);
 			loverElement.appendChild(allowanceElement);
 		}
 
@@ -855,8 +868,11 @@ public class LoverService {
 				DATE_TIME_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						lover.getActive()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI)
-				));
+					).withZoneSameInstant(
+						Servant.ASIA_TAIPEI
+					)
+				)
+			);
 			loverElement.appendChild(activeElement);
 		}
 
@@ -869,7 +885,7 @@ public class LoverService {
 					"profileImage",
 					String.format(
 						"https://%s/profileImage/%s",
-						servant.STATIC_HOST,
+						Servant.STATIC_HOST,
 						rate.getInitiative().getProfileImage()
 					));
 				rateElement.setAttribute(
@@ -919,7 +935,8 @@ public class LoverService {
 				"confirm.submit",
 				null,
 				locale
-			));
+			)
+		);
 
 		// 取消按鈕
 		documentElement.setAttribute(
@@ -928,7 +945,8 @@ public class LoverService {
 				"cancel",
 				null,
 				locale
-			));
+			)
+		);
 
 		if (Objects.nonNull(lover.getGender())) {
 			Boolean gender = lover.getGender();
@@ -947,7 +965,8 @@ public class LoverService {
 					bodyType.toString(),
 					null,
 					locale
-				));
+				)
+			);
 			bodyTypeElement.setAttribute(
 				"bodyTypeEnum", bodyType.toString()
 			);
@@ -966,7 +985,8 @@ public class LoverService {
 					education.toString(),
 					null,
 					locale
-				));
+				)
+			);
 			educationElement.setAttribute(
 				"educationEnum", education.toString()
 			);
@@ -985,7 +1005,8 @@ public class LoverService {
 					marriage.toString(),
 					null,
 					locale
-				));
+				)
+			);
 			marriageElement.setAttribute(
 				"marriageEnum", marriage.toString()
 			);
@@ -1004,7 +1025,8 @@ public class LoverService {
 					smoking.toString(),
 					null,
 					locale
-				));
+				)
+			);
 			smokingElement.setAttribute(
 				"smokingEnum", smoking.toString()
 			);
@@ -1023,7 +1045,8 @@ public class LoverService {
 					drinking.toString(),
 					null,
 					locale
-				));
+				)
+			);
 			drinkingElement.setAttribute(
 				"drinkingEnum", drinking.toString()
 			);
@@ -1042,7 +1065,8 @@ public class LoverService {
 					relationship.toString(),
 					null,
 					locale
-				));
+				)
+			);
 			relationshipElement.setAttribute(
 				"relationshipEnum", relationship.toString()
 			);
@@ -1061,7 +1085,8 @@ public class LoverService {
 					location.getName(),
 					null,
 					locale
-				));
+				)
+			);
 			locationElement.setAttribute(
 				"locationID", location.getId().toString()
 			);
@@ -1082,7 +1107,8 @@ public class LoverService {
 					service.getName(),
 					null,
 					locale
-				));
+				)
+			);
 			serviceElement.setAttribute(
 				"serviceID", service.getId().toString()
 			);
@@ -1104,7 +1130,8 @@ public class LoverService {
 						annualIncome.getName(),
 						null,
 						locale
-					));
+					)
+				);
 				annualIncomeElement.setAttribute(
 					"annualIncomeID", annualIncome.getId().toString()
 				);
@@ -1125,7 +1152,8 @@ public class LoverService {
 						allowance.getName(),
 						null,
 						locale
-					));
+					)
+				);
 				allowanceElement.setAttribute(
 					"allowanceID", allowance.getId().toString()
 				);
@@ -1149,7 +1177,8 @@ public class LoverService {
 			Element birthdayElement = document.createElement("birthday");
 			birthdayElement.setTextContent(
 				new SimpleDateFormat("yyyy-MM-dd").format(birth
-				));
+				)
+			);
 			loverElement.appendChild(birthdayElement);
 		}
 
