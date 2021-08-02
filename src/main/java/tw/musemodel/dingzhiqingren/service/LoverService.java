@@ -22,12 +22,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import javax.imageio.ImageIO;
@@ -613,13 +615,10 @@ public class LoverService {
 			);
 		}
 
-		if (!lover.getGender()) {
+		if (!lover.getGender() && hasLineNotify(lover)) {
 			String uri = lover.getInviteMeAsLineFriend();
 			Boolean isLine = Servant.isLine(URI.create(uri));
 			Boolean isWeChat = Servant.isWeChat(URI.create(uri));
-
-			LOGGER.debug("甜心是留賴{}", isLine);
-			LOGGER.debug("甜心是留微信{}", isWeChat);
 
 			loverElement.setAttribute(
 				"socialMedia",
@@ -1646,7 +1645,7 @@ public class LoverService {
 	 * @param lover
 	 * @return
 	 */
-	public Document indexDocument(Document document, Lover lover) {
+	public Document indexDocument(Document document, Lover lover, Locale locale) {
 		Element documentElement = document.getDocumentElement();
 		Element areaElement = document.createElement("area");
 		documentElement.appendChild(areaElement);
@@ -1666,28 +1665,28 @@ public class LoverService {
 		// 男仕顯示的列表
 		if (isMale) {
 			// 通過安心認證的甜心
-			reliefElement = indexElement(document, reliefElement, femalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL));
+			reliefElement = indexElement(document, reliefElement, femalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
 			areaElement.appendChild(reliefElement);
 			// 最新活躍(使用)時間
-			activeElement = indexElement(document, activeElement, latestActiveFemalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL));
+			activeElement = indexElement(document, activeElement, latestActiveFemalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
 			areaElement.appendChild(activeElement);
 			// 最近註冊
-			registerElement = indexElement(document, registerElement, latestRegisteredFemalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL));
+			registerElement = indexElement(document, registerElement, latestRegisteredFemalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
 			areaElement.appendChild(registerElement);
 		}
 		// 甜心顯示的列表
 		if (!isMale) {
 			// 貴賓會員的男仕
-			vipElement = indexElement(document, vipElement, vipOnTheWall(0, PAGE_SIZE_ON_THE_WALL));
+			vipElement = indexElement(document, vipElement, vipOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
 			areaElement.appendChild(vipElement);
 			// 通過安心認證的男仕
-			reliefElement = indexElement(document, reliefElement, malesOnTheWall(0, PAGE_SIZE_ON_THE_WALL));
+			reliefElement = indexElement(document, reliefElement, malesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
 			areaElement.appendChild(reliefElement);
 			// 最新活躍(使用)時間
-			activeElement = indexElement(document, activeElement, latestActiveMalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL));
+			activeElement = indexElement(document, activeElement, latestActiveMalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
 			areaElement.appendChild(activeElement);
 			// 最近註冊
-			registerElement = indexElement(document, registerElement, latestRegisteredMalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL));
+			registerElement = indexElement(document, registerElement, latestRegisteredMalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
 			areaElement.appendChild(registerElement);
 		}
 		return document;
@@ -1701,7 +1700,7 @@ public class LoverService {
 	 * @param list
 	 * @return
 	 */
-	public Element indexElement(Document document, Element element, Page<Lover> page) {
+	public Element indexElement(Document document, Element element, Page<Lover> page, Locale locale) {
 		if (page.getTotalPages() <= 1) {
 			element.setAttribute("lastPage", null);
 		}
@@ -1720,8 +1719,39 @@ public class LoverService {
 				Boolean relief = lover.getRelief();
 				sectionElement.setAttribute(
 					"relief",
-					relief ? "true" : "false"
+					relief.toString()
 				);
+			}
+			if (Objects.nonNull(lover.getRelationship())) {
+				Element relationshipElement = document.createElement("relationship");
+				relationshipElement.setTextContent(
+					messageSource.getMessage(
+						lover.getRelationship().toString(),
+						null,
+						locale
+					)
+				);
+				sectionElement.appendChild(relationshipElement);
+			}
+			if (Objects.nonNull(lover.getLocations())) {
+				Set<Location> locations = lover.getLocations();
+				List<Location> locationList = new ArrayList<>(locations);
+				Collections.shuffle(locationList);
+				int count = 0;
+				for (Location location : locationList) {
+					count += 1;
+					if (count <= 3) {
+						Element locationElement = document.createElement("location");
+						locationElement.setTextContent(
+							messageSource.getMessage(
+								location.getName(),
+								null,
+								locale
+							)
+						);
+						sectionElement.appendChild(locationElement);
+					}
+				}
 			}
 			Element ageElement = document.createElement("age");
 			ageElement.setTextContent(calculateAge(lover).toString());
@@ -1750,7 +1780,7 @@ public class LoverService {
 	 * @param page
 	 * @return
 	 */
-	public JSONArray seeMore(Page<Lover> page) {
+	public JSONArray seeMore(Page<Lover> page, Locale locale) {
 		JSONArray jSONArray = new JSONArray();
 		for (Lover lover : page.getContent()) {
 			JSONObject json = new JSONObject();
@@ -1763,6 +1793,40 @@ public class LoverService {
 			}
 			json.put("age", calculateAge(lover));
 			json.put("identifier", lover.getIdentifier());
+			if (Objects.nonNull(lover.getRelationship())) {
+				json.put(
+					"relationship",
+					messageSource.getMessage(
+						lover.getRelationship().toString(),
+						null,
+						locale
+					));
+			}
+			if (Objects.nonNull(lover.getLocations())) {
+				JSONArray jaLocations = new JSONArray();
+				Set<Location> locations = lover.getLocations();
+				List<Location> locationList = new ArrayList<>(locations);
+				Collections.shuffle(locationList);
+				int count = 0;
+				for (Location location : locationList) {
+					JSONObject joLocation = new JSONObject();
+					count += 1;
+					if (count <= 3) {
+						joLocation.put(
+							"location",
+							messageSource.getMessage(
+								location.getName(),
+								null,
+								locale
+							)
+						);
+						jaLocations.put(joLocation);
+					}
+				}
+				json.put(
+					"location", jaLocations
+				);
+			}
 			json.put("profileImage", String.format(
 				"https://%s/profileImage/%s",
 				Servant.STATIC_HOST,

@@ -281,6 +281,7 @@
 						<DIV class="col-md-12 mb-3">
 							<LABEL>LINE/微信WeChat</LABEL>
 							<P class="text-xs m-1 mb-1">與男仕聯繫的通訊軟體 (擇一上傳 QR Code)</P>
+							<P class="text-xs text-warning m-1 mb-1">上傳 QRcode 加好友資訊能安全保護 ID 個資安全，每位男士都須經過甜心同意才能加好友，不會被騷擾，請安心上傳。</P>
 							<DIV class="uploadQrcode ">
 								<LABEL>
 									<INPUT accept="image/*" class="sr-only" name="image" type="file"/>

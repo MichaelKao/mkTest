@@ -203,15 +203,33 @@
 									<IMG class="border-radius-md" src="/accept.svg" width="25"/>
 								</xsl:if>
 							</DIV>
-							<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
-								<SPAN class="bg-dark opacity-6 border-radius-md px-1">
+							<DIV class="position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center">
+								<DIV>
 									<SPAN>
 										<xsl:value-of select="nickname"/>
 									</SPAN>
 									<SPAN class="ms-2">
 										<xsl:value-of select="age"/>
 									</SPAN>
-								</SPAN>
+								</DIV>
+								<xsl:if test="relationship">
+									<DIV class="text-warning">
+										<SPAN>尋找</SPAN>
+										<SPAN>
+											<xsl:value-of select="relationship"/>
+										</SPAN>
+									</DIV>
+								</xsl:if>
+								<DIV>
+									<xsl:for-each select="location">
+										<SPAN class="me-1">
+											<xsl:if test="position() = last()">
+												<xsl:attribute name="class"></xsl:attribute>
+											</xsl:if>
+											<xsl:value-of select="."/>
+										</SPAN>
+									</xsl:for-each>
+								</DIV>
 							</DIV>
 						</A>
 					</xsl:for-each>
@@ -238,15 +256,33 @@
 									<IMG class="border-radius-md" src="/accept.svg" width="25"/>
 								</xsl:if>
 							</DIV>
-							<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
-								<SPAN class="bg-dark opacity-6 border-radius-md px-1">
+							<DIV class="position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center">
+								<DIV>
 									<SPAN>
 										<xsl:value-of select="nickname"/>
 									</SPAN>
 									<SPAN class="ms-2">
 										<xsl:value-of select="age"/>
 									</SPAN>
-								</SPAN>
+								</DIV>
+								<xsl:if test="relationship">
+									<DIV class="text-warning">
+										<SPAN>尋找</SPAN>
+										<SPAN>
+											<xsl:value-of select="relationship"/>
+										</SPAN>
+									</DIV>
+								</xsl:if>
+								<DIV>
+									<xsl:for-each select="location">
+										<SPAN class="me-1">
+											<xsl:if test="position() = last()">
+												<xsl:attribute name="class"></xsl:attribute>
+											</xsl:if>
+											<xsl:value-of select="."/>
+										</SPAN>
+									</xsl:for-each>
+								</DIV>
 							</DIV>
 						</A>
 					</xsl:for-each>
@@ -273,15 +309,33 @@
 									<IMG class="border-radius-md" src="/accept.svg" width="25"/>
 								</xsl:if>
 							</DIV>
-							<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
-								<SPAN class="bg-dark opacity-6 border-radius-md px-1">
+							<DIV class="position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center">
+								<DIV>
 									<SPAN>
 										<xsl:value-of select="nickname"/>
 									</SPAN>
 									<SPAN class="ms-2">
 										<xsl:value-of select="age"/>
 									</SPAN>
-								</SPAN>
+								</DIV>
+								<xsl:if test="relationship">
+									<DIV class="text-warning">
+										<SPAN>尋找</SPAN>
+										<SPAN>
+											<xsl:value-of select="relationship"/>
+										</SPAN>
+									</DIV>
+								</xsl:if>
+								<DIV>
+									<xsl:for-each select="location">
+										<SPAN class="me-1">
+											<xsl:if test="position() = last()">
+												<xsl:attribute name="class"></xsl:attribute>
+											</xsl:if>
+											<xsl:value-of select="."/>
+										</SPAN>
+									</xsl:for-each>
+								</DIV>
 							</DIV>
 						</A>
 					</xsl:for-each>
@@ -308,15 +362,33 @@
 									<IMG class="border-radius-md" src="/accept.svg" width="25"/>
 								</xsl:if>
 							</DIV>
-							<DIV class="position-absolute bottom-0 right-0 d-flex text-light text-bold">
-								<SPAN class="bg-dark opacity-6 border-radius-md px-1">
+							<DIV class="position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center">
+								<DIV>
 									<SPAN>
 										<xsl:value-of select="nickname"/>
 									</SPAN>
 									<SPAN class="ms-2">
 										<xsl:value-of select="age"/>
 									</SPAN>
-								</SPAN>
+								</DIV>
+								<xsl:if test="relationship">
+									<DIV class="text-warning">
+										<SPAN>尋找</SPAN>
+										<SPAN>
+											<xsl:value-of select="relationship"/>
+										</SPAN>
+									</DIV>
+								</xsl:if>
+								<DIV>
+									<xsl:for-each select="location">
+										<SPAN class="me-1">
+											<xsl:if test="position() = last()">
+												<xsl:attribute name="class"></xsl:attribute>
+											</xsl:if>
+											<xsl:value-of select="."/>
+										</SPAN>
+									</xsl:for-each>
+								</DIV>
 							</DIV>
 						</A>
 					</xsl:for-each>

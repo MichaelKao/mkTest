@@ -79,12 +79,35 @@ $(document).ready(function () {
 					}
 
 					let infoDiv = document.createElement('DIV');
-					$(infoDiv).attr('class', 'position-absolute bottom-0 right-0 d-flex text-light text-bold');
+					$(infoDiv).attr('class', 'position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center');
 					$(outterA).append(infoDiv);
+					let nameAgeDiv = document.createElement('DIV');
+					$(infoDiv).append(nameAgeDiv);
 					let infoSpan = document.createElement('SPAN');
-					$(infoSpan).attr('class', 'bg-dark opacity-6 border-radius-md px-1');
 					$(infoSpan).html(item.nickname + ' ' + item.age);
-					$(infoDiv).append(infoSpan);
+					$(nameAgeDiv).append(infoSpan);
+					if (item.relationship) {
+						let relationshipDiv = document.createElement('DIV');
+						$(relationshipDiv).attr('class', 'text-warning');
+						$(infoDiv).append(relationshipDiv);
+						let relationshipSpan = document.createElement('SPAN');
+						$(relationshipSpan).html('尋找' + item.relationship);
+						$(relationshipDiv).append(relationshipSpan);
+					}
+					let locationDiv = document.createElement('DIV');
+					$(infoDiv).append(locationDiv);
+					item.location.forEach(function (item, i, array) {
+						if (i === array.length - 1) {
+							let locationSpan = document.createElement('SPAN');
+							$(locationSpan).html(item.location);
+							$(locationDiv).append(locationSpan);
+							return;
+						}
+						let locationSpan = document.createElement('SPAN');
+						$(locationSpan).attr('class', 'me-1');
+						$(locationSpan).html(item.location);
+						$(locationDiv).append(locationSpan);
+					});
 				});
 			}
 		},
@@ -153,12 +176,35 @@ $(document).ready(function () {
 					}
 
 					let infoDiv = document.createElement('DIV');
-					$(infoDiv).attr('class', 'position-absolute bottom-0 right-0 d-flex text-light text-bold');
+					$(infoDiv).attr('class', 'position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center');
 					$(outterA).append(infoDiv);
+					let nameAgeDiv = document.createElement('DIV');
+					$(infoDiv).append(nameAgeDiv);
 					let infoSpan = document.createElement('SPAN');
-					$(infoSpan).attr('class', 'bg-dark opacity-6 border-radius-md px-1');
 					$(infoSpan).html(item.nickname + ' ' + item.age);
-					$(infoDiv).append(infoSpan);
+					$(nameAgeDiv).append(infoSpan);
+					if (item.relationship) {
+						let relationshipDiv = document.createElement('DIV');
+						$(relationshipDiv).attr('class', 'text-warning');
+						$(infoDiv).append(relationshipDiv);
+						let relationshipSpan = document.createElement('SPAN');
+						$(relationshipSpan).html('尋找' + item.relationship);
+						$(relationshipDiv).append(relationshipSpan);
+					}
+					let locationDiv = document.createElement('DIV');
+					$(infoDiv).append(locationDiv);
+					item.location.forEach(function (item, i, array) {
+						if (i === array.length - 1) {
+							let locationSpan = document.createElement('SPAN');
+							$(locationSpan).html(item.location);
+							$(locationDiv).append(locationSpan);
+							return;
+						}
+						let locationSpan = document.createElement('SPAN');
+						$(locationSpan).attr('class', 'me-1');
+						$(locationSpan).html(item.location);
+						$(locationDiv).append(locationSpan);
+					});
 				});
 			}
 			if (data.lastPage) {

@@ -176,7 +176,7 @@ public class WelcomeController {
 			}
 
 			// 登入後的甜心或男仕列表
-			document = loverService.indexDocument(document, me);
+			document = loverService.indexDocument(document, me, locale);
 
 			// 通知數
 			if (loverService.annoucementCount(me) > 0) {
@@ -218,7 +218,7 @@ public class WelcomeController {
 	@PostMapping(path = "/seeMoreLover.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
-	String seeMoreLover(Authentication authentication, @RequestParam int p, @RequestParam String type) throws JsonProcessingException {
+	String seeMoreLover(Authentication authentication, @RequestParam int p, @RequestParam String type, Locale locale) throws JsonProcessingException {
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -252,7 +252,7 @@ public class WelcomeController {
 				page = loverService.latestRegisteredMalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
 			}
 		}
-		JSONArray jSONArray = loverService.seeMore(page);
+		JSONArray jSONArray = loverService.seeMore(page, locale);
 		JSONObject jSONObject = new JSONObject();
 
 		if (page.getTotalPages() == p + 1) {
