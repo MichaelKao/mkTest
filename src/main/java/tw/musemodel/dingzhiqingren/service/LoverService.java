@@ -64,7 +64,6 @@ import tw.musemodel.dingzhiqingren.entity.AnnualIncome;
 import tw.musemodel.dingzhiqingren.entity.Country;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
-import tw.musemodel.dingzhiqingren.entity.LineUserProfile;
 import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
@@ -84,7 +83,6 @@ import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
 import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
-import tw.musemodel.dingzhiqingren.repository.LineUserProfileRepository;
 import tw.musemodel.dingzhiqingren.repository.LocationRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
@@ -143,9 +141,6 @@ public class LoverService {
 
 	@Autowired
 	private CountryRepository countryRepository;
-
-	@Autowired
-	private LineUserProfileRepository lineUserProfileRepository;
 
 	@Autowired
 	private LoverRepository loverRepository;
@@ -223,6 +218,14 @@ public class LoverService {
 			toJSONObject();
 	}
 
+	/**
+	 * 用户已激活。
+	 *
+	 * @param activated 激活时送来的参数与值
+	 * @param request 请求
+	 * @param locale 语言环境
+	 * @return 杰森对象
+	 */
 	@Transactional
 	public JSONObject activated(Activated activated, HttpServletRequest request, Locale locale) {
 		Lover lover = loadByIdentifier(activated.getIdentifier());
@@ -237,16 +240,36 @@ public class LoverService {
 				withResponse(false).
 				toJSONObject();
 		}
-		String shadow = activated.getShadow();
 
+		/*
+		 初始化密码 
+		 */
+		String shadow = activated.getShadow();
 		lover.setShadow(
 			passwordEncoder.encode(shadow)
 		);
+
+		/*
+		 初始化身份
+		 */
 		Collection<Role> roles = new HashSet<>();
 		roles.add(servant.getRole(Servant.ROLE_ADVENTURER));
 		lover.setRoles(roles);
+
+		/*
+		 初始化推荐码
+		 */
+		String string = RandomStringUtils.randomAlphanumeric(8);
+		while (loverRepository.countByReferralCode(string) > 0) {
+			string = RandomStringUtils.randomAlphanumeric(8);
+		}
+		lover.setReferralCode(string);
+
 		lover = loverRepository.saveAndFlush(lover);
 
+		/*
+		 使用户登入
+		 */
 		SecurityContext securityContext = SecurityContextHolder.getContext();
 		securityContext.setAuthentication(
 			authenticationManager.authenticate(
@@ -318,11 +341,23 @@ public class LoverService {
 		return age;
 	}
 
+	/**
+	 * 以识别码找用户号。
+	 *
+	 * @param identifier 识别码
+	 * @return 用户号
+	 */
 	@Transactional(readOnly = true)
 	public Lover loadByIdentifier(UUID identifier) {
 		return loverRepository.findOneByIdentifier(identifier);
 	}
 
+	/**
+	 * 以用户名找用户号。
+	 *
+	 * @param username 国码➕手机号
+	 * @return 用户号
+	 */
 	@Transactional(readOnly = true)
 	public Lover loadByUsername(String username) {
 		User user = userRepository.findOneByUsername(username);
@@ -332,6 +367,13 @@ public class LoverService {
 		return loverRepository.findById(user.getId()).orElseThrow();
 	}
 
+	/**
+	 * 解析二维码为字符串。
+	 *
+	 * @param inputStream 二维码输入串流
+	 * @param locale 语言环境
+	 * @return 杰森对象
+	 */
 	public JSONObject qrCodeToString(InputStream inputStream, Locale locale) {
 		try {
 			return new JavaScriptObjectNotation().
@@ -359,6 +401,14 @@ public class LoverService {
 		}
 	}
 
+	/**
+	 * 再激活。
+	 *
+	 * @param username 国码➕手机号
+	 * @param request 请求
+	 * @param locale 语言环境
+	 * @return 杰森对象
+	 */
 	@Transactional
 	public JSONObject reactivate(String username, HttpServletRequest request, Locale locale) {
 		Lover lover = loadByUsername(username);
@@ -446,32 +496,25 @@ public class LoverService {
 			toJSONObject();
 	}
 
-	@Transactional
-	public Lover saveLover() {
-		UUID uuid = UUID.randomUUID();
-
-		Lover lover = new Lover();
-		lover.setCountry(
-			countryRepository.findById((short) 1).orElseThrow()
-		);
-		lover.setIdentifier(uuid);
-		lover.setLogin(uuid.toString().replaceAll("\\-", ""));
-		lover = loverRepository.saveAndFlush(lover);
-
-		LineUserProfile lineUserProfile = new LineUserProfile();
-		lineUserProfile.setId(lover.getId());
-		lineUserProfile.setLover(lover);
-		lineUserProfile.setDisplayName(uuid.toString().replaceAll("\\-", ""));
-		lineUserProfileRepository.saveAndFlush(lineUserProfile);
-
-		return lover;
-	}
-
+	/**
+	 * 储存用户号。
+	 *
+	 * @param lover 用户号
+	 * @return 用户号
+	 */
 	@Transactional
 	public Lover saveLover(Lover lover) {
 		return loverRepository.saveAndFlush(lover);
 	}
 
+	/**
+	 * 登录。
+	 *
+	 * @param signUp 登录时送来的参数与值
+	 * @param request 请求
+	 * @param locale 语言环境
+	 * @return 杰森对象
+	 */
 	@Transactional
 	public JSONObject signUp(SignUp signUp, HttpServletRequest request, Locale locale) {
 		Country country = countryRepository.
@@ -524,6 +567,12 @@ public class LoverService {
 			toJSONObject();
 	}
 
+	/**
+	 * 用户已登录。
+	 *
+	 * @param lover 用户号
+	 * @return 激活
+	 */
 	@Transactional
 	public Activation signedUp(Lover lover) {
 		String string = RandomStringUtils.randomNumeric(6);
@@ -1393,8 +1442,7 @@ public class LoverService {
 	 * @return
 	 */
 	@Transactional
-	public JSONObject wireTransfer(String wireTransferBankCode, String wireTransferBranchCode, String wireTransferAccountName,
-		String wireTransferAccountNumber, Lover honey, Locale locale) {
+	public JSONObject wireTransfer(String wireTransferBankCode, String wireTransferBranchCode, String wireTransferAccountName, String wireTransferAccountNumber, Lover honey, Locale locale) {
 		if (wireTransferAccountName.isBlank() || wireTransferAccountName.isEmpty()) {
 			throw new IllegalArgumentException("wireTransfer.accountNameMustntBeNull");
 		}
@@ -1470,18 +1518,21 @@ public class LoverService {
 		return leftPoints;
 	}
 
+	/**
+	 * 七天前。
+	 *
+	 * @return java.util.Date
+	 */
 	public Date before7DaysAgo() {
-		Calendar cal = Calendar.getInstance();
-		cal.getTime();
-		cal.add(Calendar.DAY_OF_MONTH, -7);
-		Date sevenDaysAgo = cal.getTime();
-
-		return sevenDaysAgo;
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DAY_OF_MONTH, -7);
+		return calendar.getTime();
 	}
 
 	/**
 	 * 更新地點
 	 *
+	 * @param location
 	 * @param honey
 	 * @return
 	 */
@@ -1510,7 +1561,7 @@ public class LoverService {
 	/**
 	 * 更新服務
 	 *
-	 * @param location
+	 * @param service
 	 * @param honey
 	 * @return
 	 */
