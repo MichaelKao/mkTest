@@ -709,3 +709,12 @@ ALTER TYPE"xing_wei" ADD VALUE 'QUN_FA';
 ALTER TABLE"qing_ren"
 ADD COLUMN"line_notify_access_token"text;
 COMMENT ON COLUMN"qing_ren"."line_notify_access_token"IS'LINE 网站服务通知访问令牌';
+
+/**
+ * 情人添加：推荐码、推荐人
+ */
+ALTER TABLE"qing_ren"
+ADD COLUMN"tui_jian_ma"varchar,
+ADD COLUMN"tui_jian_ren"int REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE;
+COMMENT ON COLUMN"qing_ren"."tui_jian_ma"IS'推荐码';
+COMMENT ON COLUMN"qing_ren"."tui_jian_ren"IS'推荐人';

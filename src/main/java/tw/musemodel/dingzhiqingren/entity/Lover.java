@@ -358,6 +358,20 @@ public class Lover implements java.io.Serializable {
 	private String lineNotifyAccessToken;
 
 	/**
+	 * 相處關係
+	 */
+	@Column(name = "tui_jian_ma")
+	private String referralCode;
+
+	/**
+	 * 相處關係
+	 */
+	@Column(name = "tui_jian_ren")
+	@ManyToOne
+	@JsonManagedReference
+	private Lover referrer;
+
+	/**
 	 * 默认构造器
 	 */
 	public Lover() {
@@ -985,6 +999,34 @@ public class Lover implements java.io.Serializable {
 	 */
 	public void setLineNotifyAccessToken(String lineNotifyAccessToken) {
 		this.lineNotifyAccessToken = lineNotifyAccessToken;
+	}
+
+	/**
+	 * @return 推荐码
+	 */
+	public String getReferralCode() {
+		return referralCode;
+	}
+
+	/**
+	 * @param referralCode 推荐码
+	 */
+	public void setReferralCode(String referralCode) {
+		this.referralCode = referralCode;
+	}
+
+	/**
+	 * @return 推荐人
+	 */
+	public Lover getReferrer() {
+		return referrer;
+	}
+
+	/**
+	 * @param referrer 推荐人
+	 */
+	public void setReferrer(Lover referrer) {
+		this.referrer = referrer;
 	}
 
 	/**
