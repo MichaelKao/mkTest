@@ -200,13 +200,15 @@ public class HistoryService {
 				initiative.getNickname(),
 				points
 			));
-		// LINE Notify
-		lineMessagingService.notify(
-			passive,
-			String.format(
-				"有一位男仕給妳車馬費！馬上查看 https://%s/activeLogs.asp",
-				servant.LOCALHOST
-			));
+		if (loverService.hasLineNotify(passive)) {
+			// LINE Notify
+			lineMessagingService.notify(
+				passive,
+				String.format(
+					"有一位男仕給妳車馬費！馬上查看 https://%s/activeLogs.asp",
+					servant.LOCALHOST
+				));
+		}
 
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
@@ -290,13 +292,15 @@ public class HistoryService {
 				greetingMessage
 			));
 
-		// LINE Notify
-		lineMessagingService.notify(
-			passive,
-			String.format(
-				"您收到一位男仕的通訊軟體要求！馬上查看 https://%s/activeLogs.asp",
-				servant.LOCALHOST
-			));
+		if (loverService.hasLineNotify(passive)) {
+			// LINE Notify
+			lineMessagingService.notify(
+				passive,
+				String.format(
+					"您收到一位男仕的通訊軟體要求！馬上查看 https://%s/activeLogs.asp",
+					servant.LOCALHOST
+				));
+		}
 
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
@@ -353,13 +357,15 @@ public class HistoryService {
 				initiative.getNickname(),
 				greetingMessage
 			));
-		// LINE Notify
-		lineMessagingService.notify(
-			passive,
-			String.format(
-				"有位甜心向你打招呼！馬上查看 https://%s/activeLogs.asp",
-				servant.LOCALHOST
-			));
+		if (loverService.hasLineNotify(passive)) {
+			// LINE Notify
+			lineMessagingService.notify(
+				passive,
+				String.format(
+					"有位甜心向你打招呼！馬上查看 https://%s/activeLogs.asp",
+					servant.LOCALHOST
+				));
+		}
 
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
@@ -414,13 +420,15 @@ public class HistoryService {
 				"%s已答應給你通訊軟體!",
 				initiative.getNickname()
 			));
-		// LINE Notify
-		lineMessagingService.notify(
-			passive,
-			String.format(
-				"有位甜心答應給你通訊軟體！馬上查看 https://%s/activeLogs.asp",
-				servant.LOCALHOST
-			));
+		if (loverService.hasLineNotify(passive)) {
+			// LINE Notify
+			lineMessagingService.notify(
+				passive,
+				String.format(
+					"有位甜心答應給你通訊軟體！馬上查看 https://%s/activeLogs.asp",
+					servant.LOCALHOST
+				));
+		}
 
 		History historyReply = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
 			passive, initiative, BEHAVIOR_GIMME_YOUR_LINE_INVITATION
@@ -489,13 +497,15 @@ public class HistoryService {
 				"%s已拒絕給你LINE!",
 				initiative.getNickname()
 			));
-		// LINE Notify
-		lineMessagingService.notify(
-			passive,
-			String.format(
-				"有位甜心拒絕給你通訊軟體..馬上查看 https://%s/activeLogs.asp",
-				servant.LOCALHOST
-			));
+		if (loverService.hasLineNotify(passive)) {
+			// LINE Notify
+			lineMessagingService.notify(
+				passive,
+				String.format(
+					"有位甜心拒絕給你通訊軟體..馬上查看 https://%s/activeLogs.asp",
+					servant.LOCALHOST
+				));
+		}
 
 		LineGiven lineGiven = new LineGiven(
 			new LineGivenPK(initiative.getId(), passive.getId()),

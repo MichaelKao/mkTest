@@ -615,6 +615,9 @@ public class LoverService {
 			Boolean isLine = servant.isLine(URI.create(uri));
 			Boolean isWeChat = servant.isWeChat(URI.create(uri));
 
+			LOGGER.debug("甜心是留賴{}", isLine);
+			LOGGER.debug("甜心是留微信{}", isWeChat);
+
 			loverElement.setAttribute(
 				"socialMedia",
 				isLine ? "line" : "weChat"
@@ -1872,12 +1875,14 @@ public class LoverService {
 					female.getNickname(),
 					greetingMessage
 				));
-			lineMessagingService.notify(
-				male,
-				String.format(
-					"有位甜心向你打招呼！馬上查看 https://%s/activeLogs.asp",
-					servant.LOCALHOST
-				));
+			if (hasLineNotify(male)) {
+				lineMessagingService.notify(
+					male,
+					String.format(
+						"有位甜心向你打招呼！馬上查看 https://%s/activeLogs.asp",
+						servant.LOCALHOST
+					));
+			}
 		}
 		historyRepository.flush();
 
