@@ -87,13 +87,16 @@
 				<DIV class="modal fade" id="rateModal">
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
-							<DIV class="modal-header">
-								<H5 class="modal-title">給予對方評價</H5>
-								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
-							</DIV>
 							<DIV class="modal-body">
-								<DIV class="form-group col-8">
-									<DIV class="rating d-flex flex-row-reverse justify-content-end">
+								<DIV class="d-flex">
+									<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
+								</DIV>
+								<DIV class="mt-3 text-center">
+									<I class="far fa-comment-alt-smile text-success mb-1" style="font-size: 50px;"></I>
+									<H5 class="modal-title">給予對方評價</H5>
+								</DIV>
+								<DIV class="form-group mx-auto col-10">
+									<DIV class="rating d-flex flex-row-reverse justify-content-center">
 										<INPUT class="d-none" id="rating-5" name="rating" type="radio" value="5"/>
 										<LABEL for="rating-5"></LABEL>
 										<INPUT class="d-none" id="rating-4" name="rating" type="radio" value="4"/>
@@ -107,26 +110,26 @@
 									</DIV>
 									<TEXTAREA class="form-control" name="comment" placeholder="留下評價..." type="text"></TEXTAREA>
 								</DIV>
-							</DIV>
-							<DIV class="modal-footer">
-								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
-									<xsl:value-of select="@i18n-cancel"/>
-								</BUTTON>
-								<BUTTON class="btn btn-primary confirmBtn commentBtn" type="button">
-									<xsl:value-of select="@i18n-confirm"/>
-								</BUTTON>
+								<DIV class="text-center">
+									<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+										<xsl:value-of select="@i18n-cancel"/>
+									</BUTTON>
+									<BUTTON class="btn btn-primary confirmBtn commentBtn" type="button">
+										<xsl:value-of select="@i18n-confirm"/>
+									</BUTTON>
+								</DIV>
 							</DIV>
 						</DIV>
 					</DIV>
 				</DIV>
 				<DIV class="d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center mt-3">
-					<DIV class="col-12 col-md-8 card card-frame mb-3 mx-2">
-						<xsl:for-each select="history">
-							<DIV class="card-body d-flex align-items-center justify-content-start py-0">
+					<xsl:for-each select="history">
+						<DIV class="col-12 col-lg-8 card card-frame mb-2">
+							<DIV class="card-body d-flex align-items-center justify-content-start py-2">
 								<INPUT name="whom" type="hidden" value="{@identifier}"/>
 								<DIV>
 									<A href="/profile/{@identifier}/">
-										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="60"/>
+										<IMG alt="profile_photo" class="border-radius-md" src="{@profileImage}" width="55"/>
 									</A>
 								</DIV>
 								<DIV class="ms-4 w-100 d-flex flex-column flex-md-row">
@@ -134,40 +137,39 @@
 										<SPAN class="text-xs font-weight-bold my-2">
 											<xsl:value-of select="@time"/>
 										</SPAN>
-										<DIV class="text-dark text-sm">
+										<DIV class="text-dark text-xs text-bold">
 											<xsl:value-of select="@message"/>
 										</DIV>
 
 									</DIV>
 									<xsl:if test="@decideButton">
-										<DIV class="ms-0 ms-md-auto buttons">
+										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 accept" type="button">接受</BUTTON>
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 refuse" type="button">拒絕</BUTTON>
 										</DIV>
 									</xsl:if>
 									<xsl:if test="@addLineButton">
-										<DIV class="ms-0 ms-md-auto">
-											<BUTTON class="btn btn-success px-2 py-1 px-md-3 py-md-2 me-1 openLine" type="button">
+										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
+											<BUTTON class="btn btn-success px-2 py-1 p-md-2 m-0 me-1 openLine" type="button">
 												<SPAN>加入好友</SPAN>
 												<xsl:if test="@remindDeduct">
 													<DIV class="text-xxs">需 30 愛心</DIV>
 												</xsl:if>
 											</BUTTON>
 											<xsl:if test="@rateButton">
-												<BUTTON class="btn btn-warning px-2 py-1 px-md-3 py-md-2 rate" type="button">評價</BUTTON>
+												<BUTTON class="btn btn-warning px-2 py-1 p-md-2 m-0 me-1 rate" type="button">評價</BUTTON>
 											</xsl:if>
 										</DIV>
 									</xsl:if>
 									<xsl:if test="@requestLineButton">
-										<DIV class="ms-0 ms-md-auto">
-											<BUTTON class="btn btn-primary px-2 py-1 px-md-3 py-md-2 requestLine" type="button">要求通訊軟體</BUTTON>
+										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
+											<BUTTON class="btn btn-primary px-2 py-1 p-md-2 m-0 me-1 requestLine" type="button">要求通訊軟體</BUTTON>
 										</DIV>
 									</xsl:if>
 								</DIV>
 							</DIV>
-							<HR class="horizontal dark"/>
-						</xsl:for-each>
-					</DIV>
+						</DIV>
+					</xsl:for-each>
 				</DIV>
 				<xsl:call-template name="footer"/>
 			</DIV>
