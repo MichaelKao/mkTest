@@ -23,8 +23,8 @@ public interface LoverRepository extends JpaRepository<Lover, Integer>, JpaSpeci
 
 	public Lover findOneByIdentifier(UUID identifier);
 
-	@Query("SELECT l FROM Lover l WHERE l.gender = :gender AND l.delete = null")
-	public List<Lover> findAllByGender(Boolean gender);
+	@Query("SELECT l FROM Lover l WHERE l.gender = :gender AND l.delete IS NULL")
+	public List<Lover> findByGender(Boolean gender);
 
-	public List<Lover> findAllByRelief(Boolean relief);
+	public List<Lover> findByRelief(Boolean relief);
 }
