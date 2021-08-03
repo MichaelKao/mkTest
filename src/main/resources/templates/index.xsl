@@ -213,7 +213,7 @@
 									</SPAN>
 								</DIV>
 								<xsl:if test="relationship">
-									<DIV class="text-warning">
+									<DIV>
 										<SPAN>尋找</SPAN>
 										<SPAN>
 											<xsl:value-of select="relationship"/>
@@ -266,7 +266,7 @@
 									</SPAN>
 								</DIV>
 								<xsl:if test="relationship">
-									<DIV class="text-warning">
+									<DIV>
 										<SPAN>尋找</SPAN>
 										<SPAN>
 											<xsl:value-of select="relationship"/>
@@ -319,7 +319,7 @@
 									</SPAN>
 								</DIV>
 								<xsl:if test="relationship">
-									<DIV class="text-warning">
+									<DIV>
 										<SPAN>尋找</SPAN>
 										<SPAN>
 											<xsl:value-of select="relationship"/>
@@ -372,7 +372,7 @@
 									</SPAN>
 								</DIV>
 								<xsl:if test="relationship">
-									<DIV class="text-warning">
+									<DIV>
 										<SPAN>尋找</SPAN>
 										<SPAN>
 											<xsl:value-of select="relationship"/>

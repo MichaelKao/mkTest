@@ -205,11 +205,6 @@
 					<SPAN aria-hidden="true" class="carousel-control-next-icon"></SPAN>
 					<SPAN class="visually-hidden">Next</SPAN>
 				</BUTTON>
-				<xsl:if test="/document/@me">
-					<A class="grayIcon" href="/album.asp">
-						<I class="fad fa-camera font40"></I>
-					</A>
-				</xsl:if>
 			</DIV>
 			<DIV class="d-flex">
 				<xsl:choose>
@@ -258,8 +253,11 @@
 						</DIV>
 					</xsl:when>
 					<xsl:otherwise>
-						<DIV class="ms-md-auto">
-							<A class="mx-2 grayIcon" href="/me.asp">
+						<DIV class="ms-md-auto ms-md-5">
+							<A class="btn btn-link m-2 p-0" href="/album.asp">
+								<I class="fad fa-camera font40"></I>
+							</A>
+							<A class="btn btn-link m-2 p-0" href="/me.asp">
 								<I class="fad fa-pen font40"></I>
 							</A>
 						</DIV>

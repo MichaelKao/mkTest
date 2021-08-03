@@ -53,14 +53,6 @@ BUTTON.fav.liked i {
 	z-index: 10;
 }
 
-A.grayIcon {
-	color: #252F40E1;
-}
-
-A.grayIcon:hover {
-	color: #252F40;
-}
-
 DIV.star {
 	color: #FF8C00;
 }

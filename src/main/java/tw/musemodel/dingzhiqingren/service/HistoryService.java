@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
@@ -157,6 +157,11 @@ public class HistoryService {
 	 * 历程：甜心群發打招呼
 	 */
 	public static final Behavior BEHAVIOR_GROUP_GREETING = Behavior.QUN_FA;
+
+	/**
+	 * 历程：再聊聊
+	 */
+	public static final Behavior BEHAVIOR_TALK_AGAIN = Behavior.ZAI_LIAO_LIAO;
 
 	/**
 	 * 车马费(男对女)
@@ -494,7 +499,7 @@ public class HistoryService {
 		webSocketServer.sendNotification(
 			passive.getIdentifier().toString(),
 			String.format(
-				"%s已拒絕給你LINE!",
+				"%s已拒絕給你通訊軟體!",
 				initiative.getNickname()
 			));
 		if (loverService.hasLineNotify(passive)) {
@@ -516,6 +521,69 @@ public class HistoryService {
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
 				"refuseToBeLineFriend.done",
+				null,
+				locale
+			)).
+			withResponse(true).
+			withResult(history.getOccurred()).
+			toJSONObject();
+	}
+
+	@Transactional
+	public JSONObject talkAgain(Lover initiative, Lover passive, Locale locale) {
+		if (Objects.isNull(initiative)) {
+			throw new IllegalArgumentException("talkAgain.initiativeMustntBeNull");
+		}
+		if (Objects.isNull(passive)) {
+			throw new IllegalArgumentException("talkAgain.passiveMustntBeNull");
+		}
+		if (Objects.equals(initiative.getGender(), true)) {
+			throw new RuntimeException("talkAgain.initiativeMustBeFemale");
+		}
+		if (Objects.equals(passive.getGender(), false)) {
+			throw new RuntimeException("talkAgain.passiveMustBeMale");
+		}
+
+		History history = new History(
+			initiative,
+			passive,
+			BEHAVIOR_TALK_AGAIN
+		);
+		history = historyRepository.saveAndFlush(history);
+
+		// 把男生的要求轉為已回應
+		History historyReply = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
+			passive, initiative, BEHAVIOR_GIMME_YOUR_LINE_INVITATION
+		);
+		historyReply.setReply(new Date(System.currentTimeMillis()));
+		historyRepository.saveAndFlush(historyReply);
+
+		// 推送通知給男生
+		webSocketServer.sendNotification(
+			passive.getIdentifier().toString(),
+			String.format(
+				"再多跟%s聊一句!",
+				initiative.getNickname()
+			));
+		if (loverService.hasLineNotify(passive)) {
+			// LINE Notify
+			lineMessagingService.notify(
+				passive,
+				String.format(
+					"有位甜心想再多跟你聊一句..馬上傳一句話給她 https://%s/activeLogs.asp",
+					servant.LOCALHOST
+				));
+		}
+
+		LineGiven lineGiven = new LineGiven(
+			new LineGivenPK(initiative.getId(), passive.getId()),
+			false
+		);
+		lineGivenRepository.saveAndFlush(lineGiven);
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"talkAgain.done",
 				null,
 				locale
 			)).

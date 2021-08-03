@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import javax.imageio.ImageIO;
@@ -244,7 +243,7 @@ public class LoverService {
 		}
 
 		/*
-		 初始化密码 
+		 初始化密码
 		 */
 		String shadow = activated.getShadow();
 		lover.setShadow(
@@ -665,7 +664,7 @@ public class LoverService {
 			);
 		}
 
-		if (!lover.getGender() && hasLineNotify(lover)) {
+		if (Objects.nonNull(lover.getInviteMeAsLineFriend())) {
 			String uri = lover.getInviteMeAsLineFriend();
 			Boolean isLine = Servant.isLine(URI.create(uri));
 			Boolean isWeChat = Servant.isWeChat(URI.create(uri));

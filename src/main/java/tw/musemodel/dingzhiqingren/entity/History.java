@@ -428,7 +428,11 @@ public class History implements java.io.Serializable {
 		/**
 		 * 群發
 		 */
-		QUN_FA("QUN_FA", 17);
+		QUN_FA("QUN_FA", 17),
+		/**
+		 * 再聊聊
+		 */
+		ZAI_LIAO_LIAO("ZAI_LIAO_LIAO", 18);
 
 		private String label;
 

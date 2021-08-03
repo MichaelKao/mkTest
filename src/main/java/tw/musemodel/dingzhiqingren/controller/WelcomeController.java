@@ -1,13 +1,23 @@
 package tw.musemodel.dingzhiqingren.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.qrcode.QRCodeWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +33,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,8 +47,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import tw.musemodel.dingzhiqingren.entity.History;
+import tw.musemodel.dingzhiqingren.entity.History.Behavior;
+import tw.musemodel.dingzhiqingren.entity.LineGiven;
 import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.Plan;
 import tw.musemodel.dingzhiqingren.entity.ServiceTag;
 import tw.musemodel.dingzhiqingren.model.Activated;
@@ -52,6 +68,7 @@ import tw.musemodel.dingzhiqingren.service.HistoryService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 import static tw.musemodel.dingzhiqingren.service.Servant.PAGE_SIZE_ON_THE_WALL;
+import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
 /**
  * 控制器：根
@@ -165,9 +182,7 @@ public class WelcomeController {
 			}
 
 			// 有無連動 LINE notify
-			if (Objects.nonNull(me.getLineNotifyAccessToken())
-				&& !me.getLineNotifyAccessToken().isBlank()
-				&& !me.getLineNotifyAccessToken().isEmpty()) {
+			if (loverService.hasLineNotify(me)) {
 				documentElement.setAttribute(
 					"lineNotify",
 					null
@@ -2193,6 +2208,39 @@ public class WelcomeController {
 		return jsonObject.toString();
 	}
 
+	@PostMapping(path = "/talkAgain.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
+	String talkAgain(@RequestParam("whom") UUID maleUUID, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover female = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Lover male = loverService.loadByIdentifier(maleUUID);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = historyService.talkAgain(
+				female,
+				male,
+				locale
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
+	}
+
 	/**
 	 * 看过我
 	 *
@@ -3138,9 +3186,7 @@ public class WelcomeController {
 		);
 
 		// 有無連動 LINE notify
-		if (Objects.nonNull(me.getLineNotifyAccessToken())
-			&& !me.getLineNotifyAccessToken().isBlank()
-			&& !me.getLineNotifyAccessToken().isEmpty()) {
+		if (loverService.hasLineNotify(me)) {
 			documentElement.setAttribute(
 				"lineNotify",
 				null

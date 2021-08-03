@@ -111,10 +111,10 @@
 									<TEXTAREA class="form-control" name="comment" placeholder="留下評價..." type="text"></TEXTAREA>
 								</DIV>
 								<DIV class="text-center">
-									<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+									<BUTTON class="btn btn-secondary mx-1" data-bs-dismiss="modal" type="button">
 										<xsl:value-of select="@i18n-cancel"/>
 									</BUTTON>
-									<BUTTON class="btn btn-primary confirmBtn commentBtn" type="button">
+									<BUTTON class="btn btn-primary commentBtn mx-1" type="button">
 										<xsl:value-of select="@i18n-confirm"/>
 									</BUTTON>
 								</DIV>
@@ -146,6 +146,7 @@
 										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 accept" type="button">接受</BUTTON>
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 refuse" type="button">拒絕</BUTTON>
+											<BUTTON class="btn btn-sm btn-outline-info px-2 py-1 p-md-2 m-0 me-1 talkAgain" type="button">再聊聊</BUTTON>
 										</DIV>
 									</xsl:if>
 									<xsl:if test="@addLineButton">

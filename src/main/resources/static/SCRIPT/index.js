@@ -88,7 +88,6 @@ $(document).ready(function () {
 					$(nameAgeDiv).append(infoSpan);
 					if (item.relationship) {
 						let relationshipDiv = document.createElement('DIV');
-						$(relationshipDiv).attr('class', 'text-warning');
 						$(infoDiv).append(relationshipDiv);
 						let relationshipSpan = document.createElement('SPAN');
 						$(relationshipSpan).html('尋找' + item.relationship);
@@ -185,7 +184,6 @@ $(document).ready(function () {
 					$(nameAgeDiv).append(infoSpan);
 					if (item.relationship) {
 						let relationshipDiv = document.createElement('DIV');
-						$(relationshipDiv).attr('class', 'text-warning');
 						$(infoDiv).append(relationshipDiv);
 						let relationshipSpan = document.createElement('SPAN');
 						$(relationshipSpan).html('尋找' + item.relationship);
