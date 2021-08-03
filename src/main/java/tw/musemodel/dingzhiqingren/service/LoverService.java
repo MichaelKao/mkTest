@@ -534,11 +534,6 @@ public class LoverService {
 
 		UUID identifier = UUID.randomUUID();
 
-		// 上傳預設大頭照
-		amazonWebServices.copyDefaultImageToLover(
-			identifier.toString()
-		);
-
 		Lover lover = new Lover();
 		lover.setIdentifier(identifier);
 		lover.setCountry(country);
@@ -551,6 +546,12 @@ public class LoverService {
 		lover.setGreeting("嗨！我想認識你！");
 		lover.setRegistered(new Date(System.currentTimeMillis()));
 		lover = loverRepository.saveAndFlush(lover);
+
+		// 上傳預設大頭照
+		amazonWebServices.copyDefaultImageToLover(
+			identifier.toString(),
+			lover
+		);
 
 		applicationEventPublisher.publishEvent(new SignedUpEvent(
 			lover,

@@ -40,19 +40,25 @@ BUTTON.fav.liked i {
 		transform: scale(1);
 	}
 }
+
 .carousel {
 	position: relative;
 }
+
 .carousel A {
 	position: absolute;
 	bottom: 10px;
 	right: 10px;
 	font-size: 40px;
-	color: #CB0C9FCC;
 	z-index: 10;
 }
-.carousel A:hover {
-	color: #cb0c9f;
+
+A.grayIcon {
+	color: #252F40E1;
+}
+
+A.grayIcon:hover {
+	color: #252F40;
 }
 
 DIV.star {

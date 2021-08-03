@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 
 /**
@@ -46,12 +47,18 @@ public class AmazonWebServices {
 
 	private static final String TEMP_DIRECTORY = System.getProperty("java.io.tmpdir");
 
-	public JSONObject copyDefaultImageToLover(String name) {
+	public JSONObject copyDefaultImageToLover(String name, Lover lover) {
 		String folder = "profileImage/";
 
+		String defaultImage = null;
+		if (lover.getGender()) {
+			defaultImage = "male.svg";
+		} else if (!lover.getGender()) {
+			defaultImage = "female.svg";
+		}
 		CopyObjectResult copyObjectResult = AMAZON_S3.copyObject(new CopyObjectRequest(
 			BUCKET_NAME,
-			folder + "default_image.png",
+			folder + defaultImage,
 			BUCKET_NAME,
 			folder + name
 		));

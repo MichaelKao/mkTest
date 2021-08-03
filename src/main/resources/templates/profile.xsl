@@ -206,7 +206,7 @@
 					<SPAN class="visually-hidden">Next</SPAN>
 				</BUTTON>
 				<xsl:if test="/document/@me">
-					<A href="/album.asp">
+					<A class="grayIcon" href="/album.asp">
 						<I class="fad fa-camera font40"></I>
 					</A>
 				</xsl:if>
@@ -259,7 +259,7 @@
 					</xsl:when>
 					<xsl:otherwise>
 						<DIV class="ms-md-auto">
-							<A class="btn btn-icon-only btn-link mx-md-4" href="/me.asp">
+							<A class="mx-2 grayIcon" href="/me.asp">
 								<I class="fad fa-pen font40"></I>
 							</A>
 						</DIV>
