@@ -277,30 +277,34 @@
 							</TEXTAREA>
 						</DIV>
 					</DIV>
-					<xsl:if test="/document/@female">
-						<DIV class="col-md-12 mb-3">
-							<LABEL>LINE/微信WeChat</LABEL>
+					<DIV class="col-md-12 mb-3">
+						<LABEL>LINE/微信WeChat</LABEL>
+						<xsl:if test="gender/@gender = 'female'">
 							<P class="text-xs m-1 mb-1">與男仕聯繫的通訊軟體 (擇一上傳 QR Code)</P>
 							<P class="text-xs text-warning m-1 mb-1">上傳 QRcode 加好友資訊能安全保護 ID 個資安全，每位男士都須經過甜心同意才能加好友，不會被騷擾，請安心上傳。</P>
-							<DIV class="uploadQrcode ">
-								<LABEL>
-									<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
-									<A class="btn btn-primary p-1 me-1 mb-0">點擊上傳 QR code</A>
-								</LABEL>
-								<BUTTON class="btn btn-info p-1 mb-0 ms-1" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">如何取得 QR code?</BUTTON>
-							</DIV>
-							<DIV class="mt-1">
-								<INPUT class="form-control" name="inviteMeAsLineFriend" readonly="" required="" style="display: none;" type="text" value="">
-									<xsl:if test="inviteMeAsLineFriend">
-										<xsl:attribute name="style">display: inline;</xsl:attribute>
-										<xsl:attribute name="value">
-											<xsl:value-of select="inviteMeAsLineFriend"/>
-										</xsl:attribute>
-									</xsl:if>
-								</INPUT>
-							</DIV>
+						</xsl:if>
+						<xsl:if test="gender/@gender = 'male'">
+							<P class="text-xs m-1 mb-1">與甜心聯繫的通訊軟體 (擇一上傳 QR Code)</P>
+							<P class="text-xs text-warning m-1 mb-1">上傳 QRcode 加好友資訊能安全保護 ID 個資安全，請安心上傳。</P>
+						</xsl:if>
+						<DIV class="uploadQrcode ">
+							<LABEL>
+								<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
+								<A class="btn btn-primary p-1 me-1 mb-0">點擊上傳 QR code</A>
+							</LABEL>
+							<BUTTON class="btn btn-info p-1 mb-0 ms-1" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">如何取得 QR code?</BUTTON>
 						</DIV>
-					</xsl:if>
+						<DIV class="mt-1">
+							<INPUT class="form-control" name="inviteMeAsLineFriend" readonly="" required="" style="display: none;" type="text" value="">
+								<xsl:if test="inviteMeAsLineFriend">
+									<xsl:attribute name="style">display: inline;</xsl:attribute>
+									<xsl:attribute name="value">
+										<xsl:value-of select="inviteMeAsLineFriend"/>
+									</xsl:attribute>
+								</xsl:if>
+							</INPUT>
+						</DIV>
+					</DIV>
 					<DIV class="col-md-12 mb-3">
 						<LABEL>服務標籤</LABEL>
 						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">

@@ -1152,7 +1152,9 @@ public class WelcomeController {
 			me.setOccupation(model.getOccupation());
 		}
 
-		me.setInviteMeAsLineFriend(model.getInviteMeAsLineFriend());
+		if (Objects.nonNull(model.getInviteMeAsLineFriend())) {
+			me.setInviteMeAsLineFriend(model.getInviteMeAsLineFriend());
+		}
 
 		if (Objects.nonNull(model.getBodyType())) {
 			me.setBodyType(model.getBodyType());

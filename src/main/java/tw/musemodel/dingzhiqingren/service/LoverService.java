@@ -664,7 +664,8 @@ public class LoverService {
 			);
 		}
 
-		if (Objects.nonNull(lover.getInviteMeAsLineFriend())) {
+		String inviteMeAsFreind = lover.getInviteMeAsLineFriend();
+		if (Objects.nonNull(inviteMeAsFreind) && !inviteMeAsFreind.isBlank() && !inviteMeAsFreind.isEmpty()) {
 			String uri = lover.getInviteMeAsLineFriend();
 			Boolean isLine = Servant.isLine(URI.create(uri));
 			Boolean isWeChat = Servant.isWeChat(URI.create(uri));
