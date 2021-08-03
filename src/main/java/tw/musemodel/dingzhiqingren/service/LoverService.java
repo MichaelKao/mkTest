@@ -2115,4 +2115,61 @@ public class LoverService {
 		}
 		return nowDate.before(gpDate);
 	}
+
+	public boolean hasFinishedSignedUp(Lover lover) {
+		boolean finished = false;
+
+		if (Objects.isNull(lover.getNickname())) {
+			return finished;
+		}
+		if (Objects.isNull(lover.getWeight())) {
+			return finished;
+		}
+		if (Objects.isNull(lover.getHeight())) {
+			return finished;
+		}
+		String occupation = lover.getOccupation();
+		if (Objects.isNull(occupation) || occupation.isBlank() || occupation.isEmpty()) {
+			return finished;
+		}
+		if (Objects.isNull(lover.getBodyType())) {
+			return finished;
+		}
+		if (Objects.isNull(lover.getEducation())) {
+			return finished;
+		}
+		if (Objects.isNull(lover.getMarriage())) {
+			return finished;
+		}
+		if (Objects.isNull(lover.getSmoking())) {
+			return finished;
+		}
+		if (Objects.isNull(lover.getDrinking())) {
+			return finished;
+		}
+		if (Objects.isNull(lover.getRelationship())) {
+			return finished;
+		}
+		if (Objects.isNull(lover.getAboutMe())) {
+			return finished;
+		}
+		if (Objects.isNull(lover.getIdealConditions())) {
+			return finished;
+		}
+		if (Objects.isNull(lover.getGreeting())) {
+			return finished;
+		}
+		if (lover.getGender() && Objects.isNull(lover.getAnnualIncome())) {
+			return finished;
+		}
+		if (!lover.getGender() && Objects.isNull(lover.getAllowance())) {
+			return finished;
+		}
+		if (!lover.getGender() && Objects.isNull(lover.getInviteMeAsLineFriend())) {
+			return finished;
+		}
+
+		finished = true;
+		return finished;
+	}
 }

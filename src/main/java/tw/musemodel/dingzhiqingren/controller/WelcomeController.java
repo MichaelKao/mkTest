@@ -140,6 +140,10 @@ public class WelcomeController {
 			Lover me = loverService.loadByUsername(
 				authentication.getName()
 			);
+			LOGGER.debug("測試{}", loverService.hasFinishedSignedUp(me));
+			if (!loverService.hasFinishedSignedUp(me)) {
+				return new ModelAndView("redirect:/me.asp");
+			}
 
 			// 確認性別
 			Boolean gender = me.getGender();
