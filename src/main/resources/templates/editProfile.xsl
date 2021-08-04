@@ -98,6 +98,7 @@
 						<H4 class="text-primary">
 							<xsl:value-of select="@title"/>
 						</H4>
+						<P>完成資料填寫，並開始尋找理想的另一半。</P>
 						<HR class="horizontal dark"/>
 					</DIV>
 					<xsl:apply-templates select="lover"/>
@@ -117,29 +118,29 @@
 			<DIV class="card-body pt-1">
 				<DIV class="row mt-3">
 					<DIV class="col-md-12 mb-3">
-						<LABEL for="nickname">暱稱</LABEL>
+						<LABEL for="nickname">*暱稱</LABEL>
 						<INPUT class="form-control" id="nickname" name="nickname" required="" type="text" value="{nickname}"/>
 					</DIV>
 					<DIV class="form-group">
-						<LABEL>生日</LABEL>
+						<LABEL>*生日</LABEL>
 						<INPUT class="form-control" readonly="" required="" type="text" value="{birthday}"/>
 					</DIV>
 					<DIV class="d-flex">
 						<DIV class="col-6 mb-3 pe-1">
-							<LABEL for="height">身高</LABEL>
-							<INPUT class="form-control" id="height" name="height" type="text" value="{height}"/>
+							<LABEL for="height">*身高</LABEL>
+							<INPUT class="form-control" id="height" name="height" required="" type="text" value="{height}"/>
 						</DIV>
 						<DIV class="col-6 mb-3 ps-1">
-							<LABEL for="weight">體重</LABEL>
-							<INPUT class="form-control" id="weight" name="weight" type="text" value="{weight}"/>
+							<LABEL for="weight">*體重</LABEL>
+							<INPUT class="form-control" id="weight" name="weight" required="" type="text" value="{weight}"/>
 						</DIV>
 					</DIV>
 					<DIV class="col-md-12 mb-3">
-						<LABEL for="occupation">職業</LABEL>
-						<INPUT class="form-control" id="occupation" name="occupation" type="text" value="{occupation}"/>
+						<LABEL for="occupation">*職業</LABEL>
+						<INPUT class="form-control" id="occupation" name="occupation" required="" type="text" value="{occupation}"/>
 					</DIV>
 					<DIV class="form-group">
-						<LABEL for="bodyType">體型</LABEL>
+						<LABEL for="bodyType">*體型</LABEL>
 						<SELECT class="form-control" id="bodyType" name="bodyType">
 							<xsl:for-each select="bodyType">
 								<OPTION value="{@bodyTypeEnum}">
@@ -152,7 +153,7 @@
 						</SELECT>
 					</DIV>
 					<DIV class="form-group">
-						<LABEL for="education">學歷</LABEL>
+						<LABEL for="education">*學歷</LABEL>
 						<SELECT class="form-control" id="education" name="education">
 							<xsl:for-each select="education">
 								<OPTION value="{@educationEnum}">
@@ -165,7 +166,7 @@
 						</SELECT>
 					</DIV>
 					<DIV class="form-group">
-						<LABEL for="marriage">婚姻狀態</LABEL>
+						<LABEL for="marriage">*婚姻狀態</LABEL>
 						<SELECT class="form-control" id="marriage" name="marriage">
 							<xsl:for-each select="marriage">
 								<OPTION value="{@marriageEnum}">
@@ -178,7 +179,7 @@
 						</SELECT>
 					</DIV>
 					<DIV class="form-group">
-						<LABEL for="smoking">抽菸習慣</LABEL>
+						<LABEL for="smoking">*抽菸習慣</LABEL>
 						<SELECT class="form-control" id="smoking" name="smoking">
 							<xsl:for-each select="smoking">
 								<OPTION value="{@smokingEnum}">
@@ -191,7 +192,7 @@
 						</SELECT>
 					</DIV>
 					<DIV class="form-group">
-						<LABEL for="drinking">飲酒習慣</LABEL>
+						<LABEL for="drinking">*飲酒習慣</LABEL>
 						<SELECT class="form-control" id="drinking" name="drinking">
 							<xsl:for-each select="drinking">
 								<OPTION value="{@drinkingEnum}">
@@ -204,7 +205,7 @@
 						</SELECT>
 					</DIV>
 					<DIV class="form-group">
-						<LABEL for="relationship">相處關係</LABEL>
+						<LABEL for="relationship">*相處關係</LABEL>
 						<SELECT class="form-control" id="relationship" name="relationship">
 							<xsl:for-each select="relationship">
 								<OPTION value="{@relationshipEnum}">
@@ -218,7 +219,7 @@
 					</DIV>
 					<xsl:if test="gender/@gender = 'male'">
 						<DIV class="form-group">
-							<LABEL for="annualIncome">年收入</LABEL>
+							<LABEL for="annualIncome">*年收入</LABEL>
 							<SELECT class="form-control" id="annualIncome" name="annualIncome">
 								<xsl:for-each select="annualIncome">
 									<OPTION value="{@annualIncomeID}">
@@ -233,7 +234,7 @@
 					</xsl:if>
 					<xsl:if test="gender/@gender = 'female'">
 						<DIV class="form-group">
-							<LABEL for="allowance">期望零用金</LABEL>
+							<LABEL for="allowance">*期望零用金</LABEL>
 							<SELECT class="form-control" id="allowance" name="allowance">
 								<xsl:for-each select="allowance">
 									<OPTION value="{@allowanceID}">
@@ -248,7 +249,7 @@
 					</xsl:if>
 					<DIV class="col-md-12 pe-2 mb-3">
 						<DIV class="form-group mb-0">
-							<LABEL for="aboutMe">關於我</LABEL>
+							<LABEL for="aboutMe">*關於我</LABEL>
 							<TEXTAREA class="form-control" id="aboutMe" name="aboutMe" required="" rows="6">
 								<xsl:value-of select="aboutMe"/>
 							</TEXTAREA>
@@ -256,7 +257,7 @@
 					</DIV>
 					<DIV class="col-md-12 pe-2 mb-3">
 						<DIV class="form-group mb-0">
-							<LABEL for="idealConditions">理想對象</LABEL>
+							<LABEL for="idealConditions">*理想對象</LABEL>
 							<TEXTAREA class="form-control" id="idealConditions" name="idealConditions" required="" rows="6">
 								<xsl:value-of select="idealConditions"/>
 							</TEXTAREA>
@@ -266,10 +267,10 @@
 						<DIV class="form-group mb-0">
 							<LABEL for="greeting">
 								<xsl:if test="gender/@gender = 'female'">
-									<SPAN>與男仕打招呼</SPAN>
+									<SPAN>*與男仕打招呼</SPAN>
 								</xsl:if>
 								<xsl:if test="gender/@gender = 'male'">
-									<SPAN>用一句話介紹自己來打動甜心</SPAN>
+									<SPAN>*用一句話介紹自己來打動甜心</SPAN>
 								</xsl:if>
 							</LABEL>
 							<TEXTAREA class="form-control" id="greeting" name="greeting" required="" rows="4">
@@ -278,12 +279,13 @@
 						</DIV>
 					</DIV>
 					<DIV class="col-md-12 mb-3">
-						<LABEL>LINE/微信WeChat</LABEL>
 						<xsl:if test="gender/@gender = 'female'">
+							<LABEL>*LINE/微信WeChat</LABEL>
 							<P class="text-xs m-1 mb-1">與男仕聯繫的通訊軟體 (擇一上傳 QR Code)</P>
 							<P class="text-xs text-warning m-1 mb-1">上傳 QRcode 加好友資訊能安全保護 ID 個資安全，每位男士都須經過甜心同意才能加好友，不會被騷擾，請安心上傳。</P>
 						</xsl:if>
 						<xsl:if test="gender/@gender = 'male'">
+							<LABEL>(選填)LINE/微信WeChat</LABEL>
 							<P class="text-xs m-1 mb-1">與甜心聯繫的通訊軟體 (擇一上傳 QR Code)</P>
 							<P class="text-xs text-warning m-1 mb-1">上傳 QRcode 加好友資訊能安全保護 ID 個資安全，請安心上傳。</P>
 						</xsl:if>
@@ -306,7 +308,7 @@
 						</DIV>
 					</DIV>
 					<DIV class="col-md-12 mb-3">
-						<LABEL>服務標籤</LABEL>
+						<LABEL>*服務標籤</LABEL>
 						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
 							<xsl:for-each select="service">
 								<DIV class="form-check ms-2">
@@ -323,7 +325,7 @@
 						</DIV>
 					</DIV>
 					<DIV class="col-md-12 mb-3">
-						<LABEL>服務地區</LABEL>
+						<LABEL>*服務地區</LABEL>
 						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
 							<xsl:for-each select="location">
 								<DIV class="form-check ms-2">

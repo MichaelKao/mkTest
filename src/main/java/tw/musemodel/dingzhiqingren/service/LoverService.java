@@ -1276,6 +1276,153 @@ public class LoverService {
 		return document;
 	}
 
+	public JSONObject updatePersonalInfo(Lover lover, Lover model) {
+
+		if (model.getNickname().isBlank() || model.getNickname().isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason("請填寫暱稱").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (Objects.isNull(model.getHeight())) {
+			return new JavaScriptObjectNotation().
+				withReason("請填寫身高").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (Objects.isNull(model.getWeight())) {
+			return new JavaScriptObjectNotation().
+				withReason("請填寫體重").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (Objects.isNull(model.getOccupation())) {
+			return new JavaScriptObjectNotation().
+				withReason("請填寫職業").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (!lover.getGender() && (model.getInviteMeAsLineFriend().isBlank() || model.getInviteMeAsLineFriend().isEmpty())) {
+			return new JavaScriptObjectNotation().
+				withReason("請上傳 LINE 或 WeChat 的 QRcode").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (Objects.isNull(model.getBodyType())) {
+			return new JavaScriptObjectNotation().
+				withReason("請擇一體型").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (Objects.isNull(model.getEducation())) {
+			return new JavaScriptObjectNotation().
+				withReason("請擇一學歷").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (Objects.isNull(model.getSmoking())) {
+			return new JavaScriptObjectNotation().
+				withReason("請擇一吸菸習慣").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (Objects.isNull(model.getDrinking())) {
+			return new JavaScriptObjectNotation().
+				withReason("請擇一飲酒習慣").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (Objects.isNull(model.getRelationship())) {
+			return new JavaScriptObjectNotation().
+				withReason("請擇一相處關係").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (lover.getGender() && Objects.isNull(model.getAnnualIncome())) {
+			return new JavaScriptObjectNotation().
+				withReason("請擇一年收入").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (!lover.getGender() && Objects.isNull(model.getAllowance())) {
+			return new JavaScriptObjectNotation().
+				withReason("請擇一期望零用金").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (model.getAboutMe().isBlank() || model.getAboutMe().isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason("請輸入關於我的內容").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (model.getIdealConditions().isBlank() || model.getIdealConditions().isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason("請輸入你的理想對象型").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (model.getGreeting().isBlank() || model.getGreeting().isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason("請輸入你的招呼語").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (lover.getLocations().size() < 1) {
+			return new JavaScriptObjectNotation().
+				withReason("請至少填入一個地區").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		if (lover.getServices().size() < 1) {
+			return new JavaScriptObjectNotation().
+				withReason("請至少填入服務標籤").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		lover.setNickname(model.getNickname());
+		lover.setHeight(model.getHeight());
+		lover.setWeight(model.getWeight());
+		lover.setOccupation(model.getOccupation());
+		lover.setInviteMeAsLineFriend(model.getInviteMeAsLineFriend());
+		lover.setBodyType(model.getBodyType());
+		lover.setEducation(model.getEducation());
+		lover.setMarriage(model.getMarriage());
+		lover.setSmoking(model.getSmoking());
+		lover.setDrinking(model.getDrinking());
+		lover.setRelationship(model.getRelationship());
+		lover.setAnnualIncome(model.getAnnualIncome());
+		lover.setAllowance(model.getAllowance());
+		lover.setAboutMe(model.getAboutMe());
+		lover.setIdealConditions(model.getIdealConditions());
+		lover.setGreeting(model.getGreeting());
+
+		loverRepository.saveAndFlush(lover);
+
+		return new JavaScriptObjectNotation().
+			withReason("update successfully").
+			withResponse(true).
+			withRedirect("/profile/").
+			toJSONObject();
+	}
+
 	public Document withdrawalDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -2116,10 +2263,17 @@ public class LoverService {
 		return nowDate.before(gpDate);
 	}
 
+	/**
+	 * 是否已經完成填寫註冊個人資訊
+	 *
+	 * @param lover
+	 * @return
+	 */
 	public boolean hasFinishedSignedUp(Lover lover) {
 		boolean finished = false;
 
-		if (Objects.isNull(lover.getNickname())) {
+		String nickname = lover.getNickname();
+		if (Objects.isNull(nickname) || nickname.isBlank() || nickname.isEmpty()) {
 			return finished;
 		}
 		if (Objects.isNull(lover.getWeight())) {
@@ -2150,13 +2304,16 @@ public class LoverService {
 		if (Objects.isNull(lover.getRelationship())) {
 			return finished;
 		}
-		if (Objects.isNull(lover.getAboutMe())) {
+		String aboutMe = lover.getAboutMe();
+		if (Objects.isNull(aboutMe) || aboutMe.isBlank() || aboutMe.isEmpty()) {
 			return finished;
 		}
-		if (Objects.isNull(lover.getIdealConditions())) {
+		String idealConditions = lover.getIdealConditions();
+		if (Objects.isNull(idealConditions) || idealConditions.isBlank() || idealConditions.isEmpty()) {
 			return finished;
 		}
-		if (Objects.isNull(lover.getGreeting())) {
+		String greeting = lover.getGreeting();
+		if (Objects.isNull(greeting) || greeting.isBlank() || greeting.isEmpty()) {
 			return finished;
 		}
 		if (lover.getGender() && Objects.isNull(lover.getAnnualIncome())) {
@@ -2165,7 +2322,14 @@ public class LoverService {
 		if (!lover.getGender() && Objects.isNull(lover.getAllowance())) {
 			return finished;
 		}
-		if (!lover.getGender() && Objects.isNull(lover.getInviteMeAsLineFriend())) {
+		String inviteMeAsFriend = lover.getInviteMeAsLineFriend();
+		if (!lover.getGender() && (Objects.isNull(inviteMeAsFriend) || inviteMeAsFriend.isBlank() || inviteMeAsFriend.isEmpty())) {
+			return finished;
+		}
+		if (lover.getLocations().size() < 1) {
+			return finished;
+		}
+		if (lover.getServices().size() < 1) {
 			return finished;
 		}
 

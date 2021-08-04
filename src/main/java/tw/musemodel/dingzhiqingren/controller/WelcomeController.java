@@ -140,7 +140,6 @@ public class WelcomeController {
 			Lover me = loverService.loadByUsername(
 				authentication.getName()
 			);
-			LOGGER.debug("測試{}", loverService.hasFinishedSignedUp(me));
 			if (!loverService.hasFinishedSignedUp(me)) {
 				return new ModelAndView("redirect:/me.asp");
 			}
@@ -810,6 +809,9 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+		if (!loverService.hasFinishedSignedUp(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
 
 		Document document = loverService.readDocument(me, locale);
 		Element documentElement = document.getDocumentElement();
@@ -895,6 +897,9 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+		if (!loverService.hasFinishedSignedUp(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
 
 		// 識別碼的帳號
 		Lover lover = loverService.loadByIdentifier(identifier);
@@ -1103,110 +1108,9 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		if (model.getNickname().isBlank() || model.getNickname().isEmpty()) {
-			return new JavaScriptObjectNotation().
-				withReason("請輸入暱稱").
-				withResponse(false).
-				toJSONObject().toString();
-		}
+		JSONObject jSONObject = loverService.updatePersonalInfo(me, model);
 
-		if (!me.getGender() && (model.getInviteMeAsLineFriend().isBlank() || model.getInviteMeAsLineFriend().isEmpty())) {
-			return new JavaScriptObjectNotation().
-				withReason("請上傳 LINE 或 WeChat 的 QRcode").
-				withResponse(false).
-				toJSONObject().toString();
-		}
-
-		if (model.getAboutMe().isBlank() || model.getAboutMe().isEmpty()) {
-			return new JavaScriptObjectNotation().
-				withReason("請輸入關於我的內容").
-				withResponse(false).
-				toJSONObject().toString();
-		}
-
-		if (model.getIdealConditions().isBlank() || model.getIdealConditions().isEmpty()) {
-			return new JavaScriptObjectNotation().
-				withReason("請輸入你的理想型").
-				withResponse(false).
-				toJSONObject().toString();
-		}
-
-		if (model.getGreeting().isBlank() || model.getGreeting().isEmpty()) {
-			return new JavaScriptObjectNotation().
-				withReason("請輸入你的招呼語").
-				withResponse(false).
-				toJSONObject().toString();
-		}
-
-		me.setNickname(model.getNickname());
-
-		if (Objects.nonNull(model.getLocation())) {
-			me.setLocation(model.getLocation());
-		}
-
-		if (Objects.nonNull(model.getHeight())) {
-			me.setHeight(model.getHeight());
-		}
-
-		if (Objects.nonNull(model.getWeight())) {
-			me.setWeight(model.getWeight());
-		}
-
-		if (Objects.nonNull(model.getOccupation())) {
-			me.setOccupation(model.getOccupation());
-		}
-
-		if (Objects.nonNull(model.getInviteMeAsLineFriend())) {
-			me.setInviteMeAsLineFriend(model.getInviteMeAsLineFriend());
-		}
-
-		if (Objects.nonNull(model.getBodyType())) {
-			me.setBodyType(model.getBodyType());
-		}
-
-		if (Objects.nonNull(model.getEducation())) {
-			me.setEducation(model.getEducation());
-		}
-
-		if (Objects.nonNull(model.getMarriage())) {
-			me.setMarriage(model.getMarriage());
-		}
-
-		if (Objects.nonNull(model.getSmoking())) {
-			me.setSmoking(model.getSmoking());
-		}
-
-		if (Objects.nonNull(model.getDrinking())) {
-			me.setDrinking(model.getDrinking());
-		}
-
-		if (Objects.nonNull(model.getRelationship())) {
-			me.setRelationship(model.getRelationship());
-		}
-
-		if (Objects.nonNull(model.getAnnualIncome())) {
-			me.setAnnualIncome(model.getAnnualIncome());
-		}
-
-		if (Objects.nonNull(model.getAllowance())) {
-			me.setAllowance(model.getAllowance());
-		}
-
-		String aboutMe = model.getAboutMe();
-		me.setAboutMe(aboutMe);
-
-		String idealConditions = model.getIdealConditions();
-		me.setIdealConditions(idealConditions);
-
-		me.setGreeting(model.getGreeting());
-
-		loverRepository.saveAndFlush(me);
-
-		return new JavaScriptObjectNotation().
-			withReason("Update successfully").
-			withResponse(true).
-			withRedirect("/profile/").
-			toJSONObject().toString();
+		return jSONObject.toString();
 	}
 
 	/**
@@ -1230,6 +1134,9 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+		if (!loverService.hasFinishedSignedUp(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -1351,6 +1258,9 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+		if (!loverService.hasFinishedSignedUp(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -1494,6 +1404,9 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+		if (!loverService.hasFinishedSignedUp(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -1702,6 +1615,9 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);//我谁⁉️
+		if (!loverService.hasFinishedSignedUp(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -1775,6 +1691,9 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);//我谁⁉️
+		if (!loverService.hasFinishedSignedUp(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -1839,6 +1758,9 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+		if (!loverService.hasFinishedSignedUp(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
 
 		Document document = historyService.historiesToDocument(me);
 		Element documentElement = document.getDocumentElement();
@@ -1951,6 +1873,9 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);//我谁⁉️
+		if (!loverService.hasFinishedSignedUp(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -2452,6 +2377,9 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+		if (!loverService.hasFinishedSignedUp(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
 
 		Document document = loverService.withdrawalDocument(me, locale);
 		Element documentElement = document.getDocumentElement();
@@ -2862,6 +2790,9 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+		if (!loverService.hasFinishedSignedUp(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -3016,6 +2947,9 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+		if (!loverService.hasFinishedSignedUp(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -3101,6 +3035,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+		LOGGER.debug("群發打招呼:{}", greetingMessage);
 
 		JSONObject jsonObject;
 		try {
@@ -3140,6 +3075,9 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+		if (!loverService.hasFinishedSignedUp(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
