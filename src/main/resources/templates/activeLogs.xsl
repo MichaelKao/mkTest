@@ -29,7 +29,7 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container py-7">
+			<DIV class="container pt-7 pt-md-8">
 				<H4 class="text-primary text-center">
 					<xsl:value-of select="@title"/>
 				</H4>
@@ -149,14 +149,16 @@
 											<BUTTON class="btn btn-sm btn-outline-info px-2 py-1 p-md-2 m-0 me-1 talkAgain" type="button">再聊聊</BUTTON>
 										</DIV>
 									</xsl:if>
-									<xsl:if test="@addLineButton">
+									<xsl:if test="not(@decideButton)">
 										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
-											<BUTTON class="btn btn-success px-2 py-1 p-md-2 m-0 me-1 openLine" type="button">
-												<SPAN>加入好友</SPAN>
-												<xsl:if test="@remindDeduct">
-													<DIV class="text-xxs">需 30 愛心</DIV>
-												</xsl:if>
-											</BUTTON>
+											<xsl:if test="@addLineButton">
+												<BUTTON class="btn btn-success px-2 py-1 p-md-2 m-0 me-1 openLine" type="button">
+													<SPAN>加入好友</SPAN>
+													<xsl:if test="@remindDeduct">
+														<DIV class="text-xxs">需 30 愛心</DIV>
+													</xsl:if>
+												</BUTTON>
+											</xsl:if>
 											<xsl:if test="@rateButton">
 												<BUTTON class="btn btn-warning px-2 py-1 p-md-2 m-0 me-1 rate" type="button">評價</BUTTON>
 											</xsl:if>

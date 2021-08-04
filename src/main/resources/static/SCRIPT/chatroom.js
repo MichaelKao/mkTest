@@ -1,12 +1,9 @@
 $(document).ready(function () {
-	$('#cellularPhoneNumber').keyup(function () {
-		let that = this;
-		$(this).val(
-			$(this).val().replace(/\D/gi, '')
-		);
-		$('INPUT[name="username"]').val(
-			$('#country').val().replace(/\D/g, '') +
-			$(this).val().replace(/^0/g, '')
-		);
+	$('BUTTON.locationBack').click(function () {
+		if (!document.referrer || document.referrer === location.href || document.referrer.indexOf(location.origin) < 0) {
+			location.href = '/';
+		} else {
+			window.history.back();
+		}
 	});
 });

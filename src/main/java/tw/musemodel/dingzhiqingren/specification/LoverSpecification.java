@@ -46,9 +46,6 @@ public class LoverSpecification {
 			root.get(Lover_.shadow)
 		));//有密码
 		predicates.add(criteriaBuilder.isNotNull(
-			root.get(Lover_.location)
-		));//有地区
-		predicates.add(criteriaBuilder.isNotNull(
 			root.get(Lover_.nickname)
 		));//有昵称
 		predicates.add(criteriaBuilder.isNotNull(
@@ -342,7 +339,7 @@ public class LoverSpecification {
 					root.get(Lover_.maleSpecies),
 					MaleSpecies.VVIP
 				),//须为 VVIP
-				eligible(root, criteriaBuilder, false)//合格用户号们
+				eligible(root, criteriaBuilder, true)//合格用户号们
 			);
 		};
 	}

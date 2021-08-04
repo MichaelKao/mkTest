@@ -612,7 +612,13 @@ public class LoverService {
 	 * @return 布尔值
 	 */
 	public boolean isVIP(Lover lover) {
-		return Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date(System.currentTimeMillis()));
+		return Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date(System.currentTimeMillis()))
+			&& Objects.nonNull(lover.getMaleSpecies()) && Objects.equals(lover.getMaleSpecies(), Lover.MaleSpecies.VIP);
+	}
+
+	public boolean isVVIP(Lover lover) {
+		return Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date(System.currentTimeMillis()))
+			&& Objects.nonNull(lover.getMaleSpecies()) && Objects.equals(lover.getMaleSpecies(), Lover.MaleSpecies.VVIP);
 	}
 
 	public Document readDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
@@ -1822,7 +1828,7 @@ public class LoverService {
 					calculateAge(lover).toString()
 				);
 			}
-			if (isVIP(lover)) {
+			if (isVVIP(lover)) {
 				loverElement.setAttribute("vip", null);
 			}
 			if (Objects.nonNull(lover.getRelief())) {
@@ -1911,7 +1917,7 @@ public class LoverService {
 				nicknameElement.setTextContent(lover.getNickname());
 				sectionElement.appendChild(nicknameElement);
 			}
-			if (isVIP(lover)) {
+			if (isVVIP(lover)) {
 				sectionElement.setAttribute("vip", null);
 			}
 			if (Objects.nonNull(lover.getRelief())) {
@@ -1984,7 +1990,7 @@ public class LoverService {
 		for (Lover lover : page.getContent()) {
 			JSONObject json = new JSONObject();
 			json.put("nickname", lover.getNickname());
-			if (isVIP(lover)) {
+			if (isVVIP(lover)) {
 				json.put("vip", true);
 			}
 			if (Objects.nonNull(lover.getRelief()) && lover.getRelief()) {
@@ -2226,7 +2232,7 @@ public class LoverService {
 			historyElement.setAttribute("age", calculateAge(male).toString());
 			historyElement.setAttribute("profileImage", male.getProfileImage());
 			historyElement.setAttribute("identifier", male.getIdentifier().toString());
-			if (isVIP(history.getPassive())) {
+			if (isVVIP(history.getPassive())) {
 				historyElement.setAttribute("vip", null);
 			}
 			if (Objects.nonNull(male.getRelief())) {

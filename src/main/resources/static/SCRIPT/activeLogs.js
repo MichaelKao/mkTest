@@ -1,6 +1,12 @@
 $(document).ready(function () {
+	$('BUTTON.accept').dblclick(function (e) {
+		e.preventDefault();
+	});
 	$('BUTTON.accept').click(function (event) {
 		event.preventDefault();
+		$(this).attr('disabled', true);
+		$(this).siblings('BUTTON.refuse').attr('disabled', true);
+		$(this).siblings('BUTTON.talkAgain').attr('disabled', true);
 		var whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 
 		$.post(
@@ -29,8 +35,14 @@ $(document).ready(function () {
 			);
 		return false;
 	});
+	$('BUTTON.refuse').dblclick(function (e) {
+		e.preventDefault();
+	});
 	$('BUTTON.refuse').click(function (event) {
 		event.preventDefault();
+		$(this).attr('disabled', true);
+		$(this).siblings('BUTTON.accept').attr('disabled', true);
+		$(this).siblings('BUTTON.talkAgain').attr('disabled', true);
 		var whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 
 		$.post(
@@ -54,8 +66,14 @@ $(document).ready(function () {
 			);
 		return false;
 	});
+	$('BUTTON.talkAgain').dblclick(function (e) {
+		e.preventDefault();
+	});
 	$('BUTTON.talkAgain').click(function (event) {
 		event.preventDefault();
+		$(this).attr('disabled', true);
+		$(this).siblings('BUTTON.accept').attr('disabled', true);
+		$(this).siblings('BUTTON.refuse').attr('disabled', true);
 		var whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 
 		$.post(
