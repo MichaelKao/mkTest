@@ -720,6 +720,11 @@ COMMENT ON COLUMN"qing_ren"."tui_jian_ma"IS'推荐码';
 COMMENT ON COLUMN"qing_ren"."tui_jian_ren"IS'推荐人';
 
 /**
+ * 再聊聊行為
+ */
+ALTER TYPE"xing_wei" ADD VALUE 'ZAI_LIAO_LIAO';
+
+/**
  * 男士种类
  */
 CREATE TYPE"nan_shi_zhong_lei"AS ENUM(
