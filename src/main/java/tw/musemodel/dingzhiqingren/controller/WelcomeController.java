@@ -2505,6 +2505,7 @@ public class WelcomeController {
 
 		me.setDelete(authentication.getName());
 		me.setLogin(null);
+		me.setShadow(null);
 		loverRepository.saveAndFlush(me);
 
 		return new JavaScriptObjectNotation().
