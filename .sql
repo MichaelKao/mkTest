@@ -718,3 +718,19 @@ ADD COLUMN"tui_jian_ma"varchar,
 ADD COLUMN"tui_jian_ren"int REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE;
 COMMENT ON COLUMN"qing_ren"."tui_jian_ma"IS'推荐码';
 COMMENT ON COLUMN"qing_ren"."tui_jian_ren"IS'推荐人';
+
+/**
+ * 男士种类
+ */
+CREATE TYPE"nan_shi_zhong_lei"AS ENUM(
+	'VIP',
+	'VVIP'
+);
+COMMENT ON TYPE"nan_shi_zhong_lei"IS'男士种类';
+
+/**
+ * 情人添加：男士种类
+ */
+ALTER TABLE"qing_ren"
+ADD COLUMN"nan_shi_zhong_lei"varchar;
+COMMENT ON COLUMN"qing_ren"."nan_shi_zhong_lei"IS'男士种类';

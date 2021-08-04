@@ -10,7 +10,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -359,18 +358,26 @@ public class Lover implements java.io.Serializable {
 	private String lineNotifyAccessToken;
 
 	/**
-	 * 相處關係
+	 * 推荐码
 	 */
 	@Column(name = "tui_jian_ma")
 	private String referralCode;
 
 	/**
-	 * 相處關係
+	 * 推荐人
 	 */
 	@JoinColumn(name = "tui_jian_ren", referencedColumnName = "id")
 	@ManyToOne
 	@JsonManagedReference
 	private Lover referrer;
+
+	/**
+	 * 男士种类
+	 */
+	@Column(name = "nan_shi_zhong_lei")
+	@Enumerated(EnumType.STRING)
+	@Type(type = "pgsql_enum")
+	private MaleSpecies maleSpecies;
 
 	/**
 	 * 默认构造器
@@ -1031,6 +1038,20 @@ public class Lover implements java.io.Serializable {
 	}
 
 	/**
+	 * @return 男士种类
+	 */
+	public MaleSpecies getMaleSpecies() {
+		return maleSpecies;
+	}
+
+	/**
+	 * @param maleSpecies 男士种类
+	 */
+	public void setMaleSpecies(MaleSpecies maleSpecies) {
+		this.maleSpecies = maleSpecies;
+	}
+
+	/**
 	 * 体型
 	 *
 	 * @author m@musemodel.tw
@@ -1159,6 +1180,26 @@ public class Lover implements java.io.Serializable {
 		private int index;
 
 		private Relationship(String label, int index) {
+			this.label = label;
+			this.index = index;
+		}
+	}
+
+	/**
+	 * 男士种类
+	 *
+	 * @author p@musemodel.tw
+	 */
+	public enum MaleSpecies {
+
+		VIP("VIP", 1),
+		VVIP("VVIP", 2);
+
+		private String label;
+
+		private int index;
+
+		private MaleSpecies(String label, int index) {
 			this.label = label;
 			this.index = index;
 		}
