@@ -3041,6 +3041,7 @@ public class WelcomeController {
 		try {
 			jsonObject = loverService.groupGreeting(me, greetingMessage, locale);
 		} catch (Exception exception) {
+			LOGGER.debug("群發打招呼有拋出例外:{}", exception.getMessage());
 			jsonObject = new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
 					exception.getMessage(),
@@ -3138,6 +3139,84 @@ public class WelcomeController {
 		}
 
 		ModelAndView modelAndView = new ModelAndView("setting");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	@GetMapping(path = "/chatRoom")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView chatRoom(Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
+		if (servant.isNull(authentication)) {
+			servant.redirectToRoot();
+		}
+
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+		if (!loverService.hasFinishedSignedUp(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.setting",
+			null,
+			locale
+		));
+
+		documentElement.setAttribute(
+			"signIn",
+			authentication.getName()
+		);
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
+
+		// 確認性別
+		Boolean isMale = me.getGender();
+
+		documentElement.setAttribute(
+			isMale ? "male" : "female",
+			null
+		);
+
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
+
+		// 有無連動 LINE notify
+		if (loverService.hasLineNotify(me)) {
+			documentElement.setAttribute(
+				"lineNotify",
+				null
+			);
+		}
+
+		ModelAndView modelAndView = new ModelAndView("chatRoom");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}
