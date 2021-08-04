@@ -3144,6 +3144,17 @@ public class WelcomeController {
 		return modelAndView;
 	}
 
+	/**
+	 * 聊天室
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
 	@GetMapping(path = "/chatRoom")
 	@Secured({"ROLE_YONGHU"})
 	ModelAndView chatRoom(Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
