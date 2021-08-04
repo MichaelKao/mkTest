@@ -2273,7 +2273,7 @@ public class LoverService {
 		boolean finished = false;
 
 		String nickname = lover.getNickname();
-		if (Objects.isNull(nickname) || nickname.isBlank() || nickname.isEmpty()) {
+		if (Objects.isNull(nickname) || nickname.isBlank()) {
 			return finished;
 		}
 		if (Objects.isNull(lover.getWeight())) {
@@ -2283,7 +2283,7 @@ public class LoverService {
 			return finished;
 		}
 		String occupation = lover.getOccupation();
-		if (Objects.isNull(occupation) || occupation.isBlank() || occupation.isEmpty()) {
+		if (Objects.isNull(occupation) || occupation.isBlank()) {
 			return finished;
 		}
 		if (Objects.isNull(lover.getBodyType())) {
@@ -2305,15 +2305,15 @@ public class LoverService {
 			return finished;
 		}
 		String aboutMe = lover.getAboutMe();
-		if (Objects.isNull(aboutMe) || aboutMe.isBlank() || aboutMe.isEmpty()) {
+		if (Objects.isNull(aboutMe) || aboutMe.isBlank()) {
 			return finished;
 		}
 		String idealConditions = lover.getIdealConditions();
-		if (Objects.isNull(idealConditions) || idealConditions.isBlank() || idealConditions.isEmpty()) {
+		if (Objects.isNull(idealConditions) || idealConditions.isBlank()) {
 			return finished;
 		}
 		String greeting = lover.getGreeting();
-		if (Objects.isNull(greeting) || greeting.isBlank() || greeting.isEmpty()) {
+		if (Objects.isNull(greeting) || greeting.isBlank()) {
 			return finished;
 		}
 		if (lover.getGender() && Objects.isNull(lover.getAnnualIncome())) {
@@ -2323,7 +2323,7 @@ public class LoverService {
 			return finished;
 		}
 		String inviteMeAsFriend = lover.getInviteMeAsLineFriend();
-		if (!lover.getGender() && (Objects.isNull(inviteMeAsFriend) || inviteMeAsFriend.isBlank() || inviteMeAsFriend.isEmpty())) {
+		if (!lover.getGender() && (Objects.isNull(inviteMeAsFriend) || inviteMeAsFriend.isBlank())) {
 			return finished;
 		}
 		if (lover.getLocations().size() < 1) {
