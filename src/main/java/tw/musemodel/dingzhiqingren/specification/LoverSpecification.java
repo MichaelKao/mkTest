@@ -127,7 +127,7 @@ public class LoverSpecification {
 				)
 			);//以活跃降幂排序
 
-			return eligible(root, criteriaBuilder, gender);
+			return eligible(root, criteriaBuilder, gender);//合格用户号们
 		};
 	}
 
@@ -145,7 +145,7 @@ public class LoverSpecification {
 				)
 			);//以活跃降幂排序
 
-			return eligible(root, criteriaBuilder, gender);
+			return eligible(root, criteriaBuilder, gender);//合格用户号们
 		};
 	}
 
@@ -233,7 +233,7 @@ public class LoverSpecification {
 				criteriaBuilder.isTrue(
 					root.get(Lover_.relief)
 				),//通过安心认证
-				eligible(root, criteriaBuilder, gender)
+				eligible(root, criteriaBuilder, gender)//合格用户号们
 			);
 		};
 	}
@@ -341,7 +341,8 @@ public class LoverSpecification {
 				criteriaBuilder.equal(
 					root.get(Lover_.maleSpecies),
 					MaleSpecies.VVIP
-				)//须为 VVIP
+				),//须为 VVIP
+				eligible(root, criteriaBuilder, false)//合格用户号们
 			);
 		};
 	}
