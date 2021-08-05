@@ -941,7 +941,7 @@ public class WelcomeController {
 		Boolean gender = me.getGender();
 
 		// 本人是否為 VIP
-		if (loverService.isVIP(me)) {
+		if (loverService.isVVIP(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -1065,8 +1065,8 @@ public class WelcomeController {
 			null
 		);
 
-		// 本人是否為 VIP
-		if (loverService.isVIP(me)) {
+		// 本人是否為 VVIP
+		if (loverService.isVVIP(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -1366,7 +1366,7 @@ public class WelcomeController {
 						loverService.calculateAge(peeker).toString()
 					);
 				}
-				if (peeker.getGender() && loverService.isVIP(peeker)) {
+				if (peeker.getGender() && loverService.isVVIP(peeker)) {
 					peekerElement.setAttribute("vip", null);
 				}
 				if (Objects.nonNull(peeker.getRelief())) {
@@ -1854,7 +1854,7 @@ public class WelcomeController {
 			));
 
 		// 本人是否為 VIP
-		if (loverService.isVIP(me)) {
+		if (loverService.isVVIP(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -1938,7 +1938,7 @@ public class WelcomeController {
 			);
 		}
 
-		if (loverService.isVIP(me)) {
+		if (loverService.isVVIP(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -2528,6 +2528,7 @@ public class WelcomeController {
 
 		me.setDelete(authentication.getName());
 		me.setLogin(null);
+		me.setShadow(null);
 		loverRepository.saveAndFlush(me);
 
 		return new JavaScriptObjectNotation().
@@ -3164,7 +3165,18 @@ public class WelcomeController {
 		return modelAndView;
 	}
 
-	@GetMapping(path = "/chatRoom")
+	/**
+	 * 聊天室
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/chatroom")
 	@Secured({"ROLE_YONGHU"})
 	ModelAndView chatRoom(Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
@@ -3182,7 +3194,7 @@ public class WelcomeController {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.setting",
+			"title.chatroom",
 			null,
 			locale
 		));
@@ -3237,7 +3249,7 @@ public class WelcomeController {
 			);
 		}
 
-		ModelAndView modelAndView = new ModelAndView("chatRoom");
+		ModelAndView modelAndView = new ModelAndView("chatroom");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}
