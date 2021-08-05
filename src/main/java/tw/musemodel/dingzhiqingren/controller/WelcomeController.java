@@ -1572,6 +1572,30 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
+		/*
+		 解析上传的照片是否为二维码
+		 */
+		try {
+			JSONObject json = loverService.qrCodeToString(
+				multipartFile.getInputStream(),
+				locale
+			);
+			if (json.getString("result").matches("^http.*$")) {
+				return new JavaScriptObjectNotation().
+					withReason(
+						messageSource.getMessage(
+							"uploadProfileImage.cannotBeQRCode",
+							null,
+							locale
+						)
+					).
+					withResponse(false).
+					toString();
+			}
+		} catch (JSONException ignore) {
+			LOGGER.debug("上传的照片大概率估计不是二维码");
+		}
+
 		UUID fileName = UUID.randomUUID();
 
 		amazonWebServices.uploadPhotoToS3Bucket(
