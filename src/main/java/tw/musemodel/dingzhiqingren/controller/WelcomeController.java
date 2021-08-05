@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1504,12 +1505,36 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@PostMapping(path = "/uploadProfileImage")
-	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
 	String uploadProfileImage(@RequestParam("file") MultipartFile multipartFile, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+
+		/*
+		 解析上传的头贴是否为二维码
+		 */
+		try {
+			JSONObject json = loverService.qrCodeToString(
+				multipartFile.getInputStream(),
+				locale
+			);
+			if (json.getString("result").matches("^http.*$")) {
+				return new JavaScriptObjectNotation().
+					withReason(
+						messageSource.getMessage(
+							"uploadProfileImage.cannotBeQRCode",
+							null,
+							locale
+						)
+					).
+					withResponse(false).
+					toString();
+			}
+		} catch (JSONException ignore) {
+			LOGGER.debug("上传的头贴大概率估计不是二维码");
+		}
 
 		amazonWebServices.deletePhotoFromS3Bucket(
 			"/profileImage", me.getProfileImage()
@@ -1540,8 +1565,8 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@PostMapping(path = "/uploadPicture")
-	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
 	String uploadPicture(@RequestParam("file") MultipartFile multipartFile, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -2453,9 +2478,7 @@ public class WelcomeController {
 	@PostMapping(path = "/wireTransfer.json")
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
-	String wireTransfer(@RequestParam String wireTransferBankCode, @RequestParam String wireTransferBranchCode,
-		@RequestParam String wireTransferAccountName, @RequestParam String wireTransferAccountNumber,
-		Authentication authentication, Locale locale) {
+	String wireTransfer(@RequestParam String wireTransferBankCode, @RequestParam String wireTransferBranchCode, @RequestParam String wireTransferAccountName, @RequestParam String wireTransferAccountNumber, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -2781,8 +2804,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/search.json")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView search(@RequestParam(required = false) Location location, @RequestParam(required = false) ServiceTag serviceTag,
-		Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
+	ModelAndView search(@RequestParam(required = false) Location location, @RequestParam(required = false) ServiceTag serviceTag, Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			servant.redirectToRoot();
 		}
@@ -2937,8 +2959,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/groupGreeting.asp")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView groupGreeting(@RequestParam(required = false) Location location, @RequestParam(required = false) ServiceTag serviceTag,
-		Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
+	ModelAndView groupGreeting(@RequestParam(required = false) Location location, @RequestParam(required = false) ServiceTag serviceTag, Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			servant.redirectToRoot();
 		}
