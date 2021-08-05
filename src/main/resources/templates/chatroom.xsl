@@ -28,70 +28,70 @@
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="bootstrapToast"/>
-			<div class="text-center">
-				<div id="chatRoom">
-					<main class="chatRoom">
-						<div class="chatroomWrapper col-12 col-md-10 mx-auto">
-							<section class="chatHistory d-flex flex-column justify-content-between">
-								<div>
-									<div class="d-flex align-items-center ps-2 chatRoomHeader">
-										<div class="me-4">
+			<h3 id="statusOutput" class="statusOutput"></h3>
+			<DIV id="row"></DIV>
+			<DIV class="text-center">
+				<DIV id="chatroom">
+					<MAIN class="chatroom">
+						<DIV class="chatroomWrapper col-12 col-md-10 mx-auto shadow">
+							<SECTION class="chatHistory d-flex flex-column justify-content-between">
+								<DIV id="messagesArea" class="panel message-area" ></DIV>
+								<!--								<DIV>
+									<DIV class="chatroomHeader d-flex align-items-center ps-2 shadow">
+										<DIV class="me-3">
 											<BUTTON class="btn btn-link text-primary h2 m-0 p-0 locationBack">
-												<i class="fad fa-chevron-double-left"></i>
+												<I class="fal fa-arrow-left"></I>
 											</BUTTON>
-										</div>
-										<div>
-											<a href="/profile/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/">
+										</DIV>
+										<DIV>
+											<A href="/profile/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/">
 												<IMG alt="profileImage" class="rounded-circle" src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" width="45"/>
-											</a>
-											<SPAN class="text-bold text-lg ms-2">Peter</SPAN>
-										</div>
-									</div>
-								</div>
-								<div class="mb-1">
-									<div>
-										<div class="msg received-msg d-flex justify-content-start mb-4">
-											<a href="/profile/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/">
-												<img alt="profileImage" class="rounded-circle" src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" width="35"/>
-											</a>
-											<div class="msg-wrapper d-flex flex-column ms-2">
-												<div class="msg-body ml-2 d-flex flex-column">
-													<div class="bg-secondary text-light border-radius-xl text mb-0 text-black px-3 py-1 chat-history-peer">Hi</div>
-												</div>
-												<span class="text-muted text-xs">08/02 10:41</span>
-											</div>
-										</div>
-									</div>
-									<div>
-										<div class="msg sent-msg d-flex justify-content-end mb-4">
-											<div class="msg-wrapper d-flex flex-column">
-												<div class="msg-body mr-2 d-flex flex-column mb-1">
-													<div class="text mb-0 text-black text-right chat-history-my bg-primary text-light border-radius-xl px-3 py-1">Hello</div>
-												</div>
-												<span class="text-muted text-xs">
-													<small>08/03 15:35</small>
-												</span>
-											</div>
-										</div>
-									</div>
-								</div>
-							</section>
-						</div>
-					</main>
-					<section id="chatInputWrapper" class="fixed-bottom col-12 col-md-10 mx-auto">
-						<div class="d-flex align-items-center justify-content-center p-2">
-							<textarea id="chat-input" rows="1" placeholder="說點什麼吧...!" maxlength="240" class="form-control bg-light"></textarea>
-							<button class="btn btn-icon-only btn-link m-0 p-0" type="button">
-								<i class="fad fa-paper-plane" style="font-size: 30px;"></i>
-							</button>
-						</div>
-					</section>
-				</div>
-			</div>
+											</A>
+											<SPAN class="text-lg ms-2">Peter</SPAN>
+										</DIV>
+									</DIV>
+								</DIV>
+								<DIV>
+									<DIV class="msg receivedMsg d-flex justify-content-start mb-4 ms-1">
+										<A href="/profile/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/">
+											<IMG alt="profileImage" class="rounded-circle" src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" width="35"/>
+										</A>
+										<DIV class="msg-wrapper d-flex flex-column ms-2">
+											<DIV class="msg-body d-flex flex-column">
+												<DIV class="bg-secondary text-light border-radius-xl text mb-0 text-black px-3 py-1 chat-history-peer">Hi</DIV>
+											</DIV>
+											<SPAN class="text-muted text-xs">08/02 10:41</SPAN>
+										</DIV>
+									</DIV>
+									<DIV class="msg sentMsg d-flex justify-content-end mb-4 me-1">
+										<DIV class="msg-wrapper d-flex flex-column">
+											<DIV class="msg-body d-flex flex-column mb-1">
+												<DIV class="text mb-0 text-black text-right chat-history-my bg-primary text-light border-radius-xl px-3 py-1">Hello</DIV>
+											</DIV>
+											<SPAN class="text-muted text-xs">
+												<SPAN class="text-muted text-xs">08/03 15:35</SPAN>
+											</SPAN>
+										</DIV>
+									</DIV>
+								</DIV>-->
+							</SECTION>
+						</DIV>
+					</MAIN>
+					<SECTION id="chatInputWrapper" class="fixed-bottom col-12 col-md-10 mx-auto shadow">
+						<DIV class="d-flex align-items-center justify-content-center p-2">
+							<TEXTAREA class="form-control bg-light" id="chatInput" maxlength="240" placeholder="說點什麼吧...!" rows="1"></TEXTAREA>
+							<BUTTON class="btn btn-icon-only btn-link m-0 p-0 sendMsgBtn" type="button">
+								<I class="fal fa-paper-plane" style="font-size: 30px;"></I>
+							</BUTTON>
+						</DIV>
+					</SECTION>
+				</DIV>
+			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/chatroom.js"/>
 			<xsl:if test="@signIn">
 				<SCRIPT src="/SCRIPT/websocket.js"/>
+				<SCRIPT src="/SCRIPT/websocketChat.js"/>
 			</xsl:if>
 		</BODY>
 	</xsl:template>

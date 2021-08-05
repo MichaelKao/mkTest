@@ -59,9 +59,9 @@ $(document).ready(function () {
 		$('#crop').removeAttr('disabled')
 	});
 
+	var canvas;
 	$('#crop').click(function () {
 
-		var canvas;
 		let CutWidth;
 		let CutHeight;
 		$('#crop').html('請稍後...');
@@ -86,9 +86,6 @@ $(document).ready(function () {
 				height: CutHeight,
 			});
 
-			if (photoType === 'profileImage') {
-				$('#profileImageImg').attr('src', canvas.toDataURL());
-			}
 
 			canvas.toBlob(function (blob) {
 				var OK = uploadpic(blob);
@@ -121,11 +118,21 @@ $(document).ready(function () {
 			contentType: false,
 			processData: false,
 			data: file,
+			dataType: 'json',
 			type: 'post',
 			success: function (data) {
-				if (photoType === 'picture') {
-					window.location.reload();
+				if (data.response) {
+					if (photoType === 'picture') {
+						window.location.reload();
+					}
+					if (photoType === 'profileImage') {
+						$('#profileImageImg').attr('src', canvas.toDataURL());
+					}
+				} else {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
 				}
+
 				$cropModal.modal('hide');
 			},
 			error: function (request, status, error) {
