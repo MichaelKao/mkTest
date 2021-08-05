@@ -2275,71 +2275,78 @@ public class LoverService {
 	 * @param lover
 	 * @return
 	 */
-	public boolean hasFinishedSignedUp(Lover lover) {
-		boolean finished = false;
-
+	public boolean isEligible(Lover lover) {
+		String login = lover.getLogin();
+		if (Objects.isNull(login) || login.isBlank()) {
+			return false;
+		}//帐号(手机号)
+		String shadow = lover.getShadow();
+		if (Objects.isNull(shadow) || shadow.isBlank()) {
+			return false;
+		}//密码
 		String nickname = lover.getNickname();
 		if (Objects.isNull(nickname) || nickname.isBlank()) {
-			return finished;
-		}
-		if (Objects.isNull(lover.getWeight())) {
-			return finished;
-		}
-		if (Objects.isNull(lover.getHeight())) {
-			return finished;
-		}
-		String occupation = lover.getOccupation();
-		if (Objects.isNull(occupation) || occupation.isBlank()) {
-			return finished;
-		}
-		if (Objects.isNull(lover.getBodyType())) {
-			return finished;
-		}
-		if (Objects.isNull(lover.getEducation())) {
-			return finished;
-		}
-		if (Objects.isNull(lover.getMarriage())) {
-			return finished;
-		}
-		if (Objects.isNull(lover.getSmoking())) {
-			return finished;
-		}
-		if (Objects.isNull(lover.getDrinking())) {
-			return finished;
-		}
-		if (Objects.isNull(lover.getRelationship())) {
-			return finished;
-		}
+			return false;
+		}//昵称
 		String aboutMe = lover.getAboutMe();
 		if (Objects.isNull(aboutMe) || aboutMe.isBlank()) {
-			return finished;
-		}
-		String idealConditions = lover.getIdealConditions();
-		if (Objects.isNull(idealConditions) || idealConditions.isBlank()) {
-			return finished;
-		}
+			return false;
+		}//自介
 		String greeting = lover.getGreeting();
 		if (Objects.isNull(greeting) || greeting.isBlank()) {
-			return finished;
+			return false;
+		}//哈啰
+		if (Objects.isNull(lover.getBodyType())) {
+			return false;
+		}//体型
+		if (Objects.isNull(lover.getHeight())) {
+			return false;
+		}//身高
+		if (Objects.isNull(lover.getWeight())) {
+			return false;
+		}//体重
+		if (Objects.isNull(lover.getEducation())) {
+			return false;
+		}//学历
+		if (Objects.isNull(lover.getMarriage())) {
+			return false;
+		}//婚姻
+		String occupation = lover.getOccupation();
+		if (Objects.isNull(occupation) || occupation.isBlank()) {
+			return false;
+		}//职业
+		if (Objects.isNull(lover.getSmoking())) {
+			return false;
+		}//抽烟习惯
+		if (Objects.isNull(lover.getDrinking())) {
+			return false;
+		}//饮酒习惯
+		String idealConditions = lover.getIdealConditions();
+		if (Objects.isNull(idealConditions) || idealConditions.isBlank()) {
+			return false;
+		}//简述理想对象条件
+		if (Objects.nonNull(lover.getDelete())) {
+			return false;
+		}//封号
+		if (Objects.isNull(lover.getRelationship())) {
+			return false;
+		}//预期关系
+		if (lover.getGender()) {
+			if (Objects.isNull(lover.getAnnualIncome())) {
+				return false;
+			}//年收入
+		} else {
+			String inviteMeAsFriend = lover.getInviteMeAsLineFriend();
+			if (Objects.isNull(inviteMeAsFriend) || inviteMeAsFriend.isBlank()) {
+				return false;
+			}//添加好友链结
+			if (Objects.isNull(lover.getAllowance())) {
+				return false;
+			}//期望零用钱
 		}
-		if (lover.getGender() && Objects.isNull(lover.getAnnualIncome())) {
-			return finished;
-		}
-		if (!lover.getGender() && Objects.isNull(lover.getAllowance())) {
-			return finished;
-		}
-		String inviteMeAsFriend = lover.getInviteMeAsLineFriend();
-		if (!lover.getGender() && (Objects.isNull(inviteMeAsFriend) || inviteMeAsFriend.isBlank())) {
-			return finished;
-		}
-		if (lover.getLocations().size() < 1) {
-			return finished;
-		}
-		if (lover.getServices().size() < 1) {
-			return finished;
-		}
-
-		finished = true;
-		return finished;
+		if (lover.getLocations().isEmpty() || lover.getServices().isEmpty()) {
+			return false;
+		}//(地点|服务)标签
+		return true;
 	}
 }

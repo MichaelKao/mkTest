@@ -30,7 +30,7 @@ public class LoverSpecification {
 	private final static Logger LOGGER = LoggerFactory.getLogger(LoverSpecification.class);
 
 	/**
-	 * 该填的栏位都有填的用户号。
+	 * 该填的栏位都有填的用户号们。
 	 *
 	 * @param gender 性别
 	 * @return 合格用户号们
@@ -74,13 +74,13 @@ public class LoverSpecification {
 		));//有职业
 		predicates.add(criteriaBuilder.isNotNull(
 			root.get(Lover_.smoking)
-		));//有抽烟
+		));//有抽烟习惯
 		predicates.add(criteriaBuilder.isNotNull(
 			root.get(Lover_.drinking)
-		));//有饮酒
+		));//有饮酒习惯
 		predicates.add(criteriaBuilder.isNotNull(
 			root.get(Lover_.idealConditions)
-		));//有简述理想对象
+		));//有简述理想对象条件
 		predicates.add(criteriaBuilder.isNull(
 			root.get(Lover_.delete)
 		));//未封号

@@ -141,7 +141,7 @@ public class WelcomeController {
 			Lover me = loverService.loadByUsername(
 				authentication.getName()
 			);
-			if (!loverService.hasFinishedSignedUp(me)) {
+			if (!loverService.isEligible(me)) {
 				return new ModelAndView("redirect:/me.asp");
 			}
 
@@ -810,7 +810,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		if (!loverService.hasFinishedSignedUp(me)) {
+		if (!loverService.isEligible(me)) {
 			return new ModelAndView("redirect:/me.asp");
 		}
 
@@ -898,7 +898,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		if (!loverService.hasFinishedSignedUp(me)) {
+		if (!loverService.isEligible(me)) {
 			return new ModelAndView("redirect:/me.asp");
 		}
 
@@ -1135,7 +1135,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		if (!loverService.hasFinishedSignedUp(me)) {
+		if (!loverService.isEligible(me)) {
 			return new ModelAndView("redirect:/me.asp");
 		}
 
@@ -1259,7 +1259,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		if (!loverService.hasFinishedSignedUp(me)) {
+		if (!loverService.isEligible(me)) {
 			return new ModelAndView("redirect:/me.asp");
 		}
 
@@ -1405,7 +1405,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		if (!loverService.hasFinishedSignedUp(me)) {
+		if (!loverService.isEligible(me)) {
 			return new ModelAndView("redirect:/me.asp");
 		}
 
@@ -1640,7 +1640,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);//我谁⁉️
-		if (!loverService.hasFinishedSignedUp(me)) {
+		if (!loverService.isEligible(me)) {
 			return new ModelAndView("redirect:/me.asp");
 		}
 
@@ -1716,7 +1716,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);//我谁⁉️
-		if (!loverService.hasFinishedSignedUp(me)) {
+		if (!loverService.isEligible(me)) {
 			return new ModelAndView("redirect:/me.asp");
 		}
 
@@ -1783,7 +1783,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		if (!loverService.hasFinishedSignedUp(me)) {
+		if (!loverService.isEligible(me)) {
 			return new ModelAndView("redirect:/me.asp");
 		}
 
@@ -1898,7 +1898,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);//我谁⁉️
-		if (!loverService.hasFinishedSignedUp(me)) {
+		if (!loverService.isEligible(me)) {
 			return new ModelAndView("redirect:/me.asp");
 		}
 
@@ -2402,7 +2402,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		if (!loverService.hasFinishedSignedUp(me)) {
+		if (!loverService.isEligible(me)) {
 			return new ModelAndView("redirect:/me.asp");
 		}
 
@@ -2813,7 +2813,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		if (!loverService.hasFinishedSignedUp(me)) {
+		if (!loverService.isEligible(me)) {
 			return new ModelAndView("redirect:/me.asp");
 		}
 
@@ -2969,7 +2969,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		if (!loverService.hasFinishedSignedUp(me)) {
+		if (!loverService.isEligible(me)) {
 			return new ModelAndView("redirect:/me.asp");
 		}
 
@@ -3098,7 +3098,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		if (!loverService.hasFinishedSignedUp(me)) {
+		if (!loverService.isEligible(me)) {
 			return new ModelAndView("redirect:/me.asp");
 		}
 
@@ -3187,7 +3187,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		if (!loverService.hasFinishedSignedUp(me)) {
+		if (!loverService.isEligible(me)) {
 			return new ModelAndView("redirect:/me.asp");
 		}
 
