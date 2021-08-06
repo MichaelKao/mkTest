@@ -2139,25 +2139,47 @@ public class LoverService {
 	}
 
 	public JSONObject groupGreeting(Lover female, String greetingMessage, Locale locale) {
+		LOGGER.debug(
+			"2143\t群發進到服務層:\n\n{}\n",
+			greetingMessage
+		);
 		if (Objects.isNull(greetingMessage) || greetingMessage.isBlank()) { //招呼語不能為空
+			LOGGER.debug(
+				"2148\t群發招呼語為空?:\n\n{}\n",
+				greetingMessage
+			);
 			throw new RuntimeException("greet.greetingMessageMustntBeNull");
 		}
 		if (within24hrsFromLastGroupGreeting(female)) { //24小時內已群發過打招呼
+			LOGGER.debug(
+				"2155\t上次群發在24小時內:\n\n{}\n"
+			);
 			throw new RuntimeException("groupGreeting.within24hrsHasSent");
 		}
 
 		LOGGER.debug(
-			String.format(
-				"女生%s群發內容：%s",
-				female.getNickname(),
-				greetingMessage
-			));
+			"2161\t{}發出群發打招呼:\n\n{}\n",
+			female.getNickname(),
+			greetingMessage
+		);
 
 		Set<Location> locations = female.getLocations();
+		LOGGER.debug(
+			"2168\t女神的地區s\n\n{}\n",
+			locations
+		);
 		List<Lover> lovers = loverRepository.findAll(LoverSpecification.malesListForGroupGreeting(true, locations));
+		LOGGER.debug(
+			"2173\t和女神一樣地區的男士\n\n{}\n",
+			lovers
+		);
 		Date current = new Date(System.currentTimeMillis());
 		int count = 0;
 		for (Lover male : lovers) {
+			LOGGER.debug(
+				"2180\t和女神一樣地區的各個男士\n\n{}\n",
+				male.getNickname()
+			);
 			// 發給 30 位男仕
 			if (count >= NUMBER_OF_GROUP_GREETING) {
 				break;
@@ -2190,6 +2212,15 @@ public class LoverService {
 			}
 		}
 		historyRepository.flush();
+
+		LOGGER.debug(
+			"2217\t完成群發\n\n{}\n",
+			messageSource.getMessage(
+				"groupGreeting.done",
+				null,
+				locale
+			)
+		);
 
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(

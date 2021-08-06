@@ -3075,20 +3075,41 @@ public class WelcomeController {
 	@PostMapping(path = "/groupGreeting.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	String groupGreeting(@RequestParam(required = false) String greetingMessage, Authentication authentication, Locale locale) {
-		LOGGER.debug("群發打招呼:{}", greetingMessage);
+		LOGGER.debug(
+			"3079\t群發打招呼:\n\n{}\n",
+			greetingMessage
+		);
 		if (servant.isNull(authentication)) {
+			LOGGER.debug(
+				"3084\t群發驗證身分:\n\n{}\n",
+				authentication
+			);
 			return servant.mustBeAuthenticated(locale);
 		}
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+		LOGGER.debug(
+			"3093\t群發找出本人:\n\n{}\n",
+			me
+		);
 
 		JSONObject jsonObject;
 		try {
-			LOGGER.debug("開始群發:{}", greetingMessage);
+			LOGGER.debug(
+				"3100\t群發開始前:\n\n{}\n",
+				greetingMessage
+			);
 			jsonObject = loverService.groupGreeting(me, greetingMessage, locale);
+			LOGGER.debug(
+				"3105\t群發完成:\n\n{}\n",
+				jsonObject
+			);
 		} catch (Exception exception) {
-			LOGGER.debug("群發打招呼有拋出例外:{}", exception.getMessage());
+			LOGGER.debug(
+				"3110\t群發超出例外:\n\n{}\n",
+				exception.getMessage()
+			);
 			jsonObject = new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
 					exception.getMessage(),

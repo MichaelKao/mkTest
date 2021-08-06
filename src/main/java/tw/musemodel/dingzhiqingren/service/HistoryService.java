@@ -635,7 +635,7 @@ public class HistoryService {
 	@Transactional
 	public JSONObject openLine(Lover male, Lover female, Locale locale) {
 		History history = historyRepository.findByInitiativeAndPassiveAndBehavior(male, female, BEHAVIOR_LAI_KOU_DIAN);
-		if (loverService.isVIP(male) && Objects.isNull(history)) {
+		if ((loverService.isVIP(male) || loverService.isVVIP(male)) && Objects.isNull(history)) {
 			History historyReply
 				= historyRepository.findByInitiativeAndPassiveAndBehavior(female, male, BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
 			historyReply.setReply(new Date(System.currentTimeMillis()));
@@ -659,7 +659,7 @@ public class HistoryService {
 					(short) 0
 				));
 			}
-		} else if (!loverService.isVIP(male)) {
+		} else if (!loverService.isVIP(male) && !loverService.isVVIP(male)) {
 			throw new RuntimeException("openLine.upgardeVipToOpen");
 		}
 

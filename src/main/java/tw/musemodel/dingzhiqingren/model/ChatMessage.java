@@ -1,27 +1,16 @@
 package tw.musemodel.dingzhiqingren.model;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
 /**
  * @author m@musemodel.tw
  */
 public class ChatMessage {
 
-	@NotEmpty
-	@NotNull
 	private String type;
 
-	@NotEmpty
-	@NotNull
 	private String sender;
 
-	@NotEmpty
-	@NotNull
 	private String receiver;
 
-	@NotEmpty
-	@NotNull
 	private String message;
 
 	public ChatMessage() {

@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,22 +72,36 @@ public class WebSocketChatServer {
 
 	@OnMessage
 	public void onMessage(Session userSession, String message) {
-		ChatMessage chatMessage = gson.fromJson(message, ChatMessage.class);
-		Lover sender = loverService.loadByIdentifier(
-			UUID.fromString(chatMessage.getSender())
-		);
+		JSONObject jsonObject = new JSONObject(message);
+		LOGGER.debug(String.format(
+			"訊息傳送者：%s",
+			jsonObject.getString("sender")
+		));
+		LOGGER.debug(String.format(
+			"訊息型態：%s",
+			jsonObject.getString("type")
+		));
+		LOGGER.debug(String.format(
+			"訊息收到者：%s",
+			jsonObject.getString("receiver")
+		));
+		Lover sender = loverService.loadByIdentifier(UUID.fromString("8757455e-b032-4dd4-8392-69bee9194bad"));
+		LOGGER.debug(String.format(
+			"訊息傳送者LOVER：%s",
+			sender
+		));
 		Lover receiver = loverService.loadByIdentifier(
-			UUID.fromString(chatMessage.getReceiver())
+			UUID.fromString(jsonObject.getString("receiver"))
 		);
 		LOGGER.debug(String.format(
-			"歷史紀錄：%s",
-			chatMessage
+			"訊息收到者LOVER：%s",
+			receiver
 		));
 
-		if ("history".equals(chatMessage.getType())) {
+		if ("history".equals(jsonObject.getString("type"))) {
 			List<History> histories = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(sender, receiver, BEHAVIOR_GIMME_YOUR_LINE_INVITATION);
 			LOGGER.debug(String.format(
-				"歷史紀錄：%s",
+				"訊息歷史紀錄：%s",
 				histories.toString()
 			));
 			List<String> historyData = new ArrayList<String>();
@@ -94,11 +109,11 @@ public class WebSocketChatServer {
 				historyData.add(history.getGreeting());
 			}
 			String historyMsg = gson.toJson(historyData);
-			ChatMessage cmHistory = new ChatMessage("history", chatMessage.getSender(), chatMessage.getReceiver(), historyMsg);
+			ChatMessage cmHistory = new ChatMessage("history", jsonObject.getString("sender"), jsonObject.getString("receiver"), historyMsg);
 			if (Objects.nonNull(userSession) && userSession.isOpen()) {
 				userSession.getAsyncRemote().sendText(gson.toJson(cmHistory));
 				LOGGER.debug(String.format(
-					"歷史紀錄：%s",
+					"訊息歷史紀錄：%s",
 					gson.toJson(cmHistory)
 				));
 				return;
@@ -117,7 +132,7 @@ public class WebSocketChatServer {
 			receiver,
 			BEHAVIOR_GIMME_YOUR_LINE_INVITATION
 		);
-		history.setGreeting(chatMessage.getMessage());
+		history.setGreeting(jsonObject.getString("message"));
 		historyRepository.saveAndFlush(history);
 
 		LOGGER.debug(String.format(
@@ -126,15 +141,14 @@ public class WebSocketChatServer {
 		));
 	}
 
-	@OnError
-	public void onError(Session userSession, Throwable e) {
-		LOGGER.debug(
-			String.format(
-				"WebSocket 發生錯誤：%s",
-				e.toString()
-			));
-	}
-
+//	@OnError
+//	public void onError(Session userSession, Throwable e) {
+//		LOGGER.debug(
+//			String.format(
+//				"WebSocket 發生錯誤：%s",
+//				e.toString()
+//			));
+//	}
 	@OnClose
 	public void onClose(Session userSession, CloseReason reason) {
 		String userClose = null;
@@ -162,6 +176,12 @@ public class WebSocketChatServer {
 				"%s關閉 webSocket 連線, 目前人數為%s",
 				userClose,
 				online
+			));
+		LOGGER.debug(
+			String.format(
+				"關閉原因：%s || %s",
+				reason.getCloseCode().getCode(),
+				reason.toString()
 			));
 	}
 
