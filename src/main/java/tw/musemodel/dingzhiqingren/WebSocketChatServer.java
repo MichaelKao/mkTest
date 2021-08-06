@@ -14,10 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.Lover;
@@ -33,11 +31,9 @@ public class WebSocketChatServer {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(WebSocketChatServer.class);
 
-	@Autowired
-	private HistoryRepository historyRepository;
+	private HistoryRepository historyRepository = SpringContext.getBean(HistoryRepository.class);
 
-	@Autowired
-	private LoverService loverService;
+	private LoverService loverService = SpringContext.getBean(LoverService.class);
 
 	//靜態常數，用來記錄當前的再現連接數。應該用執行緒較安全。
 	private static AtomicInteger online = new AtomicInteger();
@@ -72,34 +68,30 @@ public class WebSocketChatServer {
 
 	@OnMessage
 	public void onMessage(Session userSession, String message) {
-		JSONObject jsonObject = new JSONObject(message);
+		ChatMessage chatMessage = gson.fromJson(message, ChatMessage.class);
 		LOGGER.debug(String.format(
-			"訊息傳送者：%s",
-			jsonObject.getString("sender")
+			"訊息傳送者chatMsg：%s",
+			chatMessage.getSender()
 		));
 		LOGGER.debug(String.format(
 			"訊息型態：%s",
-			jsonObject.getString("type")
+			chatMessage.getType()
 		));
 		LOGGER.debug(String.format(
-			"訊息收到者：%s",
-			jsonObject.getString("receiver")
+			"訊息接收者：%s",
+			chatMessage.getReceiver()
 		));
-		Lover sender = loverService.loadByIdentifier(UUID.fromString("8757455e-b032-4dd4-8392-69bee9194bad"));
-		LOGGER.debug(String.format(
-			"訊息傳送者LOVER：%s",
-			sender
-		));
-		Lover receiver = loverService.loadByIdentifier(
-			UUID.fromString(jsonObject.getString("receiver"))
-		);
-		LOGGER.debug(String.format(
-			"訊息收到者LOVER：%s",
-			receiver
-		));
+		Lover sender = loverService.
+			loadByIdentifier(
+				UUID.fromString(chatMessage.getSender())
+			);
+		Lover receiver = loverService.
+			loadByIdentifier(
+				UUID.fromString(chatMessage.getReceiver())
+			);
 
-		if ("history".equals(jsonObject.getString("type"))) {
-			List<History> histories = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(sender, receiver, BEHAVIOR_GIMME_YOUR_LINE_INVITATION);
+		if ("history".equals(chatMessage.getType())) {
+			List<History> histories = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(receiver, sender, BEHAVIOR_GIMME_YOUR_LINE_INVITATION);
 			LOGGER.debug(String.format(
 				"訊息歷史紀錄：%s",
 				histories.toString()
@@ -109,7 +101,7 @@ public class WebSocketChatServer {
 				historyData.add(history.getGreeting());
 			}
 			String historyMsg = gson.toJson(historyData);
-			ChatMessage cmHistory = new ChatMessage("history", jsonObject.getString("sender"), jsonObject.getString("receiver"), historyMsg);
+			ChatMessage cmHistory = new ChatMessage("history", chatMessage.getSender(), chatMessage.getReceiver(), historyMsg);
 			if (Objects.nonNull(userSession) && userSession.isOpen()) {
 				userSession.getAsyncRemote().sendText(gson.toJson(cmHistory));
 				LOGGER.debug(String.format(
@@ -132,7 +124,7 @@ public class WebSocketChatServer {
 			receiver,
 			BEHAVIOR_GIMME_YOUR_LINE_INVITATION
 		);
-		history.setGreeting(jsonObject.getString("message"));
+		history.setGreeting(chatMessage.getMessage());
 		historyRepository.saveAndFlush(history);
 
 		LOGGER.debug(String.format(

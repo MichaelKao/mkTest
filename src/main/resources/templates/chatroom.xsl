@@ -28,15 +28,12 @@
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="bootstrapToast"/>
-			<h3 id="statusOutput" class="statusOutput"></h3>
-			<DIV id="row"></DIV>
 			<DIV class="text-center">
 				<DIV id="chatroom">
 					<MAIN class="chatroom">
 						<DIV class="chatroomWrapper col-12 col-md-10 mx-auto shadow">
 							<SECTION class="chatHistory d-flex flex-column justify-content-between">
-								<DIV id="messagesArea" class="panel message-area" ></DIV>
-								<!--								<DIV>
+								<DIV>
 									<DIV class="chatroomHeader d-flex align-items-center ps-2 shadow">
 										<DIV class="me-3">
 											<BUTTON class="btn btn-link text-primary h2 m-0 p-0 locationBack">
@@ -51,7 +48,8 @@
 										</DIV>
 									</DIV>
 								</DIV>
-								<DIV>
+								<DIV id="messagesArea"></DIV>
+								<!--<DIV>
 									<DIV class="msg receivedMsg d-flex justify-content-start mb-4 ms-1">
 										<A href="/profile/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/">
 											<IMG alt="profileImage" class="rounded-circle" src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" width="35"/>
@@ -90,7 +88,6 @@
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/chatroom.js"/>
 			<xsl:if test="@signIn">
-				<!--<SCRIPT src="/SCRIPT/websocket.js"/>-->
 				<SCRIPT src="/SCRIPT/websocketChat.js"/>
 			</xsl:if>
 		</BODY>

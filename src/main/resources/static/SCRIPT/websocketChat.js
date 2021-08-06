@@ -24,18 +24,15 @@ $(document).ready(function () {
 			"receiver": 'bbcb1fe6-1d5b-48f8-b804-f0486353f8bc',
 			"message": ""
 		};
-//		websocket.send(JSON.stringify(jsonObj));
+		websocket.send(JSON.stringify(jsonObj));
 	};
 
 
 	//獲得訊息事件
 	websocket.onmessage = function (msg) {
-		console.log(msg.data);
 		var jsonObj = JSON.parse(msg.data);
 		console.log(jsonObj.type)
-		if ('open' === jsonObj.type) {
-			refreshFriendList(jsonObj);
-		} else if ('history' === jsonObj.type) {
+		if ('history' === jsonObj.type) {
 			console.log(jsonObj)
 			messagesArea.innerHTML = '';
 			var ul = document.createElement('ul');
@@ -43,9 +40,11 @@ $(document).ready(function () {
 			messagesArea.appendChild(ul);
 			// 這行的jsonObj.message是從DB撈出跟對方的歷史訊息，再parse成JSON格式處理
 			var messages = JSON.parse(jsonObj.message);
+			console.log('messages.len' + messages.length);
 			for (var i = 0; i < messages.length; i++) {
-				var historyData = JSON.parse(messages[i]);
-				var showMsg = historyData.message;
+				console.log('messages[i]' + messages[i]);
+				var historyData = messages[i];
+				var showMsg = historyData;
 				var li = document.createElement('li');
 				// 根據發送者是自己還是對方來給予不同的class名, 以達到訊息左右區分
 				historyData.sender === '8757455e-b032-4dd4-8392-69bee9194bad' ? li.className += 'me' : li.className += 'friend';
@@ -131,35 +130,5 @@ $(document).ready(function () {
 			chatInput.value = "";
 			chatInput.focus();
 		}
-	}
-
-	// 註冊列表點擊事件並抓取好友名字以取得歷史訊息
-	function addListener() {
-		var container = document.getElementById("row");
-		container.addEventListener("click", function (e) {
-			var friend = e.srcElement.textContent;
-			updateFriendName(friend);
-			var jsonObj = {
-				"type": "history",
-				"sender": '8757455e-b032-4dd4-8392-69bee9194bad',
-				"receiver": 'bbcb1fe6-1d5b-48f8-b804-f0486353f8bc',
-				"message": ""
-			};
-			websocket.send(JSON.stringify(jsonObj));
-		});
-	}
-
-	// 有好友上線或離線就更新列表
-	function refreshFriendList(jsonObj) {
-		var friends = jsonObj.users;
-		var row = document.getElementById("row");
-		row.innerHTML = '';
-		for (var i = 0; i < friends.length; i++) {
-			if (friends[i] === self) {
-				continue;
-			}
-			row.innerHTML += '<div id=' + i + ' class="column" name="friendName" value=' + friends[i] + ' ><h2>' + friends[i] + '</h2></div>';
-		}
-		addListener();
 	}
 });
