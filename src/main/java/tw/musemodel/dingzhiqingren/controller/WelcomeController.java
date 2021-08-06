@@ -3074,7 +3074,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/groupGreeting.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String groupGreeting(Authentication authentication, @RequestParam String greetingMessage, Locale locale) {
+	String groupGreeting(@RequestParam(required = false) String greetingMessage, Authentication authentication, Locale locale) {
 		LOGGER.debug("群發打招呼:{}", greetingMessage);
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);

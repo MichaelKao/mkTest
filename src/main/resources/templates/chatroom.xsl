@@ -90,7 +90,7 @@
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/chatroom.js"/>
 			<xsl:if test="@signIn">
-				<SCRIPT src="/SCRIPT/websocket.js"/>
+				<!--<SCRIPT src="/SCRIPT/websocket.js"/>-->
 				<SCRIPT src="/SCRIPT/websocketChat.js"/>
 			</xsl:if>
 		</BODY>

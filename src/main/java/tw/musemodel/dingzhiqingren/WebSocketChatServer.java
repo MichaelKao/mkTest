@@ -61,11 +61,12 @@ public class WebSocketChatServer {
 				session.getAsyncRemote().sendText(stateMessageJson);
 			}
 		}
-		LOGGER.debug(String.format(
-			"%s加入 webSocket, 目前人數為%s",
-			identifier,
-			online
-		));
+		LOGGER.debug(
+			String.format(
+				"%s加入 webSocket, 目前人數為%s",
+				identifier,
+				online
+			));
 	}
 
 	@OnMessage
@@ -77,9 +78,17 @@ public class WebSocketChatServer {
 		Lover receiver = loverService.loadByIdentifier(
 			UUID.fromString(chatMessage.getReceiver())
 		);
+		LOGGER.debug(String.format(
+			"歷史紀錄：%s",
+			chatMessage
+		));
 
 		if ("history".equals(chatMessage.getType())) {
 			List<History> histories = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(sender, receiver, BEHAVIOR_GIMME_YOUR_LINE_INVITATION);
+			LOGGER.debug(String.format(
+				"歷史紀錄：%s",
+				histories.toString()
+			));
 			List<String> historyData = new ArrayList<String>();
 			for (History history : histories) {
 				historyData.add(history.getGreeting());
@@ -120,9 +129,10 @@ public class WebSocketChatServer {
 	@OnError
 	public void onError(Session userSession, Throwable e) {
 		LOGGER.debug(
-			"WebSocket 發生錯誤：%s",
-			e.toString()
-		);
+			String.format(
+				"WebSocket 發生錯誤：%s",
+				e.toString()
+			));
 	}
 
 	@OnClose
@@ -148,10 +158,11 @@ public class WebSocketChatServer {
 		}
 
 		LOGGER.debug(
-			"%s關閉 webSocket 連線, 目前人數為%s",
-			userClose,
-			online
-		);
+			String.format(
+				"%s關閉 webSocket 連線, 目前人數為%s",
+				userClose,
+				online
+			));
 	}
 
 	public static void addOnlineCount() {

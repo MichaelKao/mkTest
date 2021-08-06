@@ -18,16 +18,15 @@ $(document).ready(function () {
 	//開啟事件
 	socket.onopen = function () {
 		console.log('Chat WebSocket is open!');
-		var jsonObj = {
-			"type": "history",
-			"sender": '8757455e-b032-4dd4-8392-69bee9194bad',
-			"receiver": 'bbcb1fe6-1d5b-48f8-b804-f0486353f8bc',
-			"message": ""
-		};
-		socket.send(JSON.stringify(jsonObj));
 	};
 
-
+	var jsonObj = {
+		"type": "history",
+		"sender": '8757455e-b032-4dd4-8392-69bee9194bad',
+		"receiver": 'bbcb1fe6-1d5b-48f8-b804-f0486353f8bc',
+		"message": ""
+	};
+	socket.send(JSON.stringify(jsonObj));
 
 	//獲得訊息事件
 	socket.onmessage = function (msg) {
