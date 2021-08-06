@@ -18,15 +18,26 @@ $(document).ready(function () {
 	//開啟事件
 	socket.onopen = function () {
 		console.log('Chat WebSocket is open!');
+		var jsonObj = {
+			"type": "history",
+			"sender": '8757455e-b032-4dd4-8392-69bee9194bad',
+			"receiver": 'bbcb1fe6-1d5b-48f8-b804-f0486353f8bc',
+			"message": ""
+		};
+		socket.send(JSON.stringify(jsonObj));
 	};
+
+
 
 	//獲得訊息事件
 	socket.onmessage = function (msg) {
-		alert(msg.data);
+		console.log(msg.data);
 		var jsonObj = JSON.parse(msg.data);
+		console.log(jsonObj.type)
 		if ('open' === jsonObj.type) {
 			refreshFriendList(jsonObj);
 		} else if ('history' === jsonObj.type) {
+			console.log(jsonObj)
 			messagesArea.innerHTML = '';
 			var ul = document.createElement('ul');
 			ul.id = 'area';
@@ -93,6 +104,22 @@ $(document).ready(function () {
 			chatInput.value = "";
 			chatInput.focus();
 		}
+	}
+
+	// 註冊列表點擊事件並抓取好友名字以取得歷史訊息
+	function addListener() {
+		var container = document.getElementById("row");
+		container.addEventListener("click", function (e) {
+			var friend = e.srcElement.textContent;
+			updateFriendName(friend);
+			var jsonObj = {
+				"type": "history",
+				"sender": '8757455e-b032-4dd4-8392-69bee9194bad',
+				"receiver": 'bbcb1fe6-1d5b-48f8-b804-f0486353f8bc',
+				"message": ""
+			};
+			webSocket.send(JSON.stringify(jsonObj));
+		});
 	}
 
 	// 有好友上線或離線就更新列表

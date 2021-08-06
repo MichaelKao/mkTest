@@ -1,11 +1,15 @@
 $(document).ready(function () {
 	$('FORM').submit(function (event) {
 		event.preventDefault();
+		console.log('招呼語: ' + $('TEXTAREA').val());
 		let form = this;
 		$.post(
 			$(form).attr('action'),
-			$(form).serialize(),
+			{
+				greetingMessage: $('TEXTAREA').val()
+			},
 			function (data) {
+				console.log(data);
 				if (data.response) {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');

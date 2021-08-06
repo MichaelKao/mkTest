@@ -3075,16 +3075,17 @@ public class WelcomeController {
 	@PostMapping(path = "/groupGreeting.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	String groupGreeting(Authentication authentication, @RequestParam String greetingMessage, Locale locale) {
+		LOGGER.debug("群發打招呼:{}", greetingMessage);
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		LOGGER.debug("群發打招呼:{}", greetingMessage);
 
 		JSONObject jsonObject;
 		try {
+			LOGGER.debug("開始群發:{}", greetingMessage);
 			jsonObject = loverService.groupGreeting(me, greetingMessage, locale);
 		} catch (Exception exception) {
 			LOGGER.debug("群發打招呼有拋出例外:{}", exception.getMessage());

@@ -87,14 +87,14 @@
 							<FORM action="/groupGreeting.json" method="post">
 								<DIV class="card-body">
 									<DIV class="form-group mb-4">
-										<LABEL for="greetingMessage">招呼語</LABEL>
-										<TEXTAREA class="form-control" id="greetingMessage" name="greetingMessage" rows="4">
+										<LABEL for="greeting">招呼語</LABEL>
+										<TEXTAREA class="form-control" id="greeting" name="greetingMessage" rows="4">
 											<xsl:value-of select="@greeting"/>
 										</TEXTAREA>
 									</DIV>
 									<DIV class="row">
 										<DIV class="col-md-12">
-											<button class="btn bg-gradient-primary w-100" type="submit">打招呼</button>
+											<BUTTON class="btn bg-gradient-primary w-100" type="submit">打招呼</BUTTON>
 										</DIV>
 									</DIV>
 								</DIV>

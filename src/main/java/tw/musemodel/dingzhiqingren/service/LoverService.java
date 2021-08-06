@@ -2146,6 +2146,13 @@ public class LoverService {
 			throw new RuntimeException("groupGreeting.within24hrsHasSent");
 		}
 
+		LOGGER.debug(
+			String.format(
+				"女生%s群發內容：%s",
+				female.getNickname(),
+				greetingMessage
+			));
+
 		Set<Location> locations = female.getLocations();
 		List<Lover> lovers = loverRepository.findAll(LoverSpecification.malesListForGroupGreeting(true, locations));
 		Date current = new Date(System.currentTimeMillis());
