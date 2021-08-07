@@ -29,6 +29,8 @@ public class SignUp {
 	@DateTimeFormat(iso = ISO.DATE, fallbackPatterns = {"dd-MM-yyyy"})
 	private Date birthday;
 
+	private String referralCode;
+
 	public SignUp() {
 	}
 
@@ -70,5 +72,13 @@ public class SignUp {
 
 	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
+	}
+
+	public String getReferralCode() {
+		return referralCode;
+	}
+
+	public void setReferralCode(String referralCode) {
+		this.referralCode = referralCode;
 	}
 }

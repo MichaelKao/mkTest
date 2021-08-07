@@ -544,6 +544,10 @@ public class LoverService {
 		lover.setIdealConditions("找合得來的人");
 		lover.setGreeting("嗨！我想認識你！");
 		lover.setRegistered(new Date(System.currentTimeMillis()));
+		if (Objects.nonNull(signUp.getReferralCode())) {
+			Lover referrer = loverRepository.findByReferralCode(signUp.getReferralCode());
+			lover.setReferrer(referrer);
+		}
 		lover = loverRepository.saveAndFlush(lover);
 
 		// 上傳預設大頭照

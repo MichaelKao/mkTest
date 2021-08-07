@@ -166,6 +166,27 @@
 							</DIV>
 						</DIV>
 					</DIV>
+					<DIV class="modal fade" id="referralCode" tabindex="-1">
+						<DIV class="modal-dialog modal-dialog-centered">
+							<DIV class="modal-content">
+								<DIV class="modal-body">
+									<DIV class="d-flex">
+										<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
+									</DIV>
+									<DIV class="mt-3 text-center">
+										<I class="fal fa-user-friends text-success mb-1" style="font-size: 50px;"></I>
+										<H4>好友邀請碼</H4>
+										<DIV class="h1 text-lighter" id="referralCode">
+											<xsl:value-of select="@referralCode"/>
+										</DIV>
+									</DIV>
+									<DIV class="text-center">
+										<BUTTON class="btn btn-secondary mx-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+									</DIV>
+								</DIV>
+							</DIV>
+						</DIV>
+					</DIV>
 				</xsl:if>
 				<xsl:call-template name="footer"/>
 			</DIV>
@@ -254,12 +275,13 @@
 					</xsl:when>
 					<xsl:otherwise>
 						<DIV class="ms-md-auto ms-md-5">
-							<A class="btn btn-link m-2 p-0" href="/album.asp">
+							<A class="btn btn-link ms-0 m-2 p-0" href="/album.asp">
 								<I class="fad fa-camera font40"></I>
 							</A>
 							<A class="btn btn-link m-2 p-0" href="/me.asp">
 								<I class="fad fa-pen font40"></I>
 							</A>
+							<BUTTON class="btn btn-success p-2 m-0" data-bs-target="#referralCode" data-bs-toggle="modal">我的邀請碼</BUTTON>
 						</DIV>
 					</xsl:otherwise>
 				</xsl:choose>
@@ -294,7 +316,7 @@
 				</DIV>
 			</xsl:if>
 		</DIV>
-		<DIV class="col-md-4 ms-4">
+		<DIV class="col-md-4">
 			<DIV class="d-flex align-items-center">
 				<H3 class="text-primary me-2">
 					<xsl:value-of select="nickname"/>

@@ -19,8 +19,7 @@
 
 	<xsl:template match="document">
 		<HEAD>
-			<META content="IE=edge" http-equiv="X-UA-Compatible"/>
-			<META content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport"/>
+			<xsl:call-template name="headMetaTags"/>
 			<TITLE>
 				<xsl:value-of select="@title"/>
 			</TITLE>
@@ -68,6 +67,10 @@
 									<i class="fas fa-birthday-cake"></i>
 								</DIV>
 								<DIV class="col-11">
+									<DIV class="text-center text-sm text-warning mb-1">
+										<I class="fas fa-exclamation-circle me-1"></I>
+										<SPAN>生日註冊後不得更改</SPAN>
+									</DIV>
 									<DIV class="d-flex justify-content-around align-items-center">
 										<INPUT class="d-none" name="birthday" type="hidden" value=""/>
 										<DIV class="d-flex align-items-center">
@@ -83,7 +86,6 @@
 											<SPAN class="ms-1">日</SPAN>
 										</DIV>
 									</DIV>
-									<DIV class="text-center text-sm mt-1">生日註冊後不得更改</DIV>
 								</DIV>
 							</DIV>
 							<HR class="horizontal dark my-3"/>
@@ -92,6 +94,10 @@
 									<i class="fas fa-venus-mars"></i>
 								</DIV>
 								<DIV class="col-11">
+									<DIV class="text-center text-sm text-warning">
+										<I class="fas fa-exclamation-circle me-1"></I>
+										<SPAN>性別註冊後不得更改</SPAN>
+									</DIV>
 									<DIV class="d-flex justify-content-around align-items-center">
 										<DIV class="form-check">
 											<INPUT class="form-check-input" id="female" name="gender" required="" type="radio" value="false"/>
@@ -106,7 +112,15 @@
 											</LABEL>
 										</DIV>
 									</DIV>
-									<DIV class="text-center text-sm mt-1">性別註冊後不得更改</DIV>
+								</DIV>
+							</DIV>
+							<HR class="horizontal dark my-3"/>
+							<DIV class="row align-items-center mb-3">
+								<DIV class="col-1">
+									<I class="far fa-thumbs-up text-lg"></I>
+								</DIV>
+								<DIV class="col-11">
+									<INPUT class="form-control form-control-lg" name="referralCode" placeholder="推薦碼" required="" type="text" value=""/>
 								</DIV>
 							</DIV>
 							<DIV class="text-center">

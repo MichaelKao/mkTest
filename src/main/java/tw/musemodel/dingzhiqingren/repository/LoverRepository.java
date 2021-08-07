@@ -27,4 +27,6 @@ public interface LoverRepository extends JpaRepository<Lover, Integer>, JpaSpeci
 	public List<Lover> findByGender(Boolean gender);
 
 	public List<Lover> findByRelief(Boolean relief);
+
+	public Lover findByReferralCode(String referralCode);
 }

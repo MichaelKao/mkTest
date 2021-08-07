@@ -742,6 +742,18 @@ public class WelcomeController {
 				toString();
 		}
 
+		if (Objects.nonNull(signUp.getReferralCode())
+			&& Objects.isNull(loverRepository.findByReferralCode(signUp.getReferralCode()))) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"signUp.referralCodeNotExist",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toString();
+		}
+
 		JSONObject jsonObject;
 		try {
 			jsonObject = loverService.signUp(signUp, request, locale);
@@ -852,6 +864,11 @@ public class WelcomeController {
 		documentElement.setAttribute(
 			gender ? "male" : "female",
 			null
+		);
+
+		documentElement.setAttribute(
+			"referralCode",
+			me.getReferralCode()
 		);
 
 		// 有登入狀態
