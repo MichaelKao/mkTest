@@ -166,7 +166,7 @@
 							</DIV>
 						</DIV>
 					</DIV>
-					<DIV class="modal fade" id="referralCode" tabindex="-1">
+					<DIV class="modal fade" id="referralCodeModal" tabindex="-1">
 						<DIV class="modal-dialog modal-dialog-centered">
 							<DIV class="modal-content">
 								<DIV class="modal-body">
@@ -176,8 +176,13 @@
 									<DIV class="mt-3 text-center">
 										<I class="fal fa-user-friends text-success mb-1" style="font-size: 50px;"></I>
 										<H4>好友邀請碼</H4>
-										<DIV class="h1 text-lighter" id="referralCode">
-											<xsl:value-of select="@referralCode"/>
+										<DIV class="d-flex justify-content-center">
+											<DIV class="h1 text-lighter" id="referralCode">
+												<xsl:value-of select="@referralCode"/>
+											</DIV>
+											<BUTTON class="btn btn-link m-0 p-0 text-lg ms-2 text-dark" id="referralCodeCopy">
+												<I class="far fa-copy"></I>
+											</BUTTON>
 										</DIV>
 									</DIV>
 									<DIV class="text-center">
@@ -281,7 +286,7 @@
 							<A class="btn btn-link m-2 p-0" href="/me.asp">
 								<I class="fad fa-pen font40"></I>
 							</A>
-							<BUTTON class="btn btn-success p-2 m-0" data-bs-target="#referralCode" data-bs-toggle="modal">我的邀請碼</BUTTON>
+							<BUTTON class="btn btn-success p-2 m-0" data-bs-target="#referralCodeModal" data-bs-toggle="modal">我的邀請碼</BUTTON>
 						</DIV>
 					</xsl:otherwise>
 				</xsl:choose>
