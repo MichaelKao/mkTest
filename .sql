@@ -536,7 +536,7 @@ CREATE TABLE"ti_qu_che_ma_fei"(
 	"jin_e"int,
 	"zhuang_tai"boolean,
 	"ti_qu_feng_shi" "ti_qu_feng_shi",
-	"shi_bai_yuan_yin"varchar
+	"shi_bai_yuan_yin"varchar,
 	"shi_chuo"timestamptz
 );
 COMMENT ON TABLE"ti_qu_che_ma_fei"IS'甜心提取車馬費';
@@ -739,3 +739,16 @@ COMMENT ON TYPE"nan_shi_zhong_lei"IS'男士种类';
 ALTER TABLE"qing_ren"
 ADD COLUMN"nan_shi_zhong_lei"varchar;
 COMMENT ON COLUMN"qing_ren"."nan_shi_zhong_lei"IS'男士种类';
+
+/**
+ * 用户号之间的封锁
+ */
+CREATE TABLE"feng_suo"(
+	"zhu_dong_fang"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"bei_dong_fang"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	PRIMARY KEY("zhu_dong_fang","bei_dong_fang")
+);
+COMMENT ON TABLE"feng_suo"IS'用户号之间的封锁';
+COMMENT ON COLUMN"feng_suo"."zhu_dong_fang"IS'主动方(A 封锁 B 的 A)';
+COMMENT ON COLUMN"feng_suo"."bei_dong_fang"IS'被动方(A 封锁 B 的 B)';
+
