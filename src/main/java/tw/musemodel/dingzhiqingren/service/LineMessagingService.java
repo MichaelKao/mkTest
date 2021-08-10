@@ -3,12 +3,13 @@ package tw.musemodel.dingzhiqingren.service;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Objects;
 import me.line.notifybot.api.Notify;
-import me.line.notifybot.oauth.AccessToken;
-import me.line.notifybot.oauth.AuthorizationCode;
 import me.line.notifybot.api.Revoke;
 import me.line.notifybot.api.Status;
+import me.line.notifybot.oauth.AccessToken;
+import me.line.notifybot.oauth.AuthorizationCode;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -40,9 +41,14 @@ public class LineMessagingService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LineMessagingService.class);
 
 	/**
-	 * Access Token
+	 * 1st Dev Access Token
 	 */
-	private static final String LINE_NOTIFY_ACCESS_TOKEN = System.getenv("LINE_NOTIFY_ACCESS_TOKEN");
+	public static final String LINE_NOTIFY_ACCESS_TOKEN_FIRST = System.getenv("LINE_NOTIFY_ACCESS_TOKEN_FIRST");
+
+	/**
+	 * 2nd Dev Access Token
+	 */
+	public static final String LINE_NOTIFY_ACCESS_TOKEN_SECOND = System.getenv("LINE_NOTIFY_ACCESS_TOKEN_SECOND");
 
 	/**
 	 * Host name for authentication API endpoint
@@ -201,8 +207,10 @@ public class LineMessagingService {
 	 * @param message 最多 1000 个字符
 	 */
 	@Transactional(readOnly = true)
-	public static void notify(String message) {
-		notify(LINE_NOTIFY_ACCESS_TOKEN, message);
+	public static void notifyDev(List<String> accessTokens, String message) {
+		for (String accessToken : accessTokens) {
+			notify(accessToken, message);
+		}
 	}
 
 	/**

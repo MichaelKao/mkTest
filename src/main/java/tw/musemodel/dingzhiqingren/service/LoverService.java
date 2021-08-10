@@ -454,14 +454,19 @@ public class LoverService {
 		activation = activationRepository.saveAndFlush(activation);
 
 		// 暫時將激活碼送到 Line notify
-		lineMessagingService.notify(String.format(
-			"手機號碼 %s 的激活碼：%s️",
+		List<String> accessTokens = new ArrayList<String>();
+		accessTokens.add(lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
+		accessTokens.add(lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
+		lineMessagingService.notifyDev(
+			accessTokens,
 			String.format(
-				"0%s",
-				lover.getLogin()
-			),
-			string
-		));
+				"手機號碼 %s 的激活碼：%s️",
+				String.format(
+					"0%s",
+					lover.getLogin()
+				),
+				string
+			));
 
 		PublishResult publishResult = AMAZON_SNS.publish(
 			new PublishRequest().
@@ -592,14 +597,21 @@ public class LoverService {
 		Date expiry = calendar.getTime();
 
 		// 暫時將激活碼送到 Line notify
-		lineMessagingService.notify(String.format(
-			"手機號碼 %s 的激活碼：%s️",
+		List<String> accessTokens = new ArrayList<String>();
+		LOGGER.debug("測試LINE_NOTIFY_ACCESS_TOKEN_FIRST{}", lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
+		LOGGER.debug("測試LINE_NOTIFY_ACCESS_TOKEN_SECOND{}", lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
+		accessTokens.add(lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
+		accessTokens.add(lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
+		lineMessagingService.notifyDev(
+			accessTokens,
 			String.format(
-				"0%s",
-				lover.getLogin()
-			),
-			string
-		));
+				"手機號碼 %s 的激活碼：%s️",
+				String.format(
+					"0%s",
+					lover.getLogin()
+				),
+				string
+			));
 
 		return activationRepository.saveAndFlush(new Activation(
 			lover.getId(),
@@ -2390,5 +2402,44 @@ public class LoverService {
 			return false;
 		}//(地点|服务)标签
 		return true;
+	}
+
+	public Document chatroom(Document document, Lover me, Lover chatPartner) {
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute(
+			"friendIdentifier",
+			chatPartner.getIdentifier().toString()
+		);
+
+		documentElement.setAttribute(
+			"friendProfileImage",
+			String.format(
+				"https://%s/profileImage/%s",
+				Servant.STATIC_HOST,
+				chatPartner.getProfileImage()
+			)
+		);
+
+		documentElement.setAttribute(
+			"friendNickname",
+			chatPartner.getNickname()
+		);
+
+		documentElement.setAttribute(
+			"friendGender",
+			chatPartner.getGender().toString()
+		);
+
+		// '給我賴'的行為女生還沒回應
+		History history = historyRepository.
+			findByInitiativeAndPassiveAndBehaviorAndReplyNull(chatPartner, me, BEHAVIOR_GIMME_YOUR_LINE_INVITATION);
+		if (Objects.nonNull(history) && !me.getGender()) {
+			documentElement.setAttribute(
+				"decideButton",
+				null
+			);
+		}
+
+		return document;
 	}
 }
