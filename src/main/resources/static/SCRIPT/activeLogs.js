@@ -138,6 +138,7 @@ $(document).ready(function () {
 
 	$('BUTTON.commentBtn').click(function (event) {
 		event.preventDefault();
+		$(this).attr('disabled', true);
 		var rate = $('INPUT[name="rating"]:checked').val();
 		if (rate === undefined) {
 			rate = null;
@@ -165,7 +166,11 @@ $(document).ready(function () {
 		return false;
 	});
 
+	$('BUTTON.openLine').dblclick(function (e) {
+		e.preventDefault();
+	});
 	$('BUTTON.openLine').click(function () {
+		$(this).attr('disabled', true);
 		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 		$.post(
 			'/maleOpenLine.json',

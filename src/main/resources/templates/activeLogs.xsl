@@ -155,7 +155,7 @@
 												<BUTTON class="btn btn-success px-2 py-1 p-md-2 m-0 me-1 openLine" type="button">
 													<SPAN>加入好友</SPAN>
 													<xsl:if test="@remindDeduct">
-														<DIV class="text-xxs">需 30 愛心</DIV>
+														<DIV class="text-xxs">需 100 愛心</DIV>
 													</xsl:if>
 												</BUTTON>
 											</xsl:if>

@@ -47,7 +47,7 @@ public class HistoryService {
 
 	private final static Short COST_GIMME_YOUR_LINE_INVITATION = Short.valueOf(System.getenv("COST_GIMME_YOUR_LINE_INVITATION"));
 
-	private final static long VIP_DAILY_TOLERANCE = 10L;
+	private final static long VIP_DAILY_TOLERANCE = 30L;
 
 	@Autowired
 	private Servant servant;
@@ -942,7 +942,7 @@ public class HistoryService {
 							"addLineButton",
 							null
 						);
-						if (loverService.isVIP(passive) && !withinRequiredLimit(passive)) {
+						if (loverService.isVVIP(passive) && !withinRequiredLimit(passive)) {
 							historyElement.setAttribute(
 								"remindDeduct",
 								null
@@ -1137,12 +1137,17 @@ public class HistoryService {
 	 * @return
 	 */
 	public boolean withinRequiredLimit(Lover male) {
-		long currentTimeMillis = System.currentTimeMillis();
+		Date twelveHrsAgo = null;
+		Date nowDate = null;
+		Calendar twelveHrs = Calendar.getInstance();
+		twelveHrs.add(Calendar.HOUR, -12);
+		twelveHrsAgo = twelveHrs.getTime();
+		nowDate = new Date();
 		Long dailyCount = historyRepository.countByInitiativeAndBehaviorAndOccurredBetween(
 			male,
 			BEHAVIOR_LAI_KOU_DIAN,
-			Servant.minimumToday(currentTimeMillis),
-			Servant.maximumToday(currentTimeMillis)
+			twelveHrsAgo,
+			nowDate
 		);
 		return loverService.isVIP(male) && Objects.nonNull(dailyCount) && dailyCount < VIP_DAILY_TOLERANCE;
 	}
