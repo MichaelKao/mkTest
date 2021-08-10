@@ -1,8 +1,9 @@
 .chatroom {
-	height: calc(100% - 60px);
+	height: calc(100% - 66px - 60px);
 	overflow-y: auto;
 	overflow-x: hidden;
 	position: absolute;
+	margin-top: 66px;
 	left: 0;
 	right: 0;
 	-webkit-overflow-scrolling: touch;
@@ -10,6 +11,8 @@
 
 .chatroomWrapper {
 	height: 100%;
+	border-left: 2px solid #F3F3F3;
+	border-right: 2px solid #F3F3F3;
 }
 
 .chatHistory {
@@ -24,43 +27,18 @@
 	border-top: 1px solid #F3F3F3;
 }
 
-
-
-ul{
-	list-style: none;
-	margin: 0;
-	padding: 0;
+.maxWidth80 {
+	max-width: 80%;
 }
 
-ul li{
-	display:inline-block;
-	clear: both;
-	padding: 15px 20px;
-	border-radius: 30px;
-	margin-bottom: 2px;
-	font-family: Helvetica, Arial, sans-serif;
+.femaleResponseBtn {
+	position: fixed;
+	bottom: 65px;
+	left: 0;
+	right: 0;
 }
 
-.friend{
-	background: #eee;
-	float: left;
-}
-
-.me{
-	float: right;
-	background: #cb0c9f;
-	color: #fff;
-}
-
-.friend + .me{
-	border-bottom-right-radius: 5px;
-}
-
-.me + .me{
-	border-top-right-radius: 5px;
-	border-bottom-right-radius: 5px;
-}
-
-.me:last-of-type {
-	border-bottom-right-radius: 30px;
+TEXTAREA#chatInput {
+	height: 38px;
+	resize: none;
 }

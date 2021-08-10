@@ -27,6 +27,8 @@ public class Activity implements Comparable<Activity> {
 
 	private Date reply;
 
+	private String sender;
+
 	@Override
 	public int compareTo(Activity other) {
 		return occurred.compareTo(other.occurred);
@@ -45,6 +47,21 @@ public class Activity implements Comparable<Activity> {
 		this.greeting = greeting;
 		this.seen = seen;
 		this.reply = reply;
+	}
+
+	/**
+	 * 聊天歷史紀錄
+	 *
+	 * @param sender
+	 * @param occurred
+	 * @param greeting
+	 * @param seen
+	 */
+	public Activity(String sender, Date occurred, String greeting, Date seen) {
+		this.sender = sender;
+		this.occurred = occurred;
+		this.greeting = greeting;
+		this.seen = seen;
 	}
 
 	public Lover getInitiative() {
@@ -109,5 +126,13 @@ public class Activity implements Comparable<Activity> {
 
 	public void setReply(Date reply) {
 		this.reply = reply;
+	}
+
+	public String getSender() {
+		return sender;
+	}
+
+	public void setSender(String sender) {
+		this.sender = sender;
 	}
 }

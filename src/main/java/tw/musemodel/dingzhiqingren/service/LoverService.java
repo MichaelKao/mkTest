@@ -598,8 +598,6 @@ public class LoverService {
 
 		// 暫時將激活碼送到 Line notify
 		List<String> accessTokens = new ArrayList<String>();
-		LOGGER.debug("測試LINE_NOTIFY_ACCESS_TOKEN_FIRST{}", lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
-		LOGGER.debug("測試LINE_NOTIFY_ACCESS_TOKEN_SECOND{}", lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
 		accessTokens.add(lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
 		accessTokens.add(lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
 		lineMessagingService.notifyDev(

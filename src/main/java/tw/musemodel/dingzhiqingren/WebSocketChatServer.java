@@ -2,7 +2,6 @@ package tw.musemodel.dingzhiqingren;
 
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -18,12 +17,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import tw.musemodel.dingzhiqingren.entity.History;
+import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.model.ChatMessage;
 import tw.musemodel.dingzhiqingren.model.WebsocketState;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
 import tw.musemodel.dingzhiqingren.service.LoverService;
+import tw.musemodel.dingzhiqingren.service.WebSocketService;
 
 @Component
 @ServerEndpoint(value = "/webSocket/chat/{identifier}")
@@ -34,6 +36,8 @@ public class WebSocketChatServer {
 	private HistoryRepository historyRepository = SpringContext.getBean(HistoryRepository.class);
 
 	private LoverService loverService = SpringContext.getBean(LoverService.class);
+
+	private WebSocketService webSocketService = SpringContext.getBean(WebSocketService.class);
 
 	//靜態常數，用來記錄當前的再現連接數。應該用執行緒較安全。
 	private static AtomicInteger online = new AtomicInteger();
@@ -69,18 +73,7 @@ public class WebSocketChatServer {
 	@OnMessage
 	public void onMessage(Session userSession, String message) {
 		ChatMessage chatMessage = gson.fromJson(message, ChatMessage.class);
-		LOGGER.debug(String.format(
-			"訊息傳送者chatMsg：%s",
-			chatMessage.getSender()
-		));
-		LOGGER.debug(String.format(
-			"訊息型態：%s",
-			chatMessage.getType()
-		));
-		LOGGER.debug(String.format(
-			"訊息接收者：%s",
-			chatMessage.getReceiver()
-		));
+
 		Lover sender = loverService.
 			loadByIdentifier(
 				UUID.fromString(chatMessage.getSender())
@@ -90,18 +83,26 @@ public class WebSocketChatServer {
 				UUID.fromString(chatMessage.getReceiver())
 			);
 
+		Lover male = null;
+		Lover female = null;
+		if (sender.getGender()) {
+			male = sender;
+			female = receiver;
+		} else if (!sender.getGender()) {
+			male = receiver;
+			female = sender;
+		}
+
+		// 列出歷史紀錄
 		if ("history".equals(chatMessage.getType())) {
-			List<History> histories = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(receiver, sender, BEHAVIOR_GIMME_YOUR_LINE_INVITATION);
+			List<Activity> wholeHistoryMsgs = webSocketService.wholeHistoryMsgs(male, female);
+
+			String historyMsgs = gson.toJson(wholeHistoryMsgs);
 			LOGGER.debug(String.format(
-				"訊息歷史紀錄：%s",
-				histories.toString()
+				"訊息歷史紀錄toJson：%s",
+				historyMsgs
 			));
-			List<String> historyData = new ArrayList<String>();
-			for (History history : histories) {
-				historyData.add(history.getGreeting());
-			}
-			String historyMsg = gson.toJson(historyData);
-			ChatMessage cmHistory = new ChatMessage("history", chatMessage.getSender(), chatMessage.getReceiver(), historyMsg);
+			ChatMessage cmHistory = new ChatMessage("history", historyMsgs);
 			if (Objects.nonNull(userSession) && userSession.isOpen()) {
 				userSession.getAsyncRemote().sendText(gson.toJson(cmHistory));
 				LOGGER.debug(String.format(
@@ -110,37 +111,44 @@ public class WebSocketChatServer {
 				));
 				return;
 			}
+			return;
 		}
 
-		Session receiverSession = sessionPools.get(receiver);
+		chatMessage.setMsgCount(1);
+		message = gson.toJson(chatMessage);
+
+		Session receiverSession = sessionPools.get(chatMessage.getReceiver());
 		if (receiverSession != null && receiverSession.isOpen()) {
 			receiverSession.getAsyncRemote().sendText(message);
 			userSession.getAsyncRemote().sendText(message);
+		}
+
+		Behavior behavior = null;
+		if (sender.getGender()) {
+			behavior = BEHAVIOR_TALK;
+		} else {
+			behavior = BEHAVIOR_GREETING;
 		}
 
 		// 加到歷程
 		History history = new History(
 			sender,
 			receiver,
-			BEHAVIOR_GIMME_YOUR_LINE_INVITATION
+			behavior
 		);
 		history.setGreeting(chatMessage.getMessage());
 		historyRepository.saveAndFlush(history);
-
-		LOGGER.debug(String.format(
-			"收到的訊息(message)：%s",
-			message
-		));
 	}
 
-//	@OnError
-//	public void onError(Session userSession, Throwable e) {
-//		LOGGER.debug(
-//			String.format(
-//				"WebSocket 發生錯誤：%s",
-//				e.toString()
-//			));
-//	}
+	@OnError
+	public void onError(Session userSession, Throwable e) {
+		LOGGER.debug(
+			String.format(
+				"WebSocket 發生錯誤：%s",
+				e.toString()
+			));
+	}
+
 	@OnClose
 	public void onClose(Session userSession, CloseReason reason) {
 		String userClose = null;

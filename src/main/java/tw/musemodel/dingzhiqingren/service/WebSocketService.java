@@ -1,193 +1,89 @@
 package tw.musemodel.dingzhiqingren.service;
 
-import java.io.IOException;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
-import java.util.Locale;
+import java.util.List;
 import java.util.Objects;
-import javax.xml.parsers.ParserConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
+import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.Lover;
-import tw.musemodel.dingzhiqingren.entity.WithdrawalInfo;
-import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
-import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
-import tw.musemodel.dingzhiqingren.model.EachWithdrawal;
-import tw.musemodel.dingzhiqingren.repository.LoverRepository;
-import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
-import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
+import tw.musemodel.dingzhiqingren.model.Activity;
+import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
 
 /**
- * 服务层：情人
+ * 服务层：聊天室
  *
- * @author p@musemodel.tw
+ * @author m@musemodel.tw
  */
 @Service
-public class DashboardService {
+public class WebSocketService {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(DashboardService.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(WebSocketService.class);
 
-	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-	@Autowired
-	private MessageSource messageSource;
+	private final static int MSG_TWELVE_HRS_TOLERANCE = 3;
 
 	@Autowired
-	private Servant servant;
+	private HistoryRepository historyRepository;
 
 	@Autowired
 	private LoverService loverService;
 
-	@Autowired
-	private WithdrawalRecordRepository withdrawalRecordRepository;
+	public List<Activity> wholeHistoryMsgs(Lover male, Lover female) {
 
-	@Autowired
-	private WithdrawalInfoRepository withdrawalInfoRepository;
-
-	@Autowired
-	private LoverRepository loverRepository;
-
-	public Document withdrawalDocument(Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
-		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-
-		Element recordsElement = document.createElement("records");
-		documentElement.appendChild(recordsElement);
-
-		for (EachWithdrawal eachWithdrawal : withdrawalRecordRepository.findAllGroupByHoneyAndStatusAndWayAndTimeStamp()) {
-			Element recordElement = document.createElement("record");
-			recordsElement.appendChild(recordElement);
-
-			Lover honey = eachWithdrawal.getHoney();
-			recordElement.setAttribute(
-				"identifier",
-				honey.getIdentifier().toString()
+		List<History> mToFHistories = historyRepository.
+			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(male, female, BEHAVIOR_TALK);
+		List<History> fToMhistories = historyRepository.
+			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(female, male, BEHAVIOR_GREETING);
+		List<Activity> wholeHistoryMsgs = new ArrayList<>();
+		for (History history : mToFHistories) {
+			Activity activity = new Activity(
+				male.getIdentifier().toString(),
+				history.getOccurred(),
+				history.getGreeting(),
+				history.getSeen()
 			);
-
-			recordElement.setAttribute(
-				"name",
-				honey.getNickname()
-			);
-
-			recordElement.setAttribute(
-				"date",
-				DATE_TIME_FORMATTER.format(
-					servant.toTaipeiZonedDateTime(
-						eachWithdrawal.getTimestamp()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI)
-				));
-
-			Date timestamp = eachWithdrawal.getTimestamp();
-			long epoch = timestamp.getTime();
-			recordElement.setAttribute(
-				"timestamp",
-				Long.toString(epoch)
-			);
-
-			if (!eachWithdrawal.getStatus() && Objects.equals(eachWithdrawal.getWay(), WayOfWithdrawal.WIRE_TRANSFER)) {
-				Element wireTransferElement = document.createElement("wireTransfer");
-				recordElement.appendChild(wireTransferElement);
-				WithdrawalInfo withdrawalInfo = withdrawalInfoRepository.findByHoney(eachWithdrawal.getHoney());
-				wireTransferElement.setAttribute(
-					"bankCode",
-					withdrawalInfo.getWireTransferBankCode()
-				);
-				wireTransferElement.setAttribute(
-					"branchCode",
-					withdrawalInfo.getWireTransferBranchCode()
-				);
-				wireTransferElement.setAttribute(
-					"accountName",
-					withdrawalInfo.getWireTransferAccountName()
-				);
-				wireTransferElement.setAttribute(
-					"accountNumber",
-					withdrawalInfo.getWireTransferAccountNumber()
-				);
-			}
-
-			if (Objects.equals(eachWithdrawal.getWay(), WayOfWithdrawal.PAYPAL)) {
-				Element paypalElement = document.createElement("paypal");
-				recordElement.appendChild(paypalElement);
-			}
-
-			recordElement.setAttribute(
-				"points",
-				eachWithdrawal.getPoints().toString()
-			);
-
-			Boolean status = eachWithdrawal.getStatus();
-			recordElement.setAttribute(
-				"status",
-				status.toString()
-			);
-
-			for (WithdrawalRecord withdrawalRecord
-				: withdrawalRecordRepository.findByHoneyAndStatusAndTimestamp(honey, status, timestamp)) {
-				Element historyElement = document.createElement("history");
-				recordElement.appendChild(historyElement);
-				historyElement.setAttribute(
-					"date",
-					DATE_TIME_FORMATTER.format(
-						servant.toTaipeiZonedDateTime(
-							withdrawalRecord.getHistory().getOccurred()
-						).withZoneSameInstant(Servant.ASIA_TAIPEI)
-					));
-
-				historyElement.setAttribute(
-					"male",
-					withdrawalRecord.getHistory().getInitiative().getNickname()
-				);
-
-				historyElement.setAttribute(
-					"maleId",
-					withdrawalRecord.getHistory().getInitiative().getIdentifier().toString()
-				);
-
-				historyElement.setAttribute(
-					"type",
-					messageSource.getMessage(
-						withdrawalRecord.getHistory().getBehavior().name(),
-						null,
-						locale
-					));
-
-				historyElement.setAttribute(
-					"points",
-					Short.toString(withdrawalRecord.getPoints())
-				);
-
-			}
+			wholeHistoryMsgs.add(activity);
 		}
-		return document;
+		for (History history : fToMhistories) {
+			Activity activity = new Activity(
+				female.getIdentifier().toString(),
+				history.getOccurred(),
+				history.getGreeting(),
+				history.getSeen()
+			);
+			wholeHistoryMsgs.add(activity);
+		}
+		Collections.sort(wholeHistoryMsgs);
+
+		return wholeHistoryMsgs;
 	}
 
-	public Document certificationDocument(Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
-		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-
-		for (Lover lover : loverRepository.findByRelief(Boolean.FALSE)) {
-			Element loverElement = document.createElement("lover");
-			documentElement.appendChild(loverElement);
-
-			loverElement.setAttribute(
-				"id",
-				lover.getId().toString()
-			);
-
-			loverElement.setAttribute(
-				"name",
-				lover.getNickname()
-			);
-		}
-		return document;
+	/**
+	 * 12小時內男生限制發送訊息次數
+	 *
+	 * @param male
+	 * @return
+	 */
+	public boolean withinRequiredLimit(Lover male, Lover female) {
+		Date twelveHrsAgo = null;
+		Date nowDate = null;
+		Calendar twelveHrs = Calendar.getInstance();
+		twelveHrs.add(Calendar.HOUR, -12);
+		twelveHrsAgo = twelveHrs.getTime();
+		nowDate = new Date();
+		int dailyCount = historyRepository.countByInitiativeAndPassiveAndBehaviorAndOccurredBetween(
+			male,
+			female,
+			BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
+			twelveHrsAgo,
+			nowDate
+		);
+		return (loverService.isVVIP(male) || loverService.isVIP(male)) && Objects.nonNull(dailyCount) && dailyCount < MSG_TWELVE_HRS_TOLERANCE;
 	}
 }
