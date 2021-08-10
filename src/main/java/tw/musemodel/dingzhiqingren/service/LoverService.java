@@ -2304,7 +2304,7 @@ public class LoverService {
 		if (Objects.nonNull(history)) {
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(history.getOccurred());
-			calendar.add(Calendar.HOUR, 24);
+			calendar.add(Calendar.HOUR, 12);
 			gpDate = calendar.getTime();
 			nowDate = new Date();
 		}
