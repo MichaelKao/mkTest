@@ -146,7 +146,6 @@
 										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 accept" type="button">接受</BUTTON>
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 refuse" type="button">拒絕</BUTTON>
-											<BUTTON class="btn btn-sm btn-outline-info px-2 py-1 p-md-2 m-0 me-1 talkAgain" type="button">再聊聊</BUTTON>
 										</DIV>
 									</xsl:if>
 									<xsl:if test="not(@decideButton)">
