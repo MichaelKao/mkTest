@@ -739,3 +739,8 @@ COMMENT ON TYPE"nan_shi_zhong_lei"IS'男士种类';
 ALTER TABLE"qing_ren"
 ADD COLUMN"nan_shi_zhong_lei"varchar;
 COMMENT ON COLUMN"qing_ren"."nan_shi_zhong_lei"IS'男士种类';
+
+/**
+ * 更名再聊聊行為
+ */
+ALTER TYPE"xing_wei" RENAME VALUE 'ZAI_LIAO_LIAO' TO 'LIAO_LIAO';
