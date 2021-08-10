@@ -33,6 +33,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -378,6 +380,31 @@ public class Lover implements java.io.Serializable {
 	@Enumerated(EnumType.STRING)
 	@Type(type = "pgsql_enum")
 	private MaleSpecies maleSpecies;
+
+	/**
+	 * 封锁了谁
+	 */
+	@JoinTable(
+		name = "feng_suo",
+		joinColumns = {
+			@JoinColumn(name = "zhu_dong_fang", referencedColumnName = "id", nullable = false)
+		},
+		inverseJoinColumns = {
+			@JoinColumn(name = "bei_dong_fang", referencedColumnName = "id", nullable = false)
+		}
+	)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@ManyToMany()
+	@JsonManagedReference
+	private Collection<Lover> blocking;
+
+	/**
+	 * 封锁了我
+	 */
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@ManyToMany(mappedBy = "blocking")
+	@JsonBackReference
+	private Collection<Lover> blockedBy;
 
 	/**
 	 * 默认构造器
@@ -1049,6 +1076,34 @@ public class Lover implements java.io.Serializable {
 	 */
 	public void setMaleSpecies(MaleSpecies maleSpecies) {
 		this.maleSpecies = maleSpecies;
+	}
+
+	/**
+	 * @return 封锁了谁
+	 */
+	public Collection<Lover> getBlocking() {
+		return blocking;
+	}
+
+	/**
+	 * @param blocking 封锁了谁
+	 */
+	public void setBlocking(Collection<Lover> blocking) {
+		this.blocking = blocking;
+	}
+
+	/**
+	 * @return 封锁了我
+	 */
+	public Collection<Lover> getBlockedBy() {
+		return blockedBy;
+	}
+
+	/**
+	 * @param blockedBy 封锁了我
+	 */
+	public void setBlockedBy(Collection<Lover> blockedBy) {
+		this.blockedBy = blockedBy;
 	}
 
 	/**
