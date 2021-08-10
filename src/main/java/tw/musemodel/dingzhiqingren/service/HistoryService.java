@@ -942,7 +942,8 @@ public class HistoryService {
 							"addLineButton",
 							null
 						);
-						if (loverService.isVVIP(passive) && !withinRequiredLimit(passive)) {
+						Long count = historyRepository.countByInitiativeAndPassiveAndBehavior(passive, initiative, BEHAVIOR_LAI_KOU_DIAN);
+						if ((loverService.isVVIP(passive) || loverService.isVVIP(passive)) && (count < 1 && !withinRequiredLimit(passive))) {
 							historyElement.setAttribute(
 								"remindDeduct",
 								null
@@ -1149,7 +1150,7 @@ public class HistoryService {
 			twelveHrsAgo,
 			nowDate
 		);
-		return loverService.isVIP(male) && Objects.nonNull(dailyCount) && dailyCount < VIP_DAILY_TOLERANCE;
+		return (loverService.isVVIP(male) || loverService.isVIP(male)) && Objects.nonNull(dailyCount) && dailyCount < VIP_DAILY_TOLERANCE;
 	}
 
 	/**
