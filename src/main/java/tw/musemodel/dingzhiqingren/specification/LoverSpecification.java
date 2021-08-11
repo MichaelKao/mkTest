@@ -155,10 +155,10 @@ public class LoverSpecification {
 	/**
 	 * 未封号的情人们，以活跃降幂排序；适用于首页的最近活跃。
 	 *
-	 * @param lover 用户号
+	 * @param mofo 用户号
 	 * @return 未封号的(甜心|男士)们
 	 */
-	public static Specification<Lover> latestActiveOnTheWall(Lover lover) {
+	public static Specification<Lover> latestActiveOnTheWall(Lover mofo) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
 			criteriaQuery.orderBy(
 				criteriaBuilder.desc(
@@ -167,20 +167,20 @@ public class LoverSpecification {
 			);//以活跃降幂排序
 
 			return criteriaBuilder.and(
-				eligible(root, criteriaBuilder, !lover.getGender()),//合格用户号们
-				blacklist(lover, root, criteriaBuilder),
-				blacklisted(lover, root, criteriaBuilder)
+				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
+				blacklist(mofo, root, criteriaBuilder),
+				blacklisted(mofo, root, criteriaBuilder)
 			);
 		};
 	}
 
 	/**
-	 * 未封号的情人们，以註冊时间降幂排序；适用于首页的最新註冊。
+	 * 未封号的情人们，以註冊时间降幂排序；适用于首页的最新注册。
 	 *
-	 * @param lover 用户号
+	 * @param mofo 用户号
 	 * @return 未封号的(甜心|男士)们
 	 */
-	public static Specification<Lover> latestRegisteredOnTheWall(Lover lover) {
+	public static Specification<Lover> latestRegisteredOnTheWall(Lover mofo) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
 			criteriaQuery.orderBy(
 				criteriaBuilder.desc(
@@ -189,9 +189,9 @@ public class LoverSpecification {
 			);//以活跃降幂排序
 
 			return criteriaBuilder.and(
-				eligible(root, criteriaBuilder, !lover.getGender()),//合格用户号们
-				blacklist(lover, root, criteriaBuilder),
-				blacklisted(lover, root, criteriaBuilder)
+				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
+				blacklist(mofo, root, criteriaBuilder),
+				blacklisted(mofo, root, criteriaBuilder)
 			);
 		};
 	}
@@ -368,11 +368,12 @@ public class LoverSpecification {
 	}
 
 	/**
-	 * 未封号的贵宾(仅男士)们，以活跃降幂排序；适用于首页。
+	 * 未封号的贵宾(仅男士)们，以活跃降幂排序；适用于首页的贵宾会员。
 	 *
+	 * @param mofo 用户号
 	 * @return 未封号的贵宾(仅男士)们
 	 */
-	public static Specification<Lover> vipOnTheWall() {
+	public static Specification<Lover> vipOnTheWall(Lover mofo) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
 			criteriaQuery.orderBy(
 				criteriaBuilder.desc(
@@ -389,7 +390,9 @@ public class LoverSpecification {
 					root.get(Lover_.maleSpecies),
 					MaleSpecies.VVIP
 				),//须为 VVIP
-				eligible(root, criteriaBuilder, true)//合格用户号们
+				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
+				blacklist(mofo, root, criteriaBuilder),
+				blacklisted(mofo, root, criteriaBuilder)
 			);
 		};
 	}

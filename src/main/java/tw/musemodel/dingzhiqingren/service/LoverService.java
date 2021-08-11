@@ -1867,84 +1867,55 @@ public class LoverService {
 	 */
 	public Document indexDocument(Document document, Lover lover, Locale locale) {
 		Element documentElement = document.getDocumentElement();
+
 		Element areaElement = document.createElement("area");
 		documentElement.appendChild(areaElement);
 
-		// 確認性別
-		Boolean isMale = lover.getGender();
-
-		// 貴賓會員
-		Element vipElement = document.createElement("vip");
-		// 安心認證
-		Element reliefElement = document.createElement("relief");
-		// 最新活躍
-		Element activeElement = document.createElement("active");
-		// 最近註冊
-		Element registerElement = document.createElement("register");
-
-		// 男仕顯示的列表
-		if (isMale) {
-			// 通過安心認證的甜心
-			reliefElement = indexElement(document, reliefElement, femalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
-			areaElement.appendChild(reliefElement);
-			// 最新活躍(使用)時間
-			activeElement = indexElement(
+		if (!lover.getGender()) {
+			areaElement.appendChild(createElement(
 				document,
-				activeElement,
-				latestActiveOnTheWall(
+				document.createElement("vip"),
+				vipOnTheWall(
 					lover,
 					0,
 					PAGE_SIZE_ON_THE_WALL
 				),
 				locale
-			);
-			areaElement.appendChild(activeElement);
-			// 最近註冊
-			registerElement = indexElement(
-				document,
-				registerElement,
-				latestRegisteredOnTheWall(
-					lover,
-					0,
-					PAGE_SIZE_ON_THE_WALL
-				),
-				locale
-			);
-			areaElement.appendChild(registerElement);
+			));//甜心才会显示的贵宾会员列表区块
 		}
-		// 甜心顯示的列表
-		if (!isMale) {
-			// 貴賓會員的男仕
-			vipElement = indexElement(document, vipElement, vipOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
-			areaElement.appendChild(vipElement);
-			// 通過安心認證的男仕
-			reliefElement = indexElement(document, reliefElement, malesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
-			areaElement.appendChild(reliefElement);
-			// 最新活躍(使用)時間
-			activeElement = indexElement(
-				document,
-				activeElement,
-				latestActiveOnTheWall(
-					lover,
-					0,
-					PAGE_SIZE_ON_THE_WALL
-				),
-				locale
-			);
-			areaElement.appendChild(activeElement);
-			// 最近註冊
-			registerElement = indexElement(
-				document,
-				registerElement,
-				latestRegisteredOnTheWall(
-					lover,
-					0,
-					PAGE_SIZE_ON_THE_WALL
-				),
-				locale
-			);
-			areaElement.appendChild(registerElement);
-		}
+
+		areaElement.appendChild(createElement(
+			document,
+			document.createElement("relief"),
+			femalesOnTheWall(
+				0,
+				PAGE_SIZE_ON_THE_WALL
+			),
+			locale
+		));//安心认证
+
+		areaElement.appendChild(createElement(
+			document,
+			document.createElement("active"),
+			latestActiveOnTheWall(
+				lover,
+				0,
+				PAGE_SIZE_ON_THE_WALL
+			),
+			locale
+		));//最近活跃
+
+		areaElement.appendChild(createElement(
+			document,
+			document.createElement("register"),
+			latestRegisteredOnTheWall(
+				lover,
+				0,
+				PAGE_SIZE_ON_THE_WALL
+			),
+			locale
+		));//最新注册
+
 		return document;
 	}
 
@@ -1957,10 +1928,11 @@ public class LoverService {
 	 * @param locale
 	 * @return
 	 */
-	public Element indexElement(Document document, Element element, Page<Lover> page, Locale locale) {
+	public Element createElement(Document document, Element element, Page<Lover> page, Locale locale) {
 		if (page.getTotalPages() <= 1) {
 			element.setAttribute("lastPage", null);
 		}
+		document = element.getOwnerDocument();
 		for (Lover lover : page.getContent()) {
 			Element sectionElement = document.createElement("section");
 			element.appendChild(sectionElement);
@@ -2166,14 +2138,15 @@ public class LoverService {
 	}
 
 	/**
+	 * @param mofo 用户号
 	 * @param p 第几页
 	 * @param s 每页几笔
 	 * @return 貴賓男士们
 	 */
 	@Transactional(readOnly = true)
-	public Page<Lover> vipOnTheWall(int p, int s) {
+	public Page<Lover> vipOnTheWall(Lover mofo, int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.vipOnTheWall(),
+			LoverSpecification.vipOnTheWall(mofo),
 			PageRequest.of(p, s)
 		);
 	}
