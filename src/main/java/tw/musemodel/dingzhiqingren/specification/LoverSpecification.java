@@ -168,8 +168,8 @@ public class LoverSpecification {
 
 			return criteriaBuilder.and(
 				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
-				blacklist(mofo, root, criteriaBuilder),
-				blacklisted(mofo, root, criteriaBuilder)
+				blacklist(mofo, root, criteriaBuilder),//黑名单
+				blacklisted(mofo, root, criteriaBuilder)//被列入黑名单
 			);
 		};
 	}
@@ -190,8 +190,8 @@ public class LoverSpecification {
 
 			return criteriaBuilder.and(
 				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
-				blacklist(mofo, root, criteriaBuilder),
-				blacklisted(mofo, root, criteriaBuilder)
+				blacklist(mofo, root, criteriaBuilder),//黑名单
+				blacklisted(mofo, root, criteriaBuilder)//被列入黑名单
 			);
 		};
 	}
@@ -281,8 +281,8 @@ public class LoverSpecification {
 					root.get(Lover_.relief)
 				),//通过安心认证
 				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
-				blacklist(mofo, root, criteriaBuilder),
-				blacklisted(mofo, root, criteriaBuilder)
+				blacklist(mofo, root, criteriaBuilder),//黑名单
+				blacklisted(mofo, root, criteriaBuilder)//被列入黑名单
 			);
 		};
 	}
@@ -290,22 +290,38 @@ public class LoverSpecification {
 	/**
 	 * 搜寻。
 	 *
-	 * @param gender 性别
+	 * @param mofo 用户号
 	 * @param location 地区
 	 * @param serviceTag 服务
 	 * @return 符合条件的(甜心|男士)们
 	 */
-	public static Specification<Lover> search(boolean gender, Location location, ServiceTag serviceTag) {
+	public static Specification<Lover> search(Lover mofo, Location location, ServiceTag serviceTag) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
 			Collection<Predicate> predicates = new ArrayList<>();
 			predicates.add(criteriaBuilder.equal(
 				root.get(Lover_.gender),
-				gender
+				mofo
 			));//性别
 			predicates.add(root.
 				get(Lover_.delete).
 				isNull()
 			);//未封号
+
+			predicates.add(eligible(
+				root,
+				criteriaBuilder,
+				mofo.getGender()
+			));//合格用户号们
+			predicates.add(blacklist(
+				mofo,
+				root,
+				criteriaBuilder
+			));//黑名单
+			predicates.add(blacklisted(
+				mofo,
+				root,
+				criteriaBuilder
+			));//被列入黑名单
 
 			/*
 			 地区
@@ -393,8 +409,8 @@ public class LoverSpecification {
 					MaleSpecies.VVIP
 				),//须为 VVIP
 				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
-				blacklist(mofo, root, criteriaBuilder),
-				blacklisted(mofo, root, criteriaBuilder)
+				blacklist(mofo, root, criteriaBuilder),//黑名单
+				blacklisted(mofo, root, criteriaBuilder)//被列入黑名单
 			);
 		};
 	}

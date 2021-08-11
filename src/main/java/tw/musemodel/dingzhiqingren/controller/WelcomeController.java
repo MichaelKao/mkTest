@@ -2880,7 +2880,12 @@ public class WelcomeController {
 		);
 
 		Collection<Lover> lovers = loverRepository.findAll(
-			LoverSpecification.search(!isMale, location, serviceTag));
+			LoverSpecification.search(
+				me,
+				location,
+				serviceTag
+			)
+		);
 
 		document = loverService.loversSimpleInfo(document, lovers);
 
