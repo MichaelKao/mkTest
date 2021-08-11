@@ -9,12 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
@@ -52,6 +54,16 @@ public class ProofOfConcept {
 			"來自 GitHub 的網勾\n\n有效载荷：\n{}\n",
 			payload
 		);
+	}
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	@PostMapping(path = "/{lover:\\d+}/passwd.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	Lover passwd(@PathVariable Lover lover, @RequestParam String shadow) {
+		lover.setShadow(passwordEncoder.encode(shadow));
+		return loverService.saveLover(lover);
 	}
 
 	@Autowired
