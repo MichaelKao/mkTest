@@ -750,8 +750,7 @@ public class WelcomeController {
 				toString();
 		}
 
-		if (Objects.nonNull(signUp.getReferralCode())
-			&& Objects.isNull(loverRepository.findByReferralCode(signUp.getReferralCode()))) {
+		if (!signUp.getReferralCode().isBlank() && Objects.isNull(loverRepository.findByReferralCode(signUp.getReferralCode()))) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
 					"signUp.referralCodeNotExist",
@@ -2054,7 +2053,7 @@ public class WelcomeController {
 	@PostMapping(path = "/stalking.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
-	String gimmeYourLineInvitation(@RequestParam("whom") UUID femaleUUID, @RequestParam(name = "what", required = false) String greetingMessage, Authentication authentication, Locale locale) {
+	String gimmeYourLineInvitation(@RequestParam("whom") UUID femaleUUID, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -2069,7 +2068,6 @@ public class WelcomeController {
 			jsonObject = historyService.gimme(
 				male,
 				female,
-				greetingMessage,
 				locale
 			);
 		} catch (Exception exception) {
@@ -2196,39 +2194,6 @@ public class WelcomeController {
 		JSONObject jsonObject;
 		try {
 			jsonObject = historyService.refuseToBeLineFriend(
-				female,
-				male,
-				locale
-			);
-		} catch (Exception exception) {
-			jsonObject = new JavaScriptObjectNotation().
-				withReason(messageSource.getMessage(
-					exception.getMessage(),
-					null,
-					locale
-				)).
-				withResponse(false).
-				toJSONObject();
-		}
-		return jsonObject.toString();
-	}
-
-	@PostMapping(path = "/talkAgain.json", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
-	String talkAgain(@RequestParam("whom") UUID maleUUID, Authentication authentication, Locale locale) {
-		if (servant.isNull(authentication)) {
-			return servant.mustBeAuthenticated(locale);
-		}
-		Lover female = loverService.loadByUsername(
-			authentication.getName()
-		);
-
-		Lover male = loverService.loadByIdentifier(maleUUID);
-
-		JSONObject jsonObject;
-		try {
-			jsonObject = historyService.talkAgain(
 				female,
 				male,
 				locale
@@ -3247,9 +3212,9 @@ public class WelcomeController {
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
-	@GetMapping(path = "/chatroom")
+	@GetMapping(path = "/chatroom/{identifier}/")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView chatRoom(Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
+	ModelAndView chatRoom(@PathVariable UUID identifier, Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			servant.redirectToRoot();
 		}
@@ -3260,6 +3225,11 @@ public class WelcomeController {
 		);
 		if (!loverService.isEligible(me)) {
 			return new ModelAndView("redirect:/me.asp");
+		}
+		// 聊天對象
+		Lover partner = loverService.loadByIdentifier(identifier);
+		if (Objects.equals(me, partner)) {
+			return new ModelAndView("redirect:/");
 		}
 
 		Document document = servant.parseDocument();
@@ -3295,8 +3265,8 @@ public class WelcomeController {
 		Boolean isMale = me.getGender();
 
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
-			null
+			"gender",
+			isMale.toString()
 		);
 
 		// 通知數
@@ -3308,7 +3278,7 @@ public class WelcomeController {
 		}
 
 		documentElement.setAttribute(
-			"identifier",
+			"selfIdentifier",
 			me.getIdentifier().toString()
 		);
 
@@ -3319,6 +3289,8 @@ public class WelcomeController {
 				null
 			);
 		}
+
+		document = loverService.chatroom(document, me, partner);
 
 		ModelAndView modelAndView = new ModelAndView("chatroom");
 		modelAndView.getModelMap().addAttribute(document);

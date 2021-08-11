@@ -120,7 +120,7 @@
 									<I class="far fa-thumbs-up text-lg"></I>
 								</DIV>
 								<DIV class="col-11">
-									<INPUT class="form-control form-control-lg" name="referralCode" placeholder="推薦碼" required="" type="text" value=""/>
+									<INPUT class="form-control form-control-lg" name="referralCode" placeholder="推薦碼" type="text" value=""/>
 								</DIV>
 							</DIV>
 							<DIV class="text-center">

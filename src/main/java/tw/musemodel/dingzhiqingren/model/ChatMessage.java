@@ -13,6 +13,13 @@ public class ChatMessage {
 
 	private String message;
 
+	private String historyMsgs;
+
+	/**
+	 * 12小時內發送訊息的次數
+	 */
+	private int msgCount;
+
 	public ChatMessage() {
 	}
 
@@ -22,6 +29,12 @@ public class ChatMessage {
 		this.sender = sender;
 		this.receiver = receiver;
 		this.message = message;
+	}
+
+	public ChatMessage(String type, String historyMsgs) {
+		super();
+		this.type = type;
+		this.historyMsgs = historyMsgs;
 	}
 
 	public String getType() {
@@ -54,5 +67,21 @@ public class ChatMessage {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public String getHistoryMsgs() {
+		return historyMsgs;
+	}
+
+	public void setHistoryMsgs(String historyMsgs) {
+		this.historyMsgs = historyMsgs;
+	}
+
+	public int getMsgCount() {
+		return msgCount;
+	}
+
+	public void setMsgCount(int msgCount) {
+		this.msgCount = msgCount;
 	}
 }

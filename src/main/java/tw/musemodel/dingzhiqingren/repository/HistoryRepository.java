@@ -24,6 +24,8 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
 
 	public Long countByInitiativeAndBehaviorAndOccurredBetween(Lover initiative, Behavior behavior, Date occurredSince, Date occurredUntil);
 
+	public int countByInitiativeAndPassiveAndBehaviorAndOccurredBetween(Lover initiative, Lover passive, Behavior behavior, Date occurredSince, Date occurredUntil);
+
 	public Long countByInitiativeAndPassiveAndBehaviorAndReplyNotNull(Lover initiative, Lover passive, Behavior behavior);
 
 	public int countByInitiative(Lover initiative);
@@ -45,6 +47,8 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
 	public History findTop1ByInitiativeAndBehaviorOrderByIdDesc(Lover initiative, Behavior behavior);
 
 	public History findByInitiativeAndPassiveAndBehavior(Lover initiative, Lover passive, Behavior behavior);
+
+	public History findByInitiativeAndPassiveAndBehaviorAndReplyNull(Lover initiative, Lover passive, Behavior behavior);
 
 	public List<History> findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(Lover initiative, Lover passive, Behavior behavior);
 

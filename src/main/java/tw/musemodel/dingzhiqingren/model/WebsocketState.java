@@ -1,6 +1,5 @@
 package tw.musemodel.dingzhiqingren.model;
 
-import java.util.Date;
 import java.util.Set;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -9,10 +8,6 @@ import javax.validation.constraints.NotNull;
  * @author m@musemodel.tw
  */
 public class WebsocketState {
-
-	@NotEmpty
-	@NotNull
-	private Date birthday;
 
 	@NotEmpty
 	@NotNull

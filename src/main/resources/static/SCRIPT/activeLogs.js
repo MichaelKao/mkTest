@@ -66,37 +66,6 @@ $(document).ready(function () {
 			);
 		return false;
 	});
-	$('BUTTON.talkAgain').dblclick(function (e) {
-		e.preventDefault();
-	});
-	$('BUTTON.talkAgain').click(function (event) {
-		event.preventDefault();
-		$(this).attr('disabled', true);
-		$(this).siblings('BUTTON.accept').attr('disabled', true);
-		$(this).siblings('BUTTON.refuse').attr('disabled', true);
-		var whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
-
-		$.post(
-			"/talkAgain.json",
-			{
-				whom: whom
-			},
-			function (data) {
-				if (data.response) {
-					$('.toast-body').html(data.reason);
-					$('.toast').toast('show');
-					$('.toast').on('hidden.bs.toast', function () {
-						window.location.reload();
-					});
-				} else {
-					$('.toast-body').html(data.reason);
-					$('.toast').toast('show');
-				}
-			},
-			'json'
-			);
-		return false;
-	});
 
 	var $modal = $('#modal');
 	var $rateModal = $('#rateModal');
@@ -138,6 +107,7 @@ $(document).ready(function () {
 
 	$('BUTTON.commentBtn').click(function (event) {
 		event.preventDefault();
+		$(this).attr('disabled', true);
 		var rate = $('INPUT[name="rating"]:checked').val();
 		if (rate === undefined) {
 			rate = null;
@@ -165,7 +135,11 @@ $(document).ready(function () {
 		return false;
 	});
 
+	$('BUTTON.openLine').dblclick(function (e) {
+		e.preventDefault();
+	});
 	$('BUTTON.openLine').click(function () {
+		$(this).attr('disabled', true);
 		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 		$.post(
 			'/maleOpenLine.json',

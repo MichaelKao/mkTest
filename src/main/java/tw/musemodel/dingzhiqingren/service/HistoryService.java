@@ -47,7 +47,7 @@ public class HistoryService {
 
 	private final static Short COST_GIMME_YOUR_LINE_INVITATION = Short.valueOf(System.getenv("COST_GIMME_YOUR_LINE_INVITATION"));
 
-	private final static long VIP_DAILY_TOLERANCE = 10L;
+	private final static long VIP_DAILY_TOLERANCE = 30L;
 
 	@Autowired
 	private Servant servant;
@@ -161,7 +161,7 @@ public class HistoryService {
 	/**
 	 * 历程：再聊聊
 	 */
-	public static final Behavior BEHAVIOR_TALK_AGAIN = Behavior.ZAI_LIAO_LIAO;
+	public static final Behavior BEHAVIOR_TALK = Behavior.LIAO_LIAO;
 
 	/**
 	 * 车马费(男对女)
@@ -236,7 +236,7 @@ public class HistoryService {
 	 * @return 杰森对象
 	 */
 	@Transactional
-	public JSONObject gimme(Lover initiative, Lover passive, String greetingMessage, Locale locale) {
+	public JSONObject gimme(Lover initiative, Lover passive, Locale locale) {
 		if (Objects.isNull(initiative)) {
 			throw new IllegalArgumentException("gimmeYourLineInvitation.initiativeMustntBeNull");//无主动方
 		}
@@ -248,9 +248,6 @@ public class HistoryService {
 		}
 		if (Objects.equals(passive.getGender(), true)) {
 			throw new RuntimeException("gimmeYourLineInvitation.passiveMustBeFemale");//被动方为男
-		}
-		if (Objects.isNull(greetingMessage) || greetingMessage.isBlank()) { //招呼語不能為空
-			throw new RuntimeException("gimmeYourLineInvitation.greetingMessageMustntBeNull");
 		}
 		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(passive, initiative);
 		if (Objects.isNull(lineGiven)) {
@@ -271,8 +268,8 @@ public class HistoryService {
 				//女生已經同意給過 LINE
 				throw new RuntimeException("gimmeYourLineInvitation.femaleHasGivenLine");
 			} else {
-				//離上一次拒絕不到24小時
-				if (within24hrsFromLastRefused(initiative, passive)) {
+				//離上一次拒絕不到12小時
+				if (within12hrsFromLastRefused(initiative, passive)) {
 					throw new RuntimeException("gimmeYourLineInvitation.within24hrsFromLastRefused");
 				}
 				//被拒絕過
@@ -285,16 +282,14 @@ public class HistoryService {
 			passive,
 			BEHAVIOR_GIMME_YOUR_LINE_INVITATION
 		);
-		history.setGreeting(greetingMessage);
 		history = historyRepository.saveAndFlush(history);
 
 		// 推送通知給女生
 		webSocketServer.sendNotification(
 			passive.getIdentifier().toString(),
 			String.format(
-				"%s和妳要求通訊軟體：「%s」",
-				initiative.getNickname(),
-				greetingMessage
+				"%s和妳要求通訊軟體",
+				initiative.getNickname()
 			));
 
 		if (loverService.hasLineNotify(passive)) {
@@ -521,69 +516,6 @@ public class HistoryService {
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
 				"refuseToBeLineFriend.done",
-				null,
-				locale
-			)).
-			withResponse(true).
-			withResult(history.getOccurred()).
-			toJSONObject();
-	}
-
-	@Transactional
-	public JSONObject talkAgain(Lover initiative, Lover passive, Locale locale) {
-		if (Objects.isNull(initiative)) {
-			throw new IllegalArgumentException("talkAgain.initiativeMustntBeNull");
-		}
-		if (Objects.isNull(passive)) {
-			throw new IllegalArgumentException("talkAgain.passiveMustntBeNull");
-		}
-		if (Objects.equals(initiative.getGender(), true)) {
-			throw new RuntimeException("talkAgain.initiativeMustBeFemale");
-		}
-		if (Objects.equals(passive.getGender(), false)) {
-			throw new RuntimeException("talkAgain.passiveMustBeMale");
-		}
-
-		History history = new History(
-			initiative,
-			passive,
-			BEHAVIOR_TALK_AGAIN
-		);
-		history = historyRepository.saveAndFlush(history);
-
-		// 把男生的要求轉為已回應
-		History historyReply = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
-			passive, initiative, BEHAVIOR_GIMME_YOUR_LINE_INVITATION
-		);
-		historyReply.setReply(new Date(System.currentTimeMillis()));
-		historyRepository.saveAndFlush(historyReply);
-
-		// 推送通知給男生
-		webSocketServer.sendNotification(
-			passive.getIdentifier().toString(),
-			String.format(
-				"再多跟%s聊一句!",
-				initiative.getNickname()
-			));
-		if (loverService.hasLineNotify(passive)) {
-			// LINE Notify
-			lineMessagingService.notify(
-				passive,
-				String.format(
-					"有位甜心想再多跟你聊一句..馬上傳一句話給她 https://%s/activeLogs.asp",
-					servant.LOCALHOST
-				));
-		}
-
-		LineGiven lineGiven = new LineGiven(
-			new LineGivenPK(initiative.getId(), passive.getId()),
-			false
-		);
-		lineGivenRepository.saveAndFlush(lineGiven);
-
-		return new JavaScriptObjectNotation().
-			withReason(messageSource.getMessage(
-				"talkAgain.done",
 				null,
 				locale
 			)).
@@ -942,7 +874,8 @@ public class HistoryService {
 							"addLineButton",
 							null
 						);
-						if (loverService.isVIP(passive) && !withinRequiredLimit(passive)) {
+						Long count = historyRepository.countByInitiativeAndPassiveAndBehavior(passive, initiative, BEHAVIOR_LAI_KOU_DIAN);
+						if ((loverService.isVVIP(passive) || loverService.isVVIP(passive)) && (count < 1 && !withinRequiredLimit(passive))) {
 							historyElement.setAttribute(
 								"remindDeduct",
 								null
@@ -1131,37 +1064,42 @@ public class HistoryService {
 	}
 
 	/**
-	 * 男生開啟 加入通訊軟體 未超過上限值
+	 * 男生開啟 加入通訊軟體 12小時內未超過上限值
 	 *
 	 * @param male
 	 * @return
 	 */
 	public boolean withinRequiredLimit(Lover male) {
-		long currentTimeMillis = System.currentTimeMillis();
+		Date twelveHrsAgo = null;
+		Date nowDate = null;
+		Calendar twelveHrs = Calendar.getInstance();
+		twelveHrs.add(Calendar.HOUR, -12);
+		twelveHrsAgo = twelveHrs.getTime();
+		nowDate = new Date();
 		Long dailyCount = historyRepository.countByInitiativeAndBehaviorAndOccurredBetween(
 			male,
 			BEHAVIOR_LAI_KOU_DIAN,
-			Servant.minimumToday(currentTimeMillis),
-			Servant.maximumToday(currentTimeMillis)
+			twelveHrsAgo,
+			nowDate
 		);
-		return loverService.isVIP(male) && Objects.nonNull(dailyCount) && dailyCount < VIP_DAILY_TOLERANCE;
+		return (loverService.isVVIP(male) || loverService.isVIP(male)) && Objects.nonNull(dailyCount) && dailyCount < VIP_DAILY_TOLERANCE;
 	}
 
 	/**
-	 * 距離上次被拒絕 24 小時內
+	 * 距離上次被拒絕 12 小時內
 	 *
 	 * @param male
 	 * @param female
 	 * @return
 	 */
-	public boolean within24hrsFromLastRefused(Lover male, Lover female) {
+	public boolean within12hrsFromLastRefused(Lover male, Lover female) {
 		Date refusedDate = null;
 		Date nowDate = null;
 		History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(female, male, BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
 		if (Objects.nonNull(history)) {
 			Calendar refused = Calendar.getInstance();
 			refused.setTime(history.getOccurred());
-			refused.add(Calendar.HOUR, 24);
+			refused.add(Calendar.HOUR, 12);
 			refusedDate = refused.getTime();
 			nowDate = new Date();
 		}
