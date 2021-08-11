@@ -153,7 +153,7 @@ public class LoverSpecification {
 	}
 
 	/**
-	 * 未封号的情人们，以活跃降幂排序；适用于首页的最近活跃。
+	 * 未封号的情人们，以活跃降幂排序；适用于首页的最近活跃列表区块。
 	 *
 	 * @param mofo 用户号
 	 * @return 未封号的(甜心|男士)们
@@ -175,7 +175,7 @@ public class LoverSpecification {
 	}
 
 	/**
-	 * 未封号的情人们，以註冊时间降幂排序；适用于首页的最新注册。
+	 * 未封号的情人们，以註冊时间降幂排序；适用于首页的最新注册列表区块。
 	 *
 	 * @param mofo 用户号
 	 * @return 未封号的(甜心|男士)们
@@ -263,12 +263,12 @@ public class LoverSpecification {
 	}
 
 	/**
-	 * 未封号并通过安心认证的情人们，以活跃降幂排序；适用于首页。
+	 * 未封号并通过安心认证的情人们，以活跃降幂排序；适用于首页的安心认证列表区块。
 	 *
-	 * @param gender 性别
+	 * @param mofo 用户号
 	 * @return 未封号的(甜心|男士)们
 	 */
-	public static Specification<Lover> relievingOnTheWall(boolean gender) {
+	public static Specification<Lover> relievingOnTheWall(Lover mofo) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
 			criteriaQuery.orderBy(
 				criteriaBuilder.desc(
@@ -280,7 +280,9 @@ public class LoverSpecification {
 				criteriaBuilder.isTrue(
 					root.get(Lover_.relief)
 				),//通过安心认证
-				eligible(root, criteriaBuilder, gender)//合格用户号们
+				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
+				blacklist(mofo, root, criteriaBuilder),
+				blacklisted(mofo, root, criteriaBuilder)
 			);
 		};
 	}
@@ -368,7 +370,7 @@ public class LoverSpecification {
 	}
 
 	/**
-	 * 未封号的贵宾(仅男士)们，以活跃降幂排序；适用于首页的贵宾会员。
+	 * 未封号的贵宾(仅男士)们，以活跃降幂排序；适用于首页的贵宾会员列表区块。
 	 *
 	 * @param mofo 用户号
 	 * @return 未封号的贵宾(仅男士)们

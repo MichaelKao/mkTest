@@ -2,16 +2,12 @@ package tw.musemodel.dingzhiqingren.controller;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import tw.musemodel.dingzhiqingren.entity.Lover;
-import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 
@@ -57,6 +52,9 @@ public class ProofOfConcept {
 	}
 
 	@Autowired
+	private LoverService loverService;
+
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	/**
@@ -71,53 +69,5 @@ public class ProofOfConcept {
 	Lover passwd(@PathVariable Lover lover, @RequestParam String shadow) {
 		lover.setShadow(passwordEncoder.encode(shadow));
 		return loverService.saveLover(lover);
-	}
-
-	@Autowired
-	private LoverRepository loverRepository;
-
-	@Autowired
-	private LoverService loverService;
-
-	/**
-	 * 暂时的最近活跃；实作完成后删除
-	 *
-	 * @param lover 用户号
-	 * @return
-	 */
-	@GetMapping(path = "/{lover:\\d+}/latestActive.json", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	Collection<Integer> latestActive(@PathVariable Lover lover) {
-		List<Lover> lovers = loverService.latestActiveOnTheWall(
-			lover,
-			0,
-			100
-		).getContent();
-		List<Integer> integers = new ArrayList<>();
-		lovers.forEach(sucker -> {
-			integers.add(sucker.getId());
-		});
-		return integers;
-	}
-
-	/**
-	 * 暂时的最近活跃；实作完成后删除
-	 *
-	 * @param lover 用户号
-	 * @return
-	 */
-	@GetMapping(path = "/{lover:\\d+}/latestActive.json", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	Collection<Integer> latestRegistered(@PathVariable Lover lover) {
-		List<Lover> lovers = loverService.latestRegisteredOnTheWall(
-			lover,
-			0,
-			100
-		).getContent();
-		List<Integer> integers = new ArrayList<>();
-		lovers.forEach(sucker -> {
-			integers.add(sucker.getId());
-		});
-		return integers;
 	}
 }

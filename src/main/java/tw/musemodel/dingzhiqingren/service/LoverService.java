@@ -455,8 +455,8 @@ public class LoverService {
 
 		// 暫時將激活碼送到 Line notify
 		List<String> accessTokens = new ArrayList<String>();
-		accessTokens.add(lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
-		accessTokens.add(lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
+		accessTokens.add(LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
+		accessTokens.add(LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
 		lineMessagingService.notifyDev(
 			accessTokens,
 			String.format(
@@ -598,8 +598,8 @@ public class LoverService {
 
 		// 暫時將激活碼送到 Line notify
 		List<String> accessTokens = new ArrayList<String>();
-		accessTokens.add(lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
-		accessTokens.add(lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
+		accessTokens.add(LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
+		accessTokens.add(LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
 		lineMessagingService.notifyDev(
 			accessTokens,
 			String.format(
@@ -631,8 +631,12 @@ public class LoverService {
 	}
 
 	public boolean isVVIP(Lover lover) {
-		return Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date(System.currentTimeMillis()))
-			&& Objects.nonNull(lover.getMaleSpecies()) && Objects.equals(lover.getMaleSpecies(), Lover.MaleSpecies.VVIP);
+		Date vip = lover.getVip();
+		Lover.MaleSpecies maleSpecies = lover.getMaleSpecies();
+		return Objects.nonNull(vip)
+			&& vip.after(new Date(System.currentTimeMillis()))
+			&& Objects.nonNull(maleSpecies)
+			&& Objects.equals(maleSpecies, Lover.MaleSpecies.VVIP);
 	}
 
 	public Document readDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
@@ -1873,7 +1877,6 @@ public class LoverService {
 
 		if (!lover.getGender()) {
 			areaElement.appendChild(createElement(
-				document,
 				document.createElement("vip"),
 				vipOnTheWall(
 					lover,
@@ -1885,17 +1888,16 @@ public class LoverService {
 		}
 
 		areaElement.appendChild(createElement(
-			document,
 			document.createElement("relief"),
-			femalesOnTheWall(
+			relievingOnTheWall(
+				lover,
 				0,
 				PAGE_SIZE_ON_THE_WALL
 			),
 			locale
-		));//安心认证
+		));//安心认证列表区块
 
 		areaElement.appendChild(createElement(
-			document,
 			document.createElement("active"),
 			latestActiveOnTheWall(
 				lover,
@@ -1903,10 +1905,9 @@ public class LoverService {
 				PAGE_SIZE_ON_THE_WALL
 			),
 			locale
-		));//最近活跃
+		));//最近活跃列表区块
 
 		areaElement.appendChild(createElement(
-			document,
 			document.createElement("register"),
 			latestRegisteredOnTheWall(
 				lover,
@@ -1914,7 +1915,7 @@ public class LoverService {
 				PAGE_SIZE_ON_THE_WALL
 			),
 			locale
-		));//最新注册
+		));//最新注册列表区块
 
 		return document;
 	}
@@ -1922,17 +1923,16 @@ public class LoverService {
 	/**
 	 * 首頁的列表 Element
 	 *
-	 * @param document
 	 * @param element
 	 * @param page
 	 * @param locale
 	 * @return
 	 */
-	public Element createElement(Document document, Element element, Page<Lover> page, Locale locale) {
+	public Element createElement(Element element, Page<Lover> page, Locale locale) {
 		if (page.getTotalPages() <= 1) {
 			element.setAttribute("lastPage", null);
 		}
-		document = element.getOwnerDocument();
+		Document document = element.getOwnerDocument();
 		for (Lover lover : page.getContent()) {
 			Element sectionElement = document.createElement("section");
 			element.appendChild(sectionElement);
@@ -2068,14 +2068,17 @@ public class LoverService {
 	}
 
 	/**
+	 * 未封号的情人们，以活跃降幂排序；用于首页的安心认证列表区块。
+	 *
+	 * @param mofo 用户号
 	 * @param p 第几页
 	 * @param s 每页几笔
 	 * @return 通过安心认证的甜心们
 	 */
 	@Transactional(readOnly = true)
-	public Page<Lover> femalesOnTheWall(int p, int s) {
+	public Page<Lover> relievingOnTheWall(Lover mofo, int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.relievingOnTheWall(false),
+			LoverSpecification.relievingOnTheWall(mofo),
 			PageRequest.of(p, s)
 		);
 	}
@@ -2093,7 +2096,7 @@ public class LoverService {
 	}
 
 	/**
-	 * 未封号的情人们，以活跃降幂排序；用于首页的最近活跃。
+	 * 未封号的情人们，以活跃降幂排序；用于首页的最近活跃列表区块。
 	 *
 	 * @param mofo 用户号
 	 * @param p 第几页
@@ -2109,7 +2112,7 @@ public class LoverService {
 	}
 
 	/**
-	 * 未封号的情人们，以註冊时间降幂排序；用于首页的最新註冊。
+	 * 未封号的情人们，以註冊时间降幂排序；用于首页的最新注册列表区块。
 	 *
 	 * @param mofo 用户号
 	 * @param p 第几页
@@ -2120,19 +2123,6 @@ public class LoverService {
 	public Page<Lover> latestRegisteredOnTheWall(Lover mofo, int p, int s) {
 		return loverRepository.findAll(
 			LoverSpecification.latestRegisteredOnTheWall(mofo),
-			PageRequest.of(p, s)
-		);
-	}
-
-	/**
-	 * @param p 第几页
-	 * @param s 每页几笔
-	 * @return 通过安心认证的男士们
-	 */
-	@Transactional(readOnly = true)
-	public Page<Lover> malesOnTheWall(int p, int s) {
-		return loverRepository.findAll(
-			LoverSpecification.relievingOnTheWall(true),
 			PageRequest.of(p, s)
 		);
 	}
