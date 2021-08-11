@@ -153,7 +153,7 @@ public class LoverSpecification {
 	}
 
 	/**
-	 * 未封号的情人们，以活跃降幂排序；适用于首页。
+	 * 未封号的情人们，以活跃降幂排序；适用于首页的最近活跃。
 	 *
 	 * @param lover 用户号
 	 * @return 未封号的(甜心|男士)们
@@ -175,12 +175,12 @@ public class LoverSpecification {
 	}
 
 	/**
-	 * 未封号的情人们，以註冊时间降幂排序；适用于首页。
+	 * 未封号的情人们，以註冊时间降幂排序；适用于首页的最新註冊。
 	 *
-	 * @param gender 性别
+	 * @param lover 用户号
 	 * @return 未封号的(甜心|男士)们
 	 */
-	public static Specification<Lover> latestRegisteredOnTheWall(boolean gender) {
+	public static Specification<Lover> latestRegisteredOnTheWall(Lover lover) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
 			criteriaQuery.orderBy(
 				criteriaBuilder.desc(
@@ -188,7 +188,11 @@ public class LoverSpecification {
 				)
 			);//以活跃降幂排序
 
-			return eligible(root, criteriaBuilder, gender);//合格用户号们
+			return criteriaBuilder.and(
+				eligible(root, criteriaBuilder, !lover.getGender()),//合格用户号们
+				blacklist(lover, root, criteriaBuilder),
+				blacklisted(lover, root, criteriaBuilder)
+			);
 		};
 	}
 

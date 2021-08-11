@@ -1862,6 +1862,7 @@ public class LoverService {
 	 *
 	 * @param document
 	 * @param lover
+	 * @param locale
 	 * @return
 	 */
 	public Document indexDocument(Document document, Lover lover, Locale locale) {
@@ -1890,7 +1891,7 @@ public class LoverService {
 			activeElement = indexElement(
 				document,
 				activeElement,
-				latestActiveFemalesOnTheWall(
+				latestActiveOnTheWall(
 					lover,
 					0,
 					PAGE_SIZE_ON_THE_WALL
@@ -1899,7 +1900,16 @@ public class LoverService {
 			);
 			areaElement.appendChild(activeElement);
 			// 最近註冊
-			registerElement = indexElement(document, registerElement, latestRegisteredFemalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
+			registerElement = indexElement(
+				document,
+				registerElement,
+				latestRegisteredOnTheWall(
+					lover,
+					0,
+					PAGE_SIZE_ON_THE_WALL
+				),
+				locale
+			);
 			areaElement.appendChild(registerElement);
 		}
 		// 甜心顯示的列表
@@ -1923,7 +1933,16 @@ public class LoverService {
 			);
 			areaElement.appendChild(activeElement);
 			// 最近註冊
-			registerElement = indexElement(document, registerElement, latestRegisteredMalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
+			registerElement = indexElement(
+				document,
+				registerElement,
+				latestRegisteredOnTheWall(
+					lover,
+					0,
+					PAGE_SIZE_ON_THE_WALL
+				),
+				locale
+			);
 			areaElement.appendChild(registerElement);
 		}
 		return document;
@@ -2102,13 +2121,15 @@ public class LoverService {
 	}
 
 	/**
+	 * 未封号的情人们，以活跃降幂排序；用于首页的最近活跃。
+	 *
 	 * @param mofo 用户号
 	 * @param p 第几页
 	 * @param s 每页几笔
-	 * @return 以活跃排序的甜心们
+	 * @return 以活跃排序的男士们
 	 */
 	@Transactional(readOnly = true)
-	public Page<Lover> latestActiveFemalesOnTheWall(Lover mofo, int p, int s) {
+	public Page<Lover> latestActiveOnTheWall(Lover mofo, int p, int s) {
 		return loverRepository.findAll(
 			LoverSpecification.latestActiveOnTheWall(mofo),
 			PageRequest.of(p, s)
@@ -2116,55 +2137,17 @@ public class LoverService {
 	}
 
 	/**
+	 * 未封号的情人们，以註冊时间降幂排序；用于首页的最新註冊。
+	 *
 	 * @param mofo 用户号
-	 * @param p 第几页
-	 * @param s 每页几笔
-	 * @return 以活跃排序的男士们
-	 */
-	@Transactional(readOnly = true)
-	public Page<Lover> latestActiveMalesOnTheWall(Lover mofo, int p, int s) {
-		return loverRepository.findAll(
-			LoverSpecification.latestActiveOnTheWall(mofo),
-			PageRequest.of(p, s)
-		);
-	}
-
-	/**
-	 * @param someone 用户号
-	 * @param p 第几页
-	 * @param s 每页几笔
-	 * @return 以活跃排序的男士们
-	 */
-	@Transactional(readOnly = true)
-	public Page<Lover> latestActiveOnTheWall(Lover someone, int p, int s) {
-		return loverRepository.findAll(
-			LoverSpecification.latestActiveOnTheWall(someone),
-			PageRequest.of(p, s)
-		);
-	}
-
-	/**
 	 * @param p 第几页
 	 * @param s 每页几笔
 	 * @return 以註冊时间排序的甜心们
 	 */
 	@Transactional(readOnly = true)
-	public Page<Lover> latestRegisteredFemalesOnTheWall(int p, int s) {
+	public Page<Lover> latestRegisteredOnTheWall(Lover mofo, int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.latestRegisteredOnTheWall(false),
-			PageRequest.of(p, s)
-		);
-	}
-
-	/**
-	 * @param p 第几页
-	 * @param s 每页几笔
-	 * @return 以註冊时间排序的男士们
-	 */
-	@Transactional(readOnly = true)
-	public Page<Lover> latestRegisteredMalesOnTheWall(int p, int s) {
-		return loverRepository.findAll(
-			LoverSpecification.latestRegisteredOnTheWall(true),
+			LoverSpecification.latestRegisteredOnTheWall(mofo),
 			PageRequest.of(p, s)
 		);
 	}

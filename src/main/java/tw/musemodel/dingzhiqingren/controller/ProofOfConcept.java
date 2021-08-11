@@ -59,6 +59,13 @@ public class ProofOfConcept {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	/**
+	 * 暂时的强改密码；实作完成后删除
+	 *
+	 * @param lover 用户号
+	 * @param shadow 密码
+	 * @return 更新后的用户号
+	 */
 	@PostMapping(path = "/{lover:\\d+}/passwd.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	Lover passwd(@PathVariable Lover lover, @RequestParam String shadow) {
@@ -73,22 +80,44 @@ public class ProofOfConcept {
 	private LoverService loverService;
 
 	/**
+	 * 暂时的最近活跃；实作完成后删除
 	 *
-	 * @param lover
+	 * @param lover 用户号
 	 * @return
 	 */
-	@GetMapping(path = "/{lover:\\d+}/latestActiveMalesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/{lover:\\d+}/latestActive.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	Collection<Integer> blockedBy(@PathVariable Lover lover) {
-		List<Lover> lovers = loverService.latestActiveMalesOnTheWall(
+	Collection<Integer> latestActive(@PathVariable Lover lover) {
+		List<Lover> lovers = loverService.latestActiveOnTheWall(
 			lover,
 			0,
 			100
 		).getContent();
 		List<Integer> integers = new ArrayList<>();
-		for (Lover sucker : lovers) {
+		lovers.forEach(sucker -> {
 			integers.add(sucker.getId());
-		}
+		});
+		return integers;
+	}
+
+	/**
+	 * 暂时的最近活跃；实作完成后删除
+	 *
+	 * @param lover 用户号
+	 * @return
+	 */
+	@GetMapping(path = "/{lover:\\d+}/latestActive.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	Collection<Integer> latestRegistered(@PathVariable Lover lover) {
+		List<Lover> lovers = loverService.latestRegisteredOnTheWall(
+			lover,
+			0,
+			100
+		).getContent();
+		List<Integer> integers = new ArrayList<>();
+		lovers.forEach(sucker -> {
+			integers.add(sucker.getId());
+		});
 		return integers;
 	}
 }
