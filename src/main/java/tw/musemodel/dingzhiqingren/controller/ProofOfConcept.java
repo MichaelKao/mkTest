@@ -2,8 +2,12 @@ package tw.musemodel.dingzhiqingren.controller;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.repository.LoverRepository;
+import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 
 /**
@@ -48,9 +54,29 @@ public class ProofOfConcept {
 		);
 	}
 
-	@GetMapping(path = "/{lover:\\d+}/block.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@Autowired
+	private LoverRepository loverRepository;
+
+	@Autowired
+	private LoverService loverService;
+
+	/**
+	 *
+	 * @param lover
+	 * @return
+	 */
+	@GetMapping(path = "/{lover:\\d+}/latestActiveMalesOnTheWall.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	Lover block(@PathVariable Lover lover) {
-		return lover;
+	Collection<Integer> blockedBy(@PathVariable Lover lover) {
+		List<Lover> lovers = loverService.latestActiveMalesOnTheWall(
+			lover,
+			0,
+			100
+		).getContent();
+		List<Integer> integers = new ArrayList<>();
+		for (Lover sucker : lovers) {
+			integers.add(sucker.getId());
+		}
+		return integers;
 	}
 }

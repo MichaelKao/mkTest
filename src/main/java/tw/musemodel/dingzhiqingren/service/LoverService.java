@@ -1877,7 +1877,16 @@ public class LoverService {
 			reliefElement = indexElement(document, reliefElement, femalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
 			areaElement.appendChild(reliefElement);
 			// 最新活躍(使用)時間
-			activeElement = indexElement(document, activeElement, latestActiveFemalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
+			activeElement = indexElement(
+				document,
+				activeElement,
+				latestActiveFemalesOnTheWall(
+					lover,
+					0,
+					PAGE_SIZE_ON_THE_WALL
+				),
+				locale
+			);
 			areaElement.appendChild(activeElement);
 			// 最近註冊
 			registerElement = indexElement(document, registerElement, latestRegisteredFemalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
@@ -1892,7 +1901,16 @@ public class LoverService {
 			reliefElement = indexElement(document, reliefElement, malesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
 			areaElement.appendChild(reliefElement);
 			// 最新活躍(使用)時間
-			activeElement = indexElement(document, activeElement, latestActiveMalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
+			activeElement = indexElement(
+				document,
+				activeElement,
+				latestActiveOnTheWall(
+					lover,
+					0,
+					PAGE_SIZE_ON_THE_WALL
+				),
+				locale
+			);
 			areaElement.appendChild(activeElement);
 			// 最近註冊
 			registerElement = indexElement(document, registerElement, latestRegisteredMalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
@@ -1906,7 +1924,8 @@ public class LoverService {
 	 *
 	 * @param document
 	 * @param element
-	 * @param list
+	 * @param page
+	 * @param locale
 	 * @return
 	 */
 	public Element indexElement(Document document, Element element, Page<Lover> page, Locale locale) {
@@ -1987,10 +2006,11 @@ public class LoverService {
 	 * 看更多甜心/男仕
 	 *
 	 * @param page
+	 * @param locale
 	 * @return
 	 */
 	public JSONArray seeMore(Page<Lover> page, Locale locale) {
-		JSONArray jSONArray = new JSONArray();
+		JSONArray jsonArray = new JSONArray();
 		for (Lover lover : page.getContent()) {
 			JSONObject json = new JSONObject();
 			json.put("nickname", lover.getNickname());
@@ -2041,9 +2061,9 @@ public class LoverService {
 				Servant.STATIC_HOST,
 				lover.getProfileImage()
 			));
-			jSONArray.put(json);
+			jsonArray.put(json);
 		}
-		return jSONArray;
+		return jsonArray;
 	}
 
 	/**
@@ -2051,6 +2071,7 @@ public class LoverService {
 	 * @param s 每页几笔
 	 * @return 通过安心认证的甜心们
 	 */
+	@Transactional(readOnly = true)
 	public Page<Lover> femalesOnTheWall(int p, int s) {
 		return loverRepository.findAll(
 			LoverSpecification.relievingOnTheWall(false),
@@ -2071,25 +2092,43 @@ public class LoverService {
 	}
 
 	/**
+	 * @param mofo 用户号
 	 * @param p 第几页
 	 * @param s 每页几笔
 	 * @return 以活跃排序的甜心们
 	 */
-	public Page<Lover> latestActiveFemalesOnTheWall(int p, int s) {
+	@Transactional(readOnly = true)
+	public Page<Lover> latestActiveFemalesOnTheWall(Lover mofo, int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.latestActiveOnTheWall(false),
+			LoverSpecification.latestActiveOnTheWall(mofo),
 			PageRequest.of(p, s)
 		);
 	}
 
 	/**
+	 * @param mofo 用户号
 	 * @param p 第几页
 	 * @param s 每页几笔
 	 * @return 以活跃排序的男士们
 	 */
-	public Page<Lover> latestActiveMalesOnTheWall(int p, int s) {
+	@Transactional(readOnly = true)
+	public Page<Lover> latestActiveMalesOnTheWall(Lover mofo, int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.latestActiveOnTheWall(true),
+			LoverSpecification.latestActiveOnTheWall(mofo),
+			PageRequest.of(p, s)
+		);
+	}
+
+	/**
+	 * @param someone 用户号
+	 * @param p 第几页
+	 * @param s 每页几笔
+	 * @return 以活跃排序的男士们
+	 */
+	@Transactional(readOnly = true)
+	public Page<Lover> latestActiveOnTheWall(Lover someone, int p, int s) {
+		return loverRepository.findAll(
+			LoverSpecification.latestActiveOnTheWall(someone),
 			PageRequest.of(p, s)
 		);
 	}
@@ -2099,6 +2138,7 @@ public class LoverService {
 	 * @param s 每页几笔
 	 * @return 以註冊时间排序的甜心们
 	 */
+	@Transactional(readOnly = true)
 	public Page<Lover> latestRegisteredFemalesOnTheWall(int p, int s) {
 		return loverRepository.findAll(
 			LoverSpecification.latestRegisteredOnTheWall(false),
@@ -2111,6 +2151,7 @@ public class LoverService {
 	 * @param s 每页几笔
 	 * @return 以註冊时间排序的男士们
 	 */
+	@Transactional(readOnly = true)
 	public Page<Lover> latestRegisteredMalesOnTheWall(int p, int s) {
 		return loverRepository.findAll(
 			LoverSpecification.latestRegisteredOnTheWall(true),
@@ -2123,6 +2164,7 @@ public class LoverService {
 	 * @param s 每页几笔
 	 * @return 通过安心认证的男士们
 	 */
+	@Transactional(readOnly = true)
 	public Page<Lover> malesOnTheWall(int p, int s) {
 		return loverRepository.findAll(
 			LoverSpecification.relievingOnTheWall(true),
@@ -2135,6 +2177,7 @@ public class LoverService {
 	 * @param s 每页几笔
 	 * @return 貴賓男士们
 	 */
+	@Transactional(readOnly = true)
 	public Page<Lover> vipOnTheWall(int p, int s) {
 		return loverRepository.findAll(
 			LoverSpecification.vipOnTheWall(),

@@ -229,7 +229,11 @@ public class WelcomeController {
 				page = loverService.femalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
 			}
 			if ("active".equals(type)) {
-				page = loverService.latestActiveFemalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
+				page = loverService.latestActiveOnTheWall(
+					me,
+					p,
+					PAGE_SIZE_ON_THE_WALL
+				);
 			}
 			if ("register".equals(type)) {
 				page = loverService.latestRegisteredFemalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
@@ -243,7 +247,11 @@ public class WelcomeController {
 				page = loverService.malesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
 			}
 			if ("active".equals(type)) {
-				page = loverService.latestActiveMalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
+				page = loverService.latestActiveOnTheWall(
+					me,
+					p,
+					PAGE_SIZE_ON_THE_WALL
+				);
 			}
 			if ("register".equals(type)) {
 				page = loverService.latestRegisteredMalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
