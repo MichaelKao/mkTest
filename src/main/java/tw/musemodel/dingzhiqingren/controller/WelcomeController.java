@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -210,58 +209,65 @@ public class WelcomeController {
 	/**
 	 * 首頁更多甜心/男仕
 	 *
-	 * @param authentication
 	 * @param p
 	 * @param type
-	 * @return
+	 * @param authentication
+	 * @param locale 语言环境
+	 * @return 杰森对象字符串
 	 * @throws JsonProcessingException
 	 */
 	@PostMapping(path = "/seeMoreLover.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
-	String seeMoreLover(Authentication authentication, @RequestParam int p, @RequestParam String type, Locale locale) throws JsonProcessingException {
+	@SuppressWarnings("null")
+	String seeMoreLover(@RequestParam int p, @RequestParam String type, Authentication authentication, Locale locale) {
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 
-		Boolean isMale = me.getGender();
-
 		Page<Lover> page = null;
-		if (isMale) {
-			if ("relief".equals(type)) {
-				page = loverService.femalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
-			}
-			if ("active".equals(type)) {
-				page = loverService.latestActiveFemalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
-			}
-			if ("register".equals(type)) {
-				page = loverService.latestRegisteredFemalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
-			}
-		}
-		if (!isMale) {
+		if (!me.getGender()) {
 			if ("vip".equals(type)) {
-				page = loverService.vipOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
-			}
-			if ("relief".equals(type)) {
-				page = loverService.malesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
-			}
-			if ("active".equals(type)) {
-				page = loverService.latestActiveMalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
-			}
-			if ("register".equals(type)) {
-				page = loverService.latestRegisteredMalesOnTheWall(p, PAGE_SIZE_ON_THE_WALL);
+				page = loverService.vipOnTheWall(
+					me,
+					p,
+					PAGE_SIZE_ON_THE_WALL
+				);//甜心才会显示的贵宾会员列表区块
 			}
 		}
-		JSONArray jSONArray = loverService.seeMore(page, locale);
-		JSONObject jSONObject = new JSONObject();
-
-		if (page.getTotalPages() == p + 1) {
-			jSONObject.put("lastPage", true);
+		if ("relief".equals(type)) {
+			page = loverService.relievingOnTheWall(
+				me,
+				p,
+				PAGE_SIZE_ON_THE_WALL
+			);//安心认证列表区块
+		}
+		if ("active".equals(type)) {
+			page = loverService.latestActiveOnTheWall(
+				me,
+				p,
+				PAGE_SIZE_ON_THE_WALL
+			);//最近活跃列表区块
+		}
+		if ("register".equals(type)) {
+			page = loverService.latestRegisteredOnTheWall(
+				me,
+				p,
+				PAGE_SIZE_ON_THE_WALL
+			);//最新注册列表区块
 		}
 
-		return jSONObject.put("response", true).
-			put("result", jSONArray).
+		JSONObject jsonObject = new JSONObject();
+		if (Objects.nonNull(page) && page.getTotalPages() == p + 1) {
+			jsonObject.put("lastPage", true);
+		}
+		return jsonObject.
+			put("response", true).
+			put(
+				"result",
+				loverService.seeMore(page, locale)
+			).
 			toString();
 	}
 
@@ -2878,7 +2884,12 @@ public class WelcomeController {
 		);
 
 		Collection<Lover> lovers = loverRepository.findAll(
-			LoverSpecification.search(!isMale, location, serviceTag));
+			LoverSpecification.search(
+				me,
+				location,
+				serviceTag
+			)
+		);
 
 		document = loverService.loversSimpleInfo(document, lovers);
 

@@ -41,16 +41,6 @@ public class LineMessagingService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LineMessagingService.class);
 
 	/**
-	 * 1st Dev Access Token
-	 */
-	public static final String LINE_NOTIFY_ACCESS_TOKEN_FIRST = System.getenv("LINE_NOTIFY_ACCESS_TOKEN_FIRST");
-
-	/**
-	 * 2nd Dev Access Token
-	 */
-	public static final String LINE_NOTIFY_ACCESS_TOKEN_SECOND = System.getenv("LINE_NOTIFY_ACCESS_TOKEN_SECOND");
-
-	/**
 	 * Host name for authentication API endpoint
 	 */
 	private static final String LINE_NOTIFY_API_ENDPOINT_HOST = System.getenv("LINE_NOTIFY_API_ENDPOINT_HOST");
@@ -176,6 +166,16 @@ public class LineMessagingService {
 	private LineNotifyAuthenticationRepository lineNotifyAuthenticationRepository;
 
 	/**
+	 * 1st Dev Access Token
+	 */
+	public static final String LINE_NOTIFY_ACCESS_TOKEN_FIRST = System.getenv("LINE_NOTIFY_ACCESS_TOKEN_FIRST");
+
+	/**
+	 * 2nd Dev Access Token
+	 */
+	public static final String LINE_NOTIFY_ACCESS_TOKEN_SECOND = System.getenv("LINE_NOTIFY_ACCESS_TOKEN_SECOND");
+
+	/**
 	 * 重定向 URI
 	 */
 	public static URI redirectUri;
@@ -204,6 +204,7 @@ public class LineMessagingService {
 	/**
 	 * LINE Notify 服务；开发人员用。
 	 *
+	 * @param accessTokens 访问令牌们F
 	 * @param message 最多 1000 个字符
 	 */
 	@Transactional(readOnly = true)

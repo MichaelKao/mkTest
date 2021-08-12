@@ -462,8 +462,8 @@ public class LoverService {
 
 		// 暫時將激活碼送到 Line notify
 		List<String> accessTokens = new ArrayList<String>();
-		accessTokens.add(lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
-		accessTokens.add(lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
+		accessTokens.add(LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
+		accessTokens.add(LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
 		lineMessagingService.notifyDev(
 			accessTokens,
 			String.format(
@@ -605,8 +605,8 @@ public class LoverService {
 
 		// 暫時將激活碼送到 Line notify
 		List<String> accessTokens = new ArrayList<String>();
-		accessTokens.add(lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
-		accessTokens.add(lineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
+		accessTokens.add(LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
+		accessTokens.add(LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
 		lineMessagingService.notifyDev(
 			accessTokens,
 			String.format(
@@ -638,8 +638,12 @@ public class LoverService {
 	}
 
 	public boolean isVVIP(Lover lover) {
-		return Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date(System.currentTimeMillis()))
-			&& Objects.nonNull(lover.getMaleSpecies()) && Objects.equals(lover.getMaleSpecies(), Lover.MaleSpecies.VVIP);
+		Date vip = lover.getVip();
+		Lover.MaleSpecies maleSpecies = lover.getMaleSpecies();
+		return Objects.nonNull(vip)
+			&& vip.after(new Date(System.currentTimeMillis()))
+			&& Objects.nonNull(maleSpecies)
+			&& Objects.equals(maleSpecies, Lover.MaleSpecies.VVIP);
 	}
 
 	public Document readDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
@@ -1869,67 +1873,73 @@ public class LoverService {
 	 *
 	 * @param document
 	 * @param lover
+	 * @param locale
 	 * @return
 	 */
 	public Document indexDocument(Document document, Lover lover, Locale locale) {
 		Element documentElement = document.getDocumentElement();
+
 		Element areaElement = document.createElement("area");
 		documentElement.appendChild(areaElement);
 
-		// 確認性別
-		Boolean isMale = lover.getGender();
-
-		// 貴賓會員
-		Element vipElement = document.createElement("vip");
-		// 安心認證
-		Element reliefElement = document.createElement("relief");
-		// 最新活躍
-		Element activeElement = document.createElement("active");
-		// 最近註冊
-		Element registerElement = document.createElement("register");
-
-		// 男仕顯示的列表
-		if (isMale) {
-			// 通過安心認證的甜心
-			reliefElement = indexElement(document, reliefElement, femalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
-			areaElement.appendChild(reliefElement);
-			// 最新活躍(使用)時間
-			activeElement = indexElement(document, activeElement, latestActiveFemalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
-			areaElement.appendChild(activeElement);
-			// 最近註冊
-			registerElement = indexElement(document, registerElement, latestRegisteredFemalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
-			areaElement.appendChild(registerElement);
+		if (!lover.getGender()) {
+			areaElement.appendChild(createElement(
+				document.createElement("vip"),
+				vipOnTheWall(
+					lover,
+					0,
+					PAGE_SIZE_ON_THE_WALL
+				),
+				locale
+			));//甜心才会显示的贵宾会员列表区块
 		}
-		// 甜心顯示的列表
-		if (!isMale) {
-			// 貴賓會員的男仕
-			vipElement = indexElement(document, vipElement, vipOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
-			areaElement.appendChild(vipElement);
-			// 通過安心認證的男仕
-			reliefElement = indexElement(document, reliefElement, malesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
-			areaElement.appendChild(reliefElement);
-			// 最新活躍(使用)時間
-			activeElement = indexElement(document, activeElement, latestActiveMalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
-			areaElement.appendChild(activeElement);
-			// 最近註冊
-			registerElement = indexElement(document, registerElement, latestRegisteredMalesOnTheWall(0, PAGE_SIZE_ON_THE_WALL), locale);
-			areaElement.appendChild(registerElement);
-		}
+
+		areaElement.appendChild(createElement(
+			document.createElement("relief"),
+			relievingOnTheWall(
+				lover,
+				0,
+				PAGE_SIZE_ON_THE_WALL
+			),
+			locale
+		));//安心认证列表区块
+
+		areaElement.appendChild(createElement(
+			document.createElement("active"),
+			latestActiveOnTheWall(
+				lover,
+				0,
+				PAGE_SIZE_ON_THE_WALL
+			),
+			locale
+		));//最近活跃列表区块
+
+		areaElement.appendChild(createElement(
+			document.createElement("register"),
+			latestRegisteredOnTheWall(
+				lover,
+				0,
+				PAGE_SIZE_ON_THE_WALL
+			),
+			locale
+		));//最新注册列表区块
+
 		return document;
 	}
 
 	/**
 	 * 首頁的列表 Element
 	 *
-	 * @param document
 	 * @param element
-	 * @param list
+	 * @param page
+	 * @param locale
 	 * @return
 	 */
-	public Element indexElement(Document document, Element element, Page<Lover> page, Locale locale) {
+	public Element createElement(Element element, Page<Lover> page, Locale locale) {
 		if (page.getTotalPages() <= 1) {
 			element.setAttribute("lastPage", null);
 		}
+		Document document = element.getOwnerDocument();
 		for (Lover lover : page.getContent()) {
 			Element sectionElement = document.createElement("section");
 			element.appendChild(sectionElement);
@@ -2004,10 +2014,11 @@ public class LoverService {
 	 * 看更多甜心/男仕
 	 *
 	 * @param page
+	 * @param locale
 	 * @return
 	 */
 	public JSONArray seeMore(Page<Lover> page, Locale locale) {
-		JSONArray jSONArray = new JSONArray();
+		JSONArray jsonArray = new JSONArray();
 		for (Lover lover : page.getContent()) {
 			JSONObject json = new JSONObject();
 			json.put("nickname", lover.getNickname());
@@ -2058,19 +2069,23 @@ public class LoverService {
 				Servant.STATIC_HOST,
 				lover.getProfileImage()
 			));
-			jSONArray.put(json);
+			jsonArray.put(json);
 		}
-		return jSONArray;
+		return jsonArray;
 	}
 
 	/**
+	 * 未封号的情人们，以活跃降幂排序；用于首页的安心认证列表区块。
+	 *
+	 * @param mofo 用户号
 	 * @param p 第几页
 	 * @param s 每页几笔
 	 * @return 通过安心认证的甜心们
 	 */
-	public Page<Lover> femalesOnTheWall(int p, int s) {
+	@Transactional(readOnly = true)
+	public Page<Lover> relievingOnTheWall(Lover mofo, int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.relievingOnTheWall(false),
+			LoverSpecification.relievingOnTheWall(mofo),
 			PageRequest.of(p, s)
 		);
 	}
@@ -2088,73 +2103,47 @@ public class LoverService {
 	}
 
 	/**
-	 * @param p 第几页
-	 * @param s 每页几笔
-	 * @return 以活跃排序的甜心们
-	 */
-	public Page<Lover> latestActiveFemalesOnTheWall(int p, int s) {
-		return loverRepository.findAll(
-			LoverSpecification.latestActiveOnTheWall(false),
-			PageRequest.of(p, s)
-		);
-	}
-
-	/**
+	 * 未封号的情人们，以活跃降幂排序；用于首页的最近活跃列表区块。
+	 *
+	 * @param mofo 用户号
 	 * @param p 第几页
 	 * @param s 每页几笔
 	 * @return 以活跃排序的男士们
 	 */
-	public Page<Lover> latestActiveMalesOnTheWall(int p, int s) {
+	@Transactional(readOnly = true)
+	public Page<Lover> latestActiveOnTheWall(Lover mofo, int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.latestActiveOnTheWall(true),
+			LoverSpecification.latestActiveOnTheWall(mofo),
 			PageRequest.of(p, s)
 		);
 	}
 
 	/**
+	 * 未封号的情人们，以註冊时间降幂排序；用于首页的最新注册列表区块。
+	 *
+	 * @param mofo 用户号
 	 * @param p 第几页
 	 * @param s 每页几笔
 	 * @return 以註冊时间排序的甜心们
 	 */
-	public Page<Lover> latestRegisteredFemalesOnTheWall(int p, int s) {
+	@Transactional(readOnly = true)
+	public Page<Lover> latestRegisteredOnTheWall(Lover mofo, int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.latestRegisteredOnTheWall(false),
+			LoverSpecification.latestRegisteredOnTheWall(mofo),
 			PageRequest.of(p, s)
 		);
 	}
 
 	/**
-	 * @param p 第几页
-	 * @param s 每页几笔
-	 * @return 以註冊时间排序的男士们
-	 */
-	public Page<Lover> latestRegisteredMalesOnTheWall(int p, int s) {
-		return loverRepository.findAll(
-			LoverSpecification.latestRegisteredOnTheWall(true),
-			PageRequest.of(p, s)
-		);
-	}
-
-	/**
-	 * @param p 第几页
-	 * @param s 每页几笔
-	 * @return 通过安心认证的男士们
-	 */
-	public Page<Lover> malesOnTheWall(int p, int s) {
-		return loverRepository.findAll(
-			LoverSpecification.relievingOnTheWall(true),
-			PageRequest.of(p, s)
-		);
-	}
-
-	/**
+	 * @param mofo 用户号
 	 * @param p 第几页
 	 * @param s 每页几笔
 	 * @return 貴賓男士们
 	 */
-	public Page<Lover> vipOnTheWall(int p, int s) {
+	@Transactional(readOnly = true)
+	public Page<Lover> vipOnTheWall(Lover mofo, int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.vipOnTheWall(),
+			LoverSpecification.vipOnTheWall(mofo),
 			PageRequest.of(p, s)
 		);
 	}

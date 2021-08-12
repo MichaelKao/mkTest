@@ -30,6 +30,48 @@ public class LoverSpecification {
 	private final static Logger LOGGER = LoggerFactory.getLogger(LoverSpecification.class);
 
 	/**
+	 * 黑名单。
+	 *
+	 * @param lover 用户号
+	 * @return 用户号拉黑的其它用户号们
+	 */
+	private static Predicate blacklist(Lover lover, Root<Lover> root, CriteriaBuilder criteriaBuilder) {
+		Predicate predicate = criteriaBuilder.conjunction();
+		Collection<Predicate> predicates = new ArrayList<>();
+
+		predicates.add(
+			criteriaBuilder.not(
+				criteriaBuilder.isMember(
+					lover,
+					root.get(Lover_.blockedBy)
+				)
+			)
+		);
+
+		predicate.getExpressions().addAll(predicates);
+		return predicate;
+	}
+
+	/**
+	 * 被列入黑名单。
+	 *
+	 * @param lover 用户号
+	 * @return 把用户号拉黑的其它用户号们
+	 */
+	private static Predicate blacklisted(Lover lover, Root<Lover> root, CriteriaBuilder criteriaBuilder) {
+		Predicate predicate = criteriaBuilder.conjunction();
+		Collection<Predicate> predicates = new ArrayList<>();
+
+		predicates.add(criteriaBuilder.isMember(
+			lover,
+			root.get(Lover_.blocking)
+		).not());
+
+		predicate.getExpressions().addAll(predicates);
+		return predicate;
+	}
+
+	/**
 	 * 该填的栏位都有填的用户号们。
 	 *
 	 * @param gender 性别
@@ -111,12 +153,12 @@ public class LoverSpecification {
 	}
 
 	/**
-	 * 未封号的情人们，以活跃降幂排序；适用于首页。
+	 * 未封号的情人们，以活跃降幂排序；适用于首页的最近活跃列表区块。
 	 *
-	 * @param gender 性别
+	 * @param mofo 用户号
 	 * @return 未封号的(甜心|男士)们
 	 */
-	public static Specification<Lover> latestActiveOnTheWall(boolean gender) {
+	public static Specification<Lover> latestActiveOnTheWall(Lover mofo) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
 			criteriaQuery.orderBy(
 				criteriaBuilder.desc(
@@ -124,17 +166,21 @@ public class LoverSpecification {
 				)
 			);//以活跃降幂排序
 
-			return eligible(root, criteriaBuilder, gender);//合格用户号们
+			return criteriaBuilder.and(
+				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
+				blacklist(mofo, root, criteriaBuilder),//黑名单
+				blacklisted(mofo, root, criteriaBuilder)//被列入黑名单
+			);
 		};
 	}
 
 	/**
-	 * 未封号的情人们，以註冊时间降幂排序；适用于首页。
+	 * 未封号的情人们，以註冊时间降幂排序；适用于首页的最新注册列表区块。
 	 *
-	 * @param gender 性别
+	 * @param mofo 用户号
 	 * @return 未封号的(甜心|男士)们
 	 */
-	public static Specification<Lover> latestRegisteredOnTheWall(boolean gender) {
+	public static Specification<Lover> latestRegisteredOnTheWall(Lover mofo) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
 			criteriaQuery.orderBy(
 				criteriaBuilder.desc(
@@ -142,7 +188,11 @@ public class LoverSpecification {
 				)
 			);//以活跃降幂排序
 
-			return eligible(root, criteriaBuilder, gender);//合格用户号们
+			return criteriaBuilder.and(
+				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
+				blacklist(mofo, root, criteriaBuilder),//黑名单
+				blacklisted(mofo, root, criteriaBuilder)//被列入黑名单
+			);
 		};
 	}
 
@@ -213,12 +263,12 @@ public class LoverSpecification {
 	}
 
 	/**
-	 * 未封号并通过安心认证的情人们，以活跃降幂排序；适用于首页。
+	 * 未封号并通过安心认证的情人们，以活跃降幂排序；适用于首页的安心认证列表区块。
 	 *
-	 * @param gender 性别
+	 * @param mofo 用户号
 	 * @return 未封号的(甜心|男士)们
 	 */
-	public static Specification<Lover> relievingOnTheWall(boolean gender) {
+	public static Specification<Lover> relievingOnTheWall(Lover mofo) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
 			criteriaQuery.orderBy(
 				criteriaBuilder.desc(
@@ -230,7 +280,9 @@ public class LoverSpecification {
 				criteriaBuilder.isTrue(
 					root.get(Lover_.relief)
 				),//通过安心认证
-				eligible(root, criteriaBuilder, gender)//合格用户号们
+				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
+				blacklist(mofo, root, criteriaBuilder),//黑名单
+				blacklisted(mofo, root, criteriaBuilder)//被列入黑名单
 			);
 		};
 	}
@@ -238,22 +290,38 @@ public class LoverSpecification {
 	/**
 	 * 搜寻。
 	 *
-	 * @param gender 性别
+	 * @param mofo 用户号
 	 * @param location 地区
 	 * @param serviceTag 服务
 	 * @return 符合条件的(甜心|男士)们
 	 */
-	public static Specification<Lover> search(boolean gender, Location location, ServiceTag serviceTag) {
+	public static Specification<Lover> search(Lover mofo, Location location, ServiceTag serviceTag) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
 			Collection<Predicate> predicates = new ArrayList<>();
 			predicates.add(criteriaBuilder.equal(
 				root.get(Lover_.gender),
-				gender
+				mofo
 			));//性别
 			predicates.add(root.
 				get(Lover_.delete).
 				isNull()
 			);//未封号
+
+			predicates.add(eligible(
+				root,
+				criteriaBuilder,
+				mofo.getGender()
+			));//合格用户号们
+			predicates.add(blacklist(
+				mofo,
+				root,
+				criteriaBuilder
+			));//黑名单
+			predicates.add(blacklisted(
+				mofo,
+				root,
+				criteriaBuilder
+			));//被列入黑名单
 
 			/*
 			 地区
@@ -318,11 +386,12 @@ public class LoverSpecification {
 	}
 
 	/**
-	 * 未封号的贵宾(仅男士)们，以活跃降幂排序；适用于首页。
+	 * 未封号的贵宾(仅男士)们，以活跃降幂排序；适用于首页的贵宾会员列表区块。
 	 *
+	 * @param mofo 用户号
 	 * @return 未封号的贵宾(仅男士)们
 	 */
-	public static Specification<Lover> vipOnTheWall() {
+	public static Specification<Lover> vipOnTheWall(Lover mofo) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
 			criteriaQuery.orderBy(
 				criteriaBuilder.desc(
@@ -339,7 +408,9 @@ public class LoverSpecification {
 					root.get(Lover_.maleSpecies),
 					MaleSpecies.VVIP
 				),//须为 VVIP
-				eligible(root, criteriaBuilder, true)//合格用户号们
+				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
+				blacklist(mofo, root, criteriaBuilder),//黑名单
+				blacklisted(mofo, root, criteriaBuilder)//被列入黑名单
 			);
 		};
 	}

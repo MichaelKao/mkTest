@@ -720,9 +720,11 @@ COMMENT ON COLUMN"qing_ren"."tui_jian_ma"IS'推荐码';
 COMMENT ON COLUMN"qing_ren"."tui_jian_ren"IS'推荐人';
 
 /**
- * 再聊聊行為
+ * 行为
  */
-ALTER TYPE"xing_wei" ADD VALUE 'ZAI_LIAO_LIAO';
+ALTER TYPE"xing_wei"
+ADD VALUE'ZAI_LIAO_LIAO',--再聊聊
+ADD VALUE'FANG_XING_SHENG_HUO_ZHAO';--放行生活照
 
 /**
  * 男士种类
@@ -757,3 +759,6 @@ COMMENT ON TABLE"feng_suo"IS'用户号之间的封锁';
 COMMENT ON COLUMN"feng_suo"."zhu_dong_fang"IS'主动方(A 封锁 B 的 A)';
 COMMENT ON COLUMN"feng_suo"."bei_dong_fang"IS'被动方(A 封锁 B 的 B)';
 
+ALTER TABLE"li_cheng"
+ADD COLUMN"fang_xing_sheng_huo_zhao"bool NOT NULL DEFAULT'0';
+COMMENT ON COLUMN"li_cheng"."fang_xing_sheng_huo_zhao"IS'放行生活照';
