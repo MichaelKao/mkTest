@@ -269,8 +269,9 @@ public class HistoryService {
 				throw new RuntimeException("gimmeYourLineInvitation.femaleHasGivenLine");
 			} else {
 				//離上一次拒絕不到12小時
-				if (within12hrsFromLastRefused(initiative, passive)) {
-					throw new RuntimeException("gimmeYourLineInvitation.within24hrsFromLastRefused");
+				History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(passive, initiative, BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
+				if (Objects.nonNull(history) && within12hrsFromLastRefused(history)) {
+					throw new RuntimeException("gimmeYourLineInvitation.within12hrsFromLastRefused");
 				}
 				//被拒絕過
 				lineGiven.setResponse(null);
@@ -875,7 +876,7 @@ public class HistoryService {
 							null
 						);
 						Long count = historyRepository.countByInitiativeAndPassiveAndBehavior(passive, initiative, BEHAVIOR_LAI_KOU_DIAN);
-						if ((loverService.isVVIP(passive) || loverService.isVVIP(passive)) && (count < 1 && !withinRequiredLimit(passive))) {
+						if ((loverService.isVIP(passive) || loverService.isVVIP(passive)) && (count < 1 && !withinRequiredLimit(passive))) {
 							historyElement.setAttribute(
 								"remindDeduct",
 								null
@@ -1092,17 +1093,13 @@ public class HistoryService {
 	 * @param female
 	 * @return
 	 */
-	public boolean within12hrsFromLastRefused(Lover male, Lover female) {
-		Date refusedDate = null;
-		Date nowDate = null;
-		History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(female, male, BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
-		if (Objects.nonNull(history)) {
-			Calendar refused = Calendar.getInstance();
-			refused.setTime(history.getOccurred());
-			refused.add(Calendar.HOUR, 12);
-			refusedDate = refused.getTime();
-			nowDate = new Date();
-		}
+	public boolean within12hrsFromLastRefused(History history) {
+		Date nowDate = new Date();
+		Calendar refused = Calendar.getInstance();
+		refused.setTime(history.getOccurred());
+		refused.add(Calendar.HOUR, 12);
+		Date refusedDate = refused.getTime();
+
 		return nowDate.before(refusedDate);
 	}
 }

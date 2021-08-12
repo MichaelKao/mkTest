@@ -57,8 +57,9 @@ public class Activity implements Comparable<Activity> {
 	 * @param greeting
 	 * @param seen
 	 */
-	public Activity(String sender, Date occurred, String greeting, Date seen) {
+	public Activity(String sender, Behavior behavior, Date occurred, String greeting, Date seen) {
 		this.sender = sender;
+		this.behavior = behavior;
 		this.occurred = occurred;
 		this.greeting = greeting;
 		this.seen = seen;

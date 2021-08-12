@@ -114,15 +114,6 @@ public class WebSocketChatServer {
 			return;
 		}
 
-		chatMessage.setMsgCount(1);
-		message = gson.toJson(chatMessage);
-
-		Session receiverSession = sessionPools.get(chatMessage.getReceiver());
-		if (receiverSession != null && receiverSession.isOpen()) {
-			receiverSession.getAsyncRemote().sendText(message);
-			userSession.getAsyncRemote().sendText(message);
-		}
-
 		Behavior behavior = null;
 		if (sender.getGender()) {
 			behavior = BEHAVIOR_TALK;
@@ -138,6 +129,20 @@ public class WebSocketChatServer {
 		);
 		history.setGreeting(chatMessage.getMessage());
 		historyRepository.saveAndFlush(history);
+
+		if (sender.getGender()) {
+			int msgsCount = webSocketService.msgsCountWithin12Hrs(male, female);
+			chatMessage.setMsgCount(msgsCount);
+			message = gson.toJson(chatMessage);
+		}
+
+		Session receiverSession = sessionPools.get(chatMessage.getReceiver());
+		if (receiverSession != null && receiverSession.isOpen()) {
+			receiverSession.getAsyncRemote().sendText(message);
+		}
+		if (userSession != null && userSession.isOpen()) {
+			userSession.getAsyncRemote().sendText(message);
+		}
 	}
 
 	@OnError

@@ -31,7 +31,11 @@
 	max-width: 80%;
 }
 
-.femaleResponseBtn {
+.wordBreak {
+	word-break: break-word;
+}
+
+.floatBtn {
 	position: fixed;
 	bottom: 65px;
 	left: 0;

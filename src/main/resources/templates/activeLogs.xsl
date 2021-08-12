@@ -24,7 +24,8 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
-			<LINK href="/STYLE/activeLogs.css" rel="stylesheet"/>
+			<LINK href="/STYLE/rateStar.css" rel="stylesheet"/>
+			<STYLE>body {background-color: #F3F3F3;}</STYLE>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>

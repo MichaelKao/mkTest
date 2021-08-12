@@ -6,7 +6,6 @@ $(document).ready(function () {
 		event.preventDefault();
 		$(this).attr('disabled', true);
 		$(this).siblings('BUTTON.refuse').attr('disabled', true);
-		$(this).siblings('BUTTON.talkAgain').attr('disabled', true);
 		var whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 
 		$.post(
@@ -42,7 +41,6 @@ $(document).ready(function () {
 		event.preventDefault();
 		$(this).attr('disabled', true);
 		$(this).siblings('BUTTON.accept').attr('disabled', true);
-		$(this).siblings('BUTTON.talkAgain').attr('disabled', true);
 		var whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 
 		$.post(

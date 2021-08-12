@@ -84,6 +84,7 @@ import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
 import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
+import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LocationRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
@@ -181,6 +182,12 @@ public class LoverService {
 
 	@Autowired
 	private WebSocketServer webSocketServer;
+
+	@Autowired
+	private LineGivenRepository lineGivenRepository;
+
+	@Autowired
+	private HistoryService historyService;
 
 	public List<Lover> loadLovers() {
 		return loverRepository.findAll();
@@ -2164,9 +2171,9 @@ public class LoverService {
 			);
 			throw new RuntimeException("greet.greetingMessageMustntBeNull");
 		}
-		if (within24hrsFromLastGroupGreeting(female)) { //24小時內已群發過打招呼
+		if (within12hrsFromLastGroupGreeting(female)) { //24小時內已群發過打招呼
 			LOGGER.debug(
-				"2155\t上次群發在24小時內:\n\n{}\n"
+				"2155\t上次群發在12小時內:\n\n{}\n"
 			);
 			throw new RuntimeException("groupGreeting.within24hrsHasSent");
 		}
@@ -2252,7 +2259,7 @@ public class LoverService {
 
 		History lastHistory = historyRepository.findTop1ByInitiativeAndBehaviorOrderByIdDesc(female, BEHAVIOR_GROUP_GREETING);
 		if (Objects.nonNull(lastHistory)) {
-			Boolean within24hr = within24hrsFromLastGroupGreeting(female);
+			Boolean within24hr = within12hrsFromLastGroupGreeting(female);
 			if (within24hr) {
 				documentElement.setAttribute(
 					"within24hr",
@@ -2307,7 +2314,7 @@ public class LoverService {
 		return document;
 	}
 
-	public boolean within24hrsFromLastGroupGreeting(Lover female) {
+	public boolean within12hrsFromLastGroupGreeting(Lover female) {
 		Date gpDate = null;
 		Date nowDate = null;
 		History history = historyRepository.findTop1ByInitiativeAndBehaviorOrderByIdDesc(female, BEHAVIOR_GROUP_GREETING);
@@ -2400,44 +2407,5 @@ public class LoverService {
 			return false;
 		}//(地点|服务)标签
 		return true;
-	}
-
-	public Document chatroom(Document document, Lover me, Lover chatPartner) {
-		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute(
-			"friendIdentifier",
-			chatPartner.getIdentifier().toString()
-		);
-
-		documentElement.setAttribute(
-			"friendProfileImage",
-			String.format(
-				"https://%s/profileImage/%s",
-				Servant.STATIC_HOST,
-				chatPartner.getProfileImage()
-			)
-		);
-
-		documentElement.setAttribute(
-			"friendNickname",
-			chatPartner.getNickname()
-		);
-
-		documentElement.setAttribute(
-			"friendGender",
-			chatPartner.getGender().toString()
-		);
-
-		// '給我賴'的行為女生還沒回應
-		History history = historyRepository.
-			findByInitiativeAndPassiveAndBehaviorAndReplyNull(chatPartner, me, BEHAVIOR_GIMME_YOUR_LINE_INVITATION);
-		if (Objects.nonNull(history) && !me.getGender()) {
-			documentElement.setAttribute(
-				"decideButton",
-				null
-			);
-		}
-
-		return document;
 	}
 }

@@ -69,6 +69,7 @@ import tw.musemodel.dingzhiqingren.service.HistoryService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 import static tw.musemodel.dingzhiqingren.service.Servant.PAGE_SIZE_ON_THE_WALL;
+import tw.musemodel.dingzhiqingren.service.WebSocketService;
 import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
 /**
@@ -111,6 +112,9 @@ public class WelcomeController {
 
 	@Autowired
 	private LineGivenRepository lineGivenRepository;
+
+	@Autowired
+	private WebSocketService webSocketService;
 
 	/**
 	 * 首页
@@ -3282,7 +3286,7 @@ public class WelcomeController {
 			);
 		}
 
-		document = loverService.chatroom(document, me, partner);
+		document = webSocketService.chatroom(document, me, partner);
 
 		ModelAndView modelAndView = new ModelAndView("chatroom");
 		modelAndView.getModelMap().addAttribute(document);
