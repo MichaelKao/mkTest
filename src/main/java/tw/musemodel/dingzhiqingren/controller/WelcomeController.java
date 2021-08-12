@@ -1265,6 +1265,46 @@ public class WelcomeController {
 	}
 
 	/**
+	 * 封鎖
+	 *
+	 * @param identifier
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/block.json")
+	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
+	String block(@RequestParam UUID identifier, Authentication authentication, Locale locale) {
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		// 識別碼的帳號
+		Lover lover = loverService.loadByIdentifier(identifier);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = loverService.block(
+				me,
+				lover,
+				locale
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
+	}
+
+	/**
 	 * 誰看過我
 	 *
 	 * @param authentication

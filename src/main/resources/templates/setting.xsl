@@ -42,7 +42,7 @@
 									<P class="text-warning text-bold">刪除帳號將無法再恢復，確定要刪除？</P>
 								</DIV>
 								<DIV class="text-center">
-									<BUTTON class="btn btn-primary mx-2 confirmBtn" data-bs-dismiss="modal" type="button">確認</BUTTON>
+									<BUTTON class="btn btn-primary mx-2 confirmBtn" type="button">確認</BUTTON>
 									<BUTTON class="btn btn-secondary mx-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
 								</DIV>
 							</DIV>

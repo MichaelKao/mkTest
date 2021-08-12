@@ -91,6 +91,26 @@
 					</DIV>
 				</DIV>
 			</DIV>
+			<DIV class="modal fade" id="blockModal">
+				<DIV class="modal-dialog modal-dialog-centered">
+					<DIV class="modal-content">
+						<DIV class="modal-body">
+							<DIV class="d-flex">
+								<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
+							</DIV>
+							<DIV class="mt-3">
+								<I class="fas fa-exclamation-circle text-info mb-1" style="font-size: 50px;"></I>
+								<P class="text-bold">1. 對方不會知道您封鎖他</P>
+								<P class="text-bold">2. 對方瀏覽您的網頁，會出現您的帳戶已關閉</P>
+							</DIV>
+							<DIV>
+								<BUTTON class="btn btn-primary block" type="button">確認</BUTTON>
+								<BUTTON class="btn btn-secondary mx-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
+			</DIV>
 			<DIV id="chatroom">
 				<SECTION class="fixed-top col-12 col-md-10 mx-auto shadow">
 					<DIV class="chatroomHeader d-flex align-items-center ps-2 shadow">
@@ -102,18 +122,18 @@
 						<DIV>
 							<A href="/profile/{@friendIdentifier}/">
 								<IMG alt="profileImage" class="rounded-circle" src="{@friendProfileImage}" width="45"/>
+								<SPAN class="text-lg ms-2 text-secondary">
+									<xsl:value-of select="@friendNickname"/>
+								</SPAN>
 							</A>
-							<SPAN class="text-lg ms-2">
-								<xsl:value-of select="@friendNickname"/>
-							</SPAN>
 						</DIV>
 						<DIV class="ms-auto me-3">
 							<A class="btn btn-link m-0 p-0" data-bs-toggle="dropdown">
 								<I class="fal fa-ellipsis-h h1 text-primary mb-0"></I>
 							</A>
 							<DIV class="dropdown-menu shadow">
-								<A class="dropdown-item" href="#">檢舉對方</A>
-								<A class="dropdown-item" href="#">封鎖對方</A>
+								<BUTTON class="dropdown-item">檢舉對方</BUTTON>
+								<BUTTON class="dropdown-item" data-bs-target="#blockModal" data-bs-toggle="modal">封鎖對方</BUTTON>
 							</DIV>
 						</DIV>
 					</DIV>
@@ -151,7 +171,7 @@
 										</BUTTON>
 									</xsl:when>
 									<xsl:when test="@waitingForRes">
-										<BUTTON class="btn btn-sm btn-dark px-3 py-2 m-0 border-radius-xl" disabled="" type="button">
+										<BUTTON class="btn btn-sm btn-info text-light px-3 py-2 m-0 border-radius-xl" disabled="" type="button">
 											<SPAN>已要求通訊軟體, 等待甜心回應</SPAN>
 										</BUTTON>
 									</xsl:when>

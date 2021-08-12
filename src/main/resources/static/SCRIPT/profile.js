@@ -177,6 +177,25 @@ $(document).ready(function () {
 			);
 	});
 
+	$('BUTTON.block').click(function () {
+		$.post(
+			'/block.json',
+			{
+				identifier: $('INPUT[name="whom"]').val()
+			},
+			function (data) {
+				if (data.response) {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+				} else {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+				}
+			},
+			'json'
+			);
+	});
+
 	var $giftModal = $('#giftModal');
 	var $modal = $('#modal');
 	var url;

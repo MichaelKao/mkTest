@@ -74,6 +74,9 @@ public class WebSocketChatServer {
 	public void onMessage(Session userSession, String message) {
 		ChatMessage chatMessage = gson.fromJson(message, ChatMessage.class);
 
+		LOGGER.debug("測試{}", chatMessage.toString());
+		LOGGER.debug("測試{}", chatMessage.getBehavior());
+
 		Lover sender = loverService.
 			loadByIdentifier(
 				UUID.fromString(chatMessage.getSender())
@@ -110,6 +113,17 @@ public class WebSocketChatServer {
 					gson.toJson(cmHistory)
 				));
 				return;
+			}
+			return;
+		}
+
+		if ("button".equals(chatMessage.getType())) {
+			Session receiverSession = sessionPools.get(chatMessage.getReceiver());
+			if (receiverSession != null && receiverSession.isOpen()) {
+				receiverSession.getAsyncRemote().sendText(message);
+			}
+			if (userSession != null && userSession.isOpen()) {
+				userSession.getAsyncRemote().sendText(message);
 			}
 			return;
 		}

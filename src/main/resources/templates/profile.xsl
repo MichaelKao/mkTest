@@ -129,6 +129,28 @@
 						</DIV>
 					</DIV>
 				</xsl:if>
+				<xsl:if test="not(@me)">
+					<DIV class="modal fade" id="blockModal">
+						<DIV class="modal-dialog modal-dialog-centered">
+							<DIV class="modal-content">
+								<DIV class="modal-body">
+									<DIV class="d-flex">
+										<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
+									</DIV>
+									<DIV class="mt-3">
+										<I class="fas fa-exclamation-circle text-info mb-1" style="font-size: 50px;"></I>
+										<P class="text-bold">1. 對方不會知道您封鎖他</P>
+										<P class="text-bold">2. 對方瀏覽您的網頁，會出現您的帳戶已關閉</P>
+									</DIV>
+									<DIV>
+										<BUTTON class="btn btn-primary block" type="button">確認</BUTTON>
+										<BUTTON class="btn btn-secondary mx-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+									</DIV>
+								</DIV>
+							</DIV>
+						</DIV>
+					</DIV>
+				</xsl:if>
 				<xsl:if test="@me">
 					<DIV class="modal fade" id="cropModal">
 						<DIV class="modal-dialog modal-dialog-centered">
@@ -250,32 +272,26 @@
 								</BUTTON>
 							</DIV>
 							<DIV>
-								<A class="btn btn-icon-only btn-link ms-4">
-									<xsl:choose>
-										<xsl:when test="/document/@male">
-											<xsl:choose>
-												<xsl:when test="/document/@matched">
-													<xsl:attribute name="id">openLine</xsl:attribute>
-												</xsl:when>
-												<xsl:otherwise>
-													<xsl:attribute name="id">giveMeLine</xsl:attribute>
-												</xsl:otherwise>
-											</xsl:choose>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:attribute name="id">greeting</xsl:attribute>
-										</xsl:otherwise>
-									</xsl:choose>
-									<I class="fad fa-comment-plus font40"></I>
+								<A class="btn btn-icon-only btn-link ms-4" href="/chatroom/{@identifier}/">
+									<I class="fad fa-comment-dots font40"></I>
 								</A>
 							</DIV>
 							<xsl:if test="/document/@male">
 								<DIV>
-									<BUTTON class="btn btn-icon-only btn-link mx-4 gift" type="button">
+									<BUTTON class="btn btn-icon-only btn-link ms-4 gift" type="button">
 										<I class="fad fa-taxi font40"></I>
 									</BUTTON>
 								</DIV>
 							</xsl:if>
+							<DIV>
+								<A class="btn btn-icon-only btn-link ms-4" data-bs-toggle="dropdown">
+									<I class="fad fa-exclamation-circle font40"></I>
+								</A>
+								<DIV class="dropdown-menu shadow">
+									<BUTTON class="dropdown-item">檢舉對方</BUTTON>
+									<BUTTON class="dropdown-item" data-bs-target="#blockModal" data-bs-toggle="modal">封鎖對方</BUTTON>
+								</DIV>
+							</DIV>
 						</DIV>
 					</xsl:when>
 					<xsl:otherwise>
@@ -377,14 +393,14 @@
 			</DIV>
 			<DIV class="mt-2">
 				<xsl:for-each select="location">
-					<A class="me-1 badge bg-dark" href="/search.json?location={@id}">
+					<A class="me-1 btn btn-dark m-0 px-2 py-1" href="/search.json?location={@id}">
 						<xsl:value-of select="."/>
 					</A>
 				</xsl:for-each>
 			</DIV>
 			<DIV class="mt-2">
 				<xsl:for-each select="service">
-					<A class="me-1 badge bg-primary" href="/search.json?serviceTag={@id}">
+					<A class="me-1 btn btn-outline-dark m-0 p-1" href="/search.json?serviceTag={@id}">
 						<SPAN>#</SPAN>
 						<SPAN>
 							<xsl:value-of select="."/>

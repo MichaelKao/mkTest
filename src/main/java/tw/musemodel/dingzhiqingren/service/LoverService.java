@@ -2397,4 +2397,58 @@ public class LoverService {
 		}//(地点|服务)标签
 		return true;
 	}
+
+	/**
+	 * 封鎖
+	 *
+	 * @param initiative
+	 * @param passive
+	 * @param locale
+	 * @return
+	 */
+	public JSONObject block(Lover initiative, Lover passive, Locale locale) {
+		if (Objects.isNull(initiative)) {
+			throw new IllegalArgumentException("block.initiativeMustntBeNull");
+		}
+		if (Objects.isNull(passive)) {
+			throw new IllegalArgumentException("block.passiveMustntBeNull");
+		}
+		if (Objects.equals(initiative, passive)) {
+			throw new RuntimeException("block.mustBeDifferent");
+		}
+		if (Objects.equals(initiative.getGender(), passive.getGender())) {
+			throw new RuntimeException("block.mustBeStraight");
+		}
+
+		Collection<Lover> blocking = initiative.getBlocking();
+		for (Lover blocked : blocking) {
+			if (Objects.equals(passive, blocked)) {
+				LOGGER.debug("測試{}", blocked);
+				blocking.remove(blocked);
+				initiative.setBlocking(blocking);
+				loverRepository.saveAndFlush(initiative);
+				return new JavaScriptObjectNotation().
+					withReason(messageSource.getMessage(
+						"unblock.done",
+						null,
+						locale
+					)).
+					withResponse(true).
+					toJSONObject();
+			}
+		}
+
+		blocking.add(passive);
+		initiative.setBlocking(blocking);
+		loverRepository.saveAndFlush(initiative);
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"block.done",
+				null,
+				locale
+			)).
+			withResponse(true).
+			toJSONObject();
+	}
 }

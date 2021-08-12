@@ -15,6 +15,8 @@ public class ChatMessage {
 
 	private String historyMsgs;
 
+	private String behavior;
+
 	/**
 	 * 12小時內發送訊息的次數
 	 */
@@ -83,5 +85,13 @@ public class ChatMessage {
 
 	public void setMsgCount(int msgCount) {
 		this.msgCount = msgCount;
+	}
+
+	public String getBehavior() {
+		return behavior;
+	}
+
+	public void setBehavior(String behavior) {
+		this.behavior = behavior;
 	}
 }

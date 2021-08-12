@@ -50,6 +50,8 @@ public class WebSocketService {
 			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(male, female, BEHAVIOR_TALK);
 		List<History> gimmeHistoryMsgs = historyRepository.
 			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(male, female, BEHAVIOR_GIMME_YOUR_LINE_INVITATION);
+		List<History> alreadyBeingFriendHistoryMsgs = historyRepository.
+			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(male, female, BEHAVIOR_LAI_KOU_DIAN);
 		List<History> femaleTalkHistoryMsgs = historyRepository.
 			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(female, male, BEHAVIOR_GREETING);
 		List<History> inviteAsFriendHistoryMsgs = historyRepository.
@@ -68,6 +70,16 @@ public class WebSocketService {
 			wholeHistoryMsgs.add(activity);
 		}
 		for (History history : gimmeHistoryMsgs) {
+			Activity activity = new Activity(
+				male.getIdentifier().toString(),
+				history.getBehavior(),
+				history.getOccurred(),
+				history.getGreeting(),
+				history.getSeen()
+			);
+			wholeHistoryMsgs.add(activity);
+		}
+		for (History history : alreadyBeingFriendHistoryMsgs) {
 			Activity activity = new Activity(
 				male.getIdentifier().toString(),
 				history.getBehavior(),
@@ -151,7 +163,7 @@ public class WebSocketService {
 
 		// '給我賴'的行為甜心還沒回應
 		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
-		if (Objects.nonNull(lineGiven) && Objects.isNull(lineGiven.getResponse()) && !gender) {
+		if (Objects.nonNull(lineGiven) && Objects.isNull(lineGiven.getResponse())) {
 			// 甜心的接受拒絕按鈕
 			if (!gender) {
 				documentElement.setAttribute(
