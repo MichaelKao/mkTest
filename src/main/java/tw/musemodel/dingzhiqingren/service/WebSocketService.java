@@ -18,7 +18,10 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_CHAT_MORE;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_LAI_KOU_DIAN;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_RATE;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND;
 
 /**
  * 服务层：聊天室
@@ -45,21 +48,41 @@ public class WebSocketService {
 	private LineGivenRepository lineGivenRepository;
 
 	public List<Activity> wholeHistoryMsgs(Lover male, Lover female) {
-
-		List<History> maleTalkHistoryMsgs = historyRepository.
-			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(male, female, BEHAVIOR_CHAT_MORE);
-		List<History> gimmeHistoryMsgs = historyRepository.
-			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(male, female, BEHAVIOR_GIMME_YOUR_LINE_INVITATION);
-		List<History> alreadyBeingFriendHistoryMsgs = historyRepository.
-			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(male, female, BEHAVIOR_LAI_KOU_DIAN);
-		List<History> femaleTalkHistoryMsgs = historyRepository.
-			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(female, male, BEHAVIOR_GREETING);
-		List<History> inviteAsFriendHistoryMsgs = historyRepository.
-			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(female, male, BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
-		List<History> refuseAsFriendHistoryMsgs = historyRepository.
-			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(female, male, BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
-		List<History> requestFareHistoryMsgs = historyRepository.
-			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(female, male, BEHAVIOR_REQ_FARE);
+		List<History> maleTalkHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
+			male,
+			female,
+			HistoryService.BEHAVIOR_CHAT_MORE
+		);
+		List<History> gimmeHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
+			male,
+			female,
+			HistoryService.BEHAVIOR_GIMME_YOUR_LINE_INVITATION
+		);
+		List<History> alreadyBeingFriendHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
+			male,
+			female,
+			HistoryService.BEHAVIOR_LAI_KOU_DIAN
+		);
+		List<History> femaleTalkHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
+			female,
+			male,
+			HistoryService.BEHAVIOR_GREETING
+		);
+		List<History> inviteAsFriendHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
+			female,
+			male,
+			HistoryService.BEHAVIOR_INVITE_ME_AS_LINE_FRIEND
+		);
+		List<History> refuseAsFriendHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
+			female,
+			male,
+			HistoryService.BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND
+		);
+		List<History> requestFareHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
+			female,
+			male,
+			HistoryService.BEHAVIOR_ASK_FOR_FARE
+		);
 		List<Activity> wholeHistoryMsgs = new ArrayList<>();
 		for (History history : maleTalkHistoryMsgs) {
 			Activity activity = new Activity(
@@ -133,7 +156,6 @@ public class WebSocketService {
 			wholeHistoryMsgs.add(activity);
 		}
 		Collections.sort(wholeHistoryMsgs);
-
 		return wholeHistoryMsgs;
 	}
 
