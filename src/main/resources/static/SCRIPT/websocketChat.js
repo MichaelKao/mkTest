@@ -48,7 +48,7 @@ $(document).ready(function () {
 					messagesArea.appendChild(divWrap);
 					divWrap.appendChild(divParent);
 					divParent.appendChild(divChild);
-					if (behavior !== 'LIAO_LIAO' && behavior !== 'DA_ZHAO_HU') {
+					if (behavior !== 'LIAO_LIAO' && behavior !== 'DA_ZHAO_HU' && behavior !== 'YAO_CHE_MA_FEI') {
 						var dateDiv = document.createElement('DIV');
 						dateDiv.className += 'text-xs';
 						dateDiv.innerHTML = dateFormat(msg.occurred);
@@ -78,11 +78,33 @@ $(document).ready(function () {
 					var dateSpan = document.createElement('SPAN');
 					dateSpan.innerHTML = dateFormat(msg.occurred);
 					divParent.appendChild(dateSpan);
-					divChild.innerHTML = msg.greeting;
 					// 根據發送者是自己還是對方來給予不同的class名, 以達到訊息左右區分
 					self === msg.sender ? divWrap.className += 'd-flex justify-content-end mb-2' : divWrap.className += 'd-flex justify-content-start mb-2';
 					self === msg.sender ? divChild.className += 'bg-primary text-light border-radius-xl px-3 py-2 me-1 align-self-end shadow wordBreak' : divChild.className += 'bg-light border-radius-xl px-3 py-2 ms-1 align-self-start shadow wordBreak';
 					self === msg.sender ? dateSpan.className += 'text-xs align-self-end me-2' : dateSpan.className += 'text-xs align-self-start ms-2';
+					if (behavior === 'YAO_CHE_MA_FEI') {
+						self === msg.sender ? divChild.innerHTML = '您已和對方要求車馬費' + msg.points : divChild.innerHTML = '對方和您要求車馬費' + msg.points;
+						if (isMale === 'true') {
+							var div = document.createElement('DIV');
+							$(divChild).append(div);
+							var btn1 = document.createElement('BUTTON');
+							$(btn1).attr({
+								'class': 'btn btn-sm btn-outline-primary px-3 py-2 m-0 me-1 border-radius-xl',
+								'type': 'button'
+							});
+							$(div).append(btn1);
+							$(btn1).html('給出');
+							var btn2 = document.createElement('BUTTON');
+							$(btn2).attr({
+								'class': 'btn btn-sm btn-outline-primary px-3 py-2 m-0 border-radius-xl',
+								'type': 'button'
+							});
+							$(btn2).html('下次');
+							$(div).append(btn2);
+						}
+						return;
+					}
+					divChild.innerHTML = msg.greeting;
 				});
 				scrollToEnd();
 			} else if ('chat' === jsonObj.type) {

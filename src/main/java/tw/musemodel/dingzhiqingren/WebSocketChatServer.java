@@ -15,6 +15,7 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
@@ -35,14 +36,38 @@ public class WebSocketChatServer {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(WebSocketChatServer.class);
 
-	private HistoryRepository historyRepository = SpringContext.getBean(HistoryRepository.class);
+	static HistoryRepository historyRepository;
 
-	private LoverService loverService = SpringContext.getBean(LoverService.class);
+	@Autowired
+	public void setHistoryRepository(HistoryRepository historyRepository) {
+		WebSocketChatServer.historyRepository = historyRepository;
+	}
 
-	private WebSocketService webSocketService = SpringContext.getBean(WebSocketService.class);
+	static LoverService loverService;
 
-	private LineGivenRepository lineGivenRepository = SpringContext.getBean(LineGivenRepository.class);
+	@Autowired
+	public void setLoverService(LoverService loverService) {
+		WebSocketChatServer.loverService = loverService;
+	}
 
+	static WebSocketService webSocketService;
+
+	@Autowired
+	public void setWebSocketService(WebSocketService webSocketService) {
+		WebSocketChatServer.webSocketService = webSocketService;
+	}
+
+	static LineGivenRepository lineGivenRepository;
+
+	@Autowired
+	public void setLineGivenRepository(LineGivenRepository lineGivenRepository) {
+		WebSocketChatServer.lineGivenRepository = lineGivenRepository;
+	}
+//	private HistoryRepository historyRepository = SpringContext.getBean(HistoryRepository.class);
+
+//	private LoverService loverService = SpringContext.getBean(LoverService.class);
+//	private WebSocketService webSocketService = SpringContext.getBean(WebSocketService.class);
+//	private LineGivenRepository lineGivenRepository = SpringContext.getBean(LineGivenRepository.class);
 	//靜態常數，用來記錄當前的再現連接數。應該用執行緒較安全。
 	private static AtomicInteger online = new AtomicInteger();
 
