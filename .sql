@@ -762,3 +762,6 @@ COMMENT ON COLUMN"feng_suo"."bei_dong_fang"IS'被动方(A 封锁 B 的 B)';
 ALTER TABLE"li_cheng"
 ADD COLUMN"fang_xing_sheng_huo_zhao"bool NOT NULL DEFAULT'0';
 COMMENT ON COLUMN"li_cheng"."fang_xing_sheng_huo_zhao"IS'放行生活照';
+
+ALTER TYPE"xing_wei"
+ADD VALUE'YAO_CHE_MA_FEI';--要求車馬費

@@ -186,6 +186,9 @@ public class HistoryService {
 		if (Objects.equals(passive.getGender(), true)) {
 			throw new RuntimeException("fare.passiveMustBeFemale");//被动方为男
 		}
+		if (points < 1) {
+			throw new RuntimeException("fare.pointsMustBeValid");//被动方为男
+		}
 		if (points(initiative) < Math.abs(points)) {
 			throw new RuntimeException("fare.insufficientPoints");//点数不足
 		}

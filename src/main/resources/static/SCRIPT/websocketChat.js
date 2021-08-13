@@ -583,6 +583,30 @@ $(document).ready(function () {
 		return false;
 	});
 
+	$('.confirmFare').click(function (event) {
+		event.preventDefault();
+		let btn = this;
+		$.post(
+			'/fare.json',
+			{
+				howMany: $('INPUT[name="howMany"]').val(),
+				whom: friend
+			},
+			function (data) {
+				if (data.response) {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+					$('#fareModal').modal('hide');
+				} else {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+				}
+			},
+			'json'
+			);
+		return false;
+	});
+
 	$('BUTTON.block').click(function () {
 		$.post(
 			'/block.json',

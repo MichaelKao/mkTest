@@ -66,31 +66,61 @@
 					</DIV>
 				</DIV>
 			</DIV>
-			<DIV class="modal fade" id="weChatModel">
+			<DIV class="modal fade" id="fareModal">
 				<DIV class="modal-dialog modal-dialog-centered">
 					<DIV class="modal-content">
-						<DIV class="modal-header">
-							<H5 class="modal-title">微信 WeCaht QRcode</H5>
-							<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
-						</DIV>
 						<DIV class="modal-body">
-							<DIV class="form-group">
-								<P>使用微信 APP 掃描加入好友</P>
-								<P>若是用手機，需以截圖或下載 QRCode 的方式使用微信 APP 加入好友</P>
-								<P class="text-primary">點擊 QRcode 可直接下載</P>
-								<A class="weChatQRcode" href="" download="weChatQRcode.png">
-									<IMG alt="weChatQRCode" class="weChatQRcode" src=""/>
-								</A>
+							<DIV class="d-flex">
+								<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
 							</DIV>
-						</DIV>
-						<DIV class="modal-footer">
-							<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
-								<xsl:value-of select="@i18n-cancel"/>
-							</BUTTON>
+							<DIV class="mt-3 text-center">
+								<I class="fad fa-taxi text-success mb-1" style="font-size: 50px;"></I>
+								<H5 class="modal-title">
+									<xsl:if test="@gender = 'true'">車馬費</xsl:if>
+									<xsl:if test="@gender = 'false'">要求車馬費</xsl:if>
+								</H5>
+							</DIV>
+							<DIV class="form-group text-center">
+								<xsl:if test="@gender = 'true'">
+									<LABEL class="text-xs" for="fare">使用平台支付不必擔心私下給甜心爽約，可檢舉查證屬實退回</LABEL>
+								</xsl:if>
+								<INPUT class="form-control" id="fare" min="1" name="howMany" required="" type="number"/>
+							</DIV>
+							<DIV class="text-center">
+								<BUTTON class="btn btn-secondary mx-1" data-bs-dismiss="modal" type="button">取消</BUTTON>
+								<BUTTON class="btn btn-primary confirmFare mx-1" type="button">確認</BUTTON>
+							</DIV>
 						</DIV>
 					</DIV>
 				</DIV>
 			</DIV>
+			<xsl:if test="@gender = 'true'">
+				<DIV class="modal fade" id="weChatModel">
+					<DIV class="modal-dialog modal-dialog-centered">
+						<DIV class="modal-content">
+							<DIV class="modal-header">
+								<H5 class="modal-title">微信 WeCaht QRcode</H5>
+								<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
+							</DIV>
+							<DIV class="modal-body">
+								<DIV class="form-group">
+									<P>使用微信 APP 掃描加入好友</P>
+									<P>若是用手機，需以截圖或下載 QRCode 的方式使用微信 APP 加入好友</P>
+									<P class="text-primary">點擊 QRcode 可直接下載</P>
+									<A class="weChatQRcode" href="" download="weChatQRcode.png">
+										<IMG alt="weChatQRCode" class="weChatQRcode" src=""/>
+									</A>
+								</DIV>
+							</DIV>
+							<DIV class="modal-footer">
+								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+									<xsl:value-of select="@i18n-cancel"/>
+								</BUTTON>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
+			</xsl:if>
 			<DIV class="modal fade" id="blockModal">
 				<DIV class="modal-dialog modal-dialog-centered">
 					<DIV class="modal-content">
@@ -128,8 +158,17 @@
 							</A>
 						</DIV>
 						<DIV class="ms-auto me-3">
-							<A class="btn btn-link m-0 p-0" data-bs-toggle="dropdown">
-								<I class="fal fa-ellipsis-h h1 text-primary mb-0"></I>
+							<BUTTON class="btn btn-link m-0 p-3 fare" data-bs-toggle="modal" type="button">
+								<xsl:if test="@gender = 'true'">
+									<xsl:attribute name="data-bs-target">#fareModal</xsl:attribute>
+								</xsl:if>
+								<xsl:if test="@gender = 'false'">
+									<xsl:attribute name="data-bs-target">#reqFareModal</xsl:attribute>
+								</xsl:if>
+								<I class="fad fa-taxi font30"></I>
+							</BUTTON>
+							<A class="btn btn-link m-0 p-3" data-bs-toggle="dropdown">
+								<I class="fal fa-ellipsis-v mb-0 font30"></I>
 							</A>
 							<DIV class="dropdown-menu shadow">
 								<BUTTON class="dropdown-item">檢舉對方</BUTTON>

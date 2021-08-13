@@ -219,6 +219,11 @@ public class WebSocketService {
 		}
 
 		if (gender && !lessThen3MsgsWithin12Hrs(male, female)) {
+			// 若甜心已接受給男士通訊軟體，若是VIP身分則可以無限暢聊
+			if ((loverService.isVIP(male) || loverService.isVVIP(male))
+				&& (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse()) && lineGiven.getResponse())) {
+				return document;
+			}
 			documentElement.setAttribute(
 				"notAbleToSendMsgs",
 				null

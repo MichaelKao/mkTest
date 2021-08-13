@@ -11,12 +11,12 @@
 
 .chatroomWrapper {
 	height: 100%;
-	border-left: 2px solid #F3F3F3;
-	border-right: 2px solid #F3F3F3;
 }
 
 .chatHistory {
 	min-height: 100%;
+	border-left: 2px solid #F3F3F3;
+	border-right: 2px solid #F3F3F3;
 }
 
 .chatroomHeader {
@@ -45,4 +45,8 @@
 TEXTAREA#chatInput {
 	height: 38px;
 	resize: none;
+}
+
+.font30 {
+	font-size: 30px;
 }

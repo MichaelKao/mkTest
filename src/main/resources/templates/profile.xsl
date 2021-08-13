@@ -38,23 +38,26 @@
 					<DIV class="modal fade" id="giftModal">
 						<DIV class="modal-dialog modal-dialog-centered">
 							<DIV class="modal-content">
-								<DIV class="modal-header">
-									<H5 class="modal-title">車馬費</H5>
-									<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
-								</DIV>
 								<DIV class="modal-body">
-									<DIV class="form-group">
-										<LABEL class="text-xs" for="gift">使用平台支付不必擔心私下給甜心爽約，可檢舉查證屬實退回</LABEL>
-										<INPUT class="form-control" id="gift" name="howMany" required="" type="number"/>
+									<DIV class="d-flex">
+										<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
 									</DIV>
-								</DIV>
-								<DIV class="modal-footer">
-									<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
-										<xsl:value-of select="@i18n-cancel"/>
-									</BUTTON>
-									<BUTTON class="btn btn-primary confirmBtn" type="submit">
-										<xsl:value-of select="@i18n-confirm"/>
-									</BUTTON>
+									<DIV class="mt-3 text-center">
+										<I class="fad fa-taxi text-success mb-1" style="font-size: 50px;"></I>
+										<H5 class="modal-title">車馬費</H5>
+									</DIV>
+									<DIV class="form-group text-center">
+										<LABEL class="text-xs" for="fare">使用平台支付不必擔心私下給甜心爽約，可檢舉查證屬實退回</LABEL>
+										<INPUT class="form-control" id="fare" min="1" name="howMany" required="" type="number"/>
+									</DIV>
+									<DIV class="text-center">
+										<BUTTON class="btn btn-secondary mx-1" data-bs-dismiss="modal" type="button">
+											<xsl:value-of select="@i18n-cancel"/>
+										</BUTTON>
+										<BUTTON class="btn btn-primary confirmBtn mx-1" type="button">
+											<xsl:value-of select="@i18n-confirm"/>
+										</BUTTON>
+									</DIV>
 								</DIV>
 							</DIV>
 						</DIV>

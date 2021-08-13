@@ -18,11 +18,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
+import tw.musemodel.dingzhiqingren.entity.LineGiven;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.model.ChatMessage;
 import tw.musemodel.dingzhiqingren.model.WebsocketState;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
+import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.WebSocketService;
@@ -38,6 +40,8 @@ public class WebSocketChatServer {
 	private LoverService loverService = SpringContext.getBean(LoverService.class);
 
 	private WebSocketService webSocketService = SpringContext.getBean(WebSocketService.class);
+
+	private LineGivenRepository lineGivenRepository = SpringContext.getBean(LineGivenRepository.class);
 
 	//靜態常數，用來記錄當前的再現連接數。應該用執行緒較安全。
 	private static AtomicInteger online = new AtomicInteger();
@@ -73,9 +77,6 @@ public class WebSocketChatServer {
 	@OnMessage
 	public void onMessage(Session userSession, String message) {
 		ChatMessage chatMessage = gson.fromJson(message, ChatMessage.class);
-
-		LOGGER.debug("測試{}", chatMessage.toString());
-		LOGGER.debug("測試{}", chatMessage.getBehavior());
 
 		Lover sender = loverService.
 			loadByIdentifier(
@@ -144,10 +145,14 @@ public class WebSocketChatServer {
 		history.setGreeting(chatMessage.getMessage());
 		historyRepository.saveAndFlush(history);
 
+		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
 		if (sender.getGender()) {
-			int msgsCount = webSocketService.msgsCountWithin12Hrs(male, female);
-			chatMessage.setMsgCount(msgsCount);
-			message = gson.toJson(chatMessage);
+			if ((!loverService.isVIP(male) && !loverService.isVVIP(male))
+				&& (Objects.isNull(lineGiven) || Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse())) {
+				int msgsCount = webSocketService.msgsCountWithin12Hrs(male, female);
+				chatMessage.setMsgCount(msgsCount);
+				message = gson.toJson(chatMessage);
+			}
 		}
 
 		Session receiverSession = sessionPools.get(chatMessage.getReceiver());

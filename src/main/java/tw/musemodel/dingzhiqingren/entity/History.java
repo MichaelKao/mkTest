@@ -432,7 +432,15 @@ public class History implements java.io.Serializable {
 		/**
 		 * 聊聊
 		 */
-		LIAO_LIAO("LIAO_LIAO", 18);
+		LIAO_LIAO("LIAO_LIAO", 18),
+		/**
+		 * 要車馬費
+		 */
+		YAO_CHE_MA_FEI("YAO_CHE_MA_FEI", 19),
+		/**
+		 * 放行生活照
+		 */
+		FANG_XING_SHENG_HUO_ZHAO("FANG_XING_SHENG_HUO_ZHAO", 20);
 
 		private String label;
 
