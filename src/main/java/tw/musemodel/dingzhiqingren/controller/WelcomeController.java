@@ -2111,6 +2111,49 @@ public class WelcomeController {
 	}
 
 	/**
+	 * 要求車馬費
+	 *
+	 * @param femaleUUID
+	 * @param points
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/reqFare.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
+	String reqFare(@RequestParam("whom") UUID maleUUID, @RequestParam(name = "howMany") short points, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover female = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Lover male = loverService.loadByIdentifier(maleUUID);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = historyService.reqFare(
+				female,
+				male,
+				points,
+				locale
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
+	}
+
+	/**
 	 * 给我赖(男对女)
 	 *
 	 * @param female 女生
