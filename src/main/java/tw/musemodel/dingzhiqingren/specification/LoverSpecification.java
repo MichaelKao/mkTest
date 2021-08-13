@@ -77,7 +77,7 @@ public class LoverSpecification {
 	 * @param gender 性别
 	 * @return 合格用户号们
 	 */
-	private static Predicate eligible(Root<Lover> root, CriteriaBuilder criteriaBuilder, boolean gender) {
+	private static Predicate eligible(boolean gender, Root<Lover> root, CriteriaBuilder criteriaBuilder) {
 		Predicate predicate = criteriaBuilder.conjunction();
 		Collection<Predicate> predicates = new ArrayList<>();
 
@@ -167,7 +167,7 @@ public class LoverSpecification {
 			);//以活跃降幂排序
 
 			return criteriaBuilder.and(
-				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
+				eligible(!mofo.getGender(), root, criteriaBuilder),//合格用户号们
 				blacklist(mofo, root, criteriaBuilder),//黑名单
 				blacklisted(mofo, root, criteriaBuilder)//被列入黑名单
 			);
@@ -189,7 +189,7 @@ public class LoverSpecification {
 			);//以活跃降幂排序
 
 			return criteriaBuilder.and(
-				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
+				eligible(!mofo.getGender(), root, criteriaBuilder),//合格用户号们
 				blacklist(mofo, root, criteriaBuilder),//黑名单
 				blacklisted(mofo, root, criteriaBuilder)//被列入黑名单
 			);
@@ -280,7 +280,7 @@ public class LoverSpecification {
 				criteriaBuilder.isTrue(
 					root.get(Lover_.relief)
 				),//通过安心认证
-				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
+				eligible(!mofo.getGender(), root, criteriaBuilder),//合格用户号们
 				blacklist(mofo, root, criteriaBuilder),//黑名单
 				blacklisted(mofo, root, criteriaBuilder)//被列入黑名单
 			);
@@ -297,10 +297,11 @@ public class LoverSpecification {
 	 */
 	public static Specification<Lover> search(Lover mofo, Location location, ServiceTag serviceTag) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
+			boolean gender = !mofo.getGender();
 			Collection<Predicate> predicates = new ArrayList<>();
 			predicates.add(criteriaBuilder.equal(
 				root.get(Lover_.gender),
-				mofo
+				gender
 			));//性别
 			predicates.add(root.
 				get(Lover_.delete).
@@ -308,9 +309,9 @@ public class LoverSpecification {
 			);//未封号
 
 			predicates.add(eligible(
+				gender,
 				root,
-				criteriaBuilder,
-				mofo.getGender()
+				criteriaBuilder
 			));//合格用户号们
 			predicates.add(blacklist(
 				mofo,
@@ -408,7 +409,7 @@ public class LoverSpecification {
 					root.get(Lover_.maleSpecies),
 					MaleSpecies.VVIP
 				),//须为 VVIP
-				eligible(root, criteriaBuilder, !mofo.getGender()),//合格用户号们
+				eligible(!mofo.getGender(), root, criteriaBuilder),//合格用户号们
 				blacklist(mofo, root, criteriaBuilder),//黑名单
 				blacklisted(mofo, root, criteriaBuilder)//被列入黑名单
 			);
