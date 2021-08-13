@@ -557,6 +557,19 @@ public class WelcomeController {
 	}
 
 	/**
+	 * 从头重新排序用户号们主键值。
+	 *
+	 * @param authentication 认证
+	 * @return 重新排序的用户号们
+	 */
+	@PostMapping(path = "/reorder.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY"})
+	int[] reorder() {
+		return loverService.reorderPrimaryKey();
+	}
+
+	/**
 	 * 登入
 	 *
 	 * @param authentication 认证

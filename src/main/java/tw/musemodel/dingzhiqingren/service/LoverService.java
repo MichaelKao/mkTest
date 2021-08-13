@@ -17,6 +17,7 @@ import com.google.zxing.qrcode.QRCodeReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -45,6 +46,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -128,6 +133,9 @@ public class LoverService {
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
 	private MessageSource messageSource;
@@ -507,6 +515,47 @@ public class LoverService {
 			withResponse(true).
 			withResult(publishResult).
 			toJSONObject();
+	}
+
+	/**
+	 * 从头重新排序主键值。
+	 *
+	 * @return 重新排序的用户号们
+	 */
+	@Transactional
+	public int[] reorderPrimaryKey() {
+		List<SqlParameterSource> sqlParameterSources = new ArrayList<>();
+		List<Integer> jiuList = jdbcTemplate.query(
+			"SELECT\"id\"FROM\"qing_ren\"ORDER BY\"id\"",
+			(resultSet, rowNum) -> resultSet.getInt("id")
+		);
+		int xin = 0;
+		for (int jiu : jiuList) {
+			++xin;
+			if (xin < jiu) {
+				sqlParameterSources.add(new MapSqlParameterSource().
+					addValue(
+						"xin",
+						xin,
+						Types.INTEGER
+					).
+					addValue(
+						"jiu",
+						jiu,
+						Types.INTEGER
+					)
+				);
+			}
+		}
+		NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(
+			jdbcTemplate.getDataSource()
+		);
+		return namedParameterJdbcTemplate.batchUpdate(
+			"UPDATE\"qing_ren\"SET\"id\"=:xin WHERE\"id\"=:jiu",
+			sqlParameterSources.toArray(
+				new MapSqlParameterSource[0]
+			)
+		);
 	}
 
 	/**
