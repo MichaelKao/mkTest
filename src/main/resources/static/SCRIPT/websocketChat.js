@@ -385,8 +385,8 @@ $(document).ready(function () {
 	}
 
 	function scrollToEnd() {
-		var scrollHeight = $('.chatroom').prop('scrollHeight');
-		$('.chatroom').scrollTop(scrollHeight, 200);
+		var scrollHeight = $('.chatRoom').prop('scrollHeight');
+		$('.chatRoom').scrollTop(scrollHeight);
 	}
 
 	var $textarea = $('#chatInput');
@@ -583,11 +583,20 @@ $(document).ready(function () {
 		return false;
 	});
 
+	var url;
+	$('BUTTON#fare').on("click", function () {
+		url = '/fare.json';
+	});
+
+	$('BUTTON#reqFare').on("click", function () {
+		url = '/reqFare.json';
+	});
+
 	$('.confirmFare').click(function (event) {
 		event.preventDefault();
 		let btn = this;
 		$.post(
-			'/fare.json',
+			url,
 			{
 				howMany: $('INPUT[name="howMany"]').val(),
 				whom: friend

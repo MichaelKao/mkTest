@@ -158,12 +158,12 @@
 							</A>
 						</DIV>
 						<DIV class="ms-auto me-3">
-							<BUTTON class="btn btn-link m-0 p-3 fare" data-bs-toggle="modal" type="button">
+							<BUTTON class="btn btn-link m-0 p-3" data-bs-target="#fareModal" data-bs-toggle="modal" type="button">
 								<xsl:if test="@gender = 'true'">
-									<xsl:attribute name="data-bs-target">#fareModal</xsl:attribute>
+									<xsl:attribute name="id">fare</xsl:attribute>
 								</xsl:if>
 								<xsl:if test="@gender = 'false'">
-									<xsl:attribute name="data-bs-target">#reqFareModal</xsl:attribute>
+									<xsl:attribute name="id">reqFare</xsl:attribute>
 								</xsl:if>
 								<I class="fad fa-taxi font30"></I>
 							</BUTTON>
@@ -179,7 +179,7 @@
 				</SECTION>
 				<MAIN class="chatroom">
 					<DIV class="chatroomWrapper col-12 col-md-10 mx-auto">
-						<SECTION class="chatHistory d-flex flex-column justify-content-end">
+						<SECTION class="chatHistory pb-6 d-flex flex-column justify-content-end">
 							<DIV class="mb-4" id="messagesArea"></DIV>
 						</SECTION>
 					</DIV>

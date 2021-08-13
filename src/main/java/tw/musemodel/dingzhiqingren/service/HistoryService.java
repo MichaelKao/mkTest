@@ -164,6 +164,11 @@ public class HistoryService {
 	public static final Behavior BEHAVIOR_TALK = Behavior.LIAO_LIAO;
 
 	/**
+	 * 历程：要求車馬費
+	 */
+	public static final Behavior BEHAVIOR_REQ_FARE = Behavior.YAO_CHE_MA_FEI;
+
+	/**
 	 * 车马费(男对女)
 	 *
 	 * @param initiative 男生
@@ -187,7 +192,7 @@ public class HistoryService {
 			throw new RuntimeException("fare.passiveMustBeFemale");//被动方为男
 		}
 		if (points < 1) {
-			throw new RuntimeException("fare.pointsMustBeValid");//被动方为男
+			throw new RuntimeException("fare.pointsMustBeValid");//點數不能為負數
 		}
 		if (points(initiative) < Math.abs(points)) {
 			throw new RuntimeException("fare.insufficientPoints");//点数不足
@@ -221,6 +226,60 @@ public class HistoryService {
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
 				"fare.done",
+				null,
+				locale
+			)).
+			withResponse(true).
+			withResult(history.getOccurred()).
+			toJSONObject();
+	}
+
+	@Transactional
+	public JSONObject reqFare(Lover initiative, Lover passive, short points, Locale locale) {
+		if (Objects.isNull(initiative)) {
+			throw new IllegalArgumentException("fare.initiativeMustntBeNull");//无主动方
+		}
+		if (Objects.isNull(passive)) {
+			throw new IllegalArgumentException("fare.passiveMustntBeNull");//无被动方
+		}
+		if (Objects.equals(initiative.getGender(), true)) {
+			throw new RuntimeException("reqFare.initiativeMustBeFemale");//主动方为女
+		}
+		if (Objects.equals(passive.getGender(), false)) {
+			throw new RuntimeException("reqFare.passiveMustBeMale");//被动方为男
+		}
+		if (points < 1) {
+			throw new RuntimeException("fare.pointsMustBeValid");//點數不能為負數
+		}
+		History history = new History(
+			initiative,
+			passive,
+			BEHAVIOR_REQ_FARE,
+			(short) points
+		);
+		history = historyRepository.saveAndFlush(history);
+
+		// 推送通知給男生
+		webSocketServer.sendNotification(
+			passive.getIdentifier().toString(),
+			String.format(
+				"%s和你要求車馬費%d!",
+				initiative.getNickname(),
+				points
+			));
+		if (loverService.hasLineNotify(passive)) {
+			// LINE Notify
+			lineMessagingService.notify(
+				passive,
+				String.format(
+					"有一位甜心和你要求車馬費！馬上查看 https://%s/activeLogs.asp",
+					servant.LOCALHOST
+				));
+		}
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"reqFare.done",
 				null,
 				locale
 			)).

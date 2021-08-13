@@ -552,9 +552,9 @@ public class LoverService {
 		lover.setGender(signUp.getGender());
 		lover.setBirthday(signUp.getBirthday());
 		lover.setProfileImage(identifier.toString());
-		lover.setAboutMe("嗨，我正在尋找對象");
-		lover.setIdealConditions("找合得來的人");
-		lover.setGreeting("嗨！我想認識你！");
+		lover.setAboutMe("正在找尋一段比閨蜜還親密的養蜜關係");
+		lover.setIdealConditions("合得來的養蜜");
+		lover.setGreeting("嗨，有機會成為養蜜嗎?");
 		lover.setRegistered(new Date(System.currentTimeMillis()));
 		if (Objects.nonNull(signUp.getReferralCode())) {
 			Lover referrer = loverRepository.findByReferralCode(signUp.getReferralCode());
