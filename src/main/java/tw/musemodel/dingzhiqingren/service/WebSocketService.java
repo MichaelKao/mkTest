@@ -129,6 +129,7 @@ public class WebSocketService {
 				history.getGreeting(),
 				history.getSeen()
 			);
+			activity.setPoints(history.getPoints());
 			wholeHistoryMsgs.add(activity);
 		}
 		Collections.sort(wholeHistoryMsgs);

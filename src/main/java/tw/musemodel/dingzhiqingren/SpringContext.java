@@ -21,6 +21,9 @@ public class SpringContext implements ApplicationContextAware {
 
 	// Generic method to return a beanClass
 	public static <T> T getBean(Class<T> beanClass) {
-		return context.getBean(beanClass);
+		return context.
+			getBean(
+				beanClass
+			);
 	}
 }
