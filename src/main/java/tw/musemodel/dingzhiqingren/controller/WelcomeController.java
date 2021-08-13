@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -19,6 +21,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -562,11 +565,22 @@ public class WelcomeController {
 	 * @param authentication 认证
 	 * @return 重新排序的用户号们
 	 */
-	@PostMapping(path = "/reorder.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/reorder.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({"ROLE_ALMIGHTY"})
-	int[] reorder() {
-		return loverService.reorderPrimaryKey();
+	List<List<Object>> reorder() {
+		List<List<Object>> thingies = new ArrayList<>();
+		thingies.add(Arrays.
+			stream(loverService.reorderPrimaryKey()).
+			boxed().
+			collect(Collectors.toList())
+		);
+		thingies.add(Arrays.
+			stream(historyService.reorderPrimaryKey()).
+			boxed().
+			collect(Collectors.toList())
+		);
+		return thingies;
 	}
 
 	/**
@@ -2876,7 +2890,7 @@ public class WelcomeController {
 	@Secured({"ROLE_YONGHU"})
 	ModelAndView search(@RequestParam(required = false) Location location, @RequestParam(required = false) ServiceTag serviceTag, Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
-			servant.redirectToRoot();
+			return Servant.redirectToRoot();
 		}
 		// 本人
 		Lover me = loverService.loadByUsername(

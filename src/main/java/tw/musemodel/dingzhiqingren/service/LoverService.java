@@ -191,12 +191,6 @@ public class LoverService {
 	@Autowired
 	private WebSocketServer webSocketServer;
 
-	@Autowired
-	private LineGivenRepository lineGivenRepository;
-
-	@Autowired
-	private HistoryService historyService;
-
 	public List<Lover> loadLovers() {
 		return loverRepository.findAll();
 	}
@@ -319,7 +313,7 @@ public class LoverService {
 	/**
 	 * 计算用户年龄。
 	 *
-	 * @param lover 情人
+	 * @param lover 用户号
 	 * @return 足岁岁数
 	 */
 	@Transactional(readOnly = true)
@@ -552,9 +546,7 @@ public class LoverService {
 		);
 		return namedParameterJdbcTemplate.batchUpdate(
 			"UPDATE\"qing_ren\"SET\"id\"=:xin WHERE\"id\"=:jiu",
-			sqlParameterSources.toArray(
-				new MapSqlParameterSource[0]
-			)
+			sqlParameterSources.toArray(new SqlParameterSource[0])
 		);
 	}
 

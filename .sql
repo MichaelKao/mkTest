@@ -765,3 +765,6 @@ COMMENT ON COLUMN"li_cheng"."fang_xing_sheng_huo_zhao"IS'放行生活照';
 
 ALTER TYPE"xing_wei"
 ADD VALUE'YAO_CHE_MA_FEI';--要求車馬費
+
+ALTER TABLE"li_cheng"
+ALTER COLUMN"fang_xing_sheng_huo_zhao"DROP NOT NULL;

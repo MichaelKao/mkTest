@@ -2,6 +2,7 @@ package tw.musemodel.dingzhiqingren.service;
 
 import java.io.IOException;
 import java.net.URI;
+import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,6 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
@@ -53,7 +58,19 @@ public class HistoryService {
 	private Servant servant;
 
 	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
 	private MessageSource messageSource;
+
+	@Autowired
+	private WebSocketServer webSocketServer;
+
+	@Autowired
+	private LineMessagingService lineMessagingService;
+
+	@Autowired
+	private LoverService loverService;
 
 	@Autowired
 	private HistoryRepository historyRepository;
@@ -62,16 +79,7 @@ public class HistoryService {
 	private LineGivenRepository lineGivenRepository;
 
 	@Autowired
-	private LoverService loverService;
-
-	@Autowired
 	private LoverRepository loverRepository;
-
-	@Autowired
-	private WebSocketServer webSocketServer;
-
-	@Autowired
-	private LineMessagingService lineMessagingService;
 
 	/**
 	 * 历程：充值行为
@@ -230,6 +238,68 @@ public class HistoryService {
 	}
 
 	/**
+	 * 收藏
+	 *
+	 * @param initiative
+	 * @param passive
+	 * @param locale
+	 * @return
+	 */
+	@Transactional
+	public JSONObject follow(Lover initiative, Lover passive, Locale locale) {
+		if (Objects.isNull(initiative)) {
+			throw new IllegalArgumentException("follow.initiativeMustntBeNull");
+		}
+		if (Objects.isNull(passive)) {
+			throw new IllegalArgumentException("follow.passiveMustntBeNull");
+		}
+		if (Objects.equals(initiative, passive)) {
+			throw new RuntimeException("follow.mustBeDifferent");
+		}
+		if (Objects.equals(initiative.getGender(), passive.getGender())) {
+			throw new RuntimeException("follow.mustBeStraight");
+		}
+
+		Set<Lover> following = initiative.getFollowing();
+		for (Lover followed : following) {
+			if (Objects.equals(passive, followed)) {
+				following.remove(followed);
+				initiative.setFollowing(following);
+				loverRepository.saveAndFlush(initiative);
+				return new JavaScriptObjectNotation().
+					withReason(messageSource.getMessage(
+						"unfollow.done",
+						null,
+						locale
+					)).
+					withResponse(true).
+					toJSONObject();
+			}
+		}
+
+		following.add(passive);
+		initiative.setFollowing(following);
+		loverRepository.saveAndFlush(initiative);
+
+		History history = new History(
+			initiative,
+			passive,
+			BEHAVIOR_FOLLOW
+		);
+		historyRepository.saveAndFlush(history);
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"follow.done",
+				null,
+				locale
+			)).
+			withResponse(true).
+			withResult(history.getOccurred()).
+			toJSONObject();
+	}
+
+	/**
 	 * 给我赖(男对女)
 	 *
 	 * @param initiative 男生
@@ -327,8 +397,7 @@ public class HistoryService {
 	 * @return 杰森对象
 	 */
 	@Transactional
-	public JSONObject greet(Lover initiative, Lover passive,
-		String greetingMessage, Locale locale) {
+	public JSONObject greet(Lover initiative, Lover passive, String greetingMessage, Locale locale) {
 		if (Objects.isNull(initiative)) {
 			throw new IllegalArgumentException("greet.initiativeMustntBeNull");
 		}
@@ -458,6 +527,164 @@ public class HistoryService {
 	}
 
 	/**
+	 * 打開女生的 LINE
+	 *
+	 * @param male
+	 * @param female
+	 * @return
+	 */
+	@Transactional
+	public JSONObject openLine(Lover male, Lover female, Locale locale) {
+		History history = historyRepository.findByInitiativeAndPassiveAndBehavior(male, female, BEHAVIOR_LAI_KOU_DIAN);
+		if ((loverService.isVIP(male) || loverService.isVVIP(male)) && Objects.isNull(history)) {
+			History historyReply
+				= historyRepository.findByInitiativeAndPassiveAndBehavior(female, male, BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
+			historyReply.setReply(new Date(System.currentTimeMillis()));
+			historyRepository.saveAndFlush(historyReply);
+			if (!withinRequiredLimit(male)) {
+				Short cost = COST_GIMME_YOUR_LINE_INVITATION;
+				if (points(male) < Math.abs(cost)) {
+					throw new RuntimeException("openLine.insufficientPoints");//点数不足
+				}
+				historyRepository.saveAndFlush(new History(
+					male,
+					female,
+					BEHAVIOR_LAI_KOU_DIAN,
+					cost
+				));
+			} else if (withinRequiredLimit(male)) {
+				historyRepository.saveAndFlush(new History(
+					male,
+					female,
+					BEHAVIOR_LAI_KOU_DIAN,
+					(short) 0
+				));
+			}
+		} else if (!loverService.isVIP(male) && !loverService.isVVIP(male)) {
+			throw new RuntimeException("openLine.upgardeVipToOpen");
+		}
+
+		Boolean isLine = servant.isLine(URI.create(female.getInviteMeAsLineFriend()));
+		Boolean isWeChat = servant.isWeChat(URI.create(female.getInviteMeAsLineFriend()));
+		String redirect = null;
+		if (isLine) {
+			redirect = female.getInviteMeAsLineFriend();
+		}
+		if (isWeChat) {
+			redirect = String.format("/%s.png", female.getIdentifier());
+		}
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"openLine.done",
+				null,
+				locale
+			)).
+			withResponse(true).
+			withRedirect(redirect).
+			withResult(isLine ? "isLine" : "isWeChat").
+			toJSONObject();
+	}
+
+	/**
+	 * 看过我
+	 *
+	 * @param initiative 谁看了
+	 * @param passive 看了谁
+	 * @return 杰森对象
+	 */
+	@Transactional
+	public JSONObject peek(Lover initiative, Lover passive) {
+		if (Objects.isNull(initiative)) {
+			throw new IllegalArgumentException("peek.initiativeMustntBeNull");
+		}
+		if (Objects.isNull(passive)) {
+			throw new IllegalArgumentException("peek.passiveMustntBeNull");
+		}
+		if (Objects.equals(initiative, passive)) {
+			throw new RuntimeException("peek.mustBeDifferent");
+		}
+		if (Objects.equals(initiative.getGender(), passive.getGender())) {
+			throw new RuntimeException("peek.mustBeStraight");
+		}
+
+		History history = historyRepository.saveAndFlush(new History(
+			initiative,
+			passive,
+			BEHAVIOR_PEEK
+		));
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			withResult(history.getOccurred()).
+			toJSONObject();
+	}
+
+	/**
+	 * 剩余点数。
+	 *
+	 * @param lover 用户号
+	 * @return 点数
+	 */
+	@Transactional(readOnly = true)
+	public Long points(Lover lover) {
+		if (Objects.isNull(lover)) {
+			throw new IllegalArgumentException("points.loverMustntBeNull");
+		}
+		return historyRepository.sumByInitiativeHearts(lover);
+	}
+
+	/**
+	 * 星級評價
+	 *
+	 * @param initiative
+	 * @param passive
+	 * @return
+	 */
+	@Transactional
+	public JSONObject rate(Lover initiative, Lover passive, Short rate, String comment, Locale locale) {
+		if (Objects.isNull(initiative)) {
+			throw new IllegalArgumentException("rate.initiativeMustntBeNull");
+		}
+		if (Objects.isNull(passive)) {
+			throw new IllegalArgumentException("rate.passiveMustntBeNull");
+		}
+		if (Objects.equals(initiative, passive)) {
+			throw new RuntimeException("rate.mustBeDifferent");
+		}
+		if (Objects.equals(initiative.getGender(), passive.getGender())) {
+			throw new RuntimeException("rate.mustBeStraight");
+		}
+		if (Objects.isNull(rate)) {
+			throw new RuntimeException("rate.rateMustntBeNull");
+		}
+		if (comment.isBlank() || comment.isEmpty()) {
+			throw new RuntimeException("rate.commentMustntBeNull");
+		}
+		if (historyRepository.countByInitiativeAndPassiveAndBehavior(initiative, passive, BEHAVIOR_RATE) > 0) {
+			throw new RuntimeException("rate.onlyCanRateOnce");
+		}
+
+		History history = new History(
+			initiative,
+			passive,
+			BEHAVIOR_RATE
+		);
+		history.setRate(rate);
+		history.setComment(comment);
+		historyRepository.saveAndFlush(history);
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"rate.done",
+				null,
+				locale
+			)).
+			withResponse(true).
+			withResult(history.getOccurred()).
+			toJSONObject();
+	}
+
+	/**
 	 * 不給你賴
 	 *
 	 * @param initiative
@@ -529,218 +756,114 @@ public class HistoryService {
 	}
 
 	/**
-	 * 看过我
+	 * 从头重新排序主键值。
 	 *
-	 * @param initiative 谁看了
-	 * @param passive 看了谁
-	 * @return 杰森对象
+	 * @return 重新排序的历程们
 	 */
 	@Transactional
-	public JSONObject peek(Lover initiative, Lover passive) {
-		if (Objects.isNull(initiative)) {
-			throw new IllegalArgumentException("peek.initiativeMustntBeNull");
+	public int[] reorderPrimaryKey() {
+		List<SqlParameterSource> sqlParameterSources = new ArrayList<>();
+		List<Long> jiuList = jdbcTemplate.query(
+			"SELECT\"id\"FROM\"li_cheng\"ORDER BY\"id\"",
+			(resultSet, rowNum) -> resultSet.getLong("id")
+		);
+		int xin = 0;
+		for (long jiu : jiuList) {
+			++xin;
+			if (xin < jiu) {
+				sqlParameterSources.add(new MapSqlParameterSource().
+					addValue(
+						"xin",
+						xin,
+						Types.BIGINT
+					).
+					addValue(
+						"jiu",
+						jiu,
+						Types.BIGINT
+					)
+				);
+			}
 		}
-		if (Objects.isNull(passive)) {
-			throw new IllegalArgumentException("peek.passiveMustntBeNull");
-		}
-		if (Objects.equals(initiative, passive)) {
-			throw new RuntimeException("peek.mustBeDifferent");
-		}
-		if (Objects.equals(initiative.getGender(), passive.getGender())) {
-			throw new RuntimeException("peek.mustBeStraight");
-		}
-
-		History history = historyRepository.saveAndFlush(new History(
-			initiative,
-			passive,
-			BEHAVIOR_PEEK
-		));
-		return new JavaScriptObjectNotation().
-			withResponse(true).
-			withResult(history.getOccurred()).
-			toJSONObject();
+		NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(
+			jdbcTemplate.getDataSource()
+		);
+		return namedParameterJdbcTemplate.batchUpdate(
+			"UPDATE\"li_cheng\"SET\"id\"=:xin WHERE\"id\"=:jiu",
+			sqlParameterSources.toArray(new SqlParameterSource[0])
+		);
 	}
 
 	/**
-	 * 打開女生的 LINE
+	 * 若主动方未同意或同意则拒绝，反之则同意。
+	 *
+	 * @param initiative 主动方
+	 * @param passive 被动方
+	 * @return 被动方 主动方是否放行生活照给被动方
+	 */
+	public boolean toggleShowAllPictures(Lover initiative, Lover passive) {
+		History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
+			initiative,
+			passive,
+			History.Behavior.FANG_XING_SHENG_HUO_ZHAO
+		);
+		if (Objects.isNull(history)) {
+			history = new History(
+				initiative,
+				passive,
+				History.Behavior.FANG_XING_SHENG_HUO_ZHAO
+			);
+		}
+		Boolean showAllPictures = history.getShowAllPictures();
+		history.setShowAllPictures(
+			!(Objects.isNull(showAllPictures) || showAllPictures)
+		);
+		return historyRepository.
+			saveAndFlush(history).
+			getShowAllPictures();
+	}
+
+	/**
+	 * 距離上次被拒絕 12 小時內
+	 *
+	 * @param history
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public boolean within12hrsFromLastRefused(History history) {
+		Date nowDate = new Date();
+		Calendar refused = Calendar.getInstance();
+		refused.setTime(history.getOccurred());
+		refused.add(Calendar.HOUR, 12);
+		Date refusedDate = refused.getTime();
+
+		return nowDate.before(refusedDate);
+	}
+
+	/**
+	 * 男生開啟 加入通訊軟體 12小時內未超過上限值
 	 *
 	 * @param male
-	 * @param female
 	 * @return
 	 */
-	@Transactional
-	public JSONObject openLine(Lover male, Lover female, Locale locale) {
-		History history = historyRepository.findByInitiativeAndPassiveAndBehavior(male, female, BEHAVIOR_LAI_KOU_DIAN);
-		if ((loverService.isVIP(male) || loverService.isVVIP(male)) && Objects.isNull(history)) {
-			History historyReply
-				= historyRepository.findByInitiativeAndPassiveAndBehavior(female, male, BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
-			historyReply.setReply(new Date(System.currentTimeMillis()));
-			historyRepository.saveAndFlush(historyReply);
-			if (!withinRequiredLimit(male)) {
-				Short cost = COST_GIMME_YOUR_LINE_INVITATION;
-				if (points(male) < Math.abs(cost)) {
-					throw new RuntimeException("openLine.insufficientPoints");//点数不足
-				}
-				historyRepository.saveAndFlush(new History(
-					male,
-					female,
-					BEHAVIOR_LAI_KOU_DIAN,
-					cost
-				));
-			} else if (withinRequiredLimit(male)) {
-				historyRepository.saveAndFlush(new History(
-					male,
-					female,
-					BEHAVIOR_LAI_KOU_DIAN,
-					(short) 0
-				));
-			}
-		} else if (!loverService.isVIP(male) && !loverService.isVVIP(male)) {
-			throw new RuntimeException("openLine.upgardeVipToOpen");
-		}
-
-		Boolean isLine = servant.isLine(URI.create(female.getInviteMeAsLineFriend()));
-		Boolean isWeChat = servant.isWeChat(URI.create(female.getInviteMeAsLineFriend()));
-		String redirect = null;
-		if (isLine) {
-			redirect = female.getInviteMeAsLineFriend();
-		}
-		if (isWeChat) {
-			redirect = String.format("/%s.png", female.getIdentifier());
-		}
-
-		return new JavaScriptObjectNotation().
-			withReason(messageSource.getMessage(
-				"openLine.done",
-				null,
-				locale
-			)).
-			withResponse(true).
-			withRedirect(redirect).
-			withResult(isLine ? "isLine" : "isWeChat").
-			toJSONObject();
-	}
-
-	/**
-	 * 星級評價
-	 *
-	 * @param initiative
-	 * @param passive
-	 * @return
-	 */
-	@Transactional
-	public JSONObject rate(Lover initiative, Lover passive, Short rate, String comment, Locale locale) {
-		if (Objects.isNull(initiative)) {
-			throw new IllegalArgumentException("rate.initiativeMustntBeNull");
-		}
-		if (Objects.isNull(passive)) {
-			throw new IllegalArgumentException("rate.passiveMustntBeNull");
-		}
-		if (Objects.equals(initiative, passive)) {
-			throw new RuntimeException("rate.mustBeDifferent");
-		}
-		if (Objects.equals(initiative.getGender(), passive.getGender())) {
-			throw new RuntimeException("rate.mustBeStraight");
-		}
-		if (Objects.isNull(rate)) {
-			throw new RuntimeException("rate.rateMustntBeNull");
-		}
-		if (comment.isBlank() || comment.isEmpty()) {
-			throw new RuntimeException("rate.commentMustntBeNull");
-		}
-		if (historyRepository.countByInitiativeAndPassiveAndBehavior(initiative, passive, BEHAVIOR_RATE) > 0) {
-			throw new RuntimeException("rate.onlyCanRateOnce");
-		}
-
-		History history = new History(
-			initiative,
-			passive,
-			BEHAVIOR_RATE
+	@Transactional(readOnly = true)
+	public boolean withinRequiredLimit(Lover male) {
+		Date twelveHrsAgo = null;
+		Date nowDate = null;
+		Calendar twelveHrs = Calendar.getInstance();
+		twelveHrs.add(Calendar.HOUR, -12);
+		twelveHrsAgo = twelveHrs.getTime();
+		nowDate = new Date();
+		Long dailyCount = historyRepository.countByInitiativeAndBehaviorAndOccurredBetween(
+			male,
+			BEHAVIOR_LAI_KOU_DIAN,
+			twelveHrsAgo,
+			nowDate
 		);
-		history.setRate(rate);
-		history.setComment(comment);
-		historyRepository.saveAndFlush(history);
-
-		return new JavaScriptObjectNotation().
-			withReason(messageSource.getMessage(
-				"rate.done",
-				null,
-				locale
-			)).
-			withResponse(true).
-			withResult(history.getOccurred()).
-			toJSONObject();
-	}
-
-	/**
-	 * 收藏
-	 *
-	 * @param initiative
-	 * @param passive
-	 * @param locale
-	 * @return
-	 */
-	public JSONObject follow(Lover initiative, Lover passive, Locale locale) {
-		if (Objects.isNull(initiative)) {
-			throw new IllegalArgumentException("follow.initiativeMustntBeNull");
-		}
-		if (Objects.isNull(passive)) {
-			throw new IllegalArgumentException("follow.passiveMustntBeNull");
-		}
-		if (Objects.equals(initiative, passive)) {
-			throw new RuntimeException("follow.mustBeDifferent");
-		}
-		if (Objects.equals(initiative.getGender(), passive.getGender())) {
-			throw new RuntimeException("follow.mustBeStraight");
-		}
-
-		Set<Lover> following = initiative.getFollowing();
-		for (Lover followed : following) {
-			if (Objects.equals(passive, followed)) {
-				following.remove(followed);
-				initiative.setFollowing(following);
-				loverRepository.saveAndFlush(initiative);
-				return new JavaScriptObjectNotation().
-					withReason(messageSource.getMessage(
-						"unfollow.done",
-						null,
-						locale
-					)).
-					withResponse(true).
-					toJSONObject();
-			}
-		}
-
-		following.add(passive);
-		initiative.setFollowing(following);
-		loverRepository.saveAndFlush(initiative);
-
-		History history = new History(
-			initiative,
-			passive,
-			BEHAVIOR_FOLLOW
-		);
-		historyRepository.saveAndFlush(history);
-
-		return new JavaScriptObjectNotation().
-			withReason(messageSource.getMessage(
-				"follow.done",
-				null,
-				locale
-			)).
-			withResponse(true).
-			withResult(history.getOccurred()).
-			toJSONObject();
+		return (loverService.isVVIP(male) || loverService.isVIP(male)) && Objects.nonNull(dailyCount) && dailyCount < VIP_DAILY_TOLERANCE;
 	}
 
 	@Transactional(readOnly = true)
-	public Long points(Lover lover) {
-		if (Objects.isNull(lover)) {
-			throw new IllegalArgumentException("points.loverMustntBeNull");
-		}
-		return historyRepository.sumByInitiativeHearts(lover);
-	}
-
 	public List<Activity> findActiveLogsOrderByOccurredDesc(Lover lover) {
 		List<Activity> list = new ArrayList<Activity>();
 
@@ -770,11 +893,21 @@ public class HistoryService {
 			);
 			list.add(activeLogs);
 		}
+
 		Collections.sort(list, Comparator.reverseOrder());
 		return list;
 	}
 
-	// 歷程 document
+	/**
+	 * 歷程 document
+	 *
+	 * @param lover
+	 * @return
+	 * @throws org.xml.sax.SAXException
+	 * @throws javax.xml.parsers.ParserConfigurationException
+	 * @throws java.io.IOException
+	 */
+	@Transactional(readOnly = true)
 	public Document historiesToDocument(Lover lover) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -1065,44 +1198,5 @@ public class HistoryService {
 			);
 		}
 		return document;
-	}
-
-	/**
-	 * 男生開啟 加入通訊軟體 12小時內未超過上限值
-	 *
-	 * @param male
-	 * @return
-	 */
-	public boolean withinRequiredLimit(Lover male) {
-		Date twelveHrsAgo = null;
-		Date nowDate = null;
-		Calendar twelveHrs = Calendar.getInstance();
-		twelveHrs.add(Calendar.HOUR, -12);
-		twelveHrsAgo = twelveHrs.getTime();
-		nowDate = new Date();
-		Long dailyCount = historyRepository.countByInitiativeAndBehaviorAndOccurredBetween(
-			male,
-			BEHAVIOR_LAI_KOU_DIAN,
-			twelveHrsAgo,
-			nowDate
-		);
-		return (loverService.isVVIP(male) || loverService.isVIP(male)) && Objects.nonNull(dailyCount) && dailyCount < VIP_DAILY_TOLERANCE;
-	}
-
-	/**
-	 * 距離上次被拒絕 12 小時內
-	 *
-	 * @param male
-	 * @param female
-	 * @return
-	 */
-	public boolean within12hrsFromLastRefused(History history) {
-		Date nowDate = new Date();
-		Calendar refused = Calendar.getInstance();
-		refused.setTime(history.getOccurred());
-		refused.add(Calendar.HOUR, 12);
-		Date refusedDate = refused.getTime();
-
-		return nowDate.before(refusedDate);
 	}
 }
