@@ -6,12 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
+import tw.musemodel.dingzhiqingren.service.HistoryService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 
 /**
@@ -43,5 +46,14 @@ public class ProofOfConcept {
 	Lover passwd(@PathVariable Lover lover, @RequestParam String shadow) {
 		lover.setShadow(passwordEncoder.encode(shadow));
 		return loverService.saveLover(lover);
+	}
+
+	@Autowired
+	private HistoryService historyService;
+
+	@GetMapping(path = "/showAllPix.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	boolean showAllPix(@RequestParam Lover a, @RequestParam Lover b) {
+		return historyService.toggleShowAllPictures(a, b);
 	}
 }

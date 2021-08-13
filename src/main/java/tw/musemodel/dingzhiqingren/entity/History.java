@@ -91,6 +91,9 @@ public class History implements java.io.Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date reply;
 
+	@Column(name = "fang_xing_sheng_huo_zhao")
+	private Boolean showAllPictures;
+
 	/**
 	 * 默认构造器
 	 */
@@ -103,7 +106,6 @@ public class History implements java.io.Serializable {
 	 * 构造器：适用于「升级为 VIP」。
 	 *
 	 * @param initiative 用户(应限男性)
-	 * @param behavior 行为
 	 * @param occurred 时戳
 	 * @param luJie 绿界
 	 */
@@ -352,6 +354,20 @@ public class History implements java.io.Serializable {
 	 */
 	public void setReply(Date reply) {
 		this.reply = reply;
+	}
+
+	/**
+	 * @return 放行生活照
+	 */
+	public Boolean getShowAllPictures() {
+		return showAllPictures;
+	}
+
+	/**
+	 * @param showAllPictures 放行生活照
+	 */
+	public void setShowAllPictures(Boolean showAllPictures) {
+		this.showAllPictures = showAllPictures;
 	}
 
 	/**
