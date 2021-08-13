@@ -131,7 +131,7 @@ public class WebSocketChatServer {
 
 		Behavior behavior = null;
 		if (sender.getGender()) {
-			behavior = BEHAVIOR_TALK;
+			behavior = BEHAVIOR_CHAT_MORE;
 		} else {
 			behavior = BEHAVIOR_GREETING;
 		}

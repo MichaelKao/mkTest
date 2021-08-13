@@ -47,7 +47,7 @@ public class WebSocketService {
 	public List<Activity> wholeHistoryMsgs(Lover male, Lover female) {
 
 		List<History> maleTalkHistoryMsgs = historyRepository.
-			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(male, female, BEHAVIOR_TALK);
+			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(male, female, BEHAVIOR_CHAT_MORE);
 		List<History> gimmeHistoryMsgs = historyRepository.
 			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(male, female, BEHAVIOR_GIMME_YOUR_LINE_INVITATION);
 		List<History> alreadyBeingFriendHistoryMsgs = historyRepository.
@@ -245,10 +245,9 @@ public class WebSocketService {
 		twelveHrs.add(Calendar.HOUR, -12);
 		twelveHrsAgo = twelveHrs.getTime();
 		nowDate = new Date();
-		int msgsCount = historyRepository.countByInitiativeAndPassiveAndBehaviorAndOccurredBetween(
-			male,
+		int msgsCount = historyRepository.countByInitiativeAndPassiveAndBehaviorAndOccurredBetween(male,
 			female,
-			BEHAVIOR_TALK,
+			BEHAVIOR_CHAT_MORE,
 			twelveHrsAgo,
 			nowDate
 		);

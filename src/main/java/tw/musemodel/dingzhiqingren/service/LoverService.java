@@ -144,6 +144,9 @@ public class LoverService {
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
+	private WebSocketServer webSocketServer;
+
+	@Autowired
 	private Servant servant;
 
 	@Autowired
@@ -187,9 +190,6 @@ public class LoverService {
 
 	@Autowired
 	private WithdrawalInfoRepository withdrawalInfoRepository;
-
-	@Autowired
-	private WebSocketServer webSocketServer;
 
 	public List<Lover> loadLovers() {
 		return loverRepository.findAll();

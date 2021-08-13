@@ -82,9 +82,19 @@ public class HistoryService {
 	private LoverRepository loverRepository;
 
 	/**
+	 * 历程：要求車馬費
+	 */
+	public static final Behavior BEHAVIOR_ASK_FOR_FARE = Behavior.YAO_CHE_MA_FEI;
+
+	/**
 	 * 历程：充值行为
 	 */
 	public static final Behavior BEHAVIOR_CHARGED = Behavior.CHU_ZHI;
+
+	/**
+	 * 历程：再聊聊
+	 */
+	public static final Behavior BEHAVIOR_CHAT_MORE = Behavior.LIAO_LIAO;
 
 	/**
 	 * 历程：车马费(男对女)行为
@@ -167,14 +177,26 @@ public class HistoryService {
 	public static final Behavior BEHAVIOR_GROUP_GREETING = Behavior.QUN_FA;
 
 	/**
-	 * 历程：再聊聊
+	 * 历程：放行生活照
 	 */
-	public static final Behavior BEHAVIOR_TALK = Behavior.LIAO_LIAO;
+	public static final Behavior BEHAVIOR_PICTURES_VIEWABLE = Behavior.LIAO_LIAO;
 
 	/**
-	 * 历程：要求車馬費
+	 * 主动方是否愿意给被动方看生活照。
+	 *
+	 * @param initiative 主动方
+	 * @param passive 被动方
+	 * @return 主动方是否放行生活照给被动方
 	 */
-	public static final Behavior BEHAVIOR_REQ_FARE = Behavior.YAO_CHE_MA_FEI;
+	@Transactional(readOnly = true)
+	public boolean arePicturesViewable(Lover initiative, Lover passive) {
+		History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
+			initiative,
+			passive,
+			BEHAVIOR_PICTURES_VIEWABLE
+		);
+		return Objects.nonNull(history) && history.getShowAllPictures();
+	}
 
 	/**
 	 * 车马费(男对女)
@@ -262,7 +284,7 @@ public class HistoryService {
 		History history = new History(
 			initiative,
 			passive,
-			BEHAVIOR_REQ_FARE,
+			BEHAVIOR_ASK_FOR_FARE,
 			(short) points
 		);
 		history = historyRepository.saveAndFlush(history);
@@ -858,19 +880,19 @@ public class HistoryService {
 	 *
 	 * @param initiative 主动方
 	 * @param passive 被动方
-	 * @return 被动方 主动方是否放行生活照给被动方
+	 * @return 主动方是否放行生活照给被动方
 	 */
 	public boolean toggleShowAllPictures(Lover initiative, Lover passive) {
 		History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
 			initiative,
 			passive,
-			History.Behavior.FANG_XING_SHENG_HUO_ZHAO
+			BEHAVIOR_PICTURES_VIEWABLE
 		);
 		if (Objects.isNull(history)) {
 			history = new History(
 				initiative,
 				passive,
-				History.Behavior.FANG_XING_SHENG_HUO_ZHAO
+				BEHAVIOR_PICTURES_VIEWABLE
 			);
 		}
 		Boolean showAllPictures = history.getShowAllPictures();
