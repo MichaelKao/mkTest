@@ -190,7 +190,7 @@
 							<xsl:if test="@decideBtn">
 								<DIV class="d-flex align-items-center justify-content-center femaleBtn floatBtn">
 									<BUTTON class="btn btn-sm btn-outline-primary px-3 py-2 m-0 me-1 border-radius-xl accept" type="button">接受</BUTTON>
-									<BUTTON class="btn btn-sm btn-outline-dark px-3 py-2 m-0 me-1 border-radius-xl refuse" type="button">拒絕</BUTTON>
+									<BUTTON class="btn btn-sm btn-outline-dark px-3 py-2 m-0 border-radius-xl refuse" type="button">拒絕</BUTTON>
 								</DIV>
 							</xsl:if>
 							<xsl:if test="@rateBtn">
