@@ -58,6 +58,8 @@ public class WebSocketService {
 			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(female, male, BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
 		List<History> refuseAsFriendHistoryMsgs = historyRepository.
 			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(female, male, BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
+		List<History> requestFareHistoryMsgs = historyRepository.
+			findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(female, male, BEHAVIOR_REQ_FARE);
 		List<Activity> wholeHistoryMsgs = new ArrayList<>();
 		for (History history : maleTalkHistoryMsgs) {
 			Activity activity = new Activity(
@@ -110,6 +112,16 @@ public class WebSocketService {
 			wholeHistoryMsgs.add(activity);
 		}
 		for (History history : refuseAsFriendHistoryMsgs) {
+			Activity activity = new Activity(
+				female.getIdentifier().toString(),
+				history.getBehavior(),
+				history.getOccurred(),
+				history.getGreeting(),
+				history.getSeen()
+			);
+			wholeHistoryMsgs.add(activity);
+		}
+		for (History history : requestFareHistoryMsgs) {
 			Activity activity = new Activity(
 				female.getIdentifier().toString(),
 				history.getBehavior(),

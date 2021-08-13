@@ -385,8 +385,8 @@ $(document).ready(function () {
 	}
 
 	function scrollToEnd() {
-		var scrollHeight = $('.chatRoom').prop('scrollHeight');
-		$('.chatRoom').scrollTop(scrollHeight);
+		var scrollHeight = $('.chatroom').prop('scrollHeight');
+		$('.chatroom').scrollTop(scrollHeight);
 	}
 
 	var $textarea = $('#chatInput');
