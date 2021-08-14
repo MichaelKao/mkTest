@@ -63,11 +63,7 @@ public class WebSocketChatServer {
 	public void setLineGivenRepository(LineGivenRepository lineGivenRepository) {
 		WebSocketChatServer.lineGivenRepository = lineGivenRepository;
 	}
-//	private HistoryRepository historyRepository = SpringContext.getBean(HistoryRepository.class);
 
-//	private LoverService loverService = SpringContext.getBean(LoverService.class);
-//	private WebSocketService webSocketService = SpringContext.getBean(WebSocketService.class);
-//	private LineGivenRepository lineGivenRepository = SpringContext.getBean(LineGivenRepository.class);
 	//靜態常數，用來記錄當前的再現連接數。應該用執行緒較安全。
 	private static AtomicInteger online = new AtomicInteger();
 
