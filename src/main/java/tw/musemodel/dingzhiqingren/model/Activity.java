@@ -27,7 +27,11 @@ public class Activity implements Comparable<Activity> {
 
 	private Date reply;
 
+	// 用於聊天室：紀錄寄送人
 	private String sender;
+
+	// 用於聊天室：要求車馬費的歷程 id
+	private Long id;
 
 	@Override
 	public int compareTo(Activity other) {
@@ -135,5 +139,13 @@ public class Activity implements Comparable<Activity> {
 
 	public void setSender(String sender) {
 		this.sender = sender;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 }

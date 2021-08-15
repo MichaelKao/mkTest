@@ -2126,6 +2126,45 @@ public class WelcomeController {
 		return jsonObject.toString();
 	}
 
+	@PostMapping(path = "/resFare.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
+	String resFare(@RequestParam("whom") UUID femaleUUID, @RequestParam String historyId,
+		@RequestParam Boolean result, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+
+		History reqHistory = historyRepository.findById(Long.parseLong(historyId)).orElse(null);
+		reqHistory.setReply(new Date(System.currentTimeMillis()));
+		historyRepository.saveAndFlush(reqHistory);
+		Lover male = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Lover female = loverService.loadByIdentifier(femaleUUID);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = historyService.fare(
+				male,
+				female,
+				reqHistory.getPoints(),
+				locale
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
+	}
+
 	/**
 	 * 要求車馬費
 	 *

@@ -153,6 +153,7 @@ public class WebSocketService {
 				history.getSeen()
 			);
 			activity.setPoints(history.getPoints());
+			activity.setId(history.getId());
 			wholeHistoryMsgs.add(activity);
 		}
 		Collections.sort(wholeHistoryMsgs);

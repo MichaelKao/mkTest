@@ -83,24 +83,50 @@ $(document).ready(function () {
 					self === msg.sender ? divChild.className += 'bg-primary text-light border-radius-xl px-3 py-2 me-1 align-self-end shadow wordBreak' : divChild.className += 'bg-light border-radius-xl px-3 py-2 ms-1 align-self-start shadow wordBreak';
 					self === msg.sender ? dateSpan.className += 'text-xs align-self-end me-2' : dateSpan.className += 'text-xs align-self-start ms-2';
 					if (behavior === 'YAO_CHE_MA_FEI') {
-						self === msg.sender ? divChild.innerHTML = '您已和對方要求車馬費' + msg.points : divChild.innerHTML = '對方和您要求車馬費' + msg.points;
+						self === msg.sender ? divChild.innerHTML = '您已和對方要求 💗 ' + msg.points + ' 車馬費' : divChild.innerHTML = '對方和您要求 💗 ' + msg.points + ' 車馬費';
 						if (isMale === 'true') {
 							var div = document.createElement('DIV');
+							$(divChild).attr('id', msg.id);
 							$(divChild).append(div);
 							var btn1 = document.createElement('BUTTON');
 							$(btn1).attr({
-								'class': 'btn btn-sm btn-outline-primary px-3 py-2 m-0 me-1 border-radius-xl',
+								'class': 'btn btn-sm btn-outline-primary p-2 m-0 me-1 border-radius-lg acceptFare',
 								'type': 'button'
 							});
 							$(div).append(btn1);
 							$(btn1).html('給出');
 							var btn2 = document.createElement('BUTTON');
 							$(btn2).attr({
-								'class': 'btn btn-sm btn-outline-primary px-3 py-2 m-0 border-radius-xl',
+								'class': 'btn btn-sm btn-outline-primary p-2 m-0 border-radius-lg refuseFare',
 								'type': 'button'
 							});
 							$(btn2).html('下次');
 							$(div).append(btn2);
+
+							$('BUTTON.acceptFare').click(function () {
+								event.preventDefault();
+								let btn = this;
+								$.post(
+									'/resFare.json',
+									{
+										historyId: $(btn).closest('DIV').attr('id'),
+										status: true,
+										whom: friend
+									},
+									function (data) {
+										if (data.response) {
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+											$('#fareModal').modal('hide');
+										} else {
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+										}
+									},
+									'json'
+									);
+								return false;
+							});
 						}
 						return;
 					}
