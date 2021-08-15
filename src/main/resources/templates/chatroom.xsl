@@ -157,24 +157,26 @@
 								</SPAN>
 							</A>
 						</DIV>
-						<DIV class="ms-auto me-3">
-							<BUTTON class="btn btn-link m-0 p-3" data-bs-target="#fareModal" data-bs-toggle="modal" type="button">
-								<xsl:if test="@gender = 'true'">
-									<xsl:attribute name="id">fare</xsl:attribute>
-								</xsl:if>
-								<xsl:if test="@gender = 'false'">
-									<xsl:attribute name="id">reqFare</xsl:attribute>
-								</xsl:if>
-								<I class="fad fa-taxi font30"></I>
-							</BUTTON>
-							<A class="btn btn-link m-0 p-3" data-bs-toggle="dropdown">
-								<I class="fal fa-ellipsis-v mb-0 font30"></I>
-							</A>
-							<DIV class="dropdown-menu shadow">
-								<BUTTON class="dropdown-item">檢舉對方</BUTTON>
-								<BUTTON class="dropdown-item" data-bs-target="#blockModal" data-bs-toggle="modal">封鎖對方</BUTTON>
+						<xsl:if test="not(@blocking) and not(@blockedBy)">
+							<DIV class="ms-auto me-3">
+								<BUTTON class="btn btn-link m-0 p-3" data-bs-target="#fareModal" data-bs-toggle="modal" type="button">
+									<xsl:if test="@gender = 'true'">
+										<xsl:attribute name="id">fare</xsl:attribute>
+									</xsl:if>
+									<xsl:if test="@gender = 'false'">
+										<xsl:attribute name="id">reqFare</xsl:attribute>
+									</xsl:if>
+									<I class="fad fa-taxi font30"></I>
+								</BUTTON>
+								<A class="btn btn-link m-0 p-3" data-bs-toggle="dropdown">
+									<I class="fal fa-ellipsis-v mb-0 font30"></I>
+								</A>
+								<DIV class="dropdown-menu shadow">
+									<BUTTON class="dropdown-item">檢舉對方</BUTTON>
+									<BUTTON class="dropdown-item" data-bs-target="#blockModal" data-bs-toggle="modal">封鎖對方</BUTTON>
+								</DIV>
 							</DIV>
-						</DIV>
+						</xsl:if>
 					</DIV>
 				</SECTION>
 				<MAIN class="chatroom">
@@ -187,13 +189,13 @@
 				<SECTION id="chatInputWrapper" class="fixed-bottom col-12 col-md-10 mx-auto shadow">
 					<DIV class="d-flex align-items-center justify-content-center p-2 position-relative footerWrap">
 						<xsl:if test="@gender = 'false'">
-							<xsl:if test="@decideBtn">
+							<xsl:if test="@decideBtn and not(@blocking) and not(@blockedBy)">
 								<DIV class="d-flex align-items-center justify-content-center femaleBtn floatBtn">
 									<BUTTON class="btn btn-sm btn-outline-primary px-3 py-2 m-0 me-1 border-radius-xl accept" type="button">接受</BUTTON>
 									<BUTTON class="btn btn-sm btn-outline-dark px-3 py-2 m-0 border-radius-xl refuse" type="button">拒絕</BUTTON>
 								</DIV>
 							</xsl:if>
-							<xsl:if test="@rateBtn">
+							<xsl:if test="@rateBtn and not(@blocking) and not(@blockedBy)">
 								<DIV class="d-flex align-items-center justify-content-center femaleBtn floatBtn">
 									<BUTTON class="btn btn-sm btn-warning px-3 py-2 m-0 border-radius-xl rate" data-bs-target="#rateModal" data-bs-toggle="modal" type="button">評價</BUTTON>
 								</DIV>
@@ -202,19 +204,19 @@
 						<xsl:if test="@gender = 'true'">
 							<DIV class="d-flex align-items-center justify-content-center maleBtn floatBtn">
 								<xsl:choose>
-									<xsl:when test="@reqSocialMediaBtn">
+									<xsl:when test="@reqSocialMediaBtn and not(@blocking) and not(@blockedBy)">
 										<BUTTON class="btn btn-sm btn-info px-3 py-2 m-0 border-radius-xl" type="button">
 											<xsl:attribute name="id">giveMeLine</xsl:attribute>
 											<SPAN>要求通訊軟體</SPAN>
 											<I class="far fa-user-plus ms-1"></I>
 										</BUTTON>
 									</xsl:when>
-									<xsl:when test="@waitingForRes">
+									<xsl:when test="@waitingForRes and not(@blocking) and not(@blockedBy)">
 										<BUTTON class="btn btn-sm btn-info text-light px-3 py-2 m-0 border-radius-xl" disabled="" type="button">
 											<SPAN>已要求通訊軟體, 等待甜心回應</SPAN>
 										</BUTTON>
 									</xsl:when>
-									<xsl:when test="@addLineBtn">
+									<xsl:when test="@addLineBtn and not(@blocking) and not(@blockedBy)">
 										<BUTTON class="btn btn-sm btn-success px-3 py-2 m-0 border-radius-xl openSocialMedia" type="button">
 											<SPAN>加入好友</SPAN>
 											<xsl:if test="@remindDeduct">
@@ -223,20 +225,28 @@
 										</BUTTON>
 									</xsl:when>
 								</xsl:choose>
-								<xsl:if test="@rateBtn">
+								<xsl:if test="@rateBtn and not(@blocking) and not(@blockedBy)">
 									<BUTTON class="btn btn-sm btn-warning px-3 py-2 m-0 ms-1 border-radius-xl rate" data-bs-target="#rateModal" data-bs-toggle="modal" type="button">評價</BUTTON>
 								</xsl:if>
 							</DIV>
 						</xsl:if>
-						<xsl:if test="not(@notAbleToSendMsgs)">
-							<TEXTAREA class="form-control bg-light" id="chatInput" maxlength="240" placeholder="說點什麼吧...!" rows="1"></TEXTAREA>
-							<BUTTON class="btn btn-icon-only btn-link m-0 p-0 sendMsgBtn" type="button">
-								<I class="fal fa-paper-plane" style="font-size: 30px;"></I>
-							</BUTTON>
-						</xsl:if>
-						<xsl:if test="@notAbleToSendMsgs">
-							<SPAN>12小時內僅能發送3句話給甜心</SPAN>
-						</xsl:if>
+						<xsl:choose>
+							<xsl:when test="not(@notAbleToSendMsgs) and not(@blocking) and not(@blockedBy)">
+								<TEXTAREA class="form-control bg-light" id="chatInput" maxlength="240" placeholder="說點什麼吧...!" rows="1"></TEXTAREA>
+								<BUTTON class="btn btn-icon-only btn-link m-0 p-0 sendMsgBtn" type="button">
+									<I class="fal fa-paper-plane" style="font-size: 30px;"></I>
+								</BUTTON>
+							</xsl:when>
+							<xsl:when test="@blockedBy">
+								<SPAN>此用戶已不存在</SPAN>
+							</xsl:when>
+							<xsl:when test="@blocking">
+								<SPAN>您已封鎖對方</SPAN>
+							</xsl:when>
+							<xsl:when test="@notAbleToSendMsgs">
+								<SPAN>12小時內僅能發送3句話給甜心</SPAN>
+							</xsl:when>
+						</xsl:choose>
 					</DIV>
 				</SECTION>
 			</DIV>

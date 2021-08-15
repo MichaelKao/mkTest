@@ -278,4 +278,9 @@ $(document).ready(function () {
 				console.log('Something went wrong', err);
 			})
 	});
+
+	$('#blockedModal').modal('show');
+	$('#blockedModal').on('hidden.bs.modal', function () {
+		location.href = '/';
+	});
 });

@@ -1070,7 +1070,8 @@ public class HistoryService {
 						initiativeNickname,
 						activeLogs.getGreeting()
 					);
-					if (Objects.isNull(activeLogs.getReply())) {
+					if (Objects.isNull(activeLogs.getReply())
+						&& (!initiative.getBlocking().contains(passive) && !initiative.getBlockedBy().contains(passive))) {
 						historyElement.setAttribute(
 							"decideButton",
 							null
@@ -1087,7 +1088,7 @@ public class HistoryService {
 						initiativeNickname
 					);
 					LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(initiative, passive);
-					if (Objects.nonNull(lineGiven) && lineGiven.getResponse()) {
+					if (Objects.nonNull(lineGiven) && lineGiven.getResponse() && (!initiative.getBlocking().contains(passive) && !initiative.getBlockedBy().contains(passive))) {
 						historyElement.setAttribute(
 							"addLineButton",
 							null
@@ -1101,7 +1102,8 @@ public class HistoryService {
 						}
 					}
 					if (Objects.isNull(
-						historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(passive, initiative, BEHAVIOR_RATE))) {
+						historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(passive, initiative, BEHAVIOR_RATE))
+						&& (!initiative.getBlocking().contains(passive) && !initiative.getBlockedBy().contains(passive))) {
 						historyElement.setAttribute(
 							"rateButton",
 							null
@@ -1116,7 +1118,8 @@ public class HistoryService {
 						passiveNickname
 					);
 					if (Objects.isNull(
-						historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(initiative, passive, BEHAVIOR_RATE))) {
+						historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(initiative, passive, BEHAVIOR_RATE))
+						&& (!initiative.getBlocking().contains(passive) && !initiative.getBlockedBy().contains(passive))) {
 						historyElement.setAttribute(
 							"rateButton",
 							null
@@ -1152,7 +1155,8 @@ public class HistoryService {
 						activeLogs.getGreeting()
 					);
 					LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(initiative, passive);
-					if (Objects.isNull(lineGiven) || (Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse())) {
+					if (Objects.isNull(lineGiven) || (Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse())
+						&& (!initiative.getBlocking().contains(passive) && !initiative.getBlockedBy().contains(passive))) {
 						historyElement.setAttribute(
 							"requestLineButton",
 							null
@@ -1212,14 +1216,6 @@ public class HistoryService {
 				identifier = initiativeIdentifier;
 				message = String.format(
 					"%s給予您評價",
-					initiativeNickname
-				);
-			}
-			if (activeLogs.getBehavior() == BEHAVIOR_FOLLOW) {
-				profileImage = initiativeProfileImage;
-				identifier = initiativeIdentifier;
-				message = String.format(
-					"%s收藏了您",
 					initiativeNickname
 				);
 			}

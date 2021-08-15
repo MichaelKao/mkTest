@@ -1051,6 +1051,22 @@ public class WelcomeController {
 			);
 		}
 
+		// 是否已封鎖此人
+		if (me.getBlocking().contains(lover)) {
+			documentElement.setAttribute(
+				"blocking",
+				null
+			);
+		}
+
+		// 是否已被此人封鎖
+		if (me.getBlockedBy().contains(lover)) {
+			documentElement.setAttribute(
+				"blockedBy",
+				null
+			);
+		}
+
 		ModelAndView modelAndView = new ModelAndView("profile");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
@@ -3403,6 +3419,22 @@ public class WelcomeController {
 		if (loverService.hasLineNotify(me)) {
 			documentElement.setAttribute(
 				"lineNotify",
+				null
+			);
+		}
+
+		// 是否已封鎖此人
+		if (me.getBlocking().contains(partner)) {
+			documentElement.setAttribute(
+				"blocking",
+				null
+			);
+		}
+
+		// 是否已被此人封鎖
+		if (me.getBlockedBy().contains(partner)) {
+			documentElement.setAttribute(
+				"blockedBy",
 				null
 			);
 		}

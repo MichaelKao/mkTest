@@ -218,6 +218,26 @@
 						</DIV>
 					</DIV>
 				</xsl:if>
+				<xsl:if test="@blocking or @blockedBy">
+					<DIV class="modal fade show" id="blockedModal">
+						<DIV class="modal-dialog modal-dialog-centered">
+							<DIV class="modal-content">
+								<DIV class="modal-body">
+									<DIV class="mt-3 text-center">
+										<I class="fal fa-times text-warning mb-1" style="font-size: 50px;"></I>
+										<H5 class="modal-title">
+											<xsl:if test="@blocking">此用戶已被您封鎖</xsl:if>
+											<xsl:if test="@blockedBy">此用戶已不存在</xsl:if>
+										</H5>
+									</DIV>
+									<DIV class="text-center">
+										<A class="btn btn-link text-dark" href="/">回首頁</A>
+									</DIV>
+								</DIV>
+							</DIV>
+						</DIV>
+					</DIV>
+				</xsl:if>
 				<xsl:call-template name="footer"/>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
@@ -258,57 +278,55 @@
 				</BUTTON>
 			</DIV>
 			<DIV class="d-flex">
-				<xsl:choose>
-					<xsl:when test="not(/document/@me)">
-						<DIV class="d-flex justify-content-center justify-content-md-start" id="icon">
+				<xsl:if test="not(/document/@me) and not(/document/@blocking) and not(/document/@blockedBy)">
+					<DIV class="d-flex justify-content-center justify-content-md-start" id="icon">
+						<DIV>
+							<BUTTON type="button">
+								<xsl:choose>
+									<xsl:when test="/document/follow">
+										<xsl:attribute name="class">btn btn-icon-only btn-link fav liked</xsl:attribute>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:attribute name="class">btn btn-icon-only btn-link fav</xsl:attribute>
+									</xsl:otherwise>
+								</xsl:choose>
+								<I class="fad fa-heart font40"></I>
+							</BUTTON>
+						</DIV>
+						<DIV>
+							<A class="btn btn-icon-only btn-link ms-4" href="/chatroom/{@identifier}/">
+								<I class="fad fa-comment-dots font40"></I>
+							</A>
+						</DIV>
+						<xsl:if test="/document/@male">
 							<DIV>
-								<BUTTON type="button">
-									<xsl:choose>
-										<xsl:when test="/document/follow">
-											<xsl:attribute name="class">btn btn-icon-only btn-link fav liked</xsl:attribute>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:attribute name="class">btn btn-icon-only btn-link fav</xsl:attribute>
-										</xsl:otherwise>
-									</xsl:choose>
-									<I class="fad fa-heart font40"></I>
+								<BUTTON class="btn btn-icon-only btn-link ms-4 gift" type="button">
+									<I class="fad fa-taxi font40"></I>
 								</BUTTON>
 							</DIV>
-							<DIV>
-								<A class="btn btn-icon-only btn-link ms-4" href="/chatroom/{@identifier}/">
-									<I class="fad fa-comment-dots font40"></I>
-								</A>
-							</DIV>
-							<xsl:if test="/document/@male">
-								<DIV>
-									<BUTTON class="btn btn-icon-only btn-link ms-4 gift" type="button">
-										<I class="fad fa-taxi font40"></I>
-									</BUTTON>
-								</DIV>
-							</xsl:if>
-							<DIV>
-								<A class="btn btn-icon-only btn-link ms-4" data-bs-toggle="dropdown">
-									<I class="fad fa-exclamation-circle font40"></I>
-								</A>
-								<DIV class="dropdown-menu shadow">
-									<BUTTON class="dropdown-item">檢舉對方</BUTTON>
-									<BUTTON class="dropdown-item" data-bs-target="#blockModal" data-bs-toggle="modal">封鎖對方</BUTTON>
-								</DIV>
+						</xsl:if>
+						<DIV>
+							<A class="btn btn-icon-only btn-link ms-4" data-bs-toggle="dropdown">
+								<I class="fad fa-exclamation-circle font40"></I>
+							</A>
+							<DIV class="dropdown-menu shadow">
+								<BUTTON class="dropdown-item">檢舉對方</BUTTON>
+								<BUTTON class="dropdown-item" data-bs-target="#blockModal" data-bs-toggle="modal">封鎖對方</BUTTON>
 							</DIV>
 						</DIV>
-					</xsl:when>
-					<xsl:otherwise>
-						<DIV class="ms-md-auto ms-md-5">
-							<A class="btn btn-link ms-0 m-2 p-0" href="/album.asp">
-								<I class="fad fa-camera font40"></I>
-							</A>
-							<A class="btn btn-link m-2 p-0" href="/me.asp">
-								<I class="fad fa-pen font40"></I>
-							</A>
-							<BUTTON class="btn btn-success p-2 m-0" data-bs-target="#referralCodeModal" data-bs-toggle="modal">我的邀請碼</BUTTON>
-						</DIV>
-					</xsl:otherwise>
-				</xsl:choose>
+					</DIV>
+				</xsl:if>
+				<xsl:if test="/document/@me">
+					<DIV class="ms-md-auto ms-md-5">
+						<A class="btn btn-link ms-0 m-2 p-0" href="/album.asp">
+							<I class="fad fa-camera font40"></I>
+						</A>
+						<A class="btn btn-link m-2 p-0" href="/me.asp">
+							<I class="fad fa-pen font40"></I>
+						</A>
+						<BUTTON class="btn btn-success p-2 m-0" data-bs-target="#referralCodeModal" data-bs-toggle="modal">我的邀請碼</BUTTON>
+					</DIV>
+				</xsl:if>
 			</DIV>
 			<xsl:if test="rate">
 				<DIV class="moreThan768 mt-3">
