@@ -69,28 +69,47 @@ public class InPay2Controller {
 	}
 
 	/**
-	 * 取得厂商验证码(信用卡定期定额)。
+	 * 取得厂商验证码(信用卡定期定额)以升级长期贵宾。
 	 *
 	 * @param session 分配给会话的标识符
 	 * @param locale 语言环境
 	 * @return 厂商验证码 JSON 对象
-	 * @throws com.​fasterxml.​jackson.​coreJsonProcessingException
+	 * @throws com.​fasterxml.​jackson.​core.JsonProcessingException
 	 */
 	@PostMapping(path = "/getPeriodTokenByTrade.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String getPeriodTokenByTrade(final @RequestParam UUID me, final HttpSession session) throws JsonProcessingException {
+	String getPeriodTokenByTrade(final @RequestParam UUID me, final HttpSession session, final Locale locale) throws JsonProcessingException {
 		return inpay2Service.getPeriodTokenByTrade(
 			loverService.loadByIdentifier(me),
-			session
+			session,
+			locale
 		);
 	}
 
 	/**
-	 * 取得厂商验证码(付款选择清单)。
+	 * 取得厂商验证码(付款选择清单)以升级短期贵宾。
+	 *
+	 * @param session 分配给会话的标识符
+	 * @param locale 语言环境
+	 * @return 厂商验证码 JSON 对象
+	 * @throws com.​fasterxml.​jackson.​core.JsonProcessingException
+	 */
+	@PostMapping(path = "/getTokenByTrade.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String getTokenByTrade(final @RequestParam UUID me, final HttpSession session, final Locale locale) throws JsonProcessingException {
+		return inpay2Service.getTokenByTrade(
+			loverService.loadByIdentifier(me),
+			session,
+			locale
+		);
+	}
+
+	/**
+	 * 取得厂商验证码(付款选择清单)以充值。
 	 *
 	 * @param session 分配给会话的标识符
 	 * @return 厂商验证码 JSON 对象
-	 * @throws com.​fasterxml.​jackson.​coreJsonProcessingException
+	 * @throws com.​fasterxml.​jackson.​core.JsonProcessingException
 	 */
 	@PostMapping(path = "/getTokenByTrade.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -109,62 +128,62 @@ public class InPay2Controller {
 	 * @return 给绿界的响应
 	 */
 	@PostMapping(path = "/orderResult.asp")
-	ModelAndView orderResult(@RequestParam("ResultData") String resultData, Locale locale, Authentication authentication) throws Exception {
-		JSONObject jSONObject = inpay2Service.handleOrderResult(resultData);
+	ModelAndView orderResult(@RequestParam("ResultData") String resultData, Authentication authentication, Locale locale) throws Exception {
+		JSONObject jsonObject = inpay2Service.
+			handleOrderResult(resultData);
+
+		Lover me = loverService.loadByUsername(jsonObject.
+			getJSONObject("result").
+			getString("customField")
+		);//目前登录的用户
 
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.orderResult",
 			null,
 			locale
 		));
 
-		// 本人
-		Lover me = loverService.loadByUsername(
-			jSONObject.getJSONObject("result").getString("customField")
-		);
-
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
+		if (servant.hasRole(me, Servant.ROLE_ADMINISTRATOR)) {
+			/*
+			 万能天神
+			 */
 			documentElement.setAttribute(
 				"almighty",
 				null
 			);
 		}
-		if (isFinance) {
+		if (servant.hasRole(me, Servant.ROLE_ACCOUNTANT)) {
+			/*
+			 财务会计
+			 */
 			documentElement.setAttribute(
 				"finance",
 				null
 			);
 		}
 
-		// 確認性別
-		Boolean isMale = me.getGender();
-
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
+			me.getGender() ? "male" : "female",
 			null
 		);
 
-		// 登入中
-		documentElement.setAttribute(
-			"signIn",
-			null
-		);
+		documentElement.setAttribute("signIn", null);//登入中
 
-		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
-		);
-
-		String itemName = jSONObject.getJSONObject("result").getString("itemName");
-		if (jSONObject.getBoolean("response")) {
+		String itemName = jsonObject.
+			getJSONObject("result").
+			getString("itemName");
+		if (jsonObject.getBoolean("response")) {
 			documentElement.setAttribute(
 				"date",
-				jSONObject.getJSONObject("result").getString("paymentDate")
+				jsonObject.
+					getJSONObject("result").
+					getString("paymentDate")
 			);
 			documentElement.setAttribute(
 				"message",
@@ -175,31 +194,42 @@ public class InPay2Controller {
 				));
 			documentElement.setAttribute(
 				"amount",
-				jSONObject.getJSONObject("result").get("totalAmount").toString()
+				jsonObject.
+					getJSONObject("result").
+					get("totalAmount").toString()
 			);
 			String result = null;
 			if (Objects.equals(itemName, "1")) {
+				/*
+				 充值方案 1
+				 */
 				result = messageSource.getMessage(
 					"recharge.3000",
 					null,
 					locale
 				);
-			}
-			if (Objects.equals(itemName, "2")) {
+			} else if (Objects.equals(itemName, "2")) {
+				/*
+				 充值方案 2
+				 */
 				result = messageSource.getMessage(
 					"recharge.5000",
 					null,
 					locale
 				);
-			}
-			if (Objects.equals(itemName, "3")) {
+			} else if (Objects.equals(itemName, "3")) {
+				/*
+				 充值方案 3
+				 */
 				result = messageSource.getMessage(
 					"recharge.10000",
 					null,
 					locale
 				);
-			}
-			if (Objects.equals(itemName, "vip")) {
+			} else {
+				/*
+				 升级为贵宾
+				 */
 				result = messageSource.getMessage(
 					"upgrade.vip",
 					null,
@@ -208,9 +238,7 @@ public class InPay2Controller {
 			}
 			documentElement.setAttribute("result", result);
 			documentElement.setAttribute("redirect", "/");
-		}
-
-		if (!jSONObject.getBoolean("response")) {
+		} else {
 			documentElement.setAttribute("fail", null);
 			documentElement.setAttribute(
 				"message",
@@ -219,9 +247,13 @@ public class InPay2Controller {
 					null,
 					locale
 				));
-			documentElement.setAttribute("reason", jSONObject.get("reason").toString());
+			documentElement.setAttribute(
+				"reason",
+				jsonObject.get("reason").toString()
+			);
 			documentElement.setAttribute("redirect", "/");
 		}
+
 		ModelAndView modelAndView = new ModelAndView("orderResult");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
