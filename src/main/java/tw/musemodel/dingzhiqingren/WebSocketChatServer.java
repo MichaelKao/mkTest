@@ -150,6 +150,31 @@ public class WebSocketChatServer {
 			return;
 		}
 
+		if ("chat".equals(chatMessage.getType()) && "YAO_CHE_MA_FEI".equals(chatMessage.getBehavior())) {
+			History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(female, male, BEHAVIOR_REQ_FARE);
+			chatMessage.setId(history.getId().toString());
+			message = gson.toJson(chatMessage);
+			Session receiverSession = sessionPools.get(chatMessage.getReceiver());
+			if (receiverSession != null && receiverSession.isOpen()) {
+				receiverSession.getAsyncRemote().sendText(message);
+			}
+			if (userSession != null && userSession.isOpen()) {
+				userSession.getAsyncRemote().sendText(message);
+			}
+			return;
+		}
+
+		if ("chat".equals(chatMessage.getType()) && "CHE_MA_FEI".equals(chatMessage.getBehavior())) {
+			Session receiverSession = sessionPools.get(chatMessage.getReceiver());
+			if (receiverSession != null && receiverSession.isOpen()) {
+				receiverSession.getAsyncRemote().sendText(message);
+			}
+			if (userSession != null && userSession.isOpen()) {
+				userSession.getAsyncRemote().sendText(message);
+			}
+			return;
+		}
+
 		Behavior behavior = null;
 		if (sender.getGender()) {
 			behavior = BEHAVIOR_CHAT_MORE;
@@ -169,7 +194,7 @@ public class WebSocketChatServer {
 		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
 		if (sender.getGender()) {
 			if ((!loverService.isVIP(male) && !loverService.isVVIP(male))
-				&& (Objects.isNull(lineGiven) || Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse())) {
+				|| (Objects.isNull(lineGiven) || Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse())) {
 				int msgsCount = webSocketService.msgsCountWithin12Hrs(male, female);
 				chatMessage.setMsgCount(msgsCount);
 				message = gson.toJson(chatMessage);

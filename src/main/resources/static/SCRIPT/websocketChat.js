@@ -48,7 +48,7 @@ $(document).ready(function () {
 					messagesArea.appendChild(divWrap);
 					divWrap.appendChild(divParent);
 					divParent.appendChild(divChild);
-					if (behavior !== 'LIAO_LIAO' && behavior !== 'DA_ZHAO_HU' && behavior !== 'YAO_CHE_MA_FEI') {
+					if (behavior !== 'LIAO_LIAO' && behavior !== 'DA_ZHAO_HU' && behavior !== 'YAO_CHE_MA_FEI' && behavior !== 'CHE_MA_FEI') {
 						var dateDiv = document.createElement('DIV');
 						dateDiv.className += 'text-xs';
 						dateDiv.innerHTML = dateFormat(msg.occurred);
@@ -84,40 +84,68 @@ $(document).ready(function () {
 					self === msg.sender ? dateSpan.className += 'text-xs align-self-end me-2' : dateSpan.className += 'text-xs align-self-start ms-2';
 					if (behavior === 'YAO_CHE_MA_FEI') {
 						self === msg.sender ? divChild.innerHTML = '您已和對方要求 💗 ' + msg.points + ' 車馬費' : divChild.innerHTML = '對方和您要求 💗 ' + msg.points + ' 車馬費';
-						if (isMale === 'true') {
+						if (isMale === 'true' && msg.reply == null) {
 							var div = document.createElement('DIV');
 							$(divChild).attr('id', msg.id);
 							$(divChild).append(div);
 							var btn1 = document.createElement('BUTTON');
 							$(btn1).attr({
-								'class': 'btn btn-sm btn-outline-primary p-2 m-0 me-1 border-radius-lg acceptFare',
+								'class': 'btn btn-sm btn-outline-primary p-2 m-0 me-1 border-radius-lg acceptFare resBtn',
 								'type': 'button'
 							});
 							$(div).append(btn1);
 							$(btn1).html('給出');
 							var btn2 = document.createElement('BUTTON');
 							$(btn2).attr({
-								'class': 'btn btn-sm btn-outline-primary p-2 m-0 border-radius-lg refuseFare',
+								'class': 'btn btn-sm btn-outline-primary p-2 m-0 border-radius-lg refuseFare resBtn',
 								'type': 'button'
 							});
 							$(btn2).html('下次');
 							$(div).append(btn2);
 
+							var result;
 							$('BUTTON.acceptFare').click(function () {
+								result = true;
+								$(this).attr('disabled', true);
+								$('BUTTON.refuseFare').attr('disabled', true);
+							});
+							$('BUTTON.acceptFare').dblclick(function (e) {
+								e.preventDefault();
+							});
+							$('BUTTON.refuseFare').click(function () {
+								result = false;
+								$(this).attr('disabled', true);
+								$('BUTTON.acceptFare').attr('disabled', true);
+							});
+							$('BUTTON.refuseFare').dblclick(function (e) {
+								e.preventDefault();
+							});
+
+							$('BUTTON.resBtn').click(function () {
 								event.preventDefault();
 								let btn = this;
 								$.post(
 									'/resFare.json',
 									{
-										historyId: $(btn).closest('DIV').attr('id'),
-										status: true,
+										historyId: $(btn).closest('DIV.wordBreak').attr('id'),
+										result: result,
 										whom: friend
 									},
 									function (data) {
 										if (data.response) {
+											if (data.resultStatus) {
+												var jsonObj = {
+													'type': 'chat',
+													'sender': self,
+													'receiver': friend,
+													'behavior': 'CHE_MA_FEI',
+													'points': msg.points
+												};
+												websocket.send(JSON.stringify(jsonObj));
+											}
+											$(btn).closest('DIV').remove();
 											$('.toast-body').html(data.reason);
 											$('.toast').toast('show');
-											$('#fareModal').modal('hide');
 										} else {
 											$('.toast-body').html(data.reason);
 											$('.toast').toast('show');
@@ -130,10 +158,15 @@ $(document).ready(function () {
 						}
 						return;
 					}
+					if (behavior === 'CHE_MA_FEI') {
+						self === msg.sender ? divChild.innerHTML = '您已給 💗 ' + msg.points + ' 車馬費' : divChild.innerHTML = '對方給了您 💗 ' + msg.points + ' 車馬費';
+						return;
+					}
 					divChild.innerHTML = msg.greeting;
 				});
 				scrollToEnd();
 			} else if ('chat' === jsonObj.type) {
+				console.log(jsonObj);
 				console.log(jsonObj.msgCount);
 				if (parseInt(jsonObj.msgCount) === 3 && isMale === 'true') {
 					$('TEXTAREA#chatInput').remove();
@@ -147,7 +180,6 @@ $(document).ready(function () {
 				var divChild = document.createElement('DIV');
 				var dateSpan = document.createElement('SPAN');
 				divParent.className += 'd-flex flex-column maxWidth80';
-				divChild.innerHTML = jsonObj.message;
 				dateSpan.innerHTML = dateFormat(new Date());
 				messagesArea.appendChild(divWrap);
 				divWrap.appendChild(divParent);
@@ -157,6 +189,89 @@ $(document).ready(function () {
 				self === jsonObj.sender ? divWrap.className += 'd-flex justify-content-end mb-2' : divWrap.className += 'd-flex justify-content-start mb-2';
 				self === jsonObj.sender ? divChild.className += 'bg-primary text-light border-radius-xl px-3 py-2 me-1 align-self-end shadow wordBreak' : divChild.className += 'bg-light border-radius-xl px-3 py-2 ms-1 align-self-start shadow wordBreak';
 				self === jsonObj.sender ? dateSpan.className += 'text-xs align-self-end me-2' : dateSpan.className += 'text-xs align-self-start ms-2';
+				switch (jsonObj.behavior) {
+					case 'YAO_CHE_MA_FEI':
+						var points = jsonObj.points;
+						self === jsonObj.sender ? divChild.innerHTML += '您已和對方要求 💗 ' + points + ' 車馬費' : divChild.innerHTML += '對方和您要求 💗 ' + points + ' 車馬費';
+						if (isMale === 'true') {
+							var div = document.createElement('DIV');
+							$(divChild).attr('id', jsonObj.id);
+							$(divChild).append(div);
+							var btn1 = document.createElement('BUTTON');
+							$(btn1).attr({
+								'class': 'btn btn-sm btn-outline-primary p-2 m-0 me-1 border-radius-lg acceptFare resBtn',
+								'type': 'button'
+							});
+							$(div).append(btn1);
+							$(btn1).html('給出');
+							var btn2 = document.createElement('BUTTON');
+							$(btn2).attr({
+								'class': 'btn btn-sm btn-outline-primary p-2 m-0 border-radius-lg refuseFare resBtn',
+								'type': 'button'
+							});
+							$(btn2).html('下次');
+							$(div).append(btn2);
+
+							var result;
+							$('BUTTON.acceptFare').click(function () {
+								result = true;
+								$(this).attr('disabled', true);
+								$('BUTTON.refuseFare').attr('disabled', true);
+							});
+							$('BUTTON.acceptFare').dblclick(function (e) {
+								e.preventDefault();
+							});
+							$('BUTTON.refuseFare').click(function () {
+								result = false;
+								$(this).attr('disabled', true);
+								$('BUTTON.acceptFare').attr('disabled', true);
+							});
+							$('BUTTON.refuseFare').dblclick(function (e) {
+								e.preventDefault();
+							});
+
+							$('BUTTON.resBtn').click(function () {
+								event.preventDefault();
+								let btn = this;
+								$.post(
+									'/resFare.json',
+									{
+										historyId: $(btn).closest('DIV.wordBreak').attr('id'),
+										result: result,
+										whom: friend
+									},
+									function (data) {
+										if (data.response) {
+											if (data.resultStatus) {
+												var jsonObj = {
+													'type': 'chat',
+													'sender': self,
+													'receiver': friend,
+													'behavior': 'CHE_MA_FEI',
+													'points': points
+												};
+												websocket.send(JSON.stringify(jsonObj));
+											}
+											$(btn).closest('DIV').remove();
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+										} else {
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+										}
+									},
+									'json'
+									);
+								return false;
+							});
+						}
+						break;
+					case 'CHE_MA_FEI':
+						self === jsonObj.sender ? divChild.innerHTML += '您已給 💗 ' + jsonObj.points + ' 車馬費' : divChild.innerHTML += '對方給了您 💗 ' + jsonObj.points + ' 車馬費';
+						break;
+					default:
+						divChild.innerHTML = jsonObj.message;
+				}
 				scrollToEnd();
 			} else if ('button' === jsonObj.type) {
 				console.log(jsonObj.behavior);
@@ -344,8 +459,8 @@ $(document).ready(function () {
 					default:
 						console.log(jsonObj.behavior);
 				}
-				return;
 				scrollToEnd();
+				return;
 			}
 		};
 
@@ -607,7 +722,7 @@ $(document).ready(function () {
 			},
 			function (data) {
 				var jsonObj = {
-					'type': 'button',
+					'type': 'chat',
 					'sender': self,
 					'receiver': friend,
 					'behavior': 'LAI_KOU_DIAN'
@@ -632,25 +747,37 @@ $(document).ready(function () {
 	});
 
 	var url;
-	$('BUTTON#fare').on("click", function () {
+	var behavior;
+	$('BUTTON#fare').on('click', function () {
 		url = '/fare.json';
+		behavior = 'CHE_MA_FEI';
 	});
 
-	$('BUTTON#reqFare').on("click", function () {
+	$('BUTTON#reqFare').on('click', function () {
 		url = '/reqFare.json';
+		behavior = 'YAO_CHE_MA_FEI';
 	});
 
 	$('.confirmFare').click(function (event) {
 		event.preventDefault();
 		let btn = this;
+		let howMany = $('INPUT[name="howMany"]').val();
 		$.post(
 			url,
 			{
-				howMany: $('INPUT[name="howMany"]').val(),
+				howMany: howMany,
 				whom: friend
 			},
 			function (data) {
 				if (data.response) {
+					var jsonObj = {
+						'type': 'chat',
+						'sender': self,
+						'receiver': friend,
+						'behavior': behavior,
+						'points': howMany
+					};
+					websocket.send(JSON.stringify(jsonObj));
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');
 					$('#fareModal').modal('hide');

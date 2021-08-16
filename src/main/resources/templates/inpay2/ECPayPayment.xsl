@@ -42,7 +42,7 @@
 				</DIV>
 				<xsl:call-template name="footer"/>
 			</DIV>
-			<DIV class="loadingWrap">
+			<DIV class="loadingWrap" style="display: block;">
 				<DIV class="loading">
 					<DIV class="round"></DIV>
 					<DIV class="round ms-1"></DIV>

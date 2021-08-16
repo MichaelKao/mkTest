@@ -18,6 +18,13 @@ public class ChatMessage {
 	private String behavior;
 
 	/**
+	 * 要求車馬費的歷程 ID
+	 */
+	private String id;
+
+	private String points;
+
+	/**
 	 * 12小時內發送訊息的次數
 	 */
 	private int msgCount;
@@ -93,5 +100,21 @@ public class ChatMessage {
 
 	public void setBehavior(String behavior) {
 		this.behavior = behavior;
+	}
+
+	public String getPoints() {
+		return points;
+	}
+
+	public void setPoints(String points) {
+		this.points = points;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }

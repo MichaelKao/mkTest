@@ -51,4 +51,7 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
 	public List<History> findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(Lover initiative, Lover passive, Behavior behavior);
 
 	public List<History> findByInitiativeAndBehaviorAndOccurredGreaterThanOrderByOccurredDesc(Lover initiative, Behavior behavior, Date occurred);
+
+	@Query("SELECT h FROM History h WHERE (h.initiative = :lover AND h.behavior = :behavior1) OR (h.initiative = :lover AND h.behavior = :behavior2) OR (h.passive = :lover AND h.behavior = :behavior3) ORDER BY h.occurred DESC")
+	public List<History> findByInitiativeAndBehaviorOrPassiveAndBehaviorOrderByOccurredDesc(Lover lover, Behavior behavior1, Behavior behavior2, Behavior behavior3);
 }

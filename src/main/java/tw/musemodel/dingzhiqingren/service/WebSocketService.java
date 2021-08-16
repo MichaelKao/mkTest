@@ -18,10 +18,7 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_CHAT_MORE;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_LAI_KOU_DIAN;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_RATE;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
 
 /**
  * 服务层：聊天室
@@ -62,6 +59,11 @@ public class WebSocketService {
 			male,
 			female,
 			HistoryService.BEHAVIOR_LAI_KOU_DIAN
+		);
+		List<History> fareHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
+			male,
+			female,
+			HistoryService.BEHAVIOR_FARE
 		);
 		List<History> femaleTalkHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
 			female,
@@ -114,6 +116,17 @@ public class WebSocketService {
 			);
 			wholeHistoryMsgs.add(activity);
 		}
+		for (History history : fareHistoryMsgs) {
+			Activity activity = new Activity(
+				male.getIdentifier().toString(),
+				history.getBehavior(),
+				history.getOccurred(),
+				history.getGreeting(),
+				history.getSeen()
+			);
+			activity.setPoints((short) Math.abs(history.getPoints()));
+			wholeHistoryMsgs.add(activity);
+		}
 		for (History history : femaleTalkHistoryMsgs) {
 			Activity activity = new Activity(
 				female.getIdentifier().toString(),
@@ -154,14 +167,25 @@ public class WebSocketService {
 			);
 			activity.setPoints(history.getPoints());
 			activity.setId(history.getId());
+			activity.setReply(history.getReply());
 			wholeHistoryMsgs.add(activity);
 		}
 		Collections.sort(wholeHistoryMsgs);
 		return wholeHistoryMsgs;
 	}
 
+	public Document inbox(Document document, Lover me) {
+		Element documentElement = document.getDocumentElement();
+		List<History> history = historyRepository.
+			findByInitiativeAndBehaviorOrPassiveAndBehaviorOrderByOccurredDesc(me, BEHAVIOR_GREETING, BEHAVIOR_GROUP_GREETING, BEHAVIOR_CHAT_MORE);
+
+		LOGGER.debug("測試{}", history.toString());
+		return document;
+	}
+
 	public Document chatroom(Document document, Lover me, Lover chatPartner) {
 		Element documentElement = document.getDocumentElement();
+
 		documentElement.setAttribute(
 			"friendIdentifier",
 			chatPartner.getIdentifier().toString()

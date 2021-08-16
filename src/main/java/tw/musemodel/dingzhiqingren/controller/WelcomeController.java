@@ -2073,6 +2073,13 @@ public class WelcomeController {
 
 		if (loverService.isVVIP(me)) {
 			documentElement.setAttribute(
+				"vvip",
+				null
+			);
+		}//是否为 VVIP⁉️
+
+		if (loverService.isVIP(me)) {
+			documentElement.setAttribute(
 				"vip",
 				null
 			);
@@ -2126,25 +2133,48 @@ public class WelcomeController {
 		return jsonObject.toString();
 	}
 
+	/**
+	 * 男仕回覆要求車馬費
+	 *
+	 * @param femaleUUID
+	 * @param historyId
+	 * @param result
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
 	@PostMapping(path = "/resFare.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
-	String resFare(@RequestParam("whom") UUID femaleUUID, @RequestParam String historyId,
+	String resFare(@RequestParam("whom") UUID femaleUUID, @RequestParam Long historyId,
 		@RequestParam Boolean result, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
 
-		History reqHistory = historyRepository.findById(Long.parseLong(historyId)).orElse(null);
+		History reqHistory = historyRepository.findById(historyId).orElse(null);
 		reqHistory.setReply(new Date(System.currentTimeMillis()));
 		historyRepository.saveAndFlush(reqHistory);
+
+		JSONObject jsonObject;
+		if (!result) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"resFare.refuse",
+					null,
+					locale
+				)).
+				withResponse(true).
+				toJSONObject();
+			return jsonObject.put("resultStatus", false).toString();
+		}
+
 		Lover male = loverService.loadByUsername(
 			authentication.getName()
 		);
 
 		Lover female = loverService.loadByIdentifier(femaleUUID);
 
-		JSONObject jsonObject;
 		try {
 			jsonObject = historyService.fare(
 				male,
@@ -2162,7 +2192,7 @@ public class WelcomeController {
 				withResponse(false).
 				toJSONObject();
 		}
-		return jsonObject.toString();
+		return jsonObject.put("resultStatus", true).toString();
 	}
 
 	/**
@@ -3481,6 +3511,97 @@ public class WelcomeController {
 		document = webSocketService.chatroom(document, me, partner);
 
 		ModelAndView modelAndView = new ModelAndView("chatroom");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
+	 * 收信匣
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/inbox.asp")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView inbox(Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
+		if (servant.isNull(authentication)) {
+			servant.redirectToRoot();
+		}
+
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+		if (!loverService.isEligible(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.inbox",
+			null,
+			locale
+		));
+
+		documentElement.setAttribute(
+			"signIn",
+			authentication.getName()
+		);
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
+
+		// 確認性別
+		Boolean isMale = me.getGender();
+
+		documentElement.setAttribute(
+			"gender",
+			isMale.toString()
+		);
+
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
+		documentElement.setAttribute(
+			"selfIdentifier",
+			me.getIdentifier().toString()
+		);
+
+		// 有無連動 LINE notify
+		if (loverService.hasLineNotify(me)) {
+			documentElement.setAttribute(
+				"lineNotify",
+				null
+			);
+		}
+
+		document = webSocketService.inbox(document, me);
+
+		ModelAndView modelAndView = new ModelAndView("inbox");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}

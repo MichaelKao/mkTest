@@ -15,6 +15,7 @@ $(document).ready(function () {
 				function (data) {
 					if (data.RtnCode === 1) {
 						try {
+							$('DIV.loadingWrap').css('display', 'none');
 							ECPay.createPayment(
 								data.Token,
 								null === navigator.language.match(/^zh/gi) ? ECPay.Language.enUS : ECPay.Language.zhTW,
@@ -45,7 +46,6 @@ $(document).ready(function () {
 					alert(errMsg);
 					return false;
 				}
-				$('DIV.loadingWrap').css('display', 'block');
 				let payToken = paymentInfo.PayToken;
 				$(form.payToken).val(
 					payToken
@@ -53,6 +53,7 @@ $(document).ready(function () {
 				$(form.paymentType).val(
 					paymentInfo.PaymentType
 					);
+				$('DIV.loadingWrap').css('display', 'block');
 				$.post(
 					`/inpay2/createPayment/${payToken}.json`,
 					function (data) {

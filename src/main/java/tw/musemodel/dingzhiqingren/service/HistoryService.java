@@ -177,9 +177,14 @@ public class HistoryService {
 	public static final Behavior BEHAVIOR_GROUP_GREETING = Behavior.QUN_FA;
 
 	/**
+	 * 历程：甜心要求車馬費
+	 */
+	public static final Behavior BEHAVIOR_REQ_FARE = Behavior.YAO_CHE_MA_FEI;
+
+	/**
 	 * 历程：放行生活照
 	 */
-	public static final Behavior BEHAVIOR_PICTURES_VIEWABLE = Behavior.LIAO_LIAO;
+	public static final Behavior BEHAVIOR_PICTURES_VIEWABLE = Behavior.FANG_XING_SHENG_HUO_ZHAO;
 
 	/**
 	 * 主动方是否愿意给被动方看生活照。
