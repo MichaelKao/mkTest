@@ -13,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -34,6 +35,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import tw.com.ecpay.ecpg.OrderResultResponse;
 import tw.com.ecpay.ecpg.PaymentRequest;
@@ -104,9 +106,20 @@ public class Inpay2Service {
 	private final static SimpleDateFormat SIMPLEDATEFORMAT_MERCHANTTRADENO = new SimpleDateFormat("yyww'YOUNG'");
 
 	/**
-	 * 定期定额每次授权金额
+	 * 长期贵宾每次授权金额
 	 */
-	public final static Integer VIP_AMOUNT = Integer.parseInt(System.getenv("VIP_AMOUNT"));
+	public final static Integer LONGTERM_VIP_AMOUNT = Integer.parseInt(System.getenv("LONGTERM_VIP_AMOUNT"));
+
+	/**
+	 * 短期贵宾单次授权金额
+	 */
+	public final static Integer SHORTTERM_VIP_AMOUNT = Integer.parseInt(System.getenv("SHORTTERM_VIP_AMOUNT"));
+
+	@Autowired
+	private MessageSource messageSource;
+
+	@Autowired
+	private LoverService loverService;
 
 	@Autowired
 	private HistoryRepository historyRepository;
@@ -116,9 +129,6 @@ public class Inpay2Service {
 
 	@Autowired
 	private PlanRepository planRepository;
-
-	@Autowired
-	private LoverService loverService;
 
 	/**
 	 * 指定初始化向量。
@@ -449,21 +459,27 @@ public class Inpay2Service {
 	}
 
 	/**
-	 * 取得厂商验证码(信用卡定期定额)。
+	 * 取得厂商验证码(信用卡定期定额)，升级长期贵宾用。
 	 *
 	 * @param lover 用户
 	 * @param session 分配给会话的标识符
+	 * @param locale 语言环境
 	 * @return 绿界回传厂商验证码对象字符串
 	 * @throws com.fasterxml.jackson.core.JsonProcessingException
 	 */
-	public String getPeriodTokenByTrade(Lover lover, final HttpSession session) throws JsonProcessingException {
+	public String getPeriodTokenByTrade(Lover lover, final HttpSession session, final Locale locale) throws JsonProcessingException {
 		final Long currentTimeMillis = System.currentTimeMillis();//当前
-		final String merchantTradeNo = generateMerchantTradeNo(currentTimeMillis);//特店交易编号
+		final String merchantTradeNo = generateMerchantTradeNo(currentTimeMillis),//特店交易编号
+			itemName = messageSource.getMessage(
+				"longTerm.itemName",
+				null,
+				locale
+			);//订单资讯：商品名称
 		LuJie luJie = new LuJie();
 		luJie.setSessionId(session.getId());//会话的标识符
 		luJie.setMerchantTradeNo(merchantTradeNo);//特店交易编号
-		luJie.setTotalAmount(VIP_AMOUNT);//订单资讯：交易金额
-		luJie.setItemName("vip");//订单资讯：商品名称
+		luJie.setTotalAmount(LONGTERM_VIP_AMOUNT);//订单资讯：交易金额
+		luJie.setItemName(itemName);//订单资讯：商品名称
 		luJie.setMerchantMemberId(lover.getIdentifier().toString());//消费者资讯：消费者会员编号
 		luJie.setCustomField(String.format(
 			"%s%s",
@@ -481,13 +497,17 @@ public class Inpay2Service {
 		tokenRequestData.setOrderInfo(tokenRequestData.new OrderInfo(
 			generateMerchantTradeDate(currentTimeMillis),//厂商交易时间
 			luJie.getMerchantTradeNo(),//特店交易编号
-			VIP_AMOUNT,//交易金额
+			SHORTTERM_VIP_AMOUNT,//交易金额
 			String.format(
 				"https://%s/inpay2/return.asp",
 				Servant.LOCALHOST
 			),//付款回传结果
-			"升级为 VIP",//升级为 VIP
-			"升级为 VIP"//升级为 VIP
+			messageSource.getMessage(
+				"longTerm.tradeDesc",
+				null,
+				locale
+			),//交易描述
+			itemName//商品名称
 		));
 
 		CardInfo cardInfo = tokenRequestData.new CardInfo(
@@ -496,7 +516,7 @@ public class Inpay2Service {
 				Servant.LOCALHOST
 			)//3D 验证回传付款结果网址
 		);
-		cardInfo.setPeriodAmount(VIP_AMOUNT.shortValue());//定期定额每次授权金额
+		cardInfo.setPeriodAmount(SHORTTERM_VIP_AMOUNT.shortValue());//定期定额每次授权金额
 		cardInfo.setPeriodType(PERIOD_TYPE);//定期定额周期种类
 		cardInfo.setFrequency(FREQUENCY);//定期定额执行频率
 		cardInfo.setExecTimes(EXEC_TIMES);//定期定额执行次数
@@ -598,7 +618,190 @@ public class Inpay2Service {
 	}
 
 	/**
-	 * 取得厂商验证码(付款选择清单)。
+	 * 取得厂商验证码(付款选择清单)，升级短期贵宾用。
+	 *
+	 * @param lover 用户
+	 * @param session 分配给会话的标识符
+	 * @return 绿界回传厂商验证码对象字符串
+	 * @throws com.fasterxml.jackson.core.JsonProcessingException
+	 */
+	public String getTokenByTrade(final Lover lover, final HttpSession session, final Locale locale) throws JsonProcessingException {
+		final Long currentTimeMillis = System.currentTimeMillis();//当前
+		final String merchantTradeNo = generateMerchantTradeNo(currentTimeMillis),//特店交易编号
+			itemName = messageSource.getMessage(
+				"shortTerm.itemName",
+				null,
+				locale
+			);//订单资讯：商品名称
+		final int amount = SHORTTERM_VIP_AMOUNT;//交易金额
+		LuJie luJie = new LuJie();
+		luJie.setSessionId(session.getId());//会话的标识符
+		luJie.setMerchantTradeNo(merchantTradeNo);//特店交易编号
+		luJie.setTotalAmount(amount);//订单资讯：交易金额
+		luJie.setItemName(itemName);//订单资讯：商品名称
+		luJie.setMerchantMemberId(lover.getIdentifier().toString());//消费者资讯：消费者会员编号
+		luJie.setCustomField(String.format(
+			"%s%s",
+			lover.getCountry().getCallingCode(),
+			lover.getLogin()
+		));//厂商自订栏位：消费者会员编号
+		luJie = luJieRepository.saveAndFlush(luJie);
+
+		/*
+		 加密前数据
+		 */
+		TokenRequest.Data tokenRequestData = new TokenRequest.Data(
+			INPAY2_MERCHANT_ID,
+			(short) 0,//不记忆卡号
+			(short) 2//付款选择清单
+		);
+		tokenRequestData.setChoosePaymentList("1,3,4");//欲使用的付款方式：信用卡一次付清、ATM、超商代码
+
+		/*
+		 订单资讯
+		 */
+		tokenRequestData.setOrderInfo(tokenRequestData.new OrderInfo(
+			generateMerchantTradeDate(currentTimeMillis),//厂商交易时间
+			luJie.getMerchantTradeNo(),//特店交易编号
+			amount,//交易金额
+			String.format(
+				"https://%s/inpay2/return.asp",
+				Servant.LOCALHOST
+			),//付款回传结果
+			messageSource.getMessage(
+				"longTerm.tradeDesc",
+				null,
+				locale
+			),//交易描述
+			itemName//商品名称
+		));
+
+		/*
+		 信用卡资讯
+		 */
+		CardInfo cardInfo = tokenRequestData.new CardInfo(
+			String.format(
+				"https://%s/inpay2/orderResult.asp",
+				Servant.LOCALHOST
+			)//3D 验证回传付款结果网址
+		);
+		tokenRequestData.setCardInfo(cardInfo);
+
+		/*
+		 允许缴费有效天数为 1 天
+		 */
+		ATMInfo atmInfo = tokenRequestData.new ATMInfo();
+		tokenRequestData.setAtmInfo(atmInfo);
+
+		/*
+		 超商缴费截止时间为 1440 分钟(1 天)
+		 */
+		CVSInfo cvsInfo = tokenRequestData.new CVSInfo();
+		tokenRequestData.setCvsInfo(cvsInfo);
+
+		/*
+		 消费者资讯
+		 */
+		ConsumerInfo consumerInfo = tokenRequestData.new ConsumerInfo();
+		consumerInfo.setMerchantMemberId(
+			lover.getIdentifier().toString()
+		);//消费者会员编号
+		consumerInfo.setName(lover.getNickname());//信用卡持卡人姓名
+		tokenRequestData.setConsumerInfo(consumerInfo);
+
+		tokenRequestData.setCustomField(String.format(
+			"%s%s",
+			lover.getCountry().getCallingCode(),
+			lover.getLogin()
+		));//厂商自订栏位
+
+		/*
+		 加密后数据
+		 */
+		String tokenRequestDataString;
+		try {
+			tokenRequestDataString = JSON_MAPPER.writeValueAsString(
+				tokenRequestData
+			);
+		} catch (JsonProcessingException jsonProcessingException) {
+			LOGGER.info(
+				String.format(
+					"生成厂商验证码请求对象时发生序列化异常！\n%s.getTokenByTrade();",
+					getClass()
+				),
+				jsonProcessingException
+			);
+			return null;
+		}
+
+		TokenRequest tokenRequest = new TokenRequest();//向绿界服务器取得一组厂商验证码
+
+		/*
+		 传输数据
+		 */
+		tw.com.ecpay.ecpg.TokenRequest.RqHeader rqHeader = tokenRequest.new RqHeader();
+		rqHeader.setTimestamp(currentTimeMillis / 1000);//传输时间
+		rqHeader.setRevision(INPAY2_API_VERSION);//串接文件版号
+
+		tokenRequest.setMerchantId(INPAY2_MERCHANT_ID);//特店编号
+		tokenRequest.setRqHeader(rqHeader);//传输数据
+		try {
+			tokenRequest.setData(encrypt(tokenRequestDataString));//加密数据
+		} catch (UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException exception) {
+			LOGGER.info(
+				String.format(
+					"生成厂商验证码请求对象时发生加密异常！\n%s.getTokenByTrade();",
+					getClass()
+				),
+				exception
+			);
+			return null;
+		}
+
+		String responseBody;
+		try {
+			responseBody = httpPost(
+				INPAY2ENDPOINT_GET_TOKEN_BY_TRADE,
+				JSON_MAPPER.writeValueAsString(tokenRequest)
+			);
+		} catch (JsonProcessingException jsonProcessingException) {
+			LOGGER.info(
+				String.format(
+					"建立厂商验证码请求时发生序列化异常！\n%s.getTokenByTrade();",
+					getClass()
+				),
+				jsonProcessingException
+			);
+			return null;
+		}
+
+		try {
+			return decrypt(JSON_MAPPER.readValue(
+				responseBody,
+				TokenResponse.class
+			).getData());
+		} catch (JsonProcessingException jsonProcessingException) {
+			LOGGER.info(
+				String.format(
+					"生成厂商验证码响应对象时发生反序列化异常！\n%s.getTokenByTrade();",
+					getClass()
+				),
+				jsonProcessingException
+			);
+		} catch (UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException exception) {
+			LOGGER.info(
+				String.format(
+					"生成厂商验证码响应对象时发生解密异常！\n%s.getTokenByTrade();",
+					getClass()
+				),
+				exception
+			);
+		}
+		return null;
+	}
+
+	/**
+	 * 取得厂商验证码(付款选择清单)，充值用。
 	 *
 	 * @param plan 充值方案
 	 * @param lover 用户
@@ -1090,7 +1293,7 @@ public class Inpay2Service {
 		History history;
 		Lover lover = loverService.loadByUsername(username);
 		long currentTimeMillis = System.currentTimeMillis();
-		if (Objects.isNull(plan) && itemName.equalsIgnoreCase("vip")) {
+		if (Objects.isNull(plan)) {
 			/*
 			 升级为 VIP
 			 */
