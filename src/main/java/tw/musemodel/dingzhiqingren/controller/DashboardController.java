@@ -25,10 +25,12 @@ import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.WebSocketServer;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.entity.StopRecurringPaymentApplication;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
+import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 import tw.musemodel.dingzhiqingren.service.DashboardService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
@@ -68,6 +70,9 @@ public class DashboardController {
 
 	@Autowired
 	private WebSocketServer webSocketServer;
+
+	@Autowired
+	private StopRecurringPaymentApplicationRepository stopRecurringPaymentApplicationRepository;
 
 	/**
 	 * 甜心提取車馬費(財務後台)
@@ -412,6 +417,114 @@ public class DashboardController {
 
 		return new JavaScriptObjectNotation().
 			withReason("審核不通過").
+			withResponse(true).
+			toJSONObject().toString();
+	}
+
+	/**
+	 * 解除定期定額長期貴賓
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/stopRecurring.asp")
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	ModelAndView stopRecurring(Authentication authentication, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
+		if (servant.isNull(authentication)) {
+			return new ModelAndView("redirect:/");
+		}
+
+		Document document = dashboardService.stopRecurringDocument(locale);
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.stopRecurring",
+			null,
+			locale
+		));
+
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
+		if (!isFinance && !isAlmighty) {
+			return new ModelAndView("redirect:/");
+		}
+
+		// 確認性別
+		Boolean gender = me.getGender();
+
+		documentElement.setAttribute(
+			gender ? "male" : "female",
+			null
+		);
+
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"signIn",
+				authentication.getName()
+			);
+		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
+
+		ModelAndView modelAndView = new ModelAndView("dashboard/stopRecurring");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
+	 * 解除定期定額長期貴賓
+	 *
+	 * @param lover
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/stopRecurring.json")
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	@ResponseBody
+	String stopRecurring(@RequestParam("applyID") Long applyID, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+
+		StopRecurringPaymentApplication stopRecurringPaymentApplication
+			= stopRecurringPaymentApplicationRepository.
+				findById(applyID).
+				orElse(null);
+
+		// 後台人員
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		stopRecurringPaymentApplication = dashboardService.handleStopRecurringPaymentApplication(stopRecurringPaymentApplication, me);
+
+		return new JavaScriptObjectNotation().
 			withResponse(true).
 			toJSONObject().toString();
 	}

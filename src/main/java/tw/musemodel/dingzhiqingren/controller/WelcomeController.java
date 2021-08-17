@@ -58,6 +58,7 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.Plan;
 import tw.musemodel.dingzhiqingren.entity.ServiceTag;
+import tw.musemodel.dingzhiqingren.entity.StopRecurringPaymentApplication;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.SignUp;
@@ -66,7 +67,9 @@ import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
 import tw.musemodel.dingzhiqingren.repository.PlanRepository;
+import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRepository;
 import tw.musemodel.dingzhiqingren.service.AmazonWebServices;
+import tw.musemodel.dingzhiqingren.service.DashboardService;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
@@ -117,6 +120,12 @@ public class WelcomeController {
 
 	@Autowired
 	private WebSocketService webSocketService;
+
+	@Autowired
+	private DashboardService dashboardService;
+
+	@Autowired
+	private StopRecurringPaymentApplicationRepository stopRecurringPaymentApplicationRepository;
 
 	/**
 	 * 首页
@@ -1475,7 +1484,12 @@ public class WelcomeController {
 						loverService.calculateAge(peeker).toString()
 					);
 				}
-				if (peeker.getGender() && loverService.isVVIP(peeker)) {
+				// 是否為長期貴賓 vvip
+				if (loverService.isVVIP(peeker)) {
+					peekerElement.setAttribute("vvip", null);
+				}
+				// 是否為短期貴賓 vip
+				if (loverService.isVIP(peeker)) {
 					peekerElement.setAttribute("vip", null);
 				}
 				if (Objects.nonNull(peeker.getRelief())) {
@@ -1907,7 +1921,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/activeLogs.asp")
 	@Secured({"ROLE_YONGHU"})
-	ModelAndView transaction(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView activeLogs(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
 		}
@@ -1986,8 +2000,15 @@ public class WelcomeController {
 				locale
 			));
 
-		// 本人是否為 VIP
+		// 本人是否為長期貴賓 VVIP
 		if (loverService.isVVIP(me)) {
+			documentElement.setAttribute(
+				"vvip",
+				null
+			);
+		}
+		// 本人是否為短期貴賓 VIP
+		if (loverService.isVIP(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -2012,7 +2033,7 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 升級長期或短期 VIP
+	 * 升級貴賓
 	 *
 	 * @param authentication
 	 * @param locale
@@ -2076,12 +2097,38 @@ public class WelcomeController {
 				"vvip",
 				null
 			);
+			if (dashboardService.isEligible(me)) {
+				documentElement.setAttribute(
+					"isEligibleToStopRecurring",
+					Boolean.toString(dashboardService.isEligible(me))
+				);
+			}
+			documentElement.setAttribute(
+				"vvipExpiry",
+				loverService.DATE_TIME_FORMATTER.format(
+					servant.toTaipeiZonedDateTime(
+						me.getVip()
+					).withZoneSameInstant(
+						Servant.ASIA_TAIPEI
+					)
+				)
+			);
 		}//是否为 VVIP⁉️
 
 		if (loverService.isVIP(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
+			);
+			documentElement.setAttribute(
+				"vipExpiry",
+				loverService.DATE_TIME_FORMATTER.format(
+					servant.toTaipeiZonedDateTime(
+						me.getVip()
+					).withZoneSameInstant(
+						Servant.ASIA_TAIPEI
+					)
+				)
 			);
 		}//是否为 VIP⁉️
 
@@ -2091,7 +2138,7 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 升級長期貴賓
+	 * 升級長期貴賓或短期貴賓
 	 *
 	 * @param authentication
 	 * @param locale
@@ -2166,8 +2213,14 @@ public class WelcomeController {
 
 		String view = null;
 		if (vipType == 1) {
+			if (loverService.isVVIP(me) || loverService.isVIP(me)) {
+				return servant.redirectToRoot();
+			} //若是長期或者短期貴賓則不能再升級短期貴賓
 			view = "upgradeShortTerm";
 		} else if (vipType == 2) {
+			if (loverService.isVVIP(me)) {
+				return servant.redirectToRoot();
+			}//若是長期期貴賓則不能再升級長期貴賓，短期貴賓可以升級
 			view = "upgradeLongTerm";
 		}
 		ModelAndView modelAndView = new ModelAndView(view);
@@ -3689,5 +3742,44 @@ public class WelcomeController {
 		ModelAndView modelAndView = new ModelAndView("inbox");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
+	}
+
+	/**
+	 * 解除定期定額長期貴賓
+	 *
+	 * @param authentication
+	 * @return
+	 */
+	@PostMapping(path = "/stopRecurring.json")
+	@Secured({"ROLE_YONGHU"})
+	@ResponseBody
+	String stopRecurring(Authentication authentication, Locale locale) {
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+		if (!dashboardService.isEligible(me)) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"stopRecurring.isNotEligible",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject().
+				toString();
+		}
+		StopRecurringPaymentApplication stopRecurringPaymentApplication = new StopRecurringPaymentApplication(me);
+		stopRecurringPaymentApplicationRepository.saveAndFlush(stopRecurringPaymentApplication);
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"stopRecurring.done",
+				null,
+				locale
+			)).
+			withResponse(true).
+			toJSONObject().
+			toString();
 	}
 }

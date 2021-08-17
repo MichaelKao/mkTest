@@ -196,7 +196,7 @@
 						<A class="position-relative m-1" href="/profile/{identifier}/">
 							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
 							<DIV class="position-absolute top-0 right-0 text-center" style="width: 25px;">
-								<xsl:if test="@vip">
+								<xsl:if test="@vvip">
 									<IMG class="border-radius-md" src="/vip.svg" width="25"/>
 								</xsl:if>
 								<xsl:if test="@relief = 'true'">
@@ -249,7 +249,7 @@
 						<A class="position-relative m-1" href="/profile/{identifier}/">
 							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
 							<DIV class="position-absolute top-0 right-0 text-center" style="width: 25px;">
-								<xsl:if test="@vip">
+								<xsl:if test="@vvip">
 									<IMG class="border-radius-md" src="/vip.svg" width="25"/>
 								</xsl:if>
 								<xsl:if test="@relief = 'true'">
@@ -302,7 +302,7 @@
 						<A class="position-relative m-1" href="/profile/{identifier}/">
 							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
 							<DIV class="position-absolute top-0 right-0 text-center" style="width: 25px;">
-								<xsl:if test="@vip">
+								<xsl:if test="@vvip">
 									<IMG class="border-radius-md" src="/vip.svg" width="25"/>
 								</xsl:if>
 								<xsl:if test="@relief = 'true'">
@@ -355,7 +355,7 @@
 						<A class="position-relative m-1" href="/profile/{identifier}/">
 							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
 							<DIV class="position-absolute top-0 right-0 text-center" style="width: 25px;">
-								<xsl:if test="@vip">
+								<xsl:if test="@vvip">
 									<IMG class="border-radius-md" src="/vip.svg" width="25"/>
 								</xsl:if>
 								<xsl:if test="@relief = 'true'">
