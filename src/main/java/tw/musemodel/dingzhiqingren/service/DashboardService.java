@@ -3,6 +3,7 @@ package tw.musemodel.dingzhiqingren.service;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import javax.xml.parsers.ParserConfigurationException;
@@ -11,15 +12,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.entity.StopRecurringPaymentApplication;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalInfo;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
 import tw.musemodel.dingzhiqingren.model.EachWithdrawal;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
+import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 
@@ -45,16 +49,18 @@ public class DashboardService {
 	private LoverService loverService;
 
 	@Autowired
-	private WithdrawalRecordRepository withdrawalRecordRepository;
+	private LoverRepository loverRepository;
+
+	@Autowired
+	private StopRecurringPaymentApplicationRepository stopRecurringPaymentApplicationRepository;
 
 	@Autowired
 	private WithdrawalInfoRepository withdrawalInfoRepository;
 
 	@Autowired
-	private LoverRepository loverRepository;
+	private WithdrawalRecordRepository withdrawalRecordRepository;
 
-	public Document withdrawalDocument(Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
+	public Document withdrawalDocument(Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 
@@ -169,8 +175,85 @@ public class DashboardService {
 		return document;
 	}
 
-	public Document certificationDocument(Locale locale)
-		throws SAXException, IOException, ParserConfigurationException {
+	/**
+	 * 在金流平台的后台处理完解除定期定额申请后纪录谁处理的、什么时候处理的。
+	 *
+	 * @param application 申请书
+	 * @param handler 谁处理
+	 * @return 解除定期定额申请
+	 */
+	public StopRecurringPaymentApplication handleStopRecurringPaymentApplication(StopRecurringPaymentApplication application, Lover handler) {
+		application.setHandledAt(new Date(System.currentTimeMillis()));
+		application.setHandler(handler);
+		return stopRecurringPaymentApplicationRepository.saveAndFlush(application);
+	}
+
+	/**
+	 * @param applicant 申请人
+	 * @return 是否有资格申请解除定期定额
+	 */
+	@Transactional(readOnly = true)
+	public boolean isEligible(Lover applicant) {
+		Date vipDuration = applicant.getVip();
+		if (Objects.isNull(vipDuration)) {
+			LOGGER.debug(
+				String.format(
+					"是否有资格申请解除定期定额\n%s.isEligible(\n\t%s = {}\n);\n{}\n%s",
+					getClass(),
+					Lover.class,
+					"未曾是贵宾"
+				),
+				applicant,
+				vipDuration
+			);
+			return true;
+		}
+		if (vipDuration.before(new Date(System.currentTimeMillis()))) {
+			LOGGER.debug(
+				String.format(
+					"是否有资格申请解除定期定额\n%s.isEligible(\n\t%s = {}\n);\n{}\n%s",
+					getClass(),
+					Lover.class,
+					"已不是贵宾"
+				),
+				applicant,
+				vipDuration
+			);
+			return false;
+		}
+
+		List<StopRecurringPaymentApplication> applications = (List<StopRecurringPaymentApplication>) stopRecurringPaymentApplicationRepository.
+			findByApplicantOrderByCreatedAtDesc(applicant);
+		if (Objects.isNull(applications) || applications.isEmpty()) {
+			LOGGER.debug(
+				String.format(
+					"是否有资格申请解除定期定额\n%s.isEligible(\n\t%s = {}\n);\n{}\n%s",
+					getClass(),
+					Lover.class,
+					"未曾申请过"
+				),
+				applicant,
+				applications
+			);
+			return true;
+		}
+
+		StopRecurringPaymentApplication application = applications.get(0);
+		LOGGER.debug(
+			String.format(
+				"是否有资格申请解除定期定额\n%s.isEligible(\n\t%s = {}\n);\n{}\n{}\n%s",
+				getClass(),
+				Lover.class,
+				"是否处理过"
+			),
+			applicant,
+			application.getHandledAt(),
+			application.getHandler()
+		);
+		return Objects.nonNull(application.getHandledAt()) && Objects.nonNull(application.getHandler());
+	}
+
+	public Document certificationDocument(Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 
