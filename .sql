@@ -747,7 +747,7 @@ COMMENT ON COLUMN"qing_ren"."nan_shi_zhong_lei"IS'男士种类';
  */
 ALTER TYPE"xing_wei" RENAME VALUE 'ZAI_LIAO_LIAO' TO 'LIAO_LIAO';
 
-/*
+/**
  * 用户号之间的封锁
  */
 CREATE TABLE"feng_suo"(
@@ -768,3 +768,20 @@ ADD VALUE'YAO_CHE_MA_FEI';--要求車馬費
 
 ALTER TABLE"li_cheng"
 ALTER COLUMN"fang_xing_sheng_huo_zhao"DROP NOT NULL;
+
+/**
+ * 申请解除定期定额
+ */
+CREATE TABLE"shen_qing_jie_chu_ding_qi_ding_e"(
+	"id"serial8 PRIMARY KEY,
+	"shei_shen_qing"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"shen_qing_shi"timestamptz NOT NULL DEFAULT"now"(),
+	"shei_chu_li"int REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"chu_li_shi"timestamptz
+);
+COMMENT ON TABLE"shen_qing_jie_chu_ding_qi_ding_e"IS'申请解除定期定额';
+COMMENT ON COLUMN"shen_qing_jie_chu_ding_qi_ding_e"."id"IS'主键';
+COMMENT ON COLUMN"shen_qing_jie_chu_ding_qi_ding_e"."shei_shen_qing"IS'谁申请';
+COMMENT ON COLUMN"shen_qing_jie_chu_ding_qi_ding_e"."shen_qing_shi"IS'申请时';
+COMMENT ON COLUMN"shen_qing_jie_chu_ding_qi_ding_e"."shei_chu_li"IS'谁处理';
+COMMENT ON COLUMN"shen_qing_jie_chu_ding_qi_ding_e"."chu_li_shi"IS'处理时';
