@@ -226,12 +226,21 @@ public class InPay2Controller {
 					null,
 					locale
 				);
-			} else {
+			} else if (Objects.equals(itemName, "長期貴賓")) {
 				/*
-				 升级为贵宾
+				 升级为長期贵宾
 				 */
 				result = messageSource.getMessage(
-					"upgrade.vip",
+					"longTerm.itemName",
+					null,
+					locale
+				);
+			} else if (Objects.equals(itemName, "短期貴賓")) {
+				/*
+				 升级为短期贵宾
+				 */
+				result = messageSource.getMessage(
+					"shortTerm.itemName",
 					null,
 					locale
 				);

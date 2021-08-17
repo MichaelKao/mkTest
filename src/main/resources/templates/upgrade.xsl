@@ -44,7 +44,7 @@
 							<DIV class="card-description d-flex align-items-baseline">
 								<SPAN>NT$</SPAN>
 								<SPAN>1288</SPAN>
-								<A class="ms-auto btn btn-sm btn-outline-info px-3 px-sm-4 m-0" href="/upgrade/1.asp">選擇</A>
+								<A class="ms-auto btn btn-sm btn-outline-info px-3 px-sm-4 m-0" href="/upgrade/2.asp">選擇</A>
 							</DIV>
 						</DIV>
 					</DIV>
@@ -57,7 +57,7 @@
 							<DIV class="card-description d-flex align-items-baseline">
 								<SPAN>NT$</SPAN>
 								<SPAN>1288</SPAN>
-								<A class="ms-auto btn btn-sm btn-outline-info px-3 px-sm-4 m-0" href="/upgrade/2.asp">選擇</A>
+								<A class="ms-auto btn btn-sm btn-outline-info px-3 px-sm-4 m-0" href="/upgrade/1.asp">選擇</A>
 							</DIV>
 						</DIV>
 					</DIV>

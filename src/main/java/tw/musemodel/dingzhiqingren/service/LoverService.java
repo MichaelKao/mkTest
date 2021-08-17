@@ -89,7 +89,6 @@ import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
 import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
-import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LocationRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
@@ -679,6 +678,7 @@ public class LoverService {
 	}
 
 	public boolean isVVIP(Lover lover) {
+		// 貴賓到期日
 		Date vip = lover.getVip();
 		Lover.MaleSpecies maleSpecies = lover.getMaleSpecies();
 		return Objects.nonNull(vip)

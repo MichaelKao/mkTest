@@ -497,7 +497,7 @@ public class Inpay2Service {
 		tokenRequestData.setOrderInfo(tokenRequestData.new OrderInfo(
 			generateMerchantTradeDate(currentTimeMillis),//厂商交易时间
 			luJie.getMerchantTradeNo(),//特店交易编号
-			SHORTTERM_VIP_AMOUNT,//交易金额
+			LONGTERM_VIP_AMOUNT,//交易金额
 			String.format(
 				"https://%s/inpay2/return.asp",
 				Servant.LOCALHOST
@@ -516,7 +516,7 @@ public class Inpay2Service {
 				Servant.LOCALHOST
 			)//3D 验证回传付款结果网址
 		);
-		cardInfo.setPeriodAmount(SHORTTERM_VIP_AMOUNT.shortValue());//定期定额每次授权金额
+		cardInfo.setPeriodAmount(LONGTERM_VIP_AMOUNT.shortValue());//定期定额每次授权金额
 		cardInfo.setPeriodType(PERIOD_TYPE);//定期定额周期种类
 		cardInfo.setFrequency(FREQUENCY);//定期定额执行频率
 		cardInfo.setExecTimes(EXEC_TIMES);//定期定额执行次数
@@ -669,7 +669,7 @@ public class Inpay2Service {
 				Servant.LOCALHOST
 			),//付款回传结果
 			messageSource.getMessage(
-				"longTerm.tradeDesc",
+				"shortTerm.tradeDesc",
 				null,
 				locale
 			),//交易描述
@@ -1159,6 +1159,7 @@ public class Inpay2Service {
 			);//再延期 30 天
 		}
 		lover.setVip(vipDuration);
+		lover.setMaleSpecies(Lover.MaleSpecies.VVIP);
 		lover = loverService.saveLover(lover);
 
 		historyRepository.saveAndFlush(new History(
@@ -1295,7 +1296,7 @@ public class Inpay2Service {
 		long currentTimeMillis = System.currentTimeMillis();
 		if (Objects.isNull(plan)) {
 			/*
-			 升级为 VIP
+			 升级为短期 VIP
 			 */
 			Date vipDuration = lover.getVip();
 			if (Objects.isNull(vipDuration) || vipDuration.before(new Date(currentTimeMillis))) {
@@ -1314,6 +1315,15 @@ public class Inpay2Service {
 				);//再延期 30 天
 			}
 			lover.setVip(vipDuration);
+			LOGGER.debug("測試luJie.getTradeAmt(){}", Objects.equals(luJie.getTradeAmt(), SHORTTERM_VIP_AMOUNT));
+			LOGGER.debug("測試luJie.getTradeAmt(){}", luJie.getTradeAmt());
+			LOGGER.debug("測試orderInfo.getTradeAmt(){}", orderInfo.getTradeAmt());
+			if (Objects.equals(luJie.getTradeAmt(), SHORTTERM_VIP_AMOUNT)) {
+				LOGGER.debug("測試luJie.getTradeAmt(){}", luJie.getTradeAmt());
+				lover.setMaleSpecies(Lover.MaleSpecies.VIP);
+			} else if (Objects.equals(luJie.getTradeAmt(), LONGTERM_VIP_AMOUNT)) {
+				lover.setMaleSpecies(Lover.MaleSpecies.VVIP);
+			}
 			lover = loverService.saveLover(lover);
 
 			history = new History(

@@ -30,7 +30,6 @@
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
 			<INPUT id="me" type="hidden" value="{@identifier}"/>
-			<INPUT name="vipType" type="hidden" value="1"/>
 			<DIV class="container py-8">
 				<DIV class="card col-11 col-md-8 col-lg-6 mx-auto">
 					<DIV class="card-body pt-2">
@@ -50,10 +49,6 @@
 							<FORM action="" method="post" name="payment">
 								<BUTTON class="btn btn-outline-info btn-sm h6 text-info px-3 m-0" type="submit">付款</BUTTON>
 							</FORM>
-						</xsl:if>
-						<xsl:if test="@vvip">
-							<DIV class="h3 d-block text-darker my-2">取消 VIP</DIV>
-							<BUTTON class="btn btn-primary" type="button">取消</BUTTON>
 						</xsl:if>
 					</DIV>
 				</DIV>

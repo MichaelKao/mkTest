@@ -2166,9 +2166,9 @@ public class WelcomeController {
 
 		String view = null;
 		if (vipType == 1) {
-			view = "upgradeLongTerm";
-		} else if (vipType == 2) {
 			view = "upgradeShortTerm";
+		} else if (vipType == 2) {
+			view = "upgradeLongTerm";
 		}
 		ModelAndView modelAndView = new ModelAndView(view);
 		modelAndView.getModelMap().addAttribute(document);
