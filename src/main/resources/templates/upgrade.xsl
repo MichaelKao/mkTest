@@ -24,52 +24,50 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
-			<LINK href="/STYLE/ECPayPayment.css" rel="stylesheet"/>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<INPUT id="me" type="hidden" value="{@identifier}"/>
 			<DIV class="container py-8">
-				<DIV class="card col-11 col-md-8 col-lg-6 mx-auto">
-					<DIV class="card-body pt-2">
-						<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">訂製情人</SPAN>
-						<DIV class="h3 d-block text-darker my-2">解鎖 VIP</DIV>
-						<P class="card-description mb-4">
-							<DIV>1. 每日可加入 10 次女生的通訊軟體</DIV>
-							<DIV>2. 排序提高</DIV>
-							<DIV>3. 可觀看女生的評價</DIV>
-						</P>
-					</DIV>
+				<DIV class="text-center mx-sm-5 mx-lg-12 mb-5">
+					<H4 class="text-primary">
+						<xsl:value-of select="@title"/>
+					</H4>
 				</DIV>
-				<DIV class="card col-11 col-md-8 col-lg-6 mx-auto mt-3">
-					<DIV class="card-body pt-2">
-						<xsl:if test="not(@vip) and not(@vvip)">
-							<DIV class="h3 d-block text-darker my-2">馬上升級!</DIV>
-							<DIV id="ECPayPayment"/>
-							<FORM action="" method="post" name="payment">
-								<BUTTON class="btn btn-outline-info btn-sm h6 text-info px-3 m-0" type="submit">付款</BUTTON>
-							</FORM>
-						</xsl:if>
-						<xsl:if test="@vip or @vvip">
-							<DIV class="h3 d-block text-darker my-2">取消 VIP</DIV>
-							<BUTTON class="btn btn-primary" type="button">取消</BUTTON>
-						</xsl:if>
+				<DIV class="d-flex flex-column flex-md-row align-items-center justify-content-center ms-2">
+					<DIV class="col-11 col-md-4 card mb-3 mx-2">
+						<DIV class="card-body p-md-4 p-lg-5">
+							<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">長期VIP</SPAN>
+							<DIV class="text-lg text-bold text-dark my-2">
+								<SPAN>月付1288元 / 一年期</SPAN>
+							</DIV>
+							<DIV class="card-description d-flex align-items-baseline">
+								<SPAN>NT$</SPAN>
+								<SPAN>1288</SPAN>
+								<A class="ms-auto btn btn-sm btn-outline-info px-3 px-sm-4 m-0" href="/upgrade/1.asp">選擇</A>
+							</DIV>
+						</DIV>
+					</DIV>
+					<DIV class="col-11 col-md-4 card mb-3 mx-2">
+						<DIV class="card-body p-md-4 p-lg-5">
+							<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">短期VIP</SPAN>
+							<DIV class="text-lg text-bold text-dark my-2">
+								<SPAN>一個月$1688 / 一次性</SPAN>
+							</DIV>
+							<DIV class="card-description d-flex align-items-baseline">
+								<SPAN>NT$</SPAN>
+								<SPAN>1288</SPAN>
+								<A class="ms-auto btn btn-sm btn-outline-info px-3 px-sm-4 m-0" href="/upgrade/2.asp">選擇</A>
+							</DIV>
+						</DIV>
 					</DIV>
 				</DIV>
 				<xsl:call-template name="footer"/>
 			</DIV>
-			<DIV class="loadingWrap" style="display: block;">
-				<DIV class="loading">
-					<DIV class="round"></DIV>
-					<DIV class="round ms-1"></DIV>
-					<DIV class="round ms-1"></DIV>
-				</DIV>
-			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
-			<SCRIPT src="https://cdn.jsdelivr.net/npm/node-forge@0.7.0/dist/forge.min.js"/>
-			<SCRIPT src="https://ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116"/>
-			<SCRIPT src="/SCRIPT/upgrade.js"/>
+			<xsl:if test="@signIn">
+				<SCRIPT src="/SCRIPT/websocket.js"/>
+			</xsl:if>
 		</BODY>
 	</xsl:template>
 </xsl:stylesheet>

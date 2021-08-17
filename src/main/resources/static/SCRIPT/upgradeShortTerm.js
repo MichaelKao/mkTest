@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
 	ECPay.initialize(
 		ECPay.ServerType.Stage,
 		1,
@@ -7,7 +8,7 @@ $(document).ready(function () {
 				alert(errMsg);
 			}
 			$.post(
-				'/inpay2/getPeriodTokenByTrade.json',
+				'/inpay2/getTokenByTradeForShortTerm.json',
 				{
 					me: $('#me').val()
 				},
@@ -62,6 +63,7 @@ $(document).ready(function () {
 							location.replace(data.ThreeDInfo.ThreeDURL);
 						} else {
 							alert('呃!?');
+							$('DIV.loadingWrap').css('display', 'none');
 						}
 					},
 					'json'

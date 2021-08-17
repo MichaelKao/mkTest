@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
 	ECPay.initialize(
 		ECPay.ServerType.Stage,
 		1,
@@ -6,16 +7,15 @@ $(document).ready(function () {
 			if (errMsg !== null) {
 				alert(errMsg);
 			}
-			$('DIV.loadingWrap').css('display', 'none');
 			$.post(
-				'/inpay2/getTokenByTrade.json',
+				'/inpay2/getPeriodTokenByTrade.json',
 				{
-					me: $('#me').val(),
-					plan: $('#plan').val()
+					me: $('#me').val()
 				},
 				function (data) {
 					if (data.RtnCode === 1) {
 						try {
+							$('DIV.loadingWrap').css('display', 'none');
 							ECPay.createPayment(
 								data.Token,
 								null === navigator.language.match(/^zh/gi) ? ECPay.Language.enUS : ECPay.Language.zhTW,
@@ -39,6 +39,7 @@ $(document).ready(function () {
 
 	$('FORM[name="payment"]').submit(function (event) {
 		event.preventDefault();
+
 		let form = this;
 		try {
 			ECPay.getPayToken(function (paymentInfo, errMsg) {
@@ -62,6 +63,7 @@ $(document).ready(function () {
 							location.replace(data.ThreeDInfo.ThreeDURL);
 						} else {
 							alert('呃!?');
+							$('DIV.loadingWrap').css('display', 'none');
 						}
 					},
 					'json'

@@ -176,10 +176,7 @@ public class WebSocketService {
 
 	public Document inbox(Document document, Lover me) {
 		Element documentElement = document.getDocumentElement();
-		List<History> history = historyRepository.
-			findByInitiativeAndBehaviorOrPassiveAndBehaviorOrderByOccurredDesc(me, BEHAVIOR_GREETING, BEHAVIOR_GROUP_GREETING, BEHAVIOR_CHAT_MORE);
 
-		LOGGER.debug("測試{}", history.toString());
 		return document;
 	}
 

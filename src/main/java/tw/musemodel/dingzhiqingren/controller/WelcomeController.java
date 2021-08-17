@@ -2012,7 +2012,7 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 升級 VIP
+	 * 升級長期或短期 VIP
 	 *
 	 * @param authentication
 	 * @param locale
@@ -2086,6 +2086,91 @@ public class WelcomeController {
 		}//是否为 VIP⁉️
 
 		ModelAndView modelAndView = new ModelAndView("upgrade");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
+	 * 升級長期貴賓
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/upgrade/{vipType}.asp")
+	@Secured({"ROLE_YONGHU"})
+	ModelAndView upgradeLongTerm(@PathVariable int vipType, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		if (servant.isNull(authentication)) {
+			return servant.redirectToRoot();
+		}
+
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);//我谁⁉️
+		if (!loverService.isEligible(me)) {
+			return new ModelAndView("redirect:/me.asp");
+		}
+
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.upgrade",
+			null,
+			locale
+		));
+		documentElement.setAttribute(
+			"signIn",
+			authentication.getName()
+		);
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
+
+		/*
+		 确认性别
+		 */
+		boolean gender = me.getGender();
+		if (!gender) {
+			return servant.redirectToRoot();
+		}//女性则重导向首页
+		documentElement.setAttribute(
+			gender ? "male" : "female",
+			null
+		);
+
+		// 通知數
+		if (loverService.annoucementCount(me) > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
+		if (loverService.isVVIP(me)) {
+			documentElement.setAttribute(
+				"vvip",
+				null
+			);
+		}//是否为 VVIP⁉️
+
+		if (loverService.isVIP(me)) {
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}//是否为 VIP⁉️
+
+		String view = null;
+		if (vipType == 1) {
+			view = "upgradeLongTerm";
+		} else if (vipType == 2) {
+			view = "upgradeShortTerm";
+		}
+		ModelAndView modelAndView = new ModelAndView(view);
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}

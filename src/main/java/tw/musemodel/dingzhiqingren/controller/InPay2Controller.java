@@ -94,9 +94,9 @@ public class InPay2Controller {
 	 * @return 厂商验证码 JSON 对象
 	 * @throws com.​fasterxml.​jackson.​core.JsonProcessingException
 	 */
-	@PostMapping(path = "/getTokenByTrade.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/getTokenByTradeForShortTerm.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String getTokenByTrade(final @RequestParam UUID me, final HttpSession session, final Locale locale) throws JsonProcessingException {
+	String getTokenByTradeForShortTerm(final @RequestParam UUID me, final HttpSession session, final Locale locale) throws JsonProcessingException {
 		return inpay2Service.getTokenByTrade(
 			loverService.loadByIdentifier(me),
 			session,
