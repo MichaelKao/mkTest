@@ -1,7 +1,6 @@
 package tw.musemodel.dingzhiqingren.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
@@ -37,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tw.com.ecpay.ecpg.OrderResultResponse;
 import tw.com.ecpay.ecpg.PaymentRequest;
 import tw.com.ecpay.ecpg.PaymentResponse;
@@ -77,8 +77,6 @@ public class Inpay2Service {
 	 * 定期定额执行频率
 	 */
 	private final static Short FREQUENCY = Short.parseShort(System.getenv("FREQUENCY"));
-
-	private final static JsonMapper JSON_MAPPER = new JsonMapper();
 
 	private final static String INPAY2ENDPOINT_CREATE_PAYMENT = System.getenv("INPAY2ENDPOINT_CREATE_PAYMENT");
 
@@ -360,7 +358,7 @@ public class Inpay2Service {
 
 		String paymentRequestDataString;
 		try {
-			paymentRequestDataString = JSON_MAPPER.writeValueAsString(
+			paymentRequestDataString = Servant.JSON_MAPPER.writeValueAsString(
 				paymentRequestData
 			);
 		} catch (JsonProcessingException jsonProcessingException) {
@@ -401,7 +399,8 @@ public class Inpay2Service {
 		try {
 			responseBody = httpPost(
 				INPAY2ENDPOINT_CREATE_PAYMENT,
-				JSON_MAPPER.writeValueAsString(paymentRequest)
+				Servant.JSON_MAPPER.
+					writeValueAsString(paymentRequest)
 			);
 		} catch (JsonProcessingException jsonProcessingException) {
 			LOGGER.info(
@@ -424,12 +423,12 @@ public class Inpay2Service {
 				),
 				payToken,
 				session,
-				decrypt(JSON_MAPPER.readValue(
+				decrypt(Servant.JSON_MAPPER.readValue(
 					responseBody,
 					PaymentResponse.class
 				).getData())
 			);
-			return decrypt(JSON_MAPPER.readValue(
+			return decrypt(Servant.JSON_MAPPER.readValue(
 				responseBody,
 				PaymentResponse.class
 			).getData());
@@ -467,6 +466,7 @@ public class Inpay2Service {
 	 * @return 绿界回传厂商验证码对象字符串
 	 * @throws com.fasterxml.jackson.core.JsonProcessingException
 	 */
+	@Transactional
 	public String getPeriodTokenByTrade(Lover lover, final HttpSession session, final Locale locale) throws JsonProcessingException {
 		final Long currentTimeMillis = System.currentTimeMillis();//当前
 		final String merchantTradeNo = generateMerchantTradeNo(currentTimeMillis),//特店交易编号
@@ -540,7 +540,7 @@ public class Inpay2Service {
 
 		String tokenRequestDataString;
 		try {
-			tokenRequestDataString = JSON_MAPPER.writeValueAsString(
+			tokenRequestDataString = Servant.JSON_MAPPER.writeValueAsString(
 				tokenRequestData
 			);
 		} catch (JsonProcessingException jsonProcessingException) {
@@ -579,7 +579,7 @@ public class Inpay2Service {
 		try {
 			responseBody = httpPost(
 				INPAY2ENDPOINT_GET_TOKEN_BY_TRADE,
-				JSON_MAPPER.writeValueAsString(tokenRequest)
+				Servant.JSON_MAPPER.writeValueAsString(tokenRequest)
 			);
 		} catch (JsonProcessingException jsonProcessingException) {
 			LOGGER.info(
@@ -593,7 +593,7 @@ public class Inpay2Service {
 		}
 
 		try {
-			return decrypt(JSON_MAPPER.readValue(
+			return decrypt(Servant.JSON_MAPPER.readValue(
 				responseBody,
 				TokenResponse.class
 			).getData());
@@ -622,9 +622,11 @@ public class Inpay2Service {
 	 *
 	 * @param lover 用户
 	 * @param session 分配给会话的标识符
+	 * @param locale 语言环境
 	 * @return 绿界回传厂商验证码对象字符串
 	 * @throws com.fasterxml.jackson.core.JsonProcessingException
 	 */
+	@Transactional
 	public String getTokenByTrade(final Lover lover, final HttpSession session, final Locale locale) throws JsonProcessingException {
 		final Long currentTimeMillis = System.currentTimeMillis();//当前
 		final String merchantTradeNo = generateMerchantTradeNo(currentTimeMillis),//特店交易编号
@@ -720,7 +722,7 @@ public class Inpay2Service {
 		 */
 		String tokenRequestDataString;
 		try {
-			tokenRequestDataString = JSON_MAPPER.writeValueAsString(
+			tokenRequestDataString = Servant.JSON_MAPPER.writeValueAsString(
 				tokenRequestData
 			);
 		} catch (JsonProcessingException jsonProcessingException) {
@@ -762,7 +764,7 @@ public class Inpay2Service {
 		try {
 			responseBody = httpPost(
 				INPAY2ENDPOINT_GET_TOKEN_BY_TRADE,
-				JSON_MAPPER.writeValueAsString(tokenRequest)
+				Servant.JSON_MAPPER.writeValueAsString(tokenRequest)
 			);
 		} catch (JsonProcessingException jsonProcessingException) {
 			LOGGER.info(
@@ -776,7 +778,7 @@ public class Inpay2Service {
 		}
 
 		try {
-			return decrypt(JSON_MAPPER.readValue(
+			return decrypt(Servant.JSON_MAPPER.readValue(
 				responseBody,
 				TokenResponse.class
 			).getData());
@@ -809,6 +811,7 @@ public class Inpay2Service {
 	 * @return 绿界回传厂商验证码对象字符串
 	 * @throws com.fasterxml.jackson.core.JsonProcessingException
 	 */
+	@Transactional
 	public String getTokenByTrade(final Plan plan, final Lover lover, final HttpSession session) throws JsonProcessingException {
 		final Long currentTimeMillis = System.currentTimeMillis();//当前
 		final String merchantTradeNo = generateMerchantTradeNo(currentTimeMillis);//特店交易编号
@@ -895,7 +898,7 @@ public class Inpay2Service {
 		 */
 		String tokenRequestDataString;
 		try {
-			tokenRequestDataString = JSON_MAPPER.writeValueAsString(
+			tokenRequestDataString = Servant.JSON_MAPPER.writeValueAsString(
 				tokenRequestData
 			);
 		} catch (JsonProcessingException jsonProcessingException) {
@@ -937,7 +940,7 @@ public class Inpay2Service {
 		try {
 			responseBody = httpPost(
 				INPAY2ENDPOINT_GET_TOKEN_BY_TRADE,
-				JSON_MAPPER.writeValueAsString(tokenRequest)
+				Servant.JSON_MAPPER.writeValueAsString(tokenRequest)
 			);
 		} catch (JsonProcessingException jsonProcessingException) {
 			LOGGER.info(
@@ -951,7 +954,7 @@ public class Inpay2Service {
 		}
 
 		try {
-			return decrypt(JSON_MAPPER.readValue(
+			return decrypt(Servant.JSON_MAPPER.readValue(
 				responseBody,
 				TokenResponse.class
 			).getData());
@@ -989,13 +992,14 @@ public class Inpay2Service {
 	 * @throws IllegalBlockSizeException
 	 * @throws BadPaddingException
 	 */
+	@Transactional
 	public JSONObject handleOrderResult(String resultData) throws JsonProcessingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
-		OrderResultResponse orderResultResponse = JSON_MAPPER.readValue(
+		OrderResultResponse orderResultResponse = Servant.JSON_MAPPER.readValue(
 			resultData,
 			OrderResultResponse.class
 		);
 		String decrypted = decrypt(orderResultResponse.getData());
-		OrderResultResponse.Data data = JSON_MAPPER.readValue(
+		OrderResultResponse.Data data = Servant.JSON_MAPPER.readValue(
 			decrypted,
 			OrderResultResponse.Data.class
 		);
@@ -1077,8 +1081,9 @@ public class Inpay2Service {
 	 * @throws IllegalBlockSizeException
 	 * @throws BadPaddingException
 	 */
+	@Transactional
 	public JSONObject handlePeriodReturn(String requestBody) throws JsonProcessingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
-		ReturnResponse returnResponse = JSON_MAPPER.readValue(
+		ReturnResponse returnResponse = Servant.JSON_MAPPER.readValue(
 			requestBody,
 			ReturnResponse.class
 		);
@@ -1089,7 +1094,7 @@ public class Inpay2Service {
 				toJSONObject();
 		}
 
-		ReturnResponse.Data data = JSON_MAPPER.readValue(
+		ReturnResponse.Data data = Servant.JSON_MAPPER.readValue(
 			decrypt(returnResponse.getData()),//解密后的数据
 			ReturnResponse.Data.class
 		);
@@ -1145,14 +1150,14 @@ public class Inpay2Service {
 		Date vipDuration = lover.getVip();
 		if (Objects.isNull(vipDuration) || vipDuration.before(new Date(currentTimeMillis))) {
 			/*
-			 未曾是 VIP 或曾是 VIP 但已逾期
+			 未曾是贵宾或曾是贵宾但已逾期
 			 */
 			vipDuration = new Date(
 				currentTimeMillis + Servant.MILLISECONDS_OF_30_DAYS
 			);//从当前时戳加 30 天
 		} else {
 			/*
-			 曾是 VIP 但尚未逾期
+			 曾是贵宾但尚未逾期
 			 */
 			vipDuration = new Date(
 				vipDuration.getTime() + Servant.MILLISECONDS_OF_30_DAYS
@@ -1188,8 +1193,9 @@ public class Inpay2Service {
 	 * @throws IllegalBlockSizeException
 	 * @throws BadPaddingException
 	 */
+	@Transactional
 	public JSONObject handleReturn(String requestBody) throws JsonProcessingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
-		ReturnResponse returnResponse = JSON_MAPPER.readValue(
+		ReturnResponse returnResponse = Servant.JSON_MAPPER.readValue(
 			requestBody,
 			ReturnResponse.class
 		);
@@ -1200,7 +1206,7 @@ public class Inpay2Service {
 				toJSONObject();
 		}
 
-		ReturnResponse.Data data = JSON_MAPPER.readValue(
+		ReturnResponse.Data data = Servant.JSON_MAPPER.readValue(
 			decrypt(returnResponse.getData()),//解密后的数据
 			ReturnResponse.Data.class
 		);
@@ -1296,19 +1302,19 @@ public class Inpay2Service {
 		long currentTimeMillis = System.currentTimeMillis();
 		if (Objects.isNull(plan)) {
 			/*
-			 升级为短期 VIP
+			 升级为短期贵宾
 			 */
 			Date vipDuration = lover.getVip();
 			if (Objects.isNull(vipDuration) || vipDuration.before(new Date(currentTimeMillis))) {
 				/*
-				 未曾是 VIP 或曾是 VIP 但已逾期
+				 未曾是贵宾或曾是贵宾但已逾期
 				 */
 				vipDuration = new Date(
 					currentTimeMillis + Servant.MILLISECONDS_OF_30_DAYS
 				);//从当前时戳加 30 天
 			} else {
 				/*
-				 曾是 VIP 但尚未逾期
+				 曾是贵宾但尚未逾期
 				 */
 				vipDuration = new Date(
 					vipDuration.getTime() + Servant.MILLISECONDS_OF_30_DAYS
