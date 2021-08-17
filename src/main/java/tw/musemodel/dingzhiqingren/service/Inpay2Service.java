@@ -1194,6 +1194,7 @@ public class Inpay2Service {
 	 * @throws BadPaddingException
 	 */
 	@Transactional
+	@SuppressWarnings("null")
 	public JSONObject handleReturn(String requestBody) throws JsonProcessingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
 		ReturnResponse returnResponse = Servant.JSON_MAPPER.readValue(
 			requestBody,
