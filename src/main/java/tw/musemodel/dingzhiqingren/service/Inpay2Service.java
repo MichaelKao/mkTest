@@ -1315,11 +1315,7 @@ public class Inpay2Service {
 				);//再延期 30 天
 			}
 			lover.setVip(vipDuration);
-			LOGGER.debug("測試luJie.getTradeAmt(){}", Objects.equals(luJie.getTradeAmt(), SHORTTERM_VIP_AMOUNT));
-			LOGGER.debug("測試luJie.getTradeAmt(){}", luJie.getTradeAmt());
-			LOGGER.debug("測試orderInfo.getTradeAmt(){}", orderInfo.getTradeAmt());
 			if (Objects.equals(luJie.getTradeAmt(), SHORTTERM_VIP_AMOUNT)) {
-				LOGGER.debug("測試luJie.getTradeAmt(){}", luJie.getTradeAmt());
 				lover.setMaleSpecies(Lover.MaleSpecies.VIP);
 			} else if (Objects.equals(luJie.getTradeAmt(), LONGTERM_VIP_AMOUNT)) {
 				lover.setMaleSpecies(Lover.MaleSpecies.VVIP);

@@ -17,6 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.entity.Lover.MaleSpecies;
 import tw.musemodel.dingzhiqingren.entity.StopRecurringPaymentApplication;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalInfo;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
@@ -206,7 +207,7 @@ public class DashboardService {
 				applicant,
 				vipDuration
 			);
-			return true;
+			return false;
 		}
 		if (vipDuration.before(new Date(System.currentTimeMillis()))) {
 			LOGGER.debug(
@@ -215,6 +216,19 @@ public class DashboardService {
 					getClass(),
 					Lover.class,
 					"已不是贵宾"
+				),
+				applicant,
+				vipDuration
+			);
+			return false;
+		}
+		if (Objects.equals(applicant, MaleSpecies.VIP)) {
+			LOGGER.debug(
+				String.format(
+					"是否有资格申请解除定期定额\n%s.isEligible(\n\t%s = {}\n);\n{}\n%s",
+					getClass(),
+					Lover.class,
+					"短期貴賓不能解除"
 				),
 				applicant,
 				vipDuration
