@@ -747,7 +747,7 @@ COMMENT ON COLUMN"qing_ren"."nan_shi_zhong_lei"IS'男士种类';
  */
 ALTER TYPE"xing_wei" RENAME VALUE 'ZAI_LIAO_LIAO' TO 'LIAO_LIAO';
 
-/**
+/*
  * 用户号之间的封锁
  */
 CREATE TABLE"feng_suo"(
@@ -763,6 +763,9 @@ ALTER TABLE"li_cheng"
 ADD COLUMN"fang_xing_sheng_huo_zhao"bool NOT NULL DEFAULT'0';
 COMMENT ON COLUMN"li_cheng"."fang_xing_sheng_huo_zhao"IS'放行生活照';
 
+/*
+ * 行為
+ */
 ALTER TYPE"xing_wei"
 ADD VALUE'YAO_CHE_MA_FEI';--要求車馬費
 
