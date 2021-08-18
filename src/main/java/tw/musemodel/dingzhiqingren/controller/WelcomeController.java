@@ -36,8 +36,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -95,13 +93,25 @@ public class WelcomeController {
 	private AmazonWebServices amazonWebServices;
 
 	@Autowired
+	private DashboardService dashboardService;
+
+	@Autowired
 	private HistoryService historyService;
 
 	@Autowired
 	private LoverService loverService;
 
 	@Autowired
+	private WebSocketService webSocketService;
+
+	@Autowired
 	private Servant servant;
+
+	@Autowired
+	private HistoryRepository historyRepository;
+
+	@Autowired
+	private LineGivenRepository lineGivenRepository;
 
 	@Autowired
 	private LoverRepository loverRepository;
@@ -110,19 +120,7 @@ public class WelcomeController {
 	private PictureRepository pictureRepository;
 
 	@Autowired
-	private HistoryRepository historyRepository;
-
-	@Autowired
 	private PlanRepository planRepository;
-
-	@Autowired
-	private LineGivenRepository lineGivenRepository;
-
-	@Autowired
-	private WebSocketService webSocketService;
-
-	@Autowired
-	private DashboardService dashboardService;
 
 	@Autowired
 	private StopRecurringPaymentApplicationRepository stopRecurringPaymentApplicationRepository;
@@ -829,14 +827,6 @@ public class WelcomeController {
 	@ResponseBody
 	List<Lover> lovers() {
 		return loverRepository.findAll();
-	}
-
-	@GetMapping(path = "/shadow", produces = MediaType.TEXT_PLAIN_VALUE)
-	@ResponseBody
-	@Secured({"ROLE_ANONYMOUS"})
-	String shadow(@RequestParam String shadow) {
-		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		return passwordEncoder.encode(shadow);
 	}
 
 	@GetMapping(path = "/@{webhook}", produces = MediaType.TEXT_PLAIN_VALUE)
@@ -2284,8 +2274,7 @@ public class WelcomeController {
 	@PostMapping(path = "/resFare.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({"ROLE_YONGHU"})
-	String resFare(@RequestParam("whom") UUID femaleUUID, @RequestParam Long historyId,
-		@RequestParam Boolean result, Authentication authentication, Locale locale) {
+	String resFare(@RequestParam("whom") UUID femaleUUID, @RequestParam Long historyId, @RequestParam Boolean result, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -3751,8 +3740,8 @@ public class WelcomeController {
 	 * @return
 	 */
 	@PostMapping(path = "/stopRecurring.json")
-	@Secured({"ROLE_YONGHU"})
 	@ResponseBody
+	@Secured({"ROLE_YONGHU"})
 	String stopRecurring(Authentication authentication, Locale locale) {
 		// 本人
 		Lover me = loverService.loadByUsername(
