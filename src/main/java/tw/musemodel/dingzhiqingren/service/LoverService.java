@@ -1227,13 +1227,11 @@ public class LoverService {
 			locationElement.setAttribute(
 				"locationID", location.getId().toString()
 			);
-			for (Location loc : lover.getLocations()) {
-				if (Objects.equals(loc, location)) {
-					locationElement.setAttribute(
-						"locationSelected", ""
-					);
-				}
-			}
+			lover.getLocations().stream().filter(loc -> (Objects.equals(loc, location))).forEachOrdered(_item -> {
+				locationElement.setAttribute(
+					"locationSelected", ""
+				);
+			});
 			return locationElement;
 		}).forEachOrdered(locationElement -> {
 			loverElement.appendChild(locationElement);
