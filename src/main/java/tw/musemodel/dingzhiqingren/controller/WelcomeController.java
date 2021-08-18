@@ -219,16 +219,16 @@ public class WelcomeController {
 	/**
 	 * 首頁更多甜心/男仕
 	 *
-	 * @param p
+	 * @param p 第几页
 	 * @param type
-	 * @param authentication
+	 * @param authentication 认证
 	 * @param locale 语言环境
 	 * @return 杰森对象字符串
 	 * @throws JsonProcessingException
 	 */
 	@PostMapping(path = "/seeMoreLover.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	@SuppressWarnings("null")
 	String seeMoreLover(@RequestParam int p, @RequestParam String type, Authentication authentication, Locale locale) {
 		// 本人
@@ -471,7 +471,22 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 重新激活页面
+	 * 用户自主更新密码。
+	 *
+	 * @param authentication 认证
+	 * @param locale 语言环境
+	 * @return 用户号
+	 */
+	@PostMapping(path = "/password.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	Lover changePassword(@RequestParam String password, Authentication authentication, Locale locale) {
+		Lover me = loverService.loadByUsername(authentication.getName());
+		return loverService.changePassword(me, password);
+	}
+
+	/**
+	 * 重新激活页面。
 	 *
 	 * @param authentication 认证
 	 * @return 网页
@@ -536,9 +551,18 @@ public class WelcomeController {
 		return modelAndView;
 	}
 
+	/**
+	 * 再激活。
+	 *
+	 * @param username 用户名(国码➕手机号)
+	 * @param request 请求
+	 * @param authentication 认证
+	 * @param locale 语言环境
+	 * @return
+	 */
 	@PostMapping(path = "/reactivate.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String reactivate(@RequestParam String username, Authentication authentication, HttpServletRequest request, Locale locale) {
+	String reactivate(@RequestParam String username, HttpServletRequest request, Authentication authentication, Locale locale) {
 		if (!servant.isNull(authentication)) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
@@ -574,7 +598,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/reorder.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@Secured({"ROLE_ALMIGHTY"})
+	@Secured({Servant.ROLE_ADMINISTRATOR})
 	List<List<Object>> reorder() {
 		List<List<Object>> thingies = new ArrayList<>();
 		thingies.add(Arrays.
@@ -665,7 +689,7 @@ public class WelcomeController {
 	@GetMapping(path = "/signOut.asp")
 	ModelAndView signOut(HttpSession session) {
 		session.invalidate();
-		return servant.redirectToRoot();
+		return Servant.redirectToRoot();
 	}
 
 	/**
@@ -757,13 +781,13 @@ public class WelcomeController {
 	 * 新建帐户
 	 *
 	 * @param signUp 模型
-	 * @param authentication 认证
 	 * @param request 请求
+	 * @param authentication 认证
 	 * @return 重定向
 	 */
 	@PostMapping(path = "/signUp.asp")
 	@ResponseBody
-	String signUp(SignUp signUp, Authentication authentication, HttpServletRequest request, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	String signUp(SignUp signUp, HttpServletRequest request, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
@@ -813,41 +837,18 @@ public class WelcomeController {
 		return jsonObject.toString();
 	}
 
-	@GetMapping(path = "/{lover:\\d+}/cellular.json", produces = MediaType.TEXT_PLAIN_VALUE)
-	@ResponseBody
-	String cellular(@PathVariable Lover lover) throws JsonProcessingException {
-		return String.format(
-			"+%s%s",
-			lover.getCountry().getCallingCode(),
-			lover.getLogin()
-		);
-	}
-
-	@GetMapping(path = "/lovers.json", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	List<Lover> lovers() {
-		return loverRepository.findAll();
-	}
-
-	@GetMapping(path = "/@{webhook}", produces = MediaType.TEXT_PLAIN_VALUE)
-	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
-	String webhook(@PathVariable String webhook) {
-		return webhook.replaceAll("^@", "");
-	}
-
 	/**
 	 * 看自己的個人檔案
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/profile/")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView self(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
@@ -932,15 +933,15 @@ public class WelcomeController {
 	/**
 	 * 看某人(也可能是自己)的個人檔案
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/profile/{identifier}/")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView profile(@PathVariable UUID identifier, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
@@ -1074,15 +1075,15 @@ public class WelcomeController {
 	/**
 	 * 顯示自己的編輯頁面
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/me.asp")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView editPage(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
@@ -1161,8 +1162,8 @@ public class WelcomeController {
 	/**
 	 * 修改自己的個人檔案
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
@@ -1170,7 +1171,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/me.asp")
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String editProfile(Lover model, Authentication authentication, Locale locale) {
 		// 本人
 		Lover me = loverService.loadByUsername(
@@ -1185,15 +1186,15 @@ public class WelcomeController {
 	/**
 	 * 我的收藏
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/favorite.asp")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView favorite(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
@@ -1271,12 +1272,13 @@ public class WelcomeController {
 	 * 收藏
 	 *
 	 * @param identifier
-	 * @param authentication
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/favorite.json")
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String favorite(@RequestParam UUID identifier, Authentication authentication, Locale locale) {
 		// 本人
 		Lover me = loverService.loadByUsername(
@@ -1310,13 +1312,13 @@ public class WelcomeController {
 	 * 封鎖
 	 *
 	 * @param identifier
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/block.json")
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String block(@RequestParam UUID identifier, Authentication authentication, Locale locale) {
 		// 本人
 		Lover me = loverService.loadByUsername(
@@ -1349,15 +1351,15 @@ public class WelcomeController {
 	/**
 	 * 誰看過我
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/looksMe.asp")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView whoLooksMe(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
@@ -1500,15 +1502,15 @@ public class WelcomeController {
 	/**
 	 * 相片管理頁面
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/album.asp")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView album(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
@@ -1609,8 +1611,8 @@ public class WelcomeController {
 	/**
 	 * 上傳大頭照
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @param file
 	 * @return
 	 * @throws SAXException
@@ -1619,7 +1621,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/uploadProfileImage")
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String uploadProfileImage(@RequestParam("file") MultipartFile multipartFile, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -1669,9 +1671,9 @@ public class WelcomeController {
 	/**
 	 * 上傳照片
 	 *
-	 * @param authentication
-	 * @param locale
 	 * @param multipartFile
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
@@ -1679,7 +1681,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/uploadPicture")
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String uploadPicture(@RequestParam("file") MultipartFile multipartFile, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -1733,14 +1735,14 @@ public class WelcomeController {
 	/**
 	 * 刪除照片
 	 *
-	 * @param authentication
-	 * @param locale
-	 * @param index
+	 * @param identifier
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(value = "/deletePicture")
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String deletePicture(@RequestParam UUID identifier, Authentication authentication, Locale locale) {
 		pictureRepository.deleteById(
 			pictureRepository.findOneByIdentifier(identifier).getId()
@@ -1760,15 +1762,15 @@ public class WelcomeController {
 	/**
 	 * 选择充值方案
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/recharge.asp")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView recharge(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return servant.redirectToRoot();
@@ -1836,15 +1838,16 @@ public class WelcomeController {
 	/**
 	 * 充值方案
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param plan
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/recharge/{plan:\\d}.asp")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView recharge(@PathVariable Plan plan, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return servant.redirectToRoot();
@@ -1902,15 +1905,15 @@ public class WelcomeController {
 	/**
 	 * 動態紀錄
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/activeLogs.asp")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView activeLogs(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return new ModelAndView("redirect:/");
@@ -2025,15 +2028,15 @@ public class WelcomeController {
 	/**
 	 * 升級貴賓
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/upgrade.asp")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView upgrade(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return servant.redirectToRoot();
@@ -2130,18 +2133,19 @@ public class WelcomeController {
 	/**
 	 * 升級長期貴賓或短期貴賓
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param vipType
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/upgrade/{vipType}.asp")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView upgradeLongTerm(@PathVariable int vipType, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
-			return servant.redirectToRoot();
+			return Servant.redirectToRoot();
 		}
 
 		Lover me = loverService.loadByUsername(
@@ -2221,15 +2225,15 @@ public class WelcomeController {
 	/**
 	 * 车马费(男对女)
 	 *
-	 * @param female 女生
+	 * @param femaleUUID 女生
 	 * @param points 点数
-	 * @param authentication 用户凭证
+	 * @param authentication 认证
 	 * @param locale 语言环境
 	 * @return 杰森对象字符串
 	 */
 	@PostMapping(path = "/fare.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String fare(@RequestParam("whom") UUID femaleUUID, @RequestParam(name = "howMany") short points, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -2267,13 +2271,13 @@ public class WelcomeController {
 	 * @param femaleUUID
 	 * @param historyId
 	 * @param result
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/resFare.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String resFare(@RequestParam("whom") UUID femaleUUID, @RequestParam Long historyId, @RequestParam Boolean result, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -2325,15 +2329,15 @@ public class WelcomeController {
 	/**
 	 * 要求車馬費
 	 *
-	 * @param femaleUUID
+	 * @param maleUUID
 	 * @param points
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/reqFare.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String reqFare(@RequestParam("whom") UUID maleUUID, @RequestParam(name = "howMany") short points, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -2370,13 +2374,13 @@ public class WelcomeController {
 	 *
 	 * @param female 女生
 	 * @param greetingMessage 招呼语
-	 * @param authentication 用户凭证
+	 * @param authentication 认证
 	 * @param locale 语言环境
 	 * @return 杰森对象字符串
 	 */
 	@PostMapping(path = "/stalking.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String gimmeYourLineInvitation(@RequestParam("whom") UUID femaleUUID, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -2410,15 +2414,15 @@ public class WelcomeController {
 	/**
 	 * 打招呼(女对男)
 	 *
-	 * @param male 男生
+	 * @param maleUUID 男生
 	 * @param greetingMessage 招呼语
-	 * @param authentication 用户凭证
+	 * @param authentication 认证
 	 * @param locale 语言环境
 	 * @return 杰森对象字符串
 	 */
 	@PostMapping(path = "/greet.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String greet(@RequestParam("whom") UUID maleUUID, @RequestParam(name = "what", required = false) String greetingMessage, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -2454,13 +2458,13 @@ public class WelcomeController {
 	 * 给你赖(女对男)
 	 *
 	 * @param male 男生
-	 * @param authentication 用户凭证
+	 * @param authentication 认证
 	 * @param locale 语言环境
 	 * @return 杰森对象字符串
 	 */
 	@PostMapping(path = "/stalked.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String inviteMeAsLineFriend(@RequestParam("whom") UUID maleUUID, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -2498,13 +2502,13 @@ public class WelcomeController {
 	 * 不給你賴
 	 *
 	 * @param maleUUID
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/notStalked.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String refuseToBeLineFriend(@RequestParam("whom") UUID maleUUID, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -2539,13 +2543,13 @@ public class WelcomeController {
 	 * 看过我
 	 *
 	 * @param masochism 谁被看
-	 * @param authentication 用户凭证
+	 * @param authentication 认证
 	 * @param locale 语言环境
 	 * @return 杰森对象字符串
 	 */
 	@PostMapping(path = "/peek.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String peek(@RequestParam("whom") UUID masochismUUID, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -2578,8 +2582,8 @@ public class WelcomeController {
 	/**
 	 * 服務條款
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
@@ -2650,8 +2654,8 @@ public class WelcomeController {
 	/**
 	 * 隱私權政策
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
@@ -2722,15 +2726,15 @@ public class WelcomeController {
 	/**
 	 * 甜心提取車馬費
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/withdrawal.asp")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView withdrawal(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			servant.redirectToRoot();
@@ -2809,13 +2813,13 @@ public class WelcomeController {
 	/**
 	 * 甜心提取車馬費(銀行匯款)
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/wireTransfer.json")
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String wireTransfer(@RequestParam String wireTransferBankCode, @RequestParam String wireTransferBranchCode, @RequestParam String wireTransferAccountName, @RequestParam String wireTransferAccountNumber, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -2851,13 +2855,12 @@ public class WelcomeController {
 	/**
 	 * 刪除帳號
 	 *
-	 * @param identifier
-	 * @param authentication
+	 * @param authentication 认证
 	 * @return
 	 */
 	@PostMapping(path = "/deleteAccount")
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String deleteAccount(Authentication authentication) {
 		// 本人
 		Lover me = loverService.loadByUsername(
@@ -2881,12 +2884,12 @@ public class WelcomeController {
 	 * @param rate
 	 * @param comment
 	 * @param whom
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/rate.json")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	@ResponseBody
 	String rate(@RequestParam String rate, @RequestParam String comment, @RequestParam UUID whom, Authentication authentication, Locale locale) {
 		if (rate.isBlank() || rate.isEmpty()) {
@@ -2933,13 +2936,13 @@ public class WelcomeController {
 	 * 更新服務地區
 	 *
 	 * @param location
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/location.json")
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String loaction(@RequestParam Location location, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -2969,13 +2972,13 @@ public class WelcomeController {
 	 * 更新服務標籤
 	 *
 	 * @param service
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/service.json")
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String loaction(@RequestParam ServiceTag service, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -3005,8 +3008,8 @@ public class WelcomeController {
 	 * 上傳手持身分證
 	 *
 	 * @param multipartFile
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException
@@ -3014,7 +3017,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/uploadIdentity")
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String uploadIdentity(@RequestParam("file") MultipartFile multipartFile, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -3046,7 +3049,8 @@ public class WelcomeController {
 	 * 上傳 LINE QRcode
 	 *
 	 * @param multipartFile
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws URISyntaxException
 	 */
@@ -3092,8 +3096,8 @@ public class WelcomeController {
 	 * 男士打開已同意的LINE連結
 	 *
 	 * @param femaleUUID
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/maleOpenLine.json", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -3133,8 +3137,8 @@ public class WelcomeController {
 	 *
 	 * @param location
 	 * @param serviceTag
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws JsonProcessingException
 	 * @throws SAXException
@@ -3142,7 +3146,7 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/search.json")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView search(@RequestParam(required = false) Location location, @RequestParam(required = false) ServiceTag serviceTag, Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
 			return Servant.redirectToRoot();
@@ -3250,14 +3254,14 @@ public class WelcomeController {
 	 * 顯示二維碼
 	 *
 	 * @param girlIdentifier
-	 * @param authentication
 	 * @param response
+	 * @param authentication 认证
 	 * @throws IOException
 	 * @throws WriterException
 	 */
 	@GetMapping(path = "/{girlIdentifier}.png", produces = MediaType.IMAGE_PNG_VALUE)
-	@Secured({"ROLE_YONGHU"})
-	void erWeiMa(@PathVariable final UUID girlIdentifier, Authentication authentication, HttpServletResponse response) throws IOException, WriterException {
+	@Secured({Servant.ROLE_ADVENTURER})
+	void erWeiMa(@PathVariable final UUID girlIdentifier, HttpServletResponse response, Authentication authentication) throws IOException, WriterException {
 		if (servant.isNull(authentication)) {
 			return;
 		}
@@ -3293,8 +3297,8 @@ public class WelcomeController {
 	 *
 	 * @param location
 	 * @param serviceTag
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws JsonProcessingException
 	 * @throws SAXException
@@ -3302,10 +3306,10 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/groupGreeting.asp")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView groupGreeting(@RequestParam(required = false) Location location, @RequestParam(required = false) ServiceTag serviceTag, Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
-			servant.redirectToRoot();
+			return Servant.redirectToRoot();
 		}
 
 		// 本人
@@ -3386,9 +3390,9 @@ public class WelcomeController {
 	/**
 	 * 群發打招呼
 	 *
-	 * @param authentication
 	 * @param greetingMessage
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/groupGreeting.json", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -3444,8 +3448,8 @@ public class WelcomeController {
 	/**
 	 * 設定
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws JsonProcessingException
 	 * @throws SAXException
@@ -3453,10 +3457,10 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/setting.asp")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView setting(Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
-			servant.redirectToRoot();
+			return Servant.redirectToRoot();
 		}
 
 		// 本人
@@ -3533,8 +3537,8 @@ public class WelcomeController {
 	/**
 	 * 聊天室
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws JsonProcessingException
 	 * @throws SAXException
@@ -3542,10 +3546,10 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/chatroom/{identifier}/")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView chatRoom(@PathVariable UUID identifier, Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
-			servant.redirectToRoot();
+			return Servant.redirectToRoot();
 		}
 
 		// 本人
@@ -3645,8 +3649,8 @@ public class WelcomeController {
 	/**
 	 * 收信匣
 	 *
-	 * @param authentication
-	 * @param locale
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 * @throws JsonProcessingException
 	 * @throws SAXException
@@ -3654,10 +3658,10 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/inbox.asp")
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView inbox(Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
 		if (servant.isNull(authentication)) {
-			servant.redirectToRoot();
+			return Servant.redirectToRoot();
 		}
 
 		// 本人
@@ -3736,12 +3740,13 @@ public class WelcomeController {
 	/**
 	 * 解除定期定額長期貴賓
 	 *
-	 * @param authentication
+	 * @param authentication 认证
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/stopRecurring.json")
 	@ResponseBody
-	@Secured({"ROLE_YONGHU"})
+	@Secured({Servant.ROLE_ADVENTURER})
 	String stopRecurring(Authentication authentication, Locale locale) {
 		// 本人
 		Lover me = loverService.loadByUsername(

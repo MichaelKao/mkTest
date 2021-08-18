@@ -350,6 +350,19 @@ public class LoverService {
 	}
 
 	/**
+	 * 更新用户号的密码。
+	 *
+	 * @param lover 用户号
+	 * @param password 新密码
+	 * @return 用户号
+	 */
+	@Transactional
+	public Lover changePassword(Lover lover, String password) {
+		lover.setShadow(passwordEncoder.encode(password));
+		return loverRepository.saveAndFlush(lover);
+	}
+
+	/**
 	 * 以识别码找用户号。
 	 *
 	 * @param identifier 识别码
