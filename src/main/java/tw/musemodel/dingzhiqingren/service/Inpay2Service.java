@@ -142,6 +142,7 @@ public class Inpay2Service {
 	/**
 	 * 贵宾期从到期时戳开始延长 30 天。
 	 *
+	 * @param expiration 到期时戳
 	 * @return 时戳
 	 */
 	public static Date extendLife(Date expiration) {
