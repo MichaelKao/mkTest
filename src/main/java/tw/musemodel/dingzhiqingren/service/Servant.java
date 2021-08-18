@@ -70,6 +70,11 @@ public class Servant {
 	 */
 	public static final ZoneId ASIA_TAIPEI = ZoneId.of("Asia/Taipei");
 
+	/**
+	 * 一个月有(算)几天
+	 */
+	public static final Integer DAYS_IN_A_MONTH = 30;
+
 	public static final JsonMapper JSON_MAPPER = new JsonMapper();
 
 	public static final ObjectWriter JSON_WRITER_WITH_DEFAULT_PRETTY_PRINTER = new JsonMapper().writerWithDefaultPrettyPrinter();
@@ -83,6 +88,11 @@ public class Servant {
 	 * 本地服务器域名
 	 */
 	public static final String LOCALHOST = System.getenv("LOCALHOST");
+
+	/**
+	 * 1 天的毫秒数
+	 */
+	public static final Integer MILLISECONDS_IN_A_DAY = 86400000;
 
 	/**
 	 * 30 天的毫秒数

@@ -95,23 +95,72 @@ public class Inpay2Service {
 	private final static String INPAY2_TRANSFORMATION = "AES/CBC/PKCS5Padding";
 
 	/**
+	 * 长期贵宾每次授权金额
+	 */
+	public final static Float LONGTERM_VIP_AMOUNT = Float.parseFloat(System.getenv("LONGTERM_VIP_AMOUNT"));
+
+	/**
+	 * 换算长期贵宾每日价值
+	 */
+	public final static Float LONGTERM_PRICE_IN_MILLISECOND = LONGTERM_VIP_AMOUNT / Servant.MILLISECONDS_OF_30_DAYS;
+
+	/**
 	 * 定期定额周期种类
 	 */
 	private final static String PERIOD_TYPE = System.getenv("PERIOD_TYPE");
+
+	/**
+	 * 短期贵宾单次授权金额
+	 */
+	public final static Float SHORTTERM_VIP_AMOUNT = Float.parseFloat(System.getenv("SHORTTERM_VIP_AMOUNT"));
+
+	/**
+	 * 换算短期贵宾每日价值
+	 */
+	public final static Float SHORTTERM_PRICE_IN_MILLISECOND = SHORTTERM_VIP_AMOUNT / Servant.MILLISECONDS_OF_30_DAYS;
 
 	private final static SimpleDateFormat SIMPLEDATEFORMAT_MERCHANTTRADEDATE = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 	private final static SimpleDateFormat SIMPLEDATEFORMAT_MERCHANTTRADENO = new SimpleDateFormat("yyww'YOUNG'");
 
 	/**
-	 * 长期贵宾每次授权金额
+	 * 延长 30 天并将原本短期贵宾期剩余的天数换算成等价的长期贵宾天数补上。
+	 *
+	 * @param expiration 到期时戳
+	 * @param currentTimeMillis 当前
+	 * @return 时戳
 	 */
-	public final static Integer LONGTERM_VIP_AMOUNT = Integer.parseInt(System.getenv("LONGTERM_VIP_AMOUNT"));
+	public static Date convertLife(Date expiration, long currentTimeMillis) {
+		final long leftTimeMillis = expiration.getTime() - currentTimeMillis;
+		final Float leftValue = SHORTTERM_PRICE_IN_MILLISECOND * leftTimeMillis,
+			convertedValue = leftValue / LONGTERM_PRICE_IN_MILLISECOND;
+		return new Date(
+			currentTimeMillis + Servant.MILLISECONDS_OF_30_DAYS + convertedValue.longValue()
+		);
+	}
 
 	/**
-	 * 短期贵宾单次授权金额
+	 * 贵宾期从到期时戳开始延长 30 天。
+	 *
+	 * @return 时戳
 	 */
-	public final static Integer SHORTTERM_VIP_AMOUNT = Integer.parseInt(System.getenv("SHORTTERM_VIP_AMOUNT"));
+	public static Date extendLife(Date expiration) {
+		return new Date(
+			expiration.getTime() + Servant.MILLISECONDS_OF_30_DAYS
+		);
+	}
+
+	/**
+	 * 贵宾期从当前起开始为期 30 天。
+	 *
+	 * @param currentTimeMillis 当前
+	 * @return 时戳
+	 */
+	public static Date resurrectLife(long currentTimeMillis) {
+		return new Date(
+			currentTimeMillis + Servant.MILLISECONDS_OF_30_DAYS
+		);
+	}
 
 	@Autowired
 	private MessageSource messageSource;
@@ -478,7 +527,7 @@ public class Inpay2Service {
 		LuJie luJie = new LuJie();
 		luJie.setSessionId(session.getId());//会话的标识符
 		luJie.setMerchantTradeNo(merchantTradeNo);//特店交易编号
-		luJie.setTotalAmount(LONGTERM_VIP_AMOUNT);//订单资讯：交易金额
+		luJie.setTotalAmount(LONGTERM_VIP_AMOUNT.intValue());//订单资讯：交易金额
 		luJie.setItemName(itemName);//订单资讯：商品名称
 		luJie.setMerchantMemberId(lover.getIdentifier().toString());//消费者资讯：消费者会员编号
 		luJie.setCustomField(String.format(
@@ -497,7 +546,7 @@ public class Inpay2Service {
 		tokenRequestData.setOrderInfo(tokenRequestData.new OrderInfo(
 			generateMerchantTradeDate(currentTimeMillis),//厂商交易时间
 			luJie.getMerchantTradeNo(),//特店交易编号
-			LONGTERM_VIP_AMOUNT,//交易金额
+			LONGTERM_VIP_AMOUNT.intValue(),//交易金额
 			String.format(
 				"https://%s/inpay2/return.asp",
 				Servant.LOCALHOST
@@ -635,7 +684,7 @@ public class Inpay2Service {
 				null,
 				locale
 			);//订单资讯：商品名称
-		final int amount = SHORTTERM_VIP_AMOUNT;//交易金额
+		final int amount = SHORTTERM_VIP_AMOUNT.intValue();//交易金额
 		LuJie luJie = new LuJie();
 		luJie.setSessionId(session.getId());//会话的标识符
 		luJie.setMerchantTradeNo(merchantTradeNo);//特店交易编号
@@ -1297,40 +1346,75 @@ public class Inpay2Service {
 		} catch (NumberFormatException ignore) {
 			plan = null;
 		}
+		int tradeAmount = luJie.getTradeAmt();
 
 		History history;
-		Lover lover = loverService.loadByUsername(username);
+		Lover mofo = loverService.loadByUsername(username);
 		long currentTimeMillis = System.currentTimeMillis();
 		if (Objects.isNull(plan)) {
 			/*
-			 升级为短期贵宾
+			 贵宾
 			 */
-			Date vipDuration = lover.getVip();
-			if (Objects.isNull(vipDuration) || vipDuration.before(new Date(currentTimeMillis))) {
+			boolean isLongTerm = Objects.equals(
+				LONGTERM_VIP_AMOUNT.intValue(),
+				tradeAmount
+			), isShortTerm = Objects.equals(
+				SHORTTERM_VIP_AMOUNT.intValue(),
+				tradeAmount
+			);
+			Date expiration = mofo.getVip();
+			Lover.MaleSpecies maleSpecies = mofo.getMaleSpecies();
+			if (Objects.isNull(expiration) || expiration.before(new Date(currentTimeMillis))) {
 				/*
-				 未曾是贵宾或曾是贵宾但已逾期
+				 - 非贵宾以任何方式支付
+				 - 失效(逾期)的长期贵宾以定期定额支付
+				 - 失效(逾期)的长期贵宾以付款选择支付
+				 - 失效(逾期)的短期贵宾以定期定额支付
+				 - 失效(逾期)的短期贵宾以付款选择支付
 				 */
-				vipDuration = new Date(
-					currentTimeMillis + Servant.MILLISECONDS_OF_30_DAYS
-				);//从当前时戳加 30 天
+				mofo.setVip(resurrectLife(
+					currentTimeMillis
+				));
+				//贵宾期从当前起开始为期 30 天
 			} else {
-				/*
-				 曾是贵宾但尚未逾期
-				 */
-				vipDuration = new Date(
-					vipDuration.getTime() + Servant.MILLISECONDS_OF_30_DAYS
-				);//再延期 30 天
+				if (Objects.equals(maleSpecies, Lover.MaleSpecies.VIP)) {
+					if (isShortTerm) {
+						/*
+						 - 有效(未逾期)的短期贵宾以付款选择支付
+						 */
+						mofo.setVip(extendLife(
+							expiration
+						));
+						//贵宾期从到期时戳开始延长 30 天
+					}
+					if (isLongTerm) {
+						/*
+						 - 有效(未逾期)的短期贵宾以定期定额支付
+						 */
+						mofo.setVip(convertLife(
+							expiration,
+							currentTimeMillis
+						));
+						//延长 30 天并将原本短期贵宾期剩余的天数换算成等价的长期贵宾天数补上
+					}
+				} else {
+					/*
+					 - 有效(未逾期)的长期贵宾以定期定额支付
+					 - 有效(未逾期)的长期贵宾以付款选择支付
+					 */
+					//基本上一开始连订单都不该成立
+				}
 			}
-			lover.setVip(vipDuration);
-			if (Objects.equals(luJie.getTradeAmt(), SHORTTERM_VIP_AMOUNT)) {
-				lover.setMaleSpecies(Lover.MaleSpecies.VIP);
-			} else if (Objects.equals(luJie.getTradeAmt(), LONGTERM_VIP_AMOUNT)) {
-				lover.setMaleSpecies(Lover.MaleSpecies.VVIP);
+			if (isLongTerm) {
+				mofo.setMaleSpecies(Lover.MaleSpecies.VVIP);
 			}
-			lover = loverService.saveLover(lover);
+			if (isShortTerm) {
+				mofo.setMaleSpecies(Lover.MaleSpecies.VIP);
+			}
+			mofo = loverService.saveLover(mofo);
 
 			history = new History(
-				lover,
+				mofo,
 				new Date(currentTimeMillis),
 				luJie
 			);
@@ -1339,7 +1423,7 @@ public class Inpay2Service {
 			 充值
 			 */
 			history = new History(
-				lover,
+				mofo,
 				new Date(currentTimeMillis),
 				plan.getPoints(),
 				luJie
