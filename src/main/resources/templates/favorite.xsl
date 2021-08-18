@@ -46,7 +46,7 @@
 								</DIV>
 								<DIV class="ms-3">
 									<DIV class="d-flex justify-content-around">
-										<xsl:if test="@vip">
+										<xsl:if test="@vvip">
 											<DIV>
 												<IMG class="border-radius-md" src="/vip.svg" width="30"/>
 											</DIV>

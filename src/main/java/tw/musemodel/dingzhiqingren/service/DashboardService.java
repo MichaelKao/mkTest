@@ -287,4 +287,81 @@ public class DashboardService {
 		}
 		return document;
 	}
+
+	public Document stopRecurringDocument(Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+
+		/**
+		 * 未處理
+		 */
+		for (StopRecurringPaymentApplication stopRecurringPaymentApplication : stopRecurringPaymentApplicationRepository.findAllByHandlerNullOrderByCreatedAtDesc()) {
+			Element pendingElement = document.createElement("pending");
+			documentElement.appendChild(pendingElement);
+
+			Lover applicant = stopRecurringPaymentApplication.getApplicant();
+
+			pendingElement.setAttribute(
+				"applyID",
+				stopRecurringPaymentApplication.getId().toString()
+			);
+
+			pendingElement.setAttribute(
+				"id",
+				applicant.getId().toString()
+			);
+
+			pendingElement.setAttribute(
+				"identifier",
+				applicant.getIdentifier().toString()
+			);
+
+			pendingElement.setAttribute(
+				"name",
+				applicant.getNickname()
+			);
+
+			pendingElement.setAttribute(
+				"expiry",
+				DATE_TIME_FORMATTER.format(
+					servant.toTaipeiZonedDateTime(
+						applicant.getVip()
+					).withZoneSameInstant(Servant.ASIA_TAIPEI)
+				));
+		}
+
+		/**
+		 * 已處理
+		 */
+		for (StopRecurringPaymentApplication stopRecurringPaymentApplication : stopRecurringPaymentApplicationRepository.findAllByHandlerNotNullOrderByCreatedAtDesc()) {
+			Element finishedElement = document.createElement("finished");
+			documentElement.appendChild(finishedElement);
+
+			Lover applicant = stopRecurringPaymentApplication.getApplicant();
+
+			finishedElement.setAttribute(
+				"id",
+				applicant.getId().toString()
+			);
+
+			finishedElement.setAttribute(
+				"identifier",
+				applicant.getIdentifier().toString()
+			);
+
+			finishedElement.setAttribute(
+				"name",
+				applicant.getNickname()
+			);
+
+			finishedElement.setAttribute(
+				"handleDate",
+				DATE_TIME_FORMATTER.format(
+					servant.toTaipeiZonedDateTime(
+						stopRecurringPaymentApplication.getHandledAt()
+					).withZoneSameInstant(Servant.ASIA_TAIPEI)
+				));
+		}
+		return document;
+	}
 }

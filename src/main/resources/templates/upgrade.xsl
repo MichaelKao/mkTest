@@ -35,29 +35,57 @@
 					</H4>
 				</DIV>
 				<DIV class="d-flex flex-column flex-md-row align-items-center justify-content-center ms-2">
-					<DIV class="col-11 col-md-4 card mb-3 mx-2">
+					<DIV class="col-11 col-md-6 col-xl-4 card mb-3 mx-2">
 						<DIV class="card-body p-md-4 p-lg-5">
-							<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">長期VIP</SPAN>
+							<DIV class="d-flex align-items-baseline">
+								<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">長期 VIP</SPAN>
+								<xsl:if test="@vvip and @isEligibleToStopRecurring">
+									<BUTTON class="ms-auto btn btn-sm btn-outline-danger px-3 px-sm-4 m-0 stopRecurring">解除</BUTTON>
+								</xsl:if>
+							</DIV>
 							<DIV class="text-lg text-bold text-dark my-2">
 								<SPAN>月付1288元 / 一年期</SPAN>
 							</DIV>
 							<DIV class="card-description d-flex align-items-baseline">
 								<SPAN>NT$</SPAN>
 								<SPAN>1288</SPAN>
-								<A class="ms-auto btn btn-sm btn-outline-info px-3 px-sm-4 m-0" href="/upgrade/2.asp">選擇</A>
+								<xsl:if test="not(@vvip)">
+									<A class="ms-auto btn btn-sm btn-outline-info px-3 px-sm-4 m-0" href="/upgrade/2.asp">升級</A>
+								</xsl:if>
+								<xsl:if test="@vvip">
+									<DIV class="ms-auto text-warning text-sm">
+										<xsl:if test="@isEligibleToStopRecurring">
+											<SPAN class="me-1">下次扣款</SPAN>
+										</xsl:if>
+										<xsl:value-of select="@vvipExpiry"/>
+										<xsl:if test="not(@isEligibleToStopRecurring)">
+											<SPAN class="ms-1">到期</SPAN>
+										</xsl:if>
+									</DIV>
+								</xsl:if>
 							</DIV>
 						</DIV>
 					</DIV>
-					<DIV class="col-11 col-md-4 card mb-3 mx-2">
+					<DIV class="col-11 col-md-6 col-xl-4 card mb-3 mx-2">
 						<DIV class="card-body p-md-4 p-lg-5">
-							<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">短期VIP</SPAN>
+							<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">短期 VIP</SPAN>
 							<DIV class="text-lg text-bold text-dark my-2">
 								<SPAN>一個月$1688 / 一次性</SPAN>
 							</DIV>
 							<DIV class="card-description d-flex align-items-baseline">
 								<SPAN>NT$</SPAN>
 								<SPAN>1288</SPAN>
-								<A class="ms-auto btn btn-sm btn-outline-info px-3 px-sm-4 m-0" href="/upgrade/1.asp">選擇</A>
+								<xsl:if test="not(@vvip) and not(@vip)">
+									<A class="ms-auto btn btn-sm btn-outline-info px-3 px-sm-4 m-0" href="/upgrade/1.asp">升級</A>
+								</xsl:if>
+								<xsl:if test="@vip">
+									<SPAN class="ms-auto text-warning text-sm">
+										<SPAN>
+											<xsl:value-of select="@vipExpiry"/>
+										</SPAN>
+										<SPAN class="ms-1">到期</SPAN>
+									</SPAN>
+								</xsl:if>
 							</DIV>
 						</DIV>
 					</DIV>
@@ -65,6 +93,7 @@
 				<xsl:call-template name="footer"/>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
+			<SCRIPT src="/SCRIPT/upgrade.js"/>
 			<xsl:if test="@signIn">
 				<SCRIPT src="/SCRIPT/websocket.js"/>
 			</xsl:if>

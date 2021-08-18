@@ -52,7 +52,7 @@
 										<SPAN>
 											<xsl:value-of select="@age"/>
 										</SPAN>
-										<xsl:if test="@vip">
+										<xsl:if test="@vvip">
 											<SPAN class="ms-1">
 												<IMG class="border-radius-md" src="/vip.svg" width="27"/>
 											</SPAN>

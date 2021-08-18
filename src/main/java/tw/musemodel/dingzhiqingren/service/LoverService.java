@@ -667,7 +667,7 @@ public class LoverService {
 	}
 
 	/**
-	 * 是否为 VIP⁉️
+	 * 是否为短期貴賓 VIP⁉️
 	 *
 	 * @param lover 用户
 	 * @return 布尔值
@@ -677,6 +677,12 @@ public class LoverService {
 			&& Objects.nonNull(lover.getMaleSpecies()) && Objects.equals(lover.getMaleSpecies(), Lover.MaleSpecies.VIP);
 	}
 
+	/**
+	 * 是否为長期貴賓 VVIP⁉️
+	 *
+	 * @param lover
+	 * @return
+	 */
 	public boolean isVVIP(Lover lover) {
 		// 貴賓到期日
 		Date vip = lover.getVip();
@@ -724,7 +730,12 @@ public class LoverService {
 			)
 		);
 
-		if (lover.getGender() && Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date())) {
+		// 是否為長期貴賓 vvip
+		if (isVVIP(lover)) {
+			loverElement.setAttribute("vvip", null);
+		}
+		// 是否為短期貴賓 vip
+		if (isVIP(lover)) {
 			loverElement.setAttribute("vip", null);
 		}
 
@@ -1894,7 +1905,12 @@ public class LoverService {
 					calculateAge(lover).toString()
 				);
 			}
+			// 是否為長期貴賓 vvip
 			if (isVVIP(lover)) {
+				loverElement.setAttribute("vvip", null);
+			}
+			// 是否為短期貴賓 vip
+			if (isVIP(lover)) {
 				loverElement.setAttribute("vip", null);
 			}
 			if (Objects.nonNull(lover.getRelief())) {
@@ -1989,7 +2005,12 @@ public class LoverService {
 				nicknameElement.setTextContent(lover.getNickname());
 				sectionElement.appendChild(nicknameElement);
 			}
+			// 是否為長期貴賓 vvip
 			if (isVVIP(lover)) {
+				sectionElement.setAttribute("vvip", null);
+			}
+			// 是否為短期貴賓 vip
+			if (isVIP(lover)) {
 				sectionElement.setAttribute("vip", null);
 			}
 			if (Objects.nonNull(lover.getRelief())) {

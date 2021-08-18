@@ -117,6 +117,9 @@
 												<A class="dropdown-item border-radius-md" href="/dashboard/certification.asp">
 													<SPAN>安心認證審核</SPAN>
 												</A>
+												<A class="dropdown-item border-radius-md" href="/dashboard/stopRecurring.asp">
+													<SPAN>解除定期定額</SPAN>
+												</A>
 											</DIV>
 											<DIV class="d-lg-none">
 												<A class="dropdown-item border-radius-md" href="/dashboard/withdrawal.asp">
@@ -124,6 +127,9 @@
 												</A>
 												<A class="dropdown-item border-radius-md" href="/dashboard/certification.asp">
 													<SPAN>安心認證審核</SPAN>
+												</A>
+												<A class="dropdown-item border-radius-md" href="/dashboard/stopRecurring.asp">
+													<SPAN>解除定期定額</SPAN>
 												</A>
 											</DIV>
 										</DIV>

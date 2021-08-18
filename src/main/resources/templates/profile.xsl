@@ -338,7 +338,7 @@
 							</DIV>
 							<DIV>
 								<xsl:choose>
-									<xsl:when test="(/document/@female) or (/document/@vip) or (/document/@me)">
+									<xsl:when test="(/document/@female) or (/document/@vip) or (/document/@vvip) or (/document/@me)">
 										<DIV class="star text-lg" data-star="{@rate}"></DIV>
 										<DIV class="text-xs">
 											<xsl:value-of select="@nickname"/>
@@ -369,7 +369,7 @@
 				<DIV class="text-dark text-bold mx-1">
 					<xsl:value-of select="gender"/>
 				</DIV>
-				<xsl:if test="@vip">
+				<xsl:if test="@vvip">
 					<DIV class="mx-1">
 						<IMG class="border-radius-md" src="/vip.svg" width="32"/>
 					</DIV>

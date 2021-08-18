@@ -19,4 +19,8 @@ public interface StopRecurringPaymentApplicationRepository extends JpaRepository
 	 * @return 该用户号解除定期定额的申请
 	 */
 	public Collection<StopRecurringPaymentApplication> findByApplicantOrderByCreatedAtDesc(Lover applicant);
+
+	public Collection<StopRecurringPaymentApplication> findAllByHandlerNullOrderByCreatedAtDesc();
+
+	public Collection<StopRecurringPaymentApplication> findAllByHandlerNotNullOrderByCreatedAtDesc();
 }
