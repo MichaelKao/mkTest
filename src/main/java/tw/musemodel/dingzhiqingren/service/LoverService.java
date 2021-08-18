@@ -81,7 +81,6 @@ import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
 import tw.musemodel.dingzhiqingren.event.SignedUpEvent;
 import tw.musemodel.dingzhiqingren.model.Activated;
-import tw.musemodel.dingzhiqingren.model.EachWithdrawal;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.SignUp;
 import tw.musemodel.dingzhiqingren.repository.ActivationRepository;
@@ -462,10 +461,10 @@ public class LoverService {
 		activation = activationRepository.saveAndFlush(activation);
 
 		// 暫時將激活碼送到 Line notify
-		List<String> accessTokens = new ArrayList<String>();
+		List<String> accessTokens = new ArrayList<>();
 		accessTokens.add(LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
 		accessTokens.add(LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
-		lineMessagingService.notifyDev(
+		LineMessagingService.notifyDev(
 			accessTokens,
 			String.format(
 				"手機號碼 %s 的激活碼：%s️",
@@ -644,10 +643,10 @@ public class LoverService {
 		Date expiry = calendar.getTime();
 
 		// 暫時將激活碼送到 Line notify
-		List<String> accessTokens = new ArrayList<String>();
+		List<String> accessTokens = new ArrayList<>();
 		accessTokens.add(LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
 		accessTokens.add(LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
-		lineMessagingService.notifyDev(
+		LineMessagingService.notifyDev(
 			accessTokens,
 			String.format(
 				"手機號碼 %s 的激活碼：%s️",
@@ -751,7 +750,7 @@ public class LoverService {
 		if (Objects.nonNull(inviteMeAsFreind) && !inviteMeAsFreind.isBlank() && !inviteMeAsFreind.isEmpty()) {
 			String uri = lover.getInviteMeAsLineFriend();
 			Boolean isLine = Servant.isLine(URI.create(uri));
-			Boolean isWeChat = Servant.isWeChat(URI.create(uri));
+			//Boolean isWeChat = Servant.isWeChat(URI.create(uri));
 
 			loverElement.setAttribute(
 				"socialMedia",
@@ -772,7 +771,7 @@ public class LoverService {
 		loverElement.appendChild(profileImageElement);
 
 		List<Picture> pictures = pictureRepository.findByLover(lover);
-		for (Picture picture : pictures) {
+		pictures.stream().map(picture -> {
 			Element pictureElement = document.createElement("picture");
 			pictureElement.setTextContent(
 				String.format(
@@ -781,11 +780,13 @@ public class LoverService {
 					picture.getIdentifier().toString()
 				)
 			);
+			return pictureElement;
+		}).forEachOrdered(pictureElement -> {
 			loverElement.appendChild(pictureElement);
-		}
+		});
 
 		if (Objects.nonNull(lover.getLocations())) {
-			for (Location location : lover.getLocations()) {
+			lover.getLocations().stream().map(location -> {
 				Element locationElement = document.createElement("location");
 				locationElement.setAttribute("id", location.getId().toString());
 				locationElement.setTextContent(
@@ -795,12 +796,14 @@ public class LoverService {
 						locale
 					)
 				);
+				return locationElement;
+			}).forEachOrdered(locationElement -> {
 				loverElement.appendChild(locationElement);
-			}
+			});
 		}
 
 		if (Objects.nonNull(lover.getServices())) {
-			for (ServiceTag service : lover.getServices()) {
+			lover.getServices().stream().map(service -> {
 				Element serviceElement = document.createElement("service");
 				serviceElement.setAttribute("id", service.getId().toString());
 				serviceElement.setTextContent(
@@ -810,8 +813,10 @@ public class LoverService {
 						locale
 					)
 				);
+				return serviceElement;
+			}).forEachOrdered(serviceElement -> {
 				loverElement.appendChild(serviceElement);
-			}
+			});
 		}
 
 		if (Objects.nonNull(lover.getNickname())) {
@@ -1010,7 +1015,7 @@ public class LoverService {
 
 		List<History> rateList = historyRepository.findByPassiveAndBehaviorOrderByOccurredDesc(lover, History.Behavior.PING_JIA);
 		if (Objects.nonNull(rateList)) {
-			for (History rate : rateList) {
+			rateList.forEach(rate -> {
 				Element rateElement = document.createElement("rate");
 				loverElement.appendChild(rateElement);
 				rateElement.setAttribute(
@@ -1040,7 +1045,7 @@ public class LoverService {
 					"comment",
 					rate.getComment()
 				);
-			}
+			});
 		}
 
 		return document;
@@ -1210,7 +1215,7 @@ public class LoverService {
 			loverElement.appendChild(relationshipElement);
 		}
 
-		for (Location location : locationRepository.findAll()) {
+		locationRepository.findAll().stream().map(location -> {
 			Element locationElement = document.createElement("location");
 			locationElement.setTextContent(
 				messageSource.getMessage(
@@ -1229,10 +1234,12 @@ public class LoverService {
 					);
 				}
 			}
+			return locationElement;
+		}).forEachOrdered(locationElement -> {
 			loverElement.appendChild(locationElement);
-		}
+		});
 
-		for (ServiceTag service : serviceTagRepository.findAll()) {
+		serviceTagRepository.findAll().stream().map(service -> {
 			Element serviceElement = document.createElement("service");
 			serviceElement.setTextContent(
 				messageSource.getMessage(
@@ -1244,18 +1251,18 @@ public class LoverService {
 			serviceElement.setAttribute(
 				"serviceID", service.getId().toString()
 			);
-			for (ServiceTag ser : lover.getServices()) {
-				if (Objects.equals(ser, service)) {
-					serviceElement.setAttribute(
-						"serviceSelected", ""
-					);
-				}
-			}
+			lover.getServices().stream().filter(ser -> (Objects.equals(ser, service))).forEachOrdered(_item -> {
+				serviceElement.setAttribute(
+					"serviceSelected", ""
+				);
+			});
+			return serviceElement;
+		}).forEachOrdered(serviceElement -> {
 			loverElement.appendChild(serviceElement);
-		}
+		});
 
 		if (lover.getGender()) {
-			for (AnnualIncome annualIncome : annualIncomeRepository.findAllByOrderByIdAsc()) {
+			annualIncomeRepository.findAllByOrderByIdAsc().stream().map(annualIncome -> {
 				Element annualIncomeElement = document.createElement("annualIncome");
 				annualIncomeElement.setTextContent(
 					messageSource.getMessage(
@@ -1272,12 +1279,14 @@ public class LoverService {
 						"annualIncomeSelected", ""
 					);
 				}
+				return annualIncomeElement;
+			}).forEachOrdered(annualIncomeElement -> {
 				loverElement.appendChild(annualIncomeElement);
-			}
+			});
 		}
 
 		if (!lover.getGender()) {
-			for (Allowance allowance : allowanceRepository.findAllByOrderByIdAsc()) {
+			allowanceRepository.findAllByOrderByIdAsc().stream().map(allowance -> {
 				Element allowanceElement = document.createElement("allowance");
 				allowanceElement.setTextContent(
 					messageSource.getMessage(
@@ -1294,8 +1303,10 @@ public class LoverService {
 						"allowanceSelected", ""
 					);
 				}
+				return allowanceElement;
+			}).forEachOrdered(allowanceElement -> {
 				loverElement.appendChild(allowanceElement);
-			}
+			});
 		}
 
 		if (Objects.nonNull(lover.getNickname())) {
@@ -1546,7 +1557,7 @@ public class LoverService {
 			));
 
 		// 目前可提領的紀錄
-		for (History history : historyRepository.findAll(Specifications.withdrawal(lover))) {
+		historyRepository.findAll(Specifications.withdrawal(lover)).forEach(history -> {
 			Element recordElement = document.createElement("record");
 			documentElement.appendChild(recordElement);
 
@@ -1581,10 +1592,10 @@ public class LoverService {
 				"points",
 				Integer.toString(Math.abs(points))
 			);
-		}
+		});
 
 		// 等待匯款中的記錄、提領歷史紀錄
-		for (EachWithdrawal eachWithdrawal : withdrawalRecordRepository.findHoneyAllGroupByHoneyAndStatusAndWayAndTimeStamp(lover)) {
+		withdrawalRecordRepository.findHoneyAllGroupByHoneyAndStatusAndWayAndTimeStamp(lover).forEach(eachWithdrawal -> {
 			Element recordElement = document.createElement("historyRecord");
 			documentElement.appendChild(recordElement);
 
@@ -1619,8 +1630,7 @@ public class LoverService {
 				status.toString()
 			);
 
-			for (WithdrawalRecord withdrawalRecord
-				: withdrawalRecordRepository.findByHoneyAndStatusAndTimestamp(honey, status, timestamp)) {
+			withdrawalRecordRepository.findByHoneyAndStatusAndTimestamp(honey, status, timestamp).forEach(withdrawalRecord -> {
 				Element historyElement = document.createElement("history");
 				recordElement.appendChild(historyElement);
 				historyElement.setAttribute(
@@ -1653,9 +1663,8 @@ public class LoverService {
 					"points",
 					Short.toString(withdrawalRecord.getPoints())
 				);
-
-			}
-		}
+			});
+		});
 
 		return document;
 	}
@@ -1671,6 +1680,7 @@ public class LoverService {
 	 * @param locale
 	 * @return
 	 */
+	@SuppressWarnings("UnusedAssignment")
 	@Transactional
 	public JSONObject wireTransfer(String wireTransferBankCode, String wireTransferBranchCode, String wireTransferAccountName, String wireTransferAccountNumber, Lover honey, Locale locale) {
 		if (wireTransferAccountName.isBlank() || wireTransferAccountName.isEmpty()) {
@@ -1687,12 +1697,14 @@ public class LoverService {
 		}
 
 		Date current = new Date(System.currentTimeMillis());
-		for (History history : historyRepository.findAll(Specifications.withdrawal(honey))) {
+		historyRepository.findAll(Specifications.withdrawal(honey)).stream().map(history -> {
 			Short points = Objects.equals(history.getBehavior(), BEHAVIOR_FARE) ? history.getPoints() : (short) (history.getPoints() / 2);
 			WithdrawalRecord withdrawalRecord = new WithdrawalRecord(honey, (short) -points, WayOfWithdrawal.WIRE_TRANSFER, current);
 			withdrawalRecord.setId(history.getId());
+			return withdrawalRecord;
+		}).forEachOrdered(withdrawalRecord -> {
 			withdrawalRecordRepository.saveAndFlush(withdrawalRecord);
-		}
+		});
 
 		WithdrawalInfo withdrawalInfo = null;
 		if (withdrawalInfoRepository.countByHoney(honey) > 0) {
@@ -1847,14 +1859,13 @@ public class LoverService {
 	 */
 	public List<Behavior> behaviorsOfAnnocement(Lover lover) {
 		Boolean gender = lover.getGender();
-		List<Behavior> behaviors = new ArrayList<Behavior>();
+		List<Behavior> behaviors = new ArrayList<>();
 		behaviors.add(BEHAVIOR_CERTIFICATION_SUCCESS);
 		behaviors.add(BEHAVIOR_CERTIFICATION_FAIL);
 		if (gender) {
 			behaviors.add(BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
 			behaviors.add(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
 			behaviors.add(BEHAVIOR_GREETING);
-
 		}
 		if (!gender) {
 			behaviors.add(BEHAVIOR_GIMME_YOUR_LINE_INVITATION);
@@ -1875,10 +1886,7 @@ public class LoverService {
 	public Document loversSimpleInfo(Document document, Collection<Lover> lovers) {
 		Element documentElement = document.getDocumentElement();
 
-		for (Lover lover : lovers) {
-			if (Objects.nonNull(lover.getDelete())) {
-				continue;
-			}
+		lovers.stream().filter(lover -> !(Objects.nonNull(lover.getDelete()))).forEachOrdered(lover -> {
 			Element loverElement = document.createElement("lover");
 			documentElement.appendChild(loverElement);
 			loverElement.setAttribute(
@@ -1920,7 +1928,7 @@ public class LoverService {
 					relief ? "true" : "false"
 				);
 			}
-		}
+		});
 
 		return document;
 	}
@@ -1997,7 +2005,7 @@ public class LoverService {
 			element.setAttribute("lastPage", null);
 		}
 		Document document = element.getOwnerDocument();
-		for (Lover lover : page.getContent()) {
+		page.getContent().forEach(lover -> {
 			Element sectionElement = document.createElement("section");
 			element.appendChild(sectionElement);
 			if (Objects.nonNull(lover.getNickname())) {
@@ -2068,7 +2076,7 @@ public class LoverService {
 				)
 			);
 			sectionElement.appendChild(profileImageElement);
-		}
+		});
 		return element;
 	}
 
@@ -2081,7 +2089,7 @@ public class LoverService {
 	 */
 	public JSONArray seeMore(Page<Lover> page, Locale locale) {
 		JSONArray jsonArray = new JSONArray();
-		for (Lover lover : page.getContent()) {
+		page.getContent().stream().map(lover -> {
 			JSONObject json = new JSONObject();
 			json.put("nickname", lover.getNickname());
 			if (isVVIP(lover)) {
@@ -2131,8 +2139,10 @@ public class LoverService {
 				Servant.STATIC_HOST,
 				lover.getProfileImage()
 			));
+			return json;
+		}).forEachOrdered(json -> {
 			jsonArray.put(json);
-		}
+		});
 		return jsonArray;
 	}
 
@@ -2279,8 +2289,9 @@ public class LoverService {
 					male,
 					String.format(
 						"有位甜心向你打招呼！馬上查看 https://%s/activeLogs.asp",
-						servant.LOCALHOST
-					));
+						Servant.LOCALHOST
+					)
+				);
 			}
 		}
 		historyRepository.flush();
@@ -2326,15 +2337,25 @@ public class LoverService {
 		Date fiveDaysAgo = cal.getTime();
 
 		// 查看五天內的招呼紀錄
-		List<History> histories = historyRepository.findByInitiativeAndBehaviorAndOccurredGreaterThanOrderByOccurredDesc(female, BEHAVIOR_GROUP_GREETING, fiveDaysAgo);
-		for (History history : histories) {
+		List<History> histories = historyRepository.findByInitiativeAndBehaviorAndOccurredGreaterThanOrderByOccurredDesc(
+			female,
+			BEHAVIOR_GROUP_GREETING,
+			fiveDaysAgo
+		);
+		histories.forEach(history -> {
 			Element historyElement = document.createElement("history");
 			documentElement.appendChild(historyElement);
-			historyElement.setAttribute("date", DATE_TIME_FORMATTER.format(
-				servant.toTaipeiZonedDateTime(
-					history.getOccurred()
-				).withZoneSameInstant(Servant.ASIA_TAIPEI)
-			));
+			historyElement.setAttribute(
+				"date",
+				DATE_TIME_FORMATTER.format(servant.
+					toTaipeiZonedDateTime(
+						history.getOccurred()
+					).
+					withZoneSameInstant(
+						Servant.ASIA_TAIPEI
+					)
+				)
+			);
 
 			Lover male = history.getPassive();
 
@@ -2360,7 +2381,7 @@ public class LoverService {
 					male.getProfileImage()
 				)
 			);
-		}
+		});
 
 		return document;
 	}
@@ -2454,10 +2475,7 @@ public class LoverService {
 				return false;
 			}//期望零用钱
 		}
-		if (lover.getLocations().isEmpty() || lover.getServices().isEmpty()) {
-			return false;
-		}//(地点|服务)标签
-		return true;
+		return !(lover.getLocations().isEmpty() || lover.getServices().isEmpty());//(地点|服务)标签
 	}
 
 	/**
