@@ -19,6 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -39,6 +42,7 @@ import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
+import tw.musemodel.dingzhiqingren.specification.HistorySpecification;
 
 /**
  * 服务层：历程
@@ -201,6 +205,38 @@ public class HistoryService {
 			BEHAVIOR_PICTURES_VIEWABLE
 		);
 		return Objects.nonNull(history) && history.getShowAllPictures();
+	}
+
+	/**
+	 * 两用户之间的最后一次对话。
+	 *
+	 * @param initiative 某用户
+	 * @param passive 另一用户
+	 * @return 最后一次对话
+	 */
+	public History lastConversationOfTwo(Lover initiative, Lover passive) {
+		final Pageable limitOne = PageRequest.of(0, 1);
+		Page<History> initiativePage = historyRepository.findAll(
+			HistorySpecification.conversationsOfTwo(initiative, passive),
+			limitOne
+		), passivePage = historyRepository.findAll(
+			HistorySpecification.conversationsOfTwo(passive, initiative),
+			limitOne
+		);
+
+		List<History> conversations = new ArrayList<>();
+		conversations.addAll(initiativePage.toList());
+		conversations.addAll(passivePage.toList());
+
+		if (conversations.isEmpty()) {
+			return null;
+		}
+		Collections.sort(conversations, (History history, History otherHistory) -> Long.compare(
+			history.getOccurred().getTime(),
+			otherHistory.getOccurred().getTime()
+		));
+		Collections.reverse(conversations);
+		return conversations.get(0);
 	}
 
 	/**
