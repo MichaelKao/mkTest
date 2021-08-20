@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
@@ -85,4 +86,22 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
 	public List<History> findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(Lover initiative, Lover passive, Behavior behavior);
 
 	public List<History> findByInitiativeAndBehaviorAndOccurredGreaterThanOrderByOccurredDesc(Lover initiative, Behavior behavior, Date occurred);
+
+	@Query("SELECT h1 FROM History h1"
+		+ " WHERE EXISTS (SELECT h2.passive, max(h2.occurred) FROM History h2"
+		+ " WHERE behavior IN :behaviors"
+		+ " AND initiative = :initiative"
+		+ " GROUP by h2.passive"
+		+ " HAVING h1.passive = h2.passive and h1.occurred = max(h2.occurred))"
+		+ " ORDER BY h1.occurred DESC")
+	public List<History> findReferencedInitiative(Lover initiative, @Param("behaviors") List<Behavior> behaviors);
+
+	@Query("SELECT h1 FROM History h1"
+		+ " WHERE EXISTS (SELECT h2.initiative, max(h2.occurred) FROM History h2"
+		+ " WHERE behavior IN :behaviors"
+		+ " AND passive = :passive"
+		+ " GROUP by h2.initiative"
+		+ " HAVING h1.initiative = h2.initiative and h1.occurred = max(h2.occurred))"
+		+ " ORDER BY h1.occurred DESC")
+	public List<History> findReferencedPassive(Lover passive, @Param("behaviors") List<Behavior> behaviors);
 }

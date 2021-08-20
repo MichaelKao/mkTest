@@ -63,6 +63,26 @@
 						</DIV>
 					</DIV>
 				</xsl:if>
+				<xsl:if test="@male and @lockedPix">
+					<DIV class="modal fade" id="upgradeVIP">
+						<DIV class="modal-dialog modal-dialog-centered">
+							<DIV class="modal-content">
+								<DIV class="modal-body">
+									<DIV class="d-flex">
+										<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
+									</DIV>
+									<DIV class="mt-3 text-center">
+										<IMG src="/vip.svg" width="70"/>
+										<H5 class="modal-title my-3">需升級貴賓才能取得甜心授權</H5>
+									</DIV>
+									<DIV class="text-center">
+										<A class="btn btn-outline-primary btn-round mx-1" href="/upgrade.asp">馬上升級</A>
+									</DIV>
+								</DIV>
+							</DIV>
+						</DIV>
+					</DIV>
+				</xsl:if>
 				<xsl:if test="@male and not(@me)">
 					<DIV class="modal fade" id="weChatModel">
 						<DIV class="modal-dialog modal-dialog-centered">
@@ -264,7 +284,34 @@
 					</DIV>
 					<xsl:for-each select="picture">
 						<DIV class="carousel-item">
-							<IMG class="d-block w-100" src="{.}" alt="照片{position()}"/>
+							<IMG class="d-block w-100" src="{.}" alt="照片{position()}">
+								<xsl:if test="/document/@unlockedPix">
+									<xsl:attribute name="src">
+										<xsl:value-of select="/document/@unlockedPix"/>
+										<xsl:value-of select="."/>
+									</xsl:attribute>
+								</xsl:if>
+								<xsl:if test="/document/@lockedPix">
+									<xsl:attribute name="src">
+										<xsl:value-of select="/document/@lockedPix"/>
+										<xsl:value-of select="."/>
+										<xsl:text>.png</xsl:text>
+									</xsl:attribute>
+								</xsl:if>
+							</IMG>
+							<xsl:if test="/document/@lockedPix">
+								<DIV class="position-absolute bottom-50 right-0 left-0 mx-auto w-50">
+									<DIV class="text-center">
+										<BUTTON class="btn btn-dark btn-round m-0 picturesAuth" type="button">
+											<xsl:if test="not(/document/@waitForAuth)">取得授權</xsl:if>
+											<xsl:if test="/document/@waitForAuth">
+												<xsl:attribute name="disabled">true</xsl:attribute>
+												<xsl:text>等待授權</xsl:text>
+											</xsl:if>
+										</BUTTON>
+									</DIV>
+								</DIV>
+							</xsl:if>
 						</DIV>
 					</xsl:for-each>
 				</DIV>

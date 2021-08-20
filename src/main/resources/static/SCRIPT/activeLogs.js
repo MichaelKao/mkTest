@@ -161,5 +161,35 @@ $(document).ready(function () {
 			);
 		return false;
 	});
+	$('BUTTON.acceptPixAuth').dblclick(function (e) {
+		e.preventDefault();
+	});
+	$('BUTTON.acceptPixAuth').click(function (event) {
+		event.preventDefault();
+		let btn = this;
+		$(btn).attr('disabled', true);
+		var whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 
+		$.post(
+			"/acceptPixAuth.json",
+			{
+				whom: whom
+			},
+			function (data) {
+				if (data.response) {
+					$(btn).remove();
+				} else {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+					if (data.redirect) {
+						$('.toast').on('hidden.bs.toast', function () {
+							location.href = data.redirect;
+						});
+					}
+				}
+			},
+			'json'
+			);
+		return false;
+	});
 });

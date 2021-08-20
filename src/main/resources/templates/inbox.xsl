@@ -45,7 +45,7 @@
 								<IMG src="https://d35hi420xc5ji7.cloudfront.net/profileImage/31835bd9-ab5e-42fc-8616-af3e6f66fae3" alt="大頭貼" class="rounded-circle" width="70px"/>
 							</DIV>
 							<DIV class="me-auto" style="overflow: hidden;">
-								<DIV class="d-flex flex-column align-items-start">
+								<DIV class="d-flex flex-column align-items-start ms-3">
 									<A class=" font-weight-bold text-dark mb-1">吳俊賢</A>
 									<P class="text-muted mb-0">
 										<SPAN>HIHI</SPAN>

@@ -100,6 +100,7 @@ public class History implements java.io.Serializable {
 	public History() {
 		occurred = new Date(System.currentTimeMillis());
 		points = 0;
+		showAllPictures = Boolean.FALSE;
 	}
 
 	/**
@@ -134,7 +135,7 @@ public class History implements java.io.Serializable {
 	}
 
 	/**
-	 * 构造器：适用于「看过我」。
+	 * 构造器：适用于「看过我」、「放行生活照」。
 	 *
 	 * @param initiative 主动方
 	 * @param passive 被动方

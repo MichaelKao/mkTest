@@ -283,4 +283,36 @@ $(document).ready(function () {
 	$('#blockedModal').on('hidden.bs.modal', function () {
 		location.href = '/';
 	});
+
+
+	$('BUTTON.picturesAuth').dblclick(function (e) {
+		e.preventDefault();
+	});
+	$('BUTTON.picturesAuth').click(function () {
+		whom = $('INPUT[name="whom"]').val();
+		let btn = this;
+		$('.picturesAuth').each(function () {
+			$(this).attr('disabled', true);
+		});
+		$.post(
+			'/picturesAuth.json',
+			{
+				whom: whom
+			},
+			function (data) {
+				if (data.response) {
+					$('.picturesAuth').each(function () {
+						$(this).html('等待回覆');
+					});
+				} else if (!data.response && data.reason === 'non-vip') {
+					$('#upgradeVIP').modal('show');
+				} else {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+				}
+			},
+			'json'
+			);
+		return false;
+	});
 });

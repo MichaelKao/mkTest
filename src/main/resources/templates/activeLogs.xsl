@@ -169,6 +169,11 @@
 											<BUTTON class="btn btn-primary px-2 py-1 p-md-2 m-0 me-1 requestLine" type="button">要求通訊軟體</BUTTON>
 										</DIV>
 									</xsl:if>
+									<xsl:if test="@pixAuthBtn">
+										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
+											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 acceptPixAuth" type="button">同意</BUTTON>
+										</DIV>
+									</xsl:if>
 								</DIV>
 							</DIV>
 						</DIV>
