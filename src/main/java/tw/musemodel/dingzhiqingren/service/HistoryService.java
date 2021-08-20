@@ -1,24 +1,37 @@
 package tw.musemodel.dingzhiqingren.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.URI;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
+import lombok.Data;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +41,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileCopyUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -42,6 +56,7 @@ import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
+import static tw.musemodel.dingzhiqingren.service.Servant.UTF_8;
 import tw.musemodel.dingzhiqingren.specification.HistorySpecification;
 
 /**
@@ -84,6 +99,28 @@ public class HistoryService {
 
 	@Autowired
 	private LoverRepository loverRepository;
+
+	@Value("classpath:与其它用户近期的对话.sql")
+	private Resource latestConversationsResource;
+
+	@Data
+	private class Dialogist implements Serializable {
+
+		private static final long serialVersionUID = -7377929167558711132L;
+
+		private final int initiative;
+
+		private final int passive;
+
+		@Override
+		public String toString() {
+			try {
+				return new JsonMapper().writeValueAsString(this);
+			} catch (JsonProcessingException ignore) {
+				return "null";
+			}
+		}
+	}
 
 	/**
 	 * 历程：要求車馬費
@@ -191,6 +228,16 @@ public class HistoryService {
 	public static final Behavior BEHAVIOR_PICTURES_VIEWABLE = Behavior.FANG_XING_SHENG_HUO_ZHAO;
 
 	/**
+	 * 聊天相关行为
+	 */
+	@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+	public final static Collection<History.Behavior> BEHAVIORS_OF_CONVERSATIONS = Arrays.asList(new History.Behavior[]{
+		HistoryService.BEHAVIOR_CHAT_MORE,
+		HistoryService.BEHAVIOR_GREETING,
+		HistoryService.BEHAVIOR_GROUP_GREETING
+	});
+
+	/**
 	 * 主动方是否愿意给被动方看生活照。
 	 *
 	 * @param initiative 主动方
@@ -208,13 +255,96 @@ public class HistoryService {
 	}
 
 	/**
+	 * 与其它用户近期的对话。
+	 *
+	 * @param me 用户号
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public List<History> latestConversations(final Lover me) {
+		int id = me.getId();
+		List<Dialogist> candidates = jdbcTemplate.query(
+			(Connection connection) -> {
+				StringBuilder stringBuilder = new StringBuilder();
+				BEHAVIORS_OF_CONVERSATIONS.forEach(behavior -> {
+					stringBuilder.append(String.format(
+						"'%s',",
+						behavior.toString()
+					));
+				});
+				final String CONVERSATIONAL_BEHAVIORS = stringBuilder.
+					toString().
+					replaceAll(
+						",$",
+						""
+					);
+
+				PreparedStatement preparedStatement;
+				try {
+					preparedStatement = connection.prepareStatement(
+						String.format(
+							FileCopyUtils.copyToString(
+								new InputStreamReader(
+									latestConversationsResource.getInputStream(),
+									UTF_8
+								)
+							),
+							CONVERSATIONAL_BEHAVIORS,
+							CONVERSATIONAL_BEHAVIORS
+						)
+					);
+					preparedStatement.setInt(1, id);
+					preparedStatement.setInt(2, id);
+					return preparedStatement;
+				} catch (IOException ex) {
+					return null;
+				}
+			},
+			(ResultSet resultSet, int rowNum) -> {
+				return new Dialogist(
+					resultSet.getInt("zhu_dong_de"),
+					resultSet.getInt("bei_dong_de")
+				);
+			}
+		);
+
+		List<Dialogist> dialogists = new ArrayList<>();
+		Iterator<Dialogist> iterator = candidates.iterator();
+		while (iterator.hasNext()) {
+			Dialogist candidate = iterator.next(),
+				dialogist = new Dialogist(
+					candidate.getPassive(),
+					candidate.getInitiative()
+				);
+			if (!dialogists.contains(candidate) && !dialogists.contains(dialogist)) {
+				dialogists.add(candidate);
+			}
+		}
+
+		List<History> histories = new ArrayList<>();
+		dialogists.forEach(dialogist -> {
+			histories.add(historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorInOrderByOccurredDesc(
+				loverRepository.
+					findById(dialogist.getInitiative()).
+					orElseThrow(),
+				loverRepository.
+					findById(dialogist.getPassive()).
+					orElseThrow(),
+				BEHAVIORS_OF_CONVERSATIONS
+			));
+		});
+		return histories;
+	}
+
+	/**
 	 * 两用户之间的最后一次对话。
 	 *
 	 * @param initiative 某用户
 	 * @param passive 另一用户
 	 * @return 最后一次对话
 	 */
-	public History lastConversationOfTwo(Lover initiative, Lover passive) {
+	@Transactional(readOnly = true)
+	public History lastConversation(Lover initiative, Lover passive) {
 		final Pageable limitOne = PageRequest.of(0, 1);
 		Page<History> initiativePage = historyRepository.findAll(
 			HistorySpecification.conversationsOfTwo(initiative, passive),
@@ -1300,7 +1430,7 @@ public class HistoryService {
 				"profileImage",
 				String.format(
 					"https://%s/profileImage/%s",
-					servant.STATIC_HOST,
+					Servant.STATIC_HOST,
 					profileImage
 				)
 			);

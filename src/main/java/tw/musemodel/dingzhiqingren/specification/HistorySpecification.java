@@ -1,7 +1,6 @@
 package tw.musemodel.dingzhiqingren.specification;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -23,16 +22,6 @@ public class HistorySpecification {
 
 	/**
 	 * 聊天相关行为
-	 */
-	@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-	private final static Collection<History.Behavior> BEHAVIOR_OF_CONVERSATIONS = Arrays.asList(new History.Behavior[]{
-		HistoryService.BEHAVIOR_CHAT_MORE,
-		HistoryService.BEHAVIOR_GREETING,
-		HistoryService.BEHAVIOR_GROUP_GREETING
-	});
-
-	/**
-	 * 聊天相关行为
 	 *
 	 * @param root
 	 * @param criteriaBuilder
@@ -42,10 +31,9 @@ public class HistorySpecification {
 		Predicate predicate = criteriaBuilder.conjunction();
 		Collection<Predicate> predicates = new ArrayList<>();
 
-		LOGGER.debug("聊天相关行为\n{}", BEHAVIOR_OF_CONVERSATIONS);
 		predicates.add(root.
 			get(History_.behavior).
-			in(BEHAVIOR_OF_CONVERSATIONS)
+			in(HistoryService.BEHAVIORS_OF_CONVERSATIONS)
 		);
 
 		predicate.getExpressions().addAll(predicates);

@@ -1,0 +1,1 @@
+SELECT"history".*FROM"li_cheng"AS"history",(SELECT DISTINCT"zhu_dong_de","bei_dong_de"FROM"li_cheng"WHERE"xing_wei"IN(%s)AND("zhu_dong_de"=? OR "bei_dong_de"=?))AS"benefactors"WHERE"history"."xing_wei"IN(%s)AND"history"."zhu_dong_de"="benefactors"."zhu_dong_de"AND"history"."bei_dong_de"="benefactors"."bei_dong_de"ORDER BY"history"."shi_chuo"DESC
