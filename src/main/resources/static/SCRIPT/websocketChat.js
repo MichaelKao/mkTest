@@ -48,7 +48,8 @@ $(document).ready(function () {
 					messagesArea.appendChild(divWrap);
 					divWrap.appendChild(divParent);
 					divParent.appendChild(divChild);
-					if (behavior !== 'LIAO_LIAO' && behavior !== 'DA_ZHAO_HU' && behavior !== 'YAO_CHE_MA_FEI' && behavior !== 'CHE_MA_FEI') {
+					if (behavior !== 'LIAO_LIAO' && behavior !== 'DA_ZHAO_HU' && behavior !== 'QUN_FA'
+						&& behavior !== 'YAO_CHE_MA_FEI' && behavior !== 'CHE_MA_FEI') {
 						var dateDiv = document.createElement('DIV');
 						dateDiv.className += 'text-xs';
 						dateDiv.innerHTML = dateFormat(msg.occurred);

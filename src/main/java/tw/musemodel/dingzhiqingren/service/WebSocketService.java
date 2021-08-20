@@ -70,6 +70,11 @@ public class WebSocketService {
 			male,
 			HistoryService.BEHAVIOR_GREETING
 		);
+		List<History> femaleGroupGreetingHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
+			female,
+			male,
+			HistoryService.BEHAVIOR_GROUP_GREETING
+		);
 		List<History> inviteAsFriendHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
 			female,
 			male,
@@ -128,6 +133,16 @@ public class WebSocketService {
 			wholeHistoryMsgs.add(activity);
 		}
 		for (History history : femaleTalkHistoryMsgs) {
+			Activity activity = new Activity(
+				female.getIdentifier().toString(),
+				history.getBehavior(),
+				history.getOccurred(),
+				history.getGreeting(),
+				history.getSeen()
+			);
+			wholeHistoryMsgs.add(activity);
+		}
+		for (History history : femaleGroupGreetingHistoryMsgs) {
 			Activity activity = new Activity(
 				female.getIdentifier().toString(),
 				history.getBehavior(),

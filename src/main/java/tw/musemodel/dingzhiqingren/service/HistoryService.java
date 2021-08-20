@@ -949,6 +949,12 @@ public class HistoryService {
 		return (loverService.isVVIP(male) || loverService.isVIP(male)) && Objects.nonNull(dailyCount) && dailyCount < VIP_DAILY_TOLERANCE;
 	}
 
+	/**
+	 * 找出需顯示在歷程頁面的所有歷程
+	 *
+	 * @param lover
+	 * @return
+	 */
 	@Transactional(readOnly = true)
 	public List<Activity> findActiveLogsOrderByOccurredDesc(Lover lover) {
 		List<Activity> list = new ArrayList<Activity>();
@@ -1177,6 +1183,26 @@ public class HistoryService {
 					);
 				}
 			}
+			if (activeLogs.getBehavior() == BEHAVIOR_PICTURES_VIEWABLE) {
+				profileImage = initiativeProfileImage;
+				identifier = initiativeIdentifier;
+				message = String.format(
+					"%s向您要求生活照授權",
+					initiativeNickname,
+					activeLogs.getGreeting()
+				);
+				History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
+					initiative,
+					passive,
+					BEHAVIOR_PICTURES_VIEWABLE
+				);
+				if (Objects.nonNull(history) && !history.getShowAllPictures()) {
+					historyElement.setAttribute(
+						"pixAuthBtn",
+						null
+					);
+				}
+			}
 			if (activeLogs.getBehavior() == BEHAVIOR_LAI_KOU_DIAN) {
 				if (isMale) {
 					profileImage = passiveProfileImage;
@@ -1280,5 +1306,96 @@ public class HistoryService {
 			);
 		}
 		return document;
+	}
+
+	/**
+	 * 要求生活照授權
+	 *
+	 * @param initiative
+	 * @param passive
+	 * @return
+	 */
+	@Transactional
+	public JSONObject picturesAuth(Lover initiative, Lover passive) {
+		if (Objects.isNull(initiative)) {
+			throw new IllegalArgumentException("picturesAuth.initiativeMustntBeNull");
+		}
+		if (Objects.isNull(passive)) {
+			throw new IllegalArgumentException("picturesAuth.passiveMustntBeNull");
+		}
+		if (Objects.equals(initiative, passive)) {
+			throw new RuntimeException("picturesAuth.mustBeDifferent");
+		}
+		if (Objects.equals(initiative.getGender(), passive.getGender())) {
+			throw new RuntimeException("picturesAuth.mustBeStraight");
+		}
+		if (initiative.getGender() && !loverService.isVIP(initiative) && !loverService.isVVIP(initiative)) {
+			return new JavaScriptObjectNotation().
+				withReason("non-vip").
+				withResponse(false).
+				toJSONObject();
+		}
+
+		History history = historyRepository.saveAndFlush(new History(
+			initiative,
+			passive,
+			BEHAVIOR_PICTURES_VIEWABLE
+		));
+		// 推送通知給對方
+		webSocketServer.sendNotification(
+			passive.getIdentifier().toString(),
+			String.format(
+				"%s和您要求生活照授權!",
+				initiative.getNickname()
+			));
+		if (loverService.hasLineNotify(passive)) {
+			// LINE Notify
+			lineMessagingService.notify(
+				passive,
+				String.format(
+					"有養蜜和您要求生活照授權..馬上查看 https://%s/activeLogs.asp",
+					servant.LOCALHOST
+				));
+		}
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			withResult(history.getOccurred()).
+			toJSONObject();
+	}
+
+	@Transactional
+	public JSONObject acceptPixAuth(Lover acceptant, Lover requester) {
+		if (Objects.isNull(acceptant)) {
+			throw new IllegalArgumentException("picturesAuth.initiativeMustntBeNull");
+		}
+		if (Objects.isNull(requester)) {
+			throw new IllegalArgumentException("picturesAuth.passiveMustntBeNull");
+		}
+		if (Objects.equals(acceptant, requester)) {
+			throw new RuntimeException("picturesAuth.mustBeDifferent");
+		}
+		if (Objects.equals(acceptant.getGender(), requester.getGender())) {
+			throw new RuntimeException("picturesAuth.mustBeStraight");
+		}
+		toggleShowAllPictures(requester, acceptant);
+		// 推送通知給對方
+		webSocketServer.sendNotification(
+			requester.getIdentifier().toString(),
+			String.format(
+				"%s同意給您看生活照!",
+				acceptant.getNickname()
+			));
+		if (loverService.hasLineNotify(requester)) {
+			// LINE Notify
+			lineMessagingService.notify(
+				requester,
+				String.format(
+					"有養蜜拒絕同意給您看生活照..馬上查看 https://%s/activeLogs.asp",
+					servant.LOCALHOST
+				));
+		}
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			toJSONObject();
 	}
 }

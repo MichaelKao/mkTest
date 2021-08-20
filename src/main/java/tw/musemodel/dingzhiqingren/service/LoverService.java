@@ -774,11 +774,7 @@ public class LoverService {
 		pictures.stream().map(picture -> {
 			Element pictureElement = document.createElement("picture");
 			pictureElement.setTextContent(
-				String.format(
-					"https://%s/pictures/%s",
-					Servant.STATIC_HOST,
-					picture.getIdentifier().toString()
-				)
+				picture.getIdentifier().toString()
 			);
 			return pictureElement;
 		}).forEachOrdered(pictureElement -> {
@@ -2317,16 +2313,13 @@ public class LoverService {
 	public Document groupGreetingDocument(Document document, Lover female) {
 		Element documentElement = document.getDocumentElement();
 
-		History lastHistory = historyRepository.findTop1ByInitiativeAndBehaviorOrderByIdDesc(female, BEHAVIOR_GROUP_GREETING);
-		if (Objects.nonNull(lastHistory)) {
-			Boolean within24hr = within12hrsFromLastGroupGreeting(female);
-			if (within24hr) {
-				documentElement.setAttribute(
-					"within24hr",
-					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-						.format(lastHistory.getOccurred())
-				);
-			}
+		if (within12hrsFromLastGroupGreeting(female)) {
+			History lastHistory = historyRepository.findTop1ByInitiativeAndBehaviorOrderByIdDesc(female, BEHAVIOR_GROUP_GREETING);
+			documentElement.setAttribute(
+				"within24hr",
+				new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+					.format(lastHistory.getOccurred())
+			);
 		}
 
 		Calendar cal = Calendar.getInstance();
@@ -2394,6 +2387,8 @@ public class LoverService {
 			calendar.add(Calendar.HOUR, 12);
 			gpDate = calendar.getTime();
 			nowDate = new Date();
+		} else if (Objects.isNull(history)) {
+			return false;
 		}
 		return nowDate.before(gpDate);
 	}

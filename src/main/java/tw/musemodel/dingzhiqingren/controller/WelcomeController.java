@@ -1,14 +1,23 @@
 package tw.musemodel.dingzhiqingren.controller;
 
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.qrcode.QRCodeWriter;
+import java.awt.image.BufferedImage;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +31,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -71,6 +82,7 @@ import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRep
 import tw.musemodel.dingzhiqingren.service.AmazonWebServices;
 import tw.musemodel.dingzhiqingren.service.DashboardService;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 import static tw.musemodel.dingzhiqingren.service.Servant.PAGE_SIZE_ON_THE_WALL;
@@ -934,6 +946,15 @@ public class WelcomeController {
 			me.getIdentifier().toString()
 		);
 
+		// 本人看到解鎖的生活照
+		documentElement.setAttribute(
+			"unlockedPix",
+			String.format(
+				"https://%s/pictures/",
+				Servant.STATIC_HOST
+			)
+		);
+
 		ModelAndView modelAndView = new ModelAndView("profile");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
@@ -1074,6 +1095,32 @@ public class WelcomeController {
 				"blockedBy",
 				null
 			);
+		}
+
+		// 是否解鎖生活照
+		History history = historyRepository.findByInitiativeAndPassiveAndBehavior(me, lover, BEHAVIOR_PICTURES_VIEWABLE);
+		if (Objects.nonNull(history) && history.getShowAllPictures()) {
+			documentElement.setAttribute(
+				"unlockedPix",
+				String.format(
+					"https://%s/pictures/",
+					Servant.STATIC_HOST
+				)
+			);
+		} else {
+			documentElement.setAttribute(
+				"lockedPix",
+				String.format(
+					"https://%s/lockedPic/",
+					Servant.LOCALHOST
+				)
+			);
+			if (Objects.nonNull(history) && !history.getShowAllPictures()) {
+				documentElement.setAttribute(
+					"waitForAuth",
+					null
+				);
+			}
 		}
 
 		ModelAndView modelAndView = new ModelAndView("profile");
@@ -3725,7 +3772,7 @@ public class WelcomeController {
 		}
 
 		documentElement.setAttribute(
-			"selfIdentifier",
+			"identifier",
 			me.getIdentifier().toString()
 		);
 
@@ -3781,5 +3828,140 @@ public class WelcomeController {
 			withResponse(true).
 			toJSONObject().
 			toString();
+	}
+
+	/**
+	 * 未解鎖的生活照
+	 *
+	 * @param identifier
+	 * @param picIdentifier
+	 * @param authentication
+	 * @param response
+	 * @throws IOException
+	 * @throws WriterException
+	 */
+	@GetMapping(path = "/lockedPic/{picIdentifier}.png", produces = MediaType.IMAGE_PNG_VALUE)
+	@Secured({"ROLE_YONGHU"})
+	void pictures(@PathVariable String picIdentifier, Authentication authentication, HttpServletResponse response) throws IOException, WriterException {
+		File tmp = null;
+		try {
+			S3Object o = amazonWebServices.AMAZON_S3.getObject(amazonWebServices.BUCKET_NAME, "pictures/" + picIdentifier);
+			S3ObjectInputStream s3is = o.getObjectContent();
+			tmp = File.createTempFile("s3test", ".png");
+			Files.copy(s3is, tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			ByteArrayOutputStream jpegOutputStream = new ByteArrayOutputStream();
+
+			try {
+				BufferedImage image = ImageIO.read(tmp);
+
+				int radius = 33;
+				int size = radius * 2 + 1;
+				float weight = 1.0f / (size * size);
+				float[] data = new float[size * size];
+
+				for (int i = 0; i < data.length; i++) {
+					data[i] = weight;
+				}
+				ConvolveOp op = new ConvolveOp(
+					new Kernel(size, size, data)
+				);
+				BufferedImage i = op.filter(image, null);
+				ImageIO.write(i, "png", jpegOutputStream);
+			} catch (IllegalArgumentException e) {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			}
+			tmp.delete();
+			byte[] imgByte = jpegOutputStream.toByteArray();
+
+			response.setHeader("Cache-Control", "no-store");
+			response.setHeader("Pragma", "no-cache");
+			response.setDateHeader("Expires", 0);
+			response.setContentType("image/png");
+			ServletOutputStream responseOutputStream = response.getOutputStream();
+			responseOutputStream.write(imgByte);
+			responseOutputStream.flush();
+			responseOutputStream.close();
+
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	/**
+	 * 取得照片授權
+	 *
+	 * @param femaleUUID
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/picturesAuth.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String picturesAuth(@RequestParam("whom") UUID uuid, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Lover another = loverService.loadByIdentifier(uuid);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = historyService.picturesAuth(
+				me,
+				another
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
+	}
+
+	/**
+	 * 接受給對方看生活照
+	 *
+	 * @param uuid
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/acceptPixAuth.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String acceptPixAuth(@RequestParam("whom") UUID uuid, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Lover another = loverService.loadByIdentifier(uuid);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = historyService.acceptPixAuth(
+				me,
+				another
+			);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
 	}
 }

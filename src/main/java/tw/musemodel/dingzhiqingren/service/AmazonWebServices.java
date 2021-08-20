@@ -34,7 +34,7 @@ public class AmazonWebServices {
 
 	private static final String AWS_SECRET_ACCESS_KEY = System.getenv("AWS_SECRET_ACCESS_KEY");
 
-	private static final AmazonS3 AMAZON_S3 = AmazonS3ClientBuilder.
+	public static final AmazonS3 AMAZON_S3 = AmazonS3ClientBuilder.
 		standard().
 		withCredentials(new AWSStaticCredentialsProvider(
 			new BasicAWSCredentials(
@@ -43,7 +43,7 @@ public class AmazonWebServices {
 			)
 		)).withRegion(Regions.AP_SOUTHEAST_1).build();
 
-	private static final String BUCKET_NAME = System.getenv("S3_BUCKET");
+	public static final String BUCKET_NAME = System.getenv("S3_BUCKET");
 
 	private static final String TEMP_DIRECTORY = System.getProperty("java.io.tmpdir");
 
