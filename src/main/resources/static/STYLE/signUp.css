@@ -1,0 +1,65 @@
+LI {
+	display: inline-block;
+}
+
+INPUT[name="gender"] {
+	display: none;
+}
+
+LABEL {
+	border: 1px solid #fff;
+	padding: 10px 20px;
+	display: block;
+	position: relative;
+	margin: 0px 20px;
+	cursor: pointer;
+}
+
+label:before {
+	background-color: white;
+	color: white;
+	content: " ";
+	display: block;
+	border-radius: 50%;
+	position: absolute;
+	top: -5px;
+	left: -5px;
+	width: 25px;
+	height: 25px;
+	text-align: center;
+	line-height: 28px;
+	transition-duration: 0.4s;
+	transform: scale(0);
+}
+
+LABEL IMG {
+	transition-duration: 0.2s;
+	transform-origin: 50% 50%;
+}
+
+:checked + LABEL.male {
+	border-color: #17C1E8E1;
+	border-radius: 20px;
+}
+
+:checked + LABEL.male:before {
+	content: "✓";
+	background-color: #17C1E8FF;
+	transform: scale(1);
+}
+
+:checked + LABEL.female {
+	border-color: #CB0C9f88;
+	border-radius: 20px;
+}
+
+:checked + LABEL.female:before {
+	content: "✓";
+	background-color: #CB0C9fEE;
+	transform: scale(1);
+}
+
+:checked + label img {
+	transform: scale(0.9);
+	z-index: -1;
+}

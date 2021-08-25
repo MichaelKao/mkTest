@@ -50,14 +50,19 @@
 					<DIV class="card-body p-1 p-sm-2">
 						<FORM action="/signIn.asp" method="post">
 							<INPUT class="d-none" id="username" name="username" type="hidden"/>
-							<DIV class="form-group">
-								<SELECT class="form-control" id="country" required="">
-									<xsl:apply-templates select="country/*"/>
-								</SELECT>
+							<DIV class="row align-items-center mb-2">
+								<DIV class="col-1 d-flex justify-content-start">
+									<I class="fad fa-globe-americas text-lg"></I>
+								</DIV>
+								<DIV class="col-11">
+									<SELECT class="form-control form-control-lg" id="country" required="">
+										<xsl:apply-templates select="country/*"/>
+									</SELECT>
+								</DIV>
 							</DIV>
 							<DIV class="row align-items-center mb-3">
-								<DIV class="col-1">
-									<I class="fas fa-mobile-alt text-lg"></I>
+								<DIV class="col-1 d-flex justify-content-start">
+									<I class="fad fa-phone-square-alt text-lg"></I>
 								</DIV>
 								<DIV class="col-11">
 									<INPUT class="form-control" id="cellularPhoneNumber" placeholder="手機號碼" required="" type="text"/>
@@ -65,7 +70,7 @@
 							</DIV>
 							<DIV class="row align-items-center mb-3">
 								<DIV class="col-1">
-									<I class="fas fa-lock-alt text-lg"></I>
+									<I class="fas fa-key text-lg"></I>
 								</DIV>
 								<DIV class="col-11">
 									<INPUT class="form-control" name="password" placeholder="密碼" required="" type="password"/>

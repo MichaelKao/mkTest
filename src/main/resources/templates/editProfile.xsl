@@ -93,12 +93,12 @@
 						</DIV>
 					</DIV>
 				</DIV>
-				<DIV class="card mt-5 mx-md-7">
+				<DIV class="card mx-auto mt-3 col-12 col-lg-7">
 					<DIV class="text-center">
 						<H4 class="text-primary">
 							<xsl:value-of select="@title"/>
 						</H4>
-						<P>完成資料填寫，並開始尋找理想的另一半。</P>
+						<P>完成資料填寫，開始尋找你的養蜜</P>
 						<HR class="horizontal dark"/>
 					</DIV>
 					<xsl:apply-templates select="lover"/>
@@ -115,231 +115,263 @@
 	</xsl:template>
 	<xsl:template match="lover">
 		<FORM action="/me.asp" method="post">
-			<DIV class="card-body pt-1">
-				<DIV class="row mt-3">
-					<DIV class="col-md-12 mb-3">
-						<LABEL for="nickname">*暱稱</LABEL>
-						<INPUT class="form-control" id="nickname" name="nickname" required="" type="text" value="{nickname}"/>
+			<DIV class="card-body row pt-1">
+				<DIV class="col-md-12 mb-3">
+					<LABEL for="nickname">
+						<I class="fad fa-mask text-lg"></I>
+					</LABEL>
+					<INPUT class="form-control" id="nickname" name="nickname" placeholder="暱稱" required="" type="text" value="{nickname}"/>
+				</DIV>
+				<DIV class="form-group">
+					<LABEL>
+						<I class="fad fa-birthday-cake text-lg"></I>
+					</LABEL>
+					<INPUT class="form-control" readonly="" required="" type="text" value="{birthday}"/>
+				</DIV>
+				<DIV class="d-flex">
+					<DIV class="col-6 mb-3 pe-1">
+						<LABEL for="height">
+							<I class="fad fa-ruler-vertical text-lg"></I>
+						</LABEL>
+						<INPUT class="form-control" id="height" name="height" placeholder="身高" required="" type="text" value="{height}"/>
 					</DIV>
-					<DIV class="form-group">
-						<LABEL>*生日</LABEL>
-						<INPUT class="form-control" readonly="" required="" type="text" value="{birthday}"/>
+					<DIV class="col-6 mb-3 ps-1">
+						<LABEL for="weight">
+							<I class="fad fa-weight text-lg"></I>
+						</LABEL>
+						<INPUT class="form-control" id="weight" name="weight" placeholder="體重" required="" type="text" value="{weight}"/>
 					</DIV>
-					<DIV class="d-flex">
-						<DIV class="col-6 mb-3 pe-1">
-							<LABEL for="height">*身高</LABEL>
-							<INPUT class="form-control" id="height" name="height" required="" type="text" value="{height}"/>
-						</DIV>
-						<DIV class="col-6 mb-3 ps-1">
-							<LABEL for="weight">*體重</LABEL>
-							<INPUT class="form-control" id="weight" name="weight" required="" type="text" value="{weight}"/>
-						</DIV>
-					</DIV>
-					<DIV class="col-md-12 mb-3">
-						<LABEL for="occupation">*職業</LABEL>
-						<INPUT class="form-control" id="occupation" name="occupation" required="" type="text" value="{occupation}"/>
-					</DIV>
-					<DIV class="form-group">
-						<LABEL for="bodyType">*體型</LABEL>
-						<SELECT class="form-control" id="bodyType" name="bodyType">
-							<xsl:for-each select="bodyType">
-								<OPTION value="{@bodyTypeEnum}">
-									<xsl:if test="@bodyTypeSelected">
-										<xsl:attribute name="selected"/>
-									</xsl:if>
-									<xsl:value-of select="."/>
-								</OPTION>
-							</xsl:for-each>
-						</SELECT>
-					</DIV>
-					<DIV class="form-group">
-						<LABEL for="education">*學歷</LABEL>
-						<SELECT class="form-control" id="education" name="education">
-							<xsl:for-each select="education">
-								<OPTION value="{@educationEnum}">
-									<xsl:if test="@educationSelected">
-										<xsl:attribute name="selected"/>
-									</xsl:if>
-									<xsl:value-of select="."/>
-								</OPTION>
-							</xsl:for-each>
-						</SELECT>
-					</DIV>
-					<DIV class="form-group">
-						<LABEL for="marriage">*婚姻狀態</LABEL>
-						<SELECT class="form-control" id="marriage" name="marriage">
-							<xsl:for-each select="marriage">
-								<OPTION value="{@marriageEnum}">
-									<xsl:if test="@marriageSelected">
-										<xsl:attribute name="selected"/>
-									</xsl:if>
-									<xsl:value-of select="."/>
-								</OPTION>
-							</xsl:for-each>
-						</SELECT>
-					</DIV>
-					<DIV class="form-group">
-						<LABEL for="smoking">*抽菸習慣</LABEL>
-						<SELECT class="form-control" id="smoking" name="smoking">
-							<xsl:for-each select="smoking">
-								<OPTION value="{@smokingEnum}">
-									<xsl:if test="@smokingSelected">
-										<xsl:attribute name="selected"/>
-									</xsl:if>
-									<xsl:value-of select="."/>
-								</OPTION>
-							</xsl:for-each>
-						</SELECT>
-					</DIV>
-					<DIV class="form-group">
-						<LABEL for="drinking">*飲酒習慣</LABEL>
-						<SELECT class="form-control" id="drinking" name="drinking">
-							<xsl:for-each select="drinking">
-								<OPTION value="{@drinkingEnum}">
-									<xsl:if test="@drinkingSelected">
-										<xsl:attribute name="selected"/>
-									</xsl:if>
-									<xsl:value-of select="."/>
-								</OPTION>
-							</xsl:for-each>
-						</SELECT>
-					</DIV>
-					<DIV class="form-group">
-						<LABEL for="relationship">*相處關係</LABEL>
-						<SELECT class="form-control" id="relationship" name="relationship">
-							<xsl:for-each select="relationship">
-								<OPTION value="{@relationshipEnum}">
-									<xsl:if test="@relationshipSelected">
-										<xsl:attribute name="selected"/>
-									</xsl:if>
-									<xsl:value-of select="."/>
-								</OPTION>
-							</xsl:for-each>
-						</SELECT>
-					</DIV>
-					<xsl:if test="gender/@gender = 'male'">
-						<DIV class="form-group">
-							<LABEL for="annualIncome">*年收入</LABEL>
-							<SELECT class="form-control" id="annualIncome" name="annualIncome">
-								<xsl:for-each select="annualIncome">
-									<OPTION value="{@annualIncomeID}">
-										<xsl:if test="@annualIncomeSelected">
-											<xsl:attribute name="selected"/>
-										</xsl:if>
-										<xsl:value-of select="."/>
-									</OPTION>
-								</xsl:for-each>
-							</SELECT>
-						</DIV>
-					</xsl:if>
-					<xsl:if test="gender/@gender = 'female'">
-						<DIV class="form-group">
-							<LABEL for="allowance">*期望零用金</LABEL>
-							<SELECT class="form-control" id="allowance" name="allowance">
-								<xsl:for-each select="allowance">
-									<OPTION value="{@allowanceID}">
-										<xsl:if test="@allowanceSelected">
-											<xsl:attribute name="selected"/>
-										</xsl:if>
-										<xsl:value-of select="."/>
-									</OPTION>
-								</xsl:for-each>
-							</SELECT>
-						</DIV>
-					</xsl:if>
-					<DIV class="col-md-12 pe-2 mb-3">
-						<DIV class="form-group mb-0">
-							<LABEL for="aboutMe">*關於我</LABEL>
-							<TEXTAREA class="form-control" id="aboutMe" name="aboutMe" required="" rows="6">
-								<xsl:value-of select="aboutMe"/>
-							</TEXTAREA>
-						</DIV>
-					</DIV>
-					<DIV class="col-md-12 pe-2 mb-3">
-						<DIV class="form-group mb-0">
-							<LABEL for="idealConditions">*理想對象</LABEL>
-							<TEXTAREA class="form-control" id="idealConditions" name="idealConditions" required="" rows="6">
-								<xsl:value-of select="idealConditions"/>
-							</TEXTAREA>
-						</DIV>
-					</DIV>
-					<DIV class="col-md-12 pe-2 mb-3">
-						<DIV class="form-group mb-0">
-							<LABEL for="greeting">
-								<xsl:if test="gender/@gender = 'female'">
-									<SPAN>*與男仕打招呼</SPAN>
+				</DIV>
+				<DIV class="form-group">
+					<LABEL for="bodyType">
+						<I class="fad fa-street-view text-lg"></I>
+					</LABEL>
+					<SELECT class="form-control" id="bodyType" name="bodyType">
+						<xsl:for-each select="bodyType">
+							<OPTION value="{@bodyTypeEnum}">
+								<xsl:if test="@bodyTypeSelected">
+									<xsl:attribute name="selected"/>
 								</xsl:if>
-								<xsl:if test="gender/@gender = 'male'">
-									<SPAN>*用一句話介紹自己來打動甜心</SPAN>
+								<xsl:value-of select="."/>
+							</OPTION>
+						</xsl:for-each>
+					</SELECT>
+				</DIV>
+				<DIV class="col-md-12 mb-3">
+					<LABEL for="occupation">
+						<I class="fad fa-briefcase text-lg"></I>
+					</LABEL>
+					<INPUT class="form-control" id="occupation" name="occupation" required="" type="text" value="{occupation}"/>
+				</DIV>
+				<DIV class="form-group">
+					<LABEL for="education">
+						<I class="fad fa-graduation-cap text-lg"></I>
+					</LABEL>
+					<SELECT class="form-control" id="education" name="education">
+						<xsl:for-each select="education">
+							<OPTION value="{@educationEnum}">
+								<xsl:if test="@educationSelected">
+									<xsl:attribute name="selected"/>
 								</xsl:if>
-							</LABEL>
-							<TEXTAREA class="form-control" id="greeting" name="greeting" required="" rows="4">
-								<xsl:value-of select="greeting"/>
-							</TEXTAREA>
-						</DIV>
-					</DIV>
-					<DIV class="col-md-12 mb-3">
-						<xsl:if test="gender/@gender = 'female'">
-							<LABEL>*LINE/微信WeChat</LABEL>
-							<P class="text-xs m-1 mb-1">與男仕聯繫的通訊軟體 (擇一上傳 QR Code)</P>
-							<P class="text-xs text-warning m-1 mb-1">上傳 QRcode 加好友資訊能安全保護 ID 個資安全，每位男士都須經過甜心同意才能加好友，不會被騷擾，請安心上傳。</P>
-						</xsl:if>
-						<xsl:if test="gender/@gender = 'male'">
-							<LABEL>(選填)LINE/微信WeChat</LABEL>
-							<P class="text-xs m-1 mb-1">與甜心聯繫的通訊軟體 (擇一上傳 QR Code)</P>
-							<P class="text-xs text-warning m-1 mb-1">上傳 QRcode 加好友資訊能安全保護 ID 個資安全，請安心上傳。</P>
-						</xsl:if>
-						<DIV class="uploadQrcode ">
-							<LABEL>
-								<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
-								<A class="btn btn-primary p-1 me-1 mb-0">點擊上傳 QR code</A>
-							</LABEL>
-							<BUTTON class="btn btn-info p-1 mb-0 ms-1" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">如何取得 QR code?</BUTTON>
-						</DIV>
-						<DIV class="mt-1">
-							<INPUT class="form-control" name="inviteMeAsLineFriend" readonly="" required="" style="display: none;" type="text" value="">
-								<xsl:if test="inviteMeAsLineFriend">
-									<xsl:attribute name="style">display: inline;</xsl:attribute>
-									<xsl:attribute name="value">
-										<xsl:value-of select="inviteMeAsLineFriend"/>
-									</xsl:attribute>
+								<xsl:value-of select="."/>
+							</OPTION>
+						</xsl:for-each>
+					</SELECT>
+				</DIV>
+				<DIV class="form-group">
+					<LABEL for="marriage">
+						<I class="fad fa-heart text-lg"></I>
+					</LABEL>
+					<SELECT class="form-control" id="marriage" name="marriage">
+						<xsl:for-each select="marriage">
+							<OPTION value="{@marriageEnum}">
+								<xsl:if test="@marriageSelected">
+									<xsl:attribute name="selected"/>
 								</xsl:if>
-							</INPUT>
-						</DIV>
-					</DIV>
-					<DIV class="col-md-12 mb-3">
-						<LABEL>*服務標籤</LABEL>
-						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
-							<xsl:for-each select="service">
-								<DIV class="form-check ms-2">
-									<INPUT class="form-check-input service" id="service{@serviceID}" type="checkbox" value="{@serviceID}">
-										<xsl:if test="@serviceSelected">
-											<xsl:attribute name="checked"/>
-										</xsl:if>
-									</INPUT>
-									<LABEL class="custom-control-label" for="service{@serviceID}">
-										<xsl:value-of select="."/>
-									</LABEL>
-								</DIV>
+								<xsl:value-of select="."/>
+							</OPTION>
+						</xsl:for-each>
+					</SELECT>
+				</DIV>
+				<DIV class="form-group">
+					<LABEL for="smoking">
+						<I class="far fa-smoking text-lg"></I>
+					</LABEL>
+					<SELECT class="form-control" id="smoking" name="smoking">
+						<xsl:for-each select="smoking">
+							<OPTION value="{@smokingEnum}">
+								<xsl:if test="@smokingSelected">
+									<xsl:attribute name="selected"/>
+								</xsl:if>
+								<xsl:value-of select="."/>
+							</OPTION>
+						</xsl:for-each>
+					</SELECT>
+				</DIV>
+				<DIV class="form-group">
+					<LABEL for="drinking">
+						<I class="fad fa-wine-glass-alt text-lg"></I>
+					</LABEL>
+					<SELECT class="form-control" id="drinking" name="drinking">
+						<xsl:for-each select="drinking">
+							<OPTION value="{@drinkingEnum}">
+								<xsl:if test="@drinkingSelected">
+									<xsl:attribute name="selected"/>
+								</xsl:if>
+								<xsl:value-of select="."/>
+							</OPTION>
+						</xsl:for-each>
+					</SELECT>
+				</DIV>
+				<DIV class="form-group">
+					<LABEL for="relationship">
+						<I class="fad fa-grin-hearts text-lg"></I>
+					</LABEL>
+					<SELECT class="form-control" id="relationship" name="relationship">
+						<xsl:for-each select="relationship">
+							<OPTION value="{@relationshipEnum}">
+								<xsl:if test="@relationshipSelected">
+									<xsl:attribute name="selected"/>
+								</xsl:if>
+								<xsl:value-of select="."/>
+							</OPTION>
+						</xsl:for-each>
+					</SELECT>
+				</DIV>
+				<xsl:if test="gender/@gender = 'male'">
+					<DIV class="form-group">
+						<LABEL for="annualIncome">
+							<I class="fad fa-usd-circle text-lg"></I>
+						</LABEL>
+						<SELECT class="form-control" id="annualIncome" name="annualIncome">
+							<xsl:for-each select="annualIncome">
+								<OPTION value="{@annualIncomeID}">
+									<xsl:if test="@annualIncomeSelected">
+										<xsl:attribute name="selected"/>
+									</xsl:if>
+									<xsl:value-of select="."/>
+								</OPTION>
 							</xsl:for-each>
-						</DIV>
+						</SELECT>
 					</DIV>
-					<DIV class="col-md-12 mb-3">
-						<LABEL>*服務地區</LABEL>
-						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
-							<xsl:for-each select="location">
-								<DIV class="form-check ms-2">
-									<INPUT class="form-check-input location" id="location{@locationID}" type="checkbox" value="{@locationID}">
-										<xsl:if test="@locationSelected">
-											<xsl:attribute name="checked"/>
-										</xsl:if>
-									</INPUT>
-									<LABEL class="custom-control-label" for="location{@locationID}">
-										<xsl:value-of select="."/>
-									</LABEL>
-								</DIV>
+				</xsl:if>
+				<xsl:if test="gender/@gender = 'female'">
+					<DIV class="form-group">
+						<LABEL for="allowance">
+							<I class="fad fa-usd-circle text-lg"></I>
+						</LABEL>
+						<SELECT class="form-control" id="allowance" name="allowance">
+							<xsl:for-each select="allowance">
+								<OPTION value="{@allowanceID}">
+									<xsl:if test="@allowanceSelected">
+										<xsl:attribute name="selected"/>
+									</xsl:if>
+									<xsl:value-of select="."/>
+								</OPTION>
 							</xsl:for-each>
-						</DIV>
+						</SELECT>
+					</DIV>
+				</xsl:if>
+				<DIV class="col-md-12 pe-2 mb-3">
+					<DIV class="form-group mb-0">
+						<LABEL for="aboutMe">
+							<I class="fad fa-file-user text-lg"></I>
+							<SPAN class="ms-1">關於我</SPAN>
+						</LABEL>
+						<TEXTAREA class="form-control" id="aboutMe" name="aboutMe" required="" rows="6">
+							<xsl:value-of select="aboutMe"/>
+						</TEXTAREA>
+					</DIV>
+				</DIV>
+				<DIV class="col-md-12 pe-2 mb-3">
+					<DIV class="form-group mb-0">
+						<LABEL for="idealConditions">
+							<I class="fad fa-fire-alt text-lg"></I>
+							<SPAN class="ms-1">理想對象</SPAN>
+						</LABEL>
+						<TEXTAREA class="form-control" id="idealConditions" name="idealConditions" required="" rows="6">
+							<xsl:value-of select="idealConditions"/>
+						</TEXTAREA>
+					</DIV>
+				</DIV>
+				<DIV class="col-md-12 pe-2 mb-3">
+					<DIV class="form-group mb-0">
+						<LABEL for="greeting">
+							<I class="fad fa-comment-edit text-lg"></I>
+							<xsl:if test="gender/@gender = 'female'">
+								<SPAN class="ms-1">與男仕打招呼</SPAN>
+							</xsl:if>
+							<xsl:if test="gender/@gender = 'male'">
+								<SPAN class="ms-1">用一句話介紹自己來打動甜心</SPAN>
+							</xsl:if>
+						</LABEL>
+						<TEXTAREA class="form-control" id="greeting" name="greeting" required="" rows="4">
+							<xsl:value-of select="greeting"/>
+						</TEXTAREA>
+					</DIV>
+				</DIV>
+				<DIV class="col-md-12 mb-3">
+					<LABEL>
+						<I class="fab fa-line text-lg me-1"></I>
+						<I class="fab fa-weixin text-lg"></I>
+						<SPAN class="text-xs m-1 mb-1">上傳 QR Code，安心加入好友，保護ID資料不外洩</SPAN>
+					</LABEL>
+					<DIV class="uploadQrcode ">
+						<LABEL>
+							<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
+							<A class="btn bg-gradient-primary px-4 py-1 me-1 mb-0">點擊上傳</A>
+						</LABEL>
+						<BUTTON class="btn bg-gradient-info px-4 py-1 ms-1 mb-0" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">使用教學</BUTTON>
+					</DIV>
+					<DIV class="mt-1">
+						<INPUT class="form-control" name="inviteMeAsLineFriend" readonly="" required="" style="display: none;" type="text" value="">
+							<xsl:if test="inviteMeAsLineFriend">
+								<xsl:attribute name="style">display: inline;</xsl:attribute>
+								<xsl:attribute name="value">
+									<xsl:value-of select="inviteMeAsLineFriend"/>
+								</xsl:attribute>
+							</xsl:if>
+						</INPUT>
+					</DIV>
+				</DIV>
+				<DIV class="col-md-12 mb-3">
+					<LABEL>
+						<I class="fad fa-book-heart text-lg"></I>
+						<SPAN class="ms-1">服務標籤</SPAN>
+					</LABEL>
+					<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
+						<xsl:for-each select="service">
+							<DIV class="form-check ms-2">
+								<INPUT class="form-check-input service" id="service{@serviceID}" type="checkbox" value="{@serviceID}">
+									<xsl:if test="@serviceSelected">
+										<xsl:attribute name="checked"/>
+									</xsl:if>
+								</INPUT>
+								<LABEL class="custom-control-label" for="service{@serviceID}">
+									<xsl:value-of select="."/>
+								</LABEL>
+							</DIV>
+						</xsl:for-each>
+					</DIV>
+				</DIV>
+				<DIV class="col-md-12 mb-3">
+					<LABEL>
+						<I class="fad fa-map-marker-alt text-lg"></I>
+						<SPAN class="ms-1">服務地區</SPAN>
+					</LABEL>
+					<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
+						<xsl:for-each select="location">
+							<DIV class="form-check ms-2">
+								<INPUT class="form-check-input location" id="location{@locationID}" type="checkbox" value="{@locationID}">
+									<xsl:if test="@locationSelected">
+										<xsl:attribute name="checked"/>
+									</xsl:if>
+								</INPUT>
+								<LABEL class="custom-control-label" for="location{@locationID}">
+									<xsl:value-of select="."/>
+								</LABEL>
+							</DIV>
+						</xsl:for-each>
 					</DIV>
 				</DIV>
 				<DIV class="text-center">

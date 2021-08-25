@@ -8,6 +8,10 @@ $(document).ready(function () {
 
 	$('FORM').submit(function (event) {
 		event.preventDefault();
+		if ($('INPUT[name="gender"]').val() === null) {
+			$('.toast-body').html('請選擇您的性別');
+			$('.toast').toast('show');
+		}
 		let form = this;
 		$('INPUT[name="birthday"]').val($('#years').val() + '-' + $('#months').val() + '-' + $('#days').val());
 		$.post(

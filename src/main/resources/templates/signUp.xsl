@@ -24,11 +24,12 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
+			<LINK href="/STYLE/signUp.css" rel="stylesheet"/>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container pt-8">
+			<DIV class="container pt-7">
 				<xsl:apply-templates select="form"/>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
@@ -39,23 +40,26 @@
 
 	<xsl:template match="form">
 		<DIV class="row">
-			<DIV class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-auto">
+			<DIV class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-auto px-0">
 				<DIV class="card card-plain">
 					<DIV class="card-header p-1 p-sm-2 text-left">
-						<H4 class="font-weight-bolder">
-							<xsl:value-of select="/document/@title"/>
-						</H4>
+						<H5 class="text-center font-weight-bolder">開啟養蜜旅程</H5>
 					</DIV>
 					<DIV class="card-body p-1 p-sm-2">
 						<FORM action="/signUp.asp" method="post">
-							<DIV class="form-group">
-								<SELECT class="form-control form-control-lg" name="country" required="">
-									<xsl:apply-templates select="countries/*"/>
-								</SELECT>
+							<DIV class="row align-items-center mb-2">
+								<DIV class="col-1 d-flex justify-content-start">
+									<I class="fad fa-globe-americas text-lg"></I>
+								</DIV>
+								<DIV class="col-11">
+									<SELECT class="form-control form-control-lg" name="country" required="">
+										<xsl:apply-templates select="countries/*"/>
+									</SELECT>
+								</DIV>
 							</DIV>
 							<DIV class="row align-items-center mb-3">
-								<DIV class="col-1">
-									<I class="fas fa-mobile-alt text-lg"></I>
+								<DIV class="col-1 d-flex justify-content-start">
+									<I class="fad fa-phone-square-alt text-lg"></I>
 								</DIV>
 								<DIV class="col-11">
 									<INPUT class="form-control form-control-lg" name="login" placeholder="手機號碼" required="" type="text" value=""/>
@@ -63,25 +67,25 @@
 							</DIV>
 							<HR class="horizontal dark my-3"/>
 							<DIV class="row align-items-center mb-3">
-								<DIV class="col-1">
-									<i class="fas fa-birthday-cake"></i>
+								<DIV class="col-1 d-flex justify-content-start">
+									<I class="fad fa-birthday-cake text-lg"></I>
 								</DIV>
 								<DIV class="col-11">
-									<DIV class="text-center text-sm text-warning mb-1">
+									<DIV class="text-xs text-warning mb-1">
 										<I class="fas fa-exclamation-circle me-1"></I>
 										<SPAN>生日註冊後不得更改</SPAN>
 									</DIV>
 									<DIV class="d-flex justify-content-around align-items-center">
 										<INPUT class="d-none" name="birthday" type="hidden" value=""/>
-										<DIV class="d-flex align-items-center">
+										<DIV class="d-flex align-items-center w-100 me-2">
 											<SELECT class="form-control" id="years" required=""></SELECT>
 											<SPAN class="ms-1">年</SPAN>
 										</DIV>
-										<DIV class="d-flex align-items-center">
+										<DIV class="d-flex align-items-center w-100 me-2">
 											<SELECT class="form-control" id="months" required=""></SELECT>
 											<SPAN class="ms-1">月</SPAN>
 										</DIV>
-										<DIV class="d-flex align-items-center">
+										<DIV class="d-flex align-items-center w-100">
 											<SELECT class="form-control" id="days" required=""></SELECT>
 											<SPAN class="ms-1">日</SPAN>
 										</DIV>
@@ -90,37 +94,39 @@
 							</DIV>
 							<HR class="horizontal dark my-3"/>
 							<DIV class="row align-items-center mb-3">
-								<DIV class="col-1">
-									<i class="fas fa-venus-mars"></i>
+								<DIV class="col-1 d-flex justify-content-start">
+									<I class="fad fa-venus-mars text-lg"></I>
 								</DIV>
 								<DIV class="col-11">
-									<DIV class="text-center text-sm text-warning">
+									<DIV class="text-xs text-warning mb-2">
 										<I class="fas fa-exclamation-circle me-1"></I>
 										<SPAN>性別註冊後不得更改</SPAN>
 									</DIV>
-									<DIV class="d-flex justify-content-around align-items-center">
-										<DIV class="form-check">
-											<INPUT class="form-check-input" id="female" name="gender" required="" type="radio" value="false"/>
-											<LABEL class="custom-control-label h6" for="female">
-												<xsl:value-of select="gender/@female"/>
-											</LABEL>
-										</DIV>
-										<DIV class="form-check">
-											<INPUT class="form-check-input" id="male" name="gender" required="" type="radio" value="true"/>
-											<LABEL class="custom-control-label h6" for="male">
-												<xsl:value-of select="gender/@male"/>
-											</LABEL>
-										</DIV>
+									<DIV class="text-center">
+										<UL class="p-0 m-0">
+											<LI>
+												<INPUT class="form-check-input" id="female" name="gender" type="radio" value="false"/>
+												<LABEL class="female" for="female">
+													<IMG src="/IMAGE/queen.png" width="32"/>
+												</LABEL>
+											</LI>
+											<LI>
+												<INPUT id="male" name="gender" type="radio" value="true"/>
+												<LABEL class="male" for="male">
+													<IMG src="/IMAGE/king.png" width="32"/>
+												</LABEL>
+											</LI>
+										</UL>
 									</DIV>
 								</DIV>
 							</DIV>
 							<HR class="horizontal dark my-3"/>
 							<DIV class="row align-items-center mb-3">
-								<DIV class="col-1">
-									<I class="far fa-thumbs-up text-lg"></I>
+								<DIV class="col-1 d-flex justify-content-start">
+									<I class="fad fa-users-crown text-lg"></I>
 								</DIV>
 								<DIV class="col-11">
-									<INPUT class="form-control form-control-lg" name="referralCode" placeholder="推薦碼" type="text" value=""/>
+									<INPUT class="form-control form-control-lg" name="referralCode" placeholder="邀請碼" type="text" value=""/>
 								</DIV>
 							</DIV>
 							<DIV class="text-center">

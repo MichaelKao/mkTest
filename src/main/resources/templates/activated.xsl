@@ -52,8 +52,8 @@
 						<FORM action="/activated.asp" method="post">
 							<INPUT class="d-none" name="identifier" type="hidden" value="{identifier}"/>
 							<DIV class="row align-items-center mb-3">
-								<DIV class="col-1">
-									<I class="fas fa-lock-alt text-lg"></I>
+								<DIV class="col-1 d-flex justify-content-start">
+									<I class="fas fa-key text-lg"></I>
 								</DIV>
 								<DIV class="col-11">
 									<INPUT class="form-control" id="shadow" name="shadow" placeholder="{shadow/@i18n}" required="" type="password"/>
