@@ -21,6 +21,7 @@ import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -70,6 +71,7 @@ import tw.musemodel.dingzhiqingren.entity.AnnualIncome;
 import tw.musemodel.dingzhiqingren.entity.Country;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
+import tw.musemodel.dingzhiqingren.entity.LineGiven;
 import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
@@ -88,6 +90,7 @@ import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
 import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
+import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LocationRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
@@ -188,6 +191,12 @@ public class LoverService {
 
 	@Autowired
 	private WithdrawalInfoRepository withdrawalInfoRepository;
+
+	@Autowired
+	private LineGivenRepository lineGivenRepository;
+
+	@Autowired
+	private HistoryService historyService;
 
 	public List<Lover> loadLovers() {
 		return loverRepository.findAll();
@@ -1869,10 +1878,11 @@ public class LoverService {
 		List<Behavior> behaviors = new ArrayList<>();
 		behaviors.add(BEHAVIOR_CERTIFICATION_SUCCESS);
 		behaviors.add(BEHAVIOR_CERTIFICATION_FAIL);
+		behaviors.add(BEHAVIOR_PICTURES_VIEWABLE);
+		behaviors.add(BEHAVIOR_RATE);
 		if (gender) {
 			behaviors.add(BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
 			behaviors.add(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
-			behaviors.add(BEHAVIOR_GREETING);
 		}
 		if (!gender) {
 			behaviors.add(BEHAVIOR_GIMME_YOUR_LINE_INVITATION);
@@ -2536,5 +2546,65 @@ public class LoverService {
 			)).
 			withResponse(true).
 			toJSONObject();
+	}
+
+	/**
+	 * 甜心是否答應給男士通訊軟體
+	 *
+	 * @param female
+	 * @param male
+	 * @return
+	 */
+	public boolean areMatched(Lover female, Lover male) {
+		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
+		if (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse()) && lineGiven.getResponse()) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 未讀訊息幾則
+	 *
+	 * @param lover
+	 * @return
+	 */
+	public int unreadMessages(Lover lover) {
+		boolean isMale = lover.getGender();
+		int notSeenCount = 0;
+		List<History> conversations = historyService.latestConversations(lover);
+
+		for (History history : conversations) {
+			if (Objects.equals(lover, history.getInitiative())
+				&& historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), lover, behaviorOfConversation(lover)) > 0) {
+				notSeenCount += historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), lover, behaviorOfConversation(lover));
+			} else if (Objects.equals(lover, history.getPassive())
+				&& historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), lover, behaviorOfConversation(lover)) > 0) {
+				notSeenCount += historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), lover, behaviorOfConversation(lover));
+			}
+		}
+		return notSeenCount;
+	}
+
+	/**
+	 * 找出未已讀的訊息(針對男女有不一樣的行為)
+	 *
+	 * @param lover
+	 * @return
+	 */
+	public Collection<Behavior> behaviorOfConversation(Lover lover) {
+		boolean isMale = lover.getGender();
+		Collection<Behavior> BEHAVIORS_OF_CONVERSATION = new ArrayList<Behavior>();
+		if (isMale) {
+			BEHAVIORS_OF_CONVERSATION = Arrays.asList(new History.Behavior[]{
+				BEHAVIOR_GREETING,
+				BEHAVIOR_GROUP_GREETING
+			});
+		} else {
+			BEHAVIORS_OF_CONVERSATION = Arrays.asList(new History.Behavior[]{
+				BEHAVIOR_CHAT_MORE
+			});
+		}
+		return BEHAVIORS_OF_CONVERSATION;
 	}
 }

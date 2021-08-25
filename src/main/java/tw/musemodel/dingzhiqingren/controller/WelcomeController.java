@@ -210,6 +210,14 @@ public class WelcomeController {
 				);
 			}
 
+			// 未讀訊息數
+			if (loverService.unreadMessages(me) > 0) {
+				documentElement.setAttribute(
+					"inbox",
+					Integer.toString(loverService.unreadMessages(me))
+				);
+			}
+
 			// 有無連動 LINE notify
 			if (loverService.hasLineNotify(me)) {
 				documentElement.setAttribute(
@@ -906,6 +914,14 @@ public class WelcomeController {
 			);
 		}
 
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
+			);
+		}
+
 		// 確認性別
 		Boolean gender = me.getGender();
 
@@ -1008,6 +1024,14 @@ public class WelcomeController {
 			documentElement.setAttribute(
 				"announcement",
 				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
 			);
 		}
 
@@ -1173,6 +1197,14 @@ public class WelcomeController {
 			);
 		}
 
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
+			);
+		}
+
 		// 確認性別
 		Boolean gender = me.getGender();
 
@@ -1292,6 +1324,14 @@ public class WelcomeController {
 			documentElement.setAttribute(
 				"announcement",
 				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
 			);
 		}
 
@@ -1460,6 +1500,14 @@ public class WelcomeController {
 			);
 		}
 
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
+			);
+		}
+
 		if (!servant.isNull(authentication)) {
 			documentElement.setAttribute(
 				"signIn",
@@ -1608,6 +1656,14 @@ public class WelcomeController {
 			documentElement.setAttribute(
 				"announcement",
 				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
 			);
 		}
 
@@ -1863,6 +1919,14 @@ public class WelcomeController {
 			);
 		}
 
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
+			);
+		}
+
 		for (Plan plan : planRepository.findAll()) {
 			Element planElement = document.createElement("plan");
 			planElement.setAttribute("points", Short.toString(plan.getPoints()));
@@ -1940,6 +2004,14 @@ public class WelcomeController {
 			);
 		}
 
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
+			);
+		}
+
 		Element planElement = document.createElement("plan");
 		planElement.setAttribute("id", plan.getId().toString());
 		documentElement.appendChild(planElement);
@@ -2012,6 +2084,14 @@ public class WelcomeController {
 			documentElement.setAttribute(
 				"announcement",
 				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
 			);
 		}
 
@@ -2132,6 +2212,14 @@ public class WelcomeController {
 			);
 		}
 
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
+			);
+		}
+
 		if (loverService.isVVIP(me)) {
 			documentElement.setAttribute(
 				"vvip",
@@ -2235,6 +2323,14 @@ public class WelcomeController {
 			documentElement.setAttribute(
 				"announcement",
 				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
 			);
 		}
 
@@ -2687,6 +2783,14 @@ public class WelcomeController {
 				);
 			}
 
+			// 未讀訊息數
+			if (loverService.unreadMessages(me) > 0) {
+				documentElement.setAttribute(
+					"inbox",
+					Integer.toString(loverService.unreadMessages(me))
+				);
+			}
+
 			documentElement.setAttribute(
 				"identifier",
 				me.getIdentifier().toString()
@@ -2756,6 +2860,14 @@ public class WelcomeController {
 				documentElement.setAttribute(
 					"announcement",
 					Integer.toString(loverService.annoucementCount(me))
+				);
+			}
+
+			// 未讀訊息數
+			if (loverService.unreadMessages(me) > 0) {
+				documentElement.setAttribute(
+					"inbox",
+					Integer.toString(loverService.unreadMessages(me))
 				);
 			}
 
@@ -2832,6 +2944,14 @@ public class WelcomeController {
 			documentElement.setAttribute(
 				"announcement",
 				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
 			);
 		}
 
@@ -3251,6 +3371,14 @@ public class WelcomeController {
 			);
 		}
 
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
+			);
+		}
+
 		documentElement.setAttribute(
 			"identifier",
 			me.getIdentifier().toString()
@@ -3414,6 +3542,14 @@ public class WelcomeController {
 			documentElement.setAttribute(
 				"announcement",
 				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
 			);
 		}
 
@@ -3645,8 +3781,8 @@ public class WelcomeController {
 		Boolean isMale = me.getGender();
 
 		documentElement.setAttribute(
-			"gender",
-			isMale.toString()
+			isMale ? "male" : "female",
+			null
 		);
 
 		// 通知數
@@ -3752,8 +3888,8 @@ public class WelcomeController {
 		Boolean isMale = me.getGender();
 
 		documentElement.setAttribute(
-			"gender",
-			isMale.toString()
+			isMale ? "male" : "female",
+			null
 		);
 
 		// 通知數
@@ -3761,6 +3897,14 @@ public class WelcomeController {
 			documentElement.setAttribute(
 				"announcement",
 				Integer.toString(loverService.annoucementCount(me))
+			);
+		}
+
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
 			);
 		}
 

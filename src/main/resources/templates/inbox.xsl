@@ -25,39 +25,113 @@
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
 			<LINK href="/STYLE/chatroom.css" rel="stylesheet"/>
-			<LINK href="/STYLE/rateStar.css" rel="stylesheet"/>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container py-8 text-center">
-				<DIV class="mx-sm-5 mx-lg-12 mb-3">
-					<H4 class="text-primary">
-						<xsl:value-of select="@title"/>
-					</H4>
-					<HR class="horizontal dark"/>
+			<DIV class="container py-7">
+				<DIV class="col-12 col-md-7 mx-auto shadow m-2 shadow tabs">
+					<UL class="nav nav-tabs flex-row">
+						<LI class="nav-item col-6 text-center">
+							<A class="nav-link cursor-pointer active" data-bs-toggle="tab" href="#matched">
+								<I class="fad fa-users"></I>
+								<SPAN class="ms-1">好友</SPAN>
+								<xsl:if test="@matchedNotSeenCount">
+									<SPAN class="text-xs border-radius-md px-1 ms-1 notSeen">
+										<xsl:value-of select="@matchedNotSeenCount"/>
+									</SPAN>
+								</xsl:if>
+							</A>
+						</LI>
+						<LI class="nav-item col-6 text-center">
+							<A class="nav-link cursor-pointer" data-bs-toggle="tab" href="#non-matched">
+								<I class="fad fa-users-slash"></I>
+								<SPAN class="ms-1">非好友</SPAN>
+								<xsl:if test="@notMatchedNotSeenCount">
+									<SPAN class="text-xs border-radius-md px-1 ms-1 notSeen">
+										<xsl:value-of select="@notMatchedNotSeenCount"/>
+									</SPAN>
+								</xsl:if>
+							</A>
+						</LI>
+					</UL>
 				</DIV>
-				<DIV class="row justify-content-center mx-0">
-					<DIV class="col-12 col-md-8 my-2 position-relative">
-						<A class="inboxLink" href="/chatroom/{@identifier}/"></A>
-						<DIV class="d-flex justify-content-between align-items-center p-2">
-							<DIV>
-								<IMG src="https://d35hi420xc5ji7.cloudfront.net/profileImage/31835bd9-ab5e-42fc-8616-af3e6f66fae3" alt="大頭貼" class="rounded-circle" width="70px"/>
-							</DIV>
-							<DIV class="me-auto" style="overflow: hidden;">
-								<DIV class="d-flex flex-column align-items-start ms-3">
-									<A class=" font-weight-bold text-dark mb-1">吳俊賢</A>
-									<P class="text-muted mb-0">
-										<SPAN>HIHI</SPAN>
-									</P>
+				<DIV class="tab-content">
+					<DIV class="row justify-content-center mx-0 tab-pane active" id="matched">
+						<xsl:for-each select="conversation">
+							<xsl:if test="@matched = 'true'">
+								<DIV class="card col-12 col-md-7 my-1 mx-auto conversationWrap position-relative shadow">
+									<A class="inboxLink" href="/chatroom/{@identifier}/"></A>
+									<DIV class="d-flex justify-content-between align-items-center py-2">
+										<DIV>
+											<IMG src="{@profileImage}" alt="大頭貼" class="rounded-circle" width="60px"/>
+										</DIV>
+										<DIV class="me-auto" style="overflow: hidden;">
+											<DIV class="d-flex flex-column align-items-start ms-3">
+												<A class=" font-weight-bold text-dark text-sm mb-1">
+													<xsl:value-of select="@nickname"/>
+												</A>
+												<P class="text-sm mb-0 content">
+													<xsl:value-of select="@content"/>
+												</P>
+											</DIV>
+										</DIV>
+										<DIV class="col-2 d-flex">
+											<DIV class="ms-auto d-flex flex-column">
+												<SPAN class="text-xs mb-1">
+													<xsl:value-of select="@occurredTime"/>
+												</SPAN>
+												<xsl:if test="@notSeenCount">
+													<DIV class="d-flex justify-content-center">
+														<SPAN class="text-xs text-light bg-primary border-radius-md px-1">
+															<xsl:value-of select="@notSeenCount"/>
+														</SPAN>
+													</DIV>
+												</xsl:if>
+											</DIV>
+										</DIV>
+									</DIV>
 								</DIV>
-							</DIV>
-							<DIV class="col-2 pe-1">
-								<DIV class="d-flex flex-column align-items-end">
-									<SPAN class="text-muted">3天前</SPAN>
+							</xsl:if>
+						</xsl:for-each>
+					</DIV>
+					<DIV class="row justify-content-center mx-0 tab-pane" id="non-matched">
+						<xsl:for-each select="conversation">
+							<xsl:if test="@matched = 'false'">
+								<DIV class="card col-12 col-md-7 my-1 mx-auto conversationWrap position-relative shadow">
+									<A class="inboxLink" href="/chatroom/{@identifier}/"></A>
+									<DIV class="d-flex justify-content-between align-items-center py-2">
+										<DIV>
+											<IMG src="{@profileImage}" alt="大頭貼" class="rounded-circle" width="60px"/>
+										</DIV>
+										<DIV class="me-auto" style="overflow: hidden;">
+											<DIV class="d-flex flex-column align-items-start ms-3">
+												<A class=" font-weight-bold text-dark text-sm mb-1">
+													<xsl:value-of select="@nickname"/>
+												</A>
+												<P class="text-sm mb-0 content">
+													<xsl:value-of select="@content"/>
+												</P>
+											</DIV>
+										</DIV>
+										<DIV class="col-2 d-flex">
+											<DIV class="ms-auto d-flex flex-column">
+												<SPAN class="text-xs mb-1">
+													<xsl:value-of select="@occurredTime"/>
+												</SPAN>
+												<xsl:if test="@notSeenCount">
+													<DIV class="d-flex justify-content-center">
+														<SPAN class="text-xs text-light bg-primary border-radius-md px-1">
+															<xsl:value-of select="@notSeenCount"/>
+														</SPAN>
+													</DIV>
+												</xsl:if>
+											</DIV>
+										</DIV>
+									</DIV>
 								</DIV>
-							</DIV>
-						</DIV>
+							</xsl:if>
+						</xsl:for-each>
 					</DIV>
 				</DIV>
 				<xsl:call-template name="footer"/>

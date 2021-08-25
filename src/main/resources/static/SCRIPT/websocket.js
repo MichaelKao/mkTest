@@ -20,17 +20,25 @@ $(document).ready(function () {
 	//獲得訊息事件
 	socket.onmessage = function (msg) {
 		$('.toast-body').html(msg.data);
-		$('.toast').toast('show');
 		var count;
-		var $announcement = $('.announcement');
-		// 增加通知數
-		if (isNaN(parseInt($announcement.html()))) {
-			count = 1;
-			$announcement.attr('style', 'display: inline;');
+		var $notify;
+		if (msg.data.slice(0, 5) === 'inbox') {
+			$('.toast-body').html(msg.data.slice(5));
+			$('.toast').toast('show');
+			$notify = $('.inbox');
 		} else {
-			count = parseInt($('.announcement').html()) + 1;
+			$('.toast-body').html(msg.data);
+			$('.toast').toast('show');
+			$notify = $('.announcement');
 		}
-		$('.announcement').html(count);
+		// 增加通知數
+		if (isNaN(parseInt($notify.html()))) {
+			count = 1;
+			$notify.attr('style', 'display: inline;');
+		} else {
+			count = parseInt($notify.html()) + 1;
+		}
+		$notify.html(count);
 	};
 
 	//關閉事件

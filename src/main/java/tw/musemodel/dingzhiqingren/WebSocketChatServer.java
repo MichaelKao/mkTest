@@ -3,6 +3,7 @@ package tw.musemodel.dingzhiqingren;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -62,6 +63,13 @@ public class WebSocketChatServer {
 	@Autowired
 	public void setLineGivenRepository(LineGivenRepository lineGivenRepository) {
 		WebSocketChatServer.lineGivenRepository = lineGivenRepository;
+	}
+
+	static WebSocketServer webSocketServer;
+
+	@Autowired
+	public void setWebSocketServer(WebSocketServer webSocketServer) {
+		WebSocketChatServer.webSocketServer = webSocketServer;
 	}
 
 	//靜態常數，用來記錄當前的再現連接數。應該用執行緒較安全。
@@ -189,7 +197,6 @@ public class WebSocketChatServer {
 			behavior
 		);
 		history.setGreeting(chatMessage.getMessage());
-		historyRepository.saveAndFlush(history);
 
 		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
 		if (sender.getGender()) {
@@ -204,10 +211,17 @@ public class WebSocketChatServer {
 		Session receiverSession = sessionPools.get(chatMessage.getReceiver());
 		if (receiverSession != null && receiverSession.isOpen()) {
 			receiverSession.getAsyncRemote().sendText(message);
+			history.setSeen(new Date(System.currentTimeMillis()));
 		}
 		if (userSession != null && userSession.isOpen()) {
 			userSession.getAsyncRemote().sendText(message);
 		}
+
+		historyRepository.saveAndFlush(history);
+		webSocketServer.sendNotification(
+			chatMessage.getReceiver().toString(),
+			"inbox你收到一則訊息!"
+		);
 	}
 
 	@OnError

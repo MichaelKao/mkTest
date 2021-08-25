@@ -1125,7 +1125,15 @@ public class HistoryService {
 	public List<Activity> findActiveLogsOrderByOccurredDesc(Lover lover) {
 		List<Activity> list = new ArrayList<Activity>();
 
-		for (History history : historyRepository.findByInitiativeAndBehaviorNot(lover, BEHAVIOR_PEEK)) {
+		Collection<Behavior> BEHAVIORS_ANNO_IGNORE = Arrays.asList(new History.Behavior[]{
+			BEHAVIOR_GREETING,
+			BEHAVIOR_GROUP_GREETING,
+			BEHAVIOR_CHAT_MORE,
+			BEHAVIOR_PEEK,
+			BEHAVIOR_FOLLOW
+		});
+
+		for (History history : historyRepository.findByInitiativeAndBehaviorNotIn(lover, BEHAVIORS_ANNO_IGNORE)) {
 			Activity activeLogs = new Activity(
 				lover,
 				history.getPassive(),
@@ -1138,7 +1146,7 @@ public class HistoryService {
 			);
 			list.add(activeLogs);
 		}
-		for (History history : historyRepository.findByPassiveAndBehaviorNot(lover, BEHAVIOR_PEEK)) {
+		for (History history : historyRepository.findByPassiveAndBehaviorNotIn(lover, BEHAVIORS_ANNO_IGNORE)) {
 			Activity activeLogs = new Activity(
 				history.getInitiative(),
 				lover,

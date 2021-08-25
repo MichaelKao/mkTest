@@ -33,11 +33,11 @@
 			<INPUT name="identifier" type="hidden" value="{@identifier}"/>
 			<NAV class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-1 py-md-3 start-0 end-0 mx-3">
 				<DIV class="container-fluid">
-					<A class="navbar-brand font-weight-bolder ms-sm-3" href="/">Young Me 甜蜜約會</A>
+					<A class="navbar-brand font-weight-bolder ms-sm-3" href="/">YOUNG ME 養蜜</A>
 					<DIV>
 						<xsl:if test="@signIn">
-							<A class="d-lg-none" href="/activeLogs.asp">
-								<I class="fal fa-bell"></I>
+							<A class="d-lg-none me-2" href="/activeLogs.asp">
+								<I class="fal fa-bell text-lg"></I>
 								<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
 									<xsl:if test="@announcement">
 										<xsl:attribute name="style">display: inline;</xsl:attribute>
@@ -45,8 +45,17 @@
 									</xsl:if>
 								</SPAN>
 							</A>
+							<A class="d-lg-none ms-1" href="/inbox.asp">
+								<I class="fal fa-comment-smile text-lg"></I>
+								<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 inbox" style="display: none;">
+									<xsl:if test="@inbox">
+										<xsl:attribute name="style">display: inline;</xsl:attribute>
+										<xsl:value-of select="@inbox"/>
+									</xsl:if>
+								</SPAN>
+							</A>
 						</xsl:if>
-						<BUTTON class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation">
+						<BUTTON class="navbar-toggler shadow-none px-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation">
 							<SPAN class="navbar-toggler-icon mt-2">
 								<SPAN class="navbar-toggler-bar bar1"></SPAN>
 								<SPAN class="navbar-toggler-bar bar2"></SPAN>
@@ -138,11 +147,22 @@
 								<xsl:if test="@signIn">
 									<LI class="nav-item d-none d-lg-block">
 										<A class="nav-link nav-link-icon" href="/activeLogs.asp">
-											<I class="fal fa-bell"></I>
+											<I class="fal fa-bell text-lg"></I>
 											<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
 												<xsl:if test="@announcement">
 													<xsl:attribute name="style">display: inline;</xsl:attribute>
 													<xsl:value-of select="@announcement"/>
+												</xsl:if>
+											</SPAN>
+										</A>
+									</LI>
+									<LI class="nav-item d-none d-lg-block">
+										<A class="nav-link nav-link-icon" href="/inbox.asp">
+											<I class="fal fa-comment-smile text-lg"></I>
+											<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 inbox" style="display: none;">
+												<xsl:if test="@inbox">
+													<xsl:attribute name="style">display: inline;</xsl:attribute>
+													<xsl:value-of select="@inbox"/>
 												</xsl:if>
 											</SPAN>
 										</A>
