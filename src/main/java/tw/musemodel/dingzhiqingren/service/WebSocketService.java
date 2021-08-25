@@ -1,7 +1,9 @@
 package tw.musemodel.dingzhiqingren.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import tw.musemodel.dingzhiqingren.entity.History;
+import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.LineGiven;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.Activity;
@@ -192,11 +195,134 @@ public class WebSocketService {
 	public Document inbox(Document document, Lover me) {
 		Element documentElement = document.getDocumentElement();
 
+		boolean isMale = me.getGender();
+
+		List<History> conversation = historyService.latestConversations(me);
+		// 好友的未讀總數
+		int matchedNotSeenCount = 0;
+		// 非好友的未讀總數
+		int notMatchedNotSeenCount = 0;
+		for (History history : conversation) {
+			Element conversationElement = document.createElement("conversation");
+			documentElement.appendChild(conversationElement);
+
+			String identifier = null;
+			String profileImage = null;
+			String nickname = null;
+			String content = history.getGreeting();
+			Boolean matched = null;
+			// 某個人的未讀訊息數
+			int notSeenCount = 0;
+			Collection<Behavior> BEHAVIORS_OF_MALE = Arrays.asList(new History.Behavior[]{
+				HistoryService.BEHAVIOR_CHAT_MORE
+			});
+			Collection<Behavior> BEHAVIORS_OF_FEMALE = Arrays.asList(new History.Behavior[]{
+				HistoryService.BEHAVIOR_GREETING,
+				HistoryService.BEHAVIOR_GROUP_GREETING
+			});
+			if (Objects.equals(me, history.getInitiative())) {
+				if (isMale) {
+					// 雙方是否有加過通訊軟體
+					matched = loverService.areMatched(history.getPassive(), me);
+					// 未讀訊息數量
+					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), me, BEHAVIORS_OF_FEMALE);
+				}
+				if (!isMale) {
+					matched = loverService.areMatched(me, history.getPassive());
+					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), me, BEHAVIORS_OF_MALE);
+				}
+				identifier = history.getPassive().getIdentifier().toString();
+				profileImage = String.format(
+					"https://%s/profileImage/%s",
+					Servant.STATIC_HOST,
+					history.getPassive().getProfileImage()
+				);
+				nickname = history.getPassive().getNickname();
+			} else {
+				if (isMale) {
+					matched = loverService.areMatched(history.getInitiative(), me);
+					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), me, BEHAVIORS_OF_FEMALE);
+				}
+				if (!isMale) {
+					matched = loverService.areMatched(me, history.getInitiative());
+					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), me, BEHAVIORS_OF_MALE);
+				}
+				identifier = history.getInitiative().getIdentifier().toString();
+				profileImage = String.format(
+					"https://%s/profileImage/%s",
+					Servant.STATIC_HOST,
+					history.getInitiative().getProfileImage()
+				);
+				nickname = history.getInitiative().getNickname();
+			}
+			conversationElement.setAttribute(
+				"identifier",
+				identifier
+			);
+			conversationElement.setAttribute(
+				"profileImage",
+				profileImage
+			);
+			conversationElement.setAttribute(
+				"nickname",
+				nickname
+			);
+			conversationElement.setAttribute(
+				"content",
+				content
+			);
+			conversationElement.setAttribute(
+				"occurredTime",
+				calculateOccurredTime(history.getOccurred())
+			);
+			conversationElement.setAttribute(
+				"matched",
+				matched.toString()
+			);
+			if (matched) {
+				matchedNotSeenCount += notSeenCount;
+			} else {
+				notMatchedNotSeenCount += notSeenCount;
+			}
+			if (notSeenCount > 0) {
+				conversationElement.setAttribute(
+					"notSeenCount",
+					Integer.toString(notSeenCount)
+				);
+			}
+		}
+
+		if (matchedNotSeenCount > 0) {
+			documentElement.setAttribute(
+				"matchedNotSeenCount",
+				Integer.toString(matchedNotSeenCount)
+			);
+		}
+
+		if (notMatchedNotSeenCount > 0) {
+			documentElement.setAttribute(
+				"notMatchedNotSeenCount",
+				Integer.toString(notMatchedNotSeenCount)
+			);
+		}
+
 		return document;
 	}
 
 	public Document chatroom(Document document, Lover me, Lover chatPartner) {
 		Element documentElement = document.getDocumentElement();
+
+		// 將訊息改成已讀
+		List<History> unreadMessages = historyRepository.
+			findByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+				chatPartner,
+				me,
+				loverService.behaviorOfConversation(me)
+			);
+		for (History history : unreadMessages) {
+			history.setSeen(new Date(System.currentTimeMillis()));
+			historyRepository.saveAndFlush(history);
+		}
 
 		documentElement.setAttribute(
 			"friendIdentifier",
@@ -324,5 +450,26 @@ public class WebSocketService {
 			nowDate
 		);
 		return msgsCount;
+	}
+
+	public String calculateOccurredTime(Date date) {
+		Date now = new Date();
+		long l = now.getTime() - date.getTime();
+		long day = l / (24 * 60 * 60 * 1000);
+		long hour = (l / (60 * 60 * 1000) - day * 24);
+		long min = ((l / (60 * 1000)) - day * 24 * 60 - hour * 60);
+
+		String occurredTime = null;
+		if (day > 0) {
+			occurredTime = String.format("%s天前", day);
+		} else if (hour > 0) {
+			occurredTime = String.format("%s小時前", hour);
+		} else if (min > 0) {
+			occurredTime = String.format("%s分鐘前", min);
+		} else {
+			occurredTime = String.format("幾秒前");
+		}
+
+		return occurredTime;
 	}
 }

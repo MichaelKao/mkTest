@@ -64,3 +64,46 @@ TEXTAREA#chatInput {
 	bottom: 0;
 	z-index: 1;
 }
+
+.conversationWrap {
+	border: 1px solid #CB0C9F44;
+}
+
+.tabs {
+	border: 1px solid #CB0C9F44;
+	border-radius: 40px;
+}
+
+.tabs .nav-link.active {
+	color: #FFF;
+	background: #CB0C9F;
+	border-radius: 40px;
+}
+
+.nav-tabs {
+	border: none;
+}
+
+.nav-item>A:hover {
+	border: none;
+}
+
+.nav-tabs .nav-link {
+	border: none;
+	transition: none;
+}
+
+.content {
+	overflow: hidden;
+	height: 20px;
+}
+
+.nav-link .notSeen {
+	background: #CB0C9F;
+	color: white;
+}
+
+.nav-link.active .notSeen {
+	background: white;
+	color: #CB0C9F;
+}

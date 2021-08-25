@@ -72,6 +72,7 @@ import tw.musemodel.dingzhiqingren.entity.AnnualIncome;
 import tw.musemodel.dingzhiqingren.entity.Country;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
+import tw.musemodel.dingzhiqingren.entity.LineGiven;
 import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
@@ -92,6 +93,7 @@ import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
 import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
+import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LocationRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
@@ -156,6 +158,9 @@ public class LoverService {
 	private LineMessagingService lineMessagingService;
 
 	@Autowired
+	private HistoryService historyService;
+
+	@Autowired
 	private LoverService loverService;
 
 	@Autowired
@@ -178,6 +183,9 @@ public class LoverService {
 
 	@Autowired
 	private HistoryRepository historyRepository;
+
+	@Autowired
+	private LineGivenRepository lineGivenRepository;
 
 	@Autowired
 	private LocationRepository locationRepository;
@@ -588,7 +596,6 @@ public class LoverService {
 	 * @param locale 语言环境
 	 * @return 杰森格式对象
 	 */
-	@SuppressWarnings("UnusedAssignment")
 	@Transactional
 	public JSONObject resetPassword(ResetPassword resetPassword, Locale locale) {
 		/*
@@ -1788,6 +1795,7 @@ public class LoverService {
 					locale
 				));
 
+			@SuppressWarnings("null")
 			Short points = Objects.equals(history.getBehavior().name(), "CHE_MA_FEI") ? history.getPoints() : (short) (history.getPoints() / 2);
 			recordElement.setAttribute(
 				"points",
@@ -1899,6 +1907,7 @@ public class LoverService {
 
 		Date current = new Date(System.currentTimeMillis());
 		historyRepository.findAll(Specifications.withdrawal(honey)).stream().map(history -> {
+			@SuppressWarnings("null")
 			Short points = Objects.equals(history.getBehavior(), BEHAVIOR_FARE) ? history.getPoints() : (short) (history.getPoints() / 2);
 			WithdrawalRecord withdrawalRecord = new WithdrawalRecord(honey, (short) -points, WayOfWithdrawal.WIRE_TRANSFER, current);
 			withdrawalRecord.setId(history.getId());
@@ -1942,17 +1951,28 @@ public class LoverService {
 	 * @return
 	 */
 	@Transactional
+	@SuppressWarnings("null")
 	public Long honeyLeftPointsBefore7Days(Lover honey) {
-		List<History> fareList = historyRepository.findByPassiveAndBehaviorAndOccurredBefore(honey, BEHAVIOR_FARE, before7DaysAgo());
+		List<History> fareList = historyRepository.findByPassiveAndBehaviorAndOccurredBefore(
+			honey,
+			BEHAVIOR_FARE,
+			before7DaysAgo()
+		);
 		Long fareSum = 0L;
 		for (History history : fareList) {
 			fareSum += Math.abs(history.getPoints());
 		}
-		List<History> lineList = historyRepository.findByPassiveAndBehaviorAndOccurredBefore(honey, BEHAVIOR_LAI_KOU_DIAN, before7DaysAgo());
+
+		List<History> lineList = historyRepository.findByPassiveAndBehaviorAndOccurredBefore(
+			honey,
+			BEHAVIOR_LAI_KOU_DIAN,
+			before7DaysAgo()
+		);
 		Long lineSum = 0L;
 		for (History history : lineList) {
 			lineSum += Math.abs(history.getPoints()) / 2;
 		}
+
 		Long withdrawnPoints = withdrawalRecordRepository.sumPoinsByHoney(honey);
 		withdrawnPoints = Objects.nonNull(withdrawnPoints) ? withdrawnPoints : 0;
 
@@ -2063,10 +2083,11 @@ public class LoverService {
 		List<Behavior> behaviors = new ArrayList<>();
 		behaviors.add(BEHAVIOR_CERTIFICATION_SUCCESS);
 		behaviors.add(BEHAVIOR_CERTIFICATION_FAIL);
+		behaviors.add(BEHAVIOR_PICTURES_VIEWABLE);
+		behaviors.add(BEHAVIOR_RATE);
 		if (gender) {
 			behaviors.add(BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
 			behaviors.add(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
-			behaviors.add(BEHAVIOR_GREETING);
 		}
 		if (!gender) {
 			behaviors.add(BEHAVIOR_GIMME_YOUR_LINE_INVITATION);
@@ -2584,10 +2605,14 @@ public class LoverService {
 		return document;
 	}
 
+	@SuppressWarnings("null")
 	public boolean within12hrsFromLastGroupGreeting(Lover female) {
 		Date gpDate = null;
 		Date nowDate = null;
-		History history = historyRepository.findTop1ByInitiativeAndBehaviorOrderByIdDesc(female, BEHAVIOR_GROUP_GREETING);
+		History history = historyRepository.findTop1ByInitiativeAndBehaviorOrderByIdDesc(
+			female,
+			BEHAVIOR_GROUP_GREETING
+		);
 		if (Objects.nonNull(history)) {
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(history.getOccurred());
@@ -2730,5 +2755,56 @@ public class LoverService {
 			)).
 			withResponse(true).
 			toJSONObject();
+	}
+
+	/**
+	 * 甜心是否答應給男士通訊軟體
+	 *
+	 * @param female
+	 * @param male
+	 * @return
+	 */
+	public boolean areMatched(Lover female, Lover male) {
+		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
+		return Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse()) && lineGiven.getResponse();
+	}
+
+	/**
+	 * 未讀訊息幾則
+	 *
+	 * @param mofo
+	 * @return
+	 */
+	public int unreadMessages(Lover mofo) {
+		int notSeenCount = 0;
+		List<History> conversations = historyService.latestConversations(mofo);
+
+		for (History history : conversations) {
+			if (Objects.equals(mofo, history.getInitiative()) && historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), mofo, behaviorOfConversation(mofo)) > 0) {
+				notSeenCount += historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), mofo, behaviorOfConversation(mofo));
+			} else if (Objects.equals(mofo, history.getPassive()) && historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), mofo, behaviorOfConversation(mofo)) > 0) {
+				notSeenCount += historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), mofo, behaviorOfConversation(mofo));
+			}
+		}
+		return notSeenCount;
+	}
+
+	/**
+	 * 找出未已讀的訊息(針對男女有不一樣的行為)
+	 *
+	 * @param lover
+	 * @return
+	 */
+	public Collection<Behavior> behaviorOfConversation(Lover lover) {
+		if (lover.getGender()) {
+			return Arrays.asList(new History.Behavior[]{
+				BEHAVIOR_GREETING,
+				BEHAVIOR_GROUP_GREETING
+			});
+		} else {
+			return Arrays.asList(new History.Behavior[]{
+				BEHAVIOR_CHAT_MORE
+			});
+		}
 	}
 }
