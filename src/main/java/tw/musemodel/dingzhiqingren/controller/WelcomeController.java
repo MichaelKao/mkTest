@@ -70,6 +70,7 @@ import tw.musemodel.dingzhiqingren.entity.ServiceTag;
 import tw.musemodel.dingzhiqingren.entity.StopRecurringPaymentApplication;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
+import tw.musemodel.dingzhiqingren.model.ResetPassword;
 import tw.musemodel.dingzhiqingren.model.SignUp;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
@@ -316,7 +317,7 @@ public class WelcomeController {
 	ModelAndView activate(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			LOGGER.debug("已登入故激活页面重导至首页");
-			return new ModelAndView("redirect:/");
+			return Servant.redirectToRoot();
 		}
 
 		Document document = servant.parseDocument();
@@ -635,6 +636,205 @@ public class WelcomeController {
 	}
 
 	/**
+	 * 用户欲重设密码页面。
+	 *
+	 * @param request 请求
+	 * @param authentication 认证
+	 * @param locale 语言环境
+	 * @return 网页
+	 */
+	@GetMapping(path = "/resetPassword/")
+	ModelAndView resetPassword(HttpServletRequest request, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		if (!servant.isNull(authentication)) {
+			LOGGER.debug("已登入故重设密码页面重导至首页");
+			return Servant.redirectToRoot();
+		}
+
+		/*
+		 文件
+		 */
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.resetPassword",
+			null,
+			locale
+		));
+		documentElement.setAttribute("uri", request.getRequestURI());
+
+		/*
+		 表单
+		 */
+		Element formElement = document.createElement("form");
+		formElement.setAttribute(
+			"i18n-submit",
+			messageSource.getMessage(
+				"resetPassword.form.submit",
+				null,
+				locale
+			)
+		);
+		documentElement.appendChild(formElement);
+
+		/*
+		 表单的国家栏
+		 */
+		Element countriesElement = document.createElement("countries");
+		servant.getCountries().stream().map(country -> {
+			Element optionElement = document.createElement("option");
+			optionElement.setAttribute(
+				"value",
+				country.getId().toString()
+			);
+			optionElement.setTextContent(
+				String.format(
+					"+%s (%s)",
+					country.getCallingCode(),
+					messageSource.getMessage(
+						String.format(
+							"country.%s",
+							country.getName()
+						),
+						null,
+						locale
+					)
+				)
+			);
+			return optionElement;
+		}).forEachOrdered(countryElement -> {
+			countriesElement.appendChild(countryElement);
+		});
+		formElement.appendChild(countriesElement);
+
+		ModelAndView modelAndView = new ModelAndView("resetPassword");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
+	 * 用户欲重设密码。
+	 *
+	 * @param resetPassword 请求参数模型
+	 * @param authentication 认证
+	 * @param locale 语言环境
+	 * @return 杰森格式对象
+	 */
+	@PostMapping(path = "/resetPassword/", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String resetPassword(ResetPassword resetPassword, Authentication authentication, Locale locale) {
+		if (!servant.isNull(authentication)) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"resetPassword.mustntBeAuthenticated",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toString();
+		}
+
+		try {
+			return loverService.
+				resetPassword(resetPassword, locale).
+				toString();
+		} catch (RuntimeException runtimeException) {
+			return new JavaScriptObjectNotation().
+				withReason(runtimeException.getMessage()).
+				withResponse(false).
+				toString();
+		}
+	}
+
+	/**
+	 * 用户准备重设密码页面。
+	 *
+	 * @param hexadecimalId
+	 * @param request 请求
+	 * @param authentication 认证
+	 * @param locale 语言环境
+	 * @return 网页
+	 */
+	@GetMapping(path = "/resetPassword/{hexadecimalId:^[0-7][0-9a-f]{7}$}/", produces = MediaType.TEXT_PLAIN_VALUE)
+	ModelAndView resetPassword(@PathVariable String hexadecimalId, HttpServletRequest request, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		if (!servant.isNull(authentication)) {
+			LOGGER.debug("已登入故激活页面重导至首页");
+			return Servant.redirectToRoot();
+		}
+
+		Integer id = Integer.parseUnsignedInt(hexadecimalId, 16);
+		Lover mofo = loverRepository.findById(id).orElseThrow();
+
+		/*
+		 文件
+		 */
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.resetPassword",
+			null,
+			locale
+		));
+
+		/*
+		 表单
+		 */
+		Element formElement = document.createElement("form");
+		formElement.setAttribute(
+			"i18n-submit",
+			messageSource.getMessage(
+				"resetPassword.form.submit",
+				null,
+				locale
+			)
+		);
+		documentElement.appendChild(formElement);
+		formElement.setAttribute("uri", request.getRequestURI());
+
+		ModelAndView modelAndView = new ModelAndView("resettingPassword");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
+	 * 用户重设密码。
+	 *
+	 * @param hexadecimalId 十六进制主键
+	 * @param string 字符串
+	 * @param shadow 新密码
+	 * @param authentication 认证
+	 * @param locale 语言环境
+	 * @return
+	 */
+	@PostMapping(path = "/resetPassword/{hexadecimalId:^[0-7][0-9a-f]{7}$}/", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String resettingPassword(@PathVariable String hexadecimalId, @RequestParam String string, @RequestParam String shadow, Authentication authentication, Locale locale) {
+		if (!servant.isNull(authentication)) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"resetPassword.mustntBeAuthenticated",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toString();
+		}
+
+		try {
+			return loverService.resetPassword(
+				hexadecimalId,
+				string,
+				shadow,
+				locale
+			).toString();
+		} catch (RuntimeException runtimeException) {
+			return new JavaScriptObjectNotation().
+				withReason(runtimeException.getMessage()).
+				withResponse(false).
+				toString();
+		}
+	}
+
+	/**
 	 * 登入
 	 *
 	 * @param authentication 认证
@@ -646,7 +846,7 @@ public class WelcomeController {
 	@GetMapping(path = "/signIn.asp")
 	ModelAndView signIn(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
-			return new ModelAndView("redirect:/");
+			return Servant.redirectToRoot();
 		}
 
 		Document document = servant.parseDocument(
@@ -803,7 +1003,7 @@ public class WelcomeController {
 	 * @param signUp 模型
 	 * @param request 请求
 	 * @param authentication 认证
-	 * @return 重定向
+	 * @return 杰森格式对象
 	 */
 	@PostMapping(path = "/signUp.asp")
 	@ResponseBody
@@ -862,7 +1062,7 @@ public class WelcomeController {
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -972,7 +1172,7 @@ public class WelcomeController {
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -1148,7 +1348,7 @@ public class WelcomeController {
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -1267,7 +1467,7 @@ public class WelcomeController {
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -1440,7 +1640,7 @@ public class WelcomeController {
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -1599,7 +1799,7 @@ public class WelcomeController {
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -1867,7 +2067,7 @@ public class WelcomeController {
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -1952,7 +2152,7 @@ public class WelcomeController {
 	 * @param plan
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -2026,7 +2226,7 @@ public class WelcomeController {
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -2157,7 +2357,7 @@ public class WelcomeController {
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -2271,7 +2471,7 @@ public class WelcomeController {
 	 * @param vipType
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -2727,7 +2927,7 @@ public class WelcomeController {
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -2807,7 +3007,7 @@ public class WelcomeController {
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -2887,7 +3087,7 @@ public class WelcomeController {
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -3306,7 +3506,7 @@ public class WelcomeController {
 	 * @param serviceTag
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws JsonProcessingException
 	 * @throws SAXException
 	 * @throws IOException
@@ -3474,7 +3674,7 @@ public class WelcomeController {
 	 * @param serviceTag
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws JsonProcessingException
 	 * @throws SAXException
 	 * @throws IOException
@@ -3633,7 +3833,7 @@ public class WelcomeController {
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws JsonProcessingException
 	 * @throws SAXException
 	 * @throws IOException
@@ -3722,7 +3922,7 @@ public class WelcomeController {
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws JsonProcessingException
 	 * @throws SAXException
 	 * @throws IOException
@@ -3834,7 +4034,7 @@ public class WelcomeController {
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return
+	 * @return 网页
 	 * @throws JsonProcessingException
 	 * @throws SAXException
 	 * @throws IOException

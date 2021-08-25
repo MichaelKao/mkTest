@@ -81,6 +81,12 @@ public class Lover implements java.io.Serializable {
 	private String shadow;
 
 	/**
+	 * 重设密码
+	 */
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "lover")
+	private ResetShadow resetShadow;
+
+	/**
 	 * 激活
 	 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "lover")
@@ -512,6 +518,20 @@ public class Lover implements java.io.Serializable {
 	 */
 	public void setShadow(String shadow) {
 		this.shadow = shadow;
+	}
+
+	/**
+	 * @return 重设密码
+	 */
+	public ResetShadow getResetShadow() {
+		return resetShadow;
+	}
+
+	/**
+	 * @param resetShadow 重设密码
+	 */
+	public void setResetShadow(ResetShadow resetShadow) {
+		this.resetShadow = resetShadow;
 	}
 
 	/**
