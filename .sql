@@ -788,3 +788,18 @@ COMMENT ON COLUMN"shen_qing_jie_chu_ding_qi_ding_e"."shei_shen_qing"IS'谁申请
 COMMENT ON COLUMN"shen_qing_jie_chu_ding_qi_ding_e"."shen_qing_shi"IS'申请时';
 COMMENT ON COLUMN"shen_qing_jie_chu_ding_qi_ding_e"."shei_chu_li"IS'谁处理';
 COMMENT ON COLUMN"shen_qing_jie_chu_ding_qi_ding_e"."chu_li_shi"IS'处理时';
+
+/**
+ * 重设密码
+ */
+CREATE TABLE"zhong_she_mi_ma"(
+	"id"int PRIMARY KEY REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"zi_fu_chuan"varchar UNIQUE,
+	"dao_qi"timestamptz NOT NULL DEFAULT"now"(),
+	"shi_chuo"timestamptz
+);
+COMMENT ON TABLE"zhong_she_mi_ma"IS'重设密码';
+COMMENT ON COLUMN"zhong_she_mi_ma"."id"IS'主键';
+COMMENT ON COLUMN"zhong_she_mi_ma"."zi_fu_chuan"IS'字符串';
+COMMENT ON COLUMN"zhong_she_mi_ma"."dao_qi"IS'到期';
+COMMENT ON COLUMN"zhong_she_mi_ma"."shi_chuo"IS'时戳';

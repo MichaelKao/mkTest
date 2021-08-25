@@ -21,6 +21,7 @@ import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +30,7 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -73,6 +75,7 @@ import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
+import tw.musemodel.dingzhiqingren.entity.ResetShadow;
 import tw.musemodel.dingzhiqingren.entity.Role;
 import tw.musemodel.dingzhiqingren.entity.ServiceTag;
 import tw.musemodel.dingzhiqingren.entity.User;
@@ -82,6 +85,7 @@ import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
 import tw.musemodel.dingzhiqingren.event.SignedUpEvent;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
+import tw.musemodel.dingzhiqingren.model.ResetPassword;
 import tw.musemodel.dingzhiqingren.model.SignUp;
 import tw.musemodel.dingzhiqingren.repository.ActivationRepository;
 import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
@@ -91,6 +95,7 @@ import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LocationRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
+import tw.musemodel.dingzhiqingren.repository.ResetShadowRepository;
 import tw.musemodel.dingzhiqingren.repository.ServiceTagRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
@@ -107,7 +112,7 @@ import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 @Service
 public class LoverService {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(LoverService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LoverService.class);
 
 	private static final String AWS_ACCESS_KEY_ID = System.getenv("AWS_ACCESS_KEY_ID");
 
@@ -124,7 +129,7 @@ public class LoverService {
 
 	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-	private final static Short NUMBER_OF_GROUP_GREETING = Short.valueOf(System.getenv("NUMBER_OF_GROUP_GREETING"));
+	private static final Short NUMBER_OF_GROUP_GREETING = Short.valueOf(System.getenv("NUMBER_OF_GROUP_GREETING"));
 
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
@@ -145,10 +150,25 @@ public class LoverService {
 	private WebSocketServer webSocketServer;
 
 	@Autowired
+	private AmazonWebServices amazonWebServices;
+
+	@Autowired
+	private LineMessagingService lineMessagingService;
+
+	@Autowired
+	private LoverService loverService;
+
+	@Autowired
 	private Servant servant;
 
 	@Autowired
 	private ActivationRepository activationRepository;
+
+	@Autowired
+	private AllowanceRepository allowanceRepository;
+
+	@Autowired
+	private AnnualIncomeRepository annualIncomeRepository;
 
 	@Autowired
 	private CountryRepository countryRepository;
@@ -157,40 +177,40 @@ public class LoverService {
 	private LoverRepository loverRepository;
 
 	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private AmazonWebServices amazonWebServices;
-
-	@Autowired
-	private PictureRepository pictureRepository;
-
-	@Autowired
-	private LineMessagingService lineMessagingService;
-
-	@Autowired
-	private AnnualIncomeRepository annualIncomeRepository;
-
-	@Autowired
-	private AllowanceRepository allowanceRepository;
-
-	@Autowired
 	private HistoryRepository historyRepository;
 
 	@Autowired
 	private LocationRepository locationRepository;
 
 	@Autowired
+	private PictureRepository pictureRepository;
+
+	@Autowired
+	private ResetShadowRepository resetShadowRepository;
+
+	@Autowired
 	private ServiceTagRepository serviceTagRepository;
 
 	@Autowired
-	private WithdrawalRecordRepository withdrawalRecordRepository;
+	private UserRepository userRepository;
 
 	@Autowired
 	private WithdrawalInfoRepository withdrawalInfoRepository;
 
-	public List<Lover> loadLovers() {
-		return loverRepository.findAll();
+	@Autowired
+	private WithdrawalRecordRepository withdrawalRecordRepository;
+
+	/**
+	 * 更新密码。
+	 *
+	 * @param mofo 用户号
+	 * @param shadow 新密码
+	 * @return 杰森格式对象
+	 */
+	@Transactional
+	private Lover reShadow(Lover mofo, String shadow) {
+		mofo.setShadow(passwordEncoder.encode(shadow));
+		return loverRepository.saveAndFlush(mofo);
 	}
 
 	/**
@@ -559,6 +579,180 @@ public class LoverService {
 			"UPDATE\"qing_ren\"SET\"id\"=:xin WHERE\"id\"=:jiu",
 			sqlParameterSources.toArray(new SqlParameterSource[0])
 		);
+	}
+
+	/**
+	 * 用户欲重设密码。
+	 *
+	 * @param resetPassword
+	 * @param locale 语言环境
+	 * @return 杰森格式对象
+	 */
+	@SuppressWarnings("UnusedAssignment")
+	@Transactional
+	public JSONObject resetPassword(ResetPassword resetPassword, Locale locale) {
+		/*
+		 组合完整用户号
+		 */
+		Country country = countryRepository.
+			findById(resetPassword.getCountry()).
+			orElseThrow();
+		String login = resetPassword.getLogin(),
+			username = String.format(
+				"%s%s",
+				country.getCallingCode(),
+				login
+			);
+
+		/*
+		 有无此用户号
+		 */
+		Lover mofo = loverService.loadByUsername(username);
+		if (Objects.isNull(mofo)) {
+			throw new NoSuchElementException(messageSource.getMessage(
+				"_.userNotFound",
+				null,
+				locale
+			));
+		}
+
+		/*
+		 此用户号曾欲重设密码吗
+		 */
+		ResetShadow resetShadow;
+		try {
+			resetShadow = resetShadowRepository.
+				findOneByLover(mofo).
+				orElseThrow();
+		} catch (NoSuchElementException ignore) {
+			resetShadow = new ResetShadow();
+			resetShadow.setId(mofo.getId());
+			resetShadow.setLover(mofo);
+		}
+
+		/*
+		 有效期
+		 */
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(new Date(System.currentTimeMillis()));
+		calendar.add(Calendar.HOUR_OF_DAY, 1);
+		Date expiry = calendar.getTime();
+		resetShadow.setExpiry(expiry);
+
+		/*
+		 重设密码字符串
+		 */
+		String string = RandomStringUtils.randomNumeric(6);
+		while (activationRepository.countByString(string) > 0) {
+			string = RandomStringUtils.randomNumeric(6);
+		}
+		resetShadow.setString(string);
+		resetShadow.setOccurred(new Date(System.currentTimeMillis()));
+		resetShadow = resetShadowRepository.saveAndFlush(resetShadow);
+
+		String uri = String.format(
+			"/resetPassword/%s/",
+			String.format(
+				"%1$" + 8 + "s",
+				Integer.toHexString(mofo.getId())
+			).replace(' ', '0')
+		);
+
+		/*
+		 TODO:	Amazon SNS 并/或 LINE Notify
+		 */
+		LineMessagingService.notifyDev(
+			Arrays.asList(
+				LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST
+			),
+			String.format(
+				"去 %s 輸入驗證碼 %s",
+				uri,
+				resetShadow.getString()
+			)
+		);
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"resetShadow.appliedFor",
+				null,
+				locale
+			)).
+			withRedirect(uri).
+			withResponse(true).
+			toJSONObject();
+	}
+
+	/**
+	 * 用户重设密码。
+	 *
+	 * @param hexadecimalId 十六进制主键
+	 * @param string 字符串
+	 * @param shadow 新密码
+	 * @param locale 语言环境
+	 * @return 杰森格式对象
+	 */
+	@Transactional
+	public JSONObject resetPassword(String hexadecimalId, String string, String shadow, Locale locale) {
+		/*
+		 有无此用户号
+		 */
+		Lover mofo;
+		try {
+			mofo = loverRepository.findById(
+				Servant.hexadecimalToDecimal(hexadecimalId)
+			).orElseThrow();
+		} catch (NoSuchElementException ignore) {
+			throw new RuntimeException(messageSource.getMessage(
+				"_.userNotFound",
+				null,
+				locale
+			));
+		}
+
+		/*
+		 此用户号曾欲重设密码吗
+		 */
+		ResetShadow resetPassword;
+		try {
+			resetPassword = resetShadowRepository.
+				findOneByLover(mofo).
+				orElseThrow();
+		} catch (NoSuchElementException ignore) {
+			throw new RuntimeException(messageSource.getMessage(
+				"resetPassword.notFound",
+				null,
+				locale
+			));
+		}
+
+		/*
+		 核对验证码
+		 */
+		if (!string.equalsIgnoreCase(resetPassword.getString())) {
+			throw new RuntimeException(messageSource.getMessage(
+				"resetPassword.notAuthentic",
+				null,
+				locale
+			));
+		}
+
+		/*
+		 重设密码并清除重设密码申请
+		 */
+		reShadow(mofo, shadow);
+		resetPassword.setString(null);
+		resetShadowRepository.saveAndFlush(resetPassword);
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"resetPassword.done",
+				null,
+				locale
+			)).
+			withRedirect("/signIn.asp").
+			withResponse(true).
+			toJSONObject();
 	}
 
 	/**

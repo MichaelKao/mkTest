@@ -71,6 +71,7 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 						"/notify-bot.line.me/**",
 						"/reactivate.asp",
 						"/reactivate.json",
+						"/resetPassword/**",
 						"/signIn.asp",
 						"/signUp.asp",
 						"/*.png"

@@ -159,6 +159,22 @@ public class Servant {
 	 */
 	public static final ZoneId ZONE_ID = ZoneId.of(System.getenv("ZONE_ID"));
 
+	/**
+	 * 十六进制转换为十进制。
+	 *
+	 * @param hexadecimal 十六进制数的字符串
+	 * @return 十进制数
+	 */
+	public static final Integer hexadecimalToDecimal(String hexadecimal) {
+		return Integer.parseUnsignedInt(hexadecimal, 16);
+	}
+
+	/**
+	 * 这货是 Line 的邀请链结吗？
+	 *
+	 * @param uri 链接网址
+	 * @return 是不是(真伪布林值)
+	 */
 	public static final boolean isLine(URI uri) {
 		String scheme = uri.getScheme();
 		if (!scheme.equalsIgnoreCase("http") && !scheme.equalsIgnoreCase("https")) {
@@ -173,6 +189,12 @@ public class Servant {
 		return false;
 	}
 
+	/**
+	 * 这货是微信的邀请链结吗？
+	 *
+	 * @param uri 链接网址
+	 * @return 是不是(真伪布林值)
+	 */
 	public static final boolean isWeChat(URI uri) {
 		String scheme = uri.getScheme();
 		if (!scheme.equalsIgnoreCase("http") && !scheme.equalsIgnoreCase("https")) {
