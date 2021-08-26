@@ -15,7 +15,7 @@ LABEL {
 	cursor: pointer;
 }
 
-label:before {
+LABEL:before {
 	background-color: white;
 	color: white;
 	content: " ";
@@ -27,7 +27,7 @@ label:before {
 	width: 25px;
 	height: 25px;
 	text-align: center;
-	line-height: 28px;
+	line-height: 25px;
 	transition-duration: 0.4s;
 	transform: scale(0);
 }
@@ -49,13 +49,13 @@ LABEL IMG {
 }
 
 :checked + LABEL.female {
-	border-color: #CB0C9f88;
+	border-color: #D6338488;
 	border-radius: 20px;
 }
 
 :checked + LABEL.female:before {
 	content: "✓";
-	background-color: #CB0C9fEE;
+	background-color: #D63384EE;
 	transform: scale(1);
 }
 

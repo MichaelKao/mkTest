@@ -803,3 +803,11 @@ COMMENT ON COLUMN"zhong_she_mi_ma"."id"IS'主键';
 COMMENT ON COLUMN"zhong_she_mi_ma"."zi_fu_chuan"IS'字符串';
 COMMENT ON COLUMN"zhong_she_mi_ma"."dao_qi"IS'到期';
 COMMENT ON COLUMN"zhong_she_mi_ma"."shi_chuo"IS'时戳';
+
+/**
+ * 新增服務標籤
+ */
+INSERT INTO"fu_wu"("fu_wu_biao_qian")VALUES
+(E'LU_YOU'),--旅遊
+(E'CHU_CHAI'),--出差
+(E'XIAO_ZHUO');--小酌

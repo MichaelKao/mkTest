@@ -39,7 +39,7 @@
 	</xsl:template>
 
 	<xsl:template match="form">
-		<DIV class="row">
+		<DIV class="row mt-2">
 			<DIV class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-auto px-0">
 				<DIV class="card card-plain">
 					<DIV class="card-header p-1 p-sm-2 text-left">

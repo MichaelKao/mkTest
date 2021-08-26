@@ -1,0 +1,15 @@
+INPUT[type="checkbox"] {
+	display: none;
+}
+
+LABEL.tag {
+	border: 1px solid #D63384;
+	padding: 5px 10px;
+	border-radius: 10px;
+	color: #D63384;
+}
+
+:checked + LABEL.tag {
+	background: #D63384;
+	color: white;
+}
