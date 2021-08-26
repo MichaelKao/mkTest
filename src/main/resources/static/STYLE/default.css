@@ -9,12 +9,22 @@ INPUT, TEXTAREA {
 	font-size: initial;
 }
 
-.announcement {
+.announcement, .inbox {
 	padding: 0 5px;
-	vertical-align: top;
+	vertical-align: sub;
 }
 
-.inbox {
-	padding: 0 5px;
-	vertical-align: top;
+.fontSize22 {
+	font-size: 22px;
+}
+
+@media (max-width: 991.98px){
+	.dropdown.nav-item .dropdown-menu-animation {
+		transition: all .35s ease-in;
+	}
+
+	.dropdown.nav-item .dropdown-menu-animation.show {
+		height: auto;
+		overflow: hidden;
+	}
 }

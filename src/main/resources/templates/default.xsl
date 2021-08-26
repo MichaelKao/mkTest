@@ -33,11 +33,11 @@
 			<INPUT name="identifier" type="hidden" value="{@identifier}"/>
 			<NAV class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-1 py-md-3 start-0 end-0 mx-3">
 				<DIV class="container-fluid">
-					<A class="navbar-brand font-weight-bolder ms-sm-3" href="/">YOUNG ME 養蜜</A>
-					<DIV>
+					<A class="navbar-brand font-weight-bolder m-0" href="/">YOUNG ME 養蜜</A>
+					<DIV class="d-flex align-items-center">
 						<xsl:if test="@signIn">
-							<A class="d-lg-none me-2" href="/activeLogs.asp">
-								<I class="fal fa-bell text-lg"></I>
+							<A class="d-lg-none pe-1" href="/activeLogs.asp">
+								<I class="fad fa-bell fontSize22"></I>
 								<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
 									<xsl:if test="@announcement">
 										<xsl:attribute name="style">display: inline;</xsl:attribute>
@@ -45,8 +45,8 @@
 									</xsl:if>
 								</SPAN>
 							</A>
-							<A class="d-lg-none ms-1" href="/inbox.asp">
-								<I class="fal fa-comment-smile text-lg"></I>
+							<A class="d-lg-none px-1" href="/inbox.asp">
+								<I class="fad fa-comment-smile fontSize22"></I>
 								<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 inbox" style="display: none;">
 									<xsl:if test="@inbox">
 										<xsl:attribute name="style">display: inline;</xsl:attribute>
@@ -55,7 +55,7 @@
 								</SPAN>
 							</A>
 						</xsl:if>
-						<BUTTON class="navbar-toggler shadow-none px-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation">
+						<BUTTON class="navbar-toggler shadow-none px-1" type="button" data-bs-toggle="collapse" data-bs-target="#navigation">
 							<SPAN class="navbar-toggler-icon mt-2">
 								<SPAN class="navbar-toggler-bar bar1"></SPAN>
 								<SPAN class="navbar-toggler-bar bar2"></SPAN>
@@ -64,50 +64,62 @@
 						</BUTTON>
 					</DIV>
 					<DIV class="collapse navbar-collapse justify-content-end" id="navigation">
-						<UL class="navbar-nav navbar-nav-hover">
+						<UL class="navbar-nav navbar-nav-hover ">
 							<xsl:if test="@signIn">
 								<LI class="nav-item dropdown dropdown-hover">
 									<A class="nav-link cursor-pointer text-primary" id="dropdownMenuPages" data-bs-toggle="dropdown">
-										<SPAN class="me-1">會員</SPAN>
+										<SPAN class="me-1">
+											<I class="fad fa-user-cog fontSize22"></I>
+										</SPAN>
 										<I class="fas fa-chevron-down"></I>
 									</A>
 									<DIV class="dropdown-menu dropdown-menu-animation p-3 border-radius-lg mt-0 mt-lg-3">
 										<DIV class="d-none d-lg-block">
-											<A class="dropdown-item border-radius-md" href="/profile/">
-												<SPAN>個人檔案</SPAN>
+											<A class="dropdown-item border-radius-md row" href="/profile/">
+												<I class="fad fa-user-edit fontSize22 col-1"></I>
+												<SPAN class="ms-1">個人檔案</SPAN>
 											</A>
-											<A class="dropdown-item border-radius-md" href="/favorite.asp">
-												<SPAN>我的收藏</SPAN>
+											<A class="dropdown-item border-radius-md row" href="/favorite.asp">
+												<I class="fad fa-box-heart fontSize22 col-1"></I>
+												<SPAN class="ms-1">我的收藏</SPAN>
 											</A>
-											<A class="dropdown-item border-radius-md" href="/looksMe.asp">
-												<SPAN>誰看過我</SPAN>
+											<A class="dropdown-item border-radius-md row" href="/looksMe.asp">
+												<I class="fad fa-shoe-prints fontSize22 col-1"></I>
+												<SPAN class="ms-1">誰看過我</SPAN>
 											</A>
 											<xsl:if test="@female">
-												<A class="dropdown-item border-radius-md" href="/groupGreeting.asp">
-													<SPAN>群發打招呼</SPAN>
+												<A class="dropdown-item border-radius-md row" href="/groupGreeting.asp">
+													<I class="fad fa-comments-alt fontSize22 col-1"></I>
+													<SPAN class="ms-1">群發打招呼</SPAN>
 												</A>
 											</xsl:if>
-											<A class="dropdown-item border-radius-md" href="/setting.asp">
-												<SPAN>進階設定</SPAN>
+											<A class="dropdown-item border-radius-md row" href="/setting.asp">
+												<I class="fad fa-cog fontSize22 col-1"></I>
+												<SPAN class="ms-1">進階設定</SPAN>
 											</A>
 										</DIV>
 										<DIV class="d-lg-none">
-											<A class="dropdown-item border-radius-md" href="/profile/">
-												<SPAN>個人檔案</SPAN>
+											<A class="dropdown-item border-radius-md row" href="/profile/">
+												<I class="fad fa-user-edit fontSize22 col-1"></I>
+												<SPAN class="ms-1">個人檔案</SPAN>
 											</A>
-											<A class="dropdown-item border-radius-md" href="/favorite.asp">
-												<SPAN>我的收藏</SPAN>
+											<A class="dropdown-item border-radius-md row" href="/favorite.asp">
+												<I class="fad fa-box-heart fontSize22 col-1"></I>
+												<SPAN class="ms-1">我的收藏</SPAN>
 											</A>
-											<A class="dropdown-item border-radius-md" href="/looksMe.asp">
-												<SPAN>誰看過我</SPAN>
+											<A class="dropdown-item border-radius-md row" href="/looksMe.asp">
+												<I class="fad fa-shoe-prints fontSize22 col-1"></I>
+												<SPAN class="ms-1">誰看過我</SPAN>
 											</A>
 											<xsl:if test="@female">
-												<A class="dropdown-item border-radius-md" href="/groupGreeting.asp">
-													<SPAN>群發打招呼</SPAN>
+												<A class="dropdown-item border-radius-md row" href="/groupGreeting.asp">
+													<I class="fad fa-comments-alt fontSize22 col-1"></I>
+													<SPAN class="ms-1">群發打招呼</SPAN>
 												</A>
 											</xsl:if>
-											<A class="dropdown-item border-radius-md" href="/setting.asp">
-												<SPAN>進階設定</SPAN>
+											<A class="dropdown-item border-radius-md row" href="/setting.asp">
+												<I class="fad fa-cog fontSize22 col-1"></I>
+												<SPAN class="ms-1">進階設定</SPAN>
 											</A>
 										</DIV>
 									</DIV>
@@ -115,7 +127,9 @@
 								<xsl:if test="@almighty or @finance">
 									<LI class="nav-item dropdown dropdown-hover">
 										<A class="nav-link cursor-pointer text-primary" id="dropdownMenuPages" data-bs-toggle="dropdown">
-											<SPAN class="me-1">後台</SPAN>
+											<SPAN class="me-1">
+												<I class="fad fa-id-card-alt fontSize22"></I>
+											</SPAN>
 											<I class="fas fa-chevron-down"></I>
 										</A>
 										<DIV class="dropdown-menu dropdown-menu-animation p-3 border-radius-lg mt-0 mt-lg-3">
@@ -147,7 +161,7 @@
 								<xsl:if test="@signIn">
 									<LI class="nav-item d-none d-lg-block">
 										<A class="nav-link nav-link-icon" href="/activeLogs.asp">
-											<I class="fal fa-bell text-lg"></I>
+											<I class="fad fa-bell fontSize22"></I>
 											<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
 												<xsl:if test="@announcement">
 													<xsl:attribute name="style">display: inline;</xsl:attribute>
@@ -158,7 +172,7 @@
 									</LI>
 									<LI class="nav-item d-none d-lg-block">
 										<A class="nav-link nav-link-icon" href="/inbox.asp">
-											<I class="fal fa-comment-smile text-lg"></I>
+											<I class="fad fa-comment-smile fontSize22"></I>
 											<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 inbox" style="display: none;">
 												<xsl:if test="@inbox">
 													<xsl:attribute name="style">display: inline;</xsl:attribute>
@@ -169,8 +183,9 @@
 									</LI>
 								</xsl:if>
 								<LI class="nav-item">
-									<A class="nav-link nav-link-icon" href="/">
-										<SPAN>
+									<A class="nav-link nav-link-icon d-flex align-items-center" href="/">
+										<I class="fad fa-home-heart fontSize22 me-1"></I>
+										<SPAN class="d-lg-none">
 											<xsl:if test="@male">所有甜心</xsl:if>
 											<xsl:if test="@female">所有男仕</xsl:if>
 										</SPAN>
@@ -178,20 +193,23 @@
 								</LI>
 								<xsl:if test="@female">
 									<LI class="nav-item">
-										<A class="nav-link nav-link-icon" href="/withdrawal.asp">
-											<SPAN>提領車馬費</SPAN>
+										<A class="nav-link nav-link-icon d-flex align-items-center" href="/withdrawal.asp">
+											<I class="fad fa-badge-dollar fontSize22 me-1"></I>
+											<SPAN class="d-lg-none">提領車馬費</SPAN>
 										</A>
 									</LI>
 								</xsl:if>
 								<xsl:if test="@male">
 									<LI class="nav-item">
-										<A class="nav-link nav-link-icon" href="/recharge.asp">
-											<SPAN>儲值愛心</SPAN>
+										<A class="nav-link nav-link-icon d-flex align-items-center" href="/recharge.asp">
+											<I class="fad fa-badge-dollar fontSize22 me-1"></I>
+											<SPAN class="d-lg-none">儲值愛心</SPAN>
 										</A>
 									</LI>
 									<LI class="nav-item">
-										<A class="nav-link nav-link-icon" href="/upgrade.asp">
-											<SPAN>升級 VIP</SPAN>
+										<A class="nav-link nav-link-icon d-flex align-items-center" href="/upgrade.asp">
+											<I class="fad fa-crown fontSize22 me-1"></I>
+											<SPAN class="d-lg-none">升級 VIP</SPAN>
 										</A>
 									</LI>
 								</xsl:if>
@@ -199,13 +217,15 @@
 							<LI class="nav-item">
 								<xsl:choose>
 									<xsl:when test="@signIn">
-										<A class="nav-link nav-link-icon" href="/signOut.asp">
-											<SPAN>登出</SPAN>
+										<A class="nav-link nav-link-icon d-flex align-items-center" href="/signOut.asp">
+											<I class="fad fa-sign-out fontSize22 me-1"></I>
+											<SPAN class="d-lg-none">登出</SPAN>
 										</A>
 									</xsl:when>
 									<xsl:otherwise>
 										<A class="nav-link nav-link-icon" href="/signIn.asp">
-											<SPAN>登入</SPAN>
+											<I class="fad fa-sign-in fontSize22 me-1"></I>
+											<SPAN class="d-lg-none">登入</SPAN>
 										</A>
 									</xsl:otherwise>
 								</xsl:choose>
@@ -260,7 +280,7 @@
 		<FOOTER class="text-xs my-4">
 			<DIV class="text-center">
 				<I class="fal fa-copyright me-1"></I>
-				<SPAN>2021 Young Me 甜蜜約會</SPAN>
+				<SPAN>2021 Young Me 養蜜</SPAN>
 			</DIV>
 			<DIV class="text-center">
 				<A class="m-2 text-secondary" href="/privacy.asp">隱私政策</A>

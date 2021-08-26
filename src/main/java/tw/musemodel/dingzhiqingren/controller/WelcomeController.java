@@ -3899,6 +3899,14 @@ public class WelcomeController {
 			);
 		}
 
+		// 未讀訊息數
+		if (loverService.unreadMessages(me) > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				Integer.toString(loverService.unreadMessages(me))
+			);
+		}
+
 		documentElement.setAttribute(
 			"identifier",
 			me.getIdentifier().toString()
