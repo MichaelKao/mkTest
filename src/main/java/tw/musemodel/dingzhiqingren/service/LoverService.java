@@ -27,9 +27,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
@@ -222,16 +224,75 @@ public class LoverService {
 	private WithdrawalRecordRepository withdrawalRecordRepository;
 
 	/**
-	 * 更新密码。
+	 * 找上线用户。
 	 *
-	 * @param mofo 用户号
-	 * @param shadow 新密码
-	 * @return 杰森格式对象
+	 * @param mofo 起始用户号
+	 * @param ancestors 已知上线用户
+	 * @return 上线用户
 	 */
-	@Transactional
-	private Lover reShadow(Lover mofo, String shadow) {
-		mofo.setShadow(passwordEncoder.encode(shadow));
-		return loverRepository.saveAndFlush(mofo);
+	private Collection<Integer> findAncestry(Lover mofo, Collection<Integer> ancestors) {
+		Lover ancestor = mofo.getReferrer();
+
+		/*
+		 此用户号无上线则直接返回现有已知上线用户
+		 */
+		if (Objects.isNull(ancestor)) {
+			return ancestors;
+		}
+
+		/*
+		 此用户号有上线并加入已知上线用户
+		 */
+		Integer id = ancestor.getId();
+		ancestors.add(id);
+
+		/*
+		 重叠的推荐用户
+		 */
+		if (isOverlapped(id, ancestors)) {
+			throw new RuntimeException("signUp.overlap");
+		}
+
+		return findAncestry(ancestor, ancestors);
+	}
+
+	/**
+	 * 有无重叠的上线用户。
+	 *
+	 * @param ancestors 已知上线用户
+	 * @return 真伪布林值
+	 */
+	private boolean hasOverlappedAncestor(Collection<Integer> ancestors) {
+		Set<Integer> set = new HashSet<>();
+		for (Integer integer : ancestors) {
+			if (!set.add(integer)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 某用户号主键是否与已知上线用户中重叠。
+	 *
+	 * @param integer 用户号主键
+	 * @param ancestors 已知上线用户
+	 * @return 真伪布林值
+	 */
+	private boolean isOverlapped(Integer integer, Collection<Integer> ancestors) {
+		Map<String, Integer> map = new HashMap<>();
+		for (Integer ancestor : ancestors) {
+			String key = ancestor.toString();
+			if (map.containsKey(key)) {
+				if (key.equals(integer.toString())) {
+					return true;
+				} else {
+					map.put(key, map.get(key) + 1);
+				}
+			}
+			map.put(key, 1);
+		}
+		return false;
 	}
 
 	/**
@@ -393,14 +454,14 @@ public class LoverService {
 	/**
 	 * 更新用户号的密码。
 	 *
-	 * @param lover 用户号
+	 * @param mofo 用户号
 	 * @param password 新密码
 	 * @return 用户号
 	 */
 	@Transactional
-	public Lover changePassword(Lover lover, String password) {
-		lover.setShadow(passwordEncoder.encode(password));
-		return loverRepository.saveAndFlush(lover);
+	public Lover changePassword(Lover mofo, String password) {
+		mofo.setShadow(passwordEncoder.encode(password));
+		return loverRepository.saveAndFlush(mofo);
 	}
 
 	/**
@@ -760,7 +821,7 @@ public class LoverService {
 		/*
 		 重设密码并清除重设密码申请
 		 */
-		reShadow(mofo, shadow);
+		changePassword(mofo, shadow);
 		resetPassword.setString(null);
 		resetShadowRepository.saveAndFlush(resetPassword);
 
@@ -801,15 +862,22 @@ public class LoverService {
 			orElseThrow();
 		String login = signUp.getLogin();
 
+		/*
+		 用户号已存在⁉️
+		 */
 		if (loverRepository.countByCountryAndLogin(country, login) > 0) {
 			throw new RuntimeException("signUp.exists");
 		}
 
+		/*
+		 已成年⁉️
+		 */
 		if (calculateAge(signUp.getBirthday()) < 18) {
 			throw new RuntimeException("signUp.mustBeAtLeast18yrsOld");
 		}
 
 		UUID identifier = UUID.randomUUID();
+		String referralCode = signUp.getReferralCode();
 
 		Lover lover = new Lover();
 		lover.setIdentifier(identifier);
@@ -822,8 +890,15 @@ public class LoverService {
 		lover.setIdealConditions("合得來的養蜜");
 		lover.setGreeting("嗨，有機會成為養蜜嗎?");
 		lover.setRegistered(new Date(System.currentTimeMillis()));
-		if (Objects.nonNull(signUp.getReferralCode())) {
-			Lover referrer = loverRepository.findByReferralCode(signUp.getReferralCode());
+		if (Objects.nonNull(referralCode) && !referralCode.isBlank()) {
+			Lover referrer = loverRepository.findByReferralCode(
+				referralCode
+			);
+			try {
+				findAncestry(referrer, new ArrayList<>());
+			} catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
 			lover.setReferrer(referrer);
 		}
 		lover = loverRepository.saveAndFlush(lover);

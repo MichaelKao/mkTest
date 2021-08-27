@@ -210,6 +210,7 @@ LEFT JOIN"guo_jia"AS"country"
 	ON"country"."id"="lover"."guo_jia"
 LEFT JOIN"ji_huo"AS"activation"
 	ON"activation"."id"="lover"."id"
+WHERE("country"."guo_ma"||"lover"."zhang_hao")::"varchar"IS NOT NULL
 ORDER BY
 "country"."guo_ma",
 "lover"."zhang_hao";
