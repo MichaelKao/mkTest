@@ -107,13 +107,13 @@
 											<LI>
 												<INPUT class="form-check-input" id="female" name="gender" type="radio" value="false"/>
 												<LABEL class="female" for="female">
-													<IMG src="/IMAGE/queen.png" width="32"/>
+													<IMG src="/IMAGE/meQueen.png" width="75"/>
 												</LABEL>
 											</LI>
 											<LI>
 												<INPUT id="male" name="gender" type="radio" value="true"/>
 												<LABEL class="male" for="male">
-													<IMG src="/IMAGE/king.png" width="32"/>
+													<IMG src="/IMAGE/meKing.png" width="75"/>
 												</LABEL>
 											</LI>
 										</UL>

@@ -359,8 +359,8 @@ public class WebSocketService {
 			male = chatPartner;
 		}
 
-		// '給我賴'的行為甜心還沒回應
 		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
+		// '給我賴'的行為甜心還沒回應
 		if (Objects.nonNull(lineGiven) && Objects.isNull(lineGiven.getResponse())) {
 			// 甜心的接受拒絕按鈕
 			if (!gender) {

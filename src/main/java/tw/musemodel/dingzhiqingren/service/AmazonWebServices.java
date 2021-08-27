@@ -52,9 +52,9 @@ public class AmazonWebServices {
 
 		String defaultImage = null;
 		if (lover.getGender()) {
-			defaultImage = "male.svg";
+			defaultImage = "king.png";
 		} else if (!lover.getGender()) {
-			defaultImage = "female.svg";
+			defaultImage = "queen.png";
 		}
 		CopyObjectResult copyObjectResult = AMAZON_S3.copyObject(new CopyObjectRequest(
 			BUCKET_NAME,

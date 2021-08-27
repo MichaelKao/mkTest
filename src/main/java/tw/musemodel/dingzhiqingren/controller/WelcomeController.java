@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -297,7 +298,7 @@ public class WelcomeController {
 			put("response", true).
 			put(
 				"result",
-				loverService.seeMore(page, locale)
+				loverService.seeMoreLover(page, locale)
 			).
 			toString();
 	}
@@ -3246,7 +3247,7 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 星級評價
+	 * 星級評價 新增或編輯
 	 *
 	 * @param rate
 	 * @param comment
@@ -3989,8 +3990,8 @@ public class WelcomeController {
 		Boolean isMale = me.getGender();
 
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
-			null
+			"gender",
+			isMale.toString()
 		);
 
 		// 通知數
@@ -4309,5 +4310,48 @@ public class WelcomeController {
 				toJSONObject();
 		}
 		return jsonObject.toString();
+	}
+
+	/**
+	 * 看更多留言
+	 *
+	 * @param p
+	 * @param type
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/moreRate.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	@SuppressWarnings("null")
+	String moreRate(@RequestParam int p, @RequestParam UUID whom, Authentication authentication, Locale locale) {
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		// 誰
+		Lover lover = loverService.loadByIdentifier(whom);
+
+		Page<History> ratePage = historyRepository.
+			findByPassiveAndBehaviorOrderByOccurredDesc(
+				lover,
+				History.Behavior.PING_JIA,
+				PageRequest.of(p, 1)
+			);
+
+		JSONObject jsonObject = new JSONObject();
+		if (Objects.nonNull(ratePage) && ratePage.getTotalPages() == p + 1) {
+			LOGGER.debug("測試{}", ratePage.getTotalPages());
+			jsonObject.put("lastPage", true);
+		}
+		return jsonObject.
+			put("response", true).
+			put(
+				"result",
+				loverService.moreRate(ratePage, locale)
+			).
+			toString();
 	}
 }

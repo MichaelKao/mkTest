@@ -8,7 +8,7 @@ INPUT[name="gender"] {
 
 LABEL {
 	border: 1px solid #fff;
-	padding: 10px 20px;
+	padding: 0px;
 	display: block;
 	position: relative;
 	margin: 0px 20px;
@@ -38,13 +38,13 @@ LABEL IMG {
 }
 
 :checked + LABEL.male {
-	border-color: #17C1E8E1;
+	border-color: #16B5D9E1;
 	border-radius: 20px;
 }
 
 :checked + LABEL.male:before {
 	content: "✓";
-	background-color: #17C1E8FF;
+	background-color: #16B5D9FF;
 	transform: scale(1);
 }
 

@@ -102,7 +102,20 @@ import tw.musemodel.dingzhiqingren.repository.ServiceTagRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_CERTIFICATION_FAIL;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_CERTIFICATION_SUCCESS;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_CHAT_MORE;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_FARE;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_GIMME_YOUR_LINE_INVITATION;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_GREETING;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_GROUP_GREETING;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_INVITE_ME_AS_LINE_FRIEND;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_LAI_KOU_DIAN;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_PICTURES_VIEWABLE;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_RATE;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_WITHDRAWAL_FAIL;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_WITHDRAWAL_SUCCESS;
 import static tw.musemodel.dingzhiqingren.service.Servant.PAGE_SIZE_ON_THE_WALL;
 import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
@@ -1211,21 +1224,18 @@ public class LoverService {
 
 		if (Objects.nonNull(lover.getActive())) {
 			Element activeElement = document.createElement("active");
-			activeElement.setTextContent(
-				DATE_TIME_FORMATTER.format(
-					servant.toTaipeiZonedDateTime(
-						lover.getActive()
-					).withZoneSameInstant(
-						Servant.ASIA_TAIPEI
-					)
-				)
-			);
+			activeElement.setTextContent(calendarToString(lover.getActive()));
 			loverElement.appendChild(activeElement);
 		}
 
-		List<History> rateList = historyRepository.findByPassiveAndBehaviorOrderByOccurredDesc(lover, History.Behavior.PING_JIA);
-		if (Objects.nonNull(rateList)) {
-			rateList.forEach(rate -> {
+		Page<History> ratePage = historyRepository.
+			findByPassiveAndBehaviorOrderByOccurredDesc(
+				lover,
+				History.Behavior.PING_JIA,
+				PageRequest.of(0, 1)
+			);
+		if (Objects.nonNull(ratePage.getContent())) {
+			ratePage.getContent().forEach(rate -> {
 				Element rateElement = document.createElement("rate");
 				loverElement.appendChild(rateElement);
 				rateElement.setAttribute(
@@ -1255,7 +1265,15 @@ public class LoverService {
 					"comment",
 					rate.getComment()
 				);
+				rateElement.setAttribute(
+					"identifier",
+					rate.getInitiative().getIdentifier().toString()
+				);
 			});
+			loverElement.setAttribute(
+				"totalPages",
+				Integer.toString(ratePage.getTotalPages())
+			);
 		}
 
 		return document;
@@ -2309,7 +2327,7 @@ public class LoverService {
 	 * @param locale
 	 * @return
 	 */
-	public JSONArray seeMore(Page<Lover> page, Locale locale) {
+	public JSONArray seeMoreLover(Page<Lover> page, Locale locale) {
 		JSONArray jsonArray = new JSONArray();
 		page.getContent().stream().map(lover -> {
 			JSONObject json = new JSONObject();
@@ -2806,5 +2824,89 @@ public class LoverService {
 				BEHAVIOR_CHAT_MORE
 			});
 		}
+	}
+
+	/**
+	 * 日期轉換成字串形式顯示在前端頁面
+	 *
+	 * @param date
+	 * @return
+	 */
+	public String calendarToString(Date d) {
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(d);
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int date = cal.get(Calendar.DATE);
+		int day = cal.get(Calendar.DAY_OF_WEEK) - 1;
+		int hour = cal.get(Calendar.HOUR);
+		int minute = cal.get(Calendar.MINUTE);
+		int am_pm = cal.get(Calendar.AM_PM); // 0是上午, 1是下午
+
+		String dayString = null;
+		switch (day) {
+			case 1:
+				dayString = "日";
+				break;
+			case 2:
+				dayString = "一";
+				break;
+			case 3:
+				dayString = "二";
+				break;
+			case 4:
+				dayString = "三";
+				break;
+			case 5:
+				dayString = "四";
+				break;
+			case 6:
+				dayString = "五";
+				break;
+			case 7:
+				dayString = "六";
+				break;
+		}
+
+		String am_pmString = null;
+		switch (am_pm) {
+			case 0:
+				am_pmString = "上午";
+				break;
+			case 1:
+				am_pmString = "下午";
+				break;
+		}
+
+		return String.format(
+			"%d年%d月%d日 週%s, %s%s:%s",
+			year,
+			month,
+			date,
+			dayString,
+			am_pmString,
+			hour < 10 ? "0" + Integer.toString(hour) : Integer.toString(hour),
+			minute < 10 ? "0" + Integer.toString(minute) : Integer.toString(minute)
+		);
+	}
+
+	public JSONArray moreRate(Page<History> page, Locale locale) {
+		JSONArray jsonArray = new JSONArray();
+		page.getContent().stream().map(history -> {
+			JSONObject json = new JSONObject();
+			json.put("nickname", history.getInitiative().getNickname());
+			json.put("identifier", history.getInitiative().getIdentifier());
+			json.put("rate", history.getRate());
+			json.put("comment", history.getComment());
+			json.put("profileImage", String.format(
+				"https://%s/profileImage/%s",
+				Servant.STATIC_HOST,
+				history.getInitiative().getProfileImage()
+			));
+			return json;
+		}).forEachOrdered(json -> {
+			jsonArray.put(json);
+		});
+		return jsonArray;
 	}
 }
