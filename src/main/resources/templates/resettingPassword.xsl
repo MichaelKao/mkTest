@@ -26,6 +26,7 @@
 			<xsl:call-template name="headLinkTags"/>
 		</HEAD>
 		<BODY>
+			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="page-header section-height-100">
 				<DIV class="container">
@@ -50,7 +51,7 @@
 						<FORM action="{@uri}" method="post">
 							<DIV class="row align-items-center mb-3">
 								<DIV class="col-1">
-									<I class="fas fa-shield-check text-lg"/>
+									<I class="fad fa-shield-check text-lg"/>
 								</DIV>
 								<DIV class="col-11">
 									<INPUT class="form-control" id="string" name="string" placeholder="輸入驗證碼" required="" type="text"/>
@@ -58,7 +59,7 @@
 							</DIV>
 							<DIV class="row align-items-center mb-3">
 								<DIV class="col-1">
-									<I class="fas fa-shield-check text-lg"/>
+									<I class="fas fa-key text-lg"/>
 								</DIV>
 								<DIV class="col-11">
 									<INPUT class="form-control" id="shadow" name="shadow" placeholder="輸入新密碼" required="" type="password"/>
@@ -73,8 +74,8 @@
 					</DIV>
 					<DIV class="card-footer text-center pt-0 px-lg-2 px-1">
 						<P class="text-sm mx-auto">
-							<SPAN class="me-1">無驗證碼?</SPAN>
-							<A href="/resetPassword/" class="text-primary text-gradient font-weight-bold">重寄驗證碼</A>
+							<SPAN class="me-1">無激活碼?</SPAN>
+							<A href="/resetPassword/" class="text-primary text-gradient font-weight-bold">重寄激活碼</A>
 						</P>
 					</DIV>
 				</DIV>

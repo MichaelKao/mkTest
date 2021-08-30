@@ -68,7 +68,7 @@
 									<INPUT class="form-control" id="cellularPhoneNumber" placeholder="手機號碼" required="" type="text"/>
 								</DIV>
 							</DIV>
-							<DIV class="row align-items-center mb-3">
+							<DIV class="row align-items-center">
 								<DIV class="col-1">
 									<I class="fas fa-key text-lg"></I>
 								</DIV>
@@ -76,6 +76,9 @@
 									<INPUT class="form-control" name="password" placeholder="密碼" required="" type="password"/>
 								</DIV>
 							</DIV>
+							<P class="text-center text-sm mb-0 mt-1">
+								<A class="text-primary text-gradient font-weight-bold" href="/resetPassword/">忘記密碼?</A>
+							</P>
 							<DIV class="text-center">
 								<BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0" type="submit">
 									<xsl:value-of select="@i18n-submit"/>

@@ -223,7 +223,7 @@
 										</A>
 									</xsl:when>
 									<xsl:otherwise>
-										<A class="nav-link nav-link-icon" href="/signIn.asp">
+										<A class="nav-link nav-link-icon d-flex align-items-center" href="/signIn.asp">
 											<I class="fad fa-sign-in fontSize22 me-1"></I>
 											<SPAN class="d-lg-none">登入</SPAN>
 										</A>

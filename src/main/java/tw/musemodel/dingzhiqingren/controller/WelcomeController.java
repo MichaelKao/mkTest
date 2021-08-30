@@ -502,9 +502,17 @@ public class WelcomeController {
 	@PostMapping(path = "/password.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	Lover changePassword(@RequestParam String password, Authentication authentication, Locale locale) {
+	String changePassword(@RequestParam String password, Authentication authentication, Locale locale) {
 		Lover me = loverService.loadByUsername(authentication.getName());
-		return loverService.changePassword(me, password);
+		loverService.changePassword(me, password);
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"changePassword.done",
+				null,
+				locale
+			)).
+			withResponse(true).
+			toJSONObject().toString();
 	}
 
 	/**
@@ -3911,6 +3919,18 @@ public class WelcomeController {
 		documentElement.setAttribute(
 			"identifier",
 			me.getIdentifier().toString()
+		);
+
+		// 國碼
+		documentElement.setAttribute(
+			"country",
+			me.getCountry().getId().toString()
+		);
+
+		// 手機號
+		documentElement.setAttribute(
+			"login",
+			me.getLogin()
 		);
 
 		// 有無連動 LINE notify
