@@ -2,12 +2,16 @@ $(document).ready(function () {
 
 	$('DIV.star').each(function () {
 		var div = this;
+		showStar(this);
+	});
+
+	function showStar(div) {
 		var starCount = $(div).data('star');
 		var starred = '&#9733;';
 		var star = '&#9734;';
 
 		$(div).html(starred.repeat(starCount) + star.repeat(5 - starCount));
-	});
+	}
 
 	if (window.matchMedia('screen and (min-width:768px)')) {
 		$('DIV.lessThan768').html($('DIV.moreThan768').html());
@@ -311,6 +315,138 @@ $(document).ready(function () {
 					$('.toast').toast('show');
 				}
 			},
+			'json'
+			);
+		return false;
+	});
+
+	$('TEXTAREA[name="comment"]').append($('DIV.selfComment').html());
+	$('INPUT[name="rating"]').each(function () {
+		if ($(this).val() == $('DIV.selfStar').data('star')) {
+			$(this).attr('checked', true);
+		}
+	});
+
+	$('BUTTON.commentBtn').click(function (event) {
+		event.preventDefault();
+		var btn = this;
+		$(btn).attr('disabled', true);
+		var rate = $('INPUT[name="rating"]:checked').val();
+		if (rate === undefined) {
+			rate = null;
+		}
+		var comment = $('TEXTAREA[name="comment"]').val();
+		$.post(
+			'/rate.json',
+			{
+				whom: $('INPUT[name="whom"]').val(),
+				rate: rate,
+				comment: comment
+			},
+			function (data) {
+				if (data.response) {
+					$('DIV.selfComment').html(comment);
+					$('DIV.selfStar').data('star', rate);
+					showStar($('DIV.selfStar'));
+					$('#rateModal').modal('hide');
+					$(btn).attr('disabled', false);
+				} else {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+				}
+			},
+			'json'
+			);
+		return false;
+	});
+
+	$('BUTTON.moreRate').click(function () {
+		let btn = this;
+		p = $(btn).data('page');
+		console.log(p)
+		$.post(
+			'/moreRate.json',
+			{
+				p: parseInt(p) + 1,
+				whom: $('INPUT[name="whom"]').val()
+			},
+			(data) => {
+			if (data.response) {
+				var rateBox = $('DIV.rateBox');
+				rateBox.empty();
+				data.result.forEach(function (item) {
+					let outterDiv = document.createElement('DIV');
+					$(outterDiv).attr('class', 'card flex-row px-3 py-2 mb-2 align-items-center');
+					rateBox.append(outterDiv);
+
+					let imgDiv = document.createElement('DIV');
+					$(imgDiv).attr('class', 'col-3 col-sm-2');
+					outterDiv.append(imgDiv);
+
+					let img = document.createElement('IMG');
+					$(img).attr({
+						'class': 'border-radius-sm',
+						'src': item.profileImage,
+						'width': '50'
+					});
+					imgDiv.append(img);
+
+					let contentDiv = document.createElement('DIV');
+					$(contentDiv).attr('class', 'ms-2');
+					outterDiv.append(contentDiv);
+
+					let nameDiv = document.createElement('DIV');
+					$(nameDiv).attr('class', 'text-xs');
+					$(nameDiv).append(item.nickname);
+					contentDiv.append(nameDiv);
+
+					let rate = item.rate;
+					let starDiv = document.createElement('DIV');
+					$(starDiv).attr({
+						'class': 'star text-lg',
+						'data-star': rate
+					});
+					contentDiv.append(starDiv);
+					showStar($(starDiv));
+
+					let commentDiv = document.createElement('DIV');
+					$(commentDiv).attr({
+						'class': 'text-sm',
+						'data-star': item.comment
+					});
+					$(commentDiv).append(item.comment);
+					contentDiv.append(commentDiv);
+
+					if ($('INPUT[name="identifier"]').val() === item.identifier) {
+						$(commentDiv).addClass('selfComment');
+						$(starDiv).addClass('selfStar');
+
+						let editI = document.createElement('I');
+						$(editI).attr({
+							'class': 'fad fa-edit fontSize22 col-1 position-absolute top-1 right-1 cursor-pointer',
+							'data-bs-target': '#rateModal',
+							'data-bs-toggle': 'modal'
+						});
+						outterDiv.append(editI);
+
+						$('TEXTAREA[name="comment"]').empty().append(item.comment);
+						$('INPUT[name="rating"]').each(function () {
+							console.log(rate);
+							console.log($(this).val() == rate);
+							if ($(this).val() == rate) {
+								console.log('rate' + rate);
+								$(this).attr('checked', true);
+							}
+						});
+					}
+				});
+			}
+			if (data.lastPage) {
+				$(btn).data('page', -1);
+			} else {
+				$(btn).data('page', parseInt(p) + 1);
+			}
+		},
 			'json'
 			);
 		return false;

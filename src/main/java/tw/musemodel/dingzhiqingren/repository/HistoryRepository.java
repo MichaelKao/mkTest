@@ -3,6 +3,8 @@ package tw.musemodel.dingzhiqingren.repository;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +22,8 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpecificationExecutor<History> {
 
 	public List<History> findByPassiveAndBehaviorOrderByOccurredDesc(Lover passive, Behavior behavior);
+
+	public Page<History> findByPassiveAndBehaviorOrderByOccurredDesc(Lover passive, Behavior behavior, Pageable pageable);
 
 	/**
 	 * @param initiative 主动方

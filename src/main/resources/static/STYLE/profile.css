@@ -14,10 +14,6 @@
 	max-width: 100%;
 }
 
-I.font40 {
-	font-size: 40px !important;
-}
-
 BUTTON.fav {
 	border-radius: 50%;
 	color: #6C757D;
@@ -55,4 +51,18 @@ BUTTON.fav.liked i {
 
 DIV.star {
 	color: #FF8C00;
+}
+
+.carousel-indicators [data-bs-target] {
+	background-color: #D63384EE;
+	opacity: 0.4;
+}
+
+.carousel-indicators .active {
+	opacity: 1;
+}
+
+.carouselControlBtn {
+	font-size: 32px;
+	color: #D63384;
 }

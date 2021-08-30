@@ -51,8 +51,8 @@
 					<DIV class="card-body p-1 p-sm-2">
 						<FORM action="/activate.json" method="post">
 							<DIV class="row align-items-center mb-3">
-								<DIV class="col-1">
-									<I class="fas fa-shield-check text-lg"></I>
+								<DIV class="col-1 d-flex justify-content-start">
+									<I class="fad fa-shield-check text-lg"></I>
 								</DIV>
 								<DIV class="col-11">
 									<INPUT class="form-control" id="string" name="string" placeholder="輸入激活碼" required="" type="text"/>

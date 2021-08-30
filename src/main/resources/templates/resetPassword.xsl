@@ -26,9 +26,12 @@
 			<xsl:call-template name="headLinkTags"/>
 		</HEAD>
 		<BODY>
+			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container pt-8">
-				<xsl:apply-templates select="form"/>
+			<DIV class="page-header section-height-100">
+				<DIV class="container">
+					<xsl:apply-templates select="form"/>
+				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/resetPassword.js"/>
@@ -46,14 +49,19 @@
 					</DIV>
 					<DIV class="card-body p-1 p-sm-2">
 						<FORM action="{/document/@uri}" method="post">
-							<DIV class="form-group">
-								<SELECT class="form-control form-control-lg" name="country" required="">
-									<xsl:apply-templates select="countries/*"/>
-								</SELECT>
+							<DIV class="row align-items-center mb-2">
+								<DIV class="col-1 d-flex justify-content-start">
+									<I class="fad fa-globe-americas text-lg"></I>
+								</DIV>
+								<DIV class="col-11">
+									<SELECT class="form-control form-control-lg" name="country" required="">
+										<xsl:apply-templates select="countries/*"/>
+									</SELECT>
+								</DIV>
 							</DIV>
 							<DIV class="row align-items-center mb-3">
-								<DIV class="col-1">
-									<I class="fas fa-mobile-alt text-lg"></I>
+								<DIV class="col-1 d-flex justify-content-start">
+									<I class="fad fa-phone-square-alt text-lg"></I>
 								</DIV>
 								<DIV class="col-11">
 									<INPUT class="form-control form-control-lg" name="login" placeholder="手機號碼" required="" type="text" value=""/>
@@ -65,23 +73,6 @@
 								</BUTTON>
 							</DIV>
 						</FORM>
-					</DIV>
-					<DIV class="card-footer text-center pt-0 px-lg-2 px-1">
-						<DIV class="text-sm mx-auto">
-							<SPAN>註冊即表示您已閱讀並同意</SPAN>
-							<A href="/privacy.asp" class="text-primary text-gradient font-weight-bold">隱私權政策</A>
-							<SPAN>與</SPAN>
-							<A href="/terms.asp" class="text-primary text-gradient font-weight-bold">服務條款</A>
-							<SPAN>，並表示已滿18歲。</SPAN>
-						</DIV>
-						<DIV class="text-sm mx-auto">
-							<SPAN class="me-1">已是會員?</SPAN>
-							<A href="/signIn.asp" class="text-primary text-gradient font-weight-bold">按此登入</A>
-						</DIV>
-						<DIV class="text-sm mx-auto">
-							<SPAN class="me-1">已有註冊手機?</SPAN>
-							<A href="/reactivate.asp" class="text-primary text-gradient font-weight-bold">按此重新激活</A>
-						</DIV>
 					</DIV>
 				</DIV>
 			</DIV>

@@ -912,15 +912,23 @@ public class HistoryService {
 		if (comment.isBlank() || comment.isEmpty()) {
 			throw new RuntimeException("rate.commentMustntBeNull");
 		}
-		if (historyRepository.countByInitiativeAndPassiveAndBehavior(initiative, passive, BEHAVIOR_RATE) > 0) {
-			throw new RuntimeException("rate.onlyCanRateOnce");
+		Lover female = initiative.getGender() ? passive : initiative;
+		Lover male = initiative.getGender() ? initiative : passive;
+		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
+		if (Objects.isNull(lineGiven) || Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse()) {
+			throw new RuntimeException("rate.notAbleToCommentBeforeBeingFriend");
 		}
 
-		History history = new History(
-			initiative,
-			passive,
-			BEHAVIOR_RATE
-		);
+		// 已評價過，要編輯內容
+		History history = historyRepository.findByInitiativeAndPassiveAndBehavior(initiative, passive, BEHAVIOR_RATE);
+		if (Objects.isNull(history)) {
+			history = new History(
+				initiative,
+				passive,
+				BEHAVIOR_RATE
+			);
+		}
+
 		history.setRate(rate);
 		history.setComment(comment);
 		historyRepository.saveAndFlush(history);
