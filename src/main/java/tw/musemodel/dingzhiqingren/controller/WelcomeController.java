@@ -3921,18 +3921,6 @@ public class WelcomeController {
 			me.getIdentifier().toString()
 		);
 
-		// 國碼
-		documentElement.setAttribute(
-			"country",
-			me.getCountry().getId().toString()
-		);
-
-		// 手機號
-		documentElement.setAttribute(
-			"login",
-			me.getLogin()
-		);
-
 		// 有無連動 LINE notify
 		if (loverService.hasLineNotify(me)) {
 			documentElement.setAttribute(

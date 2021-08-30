@@ -30,55 +30,62 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container content py-7">
+			<DIV class="container content pt-7 pt-md-8">
 				<A class="text-primary h2" href="/profile/">
 					<I class="fad fa-chevron-double-left"></I>
 				</A>
-				<HR class="horizontal dark"/>
-				<ARTICLE class="py-4">
-					<DIV class="h4 text-primary mb-3 d-flex align-items-baseline">
-						<SPAN>大頭貼</SPAN>
-						<LABEL>
-							<INPUT accept="image/*" class="sr-only" data-type="profileImage" name="image" type="file"/>
-							<I class="far fa-pen h4"></I>
-						</LABEL>
+				<ARTICLE class="py-3">
+					<DIV class="mb-3">
+						<DIV class="h4 text-primary titleBorder">主要照片</DIV>
+						<SPAN class="text-sm">為開放照片，作為 meKING/meQueen 認識您的第一印象</SPAN>
 					</DIV>
-					<DIV>
-						<IMG alt="profile_image" class="border-radius-md" src="{profileImage}" id="profileImageImg" width="100"/>
+					<DIV class="position-relative">
+						<LABEL class="uploadProfileImage">
+							<INPUT accept="image/*" class="sr-only" data-type="profileImage" name="image" type="file"/>
+							<I class="fas fa-camera fontSize35 text-primary"></I>
+						</LABEL>
+						<IMG alt="profile_image" class="border-radius-md" src="{profileImage}" id="profileImageImg" width="150"/>
 					</DIV>
 				</ARTICLE>
-				<ARTICLE class="py-4">
-					<DIV class="h4 text-primary mb-3 d-flex align-items-baseline">
-						<SPAN>其他照片</SPAN>
-						<LABEL>
-							<INPUT accept="image/*" class="sr-only" data-type="picture" name="image" type="file"/>
-							<I class="far fa-plus-circle h4"></I>
-						</LABEL>
+				<ARTICLE class="py-3">
+					<DIV class="mb-3">
+						<DIV class="h4 text-primary titleBorder">其他照片</DIV>
+						<SPAN class="text-sm">查看其他照片需要經過您的同意才會開放，請安心上傳</SPAN>
 					</DIV>
 					<DIV class="d-flex flex-wrap pictures">
 						<xsl:for-each select="picture">
 							<DIV class="m-1 pictureWrap">
-								<BUTTON class="btnDel" data-id="{@picIdentifier}" id="delete{position()}" type="button">
-									<I class="fas fa-trash-alt text-primary"></I>
+								<BUTTON class="btn btn-link btnDel" data-id="{@picIdentifier}" id="delete{position()}" type="button">
+									<I class="fas fa-trash-alt text-primary fontSize25"></I>
 								</BUTTON>
-								<IMG alt="照片{position()}" class="border-radius-md" src="{.}" width="100"/>
+								<IMG alt="照片{position()}" class="border-radius-md" src="{.}" width="120"/>
 							</DIV>
 						</xsl:for-each>
+						<DIV class="m-1 uploadPictureWrap d-flex align-items-center justify-content-center">
+							<LABEL>
+								<INPUT accept="image/*" class="sr-only" data-type="picture" name="image" type="file"/>
+								<I class="fal fa-plus-circle text-dark"></I>
+							</LABEL>
+						</DIV>
 					</DIV>
 				</ARTICLE>
 				<DIV class="modal fade" id="confirmModal">
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
-							<DIV class="modal-header">
-								<H5 class="modal-title">提醒</H5>
-								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
-							</DIV>
 							<DIV class="modal-body">
-								<P>是否確認刪除照片?</P>
-							</DIV>
-							<DIV class="modal-footer">
-								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消</BUTTON>
-								<BUTTON class="btn btn-primary btnDelConfirm" type="button">確定</BUTTON>
+								<DIV class="d-flex">
+									<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+										<I class="fal fa-times"></I>
+									</BUTTON>
+								</DIV>
+								<DIV class="my-4 text-center">
+									<I class="fad fa-exclamation-circle text-warning mb-1 fontSize50"></I>
+									<P class="text-warning text-bold">是否確定刪除照片?</P>
+								</DIV>
+								<DIV class="text-center">
+									<BUTTON class="btn btn-outline-primary mx-2 px-3 py-2 btnDelConfirm" type="button">確認</BUTTON>
+									<BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+								</DIV>
 							</DIV>
 						</DIV>
 					</DIV>
