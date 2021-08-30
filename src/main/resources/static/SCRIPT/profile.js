@@ -320,6 +320,13 @@ $(document).ready(function () {
 		return false;
 	});
 
+	$('TEXTAREA[name="comment"]').append($('DIV.selfComment').html());
+	$('INPUT[name="rating"]').each(function () {
+		if ($(this).val() == $('DIV.selfStar').data('star')) {
+			$(this).attr('checked', true);
+		}
+	});
+
 	$('BUTTON.commentBtn').click(function (event) {
 		event.preventDefault();
 		var btn = this;
@@ -422,10 +429,12 @@ $(document).ready(function () {
 						});
 						outterDiv.append(editI);
 
-						$('TEXTAREA[name="comment"]').append(item.comment);
+						$('TEXTAREA[name="comment"]').empty().append(item.comment);
 						$('INPUT[name="rating"]').each(function () {
-							console.log($(this).val());
-							if ($(this).val() === rate) {
+							console.log(rate);
+							console.log($(this).val() == rate);
+							if ($(this).val() == rate) {
+								console.log('rate' + rate);
 								$(this).attr('checked', true);
 							}
 						});

@@ -4338,12 +4338,11 @@ public class WelcomeController {
 			findByPassiveAndBehaviorOrderByOccurredDesc(
 				lover,
 				History.Behavior.PING_JIA,
-				PageRequest.of(p, 1)
+				PageRequest.of(p, 3)
 			);
 
 		JSONObject jsonObject = new JSONObject();
 		if (Objects.nonNull(ratePage) && ratePage.getTotalPages() == p + 1) {
-			LOGGER.debug("測試{}", ratePage.getTotalPages());
 			jsonObject.put("lastPage", true);
 		}
 		return jsonObject.

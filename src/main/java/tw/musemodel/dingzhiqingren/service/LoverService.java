@@ -1307,7 +1307,7 @@ public class LoverService {
 			findByPassiveAndBehaviorOrderByOccurredDesc(
 				lover,
 				History.Behavior.PING_JIA,
-				PageRequest.of(0, 1)
+				PageRequest.of(0, 3)
 			);
 		if (Objects.nonNull(ratePage.getContent())) {
 			ratePage.getContent().forEach(rate -> {
@@ -2920,25 +2920,25 @@ public class LoverService {
 
 		String dayString = null;
 		switch (day) {
-			case 1:
+			case 0:
 				dayString = "日";
 				break;
-			case 2:
+			case 1:
 				dayString = "一";
 				break;
-			case 3:
+			case 2:
 				dayString = "二";
 				break;
-			case 4:
+			case 3:
 				dayString = "三";
 				break;
-			case 5:
+			case 4:
 				dayString = "四";
 				break;
-			case 6:
+			case 5:
 				dayString = "五";
 				break;
-			case 7:
+			case 6:
 				dayString = "六";
 				break;
 		}
