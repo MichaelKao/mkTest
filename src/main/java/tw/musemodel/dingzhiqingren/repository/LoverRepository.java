@@ -33,6 +33,14 @@ public interface LoverRepository extends JpaRepository<Lover, Integer>, JpaSpeci
 
 	public Lover findByReferralCode(String referralCode);
 
+	/**
+	 * 找下线用户。
+	 *
+	 * @param referrer 上线用户
+	 * @return 下线用户们
+	 */
+	public List<Lover> findByReferrerOrderByRegistered(Lover referrer);
+
 	public List<Lover> findByRelief(Boolean relief);
 
 	public Lover findOneByIdentifier(UUID identifier);
