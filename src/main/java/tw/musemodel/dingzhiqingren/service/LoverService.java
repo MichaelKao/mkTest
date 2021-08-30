@@ -1309,6 +1309,10 @@ public class LoverService {
 				History.Behavior.PING_JIA,
 				PageRequest.of(0, 3)
 			);
+		if (ratePage.getTotalPages() <= 1) {
+			loverElement.setAttribute("lastPage", null);
+		}
+
 		if (Objects.nonNull(ratePage.getContent())) {
 			ratePage.getContent().forEach(rate -> {
 				Element rateElement = document.createElement("rate");
@@ -2965,6 +2969,13 @@ public class LoverService {
 		);
 	}
 
+	/**
+	 * 更多評價
+	 *
+	 * @param page
+	 * @param locale
+	 * @return
+	 */
 	public JSONArray moreRate(Page<History> page, Locale locale) {
 		JSONArray jsonArray = new JSONArray();
 		page.getContent().stream().map(history -> {

@@ -41,10 +41,12 @@
 							<DIV class="modal-content">
 								<DIV class="modal-body">
 									<DIV class="d-flex">
-										<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
+										<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+											<I class="fal fa-times"></I>
+										</BUTTON>
 									</DIV>
 									<DIV class="mt-3 text-center">
-										<I class="fad fa-taxi text-success mb-1" style="font-size: 50px;"></I>
+										<I class="fad fa-taxi text-success mb-1 fontSize50"></I>
 										<H5 class="modal-title">車馬費</H5>
 									</DIV>
 									<DIV class="form-group text-center">
@@ -70,7 +72,9 @@
 							<DIV class="modal-content">
 								<DIV class="modal-body">
 									<DIV class="d-flex">
-										<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
+										<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+											<I class="fal fa-times"></I>
+										</BUTTON>
 									</DIV>
 									<DIV class="mt-3 text-center">
 										<I class="fad fa-crown fontSize25 text-yellow"></I>
@@ -90,7 +94,9 @@
 							<DIV class="modal-content">
 								<DIV class="modal-header">
 									<H5 class="modal-title">微信 WeChat QRcode</H5>
-									<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
+									<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+										<I class="fal fa-times"></I>
+									</BUTTON>
 								</DIV>
 								<DIV class="modal-body">
 									<DIV class="form-group">
@@ -124,7 +130,9 @@
 											<H5 class="modal-title">和男生打招呼</H5>
 										</xsl:otherwise>
 									</xsl:choose>
-									<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
+									<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+										<I class="fal fa-times"></I>
+									</BUTTON>
 								</DIV>
 								<DIV class="modal-body">
 									<DIV class="form-group col-8">
@@ -159,16 +167,18 @@
 							<DIV class="modal-content">
 								<DIV class="modal-body">
 									<DIV class="d-flex">
-										<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
+										<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+											<I class="fal fa-times"></I>
+										</BUTTON>
 									</DIV>
-									<DIV class="mt-3">
-										<I class="fas fa-exclamation-circle text-info mb-1" style="font-size: 50px;"></I>
-										<P class="text-bold">1. 對方不會知道您封鎖他</P>
-										<P class="text-bold">2. 對方瀏覽您的網頁，會出現您的帳戶已關閉</P>
+									<DIV class="mt-3 text-center">
+										<I class="fas fa-exclamation-circle text-info mb-2 fontSize50"></I>
+										<P class="text-dark">1. 對方不會知道您封鎖他</P>
+										<P class="text-dark">2. 對方瀏覽您的網頁，會出現您的帳戶已關閉</P>
 									</DIV>
-									<DIV>
-										<BUTTON class="btn btn-primary block" type="button">確認</BUTTON>
-										<BUTTON class="btn btn-secondary mx-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+									<DIV class="text-center">
+										<BUTTON type="button" class="btn btn-outline-primary px-3 py-2 block">確認</BUTTON>
+										<BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
 									</DIV>
 								</DIV>
 							</DIV>
@@ -179,35 +189,40 @@
 					<DIV class="modal fade" id="cropModal">
 						<DIV class="modal-dialog modal-dialog-centered">
 							<DIV class="modal-content">
-								<DIV class="modal-header">
-									<DIV class="modal-title h5">
-										<IMG alt="relief" src="/accept.svg" width="30"/>
-										<SPAN class="ms-1">手持證件安心認證</SPAN>
-									</DIV>
-									<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
-								</DIV>
 								<DIV class="modal-body">
-									<P class="text-primary text-bold">上傳本人自拍並且手持證件，通過安心認證增加真實性！</P>
-									<P class="text-primary text-bold">此照片不會對外顯示，請安心上傳。</P>
-									<LABEL>
-										<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
-										<A class="btn btn-outline-info">上傳手持證件</A>
-									</LABEL>
-									<DIV class="result"></DIV>
-									<DIV class="progress-wrapper">
-										<DIV class="progress-info">
-											<DIV class="progress-percentage">
-												<span class="text-sm font-weight-bold">0%</span>
+									<DIV class="d-flex">
+										<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+											<I class="fal fa-times"></I>
+										</BUTTON>
+									</DIV>
+									<DIV class="mt-3 text-center">
+										<DIV class="d-flex align-items-center justify-content-center">
+											<I class="fad fa-shield-check fontSize25"></I>
+											<SPAN class="text-primary text-bold">通過安心認證，增加邀約成功率</SPAN>
+										</DIV>
+										<DIV class="text-dark my-2">上傳本人自拍並且手持證件，通過安心認證增加真實性！</DIV>
+										<DIV class="text-dark my-2">此照片不會對外顯示，請安心上傳。</DIV>
+										<LABEL class="cursor-pointer">
+											<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
+											<I class="fad fa-camera fontSize35 text-primary"></I>
+										</LABEL>
+										<DIV class="text-primary text-sm">照片僅供系統認證使用，不會外流，請安心上傳。</DIV>
+										<DIV class="result"></DIV>
+										<DIV class="progress-wrapper my-3 w-90 mx-auto">
+											<DIV class="progress-info">
+												<DIV class="progress-percentage">
+													<span class="text-sm font-weight-bold">0%</span>
+												</DIV>
+											</DIV>
+											<DIV class="progress">
+												<DIV class="progress-bar bg-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></DIV>
 											</DIV>
 										</DIV>
-										<DIV class="progress">
-											<DIV class="progress-bar bg-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></DIV>
-										</DIV>
 									</DIV>
-								</DIV>
-								<DIV class="modal-footer">
-									<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消</BUTTON>
-									<BUTTON class="btn btn-primary" id="cropBtn" type="button" style="display: none;">上傳</BUTTON>
+									<DIV class="text-center">
+										<BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+										<BUTTON class="btn btn-outline-primary px-3 py-2" id="cropBtn" type="button" style="display: none;">上傳</BUTTON>
+									</DIV>
 								</DIV>
 							</DIV>
 						</DIV>
@@ -217,13 +232,15 @@
 							<DIV class="modal-content">
 								<DIV class="modal-body">
 									<DIV class="d-flex">
-										<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
+										<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+											<I class="fal fa-times"></I>
+										</BUTTON>
 									</DIV>
 									<DIV class="mt-3 text-center">
-										<I class="fal fa-user-friends text-success mb-1" style="font-size: 50px;"></I>
-										<H4>好友邀請碼</H4>
+										<I class="fad fa-users-crown mb-1 fontSize50"></I>
+										<H4 class="text-primary">好友邀請碼</H4>
 										<DIV class="d-flex justify-content-center">
-											<DIV class="h1 text-lighter" id="referralCode">
+											<DIV class="h2 text-lighter" id="referralCode">
 												<xsl:value-of select="@referralCode"/>
 											</DIV>
 											<BUTTON class="btn btn-link m-0 p-0 text-lg ms-2 text-dark" id="referralCodeCopy">
@@ -232,7 +249,7 @@
 										</DIV>
 									</DIV>
 									<DIV class="text-center">
-										<BUTTON class="btn btn-secondary mx-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+										<BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
 									</DIV>
 								</DIV>
 							</DIV>
@@ -245,7 +262,7 @@
 							<DIV class="modal-content">
 								<DIV class="modal-body">
 									<DIV class="mt-3 text-center">
-										<I class="fal fa-times text-warning mb-1" style="font-size: 50px;"></I>
+										<I class="fal fa-times text-warning mb-1 fontSize50"></I>
 										<H5 class="modal-title">
 											<xsl:if test="@blocking">此用戶已被您封鎖</xsl:if>
 											<xsl:if test="@blockedBy">此用戶已不存在</xsl:if>
@@ -347,29 +364,30 @@
 										<xsl:attribute name="class">btn btn-icon-only btn-link fav</xsl:attribute>
 									</xsl:otherwise>
 								</xsl:choose>
-								<I class="fad fa-heart fontSize35"></I>
+								<I class="fad fa-heart-circle fontSize35"></I>
 							</BUTTON>
 						</DIV>
 						<DIV>
 							<A class="btn btn-icon-only btn-link ms-4" href="/chatroom/{@identifier}/">
-								<I class="fad fa-comment-dots fontSize35"></I>
+								<I class="fad fa-comment-smile fontSize35"></I>
 							</A>
 						</DIV>
 						<xsl:if test="/document/@male">
 							<DIV>
 								<BUTTON class="btn btn-icon-only btn-link ms-4 gift" type="button">
-									<I class="fad fa-taxi fontSize35"></I>
+									<I class="fad fa-badge-dollar fontSize35"></I>
 								</BUTTON>
 							</DIV>
 						</xsl:if>
 						<DIV>
-							<A class="btn btn-icon-only btn-link ms-4" data-bs-toggle="dropdown">
-								<I class="fad fa-exclamation-circle fontSize35"></I>
-							</A>
-							<DIV class="dropdown-menu shadow">
-								<BUTTON class="dropdown-item">檢舉對方</BUTTON>
-								<BUTTON class="dropdown-item" data-bs-target="#blockModal" data-bs-toggle="modal">封鎖對方</BUTTON>
-							</DIV>
+							<BUTTON class="btn btn-icon-only btn-link ms-4">
+								<I class="fad fa-lightbulb-exclamation fontSize35"></I>
+							</BUTTON>
+						</DIV>
+						<DIV>
+							<BUTTON class="btn btn-icon-only btn-link ms-3 me-1" data-bs-target="#blockModal" data-bs-toggle="modal">
+								<I class="fad fa-user-slash fontSize35"></I>
+							</BUTTON>
 						</DIV>
 					</DIV>
 				</xsl:if>
@@ -423,10 +441,12 @@
 							<DIV class="modal-content">
 								<DIV class="modal-body">
 									<DIV class="d-flex">
-										<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
+										<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+											<I class="fal fa-times"></I>
+										</BUTTON>
 									</DIV>
 									<DIV class="mt-3 text-center">
-										<I class="far fa-comment-alt-smile text-success mb-1" style="font-size: 50px;"></I>
+										<I class="far fa-comment-alt-smile text-success mb-1 fontSize50"></I>
 										<H5 class="modal-title">編輯評價</H5>
 									</DIV>
 									<DIV class="form-group mx-auto col-10">
@@ -474,7 +494,9 @@
 							</DIV>
 						</DIV>
 					</DIV>
-					<BUTTON class="btn btn-link p-1 mb-0 moreRate" data-page="0">更多評價...</BUTTON>
+					<xsl:if test="not(@lastPage)">
+						<BUTTON class="btn btn-link p-1 mb-0 moreRate" data-page="0">更多評價...</BUTTON>
+					</xsl:if>
 				</DIV>
 			</xsl:if>
 		</DIV>
@@ -501,13 +523,13 @@
 						</DIV>
 					</xsl:if>
 					<xsl:if test="(/document/@me) and (not(@relief) or @relief = 'false')">
-						<DIV class="mx-1">
+						<DIV class="mx-1 reliefBadge">
 							<xsl:if test="@relief = 'false'">
-								<I class="fas fa-shield-check fontSize25 text-secondary"></I>
+								<I class="fad fa-shield-check fontSize25"></I>
 							</xsl:if>
 							<xsl:if test="not(@relief)">
 								<DIV class="cursor-pointer" data-bs-target="#cropModal" data-bs-toggle="modal">
-									<I class="fas fa-shield-check fontSize25 text-secondary"></I>
+									<I class="fad fa-shield-check fontSize25"></I>
 								</DIV>
 							</xsl:if>
 						</DIV>
@@ -529,7 +551,7 @@
 					</xsl:if>
 				</DIV>
 				<xsl:if test="/document/@me">
-					<DIV class="d-flex align-items-center">
+					<DIV class="d-flex align-items-center my-2">
 						<BUTTON class="btn text-xs bg-gradient-primary px-2 py-1 m-0" data-bs-target="#referralCodeModal" data-bs-toggle="modal">邀請碼</BUTTON>
 					</DIV>
 				</xsl:if>
@@ -545,7 +567,10 @@
 					<I class="fad fa-map-marker-alt fontSize22 me-2"></I>
 					<xsl:for-each select="location">
 						<A class="me-1 btn btn-dark m-0 px-2 py-1" href="/search.json?location={@id}">
-							<xsl:value-of select="."/>
+							<SPAN>#</SPAN>
+							<SPAN>
+								<xsl:value-of select="."/>
+							</SPAN>
 						</A>
 					</xsl:for-each>
 				</DIV>

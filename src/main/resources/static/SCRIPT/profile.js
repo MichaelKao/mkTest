@@ -138,8 +138,11 @@ $(document).ready(function () {
 			data: file,
 			type: 'post',
 			success: function (data) {
-				$(relief).attr('disabled', 'ture');
-				$(relief).text('安心認證審核中');
+				$('.toast-body').html('上傳成功，等待人員審核');
+				$('.toast').toast('show');
+				var i = document.createElement('I');
+				$(i).attr('class', 'fad fa-shield-check fontSize25');
+				$('DIV.reliefBadge').empty().append(i);
 				$cropModal.modal('hide');
 			},
 			error: function (request, status, error) {

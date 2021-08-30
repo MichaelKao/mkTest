@@ -26,6 +26,10 @@ INPUT, TEXTAREA {
 	font-size: 35px;
 }
 
+.fontSize50 {
+	font-size: 50px;
+}
+
 .text-pink {
 	color: #D63384;
 }
