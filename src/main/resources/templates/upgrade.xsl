@@ -28,67 +28,130 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container py-8">
-				<DIV class="text-center mx-sm-5 mx-lg-12 mb-5">
-					<H4 class="text-primary">
-						<xsl:value-of select="@title"/>
+			<DIV class="container pt-7 pt-md-8 px-2">
+				<DIV class="text-center mx-sm-5 mx-lg-12 mb-3">
+					<H4>
+						<I class="fad fa-crown fontSize22 text-dark me-2"></I>
+						<SPAN class="text-pink">
+							<xsl:value-of select="@title"/>
+						</SPAN>
 					</H4>
 				</DIV>
-				<DIV class="d-flex flex-column flex-md-row align-items-center justify-content-center ms-2">
-					<DIV class="col-11 col-md-6 col-xl-4 card mb-3 mx-2">
-						<DIV class="card-body p-md-4 p-lg-5">
-							<DIV class="d-flex align-items-baseline">
-								<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">長期 VIP</SPAN>
-								<xsl:if test="@vvip and @isEligibleToStopRecurring">
-									<BUTTON class="ms-auto btn btn-sm btn-outline-danger px-3 px-sm-4 m-0 stopRecurring">解除</BUTTON>
-								</xsl:if>
+				<xsl:if test="@vvip or @vip">
+					<DIV class="text-center border-radius-xl mx-auto col-11 col-md-10 col-xl-8 p-1 mb-3" style="border: 1px solid #d63384;">
+						<xsl:if test="@vip">
+							<DIV class="text-pink text-bold">目前為 $1688 VIP</DIV>
+							<DIV class="text-dark text-bold text-xs">
+								<SPAN class="me-1">到期日</SPAN>
+								<SPAN>
+									<xsl:value-of select="@vipExpiry"/>
+								</SPAN>
 							</DIV>
-							<DIV class="text-lg text-bold text-dark my-2">
-								<SPAN>月付1288元 / 一年期</SPAN>
-							</DIV>
-							<DIV class="card-description d-flex align-items-baseline">
-								<SPAN>NT$</SPAN>
-								<SPAN>1288</SPAN>
-								<xsl:if test="not(@vvip)">
-									<A class="ms-auto btn btn-sm btn-outline-info px-3 px-sm-4 m-0" href="/upgrade/2.asp">升級</A>
+						</xsl:if>
+						<xsl:if test="@vvip">
+							<DIV class="text-pink text-bold">目前為 $1288 VIP</DIV>
+							<DIV class="ms-auto text-dark text-xs">
+								<xsl:if test="@isEligibleToStopRecurring">
+									<SPAN class="me-1">下次扣款</SPAN>
 								</xsl:if>
-								<xsl:if test="@vvip">
-									<DIV class="ms-auto text-warning text-sm">
-										<xsl:if test="@isEligibleToStopRecurring">
-											<SPAN class="me-1">下次扣款</SPAN>
-										</xsl:if>
-										<xsl:value-of select="@vvipExpiry"/>
-										<xsl:if test="not(@isEligibleToStopRecurring)">
-											<SPAN class="ms-1">到期</SPAN>
-										</xsl:if>
-									</DIV>
+								<xsl:if test="not(@isEligibleToStopRecurring)">
+									<SPAN class="me-1">到期日</SPAN>
 								</xsl:if>
+								<xsl:value-of select="@vvipExpiry"/>
 							</DIV>
+							<xsl:if test="@isEligibleToStopRecurring">
+								<BUTTON class="ms-auto btn btn-sm btn-dark px-3 px-sm-4 m-0 stopRecurring my-2">解除定期定額</BUTTON>
+								<SPAN class="text-pink text-sm">解除將失去 VIP 功能</SPAN>
+							</xsl:if>
+						</xsl:if>
+					</DIV>
+				</xsl:if>
+				<DIV class="row mx-auto justify-content-center">
+					<DIV class="col-11 col-md-5 col-xl-4 card mb-3 mx-2 " style="background: #D63384CC;">
+						<DIV class="card-body p-4 p-lg-5">
+							<DIV class="text-center bg-white border-radius-xl py-2">
+								<SPAN class="text-dark text-lg font-weight-bold my-2">$1688/月 VIP</SPAN>
+								<DIV class="text-lg text-bold text-center text-dark my-1">
+									<DIV class="text-sm">單次付款</DIV>
+									<DIV class="text-xs">不可取消</DIV>
+								</DIV>
+							</DIV>
+							<DIV class="text-lg text-bold text-center text-white my-3">
+								<DIV>
+									<I class="fas fa-check-circle"></I>
+									<SPAN class="ms-1">每日聊天會員無限制</SPAN>
+								</DIV>
+								<DIV class="text-sm mx-auto bg-dark border-radius-xl py-1 px-2">可與站內所有女會員聊</DIV>
+							</DIV>
+							<DIV class="text-lg text-bold text-center text-white my-3">
+								<DIV>
+									<I class="fas fa-check-circle"></I>
+									<SPAN class="ms-1">加入好友與通訊軟體</SPAN>
+								</DIV>
+								<DIV class="text-sm mx-auto bg-dark border-radius-xl py-1 px-2">可加入 meQUEEN 的好友邀請</DIV>
+							</DIV>
+							<DIV class="text-lg text-bold text-center text-white my-3">
+								<DIV>
+									<I class="fas fa-check-circle"></I>
+									<SPAN class="ms-1">查看會員評價詳情</SPAN>
+								</DIV>
+								<DIV class="text-sm mx-auto bg-dark border-radius-xl py-1 px-2">可看見 meQueen 文字評價</DIV>
+							</DIV>
+							<DIV class="text-lg text-bold text-center text-white my-3">
+								<DIV>
+									<I class="fas fa-check-circle"></I>
+									<SPAN class="ms-1">要求看生活照</SPAN>
+								</DIV>
+								<DIV class="text-sm mx-auto bg-dark border-radius-xl py-1 px-2">可請求查看 meQUEEN 生活照，對方接受後可查看更多</DIV>
+							</DIV>
+							<xsl:if test="not(@vvip) and not(@vip)">
+								<DIV class="text-center">
+									<A class="btn btn-light btn-round px-4 m-0" href="/upgrade/1.asp">升級</A>
+								</DIV>
+							</xsl:if>
 						</DIV>
 					</DIV>
-					<DIV class="col-11 col-md-6 col-xl-4 card mb-3 mx-2">
-						<DIV class="card-body p-md-4 p-lg-5">
-							<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">短期 VIP</SPAN>
-							<DIV class="text-lg text-bold text-dark my-2">
-								<SPAN>一個月$1688 / 一次性</SPAN>
+					<DIV class="col-11 col-md-5 col-xl-4 card mb-3 mx-2 " style="background: #D63384;">
+						<DIV class="card-body p-4 p-lg-5">
+							<DIV class="text-center bg-white border-radius-xl py-2">
+								<SPAN class="text-dark text-lg font-weight-bold my-2">$1288/月 VIP</SPAN>
+								<DIV class="text-lg text-bold text-center text-dark my-1">
+									<DIV class="text-sm">定期定額扣款，扣繳12次</DIV>
+									<DIV class="text-xs">可於期限內取消</DIV>
+									<DIV class="text-xs">扣款申請時當月已扣款，則於次月取消</DIV>
+								</DIV>
 							</DIV>
-							<DIV class="card-description d-flex align-items-baseline">
-								<SPAN>NT$</SPAN>
-								<SPAN>1288</SPAN>
-								<xsl:if test="not(@vvip) and not(@vip)">
-									<A class="ms-auto btn btn-sm btn-outline-info px-3 px-sm-4 m-0" href="/upgrade/1.asp">升級</A>
-								</xsl:if>
-								<xsl:if test="@vip">
-									<SPAN class="ms-auto text-warning text-sm">
-										<SPAN>
-											<xsl:value-of select="@vipExpiry"/>
-										</SPAN>
-										<SPAN class="ms-1">到期</SPAN>
-									</SPAN>
-								</xsl:if>
+							<DIV class="text-lg text-bold text-center text-white my-3">
+								<DIV>
+									<I class="fad fa-crown"></I>
+									<SPAN class="ms-1">VIP 等級標章</SPAN>
+								</DIV>
+								<DIV class="text-sm mx-auto bg-dark border-radius-xl py-1 px-2">提高 meQueen 主動認識您的機會</DIV>
 							</DIV>
+							<DIV class="text-lg text-bold text-center text-white my-3">
+								<DIV>
+									<I class="fad fa-crown"></I>
+									<SPAN class="ms-1">VIP 推薦專區</SPAN>
+								</DIV>
+								<DIV class="text-sm mx-auto bg-dark border-radius-xl py-1 px-2">於首頁 VIP 專區顯示您的資料，讓 meQUEEN 更容易注意到您</DIV>
+							</DIV>
+							<DIV class="text-lg text-bold text-center text-white my-3">
+								<DIV>
+									<I class="fad fa-crown"></I>
+									<SPAN class="ms-1">所有 VIP 功能</SPAN>
+								</DIV>
+								<DIV class="text-sm mx-auto bg-dark border-radius-xl py-1 px-2">除了新增標章，也包含 $1688 VIP 功能</DIV>
+							</DIV>
+							<xsl:if test="not(@vvip)">
+								<DIV class="text-center">
+									<A class="btn btn-light btn-round px-4 m-0" href="/upgrade/2.asp">升級</A>
+								</DIV>
+							</xsl:if>
 						</DIV>
 					</DIV>
+				</DIV>
+				<DIV class="text-center border-radius-xl mx-auto col-11 col-md-10 col-xl-8 px-1" style="border: 1px solid #D63384;">
+					<SPAN class="text-pink">本筆款項將在信⽤卡帳單僅會顯示為 「線上儲值」</SPAN>
 				</DIV>
 				<xsl:call-template name="footer"/>
 			</DIV>

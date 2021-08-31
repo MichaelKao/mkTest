@@ -31,23 +31,14 @@
 			<xsl:call-template name="bootstrapToast"/>
 			<INPUT id="me" type="hidden" value="{@identifier}"/>
 			<DIV class="container py-8">
-				<DIV class="card col-11 col-md-8 col-lg-6 mx-auto">
-					<DIV class="card-body pt-2">
-						<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">養蜜 Young me</SPAN>
-						<DIV class="h3 d-block text-darker my-2">解鎖長期 VIP</DIV>
-						<P class="card-description mb-4">
-							<DIV>1. 持有貴賓標章</DIV>
-							<DIV>2. 排序提高</DIV>
-						</P>
-					</DIV>
-				</DIV>
 				<DIV class="card col-11 col-md-8 col-lg-6 mx-auto mt-3">
-					<DIV class="card-body pt-2">
-						<xsl:if test="not(@vip) and not(@vvip)">
-							<DIV class="h3 d-block text-darker my-2">馬上升級!</DIV>
+					<DIV class="card-body">
+						<xsl:if test="not(@vvip)">
+							<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">養蜜 Young me</SPAN>
+							<DIV class="h4 d-block text-darker my-2">馬上升級 $1288 VIP !</DIV>
 							<DIV id="ECPayPayment"/>
-							<FORM action="" method="post" name="payment">
-								<BUTTON class="btn btn-outline-info btn-sm h6 text-info px-3 m-0" type="submit">付款</BUTTON>
+							<FORM action="" class="text-center mt-2" method="post" name="payment">
+								<BUTTON class="btn bg-dark btn-round text-white mb-0" type="submit">付款</BUTTON>
 							</FORM>
 						</xsl:if>
 					</DIV>
