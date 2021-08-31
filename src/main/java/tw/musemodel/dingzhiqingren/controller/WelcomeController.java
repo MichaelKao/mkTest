@@ -2180,7 +2180,6 @@ public class WelcomeController {
 			Element planElement = document.createElement("plan");
 			planElement.setAttribute("points", Short.toString(plan.getPoints()));
 			planElement.setAttribute("amount", Integer.toString(plan.getAmount()));
-			planElement.setTextContent("方案" + plan.getId().toString());
 			documentElement.appendChild(planElement);
 		}
 

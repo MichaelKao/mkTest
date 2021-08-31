@@ -33,10 +33,12 @@
 			<INPUT id="plan" type="hidden" value="{plan/@id}"/>
 			<DIV class="container pt-7 pb-5">
 				<DIV class="card col-11 col-md-8 col-lg-6 mx-auto mt-3">
-					<DIV class="card-body pt-2">
+					<DIV class="card-body">
+						<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">養蜜 Young me</SPAN>
+						<DIV class="h4 d-block text-darker my-2">購買 ME 點</DIV>
 						<DIV id="ECPayPayment"/>
-						<FORM action="" class="mt-2 text-center" method="post" name="payment">
-							<BUTTON class="btn btn-outline-info btn-sm h6 text-info px-3 m-0" type="submit">付款</BUTTON>
+						<FORM action="" class="text-center mt-2" method="post" name="payment">
+							<BUTTON class="btn bg-dark btn-round text-white mb-0" type="submit">付款</BUTTON>
 						</FORM>
 					</DIV>
 				</DIV>

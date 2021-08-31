@@ -203,7 +203,7 @@
 									<LI class="nav-item">
 										<A class="nav-link nav-link-icon d-flex align-items-center" href="/recharge.asp">
 											<I class="fad fa-badge-dollar fontSize22 me-1"></I>
-											<SPAN class="d-lg-none">儲值愛心</SPAN>
+											<SPAN class="d-lg-none">購買ME點</SPAN>
 										</A>
 									</LI>
 									<LI class="nav-item">

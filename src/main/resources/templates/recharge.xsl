@@ -28,43 +28,62 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container py-8">
-				<DIV class="text-center mx-sm-5 mx-lg-12 mb-5">
-					<H4 class="text-primary">
-						<xsl:value-of select="@title"/>
+			<DIV class="container pt-7 pt-md-8">
+				<DIV class="text-center mx-sm-5 mx-lg-12 mb-3">
+					<H4>
+						<I class="fad fa-badge-dollar fontSize22 text-dark me-2"></I>
+						<SPAN class="text-pink">
+							<xsl:value-of select="@title"/>
+						</SPAN>
 					</H4>
-					<P class="text-sm px-3">使用平台支付不必擔心私下給甜心爽約，可檢舉查證屬實退回</P>
-					<HR class="horizontal dark"/>
 				</DIV>
-				<DIV class="text-center h5">
-					<SPAN>您剩餘的愛心：</SPAN>
+				<DIV class="text-center text-dark text-sm">
+					<DIV>可以用於站內發送ME點</DIV>
+					<DIV>讓您更快找到養蜜</DIV>
+				</DIV>
+				<DIV class="text-center text-pink text-sm">
+					<DIV>站內發送如遇到爽約詐騙</DIV>
+					<DIV>48小時內提出申請</DIV>
+					<DIV>經檢舉查證可退回點數</DIV>
+				</DIV>
+				<DIV class="text-center text-pink text-bold border-radius-xl mx-auto col-11 col-md-6 p-1 my-3" style="border: 1px solid #D63384;">
+					<SPAN>您剩餘的ME點：</SPAN>
 					<SPAN>
 						<xsl:value-of select="hearts"/>
 					</SPAN>
 				</DIV>
-				<DIV class="d-flex flex-column flex-md-row align-items-center justify-content-center ms-2">
+				<DIV class="row mx-auto justify-content-center">
 					<xsl:for-each select="plan">
-						<DIV class="col-11 col-md-4 card mb-3 mx-2">
-							<DIV class="card-body p-md-4 p-lg-5">
-								<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">
-									<xsl:value-of select="."/>
-								</SPAN>
-								<DIV class="text-lg text-bold text-dark my-2">
-									<I class="far fa-heart"></I>
-									<SPAN class="ms-1">
+						<DIV class="col-11 col-md-6 card mb-3 mx-2">
+							<xsl:if test="position() = 1">
+								<xsl:attribute name="style">background: #E176AB;</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="position() = 2">
+								<xsl:attribute name="style">background: #D63384;</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="position() = 3">
+								<xsl:attribute name="style">background: #9F2360;</xsl:attribute>
+							</xsl:if>
+							<DIV class="card-body p-2">
+								<DIV class="text-bold text-white text-center">
+									<SPAN>ME點</SPAN>
+									<SPAN class="mx-1">
 										<xsl:value-of select="@points"/>
 									</SPAN>
-								</DIV>
-								<DIV class="card-description d-flex align-items-baseline">
+									<SPAN>｜ NT$</SPAN>
 									<SPAN>
-										<SPAN>NT$</SPAN>
 										<xsl:value-of select="@amount"/>
 									</SPAN>
-									<A class="ms-auto btn btn-sm btn-outline-info px-3 px-sm-4 m-0" href="/recharge/{position()}.asp">選擇</A>
+									<DIV class="text-center mt-2">
+										<A class="btn btn-round btn-light px-4 py-2 m-0" href="/recharge/{position()}.asp">購買</A>
+									</DIV>
 								</DIV>
 							</DIV>
 						</DIV>
 					</xsl:for-each>
+				</DIV>
+				<DIV class="text-center text-pink text-sm border-radius-xl mx-auto col-11 col-md-6 p-1" style="border: 1px solid #D63384;">
+					<SPAN class="text-pink">本筆款項將在信用卡帳單僅會顯示為 「線上儲值」</SPAN>
 				</DIV>
 				<xsl:call-template name="footer"/>
 			</DIV>

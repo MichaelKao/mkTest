@@ -30,7 +30,7 @@
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
 			<INPUT id="me" type="hidden" value="{@identifier}"/>
-			<DIV class="container py-8">
+			<DIV class="container pt-8">
 				<DIV class="card col-11 col-md-8 col-lg-6 mx-auto mt-3">
 					<DIV class="card-body">
 						<xsl:if test="not(@vip) and not(@vvip)">
