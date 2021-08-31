@@ -287,5 +287,15 @@
 				<A class="m-2 text-secondary" href="/terms.asp">服務條款</A>
 			</DIV>
 		</FOOTER>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<SCRIPT async="" src="https://www.googletagmanager.com/gtag/js?id={/document/seo/googleAnalytics/@id}"/>
+		<SCRIPT>
+			<!--<xsl:copy>-->
+			<xsl:value-of
+				select="/document/seo/googleAnalytics"
+				disable-output-escaping="yes"
+			/>
+			<!--</xsl:copy>-->
+		</SCRIPT>
 	</xsl:template>
 </xsl:stylesheet>

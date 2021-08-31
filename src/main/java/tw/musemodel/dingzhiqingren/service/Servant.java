@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -31,11 +32,14 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.entity.Country;
 import tw.musemodel.dingzhiqingren.entity.Lover;
@@ -61,6 +65,9 @@ public class Servant {
 
 	@Autowired
 	private CountryRepository countryRepository;
+
+	@Value("classpath:skeleton/googleAnalytics.js")
+	private Resource googleAnalyticsResource;
 
 	@Autowired
 	private RoleRepository roleRepository;
@@ -88,6 +95,11 @@ public class Servant {
 	 * 本地服务器域名
 	 */
 	public static final String LOCALHOST = System.getenv("LOCALHOST");
+
+	/**
+	 * Google Analytics 评估 ID
+	 */
+	public static final String MEASUREMENT_ID = System.getenv("MEASUREMENT_ID");
 
 	/**
 	 * 1 天的毫秒数
@@ -330,7 +342,30 @@ public class Servant {
 	}
 
 	public Document parseDocument() throws SAXException, IOException, ParserConfigurationException {
-		return parseDocument(EMPTY_DOCUMENT_URI);
+		Document document = parseDocument(EMPTY_DOCUMENT_URI);
+		Element documentElement = document.getDocumentElement();
+
+		Element seoElement = document.createElement("seo");
+		documentElement.appendChild(seoElement);
+
+		Element googleAnalyticsElement = document.createElement("googleAnalytics");
+		googleAnalyticsElement.setAttribute("id", MEASUREMENT_ID);
+		googleAnalyticsElement.appendChild(document.createCDATASection(
+			String.format(
+				new String(
+					Files.readAllBytes(
+						googleAnalyticsResource.
+							getFile().
+							toPath()
+					),
+					StandardCharsets.UTF_8
+				),
+				MEASUREMENT_ID
+			)
+		));
+		seoElement.appendChild(googleAnalyticsElement);
+
+		return document;
 	}
 
 	public Document parseDocument(String uri) throws SAXException, IOException, ParserConfigurationException {
