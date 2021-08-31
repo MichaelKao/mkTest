@@ -29,7 +29,7 @@
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="page-header section-height-100">
-				<DIV class="container">
+				<DIV class="container mt-7">
 					<xsl:apply-templates select="form"/>
 				</DIV>
 			</DIV>
@@ -40,7 +40,7 @@
 
 	<xsl:template match="form">
 		<DIV class="row">
-			<DIV class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-auto">
+			<DIV class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-auto px-0">
 				<DIV class="card card-plain">
 					<DIV class="card-header p-1 p-sm-2 text-left">
 						<H4 class="font-weight-bolder">

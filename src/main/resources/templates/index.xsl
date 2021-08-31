@@ -33,20 +33,25 @@
 			<xsl:if test="not(@signIn)">
 				<HEADER class="header-2">
 					<INPUT name="signIn" type="hidden" value="false"/>
-					<DIV class="page-header section-height-75 relative" style="background-image: url('https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/COUPLE/COUPLE+(1).jpg')">
+					<DIV class="page-header section-height-85 relative" style="background-image: url('https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/COUPLE/COUPLE+(1).jpg')">
 						<DIV class="container text-center">
 							<DIV class="row">
 								<DIV class="col-10 col-md-6 text-center mx-auto">
-									<H2 class="text-white pt-3">訂製你的專屬情人</H2>
-									<DIV class="text-white mt-3">
-										<DIV>成熟穩重的男人</DIV>
-										<DIV>遇上充滿魅力的甜心寶貝</DIV>
-										<DIV>從此不再寂寞。</DIV>
+									<H3 class="text-white mb-0">養密</H3>
+									<H3 class="text-white mb-0">YOUNG ME</H3>
+									<H6 class="text-white">比閨蜜更親密</H6>
+									<DIV class="text-white mt-3 text-sm">
+										<DIV>她，用青春滋養你</DIV>
+										<DIV>他，用富足寵愛妳</DIV>
+										<DIV>一場最美好的養蜜關係。</DIV>
+									</DIV>
+									<DIV class="text-white mt-3 text-sm">
+										<DIV>開啟你的養蜜旅程</DIV>
 									</DIV>
 								</DIV>
 							</DIV>
 							<xsl:if test="not(@signIn)">
-								<DIV class="my-4">
+								<DIV class="mt-2">
 									<A class="btn btn-primary btn-round btn-sm mx-2" href="/signIn.asp">登入</A>
 									<A class="btn btn-primary btn-round btn-sm mx-2" href="/signUp.asp">註冊</A>
 								</DIV>
@@ -69,30 +74,50 @@
 						</DIV>
 					</DIV>
 				</HEADER>
-				<SECTION class="pt-3 pb-4">
+				<SECTION class="py-4">
 					<DIV class="container">
 						<DIV class="row">
 							<DIV class="col-lg-9 z-index-2 border-radius-xl mt-n8 mx-auto py-3 blur shadow-blur">
-								<H4 class="text-center">約會玩法使用步驟</H4>
 								<DIV class="row">
-									<DIV class="col-4 position-relative">
+									<DIV class="col-6 col-md-3 position-relative">
 										<DIV class="p-1 text-center">
-											<H3 class="text-gradient text-primary text-">1</H3>
-											<P class="text-sm">僅需使用手機號碼簡單註冊</P>
+											<H3>
+												<I class="fad fa-heart"></I>
+											</H3>
+											<DIV class="text-sm">
+												<DIV>真人審核安心認證</DIV>
+												<DIV>檢舉功能防詐騙爽約</DIV>
+											</DIV>
 										</DIV>
 										<HR class="vertical dark"/>
 									</DIV>
-									<DIV class="col-4 position-relative">
+									<DIV class="col-6 col-md-3 position-relative">
 										<DIV class="p-1 text-center">
-											<H3 class="text-gradient text-primary">2</H3>
-											<P class="text-sm">編輯你/妳的個人資料</P>
+											<H3>
+												<I class="fad fa-map-marker-alt"></I>
+											</H3>
+											<DIV class="text-sm">用戶廣布全台</DIV>
+											<DIV class="text-sm">分類搜尋更效率</DIV>
 										</DIV>
 										<HR class="vertical dark"/>
 									</DIV>
-									<DIV class="col-4">
+									<DIV class="col-6 col-md-3 position-relative">
 										<DIV class="p-1 text-center">
-											<H3 class="text-gradient text-primary">3</H3>
-											<P class="text-sm">馬上就能尋找心儀對象</P>
+											<H3>
+												<I class="fad fa-lock-alt"></I>
+											</H3>
+											<DIV class="text-sm">資訊絕對隱私</DIV>
+											<DIV class="text-sm">金流明細保密</DIV>
+										</DIV>
+										<HR class="vertical dark"/>
+									</DIV>
+									<DIV class="col-6 col-md-3">
+										<DIV class="p-1 text-center">
+											<H3>
+												<I class="fad fa-comment-smile"></I>
+											</H3>
+											<DIV class="text-sm">系統跳轉聊天</DIV>
+											<DIV class="text-sm">ID不外洩好安心</DIV>
 										</DIV>
 									</DIV>
 								</DIV>
@@ -101,7 +126,7 @@
 					</DIV>
 				</SECTION>
 				<SECTION class="py-4 w-95 mx-auto">
-					<DIV class="row my-4 px-3 px-md-5 px-lg-11">
+					<DIV class="row mx-0 my-4 px-3 px-md-5 px-lg-11">
 						<DIV class="col-md-6 d-flex align-items-center justify-content-center">
 							<DIV class="position-relative">
 								<DIV class="manPic border-radius-2xl height-200 border-radius-bottom-start-0 border-radius-top-end-0">
@@ -110,22 +135,20 @@
 							</DIV>
 						</DIV>
 						<DIV class="col-md-6 d-flex flex-column align-items-md-start align-items-center">
-							<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">MAN</SPAN>
-							<H4>馬上尋找你的理想男士</H4>
-							<DIV>這裡的對象不但事業有成，而且慷慨大方、寵愛女孩。</DIV>
-							<DIV>無論妳是網美、上班族或者是學生，</DIV>
-							<DIV>只要妳期待著被有經濟能力的人來照顧，</DIV>
-							<DIV>現在立即註冊，尋找你想要的理想關係。</DIV>
+							<SPAN class="text-gradient text-primary text-md font-weight-bold my-2">meKING</SPAN>
+							<DIV>你是叱吒職場的王者</DIV>
+							<DIV>時間的分秒珍貴無比</DIV>
+							<DIV>善用有效直接的方式</DIV>
+							<DIV>找到理想的 meQueen</DIV>
 						</DIV>
 					</DIV>
-					<DIV class="row px-3 px-md-5 px-xl-11">
+					<DIV class="row mx-0 px-3 px-md-5 px-xl-11">
 						<DIV class="col-md-6 mt-4 order-2 order-md-1 d-flex flex-column align-items-md-end align-items-center">
-							<SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">WOMAN</SPAN>
-							<H4>馬上尋找你的心儀女孩</H4>
-							<DIV>這裡的女孩渴望找尋像您這樣的成功人士，</DIV>
-							<DIV>裡面有不少的網美、直播主或學生，</DIV>
-							<DIV>她們希望能夠用她們的美麗與溫柔，來換取您的寵愛。</DIV>
-							<DIV>現在立即註冊，尋找你心儀的幸福對象。</DIV>
+							<SPAN class="text-gradient text-primary text-md font-weight-bold my-2">meQUEEN</SPAN>
+							<DIV>妳是讓人上癮的蜜糖</DIV>
+							<DIV>有著獨一無二的美麗</DIV>
+							<DIV>meKING 的萬千寵愛</DIV>
+							<DIV>讓妳的迷人燦爛綻放</DIV>
 						</DIV>
 						<DIV class="col-md-6 d-flex align-items-center justify-content-center order-1 order-md-2">
 							<DIV class="position-relative">
@@ -186,21 +209,21 @@
 		<xsl:if test="vip">
 			<ARTICLE class="col-md-8 border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
 				<DIV class="d-flex m-2 align-items-center">
-					<DIV class="badge bg-gradient-primary text-lg m-2">貴賓會員</DIV>
-					<xsl:if test="not(vip/@lastPage)">
-						<BUTTON class="ms-auto btn btn-link text-lg seeMoreBtn" data-type="vip" data-page="0">看更多<I class="far fa-angle-double-right ms-1"></I></BUTTON>
-					</xsl:if>
+					<DIV class="text-lg m-2 text-bold text-primary">貴賓會員</DIV>
+					<!--<xsl:if test="not(vip/@lastPage)">-->
+					<BUTTON class="ms-auto btn btn-link seeMoreBtn text-lg mx-2 my-0 p-0" data-type="vip" data-page="0">看更多<I class="fad fa-angle-double-right ms-1"></I></BUTTON>
+					<!--</xsl:if>-->
 				</DIV>
 				<DIV class="d-flex flex-wrap justify-content-center mx-2 vip">
 					<xsl:for-each select="vip/section">
 						<A class="position-relative m-1" href="/profile/{identifier}/">
 							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
-							<DIV class="position-absolute top-0 right-0 text-center" style="width: 25px;">
+							<DIV class="position-absolute right-0 text-center" style="width: 32px; top: 5px;">
 								<xsl:if test="@vvip">
-									<IMG class="border-radius-md" src="/vip.svg" width="25"/>
+									<I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>
 								</xsl:if>
 								<xsl:if test="@relief = 'true'">
-									<IMG class="border-radius-md" src="/accept.svg" width="25"/>
+									<I class="fas fa-shield-check fontSize22 text-success text-shadow"></I>
 								</xsl:if>
 							</DIV>
 							<DIV class="position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center">
@@ -231,6 +254,11 @@
 									</xsl:for-each>
 								</DIV>
 							</DIV>
+							<xsl:if test="@following">
+								<DIV class="position-absolute left-0 text-center" style="width: 32px; top: 5px;">
+									<I class="fas fa-heart-circle text-pink fontSize22"></I>
+								</DIV>
+							</xsl:if>
 						</A>
 					</xsl:for-each>
 				</DIV>
@@ -239,21 +267,21 @@
 		<xsl:if test="relief">
 			<ARTICLE class="col-md-8 border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
 				<DIV class="d-flex m-2 align-items-center">
-					<DIV class="badge bg-gradient-primary text-lg m-2">安心認證</DIV>
+					<DIV class="text-lg m-2 text-bold text-primary">安心認證</DIV>
 					<xsl:if test="not(relief/@lastPage)">
-						<BUTTON class="ms-auto btn btn-link text-lg seeMoreBtn" data-type="relief" data-page="0">看更多<I class="far fa-angle-double-right ms-1"></I></BUTTON>
+						<BUTTON class="ms-auto btn btn-link seeMoreBtn text-lg mx-2 my-0 p-0" data-type="relief" data-page="0">看更多<I class="fad fa-angle-double-right ms-1"></I></BUTTON>
 					</xsl:if>
 				</DIV>
 				<DIV class="d-flex flex-wrap justify-content-center mx-2 relief">
 					<xsl:for-each select="relief/section">
 						<A class="position-relative m-1" href="/profile/{identifier}/">
 							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
-							<DIV class="position-absolute top-0 right-0 text-center" style="width: 25px;">
+							<DIV class="position-absolute right-0 text-center" style="width: 32px; top: 5px;">
 								<xsl:if test="@vvip">
-									<IMG class="border-radius-md" src="/vip.svg" width="25"/>
+									<I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>
 								</xsl:if>
 								<xsl:if test="@relief = 'true'">
-									<IMG class="border-radius-md" src="/accept.svg" width="25"/>
+									<I class="fas fa-shield-check fontSize22 text-success text-shadow"></I>
 								</xsl:if>
 							</DIV>
 							<DIV class="position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center">
@@ -284,6 +312,11 @@
 									</xsl:for-each>
 								</DIV>
 							</DIV>
+							<xsl:if test="@following">
+								<DIV class="position-absolute left-0 text-center" style="width: 32px; top: 5px;">
+									<I class="fas fa-heart-circle text-pink fontSize22"></I>
+								</DIV>
+							</xsl:if>
 						</A>
 					</xsl:for-each>
 				</DIV>
@@ -292,21 +325,21 @@
 		<xsl:if test="active">
 			<ARTICLE class="col-md-8 border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
 				<DIV class="d-flex m-2 align-items-center">
-					<DIV class="badge bg-gradient-primary text-lg m-2">最近活躍</DIV>
+					<DIV class="text-lg m-2 text-bold text-primary">最近活躍</DIV>
 					<xsl:if test="not(active/@lastPage)">
-						<BUTTON class="ms-auto btn btn-link text-lg seeMoreBtn" data-type="active" data-page="0">看更多<I class="far fa-angle-double-right ms-1"></I></BUTTON>
+						<BUTTON class="ms-auto btn btn-link seeMoreBtn text-lg mx-2 my-0 p-0" data-type="active" data-page="0">看更多<I class="fad fa-angle-double-right ms-1"></I></BUTTON>
 					</xsl:if>
 				</DIV>
 				<DIV class="d-flex flex-wrap justify-content-center mx-2 active">
 					<xsl:for-each select="active/section">
 						<A class="position-relative m-1" href="/profile/{identifier}/">
 							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
-							<DIV class="position-absolute top-0 right-0 text-center" style="width: 25px;">
+							<DIV class="position-absolute right-0 text-center" style="width: 32px; top: 5px;">
 								<xsl:if test="@vvip">
-									<IMG class="border-radius-md" src="/vip.svg" width="25"/>
+									<I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>
 								</xsl:if>
 								<xsl:if test="@relief = 'true'">
-									<IMG class="border-radius-md" src="/accept.svg" width="25"/>
+									<I class="fas fa-shield-check fontSize22 text-success text-shadow"></I>
 								</xsl:if>
 							</DIV>
 							<DIV class="position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center">
@@ -337,6 +370,11 @@
 									</xsl:for-each>
 								</DIV>
 							</DIV>
+							<xsl:if test="@following">
+								<DIV class="position-absolute left-0 text-center" style="width: 32px; top: 5px;">
+									<I class="fas fa-heart-circle text-pink fontSize22"></I>
+								</DIV>
+							</xsl:if>
 						</A>
 					</xsl:for-each>
 				</DIV>
@@ -345,21 +383,21 @@
 		<xsl:if test="register">
 			<ARTICLE class="col-md-8 border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
 				<DIV class="d-flex m-2 align-items-center">
-					<DIV class="badge bg-gradient-primary text-lg m-2">最新註冊</DIV>
+					<DIV class="text-lg m-2 text-bold text-primary">最新註冊</DIV>
 					<xsl:if test="not(register/@lastPage)">
-						<BUTTON class="ms-auto btn btn-link text-lg seeMoreBtn" data-type="register" data-page="0">看更多<I class="far fa-angle-double-right ms-1"></I></BUTTON>
+						<BUTTON class="ms-auto btn btn-link seeMoreBtn text-lg mx-2 my-0 p-0" data-type="register" data-page="0">看更多<I class="fad fa-angle-double-right ms-1"></I></BUTTON>
 					</xsl:if>
 				</DIV>
 				<DIV class="d-flex flex-wrap justify-content-center mx-2 register">
 					<xsl:for-each select="register/section">
 						<A class="position-relative m-1" href="/profile/{identifier}/">
 							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
-							<DIV class="position-absolute top-0 right-0 text-center" style="width: 25px;">
+							<DIV class="position-absolute top-0 right-0 text-center" style="width: 32px; top: 5px;">
 								<xsl:if test="@vvip">
-									<IMG class="border-radius-md" src="/vip.svg" width="25"/>
+									<I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>
 								</xsl:if>
 								<xsl:if test="@relief = 'true'">
-									<IMG class="border-radius-md" src="/accept.svg" width="25"/>
+									<I class="fas fa-shield-check fontSize22 text-success text-shadow"></I>
 								</xsl:if>
 							</DIV>
 							<DIV class="position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center">
@@ -390,6 +428,11 @@
 									</xsl:for-each>
 								</DIV>
 							</DIV>
+							<xsl:if test="@following">
+								<DIV class="position-absolute left-0 text-center" style="width: 32px; top: 5px;">
+									<I class="fas fa-heart-circle text-pink fontSize22"></I>
+								</DIV>
+							</xsl:if>
 						</A>
 					</xsl:for-each>
 				</DIV>
@@ -397,9 +440,9 @@
 		</xsl:if>
 		<ARTICLE class="d-block d-md-none text-center">
 			<DIV class="d-flex flex-wrap justify-content-center mobileMode"></DIV>
-			<BUTTON class="btn btn-link text-lg seeMoreBtn" id="mobileMode"  data-page="0">看更多<I class="far fa-angle-double-right ms-1"></I></BUTTON>
+			<BUTTON class="btn btn-link text-lg seeMoreBtn" id="mobileMode"  data-page="0">看更多<I class="fad fa-angle-double-right ms-1"></I></BUTTON>
 		</ARTICLE>
-		<SECTION class="fixed-bottom d-block d-md-none bg-light border-top m-2">
+		<SECTION class="fixed-bottom d-block d-md-none bg-light shadow m-2">
 			<UL class="navbar-nav flex-row mobileMode">
 				<xsl:if test="vip">
 					<LI class="nav-item col-3 text-center">

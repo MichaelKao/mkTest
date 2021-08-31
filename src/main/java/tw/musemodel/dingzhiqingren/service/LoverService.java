@@ -2202,8 +2202,10 @@ public class LoverService {
 	 * @param lovers
 	 * @return
 	 */
-	public Document loversSimpleInfo(Document document, Collection<Lover> lovers) {
+	public Document loversSimpleInfo(Document document, Collection<Lover> lovers, Lover me, Locale locale) {
 		Element documentElement = document.getDocumentElement();
+
+		Set<Lover> following = me.getFollowing();
 
 		lovers.stream().filter(lover -> !(Objects.nonNull(lover.getDelete()))).forEachOrdered(lover -> {
 			Element loverElement = document.createElement("lover");
@@ -2240,12 +2242,51 @@ public class LoverService {
 			if (isVIP(lover)) {
 				loverElement.setAttribute("vip", null);
 			}
+			// 是否有安心認證
 			if (Objects.nonNull(lover.getRelief())) {
 				Boolean relief = lover.getRelief();
 				loverElement.setAttribute(
 					"relief",
 					relief ? "true" : "false"
 				);
+			}
+			// 是否收藏對方
+			if (Objects.nonNull(following) && following.contains(lover)) {
+				loverElement.setAttribute(
+					"following",
+					null
+				);
+			}
+			if (Objects.nonNull(lover.getRelationship())) {
+				Element relationshipElement = document.createElement("relationship");
+				relationshipElement.setTextContent(
+					messageSource.getMessage(
+						lover.getRelationship().toString(),
+						null,
+						locale
+					)
+				);
+				loverElement.appendChild(relationshipElement);
+			}
+			if (Objects.nonNull(lover.getLocations())) {
+				Set<Location> locations = lover.getLocations();
+				List<Location> locationList = new ArrayList<>(locations);
+				Collections.shuffle(locationList);
+				int count = 0;
+				for (Location location : locationList) {
+					count += 1;
+					if (count <= 3) {
+						Element locationElement = document.createElement("location");
+						locationElement.setTextContent(
+							messageSource.getMessage(
+								location.getName(),
+								null,
+								locale
+							)
+						);
+						loverElement.appendChild(locationElement);
+					}
+				}
 			}
 		});
 
@@ -2269,6 +2310,7 @@ public class LoverService {
 		if (!lover.getGender()) {
 			areaElement.appendChild(createElement(
 				document.createElement("vip"),
+				lover,
 				vipOnTheWall(
 					lover,
 					0,
@@ -2280,6 +2322,7 @@ public class LoverService {
 
 		areaElement.appendChild(createElement(
 			document.createElement("relief"),
+			lover,
 			relievingOnTheWall(
 				lover,
 				0,
@@ -2290,6 +2333,7 @@ public class LoverService {
 
 		areaElement.appendChild(createElement(
 			document.createElement("active"),
+			lover,
 			latestActiveOnTheWall(
 				lover,
 				0,
@@ -2300,6 +2344,7 @@ public class LoverService {
 
 		areaElement.appendChild(createElement(
 			document.createElement("register"),
+			lover,
 			latestRegisteredOnTheWall(
 				lover,
 				0,
@@ -2319,11 +2364,13 @@ public class LoverService {
 	 * @param locale
 	 * @return
 	 */
-	public Element createElement(Element element, Page<Lover> page, Locale locale) {
+	public Element createElement(Element element, Lover me, Page<Lover> page, Locale locale) {
 		if (page.getTotalPages() <= 1) {
 			element.setAttribute("lastPage", null);
 		}
 		Document document = element.getOwnerDocument();
+
+		Set<Lover> following = me.getFollowing();
 		page.getContent().forEach(lover -> {
 			Element sectionElement = document.createElement("section");
 			element.appendChild(sectionElement);
@@ -2345,6 +2392,13 @@ public class LoverService {
 				sectionElement.setAttribute(
 					"relief",
 					relief.toString()
+				);
+			}
+			// 是否收藏對方
+			if (Objects.nonNull(following) && following.contains(lover)) {
+				sectionElement.setAttribute(
+					"following",
+					null
 				);
 			}
 			if (Objects.nonNull(lover.getRelationship())) {
@@ -2406,8 +2460,9 @@ public class LoverService {
 	 * @param locale
 	 * @return
 	 */
-	public JSONArray seeMoreLover(Page<Lover> page, Locale locale) {
+	public JSONArray seeMoreLover(Lover me, Page<Lover> page, Locale locale) {
 		JSONArray jsonArray = new JSONArray();
+		Set<Lover> following = me.getFollowing();
 		page.getContent().stream().map(lover -> {
 			JSONObject json = new JSONObject();
 			json.put("nickname", lover.getNickname());
@@ -2416,6 +2471,9 @@ public class LoverService {
 			}
 			if (Objects.nonNull(lover.getRelief()) && lover.getRelief()) {
 				json.put("relief", true);
+			}
+			if (Objects.nonNull(following) && following.contains(lover)) {
+				json.put("following", true);
 			}
 			json.put("age", calculateAge(lover));
 			json.put("identifier", lover.getIdentifier());

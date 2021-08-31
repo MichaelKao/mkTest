@@ -30,54 +30,67 @@
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container py-8 text-center">
 				<DIV class="mx-sm-5 mx-lg-12 mb-3">
-					<H4 class="text-primary">
-						<xsl:value-of select="@title"/>
+					<H4>
+						<I class="fad fa-shoe-prints fontSize22 text-dark me-2"></I>
+						<SPAN class="text-primary">
+							<xsl:value-of select="@title"/>
+						</SPAN>
 					</H4>
 					<HR class="horizontal dark"/>
 				</DIV>
-				<DIV class="col-lg-9 mx-auto d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center">
+				<DIV class="d-flex flex-wrap justify-content-center mx-0">
 					<xsl:for-each select="peeker">
-						<DIV class="col-11 col-sm-8 col-md-5 card card-frame mb-3 mx-2">
-							<DIV class="card-body d-flex align-items-center justify-content-evenly p-3 p-md-4">
-								<DIV>
-									<A href="/profile/{@identifier}/">
-										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="70"/>
-									</A>
+						<DIV class="d-flex flex-column my-2">
+							<DIV class="text-xs">
+								<I class="fal fa-clock"></I>
+								<SPAN>
+									<xsl:value-of select="@date"/>
+								</SPAN>
+							</DIV>
+							<A class="position-relative m-1" href="/profile/{@identifier}/">
+								<IMG class="border-radius-md" src="{@profileImage}" width="150"/>
+								<DIV class="position-absolute right-0 text-center" style="width: 32px; top: 5px;">
+									<xsl:if test="@vvip">
+										<I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>
+									</xsl:if>
+									<xsl:if test="@relief = 'true'">
+										<I class="fas fa-shield-check fontSize22 text-success text-shadow"></I>
+									</xsl:if>
 								</DIV>
-								<DIV>
-									<A class="h6 d-flex align-items-end justify-content-center" href="/profile/{@identifier}/">
-										<SPAN class="me-2">
+								<DIV class="position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center">
+									<DIV>
+										<SPAN>
 											<xsl:value-of select="@nickname"/>
 										</SPAN>
-										<SPAN>
+										<SPAN class="ms-2">
 											<xsl:value-of select="@age"/>
 										</SPAN>
-										<xsl:if test="@vvip">
-											<SPAN class="ms-1">
-												<IMG class="border-radius-md" src="/vip.svg" width="27"/>
-											</SPAN>
-										</xsl:if>
-										<xsl:if test="@relief = 'true'">
-											<SPAN class="ms-1">
-												<IMG class="border-radius-md" src="/accept.svg" width="27"/>
-											</SPAN>
-										</xsl:if>
-									</A>
-									<DIV class="text-xs text-primary text-gradient text-bold">
-										<SPAN class="me-1">共到訪了</SPAN>
-										<SPAN>
-											<xsl:value-of select="@times"/>
-										</SPAN>
-										<SPAN class="ms-1">次</SPAN>
 									</DIV>
-									<DIV class="text-xs">
-										<SPAN class="me-1">最近一次</SPAN>
-										<SPAN>
-											<xsl:value-of select="@date"/>
-										</SPAN>
+									<xsl:if test="relationship">
+										<DIV>
+											<SPAN>尋找</SPAN>
+											<SPAN>
+												<xsl:value-of select="relationship"/>
+											</SPAN>
+										</DIV>
+									</xsl:if>
+									<DIV>
+										<xsl:for-each select="location">
+											<SPAN class="me-1">
+												<xsl:if test="position() = last()">
+													<xsl:attribute name="class"></xsl:attribute>
+												</xsl:if>
+												<xsl:value-of select="."/>
+											</SPAN>
+										</xsl:for-each>
 									</DIV>
 								</DIV>
-							</DIV>
+								<xsl:if test="@following">
+									<DIV class="position-absolute left-0" style="width: 32px; top: 5px;">
+										<I class="fas fa-heart-circle text-pink fontSize22"></I>
+									</DIV>
+								</xsl:if>
+							</A>
 						</DIV>
 					</xsl:for-each>
 				</DIV>

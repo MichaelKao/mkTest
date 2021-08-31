@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -298,7 +299,7 @@ public class WelcomeController {
 			put("response", true).
 			put(
 				"result",
-				loverService.seeMoreLover(page, locale)
+				loverService.seeMoreLover(me, page, locale)
 			).
 			toString();
 	}
@@ -1557,7 +1558,7 @@ public class WelcomeController {
 		);
 
 		Set<Lover> following = me.getFollowing();
-		document = loverService.loversSimpleInfo(document, following);
+		document = loverService.loversSimpleInfo(document, following, me, locale);
 
 		ModelAndView modelAndView = new ModelAndView("favorite");
 		modelAndView.getModelMap().addAttribute(document);
@@ -1734,6 +1735,7 @@ public class WelcomeController {
 			Behavior.KAN_GUO_WO
 		);
 
+		Set<Lover> following = me.getFollowing();
 		Set<Lover> peekers = new HashSet<Lover>();
 		for (History history : histories) {
 			if (!peekers.contains(history.getInitiative()) && Objects.isNull(history.getInitiative().getDelete())) {
@@ -1794,6 +1796,44 @@ public class WelcomeController {
 						"relief",
 						relief ? "true" : "false"
 					);
+				}
+				// 是否收藏對方
+				if (Objects.nonNull(following) && following.contains(peeker)) {
+					peekerElement.setAttribute(
+						"following",
+						null
+					);
+				}
+				if (Objects.nonNull(peeker.getRelationship())) {
+					Element relationshipElement = document.createElement("relationship");
+					relationshipElement.setTextContent(
+						messageSource.getMessage(
+							peeker.getRelationship().toString(),
+							null,
+							locale
+						)
+					);
+					peekerElement.appendChild(relationshipElement);
+				}
+				if (Objects.nonNull(peeker.getLocations())) {
+					Set<Location> locations = peeker.getLocations();
+					List<Location> locationList = new ArrayList<>(locations);
+					Collections.shuffle(locationList);
+					int count = 0;
+					for (Location location : locationList) {
+						count += 1;
+						if (count <= 3) {
+							Element locationElement = document.createElement("location");
+							locationElement.setTextContent(
+								messageSource.getMessage(
+									location.getName(),
+									null,
+									locale
+								)
+							);
+							peekerElement.appendChild(locationElement);
+						}
+					}
 				}
 			}
 		}
@@ -3601,7 +3641,7 @@ public class WelcomeController {
 			)
 		);
 
-		document = loverService.loversSimpleInfo(document, lovers);
+		document = loverService.loversSimpleInfo(document, lovers, me, locale);
 
 		// 搜尋到幾筆資料
 		documentElement.setAttribute(

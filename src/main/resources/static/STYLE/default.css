@@ -38,6 +38,10 @@ INPUT, TEXTAREA {
 	color: #FF8C00;
 }
 
+.text-shadow {
+	text-shadow: white 0 0px 1px, black 1px 0px 2px, white -1px 0px 2px;
+}
+
 @media (max-width: 991.98px){
 	.dropdown.nav-item .dropdown-menu-animation {
 		transition: all .35s ease-in;

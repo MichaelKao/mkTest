@@ -54,28 +54,32 @@ $(document).ready(function () {
 					$(outterA).append(IMG);
 					let iconDiv = document.createElement('DIV');
 					$(iconDiv).attr({
-						'class': 'position-absolute top-0 right-0 text-center',
-						'style': 'width: 25px;'
+						'class': 'position-absolute right-0 text-center',
+						'style': 'width: 32px; top: 5px;'
 					});
 					$(outterA).append(iconDiv);
 					if (item.vip) {
-						let vipImg = document.createElement('IMG');
-						$(vipImg).attr({
-							'class': 'border-radius-md',
-							'src': '/vip.svg',
-							'width': '25'
-						});
-						$(iconDiv).append(vipImg);
+						let vipI = document.createElement('I');
+						$(vipI).attr('class', 'fad fa-crown fontSize22 text-yellow text-shadow');
+						$(iconDiv).append(vipI);
 					}
 
 					if (item.relief) {
-						let reliefImg = document.createElement('IMG');
-						$(reliefImg).attr({
-							'class': 'border-radius-md',
-							'src': '/accept.svg',
-							'width': '25'
+						let reliefI = document.createElement('I');
+						$(reliefI).attr('class', 'fas fa-shield-check fontSize22 text-success text-shadow');
+						$(iconDiv).append(reliefI);
+					}
+
+					if (item.following) {
+						let followingDiv = document.createElement('DIV');
+						$(followingDiv).attr({
+							'class': 'position-absolute left-0 text-center',
+							'style': 'width: 32px; top: 5px;'
 						});
-						$(iconDiv).append(reliefImg);
+						$(outterA).append(followingDiv);
+						let followingI = document.createElement('I');
+						$(followingI).attr('class', 'fas fa-heart-circle text-pink fontSize22');
+						$(followingDiv).append(followingI);
 					}
 
 					let infoDiv = document.createElement('DIV');
@@ -150,28 +154,32 @@ $(document).ready(function () {
 					$(outterA).append(IMG);
 					let iconDiv = document.createElement('DIV');
 					$(iconDiv).attr({
-						'class': 'position-absolute top-0 right-0 text-center',
-						'style': 'width: 25px;'
+						'class': 'position-absolute right-0 text-center',
+						'style': 'width: 32px; top: 5px;'
 					});
 					$(outterA).append(iconDiv);
 					if (item.vip) {
-						let vipImg = document.createElement('IMG');
-						$(vipImg).attr({
-							'class': 'border-radius-md',
-							'src': '/vip.svg',
-							'width': '25'
-						});
-						$(iconDiv).append(vipImg);
+						let vipI = document.createElement('I');
+						$(vipI).attr('class', 'fad fa-crown fontSize22 text-yellow text-shadow');
+						$(iconDiv).append(vipI);
 					}
 
 					if (item.relief) {
-						let reliefImg = document.createElement('IMG');
-						$(reliefImg).attr({
-							'class': 'border-radius-md',
-							'src': '/accept.svg',
-							'width': '25'
+						let reliefI = document.createElement('I');
+						$(reliefI).attr('class', 'fas fa-shield-check fontSize22 text-success text-shadow');
+						$(iconDiv).append(reliefI);
+					}
+
+					if (item.following) {
+						let followingDiv = document.createElement('DIV');
+						$(followingDiv).attr({
+							'class': 'position-absolute left-0 text-center',
+							'style': 'width: 32px; top: 5px;'
 						});
-						$(iconDiv).append(reliefImg);
+						$(outterA).append(followingDiv);
+						let followingI = document.createElement('I');
+						$(followingI).attr('class', 'fas fa-heart-circle text-pink fontSize22');
+						$(followingDiv).append(followingI);
 					}
 
 					let infoDiv = document.createElement('DIV');
