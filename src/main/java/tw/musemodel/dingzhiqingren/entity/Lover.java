@@ -64,6 +64,9 @@ public class Lover implements java.io.Serializable {
 	@Id
 	private Integer id;
 
+	/**
+	 * 识别码
+	 */
 	@Basic(optional = false)
 	@Column(name = "shi_bie_ma", nullable = false)
 	private UUID identifier;

@@ -49,7 +49,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -87,6 +89,7 @@ import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
 import tw.musemodel.dingzhiqingren.event.SignedUpEvent;
 import tw.musemodel.dingzhiqingren.model.Activated;
+import tw.musemodel.dingzhiqingren.model.Descendant;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.ResetPassword;
 import tw.musemodel.dingzhiqingren.model.SignUp;
@@ -226,9 +229,9 @@ public class LoverService {
 	/**
 	 * 找上线用户。
 	 *
-	 * @param mofo 起始用户号
+	 * @param mofo 下线用户
 	 * @param ancestors 已知上线用户
-	 * @return 上线用户
+	 * @return 上线用户们
 	 */
 	private Collection<Integer> findAncestry(Lover mofo, Collection<Integer> ancestors) {
 		Lover ancestor = mofo.getReferrer();
@@ -254,6 +257,32 @@ public class LoverService {
 		}
 
 		return findAncestry(ancestor, ancestors);
+	}
+
+	/**
+	 * 找下线用户。
+	 *
+	 * @param me 上线用户
+	 * @return 下线用户们
+	 */
+	@Transactional(readOnly = true)
+	private List<Descendant> findDescendants(Lover me) {
+		List<Descendant> descendants = new ArrayList<>();
+		for (Lover mofo : loverRepository.findByReferrerOrderByRegistered(me)) {
+			Date deadline = mofo.getVip();
+
+			Descendant descendant = new Descendant(
+				mofo.getIdentifier(),
+				mofo.getNickname(),
+				deadline
+			);
+			descendant.setVip(
+				Objects.nonNull(deadline) && deadline.after(new Date(System.currentTimeMillis()))
+			);
+
+			descendants.add(descendant);
+		}
+		return descendants;
 	}
 
 	/**
@@ -462,6 +491,58 @@ public class LoverService {
 	public Lover changePassword(Lover mofo, String password) {
 		mofo.setShadow(passwordEncoder.encode(password));
 		return loverRepository.saveAndFlush(mofo);
+	}
+
+	/**
+	 * 找下线用户；支持分页。
+	 *
+	 * @param me 上线用户
+	 * @param PAGE 第几页
+	 * @param SIZE 每页几笔
+	 * @return 杰森格式对象
+	 */
+	@Transactional(readOnly = true)
+	public JSONObject getReferralCodeAndDescendants(final Lover me, final int PAGE, final int SIZE) {
+		List<Descendant> descendants = findDescendants(me);
+		final int numberOfElements = descendants.size(),
+			numberOfElementsUpToPage = SIZE * (PAGE + 1);
+
+		Pageable pageable = PageRequest.of(PAGE, SIZE);
+		Page<Descendant> page = new PageImpl<>(
+			descendants.subList(
+				SIZE * PAGE,
+				numberOfElementsUpToPage > numberOfElements ? numberOfElements : numberOfElementsUpToPage
+			),
+			pageable,
+			numberOfElements
+		);
+
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			withResult(
+				new JSONObject().
+					put(
+						"referralCode",
+						me.getReferralCode()
+					).//上线用户的推荐码
+					put(
+						"descendants",
+						page.getContent()
+					).//下线用户们
+					put(
+						"pagination",
+						new JSONObject().
+							put(
+								"next",
+								page.hasNext() ? page.nextOrLastPageable().getPageNumber() : null
+							).
+							put(
+								"previous",
+								page.hasPrevious() ? page.previousOrFirstPageable().getPageNumber() : null
+							)
+					)//分页元数据
+			).
+			toJSONObject();
 	}
 
 	/**
