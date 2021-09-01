@@ -39,7 +39,7 @@ public interface LoverRepository extends JpaRepository<Lover, Integer>, JpaSpeci
 	 * @param referrer 上线用户
 	 * @return 下线用户们
 	 */
-	public List<Lover> findByReferrerOrderByRegistered(Lover referrer);
+	public List<Lover> findByReferrerOrderByRegisteredDesc(Lover referrer);
 
 	public List<Lover> findByRelief(Boolean relief);
 

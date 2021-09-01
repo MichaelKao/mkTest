@@ -236,20 +236,27 @@
 											<I class="fal fa-times"></I>
 										</BUTTON>
 									</DIV>
-									<DIV class="mt-3 text-center">
-										<I class="fad fa-users-crown mb-1 fontSize50"></I>
-										<H4 class="text-primary">好友邀請碼</H4>
-										<DIV class="d-flex justify-content-center">
-											<DIV class="h2 text-lighter" id="referralCode">
-												<xsl:value-of select="@referralCode"/>
+									<DIV class="mt-3">
+										<DIV class="text-center">
+											<I class="fad fa-users-crown mb-1 fontSize50"></I>
+											<H4 class="text-primary">好友邀請碼</H4>
+											<DIV class="d-flex justify-content-center">
+												<DIV class="h2 text-lighter" id="referralCode">
+													<xsl:value-of select="@referralCode"/>
+												</DIV>
+												<BUTTON class="btn btn-link m-0 p-0 text-lg ms-2 text-dark" id="referralCodeCopy">
+													<I class="fal fa-copy"></I>
+												</BUTTON>
 											</DIV>
-											<BUTTON class="btn btn-link m-0 p-0 text-lg ms-2 text-dark" id="referralCodeCopy">
-												<I class="far fa-copy"></I>
-											</BUTTON>
+										</DIV>
+										<HR class="text-primary opacity-8 my-2"/>
+										<DIV class="position-relative">
+											<DIV class="descendants"></DIV>
+											<DIV class="pagination text-center text-sm text-primary cursor-pointer"></DIV>
 										</DIV>
 									</DIV>
 									<DIV class="text-center">
-										<BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+										<BUTTON class="btn btn-outline-dark my-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
 									</DIV>
 								</DIV>
 							</DIV>

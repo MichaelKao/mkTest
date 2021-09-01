@@ -268,13 +268,14 @@ public class LoverService {
 	@Transactional(readOnly = true)
 	private List<Descendant> findDescendants(Lover me) {
 		List<Descendant> descendants = new ArrayList<>();
-		for (Lover mofo : loverRepository.findByReferrerOrderByRegistered(me)) {
+		for (Lover mofo : loverRepository.findByReferrerOrderByRegisteredDesc(me)) {
 			Date deadline = mofo.getVip();
+			Date registered = mofo.getRegistered();
 
 			Descendant descendant = new Descendant(
 				mofo.getIdentifier(),
 				mofo.getNickname(),
-				deadline
+				registered
 			);
 			descendant.setVip(
 				Objects.nonNull(deadline) && deadline.after(new Date(System.currentTimeMillis()))

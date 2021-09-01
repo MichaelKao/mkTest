@@ -4400,4 +4400,20 @@ public class WelcomeController {
 			).
 			toString();
 	}
+
+	@PostMapping(path = "/descendants.json")
+	@ResponseBody
+	String descendants(@RequestParam(defaultValue = "0") final int p, @RequestParam(defaultValue = "5") final int s,
+		Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		return loverService.
+			getReferralCodeAndDescendants(me, p, s).
+			toString();
+	}
 }
