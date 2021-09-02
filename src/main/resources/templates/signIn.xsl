@@ -29,7 +29,7 @@
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="page-header section-height-100">
-				<DIV class="container mt-7">
+				<DIV class="container pt-7">
 					<xsl:apply-templates select="form"/>
 				</DIV>
 			</DIV>

@@ -29,7 +29,7 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container pt-7 pt-md-8 px-2">
+			<DIV class="container pt-7 pt-md-8 px-3">
 				<DIV class="modal fade" id="paymentModal" tabindex="-1">
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
@@ -319,7 +319,7 @@
 												<DIV>
 													<xsl:value-of select="@way"/>
 												</DIV>
-												<DIV class="text-dark font-weight-bold ms-1 text-xs">
+												<DIV class="text-dark font-weight-bold text-xs">
 													<xsl:value-of select="@date"/>
 												</DIV>
 
@@ -327,7 +327,7 @@
 											<DIV class="ms-auto d-flex align-items-center">
 												<DIV>
 													<SPAN class="text-xs">金額</SPAN>
-													<SPAN class="text-dark font-weight-bold text-sm">
+													<SPAN class="text-dark font-weight-bold text-sm ms-1">
 														<xsl:value-of select="@points"/>
 													</SPAN>
 												</DIV>
