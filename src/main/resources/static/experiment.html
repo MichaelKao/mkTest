@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<HTML dir="ltr" lang="zh-TW">
+	<HEAD>
+		<TITLE>TODO SUPPLY A TITLE</TITLE>
+		<META charset="UTF-8"/>
+		<META content="width=device-width, initial-scale=1.0" name="viewport"/>
+		<STYLE>
+			TD {
+				border: 1px solid #FF8040;
+				width: 96px;
+				height: 96px;
+			}
+		</STYLE>
+	</HEAD>
+	<BODY>
+		<DIV id="container"></DIV>
+		<SCRIPT src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></SCRIPT>
+		<SCRIPT>
+			let container = document.getElementById('container');
+			let table = document.createElement('TABLE'),
+				tr1 = document.createElement('TR'),
+				tr2 = document.createElement('TR'),
+				tr3 = document.createElement('TR'),
+				tr4 = document.createElement('TR'),
+				tr5 = document.createElement('TR');
+			
+			let tr1td1 = document.createElement('TD');
+			tr1td1.textContent = 'A';
+			tr1td1.setAttribute('rowspan', '3');
+			tr1.appendChild(tr1td1);
+
+			let tr1td2 = document.createElement('TD');
+			tr1td2.textContent = 'B';
+			tr1.appendChild(tr1td2);
+
+			let tr1td3 = document.createElement('TD');
+			tr1td3.textContent = 'C';
+			tr1td3.setAttribute('colspan', '3');
+			tr1.appendChild(tr1td3);
+
+			let tr2td1 = document.createElement('TD');
+			tr2td1.textContent = 'D';
+			tr2td1.setAttribute('colspan', '2');
+			tr2.appendChild(tr2td1);
+
+			let tr2td2 = document.createElement('TD');
+			tr2td2.textContent = 'E';
+			tr2td2.setAttribute('rowspan', '2');
+			tr2.appendChild(tr2td2);
+
+			let tr2td3 = document.createElement('TD');
+			tr2td3.textContent = 'F';
+			tr2.appendChild(tr2td3);
+
+//			table.appendChild(tr1);
+//			table.appendChild(tr2);
+//			table.appendChild(tr3);
+//			table.appendChild(tr4);
+//			table.appendChild(tr5);
+
+			$(container).append(
+				$(table).append(
+				),
+				$(table).append(tr2),
+				$(table).append(tr3),
+				$(table).append(tr4),
+				$(table).append(tr5)
+			);
+//			container.appendChild(table);
+		</SCRIPT>
+	</BODY>
+</HTML>

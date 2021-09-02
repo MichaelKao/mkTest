@@ -812,3 +812,24 @@ INSERT INTO"fu_wu"("fu_wu_biao_qian")VALUES
 (E'LU_YOU'),--旅遊
 (E'CHU_CHAI'),--出差
 (E'XIAO_ZHUO');--小酌
+
+/**
+ * 体验码
+ */
+CREATE TABLE"ti_yan_ma"(
+	"id"serial2 PRIMARY KEY,
+	"zi_fu_chuan"varchar UNIQUE,
+	"wang_hong"varchar
+);
+COMMENT ON TABLE"ti_yan_ma"IS'体验码';
+COMMENT ON COLUMN"ti_yan_ma"."id"IS'主键';
+COMMENT ON COLUMN"ti_yan_ma"."zi_fu_chuan"IS'字符串';
+COMMENT ON COLUMN"ti_yan_ma"."wang_hong"IS'网红';
+
+ALTER TABLE"li_cheng"
+ADD COLUMN"ti_yan_ma"int2 REFERENCES"ti_yan_ma"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+ADD CHECK(CASE WHEN"xing_wei"='DUAN_QI_GUI_BIN_TI_YAN'THEN"ti_yan_ma"IS NOT NULL END);
+COMMENT ON COLUMN"li_cheng"."ti_yan_ma"IS'体验码';
+
+ALTER TYPE"xing_wei"
+ADD VALUE'DUAN_QI_GUI_BIN_TI_YAN';--短期贵宾体验
