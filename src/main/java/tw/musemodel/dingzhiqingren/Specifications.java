@@ -133,4 +133,74 @@ public class Specifications {
 			);
 		};
 	}
+
+	/**
+	 * 尚未能提領的紀錄
+	 *
+	 * @param passive
+	 * @return
+	 */
+	public static Specification<History> notAbleTowithdrawal(Lover passive) {
+		return (Root<History> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
+			Root<History> historyRoot = root;
+			Subquery<WithdrawalRecord> subquery = criteriaQuery.subquery(
+				WithdrawalRecord.class
+			);
+			Root<WithdrawalRecord> withdrawalRecordRoot = subquery.from(WithdrawalRecord.class);
+			criteriaQuery.orderBy(criteriaBuilder.desc(
+				historyRoot.get("occurred"))
+			);
+
+			List<Predicate> predicates = new ArrayList<>();
+
+			predicates.add(
+				criteriaBuilder.equal(
+					historyRoot.get("behavior"),
+					Behavior.CHE_MA_FEI
+				)
+			);
+			predicates.add(
+				criteriaBuilder.and(
+					criteriaBuilder.equal(
+						historyRoot.get("behavior"),
+						Behavior.LAI_KOU_DIAN
+					),
+					criteriaBuilder.equal(
+						historyRoot.get("points"),
+						-100
+					)
+				)
+			);
+
+			Calendar cal = Calendar.getInstance();
+			cal.getTime();
+			cal.add(Calendar.DAY_OF_MONTH, -7);
+			Date sevenDaysAgo = cal.getTime();
+
+			return criteriaBuilder.and(
+				criteriaBuilder.equal(
+					historyRoot.get("passive"),
+					passive
+				),
+				criteriaBuilder.or(
+					predicates.toArray(new Predicate[0])
+				),
+				criteriaBuilder.greaterThanOrEqualTo(
+					historyRoot.get("occurred"),
+					sevenDaysAgo
+				),
+				criteriaBuilder.not(
+					criteriaBuilder.exists(
+						subquery.
+							select(withdrawalRecordRoot).
+							where(
+								criteriaBuilder.equal(
+									historyRoot.get("id"), withdrawalRecordRoot.get("id")
+								)
+							)
+					)
+				)
+			);
+		};
+	}
 }

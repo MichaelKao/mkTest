@@ -37,7 +37,7 @@
 						<DIV class="container text-center">
 							<DIV class="row">
 								<DIV class="col-10 col-md-6 text-center mx-auto">
-									<H3 class="text-white mb-0">養密</H3>
+									<H3 class="text-white mb-0">養蜜</H3>
 									<H3 class="text-white mb-0">YOUNG ME</H3>
 									<H6 class="text-white">比閨蜜更親密</H6>
 									<DIV class="text-white mt-3 text-sm">

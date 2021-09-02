@@ -1982,6 +1982,51 @@ public class LoverService {
 			);
 		});
 
+		historyRepository.findAll(Specifications.notAbleTowithdrawal(lover)).forEach(history -> {
+			Element notAbleToWithdrawalElement = document.createElement("notAbleToWithdrawal");
+			documentElement.appendChild(notAbleToWithdrawalElement);
+
+			notAbleToWithdrawalElement.setAttribute(
+				"date",
+				DATE_TIME_FORMATTER.format(
+					servant.toTaipeiZonedDateTime(
+						history.getOccurred()
+					).withZoneSameInstant(Servant.ASIA_TAIPEI)
+				));
+
+			notAbleToWithdrawalElement.setAttribute(
+				"male",
+				history.getInitiative().getNickname()
+			);
+
+			notAbleToWithdrawalElement.setAttribute(
+				"maleId",
+				history.getInitiative().getIdentifier().toString()
+			);
+
+			notAbleToWithdrawalElement.setAttribute(
+				"type",
+				messageSource.getMessage(
+					history.getBehavior().name(),
+					null,
+					locale
+				));
+
+			if (Objects.equals(history.getBehavior(), BEHAVIOR_FARE) && within48hrs(history.getOccurred())) {
+				notAbleToWithdrawalElement.setAttribute(
+					"ableToReturn",
+					null
+				);
+			}
+
+			@SuppressWarnings("null")
+			Short points = Objects.equals(history.getBehavior().name(), "CHE_MA_FEI") ? history.getPoints() : (short) (history.getPoints() / 2);
+			notAbleToWithdrawalElement.setAttribute(
+				"points",
+				Integer.toString(Math.abs(points))
+			);
+		});
+
 		// 等待匯款中的記錄、提領歷史紀錄
 		withdrawalRecordRepository.findHoneyAllGroupByHoneyAndStatusAndWayAndTimeStamp(lover).forEach(eachWithdrawal -> {
 			Element recordElement = document.createElement("historyRecord");
@@ -2169,6 +2214,20 @@ public class LoverService {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_MONTH, -7);
 		return calendar.getTime();
+	}
+
+	/**
+	 * 48小時之內
+	 *
+	 * @return java.util.Date
+	 */
+	public boolean within48hrs(Date compareDate) {
+		Calendar cal = Calendar.getInstance();
+		cal.getTime();
+		cal.add(Calendar.DAY_OF_MONTH, -2);
+		Date twoDaysAgo = cal.getTime();
+
+		return twoDaysAgo.before(compareDate);
 	}
 
 	/**

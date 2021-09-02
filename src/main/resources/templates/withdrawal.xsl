@@ -24,314 +24,362 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
+			<LINK href="/STYLE/withdrawal.css" rel="stylesheet"/>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container pt-7 pb-4 px-2">
-				<DIV class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+			<DIV class="container pt-7 pt-md-8 px-2">
+				<DIV class="modal fade" id="paymentModal" tabindex="-1">
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
-							<DIV class="modal-header">
-								<H5 class="modal-title">請選擇提領方式</H5>
-								<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
-							</DIV>
 							<DIV class="modal-body">
-								<BUTTON class="btn btn-light collapsed me-2" data-bs-target="#collapseWire" data-bs-toggle="collapse" type="button">銀行匯款</BUTTON>
-								<!--<BUTTON class="btn btn-light" data-bs-target="#collapsePaypal" data-bs-toggle="collapse" type="button">Paypal</BUTTON>-->
-								<DIV class="accordion" id="accordionRental">
-									<DIV class="accordion-item mb-3">
-										<DIV class="accordion-collapse collapse show" data-bs-parent="#accordionRental" id="collapseWire">
-											<DIV class="accordion-body text-sm opacity-8 p-0">
-												<DIV class="text-center">
-													<H3 class="text-primary">銀行匯款</H3>
-												</DIV>
-												<FORM action="/wireTransfer.json" class="wireTransfer" method="post">
-													<INPUT name="historyId" type="hidden" value=""/>
-													<DIV class="card-body pb-2">
-														<DIV class="row">
-															<DIV class="col-md-6">
-																<LABEL>銀行代碼</LABEL>
-																<DIV class="input-group mb-3">
-																	<INPUT class="form-control" placeholder="銀行代碼" name="wireTransferBankCode" type="text" value="{wire/@bankCode}"/>
-																</DIV>
-															</DIV>
-															<DIV class="col-md-6 ps-md-2">
-																<LABEL>分行代碼</LABEL>
-																<DIV class="input-group mb-3">
-																	<INPUT class="form-control" placeholder="分行代碼" name="wireTransferBranchCode" type="text" value="{wire/@branchCode}"/>
-																</DIV>
-															</DIV>
-														</DIV>
-														<DIV class="row">
-															<DIV class="col-md-6">
-																<LABEL>戶名</LABEL>
-																<DIV class="input-group mb-3">
-																	<INPUT class="form-control" placeholder="帳戶所有人名稱" name="wireTransferAccountName" type="text" value="{wire/@accountName}"/>
-																</DIV>
-															</DIV>
-															<DIV class="col-md-6 ps-md-2">
-																<LABEL>帳號</LABEL>
-																<DIV class="input-group mb-3">
-																	<INPUT class="form-control" placeholder="帳號" name="wireTransferAccountNumber" type="text" value="{wire/@accountNumber}"/>
-																</DIV>
-															</DIV>
-														</DIV>
-													</DIV>
-													<DIV class="text-center">
-														<BUTTON class="btn btn-lg bg-gradient-primary btn-lg mb-0" type="submit">使用銀行匯款</BUTTON>
-													</DIV>
-												</FORM>
-											</DIV>
-										</DIV>
-									</DIV>
-									<DIV class="accordion-item mb-3">
-										<DIV class="accordion-collapse collapse" data-bs-parent="#accordionRental" id="collapsePaypal">
-											<DIV class="accordion-body text-sm opacity-8">
-												<DIV class="text-center">
-													<H3 class="text-primary">Paypal</H3>
-												</DIV>
-												<FORM action="" method="post">
-													<INPUT name="historyId" type="hidden" value=""/>
-													<DIV class="card-body pb-2">
-														<DIV class="row">
-															<DIV class="col-md-6">
-																<LABEL>名字</LABEL>
-																<DIV class="input-group mb-4">
-																	<INPUT class="form-control" placeholder="全名" type="text"/>
-																</DIV>
-															</DIV>
-															<DIV class="col-md-6 ps-md-2">
-																<LABEL>Paypal Email</LABEL>
-																<DIV class="input-group">
-																	<INPUT type="email" class="form-control" placeholder="Email"/>
-																</DIV>
-															</DIV>
-														</DIV>
-													</DIV>
-													<DIV class="text-center">
-														<BUTTON class="btn btn-lg bg-gradient-primary btn-lg mt-4 mb-0" type="submit">使用 Paypal</BUTTON>
-													</DIV>
-												</FORM>
-											</DIV>
-										</DIV>
-									</DIV>
+								<DIV class="d-flex">
+									<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+										<I class="fal fa-times"></I>
+									</BUTTON>
 								</DIV>
-							</DIV>
-							<DIV class="modal-footer">
-								<BUTTON class="btn bg-gradient-secondary" data-bs-dismiss="modal" type="button">取消</BUTTON>
-							</DIV>
-						</DIV>
-					</DIV>
-				</DIV>
-				<DIV class="text-center">
-					<BUTTON class="btn btn-primary collapsed me-2 px-3" data-bs-target="#collapseOne" data-bs-toggle="collapse" type="button">可提領</BUTTON>
-					<BUTTON class="btn btn-primary me-2 px-3" data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">歷史紀錄</BUTTON>
-				</DIV>
-				<DIV class="accordion" id="accordionRental2">
-					<DIV class="accordion-item mb-3">
-						<DIV class="accordion-collapse collapse show" data-bs-parent="#accordionRental2" id="collapseOne">
-							<DIV class="accordion-body text-sm opacity-8 p-0 mt-3 col-md-8 mx-auto">
-								<DIV class="card p-3">
-									<DIV class="d-flex justify-content-center align-items-baseline">
-										<DIV class="text-bold text-primary">目前可提領的總費用：<xsl:value-of select="@points"/></DIV>
-										<xsl:if test="(@points &gt; 0)">
-											<BUTTON class="btn btn-block btn-dark m-0 p-1 withdrawal ms-1" data-bs-toggle="modal" data-bs-target="#exampleModalLong" type="button">提領</BUTTON>
-										</xsl:if>
-									</DIV>
-									<DIV class="text-bold text-xs text-center my-1">
-										<SPAN>僅能提領</SPAN>
-										<xsl:value-of select="@before7days"/>
-										<SPAN>以前的紀錄</SPAN>
-									</DIV>
-									<TABLE class="table align-items-center mb-0">
-										<THEAD>
-											<TR>
-												<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
-												<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
-												<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
-												<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
-											</TR>
-										</THEAD>
-										<TBODY>
-											<xsl:for-each select="record">
-												<TR>
-													<TD class="text-sm text-center">
-														<SPAN class="text-xs font-weight-bold">
-															<xsl:value-of select="@date"/>
-														</SPAN>
-													</TD>
-													<TD class="text-sm text-center">
-														<A class="text-secondary text-xs font-weight-bold" href="/profile/{@maleId}/">
-															<xsl:value-of select="@male"/>
-														</A>
-													</TD>
-													<TD class="text-sm text-center">
-														<SPAN class="text-secondary text-xs font-weight-bold">
-															<xsl:value-of select="@type"/>
-														</SPAN>
-													</TD>
-													<TD class="text-sm text-center">
-														<SPAN class="text-secondary text-xs font-weight-bold">
-															<xsl:value-of select="@points"/>
-														</SPAN>
-													</TD>
-												</TR>
-											</xsl:for-each>
-										</TBODY>
-									</TABLE>
-								</DIV>
-								<DIV class="card p-3 mt-3">
-									<DIV class="text-center text-primary h4">等待中</DIV>
-									<UL class="list-group">
-										<xsl:for-each select="historyRecord">
-											<xsl:if test="@status = 'false'">
-												<LI class="list-group-item border-0 d-flex p-3 mb-2 bg-gray-100 border-radius-lg">
-													<DIV class="text-sm h6 m-0">
-														<SPAN>
-															<xsl:value-of select="@way"/>
-														</SPAN>
-														<SPAN class="text-dark font-weight-bold ms-1 text-xs">
-															<xsl:value-of select="@date"/>
-														</SPAN>
-
-													</DIV>
-													<DIV class="ms-auto d-flex align-items-center">
-														<DIV>
-															<SPAN class="text-xs">金額：</SPAN>
-															<SPAN class="text-dark font-weight-bold text-sm">
-																<xsl:value-of select="@points"/>
-															</SPAN>
-														</DIV>
-														<BUTTON class="btn btn-info p-1 mb-0 ms-1 details" data-bs-toggle="collapse" data-bs-target="#success{position()}" type="button">
-															<I class="fas fa-eye me-1"></I>
-															<SPAN>明細</SPAN>
-														</BUTTON>
-													</DIV>
-												</LI>
-												<DIV class="collapse border-radius-lg" id="success{position()}">
-													<LI class="list-group-item border-0 d-flex p-2 p-md-3 mb-2 bg-gray-100">
-														<TABLE class="table align-items-center mb-0">
-															<THEAD>
-																<TR>
-																	<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
-																	<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
-																	<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
-																	<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
-																</TR>
-															</THEAD>
-															<TBODY>
-																<xsl:for-each select="history">
-																	<TR>
-																		<TD class="text-sm text-center">
-																			<SPAN class="text-xs font-weight-bold">
-																				<xsl:value-of select="@date"/>
-																			</SPAN>
-																		</TD>
-																		<TD class="text-sm text-center">
-																			<A class="text-secondary text-xs font-weight-bold" href="/profile/{@maleId}/">
-																				<xsl:value-of select="@male"/>
-																			</A>
-																		</TD>
-																		<TD class="text-sm text-center">
-																			<SPAN class="text-secondary text-xs font-weight-bold">
-																				<xsl:value-of select="@type"/>
-																			</SPAN>
-																		</TD>
-																		<TD class="text-sm text-center">
-																			<SPAN class="text-secondary text-xs font-weight-bold">
-																				<xsl:value-of select="@points"/>
-																			</SPAN>
-																		</TD>
-																	</TR>
-																</xsl:for-each>
-															</TBODY>
-														</TABLE>
-													</LI>
-												</DIV>
-											</xsl:if>
-										</xsl:for-each>
+								<DIV class="nav-wrapper col-11 mx-auto mt-3">
+									<UL class="nav nav-pills nav-fill">
+										<LI class="nav-item">
+											<A class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#wire">
+												<SPAN class="text-primary text-bold">銀行匯款</SPAN>
+											</A>
+										</LI>
+										<!--										<LI class="nav-item">
+											<A class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#paypal">
+												<SPAN class="text-primary text-bold">Paypal</SPAN>
+											</A>
+										</LI>-->
 									</UL>
 								</DIV>
+								<DIV class="tab-content">
+									<DIV class="tab-pane active" id="wire">
+										<DIV class="text-sm opacity-8 p-0">
+											<FORM action="/wireTransfer.json" class="wireTransfer" method="post">
+												<INPUT name="historyId" type="hidden" value=""/>
+												<DIV class="card-body pb-2">
+													<DIV class="row">
+														<DIV class="col-md-6">
+															<LABEL>銀行代碼</LABEL>
+															<DIV class="input-group mb-2">
+																<INPUT class="form-control" placeholder="銀行代碼" name="wireTransferBankCode" type="text" value="{wire/@bankCode}"/>
+															</DIV>
+														</DIV>
+														<DIV class="col-md-6 ps-md-2">
+															<LABEL>分行代碼</LABEL>
+															<DIV class="input-group mb-2">
+																<INPUT class="form-control" placeholder="分行代碼" name="wireTransferBranchCode" type="text" value="{wire/@branchCode}"/>
+															</DIV>
+														</DIV>
+													</DIV>
+													<DIV class="row">
+														<DIV class="col-md-6">
+															<LABEL>戶名</LABEL>
+															<DIV class="input-group mb-2">
+																<INPUT class="form-control" placeholder="帳戶所有人名稱" name="wireTransferAccountName" type="text" value="{wire/@accountName}"/>
+															</DIV>
+														</DIV>
+														<DIV class="col-md-6 ps-md-2">
+															<LABEL>帳號</LABEL>
+															<DIV class="input-group mb-2">
+																<INPUT class="form-control" placeholder="帳號" name="wireTransferAccountNumber" type="text" value="{wire/@accountNumber}"/>
+															</DIV>
+														</DIV>
+													</DIV>
+												</DIV>
+												<DIV class="text-center">
+													<BUTTON class="btn btn-lg bg-gradient-primary btn-lg mb-0" type="submit">使用銀行匯款</BUTTON>
+												</DIV>
+											</FORM>
+										</DIV>
+									</DIV>
+									<!--									<DIV class="tab-pane" id="paypal">
+										<DIV class="text-sm opacity-8">
+											<FORM action="" method="post">
+												<INPUT name="historyId" type="hidden" value=""/>
+												<DIV class="card-body pb-2">
+													<DIV class="row">
+														<DIV class="col-md-6">
+															<LABEL>名字</LABEL>
+															<DIV class="input-group mb-4">
+																<INPUT class="form-control" placeholder="全名" type="text"/>
+															</DIV>
+														</DIV>
+														<DIV class="col-md-6 ps-md-2">
+															<LABEL>Paypal Email</LABEL>
+															<DIV class="input-group">
+																<INPUT type="email" class="form-control" placeholder="Email"/>
+															</DIV>
+														</DIV>
+													</DIV>
+												</DIV>
+												<DIV class="text-center">
+													<BUTTON class="btn btn-lg bg-gradient-primary btn-lg mt-4 mb-0" type="submit">使用 Paypal</BUTTON>
+												</DIV>
+											</FORM>
+										</DIV>
+									</DIV>-->
+								</DIV>
 							</DIV>
 						</DIV>
 					</DIV>
-					<DIV class="accordion-item mb-3">
-						<DIV class="accordion-collapse collapse" data-bs-parent="#accordionRental2" id="collapseTwo">
-							<DIV class="accordion-body text-sm opacity-8 p-0 col-md-8 mx-auto">
-								<DIV class="text-center">
-									<H4 class="text-primary">歷史紀錄</H4>
+				</DIV>
+				<DIV class="nav-wrapper position-relative end-0 col-md-8 mx-auto">
+					<UL class="nav nav-pills nav-fill">
+						<LI class="nav-item">
+							<A class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#mainOne">
+								<SPAN class="text-primary text-bold">提領</SPAN>
+							</A>
+						</LI>
+						<LI class="nav-item">
+							<A class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#mainTwo">
+								<SPAN class="text-primary text-bold">等待中</SPAN>
+							</A>
+						</LI>
+						<LI class="nav-item">
+							<A class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#mainThree">
+								<SPAN class="text-primary text-bold">歷史紀錄</SPAN>
+							</A>
+						</LI>
+					</UL>
+				</DIV>
+				<DIV class="tab-content">
+					<DIV class="tab-pane mt-3 active" id="mainOne">
+						<DIV class="text-sm opacity-8 p-0 col-md-8 mx-auto">
+							<DIV class="card p-3">
+								<H6 class="text-center text-bold text-primary">目前可提領的總費用：<xsl:value-of select="@points"/></H6>
+								<DIV class="text-bold text-xs text-center my-1">
+									<SPAN>僅能提領</SPAN>
+									<xsl:value-of select="@before7days"/>
+									<SPAN>前(7天以前)的紀錄</SPAN>
 								</DIV>
-								<UL class="list-group">
-									<xsl:for-each select="historyRecord">
-										<xsl:if test="@status = 'true'">
-											<LI class="list-group-item border-0 d-flex p-3 mb-2 bg-gray-100 border-radius-lg">
-												<DIV class="text-sm h6 m-0">
-													<SPAN>
-														<xsl:value-of select="@way"/>
-													</SPAN>
-													<SPAN class="text-dark font-weight-bold ms-1 text-xs">
+								<TABLE class="table align-items-center mb-0">
+									<THEAD>
+										<TR>
+											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
+											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
+											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
+											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
+										</TR>
+									</THEAD>
+									<TBODY>
+										<xsl:for-each select="record">
+											<TR>
+												<TD class="text-sm text-center">
+													<SPAN class="text-xs font-weight-bold">
 														<xsl:value-of select="@date"/>
 													</SPAN>
-
-												</DIV>
-												<DIV class="ms-auto d-flex align-items-center">
-													<DIV>
-														<SPAN class="text-xs">金額：</SPAN>
-														<SPAN class="text-dark font-weight-bold text-sm">
-															<xsl:value-of select="@points"/>
-														</SPAN>
-													</DIV>
-													<BUTTON class="btn btn-info p-1 mb-0 ms-1" data-bs-toggle="collapse" data-bs-target="#success{position()}" type="button">
-														<I class="fas fa-eye me-1"></I>
-														<SPAN>明細</SPAN>
-													</BUTTON>
-												</DIV>
-											</LI>
-											<DIV class="collapse border-radius-lg" id="success{position()}">
-												<LI class="list-group-item border-0 d-flex p-2 p-md-3 mb-2 bg-gray-100">
-													<TABLE class="table align-items-center mb-0">
-														<THEAD>
-															<TR>
-																<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
-																<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
-																<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
-																<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
-															</TR>
-														</THEAD>
-														<TBODY>
-															<xsl:for-each select="history">
-																<TR>
-																	<TD class="text-sm text-center">
-																		<SPAN class="text-xs font-weight-bold">
-																			<xsl:value-of select="@date"/>
-																		</SPAN>
-																	</TD>
-																	<TD class="text-sm text-center">
-																		<A class="text-secondary text-xs font-weight-bold" href="/profile/{@maleId}/">
-																			<xsl:value-of select="@male"/>
-																		</A>
-																	</TD>
-																	<TD class="text-sm text-center">
-																		<SPAN class="text-secondary text-xs font-weight-bold">
-																			<xsl:value-of select="@type"/>
-																		</SPAN>
-																	</TD>
-																	<TD class="text-sm text-center">
-																		<SPAN class="text-secondary text-xs font-weight-bold">
-																			<xsl:value-of select="@points"/>
-																		</SPAN>
-																	</TD>
-																</TR>
-															</xsl:for-each>
-														</TBODY>
-													</TABLE>
-												</LI>
+												</TD>
+												<TD class="text-sm text-center">
+													<A class="text-secondary text-xs font-weight-bold" href="/profile/{@maleId}/">
+														<xsl:value-of select="@male"/>
+													</A>
+												</TD>
+												<TD class="text-sm text-center">
+													<SPAN class="text-secondary text-xs font-weight-bold">
+														<xsl:value-of select="@type"/>
+													</SPAN>
+												</TD>
+												<TD class="text-sm text-center">
+													<SPAN class="text-secondary text-xs font-weight-bold">
+														<xsl:value-of select="@points"/>
+													</SPAN>
+												</TD>
+											</TR>
+										</xsl:for-each>
+									</TBODY>
+								</TABLE>
+								<xsl:if test="(@points &gt; 0)">
+									<BUTTON class="btn btn-block btn-primary m-0 py-2 withdrawal border-radius-xl mt-2" data-bs-toggle="modal" data-bs-target="#paymentModal" type="button">提領</BUTTON>
+								</xsl:if>
+							</DIV>
+							<DIV class="card p-3 mt-3">
+								<DIV class="text-center mb-3">
+									<H6 class="text-primary">尚未能提領的紀錄</H6>
+									<DIV class="text-bold text-xs">
+										<DIV>如約會臨時無法出席，</DIV>
+										<DIV>可以於48小時內退回車馬費</DIV>
+										<DIV>避免被檢舉與誤會的機會唷</DIV>
+									</DIV>
+								</DIV>
+								<xsl:for-each select="notAbleToWithdrawal">
+									<DIV class="d-flex">
+										<DIV>
+											<A href="/profile/{@maleId}/" class="text-bold text-sm">
+												<xsl:value-of select="@male"/>
+											</A>
+											<SPAN class="text-dark font-weight-bold ms-1 text-xs">
+												<xsl:value-of select="@date"/>
+											</SPAN>
+											<DIV>
+												<SPAN>收到</SPAN>
+												<SPAN>
+													<xsl:value-of select="@type"/>
+												</SPAN>
+												<SPAN>
+													<xsl:value-of select="@points"/>
+												</SPAN>
+											</DIV>
+										</DIV>
+										<xsl:if test="@ableToReturn">
+											<DIV class="ms-auto text-end d-flex flex-column justify-content-around align-items-end">
+												<BUTTON class="btn btn-warning px-2 py-1 mb-0 success" type="button">
+													<I class="fas fa-trash-undo me-1"></I>
+													<SPAN>退回</SPAN>
+												</BUTTON>
 											</DIV>
 										</xsl:if>
-									</xsl:for-each>
-								</UL>
+									</DIV>
+									<hr/>
+								</xsl:for-each>
 							</DIV>
+						</DIV>
+					</DIV>
+					<DIV class="tab-pane mt-3" id="mainTwo">
+						<DIV class="text-sm opacity-8 p-0 col-md-8 mx-auto">
+							<UL class="list-group">
+								<xsl:for-each select="historyRecord">
+									<xsl:if test="@status = 'false'">
+										<LI class="list-group-item border-0 d-flex p-3 mb-2 border-radius-lg">
+											<DIV class="text-sm h6 m-0">
+												<DIV>
+													<xsl:value-of select="@way"/>
+												</DIV>
+												<DIV class="text-dark font-weight-bold text-xs">
+													<xsl:value-of select="@date"/>
+												</DIV>
+
+											</DIV>
+											<DIV class="ms-auto d-flex align-items-center">
+												<DIV>
+													<SPAN class="text-xs">金額</SPAN>
+													<SPAN class="text-dark font-weight-bold text-sm ms-1">
+														<xsl:value-of select="@points"/>
+													</SPAN>
+												</DIV>
+												<BUTTON class="btn btn-info p-1 mb-0 ms-1 details" data-bs-toggle="collapse" data-bs-target="#success{position()}" type="button">
+													<I class="fas fa-eye me-1"></I>
+													<SPAN>明細</SPAN>
+												</BUTTON>
+											</DIV>
+										</LI>
+										<DIV class="collapse border-radius-lg" id="success{position()}">
+											<LI class="list-group-item border-0 d-flex p-2 p-md-3 mb-2">
+												<TABLE class="table align-items-center mb-0">
+													<THEAD>
+														<TR>
+															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
+															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
+															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
+															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
+														</TR>
+													</THEAD>
+													<TBODY>
+														<xsl:for-each select="history">
+															<TR>
+																<TD class="text-sm text-center">
+																	<SPAN class="text-xs font-weight-bold">
+																		<xsl:value-of select="@date"/>
+																	</SPAN>
+																</TD>
+																<TD class="text-sm text-center">
+																	<A class="text-secondary text-xs font-weight-bold" href="/profile/{@maleId}/">
+																		<xsl:value-of select="@male"/>
+																	</A>
+																</TD>
+																<TD class="text-sm text-center">
+																	<SPAN class="text-secondary text-xs font-weight-bold">
+																		<xsl:value-of select="@type"/>
+																	</SPAN>
+																</TD>
+																<TD class="text-sm text-center">
+																	<SPAN class="text-secondary text-xs font-weight-bold">
+																		<xsl:value-of select="@points"/>
+																	</SPAN>
+																</TD>
+															</TR>
+														</xsl:for-each>
+													</TBODY>
+												</TABLE>
+											</LI>
+										</DIV>
+									</xsl:if>
+								</xsl:for-each>
+							</UL>
+						</DIV>
+					</DIV>
+					<DIV class="tab-pane mt-3" id="mainThree">
+						<DIV class="text-sm opacity-8 p-0 col-md-8 mx-auto">
+							<UL class="list-group">
+								<xsl:for-each select="historyRecord">
+									<xsl:if test="@status = 'true'">
+										<LI class="list-group-item border-0 d-flex p-3 mb-2 border-radius-lg">
+											<DIV class="text-sm h6 m-0">
+												<DIV>
+													<xsl:value-of select="@way"/>
+												</DIV>
+												<DIV class="text-dark font-weight-bold ms-1 text-xs">
+													<xsl:value-of select="@date"/>
+												</DIV>
+
+											</DIV>
+											<DIV class="ms-auto d-flex align-items-center">
+												<DIV>
+													<SPAN class="text-xs">金額</SPAN>
+													<SPAN class="text-dark font-weight-bold text-sm">
+														<xsl:value-of select="@points"/>
+													</SPAN>
+												</DIV>
+												<BUTTON class="btn btn-info p-1 mb-0 ms-1" data-bs-toggle="collapse" data-bs-target="#success{position()}" type="button">
+													<I class="fas fa-eye me-1"></I>
+													<SPAN>明細</SPAN>
+												</BUTTON>
+											</DIV>
+										</LI>
+										<DIV class="collapse border-radius-lg" id="success{position()}">
+											<LI class="list-group-item border-0 d-flex p-2 p-md-3 mb-2">
+												<TABLE class="table align-items-center mb-0">
+													<THEAD>
+														<TR>
+															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
+															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
+															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
+															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
+														</TR>
+													</THEAD>
+													<TBODY>
+														<xsl:for-each select="history">
+															<TR>
+																<TD class="text-sm text-center">
+																	<SPAN class="text-xs font-weight-bold">
+																		<xsl:value-of select="@date"/>
+																	</SPAN>
+																</TD>
+																<TD class="text-sm text-center">
+																	<A class="text-secondary text-xs font-weight-bold" href="/profile/{@maleId}/">
+																		<xsl:value-of select="@male"/>
+																	</A>
+																</TD>
+																<TD class="text-sm text-center">
+																	<SPAN class="text-secondary text-xs font-weight-bold">
+																		<xsl:value-of select="@type"/>
+																	</SPAN>
+																</TD>
+																<TD class="text-sm text-center">
+																	<SPAN class="text-secondary text-xs font-weight-bold">
+																		<xsl:value-of select="@points"/>
+																	</SPAN>
+																</TD>
+															</TR>
+														</xsl:for-each>
+													</TBODY>
+												</TABLE>
+											</LI>
+										</DIV>
+									</xsl:if>
+								</xsl:for-each>
+							</UL>
 						</DIV>
 					</DIV>
 				</DIV>
