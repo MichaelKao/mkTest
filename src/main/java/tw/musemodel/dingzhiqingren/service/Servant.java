@@ -414,7 +414,7 @@ public class Servant {
 	/**
 	 * 確認身分
 	 *
-	 * @param zhangHao
+	 * @param lover
 	 * @param roleName
 	 * @return
 	 */

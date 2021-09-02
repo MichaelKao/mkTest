@@ -164,6 +164,18 @@ public class History implements java.io.Serializable {
 		this.points = points;
 	}
 
+	/**
+	 * 构造器：适用于「短期贵宾体验」。
+	 *
+	 * @param initiative 主动方
+	 * @param behavior 行为
+	 */
+	public History(Lover initiative, Behavior behavior) {
+		this();
+		this.initiative = initiative;
+		this.behavior = behavior;
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 0;
@@ -457,7 +469,11 @@ public class History implements java.io.Serializable {
 		/**
 		 * 放行生活照
 		 */
-		FANG_XING_SHENG_HUO_ZHAO("FANG_XING_SHENG_HUO_ZHAO", 20);
+		FANG_XING_SHENG_HUO_ZHAO("FANG_XING_SHENG_HUO_ZHAO", 20),
+		/**
+		 * 短期贵宾体验
+		 */
+		DUAN_QI_GUI_BIN_TI_YAN("DUAN_QI_GUI_BIN_TI_YAN", 21);
 
 		private String label;
 

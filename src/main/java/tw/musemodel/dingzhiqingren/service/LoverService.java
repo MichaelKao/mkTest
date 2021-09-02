@@ -1050,6 +1050,33 @@ public class LoverService {
 	}
 
 	/**
+	 * 令用户开始体验，为期一天。
+	 *
+	 * @param mofo 用户号
+	 * @return 体验截止时戳
+	 * @throws RuntimeException 若用户曾付费或曾体验过
+	 */
+	@Transactional
+	public Date trial(Lover mofo) {
+		if (Objects.nonNull(mofo.getVip())) {
+			throw new RuntimeException("trial.disqualified");
+		}
+
+		History history = new History(
+			mofo,
+			HistoryService.BEHAVIOR_TRIAL_CODE
+		);
+		history = historyRepository.saveAndFlush(history);
+
+		mofo.setVip(new Date(
+			history.getOccurred().getTime() + Servant.MILLISECONDS_IN_A_DAY
+		));
+		loverRepository.saveAndFlush(mofo);
+
+		return mofo.getVip();
+	}
+
+	/**
 	 * 是否为短期貴賓 VIP⁉️
 	 *
 	 * @param lover 用户

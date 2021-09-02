@@ -188,6 +188,11 @@ public class HistoryService {
 	public static final Behavior BEHAVIOR_FOLLOW = Behavior.SHOU_CANG;
 
 	/**
+	 * 历程：短期贵宾体验
+	 */
+	public static final Behavior BEHAVIOR_TRIAL_CODE = Behavior.DUAN_QI_GUI_BIN_TI_YAN;
+
+	/**
 	 * 历程：不收藏
 	 */
 	public static final Behavior BEHAVIOR_UNFOLLOW = Behavior.BU_SHOU_CANG;
