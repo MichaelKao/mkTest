@@ -66,17 +66,17 @@ TEXTAREA#chatInput {
 }
 
 .conversationWrap {
-	border: 1px solid #CB0C9F44;
+	border: 1px solid #D6338444;
 }
 
 .tabs {
-	border: 1px solid #CB0C9F44;
+	border: 1px solid #D6338444;
 	border-radius: 40px;
 }
 
 .tabs .nav-link.active {
 	color: #FFF;
-	background: #CB0C9F;
+	background: #D63384;
 	border-radius: 40px;
 }
 
@@ -99,11 +99,11 @@ TEXTAREA#chatInput {
 }
 
 .nav-link .notSeen {
-	background: #CB0C9F;
+	background: #D63384;
 	color: white;
 }
 
 .nav-link.active .notSeen {
 	background: white;
-	color: #CB0C9F;
+	color: #D63384;
 }

@@ -21,7 +21,7 @@ BUTTON.fav {
 
 BUTTON.fav.liked i {
 	animation: heart-grow .7s;
-	color: #CB0C9F;
+	color: #D63384;
 }
 
 @keyframes heart-grow {

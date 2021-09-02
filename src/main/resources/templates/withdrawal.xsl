@@ -44,7 +44,7 @@
 										<DIV class="accordion-collapse collapse show" data-bs-parent="#accordionRental" id="collapseWire">
 											<DIV class="accordion-body text-sm opacity-8 p-0">
 												<DIV class="text-center">
-													<H3 class="text-gradient text-primary">銀行匯款</H3>
+													<H3 class="text-primary">銀行匯款</H3>
 												</DIV>
 												<FORM action="/wireTransfer.json" class="wireTransfer" method="post">
 													<INPUT name="historyId" type="hidden" value=""/>
@@ -89,7 +89,7 @@
 										<DIV class="accordion-collapse collapse" data-bs-parent="#accordionRental" id="collapsePaypal">
 											<DIV class="accordion-body text-sm opacity-8">
 												<DIV class="text-center">
-													<H3 class="text-gradient text-primary">Paypal</H3>
+													<H3 class="text-primary">Paypal</H3>
 												</DIV>
 												<FORM action="" method="post">
 													<INPUT name="historyId" type="hidden" value=""/>
@@ -260,7 +260,7 @@
 						<DIV class="accordion-collapse collapse" data-bs-parent="#accordionRental2" id="collapseTwo">
 							<DIV class="accordion-body text-sm opacity-8 p-0 col-md-8 mx-auto">
 								<DIV class="text-center">
-									<H4 class="text-gradient text-primary">歷史紀錄</H4>
+									<H4 class="text-primary">歷史紀錄</H4>
 								</DIV>
 								<UL class="list-group">
 									<xsl:for-each select="historyRecord">

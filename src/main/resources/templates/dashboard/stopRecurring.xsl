@@ -39,7 +39,7 @@
 									<DIV class="accordion-collapse collapse show" data-bs-parent="#accordionRental" id="collapseOne">
 										<DIV class="accordion-body text-sm opacity-8 p-0">
 											<DIV class="text-center">
-												<H3 class="text-gradient text-primary">待處理</H3>
+												<H3 class="text-primary">待處理</H3>
 											</DIV>
 											<UL class="list-group">
 												<DIV class="border-radius-lg">
@@ -92,7 +92,7 @@
 									<DIV class="accordion-collapse collapse" data-bs-parent="#accordionRental" id="collapseTwo">
 										<DIV class="accordion-body text-sm opacity-8 p-0">
 											<DIV class="text-center">
-												<H3 class="text-gradient text-primary">已處理</H3>
+												<H3 class="text-primary">已處理</H3>
 											</DIV>
 											<UL class="list-group">
 												<DIV class="border-radius-lg">

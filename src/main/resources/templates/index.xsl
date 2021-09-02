@@ -256,7 +256,7 @@
 							</DIV>
 							<xsl:if test="@following">
 								<DIV class="position-absolute left-0 text-center" style="width: 32px; top: 5px;">
-									<I class="fas fa-heart-circle text-pink fontSize22"></I>
+									<I class="fas fa-heart-circle text-primary fontSize22"></I>
 								</DIV>
 							</xsl:if>
 						</A>
@@ -314,7 +314,7 @@
 							</DIV>
 							<xsl:if test="@following">
 								<DIV class="position-absolute left-0 text-center" style="width: 32px; top: 5px;">
-									<I class="fas fa-heart-circle text-pink fontSize22"></I>
+									<I class="fas fa-heart-circle text-primary fontSize22"></I>
 								</DIV>
 							</xsl:if>
 						</A>
@@ -372,7 +372,7 @@
 							</DIV>
 							<xsl:if test="@following">
 								<DIV class="position-absolute left-0 text-center" style="width: 32px; top: 5px;">
-									<I class="fas fa-heart-circle text-pink fontSize22"></I>
+									<I class="fas fa-heart-circle text-primary fontSize22"></I>
 								</DIV>
 							</xsl:if>
 						</A>
@@ -430,7 +430,7 @@
 							</DIV>
 							<xsl:if test="@following">
 								<DIV class="position-absolute left-0 text-center" style="width: 32px; top: 5px;">
-									<I class="fas fa-heart-circle text-pink fontSize22"></I>
+									<I class="fas fa-heart-circle text-primary fontSize22"></I>
 								</DIV>
 							</xsl:if>
 						</A>

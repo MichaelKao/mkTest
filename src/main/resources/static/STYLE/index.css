@@ -31,6 +31,6 @@ SECTION.fixed-bottom, UL.mobileMode A:first-child {
 }
 
 UL.mobileMode A.active {
-	background: #CB0C9F;
+	background: #D63384;
 	color: #E9ECEF;
 }

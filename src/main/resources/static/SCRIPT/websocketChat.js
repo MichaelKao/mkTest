@@ -57,19 +57,29 @@ $(document).ready(function () {
 						var contentDiv = document.createElement('DIV');
 						divChild.appendChild(contentDiv);
 						divWrap.className += 'd-flex justify-content-center mb-4';
-						divChild.className += 'bg-dark border-radius-md text-sm px-3 shadow wordBreak text-light text-center';
+						divChild.className += 'border border-primary border-radius-md text-sm px-3 shadow wordBreak text-center';
+						contentDiv.className += 'text-primary';
+						var icon = document.createElement('I');
 						switch (behavior) {
 							case 'JI_WO_LAI':
-								self === msg.sender ? contentDiv.innerHTML += '您已發出要求通訊軟體' : contentDiv.innerHTML += '收到對方要求通訊軟體';
+								icon.className += 'fad fa-user-plus';
+								contentDiv.appendChild(icon);
+								self === msg.sender ? contentDiv.append('您已發出要求通訊軟體') : contentDiv.append('收到對方要求通訊軟體');
 								break;
 							case 'JI_NI_LAI':
-								self === msg.sender ? contentDiv.innerHTML += '您已接受給對方通訊軟體' : contentDiv.innerHTML += '對方同意給您通訊軟體';
+								icon.className += 'fas fa-smile';
+								contentDiv.appendChild(icon);
+								self === msg.sender ? contentDiv.append('您已接受給對方通訊軟體') : contentDiv.append('對方同意給您通訊軟體');
 								break;
 							case 'BU_JI_LAI':
-								self === msg.sender ? contentDiv.innerHTML += '您已拒絕給對方通訊軟體' : contentDiv.innerHTML += '對方拒絕給您通訊軟體<br/>12小時後才能再要求';
+								icon.className += 'fas fa-frown';
+								contentDiv.appendChild(icon);
+								self === msg.sender ? contentDiv.append('您已拒絕給對方通訊軟體') : contentDiv.append('對方拒絕給您通訊軟體<br/>12小時後才能再要求');
 								break;
 							case 'LAI_KOU_DIAN':
-								self === msg.sender ? contentDiv.innerHTML += '您已加了對方的通訊軟體' : contentDiv.innerHTML += '對方已加了您的通訊軟體';
+								icon.className += 'fad fa-user-check';
+								contentDiv.appendChild(icon);
+								self === msg.sender ? contentDiv.append('您開啟了對方的通訊軟體QRcode') : contentDiv.append('對方已開啟了您的通訊軟體QRcode');
 								break;
 							default:
 								console.log(behavior);
@@ -275,7 +285,6 @@ $(document).ready(function () {
 				}
 				scrollToEnd();
 			} else if ('button' === jsonObj.type) {
-				console.log(jsonObj.behavior);
 				var divWrap = document.createElement('DIV');
 				var divParent = document.createElement('DIV');
 				var divChild = document.createElement('DIV');
@@ -290,10 +299,14 @@ $(document).ready(function () {
 				var contentDiv = document.createElement('DIV');
 				divChild.appendChild(contentDiv);
 				divWrap.className += 'd-flex justify-content-center mb-4';
-				divChild.className += 'bg-dark border-radius-md text-sm px-3 shadow wordBreak text-light text-center';
+				divChild.className += 'border border-primary border-radius-md text-sm px-3 shadow wordBreak text-center';
+				contentDiv.className += 'text-primary';
+				var icon = document.createElement('I');
 				switch (jsonObj.behavior) {
 					case 'JI_WO_LAI':
-						self === jsonObj.sender ? contentDiv.innerHTML += '您已發出要求通訊軟體' : contentDiv.innerHTML += '收到對方要求通訊軟體';
+						icon.className += 'fad fa-user-plus';
+						contentDiv.appendChild(icon);
+						self === jsonObj.sender ? contentDiv.append('您已發出要求通訊軟體') : contentDiv.append('收到對方要求通訊軟體');
 						if (isMale === 'false') {
 							var div = document.createElement('DIV');
 							$(div).attr({
@@ -390,7 +403,9 @@ $(document).ready(function () {
 						}
 						break;
 					case 'JI_NI_LAI':
-						self === jsonObj.sender ? contentDiv.innerHTML += '您已接受給對方通訊軟體' : contentDiv.innerHTML += '對方同意給您通訊軟體';
+						icon.className += 'fas fa-smile';
+						contentDiv.appendChild(icon);
+						self === jsonObj.sender ? contentDiv.append('您已接受給對方通訊軟體') : contentDiv.append('對方同意給您通訊軟體');
 						if (isMale === 'false') {
 							$('DIV.floatBtn').empty();
 							var rateBtn = document.createElement('BUTTON');
@@ -451,11 +466,15 @@ $(document).ready(function () {
 						}
 						break;
 					case 'BU_JI_LAI':
-						self === jsonObj.sender ? contentDiv.innerHTML += '您已拒絕給對方通訊軟體' : contentDiv.innerHTML += '對方拒絕給您通訊軟體<br/>12小時後才能再要求';
+						icon.className += 'fas fa-frown';
+						contentDiv.appendChild(icon);
+						self === jsonObj.sender ? contentDiv.append('您已拒絕給對方通訊軟體') : contentDiv.append('對方拒絕給您通訊軟體<br/>12小時後才能再要求');
 						$('DIV.floatBtn').empty();
 						break;
 					case 'LAI_KOU_DIAN':
-						self === jsonObj.sender ? contentDiv.innerHTML += '您開啟了對方的通訊軟體QRcode' : contentDiv.innerHTML += '對方已開啟了您的通訊軟體QRcode';
+						icon.className += 'fad fa-user-check';
+						contentDiv.appendChild(icon);
+						self === jsonObj.sender ? contentDiv.append('您開啟了對方的通訊軟體QRcode') : contentDiv.append('對方已開啟了您的通訊軟體QRcode');
 						break;
 					default:
 						console.log(jsonObj.behavior);
@@ -545,7 +564,7 @@ $(document).ready(function () {
 		var hour = d.getHours();
 		var minute = d.getMinutes();
 
-		return yr + '/' + ('0' + mth).substr(-2) + '/' + ('0' + date).substr(-2) + ' ' + ('0' + hour).substr(-2) + ':' + ('0' + minute).substr(-2);
+		return yr + '-' + ('0' + mth).substr(-2) + '-' + ('0' + date).substr(-2) + ' ' + ('0' + hour).substr(-2) + ':' + ('0' + minute).substr(-2);
 	}
 
 	function scrollToEnd() {
@@ -681,6 +700,7 @@ $(document).ready(function () {
 		return false;
 	});
 
+	// 送出評價
 	$('BUTTON.commentBtn').click(function (event) {
 		event.preventDefault();
 		$(this).attr('disabled', true);
@@ -723,7 +743,7 @@ $(document).ready(function () {
 			},
 			function (data) {
 				var jsonObj = {
-					'type': 'chat',
+					'type': 'button',
 					'sender': self,
 					'receiver': friend,
 					'behavior': 'LAI_KOU_DIAN'

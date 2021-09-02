@@ -37,7 +37,9 @@
 					<DIV class="modal-content">
 						<DIV class="modal-body">
 							<DIV class="d-flex">
-								<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
+								<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+									<I class="fal fa-times"></I>
+								</BUTTON>
 							</DIV>
 							<DIV class="mt-3 text-center">
 								<I class="far fa-comment-alt-smile text-success mb-1" style="font-size: 50px;"></I>
@@ -59,8 +61,8 @@
 								<TEXTAREA class="form-control" name="comment" placeholder="留下評價..." type="text"></TEXTAREA>
 							</DIV>
 							<DIV class="text-center">
-								<BUTTON class="btn btn-secondary mx-1" data-bs-dismiss="modal" type="button">取消</BUTTON>
-								<BUTTON class="btn btn-primary commentBtn mx-1" type="button">確認</BUTTON>
+								<BUTTON class="btn btn-outline-dark mx-1" data-bs-dismiss="modal" type="button">取消</BUTTON>
+								<BUTTON class="btn btn-outline-primary commentBtn mx-1" type="button">確認</BUTTON>
 							</DIV>
 						</DIV>
 					</DIV>
@@ -71,7 +73,9 @@
 					<DIV class="modal-content">
 						<DIV class="modal-body">
 							<DIV class="d-flex">
-								<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
+								<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+									<I class="fal fa-times"></I>
+								</BUTTON>
 							</DIV>
 							<DIV class="mt-3 text-center">
 								<I class="fad fa-taxi text-success mb-1" style="font-size: 50px;"></I>
@@ -87,8 +91,8 @@
 								<INPUT class="form-control" id="fare" min="1" name="howMany" required="" type="number"/>
 							</DIV>
 							<DIV class="text-center">
-								<BUTTON class="btn btn-secondary mx-1" data-bs-dismiss="modal" type="button">取消</BUTTON>
-								<BUTTON class="btn btn-primary confirmFare mx-1" type="button">確認</BUTTON>
+								<BUTTON class="btn btn-outline-dark mx-1" data-bs-dismiss="modal" type="button">取消</BUTTON>
+								<BUTTON class="btn btn-outline-primary confirmFare mx-1" type="button">確認</BUTTON>
 							</DIV>
 						</DIV>
 					</DIV>
@@ -100,7 +104,9 @@
 						<DIV class="modal-content">
 							<DIV class="modal-header">
 								<H5 class="modal-title">微信 WeCaht QRcode</H5>
-								<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
+								<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+									<I class="fal fa-times"></I>
+								</BUTTON>
 							</DIV>
 							<DIV class="modal-body">
 								<DIV class="form-group">
@@ -113,7 +119,7 @@
 								</DIV>
 							</DIV>
 							<DIV class="modal-footer">
-								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+								<BUTTON class="btn btn-outline-dark" data-bs-dismiss="modal" type="button">
 									<xsl:value-of select="@i18n-cancel"/>
 								</BUTTON>
 							</DIV>
@@ -126,7 +132,9 @@
 					<DIV class="modal-content">
 						<DIV class="modal-body">
 							<DIV class="d-flex">
-								<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
+								<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+									<I class="fal fa-times"></I>
+								</BUTTON>
 							</DIV>
 							<DIV class="mt-3">
 								<I class="fas fa-exclamation-circle text-info mb-1" style="font-size: 50px;"></I>
@@ -134,8 +142,8 @@
 								<P class="text-bold">2. 對方瀏覽您的網頁，會出現您的帳戶已關閉</P>
 							</DIV>
 							<DIV>
-								<BUTTON class="btn btn-primary block" type="button">確認</BUTTON>
-								<BUTTON class="btn btn-secondary mx-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+								<BUTTON type="button" class="btn btn-outline-primary px-3 py-2 block">確認</BUTTON>
+								<BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
 							</DIV>
 						</DIV>
 					</DIV>
@@ -146,7 +154,7 @@
 					<DIV class="chatroomHeader d-flex align-items-center ps-2 shadow">
 						<DIV class="me-3">
 							<BUTTON class="btn btn-link text-primary h2 m-0 p-0 locationBack">
-								<I class="fal fa-arrow-left"></I>
+								<I class="fal fa-arrow-left fontSize35"></I>
 							</BUTTON>
 						</DIV>
 						<DIV>
@@ -159,21 +167,27 @@
 						</DIV>
 						<xsl:if test="not(@blocking) and not(@blockedBy)">
 							<DIV class="ms-auto me-3">
-								<BUTTON class="btn btn-link m-0 p-3" data-bs-target="#fareModal" data-bs-toggle="modal" type="button">
+								<BUTTON class="btn btn-link m-0 p-2" data-bs-target="#fareModal" data-bs-toggle="modal" type="button">
 									<xsl:if test="@gender = 'true'">
 										<xsl:attribute name="id">fare</xsl:attribute>
 									</xsl:if>
 									<xsl:if test="@gender = 'false'">
 										<xsl:attribute name="id">reqFare</xsl:attribute>
 									</xsl:if>
-									<I class="fad fa-taxi font30"></I>
+									<I class="fad fa-badge-dollar fontSize25"></I>
 								</BUTTON>
-								<A class="btn btn-link m-0 p-3" data-bs-toggle="dropdown">
-									<I class="fal fa-ellipsis-v mb-0 font30"></I>
+								<A class="btn btn-link m-0 p-2" data-bs-toggle="dropdown">
+									<I class="fad fa-comment-alt-times mb-0 fontSize25"></I>
 								</A>
 								<DIV class="dropdown-menu shadow">
-									<BUTTON class="dropdown-item">檢舉對方</BUTTON>
-									<BUTTON class="dropdown-item" data-bs-target="#blockModal" data-bs-toggle="modal">封鎖對方</BUTTON>
+									<BUTTON class="dropdown-item">
+										<I class="fad fa-lightbulb-exclamation fontSize22 col-2 text-center"></I>
+										<SPAN class="ms-2">檢舉對方</SPAN>
+									</BUTTON>
+									<BUTTON class="dropdown-item" data-bs-target="#blockModal" data-bs-toggle="modal">
+										<I class="fad fa-user-slash fontSize22 col-2"></I>
+										<SPAN class="ms-2">封鎖對方</SPAN>
+									</BUTTON>
 								</DIV>
 							</DIV>
 						</xsl:if>

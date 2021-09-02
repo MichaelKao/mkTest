@@ -78,7 +78,7 @@ $(document).ready(function () {
 						});
 						$(outterA).append(followingDiv);
 						let followingI = document.createElement('I');
-						$(followingI).attr('class', 'fas fa-heart-circle text-pink fontSize22');
+						$(followingI).attr('class', 'fas fa-heart-circle text-primary fontSize22');
 						$(followingDiv).append(followingI);
 					}
 
@@ -178,7 +178,7 @@ $(document).ready(function () {
 						});
 						$(outterA).append(followingDiv);
 						let followingI = document.createElement('I');
-						$(followingI).attr('class', 'fas fa-heart-circle text-pink fontSize22');
+						$(followingI).attr('class', 'fas fa-heart-circle text-primary fontSize22');
 						$(followingDiv).append(followingI);
 					}
 

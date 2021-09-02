@@ -32,7 +32,7 @@
 				<DIV class="text-center mx-sm-5 mx-lg-12 mb-3">
 					<H4>
 						<I class="fad fa-badge-dollar fontSize22 text-dark me-2"></I>
-						<SPAN class="text-pink">
+						<SPAN class="text-primary">
 							<xsl:value-of select="@title"/>
 						</SPAN>
 					</H4>
@@ -41,12 +41,12 @@
 					<DIV>可以用於站內發送ME點</DIV>
 					<DIV>讓您更快找到養蜜</DIV>
 				</DIV>
-				<DIV class="text-center text-pink text-sm">
+				<DIV class="text-center text-primary text-sm">
 					<DIV>站內發送如遇到爽約詐騙</DIV>
 					<DIV>48小時內提出申請</DIV>
 					<DIV>經檢舉查證可退回點數</DIV>
 				</DIV>
-				<DIV class="text-center text-pink text-bold border-radius-xl mx-auto col-11 col-md-6 p-1 my-3" style="border: 1px solid #D63384;">
+				<DIV class="text-center text-primary text-bold border-radius-xl mx-auto col-11 col-md-6 p-1 my-3" style="border: 1px solid #D63384;">
 					<SPAN>您剩餘的ME點：</SPAN>
 					<SPAN>
 						<xsl:value-of select="hearts"/>
@@ -82,8 +82,8 @@
 						</DIV>
 					</xsl:for-each>
 				</DIV>
-				<DIV class="text-center text-pink text-sm border-radius-xl mx-auto col-11 col-md-6 p-1" style="border: 1px solid #D63384;">
-					<SPAN class="text-pink">本筆款項將在信用卡帳單僅會顯示為 「線上儲值」</SPAN>
+				<DIV class="text-center text-primary text-sm border-radius-xl mx-auto col-11 col-md-6 p-1" style="border: 1px solid #D63384;">
+					<SPAN class="text-primary">本筆款項將在信用卡帳單僅會顯示為 「線上儲值」</SPAN>
 				</DIV>
 				<xsl:call-template name="footer"/>
 			</DIV>

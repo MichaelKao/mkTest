@@ -4401,6 +4401,15 @@ public class WelcomeController {
 			toString();
 	}
 
+	/**
+	 * 顯示下線名單(分頁)
+	 *
+	 * @param p
+	 * @param s
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
 	@PostMapping(path = "/descendants.json")
 	@ResponseBody
 	String descendants(@RequestParam(defaultValue = "0") final int p, @RequestParam(defaultValue = "5") final int s,

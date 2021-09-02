@@ -32,7 +32,7 @@
 				<DIV class="text-center mx-sm-5 mx-lg-12 mb-3">
 					<H4>
 						<I class="fad fa-crown fontSize22 text-dark me-2"></I>
-						<SPAN class="text-pink">
+						<SPAN class="text-primary">
 							<xsl:value-of select="@title"/>
 						</SPAN>
 					</H4>
@@ -40,7 +40,7 @@
 				<xsl:if test="@vvip or @vip">
 					<DIV class="text-center border-radius-xl mx-auto col-11 col-md-10 col-xl-8 p-1 mb-3" style="border: 1px solid #D63384;">
 						<xsl:if test="@vip">
-							<DIV class="text-pink text-bold">目前為 $1688 VIP</DIV>
+							<DIV class="text-primary text-bold">目前為 $1688 VIP</DIV>
 							<DIV class="text-dark text-bold text-xs">
 								<SPAN class="me-1">到期日</SPAN>
 								<SPAN>
@@ -49,7 +49,7 @@
 							</DIV>
 						</xsl:if>
 						<xsl:if test="@vvip">
-							<DIV class="text-pink text-bold">目前為 $1288 VIP</DIV>
+							<DIV class="text-primary text-bold">目前為 $1288 VIP</DIV>
 							<DIV class="ms-auto text-dark text-xs">
 								<xsl:if test="@isEligibleToStopRecurring">
 									<SPAN class="me-1">下次扣款</SPAN>
@@ -61,7 +61,7 @@
 							</DIV>
 							<xsl:if test="@isEligibleToStopRecurring">
 								<BUTTON class="ms-auto btn btn-sm btn-dark px-3 px-sm-4 m-0 stopRecurring my-2">解除定期定額</BUTTON>
-								<DIV class="text-pink text-sm">解除將失去 VIP 功能</DIV>
+								<DIV class="text-primary text-sm">解除將失去 VIP 功能</DIV>
 							</xsl:if>
 						</xsl:if>
 					</DIV>
@@ -151,7 +151,7 @@
 					</DIV>
 				</DIV>
 				<DIV class="text-center border-radius-xl mx-auto col-11 col-md-10 col-xl-8 px-1" style="border: 1px solid #D63384;">
-					<SPAN class="text-pink">本筆款項將在信用卡帳單僅會顯示為 「線上儲值」</SPAN>
+					<SPAN class="text-primary">本筆款項將在信用卡帳單僅會顯示為 「線上儲值」</SPAN>
 				</DIV>
 				<xsl:call-template name="footer"/>
 			</DIV>

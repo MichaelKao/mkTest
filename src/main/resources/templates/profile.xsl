@@ -353,7 +353,7 @@
 					<SPAN class="visually-hidden">Next</SPAN>
 				</BUTTON>
 				<xsl:if test="/document/@me">
-					<A class="text-pink" href="/album.asp">
+					<A class="text-primary" href="/album.asp">
 						<I class="fad fa-camera fontSize35"></I>
 					</A>
 				</xsl:if>
@@ -400,7 +400,7 @@
 				</xsl:if>
 				<xsl:if test="/document/@me">
 					<DIV class="ms-md-auto ms-md-5">
-						<A class="btn btn-link m-2 p-0 text-pink" href="/me.asp">
+						<A class="btn btn-link m-2 p-0 text-primary" href="/me.asp">
 							<I class="fad fa-pen fontSize35"></I>
 						</A>
 					</DIV>
@@ -515,7 +515,7 @@
 							<I class="fad fa-chess-king-alt fontSize35 text-info"></I>
 						</xsl:if>
 						<xsl:if test="gender/@gender = 'female'">
-							<I class="fad fa-chess-queen-alt fontSize35 text-pink"></I>
+							<I class="fad fa-chess-queen-alt fontSize35 text-primary"></I>
 						</xsl:if>
 					</DIV>
 					<H3 class="text-primary me-2 m-0">
@@ -671,7 +671,7 @@
 					</DIV>
 				</xsl:if>
 			</DIV>
-			<HR class="text-pink"/>
+			<HR class="text-primary"/>
 			<DIV class="mb-2 d-flex">
 				<I class="fad fa-file-user fontSize22 col-1"></I>
 				<DIV class="aboutMe ms-4">
