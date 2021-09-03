@@ -4461,11 +4461,7 @@ public class WelcomeController {
 			loverService.trial(me);
 		} catch (Exception exception) {
 			return new JavaScriptObjectNotation().
-				withReason(messageSource.getMessage(
-					exception.getMessage(),
-					null,
-					locale
-				)).
+				withReason(exception.getMessage()).
 				withResponse(false).
 				toJSONObject().toString();
 		}
