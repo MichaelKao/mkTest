@@ -11,4 +11,6 @@ import tw.musemodel.dingzhiqingren.entity.TrialCode;
  */
 @Repository
 public interface TrialCodeRepository extends JpaRepository<TrialCode, Short> {
+
+	public int countByCode(String code);
 }

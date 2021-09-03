@@ -4445,18 +4445,29 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
+		if (!loverService.isValidCode(trialCode)) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"trial.codeDoesntExist",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject().toString();
+		}
+
 		JSONObject jsonObject;
 		try {
 			loverService.trial(me);
 		} catch (Exception exception) {
-			jsonObject = new JavaScriptObjectNotation().
+			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
 					exception.getMessage(),
 					null,
 					locale
 				)).
 				withResponse(false).
-				toJSONObject();
+				toJSONObject().toString();
 		}
 
 		return new JavaScriptObjectNotation().
@@ -4465,7 +4476,7 @@ public class WelcomeController {
 				null,
 				locale
 			)).
-			withResponse(false).
+			withResponse(true).
 			toJSONObject().toString();
 	}
 }

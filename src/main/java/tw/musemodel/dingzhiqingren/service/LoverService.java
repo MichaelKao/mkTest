@@ -105,6 +105,7 @@ import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
 import tw.musemodel.dingzhiqingren.repository.ResetShadowRepository;
 import tw.musemodel.dingzhiqingren.repository.ServiceTagRepository;
+import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
@@ -226,6 +227,9 @@ public class LoverService {
 
 	@Autowired
 	private WithdrawalRecordRepository withdrawalRecordRepository;
+
+	@Autowired
+	private TrialCodeRepository trialCodeRepository;
 
 	/**
 	 * 找上线用户。
@@ -1076,6 +1080,10 @@ public class LoverService {
 		loverRepository.saveAndFlush(mofo);
 
 		return mofo.getVip();
+	}
+
+	public boolean isValidCode(String code) {
+		return trialCodeRepository.countByCode(code) > 0;
 	}
 
 	/**

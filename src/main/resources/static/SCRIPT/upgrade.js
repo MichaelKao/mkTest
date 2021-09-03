@@ -37,6 +37,7 @@ $(document).ready(function () {
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');
+					$(this).attr('disabled', false);
 				}
 			},
 			'json'
