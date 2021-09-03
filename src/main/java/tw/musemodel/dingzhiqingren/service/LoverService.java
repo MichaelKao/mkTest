@@ -79,6 +79,7 @@ import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.LineGiven;
 import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.entity.Lover.MaleSpecies;
 import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.ResetShadow;
 import tw.musemodel.dingzhiqingren.entity.Role;
@@ -1071,6 +1072,7 @@ public class LoverService {
 		mofo.setVip(new Date(
 			history.getOccurred().getTime() + Servant.MILLISECONDS_IN_A_DAY
 		));
+		mofo.setMaleSpecies(MaleSpecies.VIP);
 		loverRepository.saveAndFlush(mofo);
 
 		return mofo.getVip();

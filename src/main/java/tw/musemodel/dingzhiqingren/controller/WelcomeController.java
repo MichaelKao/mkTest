@@ -4425,4 +4425,47 @@ public class WelcomeController {
 			getReferralCodeAndDescendants(me, p, s).
 			toString();
 	}
+
+	/**
+	 * 體驗一日VIP
+	 *
+	 * @param p
+	 * @param s
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/trial.json")
+	@ResponseBody
+	String trial(@RequestParam String trialCode, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		JSONObject jsonObject;
+		try {
+			loverService.trial(me);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"trial.done",
+				null,
+				locale
+			)).
+			withResponse(false).
+			toJSONObject().toString();
+	}
 }

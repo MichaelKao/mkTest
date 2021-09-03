@@ -66,6 +66,19 @@
 						</xsl:if>
 					</DIV>
 				</xsl:if>
+				<xsl:if test="not(@vvip) and not(@vip)">
+					<DIV class="mx-auto col-11 col-md-10 col-xl-8 trial">
+						<BUTTON class="btn btn-light btn-round px-1 w-100 trialBtn">輸入體驗碼，兌換一日VIP身分</BUTTON>
+						<DIV class="row mb-3 trialInput d-none">
+							<DIV class="col-9 col-md-10">
+								<INPUT class="form-control px-1" name="trialCode" placeholder="輸入體驗碼" type="text"/>
+							</DIV>
+							<DIV class="col-3 col-md-2">
+								<BUTTON class="btn btn-primary btn-round px-3 m-0 w-100 confirmTrialCode">確認</BUTTON>
+							</DIV>
+						</DIV>
+					</DIV>
+				</xsl:if>
 				<DIV class="row mx-auto justify-content-center">
 					<DIV class="col-11 col-md-5 col-xl-4 card mb-3 mx-2 " style="background: #E176AB;">
 						<DIV class="card-body p-4 p-lg-5">

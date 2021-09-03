@@ -210,9 +210,9 @@
 			<ARTICLE class="col-md-8 border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
 				<DIV class="d-flex m-2 align-items-center">
 					<DIV class="text-lg m-2 text-bold text-primary">貴賓會員</DIV>
-					<!--<xsl:if test="not(vip/@lastPage)">-->
-					<BUTTON class="ms-auto btn btn-link seeMoreBtn text-lg mx-2 my-0 p-0" data-type="vip" data-page="0">看更多<I class="fad fa-angle-double-right ms-1"></I></BUTTON>
-					<!--</xsl:if>-->
+					<xsl:if test="not(vip/@lastPage)">
+						<BUTTON class="ms-auto btn btn-link seeMoreBtn text-lg mx-2 my-0 p-0" data-type="vip" data-page="0">看更多<I class="fad fa-angle-double-right ms-1"></I></BUTTON>
+					</xsl:if>
 				</DIV>
 				<DIV class="d-flex flex-wrap justify-content-center mx-2 vip">
 					<xsl:for-each select="vip/section">
@@ -392,7 +392,7 @@
 					<xsl:for-each select="register/section">
 						<A class="position-relative m-1" href="/profile/{identifier}/">
 							<IMG class="border-radius-md" src="{profileImage}" width="152"/>
-							<DIV class="position-absolute top-0 right-0 text-center" style="width: 32px; top: 5px;">
+							<DIV class="position-absolute right-0 text-center" style="width: 32px; top: 5px;">
 								<xsl:if test="@vvip">
 									<I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>
 								</xsl:if>

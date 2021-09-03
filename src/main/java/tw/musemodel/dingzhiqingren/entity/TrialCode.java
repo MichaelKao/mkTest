@@ -50,6 +50,17 @@ public class TrialCode implements Serializable {
 	@Column(name = "wang_hong")
 	private String keyOpinionLeader;
 
+	/**
+	 * 建構子
+	 */
+	public TrialCode() {
+	}
+
+	public TrialCode(String code, String keyOpinionLeader) {
+		this.code = code;
+		this.keyOpinionLeader = keyOpinionLeader;
+	}
+
 	@Override
 	public String toString() {
 		try {

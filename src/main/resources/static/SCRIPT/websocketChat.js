@@ -74,7 +74,16 @@ $(document).ready(function () {
 							case 'BU_JI_LAI':
 								icon.className += 'fas fa-frown';
 								contentDiv.appendChild(icon);
-								self === msg.sender ? contentDiv.append('您已拒絕給對方通訊軟體') : contentDiv.append('對方拒絕給您通訊軟體<br/>12小時後才能再要求');
+								if (self === msg.sender) {
+									contentDiv.append('您已拒絕給對方通訊軟體');
+								} else {
+									var div1 = document.createElement('DIV');
+									div1.append('對方拒絕給您通訊軟體');
+									contentDiv.appendChild(div1);
+									var div2 = document.createElement('DIV');
+									div2.append('12小時後才能再要求');
+									contentDiv.appendChild(div2);
+								}
 								break;
 							case 'LAI_KOU_DIAN':
 								icon.className += 'fad fa-user-check';
@@ -468,7 +477,16 @@ $(document).ready(function () {
 					case 'BU_JI_LAI':
 						icon.className += 'fas fa-frown';
 						contentDiv.appendChild(icon);
-						self === jsonObj.sender ? contentDiv.append('您已拒絕給對方通訊軟體') : contentDiv.append('對方拒絕給您通訊軟體<br/>12小時後才能再要求');
+						if (self === msg.sender) {
+							contentDiv.append('您已拒絕給對方通訊軟體');
+						} else {
+							var div1 = document.createElement('DIV');
+							div1.append('對方拒絕給您通訊軟體');
+							contentDiv.appendChild(div1);
+							var div2 = document.createElement('DIV');
+							div2.append('12小時後才能再要求');
+							contentDiv.appendChild(div2);
+						}
 						$('DIV.floatBtn').empty();
 						break;
 					case 'LAI_KOU_DIAN':

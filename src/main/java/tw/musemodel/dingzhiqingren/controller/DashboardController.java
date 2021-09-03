@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.UUID;
 import javax.xml.parsers.ParserConfigurationException;
 import org.slf4j.Logger;
@@ -26,11 +27,13 @@ import tw.musemodel.dingzhiqingren.WebSocketServer;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.StopRecurringPaymentApplication;
+import tw.musemodel.dingzhiqingren.entity.TrialCode;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRepository;
+import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 import tw.musemodel.dingzhiqingren.service.DashboardService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
@@ -73,6 +76,9 @@ public class DashboardController {
 
 	@Autowired
 	private StopRecurringPaymentApplicationRepository stopRecurringPaymentApplicationRepository;
+
+	@Autowired
+	private TrialCodeRepository trialCodeRepository;
 
 	/**
 	 * 甜心提取車馬費(財務後台)
@@ -523,6 +529,182 @@ public class DashboardController {
 		);
 
 		stopRecurringPaymentApplication = dashboardService.handleStopRecurringPaymentApplication(stopRecurringPaymentApplication, me);
+
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			toJSONObject().toString();
+	}
+
+	/**
+	 * 後台產生體驗碼頁面
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/genTrialCode.asp")
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	ModelAndView genTrialCode(Authentication authentication, Locale locale)
+		throws SAXException, IOException, ParserConfigurationException {
+		if (servant.isNull(authentication)) {
+			return new ModelAndView("redirect:/");
+		}
+
+		Document document = dashboardService.genTrialCodeDocument(locale);
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.genTrialCode",
+			null,
+			locale
+		));
+
+		// 本人
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		// 身分
+		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
+		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
+		if (isAlmighty) {
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (isFinance) {
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
+		if (!isFinance && !isAlmighty) {
+			return new ModelAndView("redirect:/");
+		}
+
+		// 確認性別
+		Boolean gender = me.getGender();
+
+		documentElement.setAttribute(
+			gender ? "male" : "female",
+			null
+		);
+
+		if (!servant.isNull(authentication)) {
+			documentElement.setAttribute(
+				"signIn",
+				authentication.getName()
+			);
+		}
+
+		documentElement.setAttribute(
+			"identifier",
+			me.getIdentifier().toString()
+		);
+
+		ModelAndView modelAndView = new ModelAndView("dashboard/genTrialCode");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
+	 * 新增體驗碼
+	 *
+	 * @param trialCode
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/addTrialCode.json")
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	@ResponseBody
+	String addTrialCode(@RequestParam(required = true) String code, @RequestParam(required = true) String keyOpinionLeader,
+		Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+
+		if (keyOpinionLeader.isBlank()) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"trial.keyOpinionLeaderMustntBeNull",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject().toString();
+		}
+
+		if (code.isBlank()) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"trial.codeMustntBeNull",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject().toString();
+		}
+
+		// 體驗碼不能重複
+		List<TrialCode> trialCodes = trialCodeRepository.findAll();
+		for (TrialCode trialCode : trialCodes) {
+			if (Objects.equals(trialCode.getCode(), code)) {
+				return new JavaScriptObjectNotation().
+					withReason(messageSource.getMessage(
+						"trial.codeMustBeUnique",
+						null,
+						locale
+					)).
+					withResponse(false).
+					toJSONObject().toString();
+			}
+		}
+
+		try {
+			TrialCode trialCode = new TrialCode(code, keyOpinionLeader);
+			trialCodeRepository.saveAndFlush(trialCode);
+		} catch (Exception exception) {
+			return new JavaScriptObjectNotation().
+				withReason(exception.getMessage()).
+				withResponse(false).
+				toJSONObject().toString();
+		}
+
+		return new JavaScriptObjectNotation().
+			withResponse(true).
+			toJSONObject().toString();
+	}
+
+	/**
+	 * 更新體驗碼
+	 *
+	 * @param trialCode
+	 * @param editedCode
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/updateTrialCode.json")
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	@ResponseBody
+	String updateTrialCode(@RequestParam TrialCode trialCode, @RequestParam String editedCode, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+
+		try {
+			trialCode.setCode(editedCode);
+			trialCodeRepository.saveAndFlush(trialCode);
+		} catch (Exception exception) {
+			return new JavaScriptObjectNotation().
+				withReason(exception.getMessage()).
+				withResponse(false).
+				toJSONObject().toString();
+		}
 
 		return new JavaScriptObjectNotation().
 			withResponse(true).

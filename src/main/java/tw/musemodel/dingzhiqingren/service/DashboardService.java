@@ -19,12 +19,14 @@ import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Lover.MaleSpecies;
 import tw.musemodel.dingzhiqingren.entity.StopRecurringPaymentApplication;
+import tw.musemodel.dingzhiqingren.entity.TrialCode;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalInfo;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
 import tw.musemodel.dingzhiqingren.model.EachWithdrawal;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRepository;
+import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 
@@ -60,6 +62,9 @@ public class DashboardService {
 
 	@Autowired
 	private WithdrawalRecordRepository withdrawalRecordRepository;
+
+	@Autowired
+	private TrialCodeRepository trialCodeRepository;
 
 	public Document withdrawalDocument(Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
@@ -362,6 +367,30 @@ public class DashboardService {
 					).withZoneSameInstant(Servant.ASIA_TAIPEI)
 				));
 		}
+		return document;
+	}
+
+	public Document genTrialCodeDocument(Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+
+		for (TrialCode trialCode : trialCodeRepository.findAll()) {
+			Element trialElement = document.createElement("trial");
+			documentElement.appendChild(trialElement);
+			trialElement.setAttribute(
+				"trialCodeID",
+				trialCode.getId().toString()
+			);
+			trialElement.setAttribute(
+				"keyOpinionLeader",
+				trialCode.getKeyOpinionLeader()
+			);
+			trialElement.setAttribute(
+				"code",
+				trialCode.getCode()
+			);
+		}
+
 		return document;
 	}
 }
