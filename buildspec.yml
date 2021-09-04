@@ -14,7 +14,7 @@ phases:
       - mvn package
 artifacts:
   files:
-    - .platform/hooks/**
+    - .platform/hooks/postdeploy/proxy.sh
     - Procfile
     - target/application.jar
   # discard-paths: yes
