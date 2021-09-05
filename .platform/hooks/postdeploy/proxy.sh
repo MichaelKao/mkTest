@@ -1,6 +1,8 @@
 #!/bin/sh
 
-wget -q -O ~ec2-user/.bash_profile https://d35hi420xc5ji7.cloudfront.net/.bash_profile
+cat << EOF > /etc/nginx/conf.d/elasticbeanstalk/proxy.conf
+client_body_buffer_size 128M;
+client_max_body_size 128M;
+EOF
 
-wget -q -O /etc/nginx/conf.d/elasticbeanstalk/proxy.conf https://d35hi420xc5ji7.cloudfront.net/proxy.conf
 service nginx restart
