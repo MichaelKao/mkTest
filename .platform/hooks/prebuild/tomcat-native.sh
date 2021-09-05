@@ -30,3 +30,7 @@ if [ ! -e "${JAVA_HOME}/lib/${TARGET}" ]; then
 
 	make && make install
 fi
+
+if [ ! -e "/var/app/current/bin/${TARGET}" ]; then
+	ln -s ${JAVA_HOME}/lib/${TARGET} /var/app/current/bin/${TARGET}
+fi
