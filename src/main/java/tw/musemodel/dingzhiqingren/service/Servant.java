@@ -2,13 +2,14 @@ package tw.musemodel.dingzhiqingren.service;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.http.client.methods.HttpPost;
@@ -32,9 +34,8 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
@@ -65,9 +66,6 @@ public class Servant {
 
 	@Autowired
 	private CountryRepository countryRepository;
-
-	@Value("classpath:skeleton/googleAnalytics.js")
-	private Resource googleAnalyticsResource;
 
 	@Autowired
 	private RoleRepository roleRepository;
@@ -352,14 +350,11 @@ public class Servant {
 		googleAnalyticsElement.setAttribute("id", MEASUREMENT_ID);
 		googleAnalyticsElement.appendChild(document.createCDATASection(
 			String.format(
-				new String(
-					Files.readAllBytes(
-						googleAnalyticsResource.
-							getFile().
-							toPath()
-					),
-					StandardCharsets.UTF_8
-				),
+				new BufferedReader(new InputStreamReader(
+					new ClassPathResource("skeleton/googleAnalytics.js").
+						getInputStream(),
+					UTF_8
+				)).lines().collect(Collectors.joining("\n")),
 				MEASUREMENT_ID
 			)
 		));
