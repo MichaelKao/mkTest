@@ -1251,6 +1251,15 @@ public class HistoryService {
 					identifier = initiativeIdentifier;
 				}
 			}
+			if (activeLogs.getBehavior() == BEHAVIOR_TRIAL_CODE) {
+				if (isMale) {
+					profileImage = initiativeProfileImage;
+					message = String.format(
+						"您已開啟單日 VIP 體驗"
+					);
+					identifier = initiativeIdentifier;
+				}
+			}
 			if (activeLogs.getBehavior() == BEHAVIOR_GIMME_YOUR_LINE_INVITATION) {
 				if (isMale) {
 					profileImage = passiveProfileImage;

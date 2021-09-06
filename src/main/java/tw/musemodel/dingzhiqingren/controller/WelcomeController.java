@@ -70,6 +70,7 @@ import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.Plan;
 import tw.musemodel.dingzhiqingren.entity.ServiceTag;
 import tw.musemodel.dingzhiqingren.entity.StopRecurringPaymentApplication;
+import tw.musemodel.dingzhiqingren.entity.TrialCode;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.ResetPassword;
@@ -80,6 +81,7 @@ import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
 import tw.musemodel.dingzhiqingren.repository.PlanRepository;
 import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRepository;
+import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
 import tw.musemodel.dingzhiqingren.service.AmazonWebServices;
 import tw.musemodel.dingzhiqingren.service.DashboardService;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
@@ -139,6 +141,9 @@ public class WelcomeController {
 
 	@Autowired
 	private StopRecurringPaymentApplicationRepository stopRecurringPaymentApplicationRepository;
+
+	@Autowired
+	private TrialCodeRepository trialCodeRepository;
 
 	/**
 	 * 首页
@@ -2491,7 +2496,7 @@ public class WelcomeController {
 			);
 		}//是否为 VVIP⁉️
 
-		if (loverService.isVIP(me)) {
+		if (loverService.isVIP(me) && !loverService.isTrial(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -2507,6 +2512,30 @@ public class WelcomeController {
 				)
 			);
 		}//是否为 VIP⁉️
+
+		if (loverService.isTrial(me)) {
+			documentElement.setAttribute(
+				"trial",
+				null
+			);
+			documentElement.setAttribute(
+				"trialExpiry",
+				loverService.DATE_TIME_FORMATTER.format(
+					servant.toTaipeiZonedDateTime(
+						me.getVip()
+					).withZoneSameInstant(
+						Servant.ASIA_TAIPEI
+					)
+				)
+			);
+		}//是否为單日體驗 VIP⁉️
+
+		if (Objects.isNull(me.getVip())) {
+			documentElement.setAttribute(
+				"ableToTrial",
+				null
+			);
+		}//是否有能使用單日體驗的資格?
 
 		ModelAndView modelAndView = new ModelAndView("upgrade");
 		modelAndView.getModelMap().addAttribute(document);
@@ -2589,16 +2618,16 @@ public class WelcomeController {
 			);
 		}//是否为 VVIP⁉️
 
-		if (loverService.isVIP(me)) {
+		if (loverService.isVIP(me) && !loverService.isTrial(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
 			);
-		}//是否为 VIP⁉️
+		}//是否为 VIP⁉ (非單日體驗VIP)️
 
 		String view = null;
 		if (vipType == 1) {
-			if (loverService.isVVIP(me) || loverService.isVIP(me)) {
+			if (loverService.isVVIP(me) || (loverService.isVIP(me) && !loverService.isTrial(me))) {
 				return servant.redirectToRoot();
 			} //若是長期或者短期貴賓則不能再升級短期貴賓
 			view = "upgradeShortTerm";
@@ -4437,7 +4466,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/trial.json")
 	@ResponseBody
-	String trial(@RequestParam String trialCode, Authentication authentication, Locale locale) {
+	String trial(@RequestParam String code, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -4445,7 +4474,7 @@ public class WelcomeController {
 			authentication.getName()
 		);
 
-		if (!loverService.isValidCode(trialCode)) {
+		if (!loverService.isValidCode(code)) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
 					"trial.codeDoesntExist",
@@ -4456,9 +4485,11 @@ public class WelcomeController {
 				toJSONObject().toString();
 		}
 
+		TrialCode trialCode = trialCodeRepository.findByCode(code);
+
 		JSONObject jsonObject;
 		try {
-			loverService.trial(me);
+			loverService.trial(me, trialCode);
 		} catch (Exception exception) {
 			return new JavaScriptObjectNotation().
 				withReason(exception.getMessage()).

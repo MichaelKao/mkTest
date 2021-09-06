@@ -23,11 +23,12 @@ $(document).ready(function () {
 	});
 
 	$('BUTTON.confirmTrialCode').click(function () {
-		$(this).attr('disabled', true);
+		var btn = this;
+		$(btn).attr('disabled', true);
 		$.post(
 			'/trial.json',
 			{
-				trialCode: $('INPUT[name="trialCode"]').val()
+				code: $('INPUT[name="code"]').val()
 			},
 			function (data) {
 				if (data.response) {
@@ -37,7 +38,7 @@ $(document).ready(function () {
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');
-					$(this).attr('disabled', false);
+					$(btn).attr('disabled', false);
 				}
 			},
 			'json'

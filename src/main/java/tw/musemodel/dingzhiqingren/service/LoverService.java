@@ -84,6 +84,7 @@ import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.ResetShadow;
 import tw.musemodel.dingzhiqingren.entity.Role;
 import tw.musemodel.dingzhiqingren.entity.ServiceTag;
+import tw.musemodel.dingzhiqingren.entity.TrialCode;
 import tw.musemodel.dingzhiqingren.entity.User;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalInfo;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
@@ -118,6 +119,7 @@ import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_GREETI
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_GROUP_GREETING;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_INVITE_ME_AS_LINE_FRIEND;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_LAI_KOU_DIAN;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_MONTHLY_CHARGED;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_PICTURES_VIEWABLE;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_RATE;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND;
@@ -149,7 +151,9 @@ public class LoverService {
 			)
 		)).withRegion(Regions.AP_SOUTHEAST_1).build();
 
-	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	private static final Short NUMBER_OF_GROUP_GREETING = Short.valueOf(System.getenv("NUMBER_OF_GROUP_GREETING"));
 
@@ -1062,14 +1066,15 @@ public class LoverService {
 	 * @throws RuntimeException 若用户曾付费或曾体验过
 	 */
 	@Transactional
-	public Date trial(Lover mofo) {
+	public Date trial(Lover mofo, TrialCode trialCode) {
 		if (Objects.nonNull(mofo.getVip())) {
 			throw new RuntimeException("trial.disqualified");
 		}
 
 		History history = new History(
 			mofo,
-			HistoryService.BEHAVIOR_TRIAL_CODE
+			HistoryService.BEHAVIOR_TRIAL_CODE,
+			trialCode
 		);
 		history = historyRepository.saveAndFlush(history);
 
@@ -1084,6 +1089,18 @@ public class LoverService {
 
 	public boolean isValidCode(String code) {
 		return trialCodeRepository.countByCode(code) > 0;
+	}
+
+	/**
+	 * 是否為單日體驗 VIP
+	 *
+	 * @param lover
+	 * @return
+	 */
+	public boolean isTrial(Lover lover) {
+		return Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date(System.currentTimeMillis()))
+			&& Objects.nonNull(lover.getMaleSpecies()) && Objects.equals(lover.getMaleSpecies(), Lover.MaleSpecies.VIP)
+			&& historyRepository.countByInitiativeAndBehaviorOrderByOccurredDesc(lover, BEHAVIOR_MONTHLY_CHARGED) < 1;
 	}
 
 	/**
@@ -1449,7 +1466,7 @@ public class LoverService {
 				);
 				rateElement.setAttribute(
 					"time",
-					DATE_TIME_FORMATTER.format(
+					DATE_FORMATTER.format(
 						servant.toTaipeiZonedDateTime(
 							rate.getOccurred()
 						).withZoneSameInstant(Servant.ASIA_TAIPEI)
@@ -1974,7 +1991,7 @@ public class LoverService {
 
 		documentElement.setAttribute(
 			"before7days",
-			DATE_TIME_FORMATTER.format(
+			DATE_FORMATTER.format(
 				servant.toTaipeiZonedDateTime(
 					before7DaysAgo()
 				).withZoneSameInstant(Servant.ASIA_TAIPEI)
@@ -1987,7 +2004,7 @@ public class LoverService {
 
 			recordElement.setAttribute(
 				"date",
-				DATE_TIME_FORMATTER.format(
+				DATE_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						history.getOccurred()
 					).withZoneSameInstant(Servant.ASIA_TAIPEI)
@@ -2025,7 +2042,7 @@ public class LoverService {
 
 			notAbleToWithdrawalElement.setAttribute(
 				"date",
-				DATE_TIME_FORMATTER.format(
+				DATE_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						history.getOccurred()
 					).withZoneSameInstant(Servant.ASIA_TAIPEI)
@@ -2083,7 +2100,7 @@ public class LoverService {
 			Date timestamp = eachWithdrawal.getTimestamp();
 			recordElement.setAttribute(
 				"date",
-				DATE_TIME_FORMATTER.format(
+				DATE_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						timestamp
 					).withZoneSameInstant(Servant.ASIA_TAIPEI)
@@ -2105,7 +2122,7 @@ public class LoverService {
 				recordElement.appendChild(historyElement);
 				historyElement.setAttribute(
 					"date",
-					DATE_TIME_FORMATTER.format(
+					DATE_FORMATTER.format(
 						servant.toTaipeiZonedDateTime(
 							withdrawalRecord.getHistory().getOccurred()
 						).withZoneSameInstant(Servant.ASIA_TAIPEI)
@@ -2899,7 +2916,7 @@ public class LoverService {
 			documentElement.appendChild(historyElement);
 			historyElement.setAttribute(
 				"date",
-				DATE_TIME_FORMATTER.format(servant.
+				DATE_FORMATTER.format(servant.
 					toTaipeiZonedDateTime(
 						history.getOccurred()
 					).

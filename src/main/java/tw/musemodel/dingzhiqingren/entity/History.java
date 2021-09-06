@@ -94,6 +94,11 @@ public class History implements java.io.Serializable {
 	@Column(name = "fang_xing_sheng_huo_zhao")
 	private Boolean showAllPictures;
 
+	@JoinColumn(name = "ti_yan_ma", referencedColumnName = "id")
+	@ManyToOne
+	@JsonManagedReference
+	private TrialCode trialCode;
+
 	/**
 	 * 默认构造器
 	 */
@@ -170,10 +175,11 @@ public class History implements java.io.Serializable {
 	 * @param initiative 主动方
 	 * @param behavior 行为
 	 */
-	public History(Lover initiative, Behavior behavior) {
+	public History(Lover initiative, Behavior behavior, TrialCode trialCode) {
 		this();
 		this.initiative = initiative;
 		this.behavior = behavior;
+		this.trialCode = trialCode;
 	}
 
 	@Override
@@ -381,6 +387,20 @@ public class History implements java.io.Serializable {
 	 */
 	public void setShowAllPictures(Boolean showAllPictures) {
 		this.showAllPictures = showAllPictures;
+	}
+
+	/**
+	 * @return 單日體驗碼
+	 */
+	public TrialCode getTrialCode() {
+		return trialCode;
+	}
+
+	/**
+	 * @param trialCode 單日體驗碼
+	 */
+	public void setTrialCode(TrialCode trialCode) {
+		this.trialCode = trialCode;
 	}
 
 	/**
