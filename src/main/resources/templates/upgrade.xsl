@@ -37,8 +37,17 @@
 						</SPAN>
 					</H4>
 				</DIV>
-				<xsl:if test="@vvip or @vip">
+				<xsl:if test="@vvip or @vip or @trial">
 					<DIV class="text-center border-radius-xl mx-auto col-11 col-md-10 col-xl-8 p-1 mb-3" style="border: 1px solid #D63384;">
+						<xsl:if test="@trial">
+							<DIV class="text-primary text-bold">目前為單日體驗 VIP</DIV>
+							<DIV class="text-dark text-bold text-xs">
+								<SPAN class="me-1">到期時間</SPAN>
+								<SPAN>
+									<xsl:value-of select="@trialExpiry"/>
+								</SPAN>
+							</DIV>
+						</xsl:if>
 						<xsl:if test="@vip">
 							<DIV class="text-primary text-bold">目前為 $1688 VIP</DIV>
 							<DIV class="text-dark text-bold text-xs">
@@ -66,15 +75,15 @@
 						</xsl:if>
 					</DIV>
 				</xsl:if>
-				<xsl:if test="not(@vvip) and not(@vip)">
+				<xsl:if test="not(@vvip) and not(@vip) and not(@trial) and @ableToTrial">
 					<DIV class="mx-auto col-11 col-md-10 col-xl-8 trial">
 						<BUTTON class="btn btn-light btn-round px-1 w-100 trialBtn">輸入體驗碼，兌換一日VIP身分</BUTTON>
 						<DIV class="row mb-3 trialInput d-none">
 							<DIV class="col-9 col-md-10">
-								<INPUT class="form-control px-1" name="trialCode" placeholder="輸入體驗碼" type="text"/>
+								<INPUT class="form-control px-1" name="code" placeholder="輸入體驗碼" type="text"/>
 							</DIV>
 							<DIV class="col-3 col-md-2">
-								<BUTTON class="btn btn-primary btn-round px-3 m-0 w-100 confirmTrialCode">確認</BUTTON>
+								<BUTTON class="btn btn-primary btn-round px-2 px-sm-3 m-0 w-100 confirmTrialCode">確認</BUTTON>
 							</DIV>
 						</DIV>
 					</DIV>
