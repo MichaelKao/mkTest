@@ -4,14 +4,6 @@ phases:
   install:
     runtime-versions:
       java: corretto11
-  build:
-    commands:
-      - echo `date "+%Y-%m-%d %H:%M:%S"`：开始单元测试
-      - mvn clean
-  post_build:
-    commands:
-      - echo `date "+%Y-%m-%d %H:%M:%S"`：开始组建项目
-      - mvn package
 artifacts:
   files:
     - .platform/hooks/prebuild/environment.sh
