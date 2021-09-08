@@ -17,6 +17,7 @@ import com.google.zxing.qrcode.QRCodeReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.sql.ResultSet;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -3247,5 +3248,41 @@ public class LoverService {
 			jsonArray.put(json);
 		});
 		return jsonArray;
+	}
+
+	/**
+	 * 更新最后活跃时戳。
+	 *
+	 * @param timestamp 自 EPOCH 以来的毫秒数
+	 * @param username 帐号(手机号)
+	 */
+	@Transactional
+	public void lastActive(long timestamp, String username) {
+		new NamedParameterJdbcTemplate(
+			jdbcTemplate.getDataSource()
+		).update(
+			"UPDATE\"qing_ren\"SET\"huo_yue\"=:active WHERE\"id\"=:id",
+			new MapSqlParameterSource().
+				addValue(
+					"active",
+					new Date(timestamp),
+					Types.TIMESTAMP
+				).
+				addValue(
+					"id",
+					jdbcTemplate.query(
+						"SELECT\"id\"FROM\"users\"WHERE\"username\"=?",
+						(ps) -> {
+							ps.setString(1, username);
+						},
+						(ResultSet resultSet) -> {
+							if (resultSet.next()) {
+								return resultSet.getInt("id");
+							}
+							return null;
+						}
+					)
+				)
+		);
 	}
 }

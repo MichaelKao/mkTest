@@ -14,7 +14,8 @@ phases:
       - mvn package
 artifacts:
   files:
+    - .platform/hooks/prebuild/environment.sh
+    - .platform/hooks/prebuild/tomcat-native.sh
     - .platform/hooks/postdeploy/proxy.sh
     - Procfile
     - target/application.jar
-  # discard-paths: yes
