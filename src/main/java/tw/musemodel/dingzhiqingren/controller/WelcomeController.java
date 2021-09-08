@@ -1291,15 +1291,15 @@ public class WelcomeController {
 			}
 		}
 
-		// 是否收藏
-		Set<Lover> following = me.getFollowing();
-		if (Objects.nonNull(following)) {
-			Element followElement = document.createElement("follow");
-			for (Lover followed : following) {
-				if (Objects.equals(followed, lover)) {
-					documentElement.appendChild(followElement);
-					break;
-				}
+		/*
+		 登录者是否追踪此页情人
+		 */
+		for (Lover followed : loverService.getThoseIFollow(me)) {
+			if (Objects.equals(followed, lover)) {
+				documentElement.appendChild(
+					document.createElement("follow")
+				);
+				break;
 			}
 		}
 
@@ -1562,8 +1562,12 @@ public class WelcomeController {
 			me.getIdentifier().toString()
 		);
 
-		Set<Lover> following = me.getFollowing();
-		document = loverService.loversSimpleInfo(document, following, me, locale);
+		document = loverService.loversSimpleInfo(
+			document,
+			loverService.getThoseIFollow(me),
+			me,
+			locale
+		);
 
 		ModelAndView modelAndView = new ModelAndView("favorite");
 		modelAndView.getModelMap().addAttribute(document);
@@ -1599,11 +1603,14 @@ public class WelcomeController {
 			);
 		} catch (Exception exception) {
 			jsonObject = new JavaScriptObjectNotation().
-				withReason(messageSource.getMessage(
-					exception.getMessage(),
-					null,
-					locale
-				)).
+				//withReason(messageSource.getMessage(
+				//	exception.getMessage(),
+				//	null,
+				//	locale
+				//)).
+				withReason(
+					exception.getMessage()
+				).
 				withResponse(false).
 				toJSONObject();
 		}
@@ -1740,7 +1747,7 @@ public class WelcomeController {
 			Behavior.KAN_GUO_WO
 		);
 
-		Set<Lover> following = me.getFollowing();
+		Collection<Lover> following = loverService.getThoseIFollow(me);
 		Set<Lover> peekers = new HashSet<Lover>();
 		for (History history : histories) {
 			if (!peekers.contains(history.getInitiative()) && Objects.isNull(history.getInitiative().getDelete())) {

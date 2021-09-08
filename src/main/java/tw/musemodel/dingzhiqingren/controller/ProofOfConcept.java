@@ -1,5 +1,6 @@
 package tw.musemodel.dingzhiqingren.controller;
 
+import java.util.Collection;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,5 +58,23 @@ public class ProofOfConcept {
 		return loverService.
 			getReferralCodeAndDescendants(me, p, s).
 			toString();
+	}
+
+	@GetMapping(path = "/{lover:\\d+}.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	Lover lover(@PathVariable Lover lover) {
+		return lover;
+	}
+
+	@GetMapping(path = "/{lover:\\d+}/followed.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	Collection<Lover> followed(@PathVariable Lover lover) {
+		return loverService.getThoseWhoFollowMe(lover);
+	}
+
+	@GetMapping(path = "/{lover:\\d+}/following.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	Collection<Lover> following(@PathVariable Lover lover) {
+		return loverService.getThoseIFollow(lover);
 	}
 }

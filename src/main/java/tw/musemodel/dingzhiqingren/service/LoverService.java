@@ -75,6 +75,7 @@ import tw.musemodel.dingzhiqingren.entity.Activation;
 import tw.musemodel.dingzhiqingren.entity.Allowance;
 import tw.musemodel.dingzhiqingren.entity.AnnualIncome;
 import tw.musemodel.dingzhiqingren.entity.Country;
+import tw.musemodel.dingzhiqingren.entity.Follow;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.LineGiven;
@@ -100,6 +101,7 @@ import tw.musemodel.dingzhiqingren.repository.ActivationRepository;
 import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
 import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
+import tw.musemodel.dingzhiqingren.repository.FollowRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LocationRepository;
@@ -204,6 +206,9 @@ public class LoverService {
 	private CountryRepository countryRepository;
 
 	@Autowired
+	private FollowRepository followRepository;
+
+	@Autowired
 	private LoverRepository loverRepository;
 
 	@Autowired
@@ -225,6 +230,9 @@ public class LoverService {
 	private ServiceTagRepository serviceTagRepository;
 
 	@Autowired
+	private TrialCodeRepository trialCodeRepository;
+
+	@Autowired
 	private UserRepository userRepository;
 
 	@Autowired
@@ -232,9 +240,6 @@ public class LoverService {
 
 	@Autowired
 	private WithdrawalRecordRepository withdrawalRecordRepository;
-
-	@Autowired
-	private TrialCodeRepository trialCodeRepository;
 
 	/**
 	 * 找上线用户。
@@ -554,6 +559,36 @@ public class LoverService {
 					)//分页元数据
 			).
 			toJSONObject();
+	}
+
+	/**
+	 * 追踪(收藏)了谁。
+	 *
+	 * @param someone 某咪郎
+	 * @return 某咪郎追踪(收藏)了的情人
+	 */
+	@Transactional(readOnly = true)
+	public Collection<Lover> getThoseIFollow(Lover someone) {
+		List<Lover> followed = new ArrayList();
+		for (Follow follow : followRepository.findByFollowing(someone)) {
+			followed.add(follow.getFollowed());
+		}
+		return followed;
+	}
+
+	/**
+	 * 被谁追踪(收藏)。
+	 *
+	 * @param someone 某咪郎
+	 * @return 追踪(收藏)了某咪郎的情人
+	 */
+	@Transactional(readOnly = true)
+	public Collection<Lover> getThoseWhoFollowMe(Lover someone) {
+		List<Lover> following = new ArrayList();
+		for (Follow follow : followRepository.findByFollowed(someone)) {
+			following.add(follow.getFollowing());
+		}
+		return following;
 	}
 
 	/**
@@ -2401,7 +2436,7 @@ public class LoverService {
 	public Document loversSimpleInfo(Document document, Collection<Lover> lovers, Lover me, Locale locale) {
 		Element documentElement = document.getDocumentElement();
 
-		Set<Lover> following = me.getFollowing();
+		Collection<Lover> following = loverService.getThoseIFollow(me);
 
 		lovers.stream().filter(lover -> !(Objects.nonNull(lover.getDelete()))).forEachOrdered(lover -> {
 			Element loverElement = document.createElement("lover");
@@ -2556,6 +2591,7 @@ public class LoverService {
 	 * 首頁的列表 Element
 	 *
 	 * @param element
+	 * @param me
 	 * @param page
 	 * @param locale
 	 * @return
@@ -2566,7 +2602,7 @@ public class LoverService {
 		}
 		Document document = element.getOwnerDocument();
 
-		Set<Lover> following = me.getFollowing();
+		Collection<Lover> following = loverService.getThoseIFollow(me);
 		page.getContent().forEach(lover -> {
 			Element sectionElement = document.createElement("section");
 			element.appendChild(sectionElement);
@@ -2652,13 +2688,14 @@ public class LoverService {
 	/**
 	 * 看更多甜心/男仕
 	 *
+	 * @param me
 	 * @param page
 	 * @param locale
 	 * @return
 	 */
 	public JSONArray seeMoreLover(Lover me, Page<Lover> page, Locale locale) {
 		JSONArray jsonArray = new JSONArray();
-		Set<Lover> following = me.getFollowing();
+		Collection<Lover> following = loverService.getThoseIFollow(me);
 		page.getContent().stream().map(lover -> {
 			JSONObject json = new JSONObject();
 			json.put("nickname", lover.getNickname());

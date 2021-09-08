@@ -282,22 +282,14 @@ public class Lover implements java.io.Serializable {
 	/**
 	 * 收藏
 	 */
-	@JoinTable(name = "shou_cang",
-		joinColumns = {
-			@JoinColumn(name = "shou_cang_de", referencedColumnName = "id", nullable = false)
-		},
-		inverseJoinColumns = {
-			@JoinColumn(name = "bei_shou_cang", referencedColumnName = "id", nullable = false)
-		}
-	)
-	@ManyToMany(fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "following")
 	@JsonIgnore
 	private Set<Lover> following;
 
 	/**
 	 * 被收藏
 	 */
-	@ManyToMany(mappedBy = "following", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "followed")
 	@JsonIgnore
 	private Set<Lover> followed;
 
