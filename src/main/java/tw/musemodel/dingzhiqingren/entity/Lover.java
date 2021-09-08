@@ -58,6 +58,9 @@ public class Lover implements java.io.Serializable {
 
 	private static final long serialVersionUID = 7620248150717440860L;
 
+	/**
+	 * 主键
+	 */
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,14 +74,23 @@ public class Lover implements java.io.Serializable {
 	@Column(name = "shi_bie_ma", nullable = false)
 	private UUID identifier;
 
+	/**
+	 * 国家
+	 */
 	@JoinColumn(name = "guo_jia", nullable = false, referencedColumnName = "id")
 	@ManyToOne(optional = false)
 	@JsonManagedReference
 	private Country country;
 
+	/**
+	 * 帐号(手机号)
+	 */
 	@Column(name = "zhang_hao", nullable = false)
 	private String login;
 
+	/**
+	 * 密码
+	 */
 	@Column(name = "mi_ma")
 	@JsonIgnore
 	private String shadow;
@@ -580,14 +592,14 @@ public class Lover implements java.io.Serializable {
 	}
 
 	/**
-	 * @return VIP
+	 * @return VIP 有效期
 	 */
 	public Date getVip() {
 		return vip;
 	}
 
 	/**
-	 * @param vip VIP
+	 * @param vip VIP 有效期
 	 */
 	public void setVip(Date vip) {
 		this.vip = vip;
