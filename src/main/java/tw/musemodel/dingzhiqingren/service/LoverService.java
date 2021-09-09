@@ -83,6 +83,8 @@ import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Lover.MaleSpecies;
 import tw.musemodel.dingzhiqingren.entity.Picture;
+import tw.musemodel.dingzhiqingren.entity.Privilege;
+import tw.musemodel.dingzhiqingren.entity.PrivilegeKey;
 import tw.musemodel.dingzhiqingren.entity.ResetShadow;
 import tw.musemodel.dingzhiqingren.entity.Role;
 import tw.musemodel.dingzhiqingren.entity.ServiceTag;
@@ -107,7 +109,9 @@ import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LocationRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
+import tw.musemodel.dingzhiqingren.repository.PrivilegeRepository;
 import tw.musemodel.dingzhiqingren.repository.ResetShadowRepository;
+import tw.musemodel.dingzhiqingren.repository.RoleRepository;
 import tw.musemodel.dingzhiqingren.repository.ServiceTagRepository;
 import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
@@ -224,7 +228,13 @@ public class LoverService {
 	private PictureRepository pictureRepository;
 
 	@Autowired
+	private PrivilegeRepository privilegeRepository;
+
+	@Autowired
 	private ResetShadowRepository resetShadowRepository;
+
+	@Autowired
+	private RoleRepository roleRepository;
 
 	@Autowired
 	private ServiceTagRepository serviceTagRepository;
@@ -407,9 +417,15 @@ public class LoverService {
 		/*
 		 初始化身份
 		 */
-		Collection<Role> roles = new HashSet<>();
-		roles.add(servant.getRole(Servant.ROLE_ADVENTURER));
-		lover.setRoles(roles);
+		Role role = servant.getRole(Servant.ROLE_ADVENTURER);
+		PrivilegeKey privilegeKey = new PrivilegeKey();
+		privilegeKey.setLoverId(lover.getId());
+		privilegeKey.setRoleId(role.getId());
+		Privilege privilege = new Privilege();
+		privilege.setId(privilegeKey);
+		privilege.setLover(lover);
+		privilege.setRole(role);
+		privilegeRepository.saveAndFlush(privilege);
 
 		/*
 		 初始化推荐码
@@ -589,6 +605,25 @@ public class LoverService {
 			following.add(follow.getFollowing());
 		}
 		return following;
+	}
+
+	/**
+	 * 这家伙有没有某种身份。
+	 *
+	 * @param mofo 某咪郎
+	 * @param roleName 角色名称
+	 * @return 真或伪(布林值)
+	 */
+	@Transactional(readOnly = true)
+	public boolean hasRole(Lover mofo, String roleName) {
+		try {
+			final Role role = roleRepository.findOneByTextualRepresentation(roleName);
+			if (privilegeRepository.findByLover(mofo).stream().anyMatch(privilege -> (Objects.equals(privilege.getRole(), role)))) {
+				return true;
+			}
+		} catch (Exception ignore) {
+		}
+		return false;
 	}
 
 	/**
@@ -3014,81 +3049,81 @@ public class LoverService {
 	}
 
 	/**
-	 * 是否已經完成填寫註冊個人資訊
+	 * 是否已经完成填写注册个人资讯
 	 *
-	 * @param lover
-	 * @return
+	 * @param mofo 某咪郎
+	 * @return 真或伪布林值
 	 */
-	public boolean isEligible(Lover lover) {
-		String login = lover.getLogin();
+	public boolean isEligible(Lover mofo) {
+		String login = mofo.getLogin();
 		if (Objects.isNull(login) || login.isBlank()) {
 			return false;
 		}//帐号(手机号)
-		String shadow = lover.getShadow();
+		String shadow = mofo.getShadow();
 		if (Objects.isNull(shadow) || shadow.isBlank()) {
 			return false;
 		}//密码
-		String nickname = lover.getNickname();
+		String nickname = mofo.getNickname();
 		if (Objects.isNull(nickname) || nickname.isBlank()) {
 			return false;
 		}//昵称
-		String aboutMe = lover.getAboutMe();
+		String aboutMe = mofo.getAboutMe();
 		if (Objects.isNull(aboutMe) || aboutMe.isBlank()) {
 			return false;
 		}//自介
-		String greeting = lover.getGreeting();
+		String greeting = mofo.getGreeting();
 		if (Objects.isNull(greeting) || greeting.isBlank()) {
 			return false;
 		}//哈啰
-		if (Objects.isNull(lover.getBodyType())) {
+		if (Objects.isNull(mofo.getBodyType())) {
 			return false;
 		}//体型
-		if (Objects.isNull(lover.getHeight())) {
+		if (Objects.isNull(mofo.getHeight())) {
 			return false;
 		}//身高
-		if (Objects.isNull(lover.getWeight())) {
+		if (Objects.isNull(mofo.getWeight())) {
 			return false;
 		}//体重
-		if (Objects.isNull(lover.getEducation())) {
+		if (Objects.isNull(mofo.getEducation())) {
 			return false;
 		}//学历
-		if (Objects.isNull(lover.getMarriage())) {
+		if (Objects.isNull(mofo.getMarriage())) {
 			return false;
 		}//婚姻
-		String occupation = lover.getOccupation();
+		String occupation = mofo.getOccupation();
 		if (Objects.isNull(occupation) || occupation.isBlank()) {
 			return false;
 		}//职业
-		if (Objects.isNull(lover.getSmoking())) {
+		if (Objects.isNull(mofo.getSmoking())) {
 			return false;
 		}//抽烟习惯
-		if (Objects.isNull(lover.getDrinking())) {
+		if (Objects.isNull(mofo.getDrinking())) {
 			return false;
 		}//饮酒习惯
-		String idealConditions = lover.getIdealConditions();
+		String idealConditions = mofo.getIdealConditions();
 		if (Objects.isNull(idealConditions) || idealConditions.isBlank()) {
 			return false;
 		}//简述理想对象条件
-		if (Objects.nonNull(lover.getDelete())) {
+		if (Objects.nonNull(mofo.getDelete())) {
 			return false;
 		}//封号
-		if (Objects.isNull(lover.getRelationship())) {
+		if (Objects.isNull(mofo.getRelationship())) {
 			return false;
 		}//预期关系
-		if (lover.getGender()) {
-			if (Objects.isNull(lover.getAnnualIncome())) {
+		if (mofo.getGender()) {
+			if (Objects.isNull(mofo.getAnnualIncome())) {
 				return false;
 			}//年收入
 		} else {
-			String inviteMeAsFriend = lover.getInviteMeAsLineFriend();
+			String inviteMeAsFriend = mofo.getInviteMeAsLineFriend();
 			if (Objects.isNull(inviteMeAsFriend) || inviteMeAsFriend.isBlank()) {
 				return false;
 			}//添加好友链结
-			if (Objects.isNull(lover.getAllowance())) {
+			if (Objects.isNull(mofo.getAllowance())) {
 				return false;
 			}//期望零用钱
 		}
-		return !(lover.getLocations().isEmpty() || lover.getServices().isEmpty());//(地点|服务)标签
+		return !(mofo.getLocations().isEmpty() || mofo.getServices().isEmpty());//(地点|服务)标签
 	}
 
 	/**

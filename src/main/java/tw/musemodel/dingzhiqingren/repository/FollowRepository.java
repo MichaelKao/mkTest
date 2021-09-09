@@ -8,7 +8,7 @@ import tw.musemodel.dingzhiqingren.entity.FollowKey;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 
 /**
- * 数据访问对象：追踪(收藏)谁、被追踪(收藏)F
+ * 数据访问对象：追踪(收藏)谁、被追踪(收藏)
  *
  * @author p@musemodel.tw
  */

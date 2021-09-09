@@ -1,7 +1,6 @@
 package tw.musemodel.dingzhiqingren.service;
 
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -11,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
@@ -40,8 +40,6 @@ public class DashboardService {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(DashboardService.class);
 
-	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
 	@Autowired
 	private MessageSource messageSource;
 
@@ -58,127 +56,68 @@ public class DashboardService {
 	private StopRecurringPaymentApplicationRepository stopRecurringPaymentApplicationRepository;
 
 	@Autowired
+	private TrialCodeRepository trialCodeRepository;
+
+	@Autowired
 	private WithdrawalInfoRepository withdrawalInfoRepository;
 
 	@Autowired
 	private WithdrawalRecordRepository withdrawalRecordRepository;
 
-	@Autowired
-	private TrialCodeRepository trialCodeRepository;
+	/**
+	 * 构建根元素。
+	 *
+	 * @param document 文件
+	 * @param authentication 认证
+	 * @return 根元素
+	 */
+	@Transactional(readOnly = true)
+	private Element documentElement(Document document, Authentication authentication) {
+		String login = authentication.getName();
 
-	public Document withdrawalDocument(Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		Document document = servant.parseDocument();
+		Lover mofo = loverService.loadByUsername(login);
+
 		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute(
+			"signIn",
+			login
+		);//帐号(国码➕手机号)
+		documentElement.setAttribute(
+			"identifier",
+			mofo.getIdentifier().toString()
+		);//识别码
+		documentElement.setAttribute(
+			mofo.getGender() ? "male" : "female",
+			null
+		);//性别
 
-		Element recordsElement = document.createElement("records");
-		documentElement.appendChild(recordsElement);
-
-		for (EachWithdrawal eachWithdrawal : withdrawalRecordRepository.findAllGroupByHoneyAndStatusAndWayAndTimeStamp()) {
-			Element recordElement = document.createElement("record");
-			recordsElement.appendChild(recordElement);
-
-			Lover honey = eachWithdrawal.getHoney();
-			recordElement.setAttribute(
-				"identifier",
-				honey.getIdentifier().toString()
+		/*
+		 身份
+		 */
+		boolean isAdministrative = loverService.hasRole(
+			mofo,
+			Servant.ROLE_ADMINISTRATOR
+		);
+		boolean isFinancial = loverService.hasRole(
+			mofo,
+			Servant.ROLE_ACCOUNTANT
+		);
+		if (isAdministrative) {
+			//万能天神
+			documentElement.setAttribute(
+				"almighty",
+				null
 			);
-
-			recordElement.setAttribute(
-				"name",
-				honey.getNickname()
-			);
-
-			recordElement.setAttribute(
-				"date",
-				DATE_TIME_FORMATTER.format(
-					servant.toTaipeiZonedDateTime(
-						eachWithdrawal.getTimestamp()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI)
-				));
-
-			Date timestamp = eachWithdrawal.getTimestamp();
-			long epoch = timestamp.getTime();
-			recordElement.setAttribute(
-				"timestamp",
-				Long.toString(epoch)
-			);
-
-			if (!eachWithdrawal.getStatus() && Objects.equals(eachWithdrawal.getWay(), WayOfWithdrawal.WIRE_TRANSFER)) {
-				Element wireTransferElement = document.createElement("wireTransfer");
-				recordElement.appendChild(wireTransferElement);
-				WithdrawalInfo withdrawalInfo = withdrawalInfoRepository.findByHoney(eachWithdrawal.getHoney());
-				wireTransferElement.setAttribute(
-					"bankCode",
-					withdrawalInfo.getWireTransferBankCode()
-				);
-				wireTransferElement.setAttribute(
-					"branchCode",
-					withdrawalInfo.getWireTransferBranchCode()
-				);
-				wireTransferElement.setAttribute(
-					"accountName",
-					withdrawalInfo.getWireTransferAccountName()
-				);
-				wireTransferElement.setAttribute(
-					"accountNumber",
-					withdrawalInfo.getWireTransferAccountNumber()
-				);
-			}
-
-			if (Objects.equals(eachWithdrawal.getWay(), WayOfWithdrawal.PAYPAL)) {
-				Element paypalElement = document.createElement("paypal");
-				recordElement.appendChild(paypalElement);
-			}
-
-			recordElement.setAttribute(
-				"points",
-				eachWithdrawal.getPoints().toString()
-			);
-
-			Boolean status = eachWithdrawal.getStatus();
-			recordElement.setAttribute(
-				"status",
-				status.toString()
-			);
-
-			for (WithdrawalRecord withdrawalRecord
-				: withdrawalRecordRepository.findByHoneyAndStatusAndTimestamp(honey, status, timestamp)) {
-				Element historyElement = document.createElement("history");
-				recordElement.appendChild(historyElement);
-				historyElement.setAttribute(
-					"date",
-					DATE_TIME_FORMATTER.format(
-						servant.toTaipeiZonedDateTime(
-							withdrawalRecord.getHistory().getOccurred()
-						).withZoneSameInstant(Servant.ASIA_TAIPEI)
-					));
-
-				historyElement.setAttribute(
-					"male",
-					withdrawalRecord.getHistory().getInitiative().getNickname()
-				);
-
-				historyElement.setAttribute(
-					"maleId",
-					withdrawalRecord.getHistory().getInitiative().getIdentifier().toString()
-				);
-
-				historyElement.setAttribute(
-					"type",
-					messageSource.getMessage(
-						withdrawalRecord.getHistory().getBehavior().name(),
-						null,
-						locale
-					));
-
-				historyElement.setAttribute(
-					"points",
-					Short.toString(withdrawalRecord.getPoints())
-				);
-
-			}
 		}
-		return document;
+		if (isFinancial) {
+			//财务会计
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
+
+		return servant.documentElement(document, authentication);
 	}
 
 	/**
@@ -188,10 +127,12 @@ public class DashboardService {
 	 * @param handler 谁处理
 	 * @return 解除定期定额申请
 	 */
+	@Transactional
 	public StopRecurringPaymentApplication handleStopRecurringPaymentApplication(StopRecurringPaymentApplication application, Lover handler) {
-		application.setHandledAt(new Date(System.currentTimeMillis()));
 		application.setHandler(handler);
-		return stopRecurringPaymentApplicationRepository.saveAndFlush(application);
+		application.setHandledAt(new Date(System.currentTimeMillis()));
+		return stopRecurringPaymentApplicationRepository.
+			saveAndFlush(application);
 	}
 
 	/**
@@ -199,7 +140,7 @@ public class DashboardService {
 	 * @return 是否有资格申请解除定期定额
 	 */
 	@Transactional(readOnly = true)
-	public boolean isEligible(Lover applicant) {
+	public boolean isRecurringPaymentStoppable(Lover applicant) {
 		Date vipDuration = applicant.getVip();
 		if (Objects.isNull(vipDuration)) {
 			LOGGER.debug(
@@ -272,13 +213,27 @@ public class DashboardService {
 		return Objects.nonNull(application.getHandledAt()) && Objects.nonNull(application.getHandler());
 	}
 
-	public Document certificationDocument(Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	/**
+	 * 安心认证审核。
+	 *
+	 * @param authentication 认证
+	 * @param locale 语言环境
+	 * @return DOM 文件
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@Transactional(readOnly = true)
+	public Document certification(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
 
-		for (Lover lover : loverRepository.findByRelief(Boolean.FALSE)) {
+		Element documentElement = documentElement(
+			document,
+			authentication
+		);//根元素
+
+		for (Lover lover : loverRepository.findByRelief(false)) {
 			Element loverElement = document.createElement("lover");
-			documentElement.appendChild(loverElement);
 
 			loverElement.setAttribute(
 				"id",
@@ -289,16 +244,75 @@ public class DashboardService {
 				"name",
 				lover.getNickname()
 			);
+
+			documentElement.appendChild(loverElement);
 		}
+
 		return document;
 	}
 
-	public Document stopRecurringDocument(Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	/**
+	 * 核发体验码。
+	 *
+	 * @param authentication 认证
+	 * @param locale 语言环境
+	 * @return DOM 文件
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@Transactional(readOnly = true)
+	public Document generateTrialCode(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
 
-		/**
-		 * 未處理
+		Element documentElement = documentElement(
+			document,
+			authentication
+		);//根元素
+
+		for (TrialCode trialCode : trialCodeRepository.findAll()) {
+			Element trialElement = document.createElement("trial");
+
+			trialElement.setAttribute(
+				"trialCodeID",
+				trialCode.getId().toString()
+			);
+			trialElement.setAttribute(
+				"keyOpinionLeader",
+				trialCode.getKeyOpinionLeader()
+			);
+			trialElement.setAttribute(
+				"code",
+				trialCode.getCode()
+			);
+
+			documentElement.appendChild(trialElement);
+		}
+
+		return document;
+	}
+
+	/**
+	 * 长期贵宾解除定期定额。
+	 *
+	 * @param authentication 认证
+	 * @param locale 语言环境
+	 * @return DOM 文件
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@Transactional(readOnly = true)
+	public Document stopRecurringDocument(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		Document document = servant.parseDocument();
+
+		Element documentElement = documentElement(
+			document,
+			authentication
+		);//根元素
+
+		/*
+		 未處理
 		 */
 		for (StopRecurringPaymentApplication stopRecurringPaymentApplication : stopRecurringPaymentApplicationRepository.findAllByHandlerNullOrderByCreatedAtDesc()) {
 			Element pendingElement = document.createElement("pending");
@@ -328,19 +342,21 @@ public class DashboardService {
 
 			pendingElement.setAttribute(
 				"expiry",
-				DATE_TIME_FORMATTER.format(
+				Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
 					servant.toTaipeiZonedDateTime(
 						applicant.getVip()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI)
-				));
+					).withZoneSameInstant(
+						Servant.ASIA_TAIPEI
+					)
+				)
+			);
 		}
 
-		/**
-		 * 已處理
+		/*
+		 已處理
 		 */
 		for (StopRecurringPaymentApplication stopRecurringPaymentApplication : stopRecurringPaymentApplicationRepository.findAllByHandlerNotNullOrderByCreatedAtDesc()) {
 			Element finishedElement = document.createElement("finished");
-			documentElement.appendChild(finishedElement);
 
 			Lover applicant = stopRecurringPaymentApplication.getApplicant();
 
@@ -361,35 +377,163 @@ public class DashboardService {
 
 			finishedElement.setAttribute(
 				"handleDate",
-				DATE_TIME_FORMATTER.format(
+				Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
 					servant.toTaipeiZonedDateTime(
-						stopRecurringPaymentApplication.getHandledAt()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI)
-				));
+						stopRecurringPaymentApplication.
+							getHandledAt()
+					).withZoneSameInstant(
+						Servant.ASIA_TAIPEI
+					)
+				)
+			);
+
+			documentElement.appendChild(finishedElement);
 		}
+
 		return document;
 	}
 
-	public Document genTrialCodeDocument(Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	/**
+	 * 甜心提取车马费。
+	 *
+	 * @param authentication 认证
+	 * @param locale 语言环境
+	 * @return DOM 文件
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@Transactional(readOnly = true)
+	public Document withdrawal(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
 
-		for (TrialCode trialCode : trialCodeRepository.findAll()) {
-			Element trialElement = document.createElement("trial");
-			documentElement.appendChild(trialElement);
-			trialElement.setAttribute(
-				"trialCodeID",
-				trialCode.getId().toString()
+		Element documentElement = documentElement(
+			document,
+			authentication
+		);//根元素
+
+		Element recordsElement = document.createElement("records");
+		for (EachWithdrawal eachWithdrawal : withdrawalRecordRepository.findAllGroupByHoneyAndStatusAndWayAndTimeStamp()) {
+			Lover honey = eachWithdrawal.getHoney();
+
+			Element recordElement = document.createElement("record");
+			recordsElement.appendChild(recordElement);
+
+			recordElement.setAttribute(
+				"identifier",
+				honey.getIdentifier().toString()
 			);
-			trialElement.setAttribute(
-				"keyOpinionLeader",
-				trialCode.getKeyOpinionLeader()
+
+			recordElement.setAttribute(
+				"name",
+				honey.getNickname()
 			);
-			trialElement.setAttribute(
-				"code",
-				trialCode.getCode()
+
+			recordElement.setAttribute(
+				"date",
+				Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
+					servant.toTaipeiZonedDateTime(
+						eachWithdrawal.getTimestamp()
+					).withZoneSameInstant(Servant.ASIA_TAIPEI)
+				));
+
+			Date timestamp = eachWithdrawal.getTimestamp();
+			long epoch = timestamp.getTime();
+			recordElement.setAttribute(
+				"timestamp",
+				Long.toString(epoch)
 			);
+
+			if (!eachWithdrawal.getStatus() && Objects.equals(eachWithdrawal.getWay(), WayOfWithdrawal.WIRE_TRANSFER)) {
+				Element wireTransferElement = document.createElement("wireTransfer");
+				recordElement.appendChild(wireTransferElement);
+				WithdrawalInfo withdrawalInfo = withdrawalInfoRepository.findByHoney(eachWithdrawal.getHoney());
+				wireTransferElement.setAttribute(
+					"bankCode",
+					withdrawalInfo.getWireTransferBankCode()
+				);
+				wireTransferElement.setAttribute(
+					"branchCode",
+					withdrawalInfo.getWireTransferBranchCode()
+				);
+				wireTransferElement.setAttribute(
+					"accountName",
+					withdrawalInfo.getWireTransferAccountName()
+				);
+				wireTransferElement.setAttribute(
+					"accountNumber",
+					withdrawalInfo.getWireTransferAccountNumber()
+				);
+			}
+
+			if (Objects.equals(eachWithdrawal.getWay(), WayOfWithdrawal.PAYPAL)) {
+				Element paypalElement = document.createElement("paypal");
+				recordElement.appendChild(paypalElement);
+			}
+
+			recordElement.setAttribute(
+				"points",
+				eachWithdrawal.getPoints().toString()
+			);
+
+			Boolean status = eachWithdrawal.getStatus();
+			recordElement.setAttribute(
+				"status",
+				status.toString()
+			);
+
+			for (WithdrawalRecord withdrawalRecord : withdrawalRecordRepository.findByHoneyAndStatusAndTimestamp(honey, status, timestamp)) {
+				Element historyElement = document.createElement("history");
+				recordElement.appendChild(historyElement);
+				historyElement.setAttribute(
+					"date",
+					Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
+						servant.toTaipeiZonedDateTime(
+							withdrawalRecord.
+								getHistory().
+								getOccurred()
+						).withZoneSameInstant(
+							Servant.ASIA_TAIPEI
+						)
+					)
+				);
+
+				historyElement.setAttribute(
+					"male",
+					withdrawalRecord.
+						getHistory().
+						getInitiative().
+						getNickname()
+				);
+
+				historyElement.setAttribute(
+					"maleId",
+					withdrawalRecord.
+						getHistory().
+						getInitiative().
+						getIdentifier().
+						toString()
+				);
+
+				historyElement.setAttribute(
+					"type",
+					messageSource.getMessage(
+						withdrawalRecord.
+							getHistory().
+							getBehavior().
+							name(),
+						null,
+						locale
+					));
+
+				historyElement.setAttribute(
+					"points",
+					Short.toString(withdrawalRecord.getPoints())
+				);
+
+			}
 		}
+		documentElement.appendChild(recordsElement);
 
 		return document;
 	}

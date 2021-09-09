@@ -38,6 +38,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -62,10 +63,13 @@ public class Servant {
 	private static final String EMPTY_DOCUMENT_URI = "classpath:/skeleton/default.xml";
 
 	@Autowired
-	private MessageSource messageSource;
+	private CountryRepository countryRepository;
 
 	@Autowired
-	private CountryRepository countryRepository;
+	private LoverService loverService;
+
+	@Autowired
+	private MessageSource messageSource;
 
 	@Autowired
 	private RoleRepository roleRepository;
@@ -80,8 +84,19 @@ public class Servant {
 	 */
 	public static final Integer DAYS_IN_A_MONTH = 30;
 
+	/**
+	 * yyyy-MM-dd 的 DateTimeFormatter
+	 */
+	public static final DateTimeFormatter DATE_TIME_FORMATTER_yyyyMMdd = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	/**
+	 * JSON 映射器
+	 */
 	public static final JsonMapper JSON_MAPPER = new JsonMapper();
 
+	/**
+	 * 美观的 JSON 映射器
+	 */
 	public static final ObjectWriter JSON_WRITER_WITH_DEFAULT_PRETTY_PRINTER = new JsonMapper().writerWithDefaultPrettyPrinter();
 
 	/**
@@ -309,12 +324,92 @@ public class Servant {
 	}
 
 	/**
-	 * 重定向到首页
+	 * 重定向到编辑个人资料页面。
+	 *
+	 * @return org.​springframework.​web.​servlet.ModelAndView
+	 */
+	public static ModelAndView redirectToProfile() {
+		return new ModelAndView("redirect:/me.asp");
+	}
+
+	/**
+	 * 重定向到首页。
 	 *
 	 * @return org.​springframework.​web.​servlet.ModelAndView
 	 */
 	public static ModelAndView redirectToRoot() {
 		return new ModelAndView("redirect:/");
+	}
+
+	/**
+	 * 构建根元素。
+	 *
+	 * @param document 文件
+	 * @param authentication 认证
+	 * @return 根元素
+	 */
+	@Transactional(readOnly = true)
+	public Element documentElement(Document document, Authentication authentication) {
+		String login = authentication.getName();
+
+		Lover mofo = loverService.loadByUsername(login);
+
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute(
+			"signIn",
+			login
+		);//帐号(国码➕手机号)
+		documentElement.setAttribute(
+			"identifier",
+			mofo.getIdentifier().toString()
+		);//识别码
+		documentElement.setAttribute(
+			mofo.getGender() ? "male" : "female",
+			null
+		);//性别
+
+		/*
+		 身份
+		 */
+		if (loverService.hasRole(mofo, Servant.ROLE_ADMINISTRATOR)) {
+			//万能天神
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (loverService.hasRole(mofo, Servant.ROLE_ACCOUNTANT)) {
+			//财务会计
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
+
+		Integer numberOfAnnoucements = loverService.annoucementCount(mofo);
+		if (numberOfAnnoucements > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				numberOfAnnoucements.toString()
+			);//通知数
+		}
+
+		Integer numberOfUnreadMessages = loverService.unreadMessages(mofo);
+		if (numberOfUnreadMessages > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				numberOfUnreadMessages.toString()
+			);//未读讯息数
+		}
+
+		if (loverService.hasLineNotify(mofo)) {
+			documentElement.setAttribute(
+				"lineNotify",
+				null
+			);//有无连动 LINE Notify
+		}
+
+		return documentElement;
 	}
 
 	public List<Country> getCountries() {
@@ -404,16 +499,5 @@ public class Servant {
 
 	public ZonedDateTime toTaipeiZonedDateTime(Date date) {
 		return Servant.this.toTaipeiZonedDateTime(date.toInstant());
-	}
-
-	/**
-	 * 確認身分
-	 *
-	 * @param lover
-	 * @param roleName
-	 * @return
-	 */
-	public boolean hasRole(Lover lover, String roleName) {
-		return Objects.nonNull(lover) && lover.getRoles().contains(roleRepository.findOneByTextualRepresentation(roleName));
 	}
 }

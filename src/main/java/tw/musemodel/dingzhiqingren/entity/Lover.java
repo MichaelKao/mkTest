@@ -245,18 +245,9 @@ public class Lover implements java.io.Serializable {
 	/**
 	 * 身份
 	 */
-	@JoinTable(
-		name = "shou_quan",
-		joinColumns = {
-			@JoinColumn(name = "qing_ren", referencedColumnName = "id", nullable = false)
-		},
-		inverseJoinColumns = {
-			@JoinColumn(name = "shen_fen", referencedColumnName = "id", nullable = false)
-		}
-	)
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JsonManagedReference
-	private Collection<Role> roles;
+	@OneToMany(mappedBy = "role")
+	@JsonIgnore
+	private Set<Privilege> roles;
 
 	/**
 	 * 生活照
@@ -284,14 +275,14 @@ public class Lover implements java.io.Serializable {
 	 */
 	@OneToMany(mappedBy = "following")
 	@JsonIgnore
-	private Set<Lover> following;
+	private Set<Follow> following;
 
 	/**
 	 * 被收藏
 	 */
 	@OneToMany(mappedBy = "followed")
 	@JsonIgnore
-	private Set<Lover> followed;
+	private Set<Follow> followed;
 
 	/**
 	 * 年收入
@@ -838,14 +829,14 @@ public class Lover implements java.io.Serializable {
 	/**
 	 * @return 身份
 	 */
-	public Collection<Role> getRoles() {
+	public Set<Privilege> getRoles() {
 		return roles;
 	}
 
 	/**
 	 * @param roles 身份
 	 */
-	public void setRoles(Collection<Role> roles) {
+	public void setRoles(Set<Privilege> roles) {
 		this.roles = roles;
 	}
 
@@ -894,28 +885,28 @@ public class Lover implements java.io.Serializable {
 	/**
 	 * @return 收藏
 	 */
-	public Set<Lover> getFollowing() {
+	public Set<Follow> getFollowing() {
 		return following;
 	}
 
 	/**
 	 * @param following 收藏
 	 */
-	public void setFollowing(Set<Lover> following) {
+	public void setFollowing(Set<Follow> following) {
 		this.following = following;
 	}
 
 	/**
 	 * @return 被收藏
 	 */
-	public Set<Lover> getFollowed() {
+	public Set<Follow> getFollowed() {
 		return followed;
 	}
 
 	/**
 	 * @param followed 被收藏
 	 */
-	public void setFollowed(Set<Lover> followed) {
+	public void setFollowed(Set<Follow> followed) {
 		this.followed = followed;
 	}
 
