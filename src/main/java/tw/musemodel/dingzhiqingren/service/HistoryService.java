@@ -836,7 +836,15 @@ public class HistoryService {
 				));
 			}
 		} else if (!loverService.isVIP(male) && !loverService.isVVIP(male)) {
-			throw new RuntimeException("openLine.upgardeVipToOpen");
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"openLine.upgardeVipToOpen",
+					null,
+					locale
+				)).
+				withResponse(false).
+				withRedirect("/upgrade.asp").
+				toJSONObject();
 		}
 
 		Boolean isLine = servant.isLine(URI.create(female.getInviteMeAsLineFriend()));

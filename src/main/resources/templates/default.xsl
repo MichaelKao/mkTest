@@ -286,7 +286,7 @@
 	</xsl:template>
 
 	<xsl:template name="customerFloatBtn">
-		<A class="customerFloatBtn d-flex align-items-center justify-content-center position-fixed bg-dark fontSize25 text-white" href="#">
+		<A class="customerFloatBtn d-flex align-items-center justify-content-center position-fixed bg-dark fontSize25 text-white opacity-9" href="#">
 			<I class="fad fa-user-headset"></I>
 		</A>
 	</xsl:template>

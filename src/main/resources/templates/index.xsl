@@ -442,7 +442,7 @@
 			<DIV class="d-flex flex-wrap justify-content-center mobileMode"></DIV>
 			<BUTTON class="btn btn-link text-lg seeMoreBtn" id="mobileMode"  data-page="0">看更多<I class="fad fa-angle-double-right ms-1"></I></BUTTON>
 		</ARTICLE>
-		<SECTION class="fixed-bottom d-block d-md-none bg-light shadow m-2 bottom-2">
+		<SECTION class="fixed-bottom d-block d-md-none bg-light shadow m-2 bottom-1">
 			<UL class="navbar-nav flex-row mobileMode">
 				<xsl:if test="vip">
 					<LI class="nav-item col-3 text-center">

@@ -102,26 +102,27 @@
 				<DIV class="modal fade" id="weChatModel">
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
-							<DIV class="modal-header">
-								<H5 class="modal-title">微信 WeCaht QRcode</H5>
-								<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
-									<I class="fal fa-times"></I>
-								</BUTTON>
-							</DIV>
 							<DIV class="modal-body">
+								<DIV class="d-flex">
+									<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+										<I class="fal fa-times"></I>
+									</BUTTON>
+								</DIV>
+								<DIV class="my-3 text-center">
+									<I class="fad fa-user-plus mb-1" style="font-size: 50px;"></I>
+									<H5 class="modal-title">微信 WeCaht QRcode</H5>
+								</DIV>
 								<DIV class="form-group">
-									<P>使用微信 APP 掃描加入好友</P>
-									<P>若是用手機，需以截圖或下載 QRCode 的方式使用微信 APP 加入好友</P>
-									<P class="text-primary">點擊 QRcode 可直接下載</P>
-									<A class="weChatQRcode" href="" download="weChatQRcode.png">
+									<DIV class="text-center">使用微信 APP 掃描加入好友</DIV>
+									<DIV class="text-center">若是用手機，需以截圖或下載 QRCode 的方式使用微信 APP 加入好友</DIV>
+									<DIV class="text-center text-primary">點擊 QRcode 可直接下載</DIV>
+									<A class="weChatQRcode d-flex justify-content-center" href="" download="weChatQRcode.png">
 										<IMG alt="weChatQRCode" class="weChatQRcode" src=""/>
 									</A>
 								</DIV>
-							</DIV>
-							<DIV class="modal-footer">
-								<BUTTON class="btn btn-outline-dark px-3 py-2" data-bs-dismiss="modal" type="button">
-									<xsl:value-of select="@i18n-cancel"/>
-								</BUTTON>
+								<DIV class="text-center">
+									<BUTTON class="btn btn-outline-dark px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+								</DIV>
 							</DIV>
 						</DIV>
 					</DIV>
@@ -637,9 +638,9 @@
 						<div class="messages" id="messagesArea"></div>
 						<div class="inputContainer">
 							<xsl:choose>
-								<xsl:when test="not(@notAbleToSendMsgs) and not(@blocking) and not(@blockedBy)">
+								<xsl:when test="not(@blocking) and not(@blockedBy)">
 									<xsl:if test="@female">
-										<xsl:if test="@decideBtn and not(@blocking) and not(@blockedBy)">
+										<xsl:if test="@decideBtn">
 											<DIV class="d-flex justify-content-center femaleBtn floatBtn">
 												<DIV class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
 													<DIV class="text-primary">
@@ -654,9 +655,9 @@
 												</DIV>
 											</DIV>
 										</xsl:if>
-										<xsl:if test="@rateBtn and not(@blocking) and not(@blockedBy)">
+										<xsl:if test="@rateBtn">
 											<div class="d-flex justify-content-center femaleBtn floatBtn">
-												<div class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center">
+												<div class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
 													<div class="text-primary">
 														<div>
 															<i class="fad fa-star-half"></i>
@@ -672,14 +673,14 @@
 										<DIV class="d-flex align-items-center justify-content-center maleBtn floatBtn">
 											<div class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
 												<xsl:choose>
-													<xsl:when test="@reqSocialMediaBtn and not(@blocking) and not(@blockedBy)">
+													<xsl:when test="@reqSocialMediaBtn">
 														<div class="text-primary">
 															<i class="far fa-user-plus ms-1"></i>
 															<span>向對方提出通訊軟體要求</span>
 														</div>
 														<button type="button" id="giveMeLine" class="btn btn-primary btn-round px-2 py-1 m-0">要求</button>
 													</xsl:when>
-													<xsl:when test="@waitingForRes and not(@blocking) and not(@blockedBy)">
+													<xsl:when test="@waitingForRes">
 														<div class="text-primary">
 															<div>
 																<i class="fad fa-user-plus"></i>
@@ -688,7 +689,7 @@
 															<div>請等待對方回應。</div>
 														</div>
 													</xsl:when>
-													<xsl:when test="@addLineBtn and not(@blocking) and not(@blockedBy)">
+													<xsl:when test="@addLineBtn">
 														<div class="text-primary">
 															<div>
 																<i class="fad fa-star-half"></i>
@@ -704,18 +705,23 @@
 														</button>
 													</xsl:when>
 												</xsl:choose>
-												<xsl:if test="@rateBtn and not(@blocking) and not(@blockedBy)">
+												<xsl:if test="@rateBtn">
 													<button data-bs-target="#rateModal" data-bs-toggle="modal" type="button" class="btn btn-sm btn-dark btn-round px-2 py-1 m-0 ms-1 rate">評價</button>
 												</xsl:if>
 											</div>
 										</DIV>
 									</xsl:if>
-									<div class="textareaContainer">
-										<textarea id="chatInput" type="text" placeholder="說點什麼吧..."></textarea>
-									</div>
-									<button class="btn btn-link m-0 p-0 sendMsgBtn">
-										<i class="fa fa-paper-plane" aria-hidden="true"></i>
-									</button>
+									<xsl:if test="not(@notAbleToSendMsgs)">
+										<div class="textareaContainer">
+											<textarea id="chatInput" type="text" placeholder="說點什麼吧..."></textarea>
+										</div>
+										<button class="btn btn-link m-0 p-0 sendMsgBtn">
+											<i class="fa fa-paper-plane"></i>
+										</button>
+									</xsl:if>
+									<xsl:if test="@notAbleToSendMsgs">
+										<SPAN>12小時內僅能發送3句話給甜心</SPAN>
+									</xsl:if>
 								</xsl:when>
 								<xsl:when test="@blockedBy">
 									<SPAN>此用戶已不存在</SPAN>
@@ -723,14 +729,14 @@
 								<xsl:when test="@blocking">
 									<SPAN>您已封鎖對方</SPAN>
 								</xsl:when>
-								<xsl:when test="@notAbleToSendMsgs">
-									<SPAN>12小時內僅能發送3句話給甜心</SPAN>
-								</xsl:when>
 							</xsl:choose>
 						</div>
 					</div>
 				</div>
 			</div>
+			<A class="customerBtn d-flex align-items-center justify-content-center position-fixed bg-dark fontSize22 opacity-8 text-white" href="#">
+				<I class="fad fa-user-headset"></I>
+			</A>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/chatroom.js"/>
 			<xsl:if test="@signIn">

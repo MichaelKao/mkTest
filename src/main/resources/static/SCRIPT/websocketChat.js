@@ -497,6 +497,15 @@ $(document).ready(function () {
 										whom: friend
 									},
 									function (data) {
+										if (data.response) {
+											var jsonObj = {
+												'type': 'button',
+												'sender': self,
+												'receiver': friend,
+												'behavior': 'LAI_KOU_DIAN'
+											};
+											websocket.send(JSON.stringify(jsonObj));
+										}
 										if (data.response && data.result === 'isLine') {
 											location.href = data.redirect;
 										} else if (data.response && data.result === 'isWeChat') {
@@ -504,9 +513,13 @@ $(document).ready(function () {
 											$('IMG.weChatQRcode').attr('src', src);
 											$('A.weChatQRcode').attr('href', src);
 											$('#weChatModel').modal('show');
+											$('BUTTON.openSocialMedia').removeAttr('disabled');
 										} else {
 											$('.toast-body').html(data.reason);
 											$('.toast').toast('show');
+											$('.toast').on('hidden.bs.toast', function () {
+												location.href = data.redirect;
+											});
 										}
 									},
 									'json'
@@ -811,13 +824,15 @@ $(document).ready(function () {
 				whom: friend
 			},
 			function (data) {
-				var jsonObj = {
-					'type': 'button',
-					'sender': self,
-					'receiver': friend,
-					'behavior': 'LAI_KOU_DIAN'
-				};
-				websocket.send(JSON.stringify(jsonObj));
+				if (data.response) {
+					var jsonObj = {
+						'type': 'button',
+						'sender': self,
+						'receiver': friend,
+						'behavior': 'LAI_KOU_DIAN'
+					};
+					websocket.send(JSON.stringify(jsonObj));
+				}
 				if (data.response && data.result === 'isLine') {
 					location.href = data.redirect;
 				} else if (data.response && data.result === 'isWeChat') {
@@ -825,10 +840,13 @@ $(document).ready(function () {
 					$('IMG.weChatQRcode').attr('src', src);
 					$('A.weChatQRcode').attr('href', src);
 					$('#weChatModel').modal('show');
-					$('BUTTON.openSocialMedia').attr('disabled', 'false');
+					$('BUTTON.openSocialMedia').removeAttr('disabled');
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');
+					$('.toast').on('hidden.bs.toast', function () {
+						location.href = data.redirect;
+					});
 				}
 			},
 			'json'

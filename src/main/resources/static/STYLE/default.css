@@ -49,6 +49,7 @@ INPUT, TEXTAREA {
 	right: 8px;
 	border-radius:50px;
 	box-shadow: 2px 2px 3px #999;
+	z-index: 9999;
 }
 
 @media (max-width: 991.98px){

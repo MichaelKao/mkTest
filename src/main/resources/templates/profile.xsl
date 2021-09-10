@@ -328,10 +328,10 @@
 								<DIV class="position-absolute bottom-50 right-0 left-0 mx-auto w-50">
 									<DIV class="text-center">
 										<BUTTON class="btn btn-dark btn-round m-0 picturesAuth" type="button">
-											<xsl:if test="not(/document/@waitForAuth)">取得授權</xsl:if>
+											<xsl:if test="not(/document/@waitForAuth)">要求查看</xsl:if>
 											<xsl:if test="/document/@waitForAuth">
 												<xsl:attribute name="disabled">true</xsl:attribute>
-												<xsl:text>等待授權</xsl:text>
+												<xsl:text>等待回覆</xsl:text>
 											</xsl:if>
 										</BUTTON>
 									</DIV>
