@@ -58,6 +58,9 @@ public class Lover implements java.io.Serializable {
 
 	private static final long serialVersionUID = 7620248150717440860L;
 
+	/**
+	 * 主键
+	 */
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,14 +74,23 @@ public class Lover implements java.io.Serializable {
 	@Column(name = "shi_bie_ma", nullable = false)
 	private UUID identifier;
 
+	/**
+	 * 国家
+	 */
 	@JoinColumn(name = "guo_jia", nullable = false, referencedColumnName = "id")
 	@ManyToOne(optional = false)
 	@JsonManagedReference
 	private Country country;
 
+	/**
+	 * 帐号(手机号)
+	 */
 	@Column(name = "zhang_hao", nullable = false)
 	private String login;
 
+	/**
+	 * 密码
+	 */
 	@Column(name = "mi_ma")
 	@JsonIgnore
 	private String shadow;
@@ -233,18 +245,9 @@ public class Lover implements java.io.Serializable {
 	/**
 	 * 身份
 	 */
-	@JoinTable(
-		name = "shou_quan",
-		joinColumns = {
-			@JoinColumn(name = "qing_ren", referencedColumnName = "id", nullable = false)
-		},
-		inverseJoinColumns = {
-			@JoinColumn(name = "shen_fen", referencedColumnName = "id", nullable = false)
-		}
-	)
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JsonManagedReference
-	private Collection<Role> roles;
+	@OneToMany(mappedBy = "role")
+	@JsonIgnore
+	private Set<Privilege> roles;
 
 	/**
 	 * 生活照
@@ -270,24 +273,16 @@ public class Lover implements java.io.Serializable {
 	/**
 	 * 收藏
 	 */
-	@JoinTable(name = "shou_cang",
-		joinColumns = {
-			@JoinColumn(name = "shou_cang_de", referencedColumnName = "id", nullable = false)
-		},
-		inverseJoinColumns = {
-			@JoinColumn(name = "bei_shou_cang", referencedColumnName = "id", nullable = false)
-		}
-	)
-	@ManyToMany(fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "following")
 	@JsonIgnore
-	private Set<Lover> following;
+	private Set<Follow> following;
 
 	/**
 	 * 被收藏
 	 */
-	@ManyToMany(mappedBy = "following", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "followed")
 	@JsonIgnore
-	private Set<Lover> followed;
+	private Set<Follow> followed;
 
 	/**
 	 * 年收入
@@ -580,14 +575,14 @@ public class Lover implements java.io.Serializable {
 	}
 
 	/**
-	 * @return VIP
+	 * @return VIP 有效期
 	 */
 	public Date getVip() {
 		return vip;
 	}
 
 	/**
-	 * @param vip VIP
+	 * @param vip VIP 有效期
 	 */
 	public void setVip(Date vip) {
 		this.vip = vip;
@@ -834,14 +829,14 @@ public class Lover implements java.io.Serializable {
 	/**
 	 * @return 身份
 	 */
-	public Collection<Role> getRoles() {
+	public Set<Privilege> getRoles() {
 		return roles;
 	}
 
 	/**
 	 * @param roles 身份
 	 */
-	public void setRoles(Collection<Role> roles) {
+	public void setRoles(Set<Privilege> roles) {
 		this.roles = roles;
 	}
 
@@ -890,28 +885,28 @@ public class Lover implements java.io.Serializable {
 	/**
 	 * @return 收藏
 	 */
-	public Set<Lover> getFollowing() {
+	public Set<Follow> getFollowing() {
 		return following;
 	}
 
 	/**
 	 * @param following 收藏
 	 */
-	public void setFollowing(Set<Lover> following) {
+	public void setFollowing(Set<Follow> following) {
 		this.following = following;
 	}
 
 	/**
 	 * @return 被收藏
 	 */
-	public Set<Lover> getFollowed() {
+	public Set<Follow> getFollowed() {
 		return followed;
 	}
 
 	/**
 	 * @param followed 被收藏
 	 */
-	public void setFollowed(Set<Lover> followed) {
+	public void setFollowed(Set<Follow> followed) {
 		this.followed = followed;
 	}
 

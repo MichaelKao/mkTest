@@ -10,9 +10,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.entity.Privilege;
 import tw.musemodel.dingzhiqingren.entity.Role;
 import tw.musemodel.dingzhiqingren.entity.User;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
+import tw.musemodel.dingzhiqingren.repository.PrivilegeRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
 
 /**
@@ -27,6 +29,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	private LoverRepository loverRepository;
 
 	@Autowired
+	private PrivilegeRepository privilegeRepository;
+
+	@Autowired
 	private UserRepository userRepository;
 
 	@Override
@@ -36,12 +41,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			throw new UsernameNotFoundException(username);
 		}
 
-		Lover lover = loverRepository.findById(user.getId()).orElseThrow();
+		Lover mofo = loverRepository.findById(user.getId()).orElseThrow();
+
+		Collection<Role> roles = new ArrayList<>();
+		for (Privilege privilege : privilegeRepository.findByLover(mofo)) {
+			roles.add(privilege.getRole());
+		}
 		return org.springframework.security.core.userdetails.User.builder().
 			username(user.getUsername()).
 			password(user.getPassword()).
 			disabled(!user.isEnabled()).
-			authorities(authorities(lover.getRoles())).
+			authorities(authorities(roles)).
 			build();
 	}
 

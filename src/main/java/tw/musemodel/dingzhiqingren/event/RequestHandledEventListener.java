@@ -1,15 +1,12 @@
 package tw.musemodel.dingzhiqingren.event;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.util.Date;
-import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.RequestHandledEvent;
-import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 
 /**
@@ -27,14 +24,9 @@ public class RequestHandledEventListener {
 
 	@EventListener
 	public void onRequestHandledEvent(RequestHandledEvent requestHandledEvent) throws JsonProcessingException {
-		Lover me = loverService.loadByUsername(
+		loverService.lastActive(
+			requestHandledEvent.getTimestamp(),
 			requestHandledEvent.getUserName()
 		);
-		if (Objects.nonNull(me)) {
-			me.setActive(new Date(
-				requestHandledEvent.getTimestamp()
-			));
-			loverService.saveLover(me);
-		}
 	}
 }

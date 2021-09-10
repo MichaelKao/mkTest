@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 import lombok.Data;
 import org.json.JSONObject;
@@ -46,6 +45,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.WebSocketServer;
+import tw.musemodel.dingzhiqingren.entity.Follow;
+import tw.musemodel.dingzhiqingren.entity.FollowKey;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.LineGiven;
@@ -53,6 +54,7 @@ import tw.musemodel.dingzhiqingren.entity.LineGivenPK;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
+import tw.musemodel.dingzhiqingren.repository.FollowRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
@@ -90,6 +92,9 @@ public class HistoryService {
 
 	@Autowired
 	private LoverService loverService;
+
+	@Autowired
+	private FollowRepository followRepository;
 
 	@Autowired
 	private HistoryRepository historyRepository;
@@ -517,12 +522,21 @@ public class HistoryService {
 			throw new RuntimeException("follow.mustBeStraight");
 		}
 
-		Set<Lover> following = initiative.getFollowing();
+		Collection<Lover> following = loverService.getThoseIFollow(
+			initiative
+		);
 		for (Lover followed : following) {
 			if (Objects.equals(passive, followed)) {
-				following.remove(followed);
-				initiative.setFollowing(following);
-				loverRepository.saveAndFlush(initiative);
+				FollowKey followKey = new FollowKey();
+				followKey.setFollowingId(initiative.getId());
+				followKey.setFollowedId(passive.getId());
+
+				Follow follow = followRepository.
+					findById(followKey).
+					orElseThrow();
+				followRepository.delete(follow);
+				followRepository.flush();
+
 				return new JavaScriptObjectNotation().
 					withReason(messageSource.getMessage(
 						"unfollow.done",
@@ -534,9 +548,14 @@ public class HistoryService {
 			}
 		}
 
-		following.add(passive);
-		initiative.setFollowing(following);
-		loverRepository.saveAndFlush(initiative);
+		FollowKey followKey = new FollowKey();
+		followKey.setFollowingId(initiative.getId());
+		followKey.setFollowedId(passive.getId());
+		Follow follow = new Follow();
+		follow.setId(followKey);
+		follow.setFollowing(initiative);
+		follow.setFollowed(passive);
+		followRepository.saveAndFlush(follow);
 
 		History history = new History(
 			initiative,
@@ -561,7 +580,6 @@ public class HistoryService {
 	 *
 	 * @param initiative 男生
 	 * @param passive 女生
-	 * @param greetingMessage 招呼语
 	 * @param locale
 	 * @return 杰森对象
 	 */

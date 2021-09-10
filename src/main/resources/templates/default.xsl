@@ -29,6 +29,9 @@
 	</xsl:template>
 
 	<xsl:template name="navbar">
+		<xsl:if test="@signIn">
+			<xsl:call-template name="customerFloatBtn"/>
+		</xsl:if>
 		<DIV class="container position-sticky z-index-sticky top-0">
 			<INPUT name="identifier" type="hidden" value="{@identifier}"/>
 			<NAV class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-1 py-md-3 start-0 end-0 mx-3">
@@ -45,7 +48,7 @@
 									</xsl:if>
 								</SPAN>
 							</A>
-							<A class="d-lg-none px-1" href="/inbox.asp">
+							<A class="d-lg-none px-2" href="/inbox.asp">
 								<I class="fad fa-comment-smile fontSize22"></I>
 								<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 inbox" style="display: none;">
 									<xsl:if test="@inbox">
@@ -64,7 +67,7 @@
 						</BUTTON>
 					</DIV>
 					<DIV class="collapse navbar-collapse justify-content-end" id="navigation">
-						<UL class="navbar-nav navbar-nav-hover ">
+						<UL class="navbar-nav navbar-nav-hover">
 							<xsl:if test="@signIn">
 								<LI class="nav-item dropdown dropdown-hover">
 									<A class="nav-link cursor-pointer text-primary" id="dropdownMenuPages" data-bs-toggle="dropdown">
@@ -280,6 +283,12 @@
 				<DIV class="toast-body text-light"/>
 			</DIV>
 		</DIV>
+	</xsl:template>
+
+	<xsl:template name="customerFloatBtn">
+		<A class="customerFloatBtn d-flex align-items-center justify-content-center position-fixed bg-dark fontSize25 text-white" href="#">
+			<I class="fad fa-user-headset"></I>
+		</A>
 	</xsl:template>
 
 	<xsl:template name="footer">

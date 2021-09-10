@@ -29,8 +29,8 @@
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="bootstrapToast"/>
-			<INPUT type="hidden" name="selfIdentifier" value="{@selfIdentifier}"/>
-			<INPUT type="hidden" name="friendIdentifier" value="{@friendIdentifier}"/>
+			<INPUT name="identifier" type="hidden" value="{@identifier}"/>
+			<INPUT name="friendIdentifier" type="hidden" value="{@friendIdentifier}"/>
 			<INPUT type="hidden" name="gender" value="{@gender}"/>
 			<DIV class="modal fade" id="rateModal">
 				<DIV class="modal-dialog modal-dialog-centered">
@@ -80,25 +80,25 @@
 							<DIV class="mt-3 text-center">
 								<I class="fad fa-taxi text-success mb-1" style="font-size: 50px;"></I>
 								<H5 class="modal-title">
-									<xsl:if test="@gender = 'true'">車馬費</xsl:if>
-									<xsl:if test="@gender = 'false'">要求車馬費</xsl:if>
+									<xsl:if test="@male">車馬費</xsl:if>
+									<xsl:if test="@female">要求車馬費</xsl:if>
 								</H5>
 							</DIV>
-							<DIV class="form-group text-center">
-								<xsl:if test="@gender = 'true'">
+							<DIV class="form-group mx-auto col-10">
+								<xsl:if test="@male">
 									<LABEL class="text-xs" for="fare">使用平台支付不必擔心私下給甜心爽約，可檢舉查證屬實退回</LABEL>
 								</xsl:if>
 								<INPUT class="form-control" id="fare" min="1" name="howMany" required="" type="number"/>
 							</DIV>
 							<DIV class="text-center">
-								<BUTTON class="btn btn-outline-dark mx-1" data-bs-dismiss="modal" type="button">取消</BUTTON>
-								<BUTTON class="btn btn-outline-primary confirmFare mx-1" type="button">確認</BUTTON>
+								<BUTTON class="btn btn-outline-primary confirmFare mx-1 px-3 py-2" type="button">確認</BUTTON>
+								<BUTTON class="btn btn-outline-dark mx-1 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
 							</DIV>
 						</DIV>
 					</DIV>
 				</DIV>
 			</DIV>
-			<xsl:if test="@gender = 'true'">
+			<xsl:if test="@male">
 				<DIV class="modal fade" id="weChatModel">
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
@@ -119,7 +119,7 @@
 								</DIV>
 							</DIV>
 							<DIV class="modal-footer">
-								<BUTTON class="btn btn-outline-dark" data-bs-dismiss="modal" type="button">
+								<BUTTON class="btn btn-outline-dark px-3 py-2" data-bs-dismiss="modal" type="button">
 									<xsl:value-of select="@i18n-cancel"/>
 								</BUTTON>
 							</DIV>
@@ -149,121 +149,588 @@
 					</DIV>
 				</DIV>
 			</DIV>
-			<DIV id="chatroom">
-				<SECTION class="fixed-top col-12 col-md-10 mx-auto shadow">
-					<DIV class="chatroomHeader d-flex align-items-center ps-2 shadow">
-						<DIV class="me-3">
-							<BUTTON class="btn btn-link text-primary h2 m-0 p-0 locationBack">
-								<I class="fal fa-arrow-left fontSize35"></I>
+			<DIV class="fixed-top container chatNavbar">
+				<NAV class="navbar navbar-expand-lg top-0 position-absolute p-0 start-0 end-0">
+					<DIV class="fixed-top container mx-auto bg-light">
+						<A class="navbar-brand font-weight-bolder m-0" href="/">YOUNG ME 養蜜</A>
+						<DIV class="d-flex align-items-center">
+							<xsl:if test="@signIn">
+								<A class="d-lg-none pe-1" href="/activeLogs.asp">
+									<I class="fad fa-bell fontSize22"></I>
+									<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
+										<xsl:if test="@announcement">
+											<xsl:attribute name="style">display: inline;</xsl:attribute>
+											<xsl:value-of select="@announcement"/>
+										</xsl:if>
+									</SPAN>
+								</A>
+								<A class="d-lg-none px-2" href="/inbox.asp">
+									<I class="fad fa-comment-smile fontSize22"></I>
+									<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 inbox" style="display: none;">
+										<xsl:if test="@inbox">
+											<xsl:attribute name="style">display: inline;</xsl:attribute>
+											<xsl:value-of select="@inbox"/>
+										</xsl:if>
+									</SPAN>
+								</A>
+							</xsl:if>
+							<BUTTON class="navbar-toggler shadow-none px-1" type="button" data-bs-toggle="collapse" data-bs-target="#navigation">
+								<SPAN class="navbar-toggler-icon mt-2">
+									<SPAN class="navbar-toggler-bar bar1"></SPAN>
+									<SPAN class="navbar-toggler-bar bar2"></SPAN>
+									<SPAN class="navbar-toggler-bar bar3"></SPAN>
+								</SPAN>
 							</BUTTON>
 						</DIV>
-						<DIV>
-							<A href="/profile/{@friendIdentifier}/">
-								<IMG alt="profileImage" class="rounded-circle" src="{@friendProfileImage}" width="45"/>
-								<SPAN class="text-lg ms-2 text-secondary">
-									<xsl:value-of select="@friendNickname"/>
-								</SPAN>
-							</A>
-						</DIV>
-						<xsl:if test="not(@blocking) and not(@blockedBy)">
-							<DIV class="ms-auto me-3">
-								<BUTTON class="btn btn-link m-0 p-2" data-bs-target="#fareModal" data-bs-toggle="modal" type="button">
-									<xsl:if test="@gender = 'true'">
-										<xsl:attribute name="id">fare</xsl:attribute>
+						<DIV class="navbar-collapse justify-content-end bg-light collapse" id="navigation">
+							<UL class="navbar-nav navbar-nav-hover">
+								<xsl:if test="@signIn">
+									<LI class="nav-item dropdown dropdown-hover">
+										<A class="nav-link cursor-pointer text-primary" id="dropdownMenuPages" data-bs-toggle="dropdown">
+											<SPAN class="me-1">
+												<I class="fad fa-user-cog fontSize22"></I>
+											</SPAN>
+											<I class="fas fa-chevron-down"></I>
+										</A>
+										<DIV class="dropdown-menu dropdown-menu-animation p-3 border-radius-lg mt-0 mt-lg-3">
+											<DIV class="d-none d-lg-block">
+												<A class="dropdown-item border-radius-md row" href="/profile/">
+													<I class="fad fa-user-edit fontSize22 col-1"></I>
+													<SPAN class="ms-1">個人檔案</SPAN>
+												</A>
+												<A class="dropdown-item border-radius-md row" href="/favorite.asp">
+													<I class="fad fa-box-heart fontSize22 col-1"></I>
+													<SPAN class="ms-1">我的收藏</SPAN>
+												</A>
+												<A class="dropdown-item border-radius-md row" href="/looksMe.asp">
+													<I class="fad fa-shoe-prints fontSize22 col-1"></I>
+													<SPAN class="ms-1">誰看過我</SPAN>
+												</A>
+												<xsl:if test="@female">
+													<A class="dropdown-item border-radius-md row" href="/groupGreeting.asp">
+														<I class="fad fa-comments-alt fontSize22 col-1"></I>
+														<SPAN class="ms-1">群發打招呼</SPAN>
+													</A>
+												</xsl:if>
+												<A class="dropdown-item border-radius-md row" href="/setting.asp">
+													<I class="fad fa-cog fontSize22 col-1"></I>
+													<SPAN class="ms-1">進階設定</SPAN>
+												</A>
+											</DIV>
+											<DIV class="d-lg-none">
+												<A class="dropdown-item border-radius-md row" href="/profile/">
+													<I class="fad fa-user-edit fontSize22 col-1"></I>
+													<SPAN class="ms-1">個人檔案</SPAN>
+												</A>
+												<A class="dropdown-item border-radius-md row" href="/favorite.asp">
+													<I class="fad fa-box-heart fontSize22 col-1"></I>
+													<SPAN class="ms-1">我的收藏</SPAN>
+												</A>
+												<A class="dropdown-item border-radius-md row" href="/looksMe.asp">
+													<I class="fad fa-shoe-prints fontSize22 col-1"></I>
+													<SPAN class="ms-1">誰看過我</SPAN>
+												</A>
+												<xsl:if test="@female">
+													<A class="dropdown-item border-radius-md row" href="/groupGreeting.asp">
+														<I class="fad fa-comments-alt fontSize22 col-1"></I>
+														<SPAN class="ms-1">群發打招呼</SPAN>
+													</A>
+												</xsl:if>
+												<A class="dropdown-item border-radius-md row" href="/setting.asp">
+													<I class="fad fa-cog fontSize22 col-1"></I>
+													<SPAN class="ms-1">進階設定</SPAN>
+												</A>
+											</DIV>
+										</DIV>
+									</LI>
+									<xsl:if test="@almighty or @finance">
+										<LI class="nav-item dropdown dropdown-hover">
+											<A class="nav-link cursor-pointer text-primary" id="dropdownMenuPages" data-bs-toggle="dropdown">
+												<SPAN class="me-1">
+													<I class="fad fa-id-card-alt fontSize22"></I>
+												</SPAN>
+												<I class="fas fa-chevron-down"></I>
+											</A>
+											<DIV class="dropdown-menu dropdown-menu-animation p-3 border-radius-lg mt-0 mt-lg-3">
+												<DIV class="d-none d-lg-block">
+													<A class="dropdown-item border-radius-md" href="/dashboard/withdrawal.asp">
+														<SPAN>甜心提領紀錄</SPAN>
+													</A>
+													<A class="dropdown-item border-radius-md" href="/dashboard/certification.asp">
+														<SPAN>安心認證審核</SPAN>
+													</A>
+													<A class="dropdown-item border-radius-md" href="/dashboard/stopRecurring.asp">
+														<SPAN>解除定期定額</SPAN>
+													</A>
+													<A class="dropdown-item border-radius-md" href="/dashboard/genTrialCode.asp">
+														<SPAN>產生體驗碼</SPAN>
+													</A>
+												</DIV>
+												<DIV class="d-lg-none">
+													<A class="dropdown-item border-radius-md" href="/dashboard/withdrawal.asp">
+														<SPAN>甜心提領紀錄</SPAN>
+													</A>
+													<A class="dropdown-item border-radius-md" href="/dashboard/certification.asp">
+														<SPAN>安心認證審核</SPAN>
+													</A>
+													<A class="dropdown-item border-radius-md" href="/dashboard/stopRecurring.asp">
+														<SPAN>解除定期定額</SPAN>
+													</A>
+													<A class="dropdown-item border-radius-md" href="/dashboard/genTrialCode.asp">
+														<SPAN>產生體驗碼</SPAN>
+													</A>
+												</DIV>
+											</DIV>
+										</LI>
 									</xsl:if>
-									<xsl:if test="@gender = 'false'">
-										<xsl:attribute name="id">reqFare</xsl:attribute>
+									<xsl:if test="@signIn">
+										<LI class="nav-item d-none d-lg-block">
+											<A class="nav-link nav-link-icon" href="/activeLogs.asp">
+												<I class="fad fa-bell fontSize22"></I>
+												<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
+													<xsl:if test="@announcement">
+														<xsl:attribute name="style">display: inline;</xsl:attribute>
+														<xsl:value-of select="@announcement"/>
+													</xsl:if>
+												</SPAN>
+											</A>
+										</LI>
+										<LI class="nav-item d-none d-lg-block">
+											<A class="nav-link nav-link-icon" href="/inbox.asp">
+												<I class="fad fa-comment-smile fontSize22"></I>
+												<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 inbox" style="display: none;">
+													<xsl:if test="@inbox">
+														<xsl:attribute name="style">display: inline;</xsl:attribute>
+														<xsl:value-of select="@inbox"/>
+													</xsl:if>
+												</SPAN>
+											</A>
+										</LI>
 									</xsl:if>
-									<I class="fad fa-badge-dollar fontSize25"></I>
-								</BUTTON>
-								<A class="btn btn-link m-0 p-2" data-bs-toggle="dropdown">
-									<I class="fad fa-comment-alt-times mb-0 fontSize25"></I>
-								</A>
-								<DIV class="dropdown-menu shadow">
-									<BUTTON class="dropdown-item">
-										<I class="fad fa-lightbulb-exclamation fontSize22 col-2 text-center"></I>
-										<SPAN class="ms-2">檢舉對方</SPAN>
-									</BUTTON>
-									<BUTTON class="dropdown-item" data-bs-target="#blockModal" data-bs-toggle="modal">
-										<I class="fad fa-user-slash fontSize22 col-2"></I>
-										<SPAN class="ms-2">封鎖對方</SPAN>
-									</BUTTON>
-								</DIV>
-							</DIV>
-						</xsl:if>
-					</DIV>
-				</SECTION>
-				<MAIN class="chatroom">
-					<DIV class="chatroomWrapper col-12 col-md-10 mx-auto">
-						<SECTION class="chatHistory pb-6 d-flex flex-column justify-content-end">
-							<DIV class="mb-4" id="messagesArea"></DIV>
-						</SECTION>
-					</DIV>
-				</MAIN>
-				<SECTION id="chatInputWrapper" class="fixed-bottom col-12 col-md-10 mx-auto shadow">
-					<DIV class="d-flex align-items-center justify-content-center p-2 position-relative footerWrap">
-						<xsl:if test="@gender = 'false'">
-							<xsl:if test="@decideBtn and not(@blocking) and not(@blockedBy)">
-								<DIV class="d-flex align-items-center justify-content-center femaleBtn floatBtn">
-									<BUTTON class="btn btn-sm btn-outline-primary px-3 py-2 m-0 me-1 border-radius-xl accept" type="button">接受</BUTTON>
-									<BUTTON class="btn btn-sm btn-outline-dark px-3 py-2 m-0 border-radius-xl refuse" type="button">拒絕</BUTTON>
-								</DIV>
-							</xsl:if>
-							<xsl:if test="@rateBtn and not(@blocking) and not(@blockedBy)">
-								<DIV class="d-flex align-items-center justify-content-center femaleBtn floatBtn">
-									<BUTTON class="btn btn-sm btn-warning px-3 py-2 m-0 border-radius-xl rate" data-bs-target="#rateModal" data-bs-toggle="modal" type="button">評價</BUTTON>
-								</DIV>
-							</xsl:if>
-						</xsl:if>
-						<xsl:if test="@gender = 'true'">
-							<DIV class="d-flex align-items-center justify-content-center maleBtn floatBtn">
-								<xsl:choose>
-									<xsl:when test="@reqSocialMediaBtn and not(@blocking) and not(@blockedBy)">
-										<BUTTON class="btn btn-sm btn-info px-3 py-2 m-0 border-radius-xl" type="button">
-											<xsl:attribute name="id">giveMeLine</xsl:attribute>
-											<SPAN>要求通訊軟體</SPAN>
-											<I class="far fa-user-plus ms-1"></I>
-										</BUTTON>
-									</xsl:when>
-									<xsl:when test="@waitingForRes and not(@blocking) and not(@blockedBy)">
-										<BUTTON class="btn btn-sm btn-info text-light px-3 py-2 m-0 border-radius-xl" disabled="" type="button">
-											<SPAN>已要求通訊軟體, 等待甜心回應</SPAN>
-										</BUTTON>
-									</xsl:when>
-									<xsl:when test="@addLineBtn and not(@blocking) and not(@blockedBy)">
-										<BUTTON class="btn btn-sm btn-success px-3 py-2 m-0 border-radius-xl openSocialMedia" type="button">
-											<SPAN>加入好友</SPAN>
-											<xsl:if test="@remindDeduct">
-												<DIV class="text-xxs">需 100 愛心</DIV>
-											</xsl:if>
-										</BUTTON>
-									</xsl:when>
-								</xsl:choose>
-								<xsl:if test="@rateBtn and not(@blocking) and not(@blockedBy)">
-									<BUTTON class="btn btn-sm btn-warning px-3 py-2 m-0 ms-1 border-radius-xl rate" data-bs-target="#rateModal" data-bs-toggle="modal" type="button">評價</BUTTON>
+									<LI class="nav-item">
+										<A class="nav-link nav-link-icon d-flex align-items-center" href="/">
+											<I class="fad fa-home-heart fontSize22 me-1"></I>
+											<SPAN class="d-lg-none">
+												<xsl:if test="@male">所有甜心</xsl:if>
+												<xsl:if test="@female">所有男仕</xsl:if>
+											</SPAN>
+										</A>
+									</LI>
+									<xsl:if test="@female">
+										<LI class="nav-item">
+											<A class="nav-link nav-link-icon d-flex align-items-center" href="/withdrawal.asp">
+												<I class="fad fa-badge-dollar fontSize22 me-1"></I>
+												<SPAN class="d-lg-none">提領車馬費</SPAN>
+											</A>
+										</LI>
+									</xsl:if>
+									<xsl:if test="@male">
+										<LI class="nav-item">
+											<A class="nav-link nav-link-icon d-flex align-items-center" href="/recharge.asp">
+												<I class="fad fa-badge-dollar fontSize22 me-1"></I>
+												<SPAN class="d-lg-none">購買ME點</SPAN>
+											</A>
+										</LI>
+										<LI class="nav-item">
+											<A class="nav-link nav-link-icon d-flex align-items-center" href="/upgrade.asp">
+												<I class="fad fa-crown fontSize22 me-1"></I>
+												<SPAN class="d-lg-none">升級 VIP</SPAN>
+											</A>
+										</LI>
+									</xsl:if>
 								</xsl:if>
-							</DIV>
-						</xsl:if>
-						<xsl:choose>
-							<xsl:when test="not(@notAbleToSendMsgs) and not(@blocking) and not(@blockedBy)">
-								<TEXTAREA class="form-control bg-light" id="chatInput" maxlength="240" placeholder="說點什麼吧...!" rows="1"></TEXTAREA>
-								<BUTTON class="btn btn-icon-only btn-link m-0 p-0 sendMsgBtn" type="button">
-									<I class="fal fa-paper-plane" style="font-size: 30px;"></I>
-								</BUTTON>
-							</xsl:when>
-							<xsl:when test="@blockedBy">
-								<SPAN>此用戶已不存在</SPAN>
-							</xsl:when>
-							<xsl:when test="@blocking">
-								<SPAN>您已封鎖對方</SPAN>
-							</xsl:when>
-							<xsl:when test="@notAbleToSendMsgs">
-								<SPAN>12小時內僅能發送3句話給甜心</SPAN>
-							</xsl:when>
-						</xsl:choose>
+								<LI class="nav-item">
+									<xsl:choose>
+										<xsl:when test="@signIn">
+											<A class="nav-link nav-link-icon d-flex align-items-center" href="/signOut.asp">
+												<I class="fad fa-sign-out fontSize22 me-1"></I>
+												<SPAN class="d-lg-none">登出</SPAN>
+											</A>
+										</xsl:when>
+										<xsl:otherwise>
+											<A class="nav-link nav-link-icon d-flex align-items-center" href="/signIn.asp">
+												<I class="fad fa-sign-in fontSize22 me-1"></I>
+												<SPAN class="d-lg-none">登入</SPAN>
+											</A>
+										</xsl:otherwise>
+									</xsl:choose>
+								</LI>
+							</UL>
+						</DIV>
 					</DIV>
-				</SECTION>
+				</NAV>
 			</DIV>
+			<div class="d-flex chatContainer container px-0">
+				<div class="d-none d-lg-block col-lg-3">
+					<div class="list">
+						<div class="tabs">
+							<ul class="nav nav-tabs flex-row">
+								<li class="nav-item col-6 text-center">
+									<a class="nav-link cursor-pointer" data-bs-toggle="tab" href="#first">
+										<i class="fad fa-crown"></i>
+										<span class="ms-1">VIP</span>
+									</a>
+								</li>
+								<li class="nav-item col-6 text-center">
+									<a class="nav-link cursor-pointer active" data-bs-toggle="tab" href="#second">
+										<span class="ms-1">一般</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+						<div class="">
+							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
+								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
+								<div class="d-flex justify-content-between align-items-center py-2">
+									<div>
+										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" class="rounded-circle" width="55px"/>
+									</div>
+									<div class="me-auto" style="overflow: hidden;">
+										<div class="d-flex flex-column align-items-start ms-3">
+											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
+											<p class="text-sm mb-0 content">給我車馬費</p>
+										</div>
+									</div>
+									<div class="col-2 d-flex">
+										<div class="ms-auto d-flex flex-column">
+											<span class="text-xs mb-1">6天前</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
+								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
+								<div class="d-flex justify-content-between align-items-center py-2">
+									<div>
+										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
+									</div>
+									<div class="me-auto" style="overflow: hidden;">
+										<div class="d-flex flex-column align-items-start ms-3">
+											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
+											<p class="text-sm mb-0 content">給我車馬費</p>
+										</div>
+									</div>
+									<div class="col-2 d-flex">
+										<div class="ms-auto d-flex flex-column">
+											<span class="text-xs mb-1">6天前</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
+								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
+								<div class="d-flex justify-content-between align-items-center py-2">
+									<div>
+										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
+									</div>
+									<div class="me-auto" style="overflow: hidden;">
+										<div class="d-flex flex-column align-items-start ms-3">
+											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
+											<p class="text-sm mb-0 content">給我車馬費</p>
+										</div>
+									</div>
+									<div class="col-2 d-flex">
+										<div class="ms-auto d-flex flex-column">
+											<span class="text-xs mb-1">6天前</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
+								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
+								<div class="d-flex justify-content-between align-items-center py-2">
+									<div>
+										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
+									</div>
+									<div class="me-auto" style="overflow: hidden;">
+										<div class="d-flex flex-column align-items-start ms-3">
+											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
+											<p class="text-sm mb-0 content">給我車馬費</p>
+										</div>
+									</div>
+									<div class="col-2 d-flex">
+										<div class="ms-auto d-flex flex-column">
+											<span class="text-xs mb-1">6天前</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
+								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
+								<div class="d-flex justify-content-between align-items-center py-2">
+									<div>
+										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
+									</div>
+									<div class="me-auto" style="overflow: hidden;">
+										<div class="d-flex flex-column align-items-start ms-3">
+											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
+											<p class="text-sm mb-0 content">給我車馬費</p>
+										</div>
+									</div>
+									<div class="col-2 d-flex">
+										<div class="ms-auto d-flex flex-column">
+											<span class="text-xs mb-1">6天前</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
+								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
+								<div class="d-flex justify-content-between align-items-center py-2">
+									<div>
+										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
+									</div>
+									<div class="me-auto" style="overflow: hidden;">
+										<div class="d-flex flex-column align-items-start ms-3">
+											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
+											<p class="text-sm mb-0 content">給我車馬費</p>
+										</div>
+									</div>
+									<div class="col-2 d-flex">
+										<div class="ms-auto d-flex flex-column">
+											<span class="text-xs mb-1">6天前</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="card my-2 px-2 mx-auto conversationWrap position-relative" style="background: #D63384bb;">
+								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
+								<div class="d-flex justify-content-between align-items-center py-2">
+									<div>
+										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
+									</div>
+									<div class="me-auto" style="overflow: hidden;">
+										<div class="d-flex flex-column align-items-start ms-3">
+											<a class=" font-weight-bold text-light text-lgmb-1" style="color: white;">Peter</a>
+											<p class="text-sm mb-0 content" style="color: white;">給我車馬費</p>
+										</div>
+									</div>
+									<div class="col-2 d-flex" style="color: white;">
+										<div class="ms-auto d-flex flex-column">
+											<span class="text-xs mb-1">6天前</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
+								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
+								<div class="d-flex justify-content-between align-items-center py-2">
+									<div>
+										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
+									</div>
+									<div class="me-auto" style="overflow: hidden;">
+										<div class="d-flex flex-column align-items-start ms-3">
+											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
+											<p class="text-sm mb-0 content">給我車馬費</p>
+										</div>
+									</div>
+									<div class="col-2 d-flex">
+										<div class="ms-auto d-flex flex-column">
+											<span class="text-xs mb-1">6天前</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
+								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
+								<div class="d-flex justify-content-between align-items-center py-2">
+									<div>
+										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
+									</div>
+									<div class="me-auto" style="overflow: hidden;">
+										<div class="d-flex flex-column align-items-start ms-3">
+											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
+											<p class="text-sm mb-0 content">給我車馬費</p>
+										</div>
+									</div>
+									<div class="col-2 d-flex">
+										<div class="ms-auto d-flex flex-column">
+											<span class="text-xs mb-1">6天前</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
+								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
+								<div class="d-flex justify-content-between align-items-center py-2">
+									<div>
+										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
+									</div>
+									<div class="me-auto" style="overflow: hidden;">
+										<div class="d-flex flex-column align-items-start ms-3">
+											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
+											<p class="text-sm mb-0 content">給我車馬費</p>
+										</div>
+									</div>
+									<div class="col-2 d-flex">
+										<div class="ms-auto d-flex flex-column">
+											<span class="text-xs mb-1">6天前</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
+								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
+								<div class="d-flex justify-content-between align-items-center py-2">
+									<div>
+										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
+									</div>
+									<div class="me-auto" style="overflow: hidden;">
+										<div class="d-flex flex-column align-items-start ms-3">
+											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
+											<p class="text-sm mb-0 content">給我車馬費</p>
+										</div>
+									</div>
+									<div class="col-2 d-flex">
+										<div class="ms-auto d-flex flex-column">
+											<span class="text-xs mb-1">6天前</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-12 col-lg-9">
+					<div class="list">
+						<div class="d-flex align-items-center bg-dark py-1 px-2 chatHeader">
+							<DIV class="me-3">
+								<BUTTON class="btn btn-link text-primary h2 m-0 p-0 locationBack">
+									<I class="fal fa-arrow-left fontSize30 text-white"></I>
+								</BUTTON>
+							</DIV>
+							<DIV>
+								<A href="/profile/{@friendIdentifier}/">
+									<IMG alt="profileImage" class="rounded-circle" src="{@friendProfileImage}" width="40"/>
+									<SPAN class="text-lg ms-2 text-white">
+										<xsl:value-of select="@friendNickname"/>
+									</SPAN>
+								</A>
+							</DIV>
+							<xsl:if test="not(@blocking) and not(@blockedBy)">
+								<DIV class="ms-auto">
+									<BUTTON class="btn btn-link m-0 p-2" data-bs-target="#fareModal" data-bs-toggle="modal" type="button">
+										<xsl:if test="@male">
+											<xsl:attribute name="id">fare</xsl:attribute>
+										</xsl:if>
+										<xsl:if test="@female">
+											<xsl:attribute name="id">reqFare</xsl:attribute>
+										</xsl:if>
+										<I class="fas fa-badge-dollar fontSize25 text-white"></I>
+									</BUTTON>
+									<A class="btn btn-link m-0 p-2" data-bs-toggle="dropdown">
+										<I class="fas fa-comment-alt-times mb-0 fontSize25 text-white"></I>
+									</A>
+									<DIV class="dropdown-menu shadow">
+										<BUTTON class="dropdown-item">
+											<I class="fad fa-lightbulb-exclamation fontSize22 col-2 text-center"></I>
+											<SPAN class="ms-2">檢舉對方</SPAN>
+										</BUTTON>
+										<BUTTON class="dropdown-item" data-bs-target="#blockModal" data-bs-toggle="modal">
+											<I class="fad fa-user-slash fontSize22 col-2"></I>
+											<SPAN class="ms-2">封鎖對方</SPAN>
+										</BUTTON>
+									</DIV>
+								</DIV>
+							</xsl:if>
+						</div>
+						<div class="messages" id="messagesArea"></div>
+						<div class="inputContainer">
+							<xsl:choose>
+								<xsl:when test="not(@notAbleToSendMsgs) and not(@blocking) and not(@blockedBy)">
+									<xsl:if test="@female">
+										<xsl:if test="@decideBtn and not(@blocking) and not(@blockedBy)">
+											<DIV class="d-flex justify-content-center femaleBtn floatBtn">
+												<DIV class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
+													<DIV class="text-primary">
+														<DIV>
+															<I aria-hidden="true" class="fad fa-user-plus"></I>
+															<SPAN>確認後對方將取得您的通訊軟體</SPAN>
+														</DIV>
+														<DIV>拒絕後對方12小時後可再次提出邀請</DIV>
+													</DIV>
+													<BUTTON class="btn btn-outline-primary btn-round px-2 py-1 m-0 me-1 accept" type="button">接受</BUTTON>
+													<BUTTON class="btn btn-outline-dark btn-round px-2 py-1 m-0 border-radius-xl refuse" type="button">拒絕</BUTTON>
+												</DIV>
+											</DIV>
+										</xsl:if>
+										<xsl:if test="@rateBtn and not(@blocking) and not(@blockedBy)">
+											<div class="d-flex justify-content-center femaleBtn floatBtn">
+												<div class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center">
+													<div class="text-primary">
+														<div>
+															<i class="fad fa-star-half"></i>
+															<span>給予對方評價</span>
+														</div>
+													</div>
+													<button class="btn btn-sm btn-primary btn-round px-2 py-1 m-0 rate" data-bs-target="#rateModal" data-bs-toggle="modal" type="button">評價</button>
+												</div>
+											</div>
+										</xsl:if>
+									</xsl:if>
+									<xsl:if test="@male">
+										<DIV class="d-flex align-items-center justify-content-center maleBtn floatBtn">
+											<div class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
+												<xsl:choose>
+													<xsl:when test="@reqSocialMediaBtn and not(@blocking) and not(@blockedBy)">
+														<div class="text-primary">
+															<i class="far fa-user-plus ms-1"></i>
+															<span>向對方提出通訊軟體要求</span>
+														</div>
+														<button type="button" id="giveMeLine" class="btn btn-primary btn-round px-2 py-1 m-0">要求</button>
+													</xsl:when>
+													<xsl:when test="@waitingForRes and not(@blocking) and not(@blockedBy)">
+														<div class="text-primary">
+															<div>
+																<i class="fad fa-user-plus"></i>
+																<SPAN>您已送出邀請加入通訊軟體邀請，</SPAN>
+															</div>
+															<div>請等待對方回應。</div>
+														</div>
+													</xsl:when>
+													<xsl:when test="@addLineBtn and not(@blocking) and not(@blockedBy)">
+														<div class="text-primary">
+															<div>
+																<i class="fad fa-star-half"></i>
+																<span>加入對方通訊軟體</span>
+															</div>
+
+														</div>
+														<button type="button" class="btn btn-sm btn-primary btn-round px-2 py-1 m-0 openSocialMedia">
+															<SPAN>加入好友</SPAN>
+															<xsl:if test="@remindDeduct">
+																<DIV class="text-xxs">需 100 愛心</DIV>
+															</xsl:if>
+														</button>
+													</xsl:when>
+												</xsl:choose>
+												<xsl:if test="@rateBtn and not(@blocking) and not(@blockedBy)">
+													<button data-bs-target="#rateModal" data-bs-toggle="modal" type="button" class="btn btn-sm btn-dark btn-round px-2 py-1 m-0 ms-1 rate">評價</button>
+												</xsl:if>
+											</div>
+										</DIV>
+									</xsl:if>
+									<div class="textareaContainer">
+										<textarea id="chatInput" type="text" placeholder="說點什麼吧..."></textarea>
+									</div>
+									<button class="btn btn-link m-0 p-0 sendMsgBtn">
+										<i class="fa fa-paper-plane" aria-hidden="true"></i>
+									</button>
+								</xsl:when>
+								<xsl:when test="@blockedBy">
+									<SPAN>此用戶已不存在</SPAN>
+								</xsl:when>
+								<xsl:when test="@blocking">
+									<SPAN>您已封鎖對方</SPAN>
+								</xsl:when>
+								<xsl:when test="@notAbleToSendMsgs">
+									<SPAN>12小時內僅能發送3句話給甜心</SPAN>
+								</xsl:when>
+							</xsl:choose>
+						</div>
+					</div>
+				</div>
+			</div>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/chatroom.js"/>
 			<xsl:if test="@signIn">

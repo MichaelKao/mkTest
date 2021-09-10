@@ -101,7 +101,7 @@ public class WebMvcConfigurerImpl implements WebMvcConfigurer {
 		@Override
 		@SuppressWarnings({"BroadCatchBlock", "TooBroadCatch", "UnusedAssignment", "null"})
 		public Source resolve(String href, String base) {
-			StreamSource source = null;
+			Source source = null;
 			InputStream inputStream = null;
 			ServletContextResource servletContextResource = null;
 			try {
@@ -116,25 +116,6 @@ public class WebMvcConfigurerImpl implements WebMvcConfigurer {
 					inputStream.close();
 				}
 			} catch (IOException ioException) {
-				LOGGER.debug(
-					String.format(
-						new StringBuilder("处理器在遇到 xsl:include、xsl:import 或 document() 时调用%n").
-							append("%s.resolve(%n").
-							append("\t%s = {},%n").
-							append("\t%s = {}%n").
-							append(");%n").
-							append("%s = {}").
-							toString(),
-						getClass().getName(),
-						String.class,
-						String.class,
-						Source.class
-					),
-					href,
-					base,
-					source,
-					ioException
-				);
 			}
 
 			LOGGER.debug(

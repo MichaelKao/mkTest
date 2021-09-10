@@ -1,5 +1,8 @@
-#/bin/sh
-echo '看到这儿，爷就安心了✅'
-wget -i https://d35hi420xc5ji7.cloudfront.net/proxy.conf
-cat proxy.conf > /etc/nginx/conf.d/elasticbeanstalk/proxy.conf
+#!/bin/sh
+
+cat << EOF > /etc/nginx/conf.d/elasticbeanstalk/proxy.conf
+client_body_buffer_size 128M;
+client_max_body_size 128M;
+EOF
+
 service nginx restart

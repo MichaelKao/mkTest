@@ -6,4 +6,11 @@ $(document).ready(function () {
 			window.history.back();
 		}
 	});
+
+	let vh = window.innerHeight * 0.01;
+	document.querySelector('.chatContainer').style.setProperty('--vh', `${vh}px`);
+	window.addEventListener('resize', () => {
+		let vh = window.innerHeight * 0.01;
+		document.querySelector('.chatContainer').style.setProperty('--vh', `${vh}px`);
+	});
 });

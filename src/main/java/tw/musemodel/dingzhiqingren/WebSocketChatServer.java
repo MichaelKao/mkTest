@@ -197,6 +197,9 @@ public class WebSocketChatServer {
 			behavior
 		);
 		history.setGreeting(chatMessage.getMessage());
+		historyRepository.saveAndFlush(history);
+
+		Session receiverSession = sessionPools.get(chatMessage.getReceiver());
 
 		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
 		if (sender.getGender()) {
@@ -208,16 +211,15 @@ public class WebSocketChatServer {
 			}
 		}
 
-		Session receiverSession = sessionPools.get(chatMessage.getReceiver());
 		if (receiverSession != null && receiverSession.isOpen()) {
 			receiverSession.getAsyncRemote().sendText(message);
 			history.setSeen(new Date(System.currentTimeMillis()));
+			historyRepository.saveAndFlush(history);
 		}
 		if (userSession != null && userSession.isOpen()) {
 			userSession.getAsyncRemote().sendText(message);
 		}
 
-		historyRepository.saveAndFlush(history);
 		webSocketServer.sendNotification(
 			chatMessage.getReceiver().toString(),
 			"inbox你收到一則訊息!"

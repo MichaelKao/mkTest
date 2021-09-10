@@ -1,10 +1,9 @@
 $(document).ready(function () {
 
-	var self = $('INPUT[name="selfIdentifier"]').val();
+	var self = $('INPUT[name="identifier"]').val();
 	var friend = $('INPUT[name="friendIdentifier"]').val();
 	var isMale = $('INPUT[name="gender"]').val();
 	var hostName = location.hostname;
-	var statusOutput = document.getElementById("statusOutput");
 	var messagesArea = document.getElementById("messagesArea");
 
 	var websocket;
@@ -50,15 +49,14 @@ $(document).ready(function () {
 					divParent.appendChild(divChild);
 					if (behavior !== 'LIAO_LIAO' && behavior !== 'DA_ZHAO_HU' && behavior !== 'QUN_FA'
 						&& behavior !== 'YAO_CHE_MA_FEI' && behavior !== 'CHE_MA_FEI') {
+						var contentDiv = document.createElement('DIV');
+						divChild.appendChild(contentDiv);
 						var dateDiv = document.createElement('DIV');
 						dateDiv.className += 'text-xs';
 						dateDiv.innerHTML = dateFormat(msg.occurred);
 						divChild.appendChild(dateDiv);
-						var contentDiv = document.createElement('DIV');
-						divChild.appendChild(contentDiv);
 						divWrap.className += 'd-flex justify-content-center mb-4';
-						divChild.className += 'border border-primary border-radius-md text-sm px-3 shadow wordBreak text-center';
-						contentDiv.className += 'text-primary';
+						divChild.className += 'text-sm wordBreak text-center';
 						var icon = document.createElement('I');
 						switch (behavior) {
 							case 'JI_WO_LAI':
@@ -100,7 +98,7 @@ $(document).ready(function () {
 					divParent.appendChild(dateSpan);
 					// 根據發送者是自己還是對方來給予不同的class名, 以達到訊息左右區分
 					self === msg.sender ? divWrap.className += 'd-flex justify-content-end mb-2' : divWrap.className += 'd-flex justify-content-start mb-2';
-					self === msg.sender ? divChild.className += 'bg-primary text-light border-radius-xl px-3 py-2 me-1 align-self-end shadow wordBreak' : divChild.className += 'bg-light border-radius-xl px-3 py-2 ms-1 align-self-start shadow wordBreak';
+					self === msg.sender ? divChild.className += 'bg-primary text-light border-radius-xl px-3 py-1 me-1 align-self-end shadow wordBreak' : divChild.className += 'bg-dark text-white border-radius-xl px-3 py-1 ms-1 align-self-start shadow wordBreak';
 					self === msg.sender ? dateSpan.className += 'text-xs align-self-end me-2' : dateSpan.className += 'text-xs align-self-start ms-2';
 					if (behavior === 'YAO_CHE_MA_FEI') {
 						self === msg.sender ? divChild.innerHTML = '您已和對方要求 💗 ' + msg.points + ' 車馬費' : divChild.innerHTML = '對方和您要求 💗 ' + msg.points + ' 車馬費';
@@ -110,14 +108,14 @@ $(document).ready(function () {
 							$(divChild).append(div);
 							var btn1 = document.createElement('BUTTON');
 							$(btn1).attr({
-								'class': 'btn btn-sm btn-outline-primary p-2 m-0 me-1 border-radius-lg acceptFare resBtn',
+								'class': 'btn btn-light btn-round px-2 py-1 m-0 me-1 border-radius-lg acceptFare resBtn',
 								'type': 'button'
 							});
 							$(div).append(btn1);
 							$(btn1).html('給出');
 							var btn2 = document.createElement('BUTTON');
 							$(btn2).attr({
-								'class': 'btn btn-sm btn-outline-primary p-2 m-0 border-radius-lg refuseFare resBtn',
+								'class': 'btn btn-light btn-round px-2 py-1 m-0 border-radius-lg refuseFare resBtn',
 								'type': 'button'
 							});
 							$(btn2).html('下次');
@@ -189,11 +187,11 @@ $(document).ready(function () {
 				console.log(jsonObj);
 				console.log(jsonObj.msgCount);
 				if (parseInt(jsonObj.msgCount) === 3 && isMale === 'true') {
-					$('TEXTAREA#chatInput').remove();
+					$('.textareaContainer').remove();
 					$('BUTTON.sendMsgBtn').remove();
 					var span = document.createElement('SPAN');
 					$(span).html('12小時內僅能發送3句話給甜心');
-					$('DIV.footerWrap').append(span);
+					$('DIV.inputContainer').append(span);
 				}
 				var divWrap = document.createElement('DIV');
 				var divParent = document.createElement('DIV');
@@ -207,7 +205,7 @@ $(document).ready(function () {
 				divParent.appendChild(dateSpan);
 				// 根據發送者是自己還是對方來給予不同的class名, 以達到訊息左右區分
 				self === jsonObj.sender ? divWrap.className += 'd-flex justify-content-end mb-2' : divWrap.className += 'd-flex justify-content-start mb-2';
-				self === jsonObj.sender ? divChild.className += 'bg-primary text-light border-radius-xl px-3 py-2 me-1 align-self-end shadow wordBreak' : divChild.className += 'bg-light border-radius-xl px-3 py-2 ms-1 align-self-start shadow wordBreak';
+				self === jsonObj.sender ? divChild.className += 'bg-primary text-light border-radius-xl px-3 py-1 me-1 align-self-end shadow wordBreak' : divChild.className += 'bg-dark text-white border-radius-xl px-3 py-1 ms-1 align-self-start shadow wordBreak';
 				self === jsonObj.sender ? dateSpan.className += 'text-xs align-self-end me-2' : dateSpan.className += 'text-xs align-self-start ms-2';
 				switch (jsonObj.behavior) {
 					case 'YAO_CHE_MA_FEI':
@@ -219,14 +217,14 @@ $(document).ready(function () {
 							$(divChild).append(div);
 							var btn1 = document.createElement('BUTTON');
 							$(btn1).attr({
-								'class': 'btn btn-sm btn-outline-primary p-2 m-0 me-1 border-radius-lg acceptFare resBtn',
+								'class': 'btn btn-light btn-round px-2 py-1 m-0 me-1 border-radius-lg acceptFare resBtn',
 								'type': 'button'
 							});
 							$(div).append(btn1);
 							$(btn1).html('給出');
 							var btn2 = document.createElement('BUTTON');
 							$(btn2).attr({
-								'class': 'btn btn-sm btn-outline-primary p-2 m-0 border-radius-lg refuseFare resBtn',
+								'class': 'btn btn-light btn-round px-2 py-1 m-0 border-radius-lg refuseFare resBtn',
 								'type': 'button'
 							});
 							$(btn2).html('下次');
@@ -301,15 +299,14 @@ $(document).ready(function () {
 				messagesArea.appendChild(divWrap);
 				divWrap.appendChild(divParent);
 				divParent.appendChild(divChild);
+				var contentDiv = document.createElement('DIV');
+				divChild.appendChild(contentDiv);
 				var dateDiv = document.createElement('DIV');
 				dateDiv.className += 'text-xs';
 				dateDiv.innerHTML = dateFormat(new Date());
 				divChild.appendChild(dateDiv);
-				var contentDiv = document.createElement('DIV');
-				divChild.appendChild(contentDiv);
 				divWrap.className += 'd-flex justify-content-center mb-4';
-				divChild.className += 'border border-primary border-radius-md text-sm px-3 shadow wordBreak text-center';
-				contentDiv.className += 'text-primary';
+				divChild.className += 'text-sm wordBreak text-center';
 				var icon = document.createElement('I');
 				switch (jsonObj.behavior) {
 					case 'JI_WO_LAI':
@@ -317,25 +314,45 @@ $(document).ready(function () {
 						contentDiv.appendChild(icon);
 						self === jsonObj.sender ? contentDiv.append('您已發出要求通訊軟體') : contentDiv.append('收到對方要求通訊軟體');
 						if (isMale === 'false') {
-							var div = document.createElement('DIV');
-							$(div).attr({
-								'class': 'd-flex align-items-center justify-content-center femaleBtn floatBtn'
+							var floatDiv = document.createElement('DIV');
+							$(floatDiv).attr({
+								'class': 'd-flex justify-content-center femaleBtn floatBtn'
 							});
-							$('DIV.footerWrap').append(div);
+							$('DIV.inputContainer').append(floatDiv);
+							var borderDiv = document.createElement('DIV');
+							$(borderDiv).attr({
+								'class': 'border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap'
+							});
+							$(floatDiv).append(borderDiv);
+							var msgDiv = document.createElement('DIV');
+							$(msgDiv).attr('class', 'text-primary');
+							$(borderDiv).append(msgDiv);
+							var firstLineDiv = document.createElement('DIV');
+							$(msgDiv).append(firstLineDiv);
+							var firstLineI = document.createElement('I');
+							$(firstLineI).attr('class', 'fad fa-user-plus');
+							$(firstLineDiv).append(firstLineI);
+							var firstLineSpan = document.createElement('SPAN');
+							$(firstLineSpan).append('確認後對方將取得您的通訊軟體');
+							$(firstLineDiv).append(firstLineSpan);
+							var secondLineDiv = document.createElement('DIV');
+							$(secondLineDiv).append('拒絕後對方12小時後可再次提出邀請');
+							$(msgDiv).append(secondLineDiv);
 							var acceptBtn = document.createElement('BUTTON');
 							$(acceptBtn).attr({
-								'class': 'btn btn-sm btn-outline-primary px-3 py-2 m-0 me-1 border-radius-xl accept',
+								'class': 'btn btn-outline-primary btn-round px-2 py-1 m-0 me-1 accept',
 								type: 'button'
 							});
 							$(acceptBtn).html('接受');
-							$(div).append(acceptBtn);
+							$(borderDiv).append(acceptBtn);
 							var refuseBtn = document.createElement('BUTTON');
 							$(refuseBtn).attr({
-								'class': 'btn btn-sm btn-outline-dark px-3 py-2 m-0 me-1 border-radius-xl refuse',
+								'class': 'btn btn-outline-dark btn-round px-2 py-1 m-0 refuse',
 								type: 'button'
 							});
 							$(refuseBtn).html('拒絕');
-							$(div).append(refuseBtn);
+							$(borderDiv).append(refuseBtn);
+							floatWrapResize();
 							$('BUTTON.accept').dblclick(function (e) {
 								e.preventDefault();
 							});
@@ -415,36 +432,60 @@ $(document).ready(function () {
 						icon.className += 'fas fa-smile';
 						contentDiv.appendChild(icon);
 						self === jsonObj.sender ? contentDiv.append('您已接受給對方通訊軟體') : contentDiv.append('對方同意給您通訊軟體');
+
+						$('DIV.floatBtn').empty();
+						var borderDiv = document.createElement('DIV');
+						$(borderDiv).attr({
+							'class': 'border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap'
+						});
+						$('DIV.floatBtn').append(borderDiv);
+						var msgDiv = document.createElement('DIV');
+						$(msgDiv).attr('class', 'text-primary');
+						$(borderDiv).append(msgDiv);
+
 						if (isMale === 'false') {
-							$('DIV.floatBtn').empty();
+							var I = document.createElement('I');
+							$(I).attr('class', 'fad fa-star-half');
+							$(msgDiv).append(I);
+							var SPAN = document.createElement('SPAN');
+							$(SPAN).append('給予對方評價');
+							$(msgDiv).append(SPAN);
 							var rateBtn = document.createElement('BUTTON');
 							$(rateBtn).attr({
-								'class': 'btn btn-sm btn-warning px-3 py-2 m-0 border-radius-xl rate',
+								'class': 'btn btn-sm btn-primary btn-round px-2 py-1 m-0 rate',
 								'data-bs-target': '#rateModal',
 								'data-bs-toggle': 'modal',
 								type: 'button'
 							});
 							$(rateBtn).html('評價');
-							$('DIV.floatBtn').append(rateBtn);
+							$(borderDiv).append(rateBtn);
+							floatWrapResize();
 						}
 						if (isMale === 'true') {
-							$('DIV.floatBtn').empty();
+							var I = document.createElement('I');
+							$(I).attr('class', 'fad fa-star-half');
+							$(msgDiv).append(I);
+							var SPAN = document.createElement('SPAN');
+							$(SPAN).append('加入對方通訊軟體');
+							$(msgDiv).append(SPAN);
+
 							var openSocialMediaBtn = document.createElement('BUTTON');
 							$(openSocialMediaBtn).attr({
-								'class': 'btn btn-sm btn-success px-3 py-2 m-0 border-radius-xl openSocialMedia',
+								'class': 'btn btn-sm btn-primary btn-round px-2 py-1 m-0 openSocialMedia',
 								type: 'button'
 							});
 							$(openSocialMediaBtn).html('加入好友');
-							$('DIV.floatBtn').append(openSocialMediaBtn);
+							$(borderDiv).append(openSocialMediaBtn);
 							var rateBtn = document.createElement('BUTTON');
 							$(rateBtn).attr({
-								'class': 'btn btn-sm btn-warning px-3 py-2 m-0 ms-1 border-radius-xl rate',
+								'class': 'btn btn-sm btn-dark btn-round px-2 py-1 m-0 ms-1 rate',
 								'data-bs-target': '#rateModal',
 								'data-bs-toggle': 'modal',
 								type: 'button'
 							});
 							$(rateBtn).html('評價');
-							$('DIV.floatBtn').append(rateBtn);
+							$(borderDiv).append(rateBtn);
+							floatWrapResize();
 							$('BUTTON.openSocialMedia').dblclick(function (e) {
 								e.preventDefault();
 							});
@@ -586,8 +627,8 @@ $(document).ready(function () {
 	}
 
 	function scrollToEnd() {
-		var scrollHeight = $('.chatroom').prop('scrollHeight');
-		$('.chatroom').scrollTop(scrollHeight);
+		var scrollHeight = $('#messagesArea').prop('scrollHeight');
+		$('#messagesArea').scrollTop(scrollHeight);
 	}
 
 	var $textarea = $('#chatInput');
@@ -617,16 +658,26 @@ $(document).ready(function () {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');
 					$('DIV.maleBtn').empty();
-					let btn = document.createElement('BUTTON');
-					$(btn).attr({
-						'class': 'btn btn-sm btn-dark px-3 py-2 m-0 border-radius-xl',
-						disabled: 'true',
-						type: 'button'
+					var borderDiv = document.createElement('DIV');
+					$(borderDiv).attr({
+						'class': 'border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap'
 					});
-					$('DIV.maleBtn').append(btn);
-					let span = document.createElement('SPAN');
-					$(span).html('已要求通訊軟體, 等待甜心回應');
-					$(btn).append(span);
+					$('DIV.maleBtn').append(borderDiv);
+					var msgDiv = document.createElement('DIV');
+					$(msgDiv).attr('class', 'text-primary');
+					$(borderDiv).append(msgDiv);
+					var firstLineDiv = document.createElement('DIV');
+					$(msgDiv).append(firstLineDiv);
+					var firstLineI = document.createElement('I');
+					$(firstLineI).attr('class', 'fad fa-user-plus');
+					$(firstLineDiv).append(firstLineI);
+					var firstLineSpan = document.createElement('SPAN');
+					$(firstLineSpan).append('您已送出邀請加入通訊軟體邀請，');
+					$(firstLineDiv).append(firstLineSpan);
+					var secondLineDiv = document.createElement('DIV');
+					$(secondLineDiv).append('請等待對方回應。');
+					$(msgDiv).append(secondLineDiv);
+					floatWrapResize();
 					var jsonObj = {
 						'type': 'button',
 						'sender': self,
@@ -848,4 +899,15 @@ $(document).ready(function () {
 			'json'
 			);
 	});
+
+	function floatWrapResize() {
+		var size = document.getElementsByClassName("floatWrap").length;
+		if (size > 0) {
+			$('.messages').css('padding-bottom', $('.floatBtn').height() + 10);
+		} else {
+			$('.messages').css('padding-bottom', 0);
+		}
+	}
+
+	floatWrapResize();
 });

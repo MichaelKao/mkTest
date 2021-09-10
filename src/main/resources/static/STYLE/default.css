@@ -22,6 +22,10 @@ INPUT, TEXTAREA {
 	font-size: 25px;
 }
 
+.fontSize30 {
+	font-size: 30px;
+}
+
 .fontSize35 {
 	font-size: 35px;
 }
@@ -36,6 +40,15 @@ INPUT, TEXTAREA {
 
 .text-shadow {
 	text-shadow: white 0 0px 1px, black 1px 0px 2px, white -1px 0px 2px;
+}
+
+.customerFloatBtn{
+	width: 50px;
+	height: 50px;
+	bottom: 94px;
+	right: 8px;
+	border-radius:50px;
+	box-shadow: 2px 2px 3px #999;
 }
 
 @media (max-width: 991.98px){

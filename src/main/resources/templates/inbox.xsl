@@ -24,7 +24,7 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
-			<LINK href="/STYLE/chatroom.css" rel="stylesheet"/>
+			<LINK href="/STYLE/inbox.css" rel="stylesheet"/>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
@@ -33,23 +33,34 @@
 				<DIV class="col-12 col-md-7 mx-auto shadow m-2 shadow tabs">
 					<UL class="nav nav-tabs flex-row">
 						<LI class="nav-item col-6 text-center">
-							<A class="nav-link cursor-pointer active" data-bs-toggle="tab" href="#matched">
-								<I class="fad fa-users"></I>
-								<SPAN class="ms-1">好友</SPAN>
-								<xsl:if test="@matchedNotSeenCount">
+							<A class="nav-link cursor-pointer active" data-bs-toggle="tab" href="#first">
+								<xsl:if test="@male">
+									<I class="fad fa-users"></I>
+									<SPAN class="ms-1">好友</SPAN>
+								</xsl:if>
+								<xsl:if test="@female">
+									<I class="fad fa-crown"></I>
+									<SPAN class="ms-1">VIP</SPAN>
+								</xsl:if>
+								<xsl:if test="@matchedOrVipNotSeenCount">
 									<SPAN class="text-xs border-radius-md px-1 ms-1 notSeen">
-										<xsl:value-of select="@matchedNotSeenCount"/>
+										<xsl:value-of select="@matchedOrVipNotSeenCount"/>
 									</SPAN>
 								</xsl:if>
 							</A>
 						</LI>
 						<LI class="nav-item col-6 text-center">
-							<A class="nav-link cursor-pointer" data-bs-toggle="tab" href="#non-matched">
-								<I class="fad fa-users-slash"></I>
-								<SPAN class="ms-1">非好友</SPAN>
-								<xsl:if test="@notMatchedNotSeenCount">
+							<A class="nav-link cursor-pointer" data-bs-toggle="tab" href="#second">
+								<xsl:if test="@male">
+									<I class="fad fa-users-slash"></I>
+									<SPAN class="ms-1">非好友</SPAN>
+								</xsl:if>
+								<xsl:if test="@female">
+									<SPAN class="ms-1">一般</SPAN>
+								</xsl:if>
+								<xsl:if test="@notMatchedOrNotVipNotSeenCount">
 									<SPAN class="text-xs border-radius-md px-1 ms-1 notSeen">
-										<xsl:value-of select="@notMatchedNotSeenCount"/>
+										<xsl:value-of select="@notMatchedOrNotVipNotSeenCount"/>
 									</SPAN>
 								</xsl:if>
 							</A>
@@ -57,9 +68,9 @@
 					</UL>
 				</DIV>
 				<DIV class="tab-content">
-					<DIV class="row justify-content-center mx-0 tab-pane active" id="matched">
+					<DIV class="row justify-content-center mx-0 tab-pane active" id="first">
 						<xsl:for-each select="conversation">
-							<xsl:if test="@matched = 'true'">
+							<xsl:if test="@isMatchedOrIsVip = 'true'">
 								<DIV class="card col-12 col-md-7 my-1 mx-auto conversationWrap position-relative shadow">
 									<A class="inboxLink" href="/chatroom/{@identifier}/"></A>
 									<DIV class="d-flex justify-content-between align-items-center py-2">
@@ -95,9 +106,9 @@
 							</xsl:if>
 						</xsl:for-each>
 					</DIV>
-					<DIV class="row justify-content-center mx-0 tab-pane" id="non-matched">
+					<DIV class="row justify-content-center mx-0 tab-pane" id="second">
 						<xsl:for-each select="conversation">
-							<xsl:if test="@matched = 'false'">
+							<xsl:if test="@isMatchedOrIsVip = 'false'">
 								<DIV class="card col-12 col-md-7 my-1 mx-auto conversationWrap position-relative shadow">
 									<A class="inboxLink" href="/chatroom/{@identifier}/"></A>
 									<DIV class="d-flex justify-content-between align-items-center py-2">

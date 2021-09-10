@@ -149,19 +149,15 @@ public class InPay2Controller {
 			locale
 		));
 
-		if (servant.hasRole(me, Servant.ROLE_ADMINISTRATOR)) {
-			/*
-			 万能天神
-			 */
+		if (loverService.hasRole(me, Servant.ROLE_ADMINISTRATOR)) {
+			//万能天神
 			documentElement.setAttribute(
 				"almighty",
 				null
 			);
 		}
-		if (servant.hasRole(me, Servant.ROLE_ACCOUNTANT)) {
-			/*
-			 财务会计
-			 */
+		if (loverService.hasRole(me, Servant.ROLE_ACCOUNTANT)) {
+			//财务会计
 			documentElement.setAttribute(
 				"finance",
 				null

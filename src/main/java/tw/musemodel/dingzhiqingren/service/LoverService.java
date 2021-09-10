@@ -17,6 +17,7 @@ import com.google.zxing.qrcode.QRCodeReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.sql.ResultSet;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -74,6 +75,7 @@ import tw.musemodel.dingzhiqingren.entity.Activation;
 import tw.musemodel.dingzhiqingren.entity.Allowance;
 import tw.musemodel.dingzhiqingren.entity.AnnualIncome;
 import tw.musemodel.dingzhiqingren.entity.Country;
+import tw.musemodel.dingzhiqingren.entity.Follow;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.LineGiven;
@@ -81,6 +83,8 @@ import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Lover.MaleSpecies;
 import tw.musemodel.dingzhiqingren.entity.Picture;
+import tw.musemodel.dingzhiqingren.entity.Privilege;
+import tw.musemodel.dingzhiqingren.entity.PrivilegeKey;
 import tw.musemodel.dingzhiqingren.entity.ResetShadow;
 import tw.musemodel.dingzhiqingren.entity.Role;
 import tw.musemodel.dingzhiqingren.entity.ServiceTag;
@@ -99,12 +103,15 @@ import tw.musemodel.dingzhiqingren.repository.ActivationRepository;
 import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
 import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
+import tw.musemodel.dingzhiqingren.repository.FollowRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LocationRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
+import tw.musemodel.dingzhiqingren.repository.PrivilegeRepository;
 import tw.musemodel.dingzhiqingren.repository.ResetShadowRepository;
+import tw.musemodel.dingzhiqingren.repository.RoleRepository;
 import tw.musemodel.dingzhiqingren.repository.ServiceTagRepository;
 import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
@@ -203,6 +210,9 @@ public class LoverService {
 	private CountryRepository countryRepository;
 
 	@Autowired
+	private FollowRepository followRepository;
+
+	@Autowired
 	private LoverRepository loverRepository;
 
 	@Autowired
@@ -218,10 +228,19 @@ public class LoverService {
 	private PictureRepository pictureRepository;
 
 	@Autowired
+	private PrivilegeRepository privilegeRepository;
+
+	@Autowired
 	private ResetShadowRepository resetShadowRepository;
 
 	@Autowired
+	private RoleRepository roleRepository;
+
+	@Autowired
 	private ServiceTagRepository serviceTagRepository;
+
+	@Autowired
+	private TrialCodeRepository trialCodeRepository;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -231,9 +250,6 @@ public class LoverService {
 
 	@Autowired
 	private WithdrawalRecordRepository withdrawalRecordRepository;
-
-	@Autowired
-	private TrialCodeRepository trialCodeRepository;
 
 	/**
 	 * 找上线用户。
@@ -401,9 +417,15 @@ public class LoverService {
 		/*
 		 初始化身份
 		 */
-		Collection<Role> roles = new HashSet<>();
-		roles.add(servant.getRole(Servant.ROLE_ADVENTURER));
-		lover.setRoles(roles);
+		Role role = servant.getRole(Servant.ROLE_ADVENTURER);
+		PrivilegeKey privilegeKey = new PrivilegeKey();
+		privilegeKey.setLoverId(lover.getId());
+		privilegeKey.setRoleId(role.getId());
+		Privilege privilege = new Privilege();
+		privilege.setId(privilegeKey);
+		privilege.setLover(lover);
+		privilege.setRole(role);
+		privilegeRepository.saveAndFlush(privilege);
 
 		/*
 		 初始化推荐码
@@ -553,6 +575,55 @@ public class LoverService {
 					)//分页元数据
 			).
 			toJSONObject();
+	}
+
+	/**
+	 * 追踪(收藏)了谁。
+	 *
+	 * @param someone 某咪郎
+	 * @return 某咪郎追踪(收藏)了的情人
+	 */
+	@Transactional(readOnly = true)
+	public Collection<Lover> getThoseIFollow(Lover someone) {
+		List<Lover> followed = new ArrayList();
+		for (Follow follow : followRepository.findByFollowing(someone)) {
+			followed.add(follow.getFollowed());
+		}
+		return followed;
+	}
+
+	/**
+	 * 被谁追踪(收藏)。
+	 *
+	 * @param someone 某咪郎
+	 * @return 追踪(收藏)了某咪郎的情人
+	 */
+	@Transactional(readOnly = true)
+	public Collection<Lover> getThoseWhoFollowMe(Lover someone) {
+		List<Lover> following = new ArrayList();
+		for (Follow follow : followRepository.findByFollowed(someone)) {
+			following.add(follow.getFollowing());
+		}
+		return following;
+	}
+
+	/**
+	 * 这家伙有没有某种身份。
+	 *
+	 * @param mofo 某咪郎
+	 * @param roleName 角色名称
+	 * @return 真或伪(布林值)
+	 */
+	@Transactional(readOnly = true)
+	public boolean hasRole(Lover mofo, String roleName) {
+		try {
+			final Role role = roleRepository.findOneByTextualRepresentation(roleName);
+			if (privilegeRepository.findByLover(mofo).stream().anyMatch(privilege -> (Objects.equals(privilege.getRole(), role)))) {
+				return true;
+			}
+		} catch (Exception ignore) {
+		}
+		return false;
 	}
 
 	/**
@@ -2400,7 +2471,7 @@ public class LoverService {
 	public Document loversSimpleInfo(Document document, Collection<Lover> lovers, Lover me, Locale locale) {
 		Element documentElement = document.getDocumentElement();
 
-		Set<Lover> following = me.getFollowing();
+		Collection<Lover> following = loverService.getThoseIFollow(me);
 
 		lovers.stream().filter(lover -> !(Objects.nonNull(lover.getDelete()))).forEachOrdered(lover -> {
 			Element loverElement = document.createElement("lover");
@@ -2555,6 +2626,7 @@ public class LoverService {
 	 * 首頁的列表 Element
 	 *
 	 * @param element
+	 * @param me
 	 * @param page
 	 * @param locale
 	 * @return
@@ -2565,7 +2637,7 @@ public class LoverService {
 		}
 		Document document = element.getOwnerDocument();
 
-		Set<Lover> following = me.getFollowing();
+		Collection<Lover> following = loverService.getThoseIFollow(me);
 		page.getContent().forEach(lover -> {
 			Element sectionElement = document.createElement("section");
 			element.appendChild(sectionElement);
@@ -2651,13 +2723,14 @@ public class LoverService {
 	/**
 	 * 看更多甜心/男仕
 	 *
+	 * @param me
 	 * @param page
 	 * @param locale
 	 * @return
 	 */
 	public JSONArray seeMoreLover(Lover me, Page<Lover> page, Locale locale) {
 		JSONArray jsonArray = new JSONArray();
-		Set<Lover> following = me.getFollowing();
+		Collection<Lover> following = loverService.getThoseIFollow(me);
 		page.getContent().stream().map(lover -> {
 			JSONObject json = new JSONObject();
 			json.put("nickname", lover.getNickname());
@@ -2976,81 +3049,81 @@ public class LoverService {
 	}
 
 	/**
-	 * 是否已經完成填寫註冊個人資訊
+	 * 是否已经完成填写注册个人资讯
 	 *
-	 * @param lover
-	 * @return
+	 * @param mofo 某咪郎
+	 * @return 真或伪布林值
 	 */
-	public boolean isEligible(Lover lover) {
-		String login = lover.getLogin();
+	public boolean isEligible(Lover mofo) {
+		String login = mofo.getLogin();
 		if (Objects.isNull(login) || login.isBlank()) {
 			return false;
 		}//帐号(手机号)
-		String shadow = lover.getShadow();
+		String shadow = mofo.getShadow();
 		if (Objects.isNull(shadow) || shadow.isBlank()) {
 			return false;
 		}//密码
-		String nickname = lover.getNickname();
+		String nickname = mofo.getNickname();
 		if (Objects.isNull(nickname) || nickname.isBlank()) {
 			return false;
 		}//昵称
-		String aboutMe = lover.getAboutMe();
+		String aboutMe = mofo.getAboutMe();
 		if (Objects.isNull(aboutMe) || aboutMe.isBlank()) {
 			return false;
 		}//自介
-		String greeting = lover.getGreeting();
+		String greeting = mofo.getGreeting();
 		if (Objects.isNull(greeting) || greeting.isBlank()) {
 			return false;
 		}//哈啰
-		if (Objects.isNull(lover.getBodyType())) {
+		if (Objects.isNull(mofo.getBodyType())) {
 			return false;
 		}//体型
-		if (Objects.isNull(lover.getHeight())) {
+		if (Objects.isNull(mofo.getHeight())) {
 			return false;
 		}//身高
-		if (Objects.isNull(lover.getWeight())) {
+		if (Objects.isNull(mofo.getWeight())) {
 			return false;
 		}//体重
-		if (Objects.isNull(lover.getEducation())) {
+		if (Objects.isNull(mofo.getEducation())) {
 			return false;
 		}//学历
-		if (Objects.isNull(lover.getMarriage())) {
+		if (Objects.isNull(mofo.getMarriage())) {
 			return false;
 		}//婚姻
-		String occupation = lover.getOccupation();
+		String occupation = mofo.getOccupation();
 		if (Objects.isNull(occupation) || occupation.isBlank()) {
 			return false;
 		}//职业
-		if (Objects.isNull(lover.getSmoking())) {
+		if (Objects.isNull(mofo.getSmoking())) {
 			return false;
 		}//抽烟习惯
-		if (Objects.isNull(lover.getDrinking())) {
+		if (Objects.isNull(mofo.getDrinking())) {
 			return false;
 		}//饮酒习惯
-		String idealConditions = lover.getIdealConditions();
+		String idealConditions = mofo.getIdealConditions();
 		if (Objects.isNull(idealConditions) || idealConditions.isBlank()) {
 			return false;
 		}//简述理想对象条件
-		if (Objects.nonNull(lover.getDelete())) {
+		if (Objects.nonNull(mofo.getDelete())) {
 			return false;
 		}//封号
-		if (Objects.isNull(lover.getRelationship())) {
+		if (Objects.isNull(mofo.getRelationship())) {
 			return false;
 		}//预期关系
-		if (lover.getGender()) {
-			if (Objects.isNull(lover.getAnnualIncome())) {
+		if (mofo.getGender()) {
+			if (Objects.isNull(mofo.getAnnualIncome())) {
 				return false;
 			}//年收入
 		} else {
-			String inviteMeAsFriend = lover.getInviteMeAsLineFriend();
+			String inviteMeAsFriend = mofo.getInviteMeAsLineFriend();
 			if (Objects.isNull(inviteMeAsFriend) || inviteMeAsFriend.isBlank()) {
 				return false;
 			}//添加好友链结
-			if (Objects.isNull(lover.getAllowance())) {
+			if (Objects.isNull(mofo.getAllowance())) {
 				return false;
 			}//期望零用钱
 		}
-		return !(lover.getLocations().isEmpty() || lover.getServices().isEmpty());//(地点|服务)标签
+		return !(mofo.getLocations().isEmpty() || mofo.getServices().isEmpty());//(地点|服务)标签
 	}
 
 	/**
@@ -3247,5 +3320,41 @@ public class LoverService {
 			jsonArray.put(json);
 		});
 		return jsonArray;
+	}
+
+	/**
+	 * 更新最后活跃时戳。
+	 *
+	 * @param timestamp 自 EPOCH 以来的毫秒数
+	 * @param username 帐号(手机号)
+	 */
+	@Transactional
+	public void lastActive(long timestamp, String username) {
+		new NamedParameterJdbcTemplate(
+			jdbcTemplate.getDataSource()
+		).update(
+			"UPDATE\"qing_ren\"SET\"huo_yue\"=:active WHERE\"id\"=:id",
+			new MapSqlParameterSource().
+				addValue(
+					"active",
+					new Date(timestamp),
+					Types.TIMESTAMP
+				).
+				addValue(
+					"id",
+					jdbcTemplate.query(
+						"SELECT\"id\"FROM\"users\"WHERE\"username\"=?",
+						(ps) -> {
+							ps.setString(1, username);
+						},
+						(ResultSet resultSet) -> {
+							if (resultSet.next()) {
+								return resultSet.getInt("id");
+							}
+							return null;
+						}
+					)
+				)
+		);
 	}
 }

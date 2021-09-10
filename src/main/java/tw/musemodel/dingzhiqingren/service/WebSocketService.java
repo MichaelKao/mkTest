@@ -21,7 +21,10 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_CHAT_MORE;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_LAI_KOU_DIAN;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_RATE;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND;
 
 /**
  * 服务层：聊天室
@@ -198,10 +201,10 @@ public class WebSocketService {
 		boolean isMale = me.getGender();
 
 		List<History> conversation = historyService.latestConversations(me);
-		// 好友的未讀總數
-		int matchedNotSeenCount = 0;
-		// 非好友的未讀總數
-		int notMatchedNotSeenCount = 0;
+		// 好友或VIP的未讀總數
+		int matchedOrVipNotSeenCount = 0;
+		// 非好友或非VIP的未讀總數
+		int notMatchedOrNotVipNotSeenCount = 0;
 		for (History history : conversation) {
 			Element conversationElement = document.createElement("conversation");
 			documentElement.appendChild(conversationElement);
@@ -210,7 +213,7 @@ public class WebSocketService {
 			String profileImage = null;
 			String nickname = null;
 			String content = history.getGreeting();
-			Boolean matched = null;
+			Boolean isMatchedOrIsVip = null;
 			// 某個人的未讀訊息數
 			int notSeenCount = 0;
 			Collection<Behavior> BEHAVIORS_OF_MALE = Arrays.asList(new History.Behavior[]{
@@ -223,12 +226,12 @@ public class WebSocketService {
 			if (Objects.equals(me, history.getInitiative())) {
 				if (isMale) {
 					// 雙方是否有加過通訊軟體
-					matched = loverService.areMatched(history.getPassive(), me);
+					isMatchedOrIsVip = loverService.areMatched(history.getPassive(), me);
 					// 未讀訊息數量
 					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), me, BEHAVIORS_OF_FEMALE);
 				}
 				if (!isMale) {
-					matched = loverService.areMatched(me, history.getPassive());
+					isMatchedOrIsVip = loverService.isVIP(history.getPassive()) || loverService.isVVIP(history.getPassive());
 					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), me, BEHAVIORS_OF_MALE);
 				}
 				identifier = history.getPassive().getIdentifier().toString();
@@ -240,11 +243,11 @@ public class WebSocketService {
 				nickname = history.getPassive().getNickname();
 			} else {
 				if (isMale) {
-					matched = loverService.areMatched(history.getInitiative(), me);
+					isMatchedOrIsVip = loverService.areMatched(history.getInitiative(), me);
 					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), me, BEHAVIORS_OF_FEMALE);
 				}
 				if (!isMale) {
-					matched = loverService.areMatched(me, history.getInitiative());
+					isMatchedOrIsVip = loverService.isVIP(history.getInitiative()) || loverService.isVVIP(history.getInitiative());
 					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), me, BEHAVIORS_OF_MALE);
 				}
 				identifier = history.getInitiative().getIdentifier().toString();
@@ -276,13 +279,13 @@ public class WebSocketService {
 				calculateOccurredTime(history.getOccurred())
 			);
 			conversationElement.setAttribute(
-				"matched",
-				matched.toString()
+				"isMatchedOrIsVip",
+				isMatchedOrIsVip.toString()
 			);
-			if (matched) {
-				matchedNotSeenCount += notSeenCount;
+			if (isMatchedOrIsVip) {
+				matchedOrVipNotSeenCount += notSeenCount;
 			} else {
-				notMatchedNotSeenCount += notSeenCount;
+				notMatchedOrNotVipNotSeenCount += notSeenCount;
 			}
 			if (notSeenCount > 0) {
 				conversationElement.setAttribute(
@@ -292,17 +295,17 @@ public class WebSocketService {
 			}
 		}
 
-		if (matchedNotSeenCount > 0) {
+		if (matchedOrVipNotSeenCount > 0) {
 			documentElement.setAttribute(
-				"matchedNotSeenCount",
-				Integer.toString(matchedNotSeenCount)
+				"matchedOrVipNotSeenCount",
+				Integer.toString(matchedOrVipNotSeenCount)
 			);
 		}
 
-		if (notMatchedNotSeenCount > 0) {
+		if (notMatchedOrNotVipNotSeenCount > 0) {
 			documentElement.setAttribute(
-				"notMatchedNotSeenCount",
-				Integer.toString(notMatchedNotSeenCount)
+				"notMatchedOrNotVipNotSeenCount",
+				Integer.toString(notMatchedOrNotVipNotSeenCount)
 			);
 		}
 
@@ -311,6 +314,11 @@ public class WebSocketService {
 
 	public Document chatroom(Document document, Lover me, Lover chatPartner) {
 		Element documentElement = document.getDocumentElement();
+
+		documentElement.setAttribute(
+			"gender",
+			me.getGender().toString()
+		);
 
 		// 將訊息改成已讀
 		List<History> unreadMessages = historyRepository.

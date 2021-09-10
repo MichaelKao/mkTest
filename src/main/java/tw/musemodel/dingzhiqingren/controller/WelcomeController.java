@@ -165,41 +165,34 @@ public class WelcomeController {
 		));
 		// 登入狀態
 		if (!servant.isNull(authentication)) {
-			documentElement.setAttribute(
-				"signIn",
-				authentication.getName()
-			);
-			// 本人
 			Lover me = loverService.loadByUsername(
 				authentication.getName()
-			);
+			);//登录者
 			if (!loverService.isEligible(me)) {
-				return new ModelAndView("redirect:/me.asp");
+				//未完成填写注册个人资讯
+				return Servant.redirectToRoot();
 			}
-
-			// 確認性別
-			Boolean gender = me.getGender();
-
-			documentElement.setAttribute(
-				gender ? "male" : "female",
-				null
-			);
-
 			documentElement.setAttribute(
 				"identifier",
 				me.getIdentifier().toString()
-			);
+			);//识别码
+			documentElement.setAttribute(
+				"signIn",
+				authentication.getName()
+			);//帐号(国码➕手机号)
+			documentElement.setAttribute(
+				me.getGender() ? "male" : "female",
+				null
+			);//性别
 
 			// 身分
-			boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-			boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-			if (isAlmighty) {
+			if (loverService.hasRole(me, Servant.ROLE_ADMINISTRATOR)) {
 				documentElement.setAttribute(
 					"almighty",
 					null
 				);
 			}
-			if (isFinance) {
+			if (loverService.hasRole(me, Servant.ROLE_ACCOUNTANT)) {
 				documentElement.setAttribute(
 					"finance",
 					null
@@ -776,7 +769,6 @@ public class WelcomeController {
 		}
 
 		Integer id = Integer.parseUnsignedInt(hexadecimalId, 16);
-		Lover mofo = loverRepository.findById(id).orElseThrow();
 
 		/*
 		 文件
@@ -852,7 +844,8 @@ public class WelcomeController {
 	 * 登入
 	 *
 	 * @param authentication 认证
-	 * @return 网页
+	 * @param locale 语言环境
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -927,10 +920,11 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 新建帐户页面
+	 * 新建帐户页面。
 	 *
 	 * @param authentication 认证
-	 * @return 网页
+	 * @param locale 语言环境
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -1072,11 +1066,11 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 看自己的個人檔案
+	 * 看自己的个人资料。
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -1084,87 +1078,34 @@ public class WelcomeController {
 	@GetMapping(path = "/profile/")
 	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView self(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return new ModelAndView("redirect:/");
-		}
-
-		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
+			//补齐个人资料
+			return Servant.redirectToProfile();
 		}
 
 		Document document = loverService.readDocument(me, locale);
-		Element documentElement = document.getDocumentElement();
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
+		);
+
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.profile",
 			null,
 			locale
-		));
-
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
-			documentElement.setAttribute(
-				"almighty",
-				null
-			);
-		}
-		if (isFinance) {
-			documentElement.setAttribute(
-				"finance",
-				null
-			);
-		}
-
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
-
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
-
-		// 確認性別
-		Boolean gender = me.getGender();
-
-		documentElement.setAttribute(
-			gender ? "male" : "female",
-			null
-		);
+		));//网页标题
 
 		documentElement.setAttribute(
 			"referralCode",
 			me.getReferralCode()
 		);
 
-		// 有登入狀態
-		if (!servant.isNull(authentication)) {
-			documentElement.setAttribute(
-				"signIn",
-				authentication.getName()
-			);
-		}
-
 		documentElement.setAttribute(
 			"me",
 			null
-		);
-
-		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
 		);
 
 		// 本人看到解鎖的生活照
@@ -1182,11 +1123,11 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 看某人(也可能是自己)的個人檔案
+	 * 看某人(也可能是自己)的个人资料。
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -1194,116 +1135,62 @@ public class WelcomeController {
 	@GetMapping(path = "/profile/{identifier}/")
 	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView profile(@PathVariable UUID identifier, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return new ModelAndView("redirect:/");
-		}
-
-		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
+			//补齐个人资料
+			return Servant.redirectToProfile();
 		}
 
-		// 識別碼的帳號
-		Lover lover = loverService.loadByIdentifier(identifier);
+		Lover mofo = loverService.loadByIdentifier(identifier);//被看光光的家伙
 
-		Document document = loverService.readDocument(lover, locale);
-		Element documentElement = document.getDocumentElement();
+		Document document = loverService.readDocument(
+			mofo,
+			locale
+		);
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
+		);
+
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.profile",
 			null,
 			locale
-		));
+		));//网页标题
 
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
-			documentElement.setAttribute(
-				"almighty",
-				null
-			);
-		}
-		if (isFinance) {
-			documentElement.setAttribute(
-				"finance",
-				null
-			);
-		}
-
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
-
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
-
-		// 確認性別
-		Boolean gender = me.getGender();
-
-		// 本人是否為 VIP
 		if (loverService.isVVIP(me)) {
+			//长期贵宾
 			documentElement.setAttribute(
 				"vip",
 				null
 			);
 		}
 
-		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
-		);
-
-		// 有登入狀態
-		if (!servant.isNull(authentication)) {
-			documentElement.setAttribute(
-				"signIn",
-				authentication.getName()
-			);
-		}
-
-		documentElement.setAttribute(
-			gender ? "male" : "female",
-			null
-		);
-
-		if (gender) {
-			// 是否已交換 LINE
-			History history = historyRepository.findByInitiativeAndPassiveAndBehavior(me, lover, Behavior.LAI_KOU_DIAN);
-
-			if (Objects.nonNull(history)) {
+		if (me.getGender()) {
+			if (Objects.nonNull(historyRepository.findByInitiativeAndPassiveAndBehavior(me, mofo, HistoryService.BEHAVIOR_LAI_KOU_DIAN))) {
 				documentElement.setAttribute(
 					"matched",
 					null
-				);
+				);//已交换过 LINE 或微信
 			}
 		}
 
-		// 是否收藏
-		Set<Lover> following = me.getFollowing();
-		if (Objects.nonNull(following)) {
-			Element followElement = document.createElement("follow");
-			for (Lover followed : following) {
-				if (Objects.equals(followed, lover)) {
-					documentElement.appendChild(followElement);
-					break;
-				}
+		/*
+		 登录者是否追踪此页情人
+		 */
+		for (Lover followed : loverService.getThoseIFollow(me)) {
+			if (Objects.equals(followed, mofo)) {
+				documentElement.appendChild(
+					document.createElement("follow")
+				);
+				break;
 			}
 		}
 
 		// 此頁是否為本人
-		if (Objects.equals(me, lover)) {
+		if (Objects.equals(me, mofo)) {
 			documentElement.setAttribute(
 				"me",
 				null
@@ -1311,7 +1198,7 @@ public class WelcomeController {
 		}
 
 		// 是否已封鎖此人
-		if (me.getBlocking().contains(lover)) {
+		if (me.getBlocking().contains(mofo)) {
 			documentElement.setAttribute(
 				"blocking",
 				null
@@ -1319,7 +1206,7 @@ public class WelcomeController {
 		}
 
 		// 是否已被此人封鎖
-		if (me.getBlockedBy().contains(lover)) {
+		if (me.getBlockedBy().contains(mofo)) {
 			documentElement.setAttribute(
 				"blockedBy",
 				null
@@ -1327,7 +1214,7 @@ public class WelcomeController {
 		}
 
 		// 是否解鎖生活照
-		History history = historyRepository.findByInitiativeAndPassiveAndBehavior(me, lover, HistoryService.BEHAVIOR_PICTURES_VIEWABLE);
+		History history = historyRepository.findByInitiativeAndPassiveAndBehavior(me, mofo, HistoryService.BEHAVIOR_PICTURES_VIEWABLE);
 		if (Objects.nonNull(history) && history.getShowAllPictures()) {
 			documentElement.setAttribute(
 				"unlockedPix",
@@ -1358,94 +1245,45 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 顯示自己的編輯頁面
+	 * 编辑个人资料。
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/me.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView editPage(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return new ModelAndView("redirect:/");
-		}
-
-		// 本人
+	ModelAndView me(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
+		if (!loverService.isEligible(me)) {
+			//补齐个人资料
+			return Servant.redirectToProfile();
+		}
 
 		Document document = loverService.writeDocument(me, locale);
-		Element documentElement = document.getDocumentElement();
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
+		);
+
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.editProfile",
 			null,
 			locale
-		));
+		));//网页标题
 
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
-			documentElement.setAttribute(
-				"almighty",
-				null
-			);
-		}
-		if (isFinance) {
-			documentElement.setAttribute(
-				"finance",
-				null
-			);
-		}
-
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
-
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
-
-		// 確認性別
-		Boolean gender = me.getGender();
-
-		documentElement.setAttribute(
-			gender ? "male" : "female",
-			null
-		);
-
-		// 本人是否為 VVIP
 		if (loverService.isVVIP(me)) {
+			//长期贵宾
 			documentElement.setAttribute(
 				"vip",
 				null
 			);
 		}
-
-		if (!servant.isNull(authentication)) {
-			documentElement.setAttribute(
-				"signIn",
-				authentication.getName()
-			);
-		}
-
-		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
-		);
 
 		ModelAndView modelAndView = new ModelAndView("editProfile");
 		modelAndView.getModelMap().addAttribute(document);
@@ -1477,11 +1315,11 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 我的收藏
+	 * 我的收藏(追踪了谁)。
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -1489,80 +1327,32 @@ public class WelcomeController {
 	@GetMapping(path = "/favorite.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView favorite(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return new ModelAndView("redirect:/");
-		}
-
-		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
+			//补齐个人资料
+			return Servant.redirectToProfile();
 		}
 
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
+		);
+
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.favorite",
 			null,
 			locale
-		));
+		));//网页标题
 
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
-			documentElement.setAttribute(
-				"almighty",
-				null
-			);
-		}
-		if (isFinance) {
-			documentElement.setAttribute(
-				"finance",
-				null
-			);
-		}
-
-		// 確認性別
-		Boolean gender = me.getGender();
-
-		documentElement.setAttribute(
-			gender ? "male" : "female",
-			null
+		document = loverService.loversSimpleInfo(
+			document,
+			loverService.getThoseIFollow(me),
+			me,
+			locale
 		);
-
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
-
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
-
-		if (!servant.isNull(authentication)) {
-			documentElement.setAttribute(
-				"signIn",
-				authentication.getName()
-			);
-		}
-
-		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
-		);
-
-		Set<Lover> following = me.getFollowing();
-		document = loverService.loversSimpleInfo(document, following, me, locale);
 
 		ModelAndView modelAndView = new ModelAndView("favorite");
 		modelAndView.getModelMap().addAttribute(document);
@@ -1598,11 +1388,14 @@ public class WelcomeController {
 			);
 		} catch (Exception exception) {
 			jsonObject = new JavaScriptObjectNotation().
-				withReason(messageSource.getMessage(
-					exception.getMessage(),
-					null,
-					locale
-				)).
+				//withReason(messageSource.getMessage(
+				//	exception.getMessage(),
+				//	null,
+				//	locale
+				//)).
+				withReason(
+					exception.getMessage()
+				).
 				withResponse(false).
 				toJSONObject();
 		}
@@ -1650,96 +1443,44 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 誰看過我
+	 * 谁看过我。
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/looksMe.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView whoLooksMe(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return new ModelAndView("redirect:/");
-		}
-
-		// 本人
+	ModelAndView seenMe(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
+			//补齐个人资料
+			return Servant.redirectToProfile();
 		}
 
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
+		);
+
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.looksMe",
 			null,
 			locale
-		));
-
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
-			documentElement.setAttribute(
-				"almighty",
-				null
-			);
-		}
-		if (isFinance) {
-			documentElement.setAttribute(
-				"finance",
-				null
-			);
-		}
-
-		// 確認性別
-		Boolean gender = me.getGender();
-
-		documentElement.setAttribute(
-			gender ? "male" : "female",
-			null
-		);
-
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
-
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
-
-		if (!servant.isNull(authentication)) {
-			documentElement.setAttribute(
-				"signIn",
-				authentication.getName()
-			);
-		}
-
-		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
-		);
+		));//网页标题
 
 		List<History> histories = historyRepository.findByPassiveAndBehaviorOrderByOccurredDesc(
 			me,
-			Behavior.KAN_GUO_WO
+			HistoryService.BEHAVIOR_PEEK
 		);
 
-		Set<Lover> following = me.getFollowing();
+		Collection<Lover> following = loverService.getThoseIFollow(me);
 		Set<Lover> peekers = new HashSet<Lover>();
 		for (History history : histories) {
 			if (!peekers.contains(history.getInitiative()) && Objects.isNull(history.getInitiative().getDelete())) {
@@ -1848,11 +1589,11 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 相片管理頁面
+	 * 相本。
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -1860,90 +1601,44 @@ public class WelcomeController {
 	@GetMapping(path = "/album.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView album(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return new ModelAndView("redirect:/");
-		}
-
-		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
+			//补齐个人资料
+			return Servant.redirectToProfile();
 		}
 
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
+		);
+
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.album",
 			null,
 			locale
-		));
+		));//网页标题
 
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
-			documentElement.setAttribute(
-				"almighty",
-				null
-			);
-		}
-		if (isFinance) {
-			documentElement.setAttribute(
-				"finance",
-				null
-			);
-		}
-
-		// 確認性別
-		Boolean gender = me.getGender();
-
-		documentElement.setAttribute(
-			gender ? "male" : "female",
-			null
-		);
-
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
-
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
-
-		if (!servant.isNull(authentication)) {
-			documentElement.setAttribute(
-				"signIn",
-				authentication.getName()
-			);
-		}
-
-		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
-		);
-
+		/*
+		 头像
+		 */
 		Element profileImageElement = document.createElement("profileImage");
 		if (Objects.nonNull(me.getProfileImage())) {
 			profileImageElement.setTextContent(
 				String.format(
 					"https://%s/profileImage/%s",
-					servant.STATIC_HOST,
+					Servant.STATIC_HOST,
 					me.getProfileImage()
 				)
 			);
 		}
 		documentElement.appendChild(profileImageElement);
 
+		/*
+		 相片
+		 */
 		List<Picture> pictures = pictureRepository.findByLover(me);
 		for (Picture picture : pictures) {
 			String identifier = picture.getIdentifier().toString();
@@ -1952,7 +1647,7 @@ public class WelcomeController {
 			pictureElement.setTextContent(
 				String.format(
 					"https://%s/pictures/%s",
-					servant.STATIC_HOST,
+					Servant.STATIC_HOST,
 					identifier
 				)
 			);
@@ -2116,11 +1811,11 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 选择充值方案
+	 * 选择充值方案。
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -2128,57 +1823,29 @@ public class WelcomeController {
 	@GetMapping(path = "/recharge.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView recharge(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return servant.redirectToRoot();
-		}
-
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
-		);//我谁⁉️
+		);
 		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
+			//补齐个人资料
+			return Servant.redirectToProfile();
+		}
+		if (!me.getGender()) {
+			//甜心无法充值
+			return Servant.redirectToRoot();
 		}
 
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
+		);
+
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.recharge",
 			null,
 			locale
-		));
-		documentElement.setAttribute(
-			"signIn",
-			authentication.getName()
-		);
-		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
-		);
-
-		boolean gender = me.getGender();
-		if (!gender) {
-			return servant.redirectToRoot();
-		}//女性则重导向首页
-		documentElement.setAttribute(
-			gender ? "male" : "female",
-			null
-		);
-
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
-
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
+		));//网页标题
 
 		for (Plan plan : planRepository.findAll()) {
 			Element planElement = document.createElement("plan");
@@ -2199,12 +1866,12 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 充值方案
+	 * 充值方案。
 	 *
 	 * @param plan
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -2212,57 +1879,29 @@ public class WelcomeController {
 	@GetMapping(path = "/recharge/{plan:\\d}.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView recharge(@PathVariable Plan plan, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return servant.redirectToRoot();
-		}
-
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
-		);//我谁⁉️
+		);
 		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
+			//补齐个人资料
+			return Servant.redirectToProfile();
+		}
+		if (!me.getGender()) {
+			//甜心无法充值
+			return Servant.redirectToRoot();
 		}
 
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
+		);
+
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.recharge",
 			null,
 			locale
-		));
-		documentElement.setAttribute(
-			"signIn",
-			authentication.getName()
-		);
-		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
-		);
-
-		boolean gender = me.getGender();
-		if (!gender) {
-			return servant.redirectToRoot();
-		}//女性则重导向首页
-		documentElement.setAttribute(
-			gender ? "male" : "female",
-			null
-		);
-
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
-
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
+		));//网页标题
 
 		Element planElement = document.createElement("plan");
 		planElement.setAttribute("id", plan.getId().toString());
@@ -2274,11 +1913,11 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 動態紀錄
+	 * 动态日志。
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -2286,74 +1925,33 @@ public class WelcomeController {
 	@GetMapping(path = "/activeLogs.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView activeLogs(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return new ModelAndView("redirect:/");
-		}
-
-		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
+			//补齐个人资料
+			return Servant.redirectToProfile();
 		}
 
-		Document document = historyService.historiesToDocument(me);
-		Element documentElement = document.getDocumentElement();
+		Document document = servant.parseDocument();
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
+		);
 
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.activeLogs",
 			null,
 			locale
-		));
+		));//网页标题
 
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
-			documentElement.setAttribute(
-				"almighty",
-				null
-			);
-		}
-		if (isFinance) {
-			documentElement.setAttribute(
-				"finance",
-				null
-			);
-		}
-
-		// 確認性別
-		Boolean gender = me.getGender();
-
-		documentElement.setAttribute(
-			gender ? "male" : "female",
-			null
-		);
-
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
-
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
-
-		if (gender) {
+		if (me.getGender()) {
 			documentElement.setAttribute(
 				"greeting",
 				me.getGreeting()
-			);
+			);//⁉️请 m@musemodel.tw 补个注解呗
 		}
-		// 確認按鈕
+
 		documentElement.setAttribute(
 			"i18n-confirm",
 			messageSource.getMessage(
@@ -2361,43 +1959,30 @@ public class WelcomeController {
 				null,
 				locale
 			)
-		);
+		);//确认按钮
 
-		// 取消按鈕
 		documentElement.setAttribute(
 			"i18n-cancel",
 			messageSource.getMessage(
 				"cancel",
 				null,
 				locale
-			));
+			)
+		);//取消按钮
 
-		// 本人是否為長期貴賓 VVIP
 		if (loverService.isVVIP(me)) {
 			documentElement.setAttribute(
 				"vvip",
 				null
-			);
+			);//长期贵宾
 		}
-		// 本人是否為短期貴賓 VIP
+
 		if (loverService.isVIP(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
-			);
+			);//短期贵宾
 		}
-
-		if (!servant.isNull(authentication)) {
-			documentElement.setAttribute(
-				"signIn",
-				authentication.getName()
-			);
-		}
-
-		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
-		);
 
 		ModelAndView modelAndView = new ModelAndView("activeLogs");
 		modelAndView.getModelMap().addAttribute(document);
@@ -2405,11 +1990,11 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 升級貴賓
+	 * 升级贵宾。
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -2417,75 +2002,52 @@ public class WelcomeController {
 	@GetMapping(path = "/upgrade.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView upgrade(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return servant.redirectToRoot();
-		}
-
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
-		);//我谁⁉️
+		);
 		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
+			//补齐个人资料
+			return Servant.redirectToProfile();
+		}
+		if (!me.getGender()) {
+			//甜心无法升级贵宾
+			return Servant.redirectToRoot();
 		}
 
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.upgrade",
-			null,
-			locale
-		));
-		documentElement.setAttribute(
-			"signIn",
-			authentication.getName()
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
 		);
+
 		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
-		);
+			"title",
+			messageSource.getMessage(
+				"title.upgrade",
+				null,
+				locale
+			)
+		);//网页标题
 
 		/*
-		 确认性别
+		 长期贵宾
 		 */
-		boolean gender = me.getGender();
-		if (!gender) {
-			return servant.redirectToRoot();
-		}//女性则重导向首页
-		documentElement.setAttribute(
-			gender ? "male" : "female",
-			null
-		);
-
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
-
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
-
 		if (loverService.isVVIP(me)) {
 			documentElement.setAttribute(
 				"vvip",
 				null
 			);
-			if (dashboardService.isEligible(me)) {
+
+			if (dashboardService.isRecurringPaymentStoppable(me)) {
 				documentElement.setAttribute(
 					"isEligibleToStopRecurring",
-					Boolean.toString(dashboardService.isEligible(me))
+					Boolean.toString(dashboardService.isRecurringPaymentStoppable(me))
 				);
 			}
+
 			documentElement.setAttribute(
 				"vvipExpiry",
-				loverService.DATE_TIME_FORMATTER.format(
+				LoverService.DATE_TIME_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						me.getVip()
 					).withZoneSameInstant(
@@ -2493,16 +2055,22 @@ public class WelcomeController {
 					)
 				)
 			);
-		}//是否为 VVIP⁉️
+		}
 
-		if (loverService.isVIP(me) && !loverService.isTrial(me)) {
+		boolean isInTrialPeriod = loverService.isTrial(me);//在体验期内
+
+		/*
+		 短期贵宾但非体验
+		 */
+		if (loverService.isVIP(me) && !isInTrialPeriod) {
 			documentElement.setAttribute(
 				"vip",
 				null
 			);
+
 			documentElement.setAttribute(
 				"vipExpiry",
-				loverService.DATE_TIME_FORMATTER.format(
+				LoverService.DATE_TIME_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						me.getVip()
 					).withZoneSameInstant(
@@ -2510,16 +2078,19 @@ public class WelcomeController {
 					)
 				)
 			);
-		}//是否为 VIP⁉️
+		}
 
-		if (loverService.isTrial(me)) {
+		/*
+		 短期体验
+		 */
+		if (isInTrialPeriod) {
 			documentElement.setAttribute(
 				"trial",
 				null
 			);
 			documentElement.setAttribute(
 				"trialExpiry",
-				loverService.DATE_TIME_FORMATTER.format(
+				LoverService.DATE_TIME_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						me.getVip()
 					).withZoneSameInstant(
@@ -2527,14 +2098,14 @@ public class WelcomeController {
 					)
 				)
 			);
-		}//是否为單日體驗 VIP⁉️
+		}
 
 		if (Objects.isNull(me.getVip())) {
 			documentElement.setAttribute(
 				"ableToTrial",
 				null
-			);
-		}//是否有能使用單日體驗的資格?
+			);//具有体验资格
+		}
 
 		ModelAndView modelAndView = new ModelAndView("upgrade");
 		modelAndView.getModelMap().addAttribute(document);
@@ -2542,12 +2113,12 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 升級長期貴賓或短期貴賓
+	 * 升级长期贵宾或短期贵宾。
 	 *
 	 * @param vipType
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -2555,87 +2126,68 @@ public class WelcomeController {
 	@GetMapping(path = "/upgrade/{vipType}.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView upgradeLongTerm(@PathVariable int vipType, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+		if (!loverService.isEligible(me)) {
+			//补齐个人资料
+			return Servant.redirectToProfile();
+		}
+		if (!me.getGender()) {
+			//甜心无法升级贵宾
 			return Servant.redirectToRoot();
 		}
 
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
-		);//我谁⁉️
-		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
-		}
-
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.upgrade",
-			null,
-			locale
-		));
-		documentElement.setAttribute(
-			"signIn",
-			authentication.getName()
-		);
-		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
 		);
 
-		/*
-		 确认性别
-		 */
-		boolean gender = me.getGender();
-		if (!gender) {
-			return servant.redirectToRoot();
-		}//女性则重导向首页
 		documentElement.setAttribute(
-			gender ? "male" : "female",
-			null
-		);
+			"title",
+			messageSource.getMessage(
+				"title.upgrade",
+				null,
+				locale
+			)
+		);//网页标题
 
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
+		boolean isInTrialPeriod = loverService.isTrial(me),//在体验期内
+			isShortTermVip = loverService.isVIP(me),//短期贵宾
+			isLongTermVip = loverService.isVVIP(me);//长期贵宾
 
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
-
-		if (loverService.isVVIP(me)) {
+		if (isLongTermVip) {
+			//长期贵宾
 			documentElement.setAttribute(
 				"vvip",
 				null
 			);
-		}//是否为 VVIP⁉️
+		}
 
-		if (loverService.isVIP(me) && !loverService.isTrial(me)) {
+		if (isShortTermVip && !isInTrialPeriod) {
+			//短期贵宾但非体验
 			documentElement.setAttribute(
 				"vip",
 				null
 			);
-		}//是否为 VIP⁉ (非單日體驗VIP)️
+		}
 
 		String view = null;
 		if (vipType == 1) {
-			if (loverService.isVVIP(me) || (loverService.isVIP(me) && !loverService.isTrial(me))) {
-				return servant.redirectToRoot();
-			} //若是長期或者短期貴賓則不能再升級短期貴賓
+			if (isLongTermVip || (isShortTermVip && !isInTrialPeriod)) {
+				//长期贵宾，或，短期贵宾但非体验；则无法升级❗️
+				return Servant.redirectToRoot();
+			}
 			view = "upgradeShortTerm";
 		} else if (vipType == 2) {
 			if (loverService.isVVIP(me)) {
-				return servant.redirectToRoot();
-			}//若是長期期貴賓則不能再升級長期貴賓，短期貴賓可以升級
+				//长期贵宾无法再升级❗
+				return Servant.redirectToRoot();
+			}
 			view = "upgradeLongTerm";
 		}
+
 		ModelAndView modelAndView = new ModelAndView(view);
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
@@ -2999,11 +2551,11 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 服務條款
+	 * 服务条款。
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -3011,67 +2563,27 @@ public class WelcomeController {
 	@GetMapping(path = "/terms.asp")
 	ModelAndView terms(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.terms",
-			null,
-			locale
-		));
-		// 登入狀態
-		if (!servant.isNull(authentication)) {
-			documentElement.setAttribute(
-				"signIn",
-				authentication.getName()
-			);
-			// 本人
-			Lover me = loverService.loadByUsername(
-				authentication.getName()
-			);
-			// 身分
-			boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-			boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-			if (isAlmighty) {
-				documentElement.setAttribute(
-					"almighty",
-					null
-				);
-			}
-			if (isFinance) {
-				documentElement.setAttribute(
-					"finance",
-					null
-				);
-			}
 
-			// 確認性別
-			Boolean gender = me.getGender();
-
-			documentElement.setAttribute(
-				gender ? "male" : "female",
-				null
-			);
-
-			// 通知數
-			if (loverService.annoucementCount(me) > 0) {
-				documentElement.setAttribute(
-					"announcement",
-					Integer.toString(loverService.annoucementCount(me))
-				);
-			}
-
-			// 未讀訊息數
-			if (loverService.unreadMessages(me) > 0) {
-				documentElement.setAttribute(
-					"inbox",
-					Integer.toString(loverService.unreadMessages(me))
-				);
-			}
-
-			documentElement.setAttribute(
-				"identifier",
-				me.getIdentifier().toString()
+		Element documentElement;
+		if (servant.isNull(authentication)) {
+			//未登录
+			documentElement = document.getDocumentElement();
+		} else {
+			//已登录
+			documentElement = servant.documentElement(
+				document,
+				authentication
 			);
 		}
+
+		documentElement.setAttribute(
+			"title",
+			messageSource.getMessage(
+				"title.privacy",
+				null,
+				locale
+			)
+		);//网页标题
 
 		ModelAndView modelAndView = new ModelAndView("terms");
 		modelAndView.getModelMap().addAttribute(document);
@@ -3079,11 +2591,11 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 隱私權政策
+	 * 隐私权政策。
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -3091,67 +2603,27 @@ public class WelcomeController {
 	@GetMapping(path = "/privacy.asp")
 	ModelAndView privacy(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.privacy",
-			null,
-			locale
-		));
-		// 登入狀態
-		if (!servant.isNull(authentication)) {
-			documentElement.setAttribute(
-				"signIn",
-				authentication.getName()
-			);
-			// 本人
-			Lover me = loverService.loadByUsername(
-				authentication.getName()
-			);
-			// 身分
-			boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-			boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-			if (isAlmighty) {
-				documentElement.setAttribute(
-					"almighty",
-					null
-				);
-			}
-			if (isFinance) {
-				documentElement.setAttribute(
-					"finance",
-					null
-				);
-			}
 
-			// 確認性別
-			Boolean gender = me.getGender();
-
-			documentElement.setAttribute(
-				gender ? "male" : "female",
-				null
-			);
-
-			// 通知數
-			if (loverService.annoucementCount(me) > 0) {
-				documentElement.setAttribute(
-					"announcement",
-					Integer.toString(loverService.annoucementCount(me))
-				);
-			}
-
-			// 未讀訊息數
-			if (loverService.unreadMessages(me) > 0) {
-				documentElement.setAttribute(
-					"inbox",
-					Integer.toString(loverService.unreadMessages(me))
-				);
-			}
-
-			documentElement.setAttribute(
-				"identifier",
-				me.getIdentifier().toString()
+		Element documentElement;
+		if (servant.isNull(authentication)) {
+			//未登录
+			documentElement = document.getDocumentElement();
+		} else {
+			//已登录
+			documentElement = servant.documentElement(
+				document,
+				authentication
 			);
 		}
+
+		documentElement.setAttribute(
+			"title",
+			messageSource.getMessage(
+				"title.privacy",
+				null,
+				locale
+			)
+		);//网页标题
 
 		ModelAndView modelAndView = new ModelAndView("privacy");
 		modelAndView.getModelMap().addAttribute(document);
@@ -3159,11 +2631,11 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 甜心提取車馬費
+	 * 甜心提取车马费。
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -3171,82 +2643,32 @@ public class WelcomeController {
 	@GetMapping(path = "/withdrawal.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView withdrawal(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			servant.redirectToRoot();
-		}
-
-		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
+			//补齐个人资料
+			return Servant.redirectToProfile();
+		}
+		if (me.getGender()) {
+			//男士无法提取车马费
+			return Servant.redirectToRoot();
 		}
 
-		Document document = loverService.withdrawalDocument(me, locale);
-		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.withdrawal",
-			null,
-			locale
-		));
-
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
-			documentElement.setAttribute(
-				"almighty",
-				null
-			);
-		}
-		if (isFinance) {
-			documentElement.setAttribute(
-				"finance",
-				null
-			);
-		}
-
-		// 確認性別
-		Boolean gender = me.getGender();
-
-		documentElement.setAttribute(
-			gender ? "male" : "female",
-			null
+		Document document = servant.parseDocument();
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
 		);
 
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
-
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
-
-		if (!servant.isNull(authentication)) {
-			documentElement.setAttribute(
-				"signIn",
-				authentication.getName()
-			);
-		}
-
-		// 男仕返回首頁
-		if (gender) {
-			servant.redirectToRoot();
-		}
-
 		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
-		);
+			"title",
+			messageSource.getMessage(
+				"title.withdrawal",
+				null,
+				locale
+			)
+		);//网页标题
 
 		ModelAndView modelAndView = new ModelAndView("withdrawal");
 		modelAndView.getModelMap().addAttribute(document);
@@ -3578,87 +3000,40 @@ public class WelcomeController {
 	/**
 	 * 搜尋頁
 	 *
-	 * @param location
-	 * @param serviceTag
+	 * @param location 地区
+	 * @param serviceTag 服务
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
-	 * @throws JsonProcessingException
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/search.json")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView search(@RequestParam(required = false) Location location, @RequestParam(required = false) ServiceTag serviceTag, Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return Servant.redirectToRoot();
-		}
-		// 本人
+	ModelAndView search(@RequestParam(required = false) Location location, @RequestParam(required = false) ServiceTag serviceTag, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
+			//补齐个人资料
+			return Servant.redirectToProfile();
 		}
 
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.search",
-			null,
-			locale
-		));
-
-		documentElement.setAttribute(
-			"signIn",
-			authentication.getName()
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
 		);
 
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
-			documentElement.setAttribute(
-				"almighty",
-				null
-			);
-		}
-		if (isFinance) {
-			documentElement.setAttribute(
-				"finance",
-				null
-			);
-		}
-
-		// 確認性別
-		Boolean isMale = me.getGender();
-
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
-			null
-		);
-
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
-
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
-
-		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
-		);
+			"title",
+			messageSource.getMessage(
+				"title.search",
+				null,
+				locale
+			)
+		);//网页标题
 
 		Collection<Lover> lovers = loverRepository.findAll(
 			LoverSpecification.search(
@@ -3668,13 +3043,19 @@ public class WelcomeController {
 			)
 		);
 
-		document = loverService.loversSimpleInfo(document, lovers, me, locale);
+		document = loverService.loversSimpleInfo(
+			document,
+			lovers,
+			me,
+			locale
+		);
 
-		// 搜尋到幾筆資料
 		documentElement.setAttribute(
 			"count",
-			Integer.toString(lovers.size())
-		);
+			Integer.toString(
+				lovers.size()
+			)
+		);//搜寻到几笔资料
 
 		String searchName = null;
 		if (Objects.nonNull(location)) {
@@ -3702,7 +3083,7 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 顯示二維碼
+	 * 显示二维码。
 	 *
 	 * @param girlIdentifier
 	 * @param response
@@ -3744,13 +3125,11 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 群發打招呼
+	 * 群发打招呼。
 	 *
-	 * @param location
-	 * @param serviceTag
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
+	 * @return 网页页面
 	 * @throws JsonProcessingException
 	 * @throws SAXException
 	 * @throws IOException
@@ -3758,86 +3137,38 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/groupGreeting.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView groupGreeting(@RequestParam(required = false) Location location, @RequestParam(required = false) ServiceTag serviceTag, Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return Servant.redirectToRoot();
-		}
-
-		// 本人
+	ModelAndView groupGreeting(Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
+			//补齐个人资料
+			return Servant.redirectToProfile();
+		}
+		if (me.getGender()) {
+			//男士禁用群发打招呼
+			return Servant.redirectToRoot();
 		}
 
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.groupGreeting",
-			null,
-			locale
-		));
-
-		documentElement.setAttribute(
-			"signIn",
-			authentication.getName()
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
 		);
 
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
-			documentElement.setAttribute(
-				"almighty",
-				null
-			);
-		}
-		if (isFinance) {
-			documentElement.setAttribute(
-				"finance",
-				null
-			);
-		}
-
-		// 確認性別
-		Boolean isMale = me.getGender();
-
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
-			null
-		);
-
-		// 男仕不需群發打招呼
-		if (isMale) {
-			servant.redirectToRoot();
-		}
-
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
-
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
-
-		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
-		);
+			"title",
+			messageSource.getMessage(
+				"title.groupGreeting",
+				null,
+				locale
+			)
+		);//网页标题
 
 		documentElement.setAttribute(
 			"greeting",
 			me.getGreeting()
-		);
+		);//默认招呼语
 
 		document = loverService.groupGreetingDocument(document, me);
 
@@ -3847,7 +3178,7 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 群發打招呼
+	 * 群发打招呼。
 	 *
 	 * @param greetingMessage
 	 * @param authentication 认证
@@ -3905,96 +3236,40 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 設定
+	 * 设定。
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
-	 * @throws JsonProcessingException
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/setting.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView setting(Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return Servant.redirectToRoot();
-		}
-
-		// 本人
+	ModelAndView setting(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
+			//补齐个人资料
+			return Servant.redirectToProfile();
 		}
 
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.setting",
-			null,
-			locale
-		));
-
-		documentElement.setAttribute(
-			"signIn",
-			authentication.getName()
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
 		);
 
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
-			documentElement.setAttribute(
-				"almighty",
-				null
-			);
-		}
-		if (isFinance) {
-			documentElement.setAttribute(
-				"finance",
-				null
-			);
-		}
-
-		// 確認性別
-		Boolean isMale = me.getGender();
-
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
-			null
-		);
-
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
-
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
-
-		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
-		);
-
-		// 有無連動 LINE notify
-		if (loverService.hasLineNotify(me)) {
-			documentElement.setAttribute(
-				"lineNotify",
-				null
-			);
-		}
+			"title",
+			messageSource.getMessage(
+				"title.setting",
+				null,
+				locale
+			)
+		);//网页标题
 
 		ModelAndView modelAndView = new ModelAndView("setting");
 		modelAndView.getModelMap().addAttribute(document);
@@ -4002,79 +3277,47 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 聊天室
+	 * 聊天室。
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
-	 * @throws JsonProcessingException
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/chatroom/{identifier}/")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView chatRoom(@PathVariable UUID identifier, Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return Servant.redirectToRoot();
-		}
-
-		// 本人
+	ModelAndView chatRoom(@PathVariable UUID identifier, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
-		}
-		// 聊天對象
-		Lover partner = loverService.loadByIdentifier(identifier);
-		if (Objects.equals(me, partner)) {
-			return new ModelAndView("redirect:/");
+			//补齐个人资料
+			return Servant.redirectToProfile();
 		}
 
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.chatroom",
-			null,
-			locale
-		));
-
-		documentElement.setAttribute(
-			"signIn",
-			authentication.getName()
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
 		);
 
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
-			documentElement.setAttribute(
-				"almighty",
-				null
-			);
-		}
-		if (isFinance) {
-			documentElement.setAttribute(
-				"finance",
-				null
-			);
-		}
-
-		// 確認性別
-		Boolean isMale = me.getGender();
-
 		documentElement.setAttribute(
-			"gender",
-			isMale.toString()
-		);
+			"title",
+			messageSource.getMessage(
+				"title.chatroom",
+				null,
+				locale
+			)
+		);//网页标题
 
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
+		/*
+		 聊天对象
+		 */
+		Lover partner = loverService.loadByIdentifier(identifier);
+		if (Objects.equals(me, partner)) {
+			return Servant.redirectToRoot();
 		}
 
 		documentElement.setAttribute(
@@ -4082,28 +3325,18 @@ public class WelcomeController {
 			me.getIdentifier().toString()
 		);
 
-		// 有無連動 LINE notify
-		if (loverService.hasLineNotify(me)) {
-			documentElement.setAttribute(
-				"lineNotify",
-				null
-			);
-		}
-
-		// 是否已封鎖此人
 		if (me.getBlocking().contains(partner)) {
 			documentElement.setAttribute(
 				"blocking",
 				null
-			);
+			);//是否已封锁此人
 		}
 
-		// 是否已被此人封鎖
 		if (me.getBlockedBy().contains(partner)) {
 			documentElement.setAttribute(
 				"blockedBy",
 				null
-			);
+			);//是否已被此人封锁
 		}
 
 		document = webSocketService.chatroom(document, me, partner);
@@ -4114,96 +3347,40 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 收信匣
+	 * 收信匣。
 	 *
 	 * @param authentication 认证
 	 * @param locale 语言环境
-	 * @return 网页
-	 * @throws JsonProcessingException
+	 * @return 网页页面
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/inbox.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView inbox(Authentication authentication, Locale locale) throws JsonProcessingException, SAXException, IOException, ParserConfigurationException {
-		if (servant.isNull(authentication)) {
-			return Servant.redirectToRoot();
-		}
-
-		// 本人
+	ModelAndView inbox(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 		if (!loverService.isEligible(me)) {
-			return new ModelAndView("redirect:/me.asp");
+			//补齐个人资料
+			return Servant.redirectToProfile();
 		}
 
 		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.inbox",
-			null,
-			locale
-		));
-
-		documentElement.setAttribute(
-			"signIn",
-			authentication.getName()
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
 		);
 
-		// 身分
-		boolean isAlmighty = servant.hasRole(me, "ROLE_ALMIGHTY");
-		boolean isFinance = servant.hasRole(me, "ROLE_FINANCE");
-		if (isAlmighty) {
-			documentElement.setAttribute(
-				"almighty",
-				null
-			);
-		}
-		if (isFinance) {
-			documentElement.setAttribute(
-				"finance",
-				null
-			);
-		}
-
-		// 確認性別
-		Boolean isMale = me.getGender();
-
 		documentElement.setAttribute(
-			isMale ? "male" : "female",
-			null
-		);
-
-		// 通知數
-		if (loverService.annoucementCount(me) > 0) {
-			documentElement.setAttribute(
-				"announcement",
-				Integer.toString(loverService.annoucementCount(me))
-			);
-		}
-
-		// 未讀訊息數
-		if (loverService.unreadMessages(me) > 0) {
-			documentElement.setAttribute(
-				"inbox",
-				Integer.toString(loverService.unreadMessages(me))
-			);
-		}
-
-		documentElement.setAttribute(
-			"identifier",
-			me.getIdentifier().toString()
-		);
-
-		// 有無連動 LINE notify
-		if (loverService.hasLineNotify(me)) {
-			documentElement.setAttribute(
-				"lineNotify",
-				null
-			);
-		}
+			"title",
+			messageSource.getMessage(
+				"title.inbox",
+				null,
+				locale
+			)
+		);//网页标题
 
 		document = webSocketService.inbox(document, me);
 
@@ -4227,7 +3404,7 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		if (!dashboardService.isEligible(me)) {
+		if (!dashboardService.isRecurringPaymentStoppable(me)) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
 					"stopRecurring.isNotEligible",
@@ -4440,8 +3617,7 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/descendants.json")
 	@ResponseBody
-	String descendants(@RequestParam(defaultValue = "0") final int p, @RequestParam(defaultValue = "5") final int s,
-		Authentication authentication, Locale locale) {
+	String descendants(@RequestParam(defaultValue = "0") final int p, @RequestParam(defaultValue = "5") final int s, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}

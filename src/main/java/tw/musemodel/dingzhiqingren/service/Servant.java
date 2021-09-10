@@ -2,13 +2,14 @@ package tw.musemodel.dingzhiqingren.service;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.http.client.methods.HttpPost;
@@ -32,11 +34,11 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -61,13 +63,13 @@ public class Servant {
 	private static final String EMPTY_DOCUMENT_URI = "classpath:/skeleton/default.xml";
 
 	@Autowired
-	private MessageSource messageSource;
-
-	@Autowired
 	private CountryRepository countryRepository;
 
-	@Value("classpath:skeleton/googleAnalytics.js")
-	private Resource googleAnalyticsResource;
+	@Autowired
+	private LoverService loverService;
+
+	@Autowired
+	private MessageSource messageSource;
 
 	@Autowired
 	private RoleRepository roleRepository;
@@ -82,8 +84,19 @@ public class Servant {
 	 */
 	public static final Integer DAYS_IN_A_MONTH = 30;
 
+	/**
+	 * yyyy-MM-dd 的 DateTimeFormatter
+	 */
+	public static final DateTimeFormatter DATE_TIME_FORMATTER_yyyyMMdd = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	/**
+	 * JSON 映射器
+	 */
 	public static final JsonMapper JSON_MAPPER = new JsonMapper();
 
+	/**
+	 * 美观的 JSON 映射器
+	 */
 	public static final ObjectWriter JSON_WRITER_WITH_DEFAULT_PRETTY_PRINTER = new JsonMapper().writerWithDefaultPrettyPrinter();
 
 	/**
@@ -311,12 +324,92 @@ public class Servant {
 	}
 
 	/**
-	 * 重定向到首页
+	 * 重定向到编辑个人资料页面。
+	 *
+	 * @return org.​springframework.​web.​servlet.ModelAndView
+	 */
+	public static ModelAndView redirectToProfile() {
+		return new ModelAndView("redirect:/me.asp");
+	}
+
+	/**
+	 * 重定向到首页。
 	 *
 	 * @return org.​springframework.​web.​servlet.ModelAndView
 	 */
 	public static ModelAndView redirectToRoot() {
 		return new ModelAndView("redirect:/");
+	}
+
+	/**
+	 * 构建根元素。
+	 *
+	 * @param document 文件
+	 * @param authentication 认证
+	 * @return 根元素
+	 */
+	@Transactional(readOnly = true)
+	public Element documentElement(Document document, Authentication authentication) {
+		String login = authentication.getName();
+
+		Lover mofo = loverService.loadByUsername(login);
+
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute(
+			"signIn",
+			login
+		);//帐号(国码➕手机号)
+		documentElement.setAttribute(
+			"identifier",
+			mofo.getIdentifier().toString()
+		);//识别码
+		documentElement.setAttribute(
+			mofo.getGender() ? "male" : "female",
+			null
+		);//性别
+
+		/*
+		 身份
+		 */
+		if (loverService.hasRole(mofo, Servant.ROLE_ADMINISTRATOR)) {
+			//万能天神
+			documentElement.setAttribute(
+				"almighty",
+				null
+			);
+		}
+		if (loverService.hasRole(mofo, Servant.ROLE_ACCOUNTANT)) {
+			//财务会计
+			documentElement.setAttribute(
+				"finance",
+				null
+			);
+		}
+
+		Integer numberOfAnnoucements = loverService.annoucementCount(mofo);
+		if (numberOfAnnoucements > 0) {
+			documentElement.setAttribute(
+				"announcement",
+				numberOfAnnoucements.toString()
+			);//通知数
+		}
+
+		Integer numberOfUnreadMessages = loverService.unreadMessages(mofo);
+		if (numberOfUnreadMessages > 0) {
+			documentElement.setAttribute(
+				"inbox",
+				numberOfUnreadMessages.toString()
+			);//未读讯息数
+		}
+
+		if (loverService.hasLineNotify(mofo)) {
+			documentElement.setAttribute(
+				"lineNotify",
+				null
+			);//有无连动 LINE Notify
+		}
+
+		return documentElement;
 	}
 
 	public List<Country> getCountries() {
@@ -352,14 +445,11 @@ public class Servant {
 		googleAnalyticsElement.setAttribute("id", MEASUREMENT_ID);
 		googleAnalyticsElement.appendChild(document.createCDATASection(
 			String.format(
-				new String(
-					Files.readAllBytes(
-						googleAnalyticsResource.
-							getFile().
-							toPath()
-					),
-					StandardCharsets.UTF_8
-				),
+				new BufferedReader(new InputStreamReader(
+					new ClassPathResource("skeleton/googleAnalytics.js").
+						getInputStream(),
+					UTF_8
+				)).lines().collect(Collectors.joining("\n")),
 				MEASUREMENT_ID
 			)
 		));
@@ -409,16 +499,5 @@ public class Servant {
 
 	public ZonedDateTime toTaipeiZonedDateTime(Date date) {
 		return Servant.this.toTaipeiZonedDateTime(date.toInstant());
-	}
-
-	/**
-	 * 確認身分
-	 *
-	 * @param lover
-	 * @param roleName
-	 * @return
-	 */
-	public boolean hasRole(Lover lover, String roleName) {
-		return Objects.nonNull(lover) && lover.getRoles().contains(roleRepository.findOneByTextualRepresentation(roleName));
 	}
 }
