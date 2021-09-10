@@ -1939,6 +1939,8 @@ public class WelcomeController {
 			authentication
 		);
 
+		document = historyService.historiesToDocument(me);
+
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.activeLogs",
 			null,

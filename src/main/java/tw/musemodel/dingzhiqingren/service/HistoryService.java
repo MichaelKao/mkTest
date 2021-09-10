@@ -1291,7 +1291,7 @@ public class HistoryService {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
-						"您已向 %s 要求通訊軟體",
+						"您已向%s要求通訊軟體",
 						passiveNickname
 					);
 				}
@@ -1299,9 +1299,8 @@ public class HistoryService {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
 					message = String.format(
-						"%s向您要求通訊軟體：%s",
-						initiativeNickname,
-						activeLogs.getGreeting()
+						"%s向您要求通訊軟體",
+						initiativeNickname
 					);
 					if (Objects.isNull(activeLogs.getReply())
 						&& (!initiative.getBlocking().contains(passive) && !initiative.getBlockedBy().contains(passive))) {
@@ -1378,58 +1377,40 @@ public class HistoryService {
 					);
 				}
 			}
-			if (activeLogs.getBehavior() == BEHAVIOR_GREETING || activeLogs.getBehavior() == BEHAVIOR_GROUP_GREETING) {
-				if (isMale) {
-					profileImage = initiativeProfileImage;
-					identifier = initiativeIdentifier;
-					message = String.format(
-						"%s向您打招呼：%s",
-						initiativeNickname,
-						activeLogs.getGreeting()
-					);
-					LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(initiative, passive);
-					if (Objects.isNull(lineGiven) || (Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse())
-						&& (!initiative.getBlocking().contains(passive) && !initiative.getBlockedBy().contains(passive))) {
-						historyElement.setAttribute(
-							"requestLineButton",
-							null
-						);
-					}
-				}
-				if (!isMale) {
+			if (activeLogs.getBehavior() == BEHAVIOR_PICTURES_VIEWABLE) {
+				if (Objects.equals(initiative, lover)) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
 					message = String.format(
-						"您已向 %s 打招呼",
+						"您向%s要求生活照授權",
 						passiveNickname
 					);
 				}
-			}
-			if (activeLogs.getBehavior() == BEHAVIOR_PICTURES_VIEWABLE) {
-				profileImage = initiativeProfileImage;
-				identifier = initiativeIdentifier;
-				message = String.format(
-					"%s向您要求生活照授權",
-					initiativeNickname,
-					activeLogs.getGreeting()
-				);
-				History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
-					initiative,
-					passive,
-					BEHAVIOR_PICTURES_VIEWABLE
-				);
-				if (Objects.nonNull(history) && !history.getShowAllPictures()) {
-					historyElement.setAttribute(
-						"pixAuthBtn",
-						null
+				if (Objects.equals(passive, lover)) {
+					profileImage = initiativeProfileImage;
+					identifier = initiativeIdentifier;
+					message = String.format(
+						"%s向您要求生活照授權",
+						initiativeNickname
 					);
+					History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
+						initiative,
+						passive,
+						BEHAVIOR_PICTURES_VIEWABLE
+					);
+					if (Objects.nonNull(history) && !history.getShowAllPictures()) {
+						historyElement.setAttribute(
+							"pixAuthBtn",
+							null
+						);
+					}
 				}
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_LAI_KOU_DIAN) {
 				if (isMale) {
 					profileImage = passiveProfileImage;
 					message = String.format(
-						"您取得 %s 的通訊軟體，扣 %d 點",
+						"您加入%s的通訊軟體",
 						passiveNickname,
 						Math.abs(activeLogs.getPoints())
 					);
@@ -1460,6 +1441,26 @@ public class HistoryService {
 					message = String.format(
 						"您收到了來自%s的 %d 車馬費",
 						initiativeNickname,
+						Math.abs(activeLogs.getPoints())
+					);
+				}
+			}
+			if (activeLogs.getBehavior() == BEHAVIOR_REQ_FARE) {
+				if (isMale) {
+					profileImage = initiativeProfileImage;
+					identifier = initiativeIdentifier;
+					message = String.format(
+						"%s向您要求 %d 車馬費",
+						initiativeNickname,
+						Math.abs(activeLogs.getPoints())
+					);
+				}
+				if (!isMale) {
+					profileImage = passiveProfileImage;
+					identifier = passiveIdentifier;
+					message = String.format(
+						"您向%s要求 %d 車馬費",
+						passiveNickname,
 						Math.abs(activeLogs.getPoints())
 					);
 				}
