@@ -29,6 +29,9 @@
 	</xsl:template>
 
 	<xsl:template name="navbar">
+		<xsl:if test="@signIn">
+			<xsl:call-template name="customerFloatBtn"/>
+		</xsl:if>
 		<DIV class="container position-sticky z-index-sticky top-0">
 			<INPUT name="identifier" type="hidden" value="{@identifier}"/>
 			<NAV class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-1 py-md-3 start-0 end-0 mx-3">
@@ -36,7 +39,6 @@
 					<A class="navbar-brand font-weight-bolder m-0" href="/">YOUNG ME 養蜜</A>
 					<DIV class="d-flex align-items-center">
 						<xsl:if test="@signIn">
-							<xsl:call-template name="customerFloatBtn"/>
 							<A class="d-lg-none pe-1" href="/activeLogs.asp">
 								<I class="fad fa-bell fontSize22"></I>
 								<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
