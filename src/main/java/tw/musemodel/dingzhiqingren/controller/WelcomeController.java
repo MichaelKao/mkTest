@@ -85,7 +85,6 @@ import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
 import tw.musemodel.dingzhiqingren.service.AmazonWebServices;
 import tw.musemodel.dingzhiqingren.service.DashboardService;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 import static tw.musemodel.dingzhiqingren.service.Servant.PAGE_SIZE_ON_THE_WALL;
@@ -1328,7 +1327,7 @@ public class WelcomeController {
 		}
 
 		// 是否解鎖生活照
-		History history = historyRepository.findByInitiativeAndPassiveAndBehavior(me, lover, BEHAVIOR_PICTURES_VIEWABLE);
+		History history = historyRepository.findByInitiativeAndPassiveAndBehavior(me, lover, HistoryService.BEHAVIOR_PICTURES_VIEWABLE);
 		if (Objects.nonNull(history) && history.getShowAllPictures()) {
 			documentElement.setAttribute(
 				"unlockedPix",
