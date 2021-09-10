@@ -315,6 +315,11 @@ public class WebSocketService {
 	public Document chatroom(Document document, Lover me, Lover chatPartner) {
 		Element documentElement = document.getDocumentElement();
 
+		documentElement.setAttribute(
+			"gender",
+			me.getGender().toString()
+		);
+
 		// 將訊息改成已讀
 		List<History> unreadMessages = historyRepository.
 			findByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
