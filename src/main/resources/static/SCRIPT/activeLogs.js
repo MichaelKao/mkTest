@@ -1,4 +1,7 @@
 $(document).ready(function () {
+
+	var whom;
+
 	$('BUTTON.accept').dblclick(function (e) {
 		e.preventDefault();
 	});
@@ -6,7 +9,7 @@ $(document).ready(function () {
 		event.preventDefault();
 		$(this).attr('disabled', true);
 		$(this).siblings('BUTTON.refuse').attr('disabled', true);
-		var whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
+		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 
 		$.post(
 			"/stalked.json",
@@ -41,7 +44,7 @@ $(document).ready(function () {
 		event.preventDefault();
 		$(this).attr('disabled', true);
 		$(this).siblings('BUTTON.accept').attr('disabled', true);
-		var whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
+		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 
 		$.post(
 			"/notStalked.json",
@@ -67,7 +70,6 @@ $(document).ready(function () {
 
 	var $modal = $('#modal');
 	var $rateModal = $('#rateModal');
-	var whom;
 	var commentBtn;
 
 	$('.requestLine').click(function () {
@@ -76,8 +78,8 @@ $(document).ready(function () {
 	});
 	$('.rate').click(function () {
 		$rateModal.modal('show');
-		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 		commentBtn = $(this);
+		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 	});
 
 	$('BUTTON.requestLineBtn').click(function (event) {
@@ -168,7 +170,7 @@ $(document).ready(function () {
 		event.preventDefault();
 		let btn = this;
 		$(btn).attr('disabled', true);
-		var whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
+		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 
 		$.post(
 			"/acceptPixAuth.json",
@@ -197,7 +199,7 @@ $(document).ready(function () {
 	$('BUTTON.acceptFare').click(function () {
 		result = true;
 		$(this).attr('disabled', true);
-		$('BUTTON.refuseFare').attr('disabled', true);
+		$(this).siblings($('BUTTON.refuseFare')).attr('disabled', true);
 	});
 	$('BUTTON.acceptFare').dblclick(function (e) {
 		e.preventDefault();
@@ -205,7 +207,7 @@ $(document).ready(function () {
 	$('BUTTON.refuseFare').click(function () {
 		result = false;
 		$(this).attr('disabled', true);
-		$('BUTTON.acceptFare').attr('disabled', true);
+		$(this).siblings($('BUTTON.acceptFare')).attr('disabled', true);
 	});
 	$('BUTTON.refuseFare').dblclick(function (e) {
 		e.preventDefault();
@@ -214,25 +216,16 @@ $(document).ready(function () {
 	$('BUTTON.resBtn').click(function () {
 		event.preventDefault();
 		let btn = this;
+		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
 		$.post(
 			'/resFare.json',
 			{
-				historyId: $(btn).closest('INPUT[name="historyId"]').val(),
+				historyId: $(btn).siblings('INPUT[name="historyId"]').val(),
 				result: result,
 				whom: whom
 			},
 			function (data) {
 				if (data.response) {
-					if (data.resultStatus) {
-						var jsonObj = {
-							'type': 'chat',
-							'sender': self,
-							'receiver': friend,
-							'behavior': 'CHE_MA_FEI',
-							'points': msg.points
-						};
-						websocket.send(JSON.stringify(jsonObj));
-					}
 					$(btn).closest('DIV').remove();
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');

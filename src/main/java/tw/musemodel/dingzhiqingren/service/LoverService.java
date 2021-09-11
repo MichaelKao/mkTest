@@ -117,6 +117,7 @@ import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_ASK_FOR_FARE;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_CERTIFICATION_FAIL;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_CERTIFICATION_SUCCESS;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_CHAT_MORE;
@@ -128,7 +129,6 @@ import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_INVITE
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_LAI_KOU_DIAN;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_MONTHLY_CHARGED;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_PICTURES_VIEWABLE;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_RATE;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_WITHDRAWAL_FAIL;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_WITHDRAWAL_SUCCESS;
@@ -2447,10 +2447,10 @@ public class LoverService {
 		behaviors.add(BEHAVIOR_CERTIFICATION_SUCCESS);
 		behaviors.add(BEHAVIOR_CERTIFICATION_FAIL);
 		behaviors.add(BEHAVIOR_PICTURES_VIEWABLE);
-		behaviors.add(BEHAVIOR_RATE);
 		if (gender) {
 			behaviors.add(BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
 			behaviors.add(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
+			behaviors.add(BEHAVIOR_ASK_FOR_FARE);
 		}
 		if (!gender) {
 			behaviors.add(BEHAVIOR_GIMME_YOUR_LINE_INVITATION);

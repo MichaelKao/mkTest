@@ -106,6 +106,8 @@ public class WebSocketChatServer {
 	@OnMessage
 	public void onMessage(Session userSession, String message) {
 		ChatMessage chatMessage = gson.fromJson(message, ChatMessage.class);
+		String receiverConn = chatMessage.getReceiver() + chatMessage.getSender();
+		LOGGER.debug("測試{}", receiverConn);
 
 		Lover sender = loverService.
 			loadByIdentifier(
@@ -148,7 +150,7 @@ public class WebSocketChatServer {
 		}
 
 		if ("button".equals(chatMessage.getType())) {
-			Session receiverSession = sessionPools.get(chatMessage.getReceiver());
+			Session receiverSession = sessionPools.get(receiverConn);
 			if (receiverSession != null && receiverSession.isOpen()) {
 				receiverSession.getAsyncRemote().sendText(message);
 			}
@@ -162,7 +164,7 @@ public class WebSocketChatServer {
 			History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(female, male, BEHAVIOR_ASK_FOR_FARE);
 			chatMessage.setId(history.getId().toString());
 			message = gson.toJson(chatMessage);
-			Session receiverSession = sessionPools.get(chatMessage.getReceiver());
+			Session receiverSession = sessionPools.get(receiverConn);
 			if (receiverSession != null && receiverSession.isOpen()) {
 				receiverSession.getAsyncRemote().sendText(message);
 			}
@@ -173,7 +175,7 @@ public class WebSocketChatServer {
 		}
 
 		if ("chat".equals(chatMessage.getType()) && "CHE_MA_FEI".equals(chatMessage.getBehavior())) {
-			Session receiverSession = sessionPools.get(chatMessage.getReceiver());
+			Session receiverSession = sessionPools.get(receiverConn);
 			if (receiverSession != null && receiverSession.isOpen()) {
 				receiverSession.getAsyncRemote().sendText(message);
 			}
@@ -199,7 +201,7 @@ public class WebSocketChatServer {
 		history.setGreeting(chatMessage.getMessage());
 		historyRepository.saveAndFlush(history);
 
-		Session receiverSession = sessionPools.get(chatMessage.getReceiver());
+		Session receiverSession = sessionPools.get(receiverConn);
 
 		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
 		if (sender.getGender()) {

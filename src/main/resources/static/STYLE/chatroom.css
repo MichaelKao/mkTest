@@ -37,6 +37,15 @@ body{
 	border: 1px solid #D6338444;
 }
 
+.conversationWrap.active {
+	background: #D63384;
+	color: #FFF !important;
+}
+
+.conversationWrap.active A {
+	color: #FFF !important;
+}
+
 .tabs {
 	border: 1px solid #D6338444;
 	border-radius: 40px;
@@ -46,6 +55,10 @@ body{
 	color: #FFF;
 	background: #D63384;
 	border-radius: 40px;
+}
+
+.tab-content {
+	overflow-x: hidden;
 }
 
 .nav-tabs {
@@ -77,7 +90,7 @@ body{
 }
 
 .list{
-	padding-top: 50px;
+	padding-top: 49px;
 	background-color: #ebecf0;
 	border-radius: 3px;
 	box-sizing: border-box;

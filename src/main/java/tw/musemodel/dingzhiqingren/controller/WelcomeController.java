@@ -3340,6 +3340,7 @@ public class WelcomeController {
 		}
 
 		document = webSocketService.chatroom(document, me, partner);
+		document = webSocketService.inbox(document, me);
 
 		ModelAndView modelAndView = new ModelAndView("chatroom");
 		modelAndView.getModelMap().addAttribute(document);

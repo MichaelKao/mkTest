@@ -365,245 +365,140 @@
 				<div class="d-none d-lg-block col-lg-3">
 					<div class="list">
 						<div class="tabs">
-							<ul class="nav nav-tabs flex-row">
-								<li class="nav-item col-6 text-center">
-									<a class="nav-link cursor-pointer" data-bs-toggle="tab" href="#first">
-										<i class="fad fa-crown"></i>
-										<span class="ms-1">VIP</span>
-									</a>
-								</li>
-								<li class="nav-item col-6 text-center">
-									<a class="nav-link cursor-pointer active" data-bs-toggle="tab" href="#second">
-										<span class="ms-1">一般</span>
-									</a>
-								</li>
-							</ul>
+							<UL class="nav nav-tabs flex-row">
+								<LI class="nav-item col-6 text-center">
+									<A class="nav-link cursor-pointer active" data-bs-toggle="tab" href="#first">
+										<xsl:if test="@male">
+											<I class="fad fa-users"></I>
+											<SPAN class="ms-1">好友</SPAN>
+										</xsl:if>
+										<xsl:if test="@female">
+											<I class="fad fa-crown"></I>
+											<SPAN class="ms-1">VIP</SPAN>
+										</xsl:if>
+										<xsl:if test="@matchedOrVipNotSeenCount">
+											<SPAN class="text-xs border-radius-md px-1 ms-1 notSeen">
+												<xsl:value-of select="@matchedOrVipNotSeenCount"/>
+											</SPAN>
+										</xsl:if>
+									</A>
+								</LI>
+								<LI class="nav-item col-6 text-center">
+									<A class="nav-link cursor-pointer" data-bs-toggle="tab" href="#second">
+										<xsl:if test="@male">
+											<I class="fad fa-users-slash"></I>
+											<SPAN class="ms-1">非好友</SPAN>
+										</xsl:if>
+										<xsl:if test="@female">
+											<SPAN class="ms-1">一般</SPAN>
+										</xsl:if>
+										<xsl:if test="@notMatchedOrNotVipNotSeenCount">
+											<SPAN class="text-xs border-radius-md px-1 ms-1 notSeen">
+												<xsl:value-of select="@notMatchedOrNotVipNotSeenCount"/>
+											</SPAN>
+										</xsl:if>
+									</A>
+								</LI>
+							</UL>
 						</div>
-						<div class="">
-							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
-								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
-								<div class="d-flex justify-content-between align-items-center py-2">
-									<div>
-										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" class="rounded-circle" width="55px"/>
-									</div>
-									<div class="me-auto" style="overflow: hidden;">
-										<div class="d-flex flex-column align-items-start ms-3">
-											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
-											<p class="text-sm mb-0 content">給我車馬費</p>
-										</div>
-									</div>
-									<div class="col-2 d-flex">
-										<div class="ms-auto d-flex flex-column">
-											<span class="text-xs mb-1">6天前</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
-								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
-								<div class="d-flex justify-content-between align-items-center py-2">
-									<div>
-										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
-									</div>
-									<div class="me-auto" style="overflow: hidden;">
-										<div class="d-flex flex-column align-items-start ms-3">
-											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
-											<p class="text-sm mb-0 content">給我車馬費</p>
-										</div>
-									</div>
-									<div class="col-2 d-flex">
-										<div class="ms-auto d-flex flex-column">
-											<span class="text-xs mb-1">6天前</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
-								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
-								<div class="d-flex justify-content-between align-items-center py-2">
-									<div>
-										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
-									</div>
-									<div class="me-auto" style="overflow: hidden;">
-										<div class="d-flex flex-column align-items-start ms-3">
-											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
-											<p class="text-sm mb-0 content">給我車馬費</p>
-										</div>
-									</div>
-									<div class="col-2 d-flex">
-										<div class="ms-auto d-flex flex-column">
-											<span class="text-xs mb-1">6天前</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
-								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
-								<div class="d-flex justify-content-between align-items-center py-2">
-									<div>
-										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
-									</div>
-									<div class="me-auto" style="overflow: hidden;">
-										<div class="d-flex flex-column align-items-start ms-3">
-											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
-											<p class="text-sm mb-0 content">給我車馬費</p>
-										</div>
-									</div>
-									<div class="col-2 d-flex">
-										<div class="ms-auto d-flex flex-column">
-											<span class="text-xs mb-1">6天前</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
-								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
-								<div class="d-flex justify-content-between align-items-center py-2">
-									<div>
-										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
-									</div>
-									<div class="me-auto" style="overflow: hidden;">
-										<div class="d-flex flex-column align-items-start ms-3">
-											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
-											<p class="text-sm mb-0 content">給我車馬費</p>
-										</div>
-									</div>
-									<div class="col-2 d-flex">
-										<div class="ms-auto d-flex flex-column">
-											<span class="text-xs mb-1">6天前</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
-								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
-								<div class="d-flex justify-content-between align-items-center py-2">
-									<div>
-										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
-									</div>
-									<div class="me-auto" style="overflow: hidden;">
-										<div class="d-flex flex-column align-items-start ms-3">
-											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
-											<p class="text-sm mb-0 content">給我車馬費</p>
-										</div>
-									</div>
-									<div class="col-2 d-flex">
-										<div class="ms-auto d-flex flex-column">
-											<span class="text-xs mb-1">6天前</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="card my-2 px-2 mx-auto conversationWrap position-relative" style="background: #D63384bb;">
-								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
-								<div class="d-flex justify-content-between align-items-center py-2">
-									<div>
-										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
-									</div>
-									<div class="me-auto" style="overflow: hidden;">
-										<div class="d-flex flex-column align-items-start ms-3">
-											<a class=" font-weight-bold text-light text-lgmb-1" style="color: white;">Peter</a>
-											<p class="text-sm mb-0 content" style="color: white;">給我車馬費</p>
-										</div>
-									</div>
-									<div class="col-2 d-flex" style="color: white;">
-										<div class="ms-auto d-flex flex-column">
-											<span class="text-xs mb-1">6天前</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
-								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
-								<div class="d-flex justify-content-between align-items-center py-2">
-									<div>
-										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
-									</div>
-									<div class="me-auto" style="overflow: hidden;">
-										<div class="d-flex flex-column align-items-start ms-3">
-											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
-											<p class="text-sm mb-0 content">給我車馬費</p>
-										</div>
-									</div>
-									<div class="col-2 d-flex">
-										<div class="ms-auto d-flex flex-column">
-											<span class="text-xs mb-1">6天前</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
-								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
-								<div class="d-flex justify-content-between align-items-center py-2">
-									<div>
-										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
-									</div>
-									<div class="me-auto" style="overflow: hidden;">
-										<div class="d-flex flex-column align-items-start ms-3">
-											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
-											<p class="text-sm mb-0 content">給我車馬費</p>
-										</div>
-									</div>
-									<div class="col-2 d-flex">
-										<div class="ms-auto d-flex flex-column">
-											<span class="text-xs mb-1">6天前</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
-								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
-								<div class="d-flex justify-content-between align-items-center py-2">
-									<div>
-										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
-									</div>
-									<div class="me-auto" style="overflow: hidden;">
-										<div class="d-flex flex-column align-items-start ms-3">
-											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
-											<p class="text-sm mb-0 content">給我車馬費</p>
-										</div>
-									</div>
-									<div class="col-2 d-flex">
-										<div class="ms-auto d-flex flex-column">
-											<span class="text-xs mb-1">6天前</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="card my-2 px-2 mx-auto conversationWrap position-relative">
-								<a class="inboxLink" href="/chatroom/bbcb1fe6-1d5b-48f8-b804-f0486353f8bc/"></a>
-								<div class="d-flex justify-content-between align-items-center py-2">
-									<div>
-										<img src="https://d35hi420xc5ji7.cloudfront.net/profileImage/5245e8f1-2fac-4f32-93fe-48d3db63165d" alt="大頭貼" class="rounded-circle" width="55px"/>
-									</div>
-									<div class="me-auto" style="overflow: hidden;">
-										<div class="d-flex flex-column align-items-start ms-3">
-											<a class=" font-weight-bold text-dark text-lgmb-1">Peter</a>
-											<p class="text-sm mb-0 content">給我車馬費</p>
-										</div>
-									</div>
-									<div class="col-2 d-flex">
-										<div class="ms-auto d-flex flex-column">
-											<span class="text-xs mb-1">6天前</span>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
+						<DIV class="tab-content">
+							<DIV class="row justify-content-center mx-0 tab-pane active" id="first">
+								<xsl:for-each select="conversation">
+									<xsl:if test="@isMatchedOrIsVip = 'true'">
+										<DIV class="card my-2 px-2 mx-auto conversationWrap position-relative shadow">
+											<xsl:if test="/document/@friendIdentifier = @identifier">
+												<xsl:attribute name="class">card my-2 px-2 mx-auto conversationWrap position-relative shadow active</xsl:attribute>
+											</xsl:if>
+											<A class="inboxLink" href="/chatroom/{@identifier}/"></A>
+											<DIV class="d-flex justify-content-between align-items-center py-2">
+												<DIV>
+													<IMG src="{@profileImage}" alt="大頭貼" class="rounded-circle" width="60px"/>
+												</DIV>
+												<DIV class="me-auto" style="overflow: hidden;">
+													<DIV class="d-flex flex-column align-items-start ms-3">
+														<A class=" font-weight-bold text-dark text-sm mb-1">
+															<xsl:value-of select="@nickname"/>
+														</A>
+														<P class="text-sm mb-0 content">
+															<xsl:value-of select="@content"/>
+														</P>
+													</DIV>
+												</DIV>
+												<DIV class="col-2 d-flex">
+													<DIV class="ms-auto d-flex flex-column">
+														<SPAN class="text-xs mb-1">
+															<xsl:value-of select="@occurredTime"/>
+														</SPAN>
+														<xsl:if test="@notSeenCount">
+															<DIV class="d-flex justify-content-center">
+																<SPAN class="text-xs text-light bg-primary border-radius-md px-1">
+																	<xsl:value-of select="@notSeenCount"/>
+																</SPAN>
+															</DIV>
+														</xsl:if>
+													</DIV>
+												</DIV>
+											</DIV>
+										</DIV>
+									</xsl:if>
+								</xsl:for-each>
+							</DIV>
+							<DIV class="row justify-content-center mx-0 tab-pane" id="second">
+								<xsl:for-each select="conversation">
+									<xsl:if test="@isMatchedOrIsVip = 'false'">
+										<DIV class="card my-2 px-2 mx-auto conversationWrap position-relative shadow">
+											<xsl:if test="/document/@friendIdentifier = @identifier">
+												<xsl:attribute name="class">card my-2 px-2 mx-auto conversationWrap position-relative shadow active</xsl:attribute>
+											</xsl:if>
+											<A class="inboxLink" href="/chatroom/{@identifier}/"></A>
+											<DIV class="d-flex justify-content-between align-items-center py-2">
+												<DIV>
+													<IMG src="{@profileImage}" alt="大頭貼" class="rounded-circle" width="60px"/>
+												</DIV>
+												<DIV class="me-auto" style="overflow: hidden;">
+													<DIV class="d-flex flex-column align-items-start ms-3">
+														<A class=" font-weight-bold text-dark text-sm mb-1">
+															<xsl:value-of select="@nickname"/>
+														</A>
+														<P class="text-sm mb-0 content">
+															<xsl:value-of select="@content"/>
+														</P>
+													</DIV>
+												</DIV>
+												<DIV class="col-2 d-flex">
+													<DIV class="ms-auto d-flex flex-column">
+														<SPAN class="text-xs mb-1">
+															<xsl:value-of select="@occurredTime"/>
+														</SPAN>
+														<xsl:if test="@notSeenCount">
+															<DIV class="d-flex justify-content-center">
+																<SPAN class="text-xs text-light bg-primary border-radius-md px-1">
+																	<xsl:value-of select="@notSeenCount"/>
+																</SPAN>
+															</DIV>
+														</xsl:if>
+													</DIV>
+												</DIV>
+											</DIV>
+										</DIV>
+									</xsl:if>
+								</xsl:for-each>
+							</DIV>
+						</DIV>
 					</div>
 				</div>
 				<div class="col-12 col-lg-9">
 					<div class="list">
 						<div class="d-flex align-items-center bg-dark py-1 px-2 chatHeader">
 							<DIV class="me-3">
-								<BUTTON class="btn btn-link text-primary h2 m-0 p-0 locationBack">
+								<BUTTON class="btn btn-link text-primary m-0 p-0 locationBack">
 									<I class="fal fa-arrow-left fontSize30 text-white"></I>
 								</BUTTON>
 							</DIV>
 							<DIV>
 								<A href="/profile/{@friendIdentifier}/">
-									<IMG alt="profileImage" class="rounded-circle" src="{@friendProfileImage}" width="40"/>
-									<SPAN class="text-lg ms-2 text-white">
+									<IMG alt="profileImage" class="rounded-circle" src="{@friendProfileImage}" width="30"/>
+									<SPAN class="ms-2 text-white">
 										<xsl:value-of select="@friendNickname"/>
 									</SPAN>
 								</A>

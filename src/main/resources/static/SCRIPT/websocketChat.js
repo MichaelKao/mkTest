@@ -16,7 +16,7 @@ $(document).ready(function () {
 
 	function connect() {
 
-		websocket = new WebSocket('wss://' + hostName + '/webSocket/chat/' + self);
+		websocket = new WebSocket('wss://' + hostName + '/webSocket/chat/' + self + friend);
 
 		//開啟事件
 		websocket.onopen = function () {
@@ -785,7 +785,8 @@ $(document).ready(function () {
 	// 送出評價
 	$('BUTTON.commentBtn').click(function (event) {
 		event.preventDefault();
-		$(this).attr('disabled', true);
+		var btn = this;
+		$(btn).attr('disabled', true);
 		var rate = $('INPUT[name="rating"]:checked').val();
 		if (rate === undefined) {
 			rate = null;
@@ -806,6 +807,7 @@ $(document).ready(function () {
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');
+					$(btn).attr('disabled', false);
 				}
 			},
 			'json'
