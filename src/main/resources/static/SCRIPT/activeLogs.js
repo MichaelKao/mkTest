@@ -192,4 +192,57 @@ $(document).ready(function () {
 			);
 		return false;
 	});
+
+	var result;
+	$('BUTTON.acceptFare').click(function () {
+		result = true;
+		$(this).attr('disabled', true);
+		$('BUTTON.refuseFare').attr('disabled', true);
+	});
+	$('BUTTON.acceptFare').dblclick(function (e) {
+		e.preventDefault();
+	});
+	$('BUTTON.refuseFare').click(function () {
+		result = false;
+		$(this).attr('disabled', true);
+		$('BUTTON.acceptFare').attr('disabled', true);
+	});
+	$('BUTTON.refuseFare').dblclick(function (e) {
+		e.preventDefault();
+	});
+
+	$('BUTTON.resBtn').click(function () {
+		event.preventDefault();
+		let btn = this;
+		$.post(
+			'/resFare.json',
+			{
+				historyId: $(btn).closest('INPUT[name="historyId"]').val(),
+				result: result,
+				whom: whom
+			},
+			function (data) {
+				if (data.response) {
+					if (data.resultStatus) {
+						var jsonObj = {
+							'type': 'chat',
+							'sender': self,
+							'receiver': friend,
+							'behavior': 'CHE_MA_FEI',
+							'points': msg.points
+						};
+						websocket.send(JSON.stringify(jsonObj));
+					}
+					$(btn).closest('DIV').remove();
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+				} else {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+				}
+			},
+			'json'
+			);
+		return false;
+	});
 });

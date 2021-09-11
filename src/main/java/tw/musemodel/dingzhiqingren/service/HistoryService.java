@@ -228,11 +228,6 @@ public class HistoryService {
 	public static final Behavior BEHAVIOR_GROUP_GREETING = Behavior.QUN_FA;
 
 	/**
-	 * 历程：甜心要求車馬費
-	 */
-	public static final Behavior BEHAVIOR_REQ_FARE = Behavior.YAO_CHE_MA_FEI;
-
-	/**
 	 * 历程：放行生活照
 	 */
 	public static final Behavior BEHAVIOR_PICTURES_VIEWABLE = Behavior.FANG_XING_SHENG_HUO_ZHAO;
@@ -1174,6 +1169,7 @@ public class HistoryService {
 
 		for (History history : historyRepository.findByInitiativeAndBehaviorNotIn(lover, BEHAVIORS_ANNO_IGNORE)) {
 			Activity activeLogs = new Activity(
+				history.getId(),
 				lover,
 				history.getPassive(),
 				history.getBehavior(),
@@ -1187,6 +1183,7 @@ public class HistoryService {
 		}
 		for (History history : historyRepository.findByPassiveAndBehaviorNotIn(lover, BEHAVIORS_ANNO_IGNORE)) {
 			Activity activeLogs = new Activity(
+				history.getId(),
 				history.getInitiative(),
 				lover,
 				history.getBehavior(),
@@ -1212,7 +1209,7 @@ public class HistoryService {
 	 * @throws javax.xml.parsers.ParserConfigurationException
 	 * @throws java.io.IOException
 	 */
-	@Transactional(readOnly = true)
+	@Transactional
 	public Document historiesToDocument(Lover lover) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -1221,11 +1218,13 @@ public class HistoryService {
 		Boolean isMale = lover.getGender();
 
 		// 將通知已讀
-		List<History> histories = loverService.annoucementHistories(lover);
-		for (History history : histories) {
-			history.setSeen(new Date(System.currentTimeMillis()));
-			historyRepository.saveAndFlush(history);
+		Date now = new Date(System.currentTimeMillis());
+		List<History> historyList = new ArrayList<History>();
+		for (History history : loverService.annoucementHistories(lover)) {
+			history.setSeen(now);
+			historyList.add(history);
 		}
+		historyRepository.saveAllAndFlush(historyList);
 
 		List<Activity> activeLogsList = findActiveLogsOrderByOccurredDesc(lover);
 
@@ -1445,7 +1444,7 @@ public class HistoryService {
 					);
 				}
 			}
-			if (activeLogs.getBehavior() == BEHAVIOR_REQ_FARE) {
+			if (activeLogs.getBehavior() == BEHAVIOR_ASK_FOR_FARE) {
 				if (isMale) {
 					profileImage = initiativeProfileImage;
 					identifier = initiativeIdentifier;
@@ -1454,6 +1453,16 @@ public class HistoryService {
 						initiativeNickname,
 						Math.abs(activeLogs.getPoints())
 					);
+					if (Objects.isNull(activeLogs.getReply())) {
+						historyElement.setAttribute(
+							"replyFareReqBtn",
+							null
+						);
+						historyElement.setAttribute(
+							"historyId",
+							activeLogs.getId().toString()
+						);
+					}
 				}
 				if (!isMale) {
 					profileImage = passiveProfileImage;

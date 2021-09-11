@@ -923,7 +923,7 @@ $(document).ready(function () {
 		if (size > 0) {
 			$('.messages').css('padding-bottom', $('.floatBtn').height() + 10);
 		} else {
-			$('.messages').css('padding-bottom', 0);
+			$('.messages').css('padding-bottom', '40px');
 		}
 	}
 

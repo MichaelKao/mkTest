@@ -41,8 +41,9 @@ public class Activity implements Comparable<Activity> {
 	public Activity() {
 	}
 
-	public Activity(Lover initiative, Lover passive, Behavior behavior,
+	public Activity(Long id, Lover initiative, Lover passive, Behavior behavior,
 		Date occurred, Short points, String greeting, Date seen, Date reply) {
+		this.id = id;
 		this.initiative = initiative;
 		this.passive = passive;
 		this.behavior = behavior;
