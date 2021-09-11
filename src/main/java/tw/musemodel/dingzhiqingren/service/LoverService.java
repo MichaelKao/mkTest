@@ -93,6 +93,8 @@ import tw.musemodel.dingzhiqingren.entity.User;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalInfo;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
+import tw.musemodel.dingzhiqingren.entity.embedded.AppearedLocation;
+import tw.musemodel.dingzhiqingren.entity.embedded.AppearedLocationKey;
 import tw.musemodel.dingzhiqingren.event.SignedUpEvent;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.Descendant;
@@ -102,6 +104,7 @@ import tw.musemodel.dingzhiqingren.model.SignUp;
 import tw.musemodel.dingzhiqingren.repository.ActivationRepository;
 import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
 import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
+import tw.musemodel.dingzhiqingren.repository.AppearedLocationRepository;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
 import tw.musemodel.dingzhiqingren.repository.FollowRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
@@ -205,6 +208,9 @@ public class LoverService {
 
 	@Autowired
 	private AnnualIncomeRepository annualIncomeRepository;
+
+	@Autowired
+	private AppearedLocationRepository appearedLocationRepository;
 
 	@Autowired
 	private CountryRepository countryRepository;
@@ -523,6 +529,39 @@ public class LoverService {
 	public Lover changePassword(Lover mofo, String password) {
 		mofo.setShadow(passwordEncoder.encode(password));
 		return loverRepository.saveAndFlush(mofo);
+	}
+
+	/**
+	 * 取得某咪郎的出没地区。
+	 *
+	 * @param lover 某咪郎
+	 * @return 某咪郎的出没地区
+	 */
+	@Transactional(readOnly = true)
+	public Collection<Location> getLocations(Lover lover) {
+		return getLocations(lover, false);
+	}
+
+	/**
+	 * 取得某咪郎的出没地区并随机排列。
+	 *
+	 * @param lover 某咪郎
+	 * @param random 随机排列
+	 * @return 某咪郎的出没地区
+	 */
+	@Transactional(readOnly = true)
+	public Collection<Location> getLocations(Lover lover, boolean random) {
+		Collection<Location> locations = new ArrayList<>();
+
+		appearedLocationRepository.findByLover(lover).forEach(appearedLocation -> {
+			locations.add(appearedLocation.getLocation());
+		});
+
+		if (random) {
+			Collections.shuffle(new ArrayList<>(locations));
+		}
+
+		return locations;
 	}
 
 	/**
@@ -1290,8 +1329,9 @@ public class LoverService {
 			loverElement.appendChild(pictureElement);
 		});
 
-		if (Objects.nonNull(lover.getLocations())) {
-			lover.getLocations().stream().map(location -> {
+		Collection<Location> locations = getLocations(lover);
+		if (!locations.isEmpty()) {
+			locations.stream().map(location -> {
 				Element locationElement = document.createElement("location");
 				locationElement.setAttribute("id", location.getId().toString());
 				locationElement.setTextContent(
@@ -1741,7 +1781,7 @@ public class LoverService {
 			locationElement.setAttribute(
 				"locationID", location.getId().toString()
 			);
-			lover.getLocations().stream().filter(loc -> (Objects.equals(loc, location))).forEachOrdered(_item -> {
+			getLocations(lover).stream().filter(loc -> (Objects.equals(loc, location))).forEachOrdered(_item -> {
 				locationElement.setAttribute(
 					"locationSelected", ""
 				);
@@ -1989,7 +2029,7 @@ public class LoverService {
 				toJSONObject();
 		}
 
-		if (lover.getLocations().size() < 1) {
+		if (getLocations(lover).size() < 1) {
 			return new JavaScriptObjectNotation().
 				withReason("請至少填入一個地區").
 				withResponse(false).
@@ -2356,31 +2396,47 @@ public class LoverService {
 	}
 
 	/**
-	 * 更新地點
+	 * 更新出没地区。
 	 *
-	 * @param location
-	 * @param honey
-	 * @return
+	 * @param location 地区
+	 * @param lover 情人
+	 * @return 出没地区
 	 */
 	@Transactional
-	public JSONObject updateLocation(Location location, Lover honey) {
-		Set<Location> locations = honey.getLocations();
-		for (Location loc : locations) {
-			if (Objects.equals(loc, location)) {
-				locations.remove(loc);
-				honey.setLocations(locations);
-				loverRepository.saveAndFlush(honey);
-				return new JavaScriptObjectNotation().
-					withResponse(true).
-					toJSONObject();
-			}
-		}
+	public JSONObject updateLocation(Location location, Lover lover) {
+		Set<Location> locations = new HashSet<>();
+		appearedLocationRepository.findByLover(lover).forEach(appearedLocation -> {
+			locations.add(appearedLocation.getLocation());
+		});
 
-		locations.add(location);
-		honey.setLocations(locations);
-		loverRepository.saveAndFlush(honey);
+		AppearedLocation appearedLocation;
+		if (locations.contains(location)) {
+			/*
+			 已存在则删除
+			 */
+			appearedLocation = appearedLocationRepository.
+				findOneByLoverAndLocation(lover, location).
+				orElseThrow();
+			appearedLocationRepository.delete(appearedLocation);
+		} else {
+			/*
+			 不存在则创建
+			 */
+			AppearedLocationKey id = new AppearedLocationKey();
+			id.setLoverId(lover.getId());
+			id.setLocationId(location.getId());
+
+			appearedLocation = new AppearedLocation();
+			appearedLocation.setId(id);
+			appearedLocation.setLover(lover);
+			appearedLocation.setLocation(location);
+			appearedLocationRepository.save(appearedLocation);
+		}
+		appearedLocationRepository.flush();
+
 		return new JavaScriptObjectNotation().
 			withResponse(true).
+			//withResult(appearedLocation).
 			toJSONObject();
 	}
 
@@ -2534,13 +2590,15 @@ public class LoverService {
 				);
 				loverElement.appendChild(relationshipElement);
 			}
-			if (Objects.nonNull(lover.getLocations())) {
-				Set<Location> locations = lover.getLocations();
-				List<Location> locationList = new ArrayList<>(locations);
-				Collections.shuffle(locationList);
+
+			/*
+			 出没地区
+			 */
+			Collection<Location> locations = getLocations(lover, true);
+			if (!locations.isEmpty()) {
 				int count = 0;
-				for (Location location : locationList) {
-					count += 1;
+				for (Location location : locations) {
+					++count;
 					if (count <= 3) {
 						Element locationElement = document.createElement("location");
 						locationElement.setTextContent(
@@ -2679,13 +2737,15 @@ public class LoverService {
 				);
 				sectionElement.appendChild(relationshipElement);
 			}
-			if (Objects.nonNull(lover.getLocations())) {
-				Set<Location> locations = lover.getLocations();
-				List<Location> locationList = new ArrayList<>(locations);
-				Collections.shuffle(locationList);
+
+			/*
+			 出没地区
+			 */
+			Collection<Location> locations = getLocations(lover, true);
+			if (!locations.isEmpty()) {
 				int count = 0;
-				for (Location location : locationList) {
-					count += 1;
+				for (Location location : locations) {
+					++count;
 					if (count <= 3) {
 						Element locationElement = document.createElement("location");
 						locationElement.setTextContent(
@@ -2699,6 +2759,7 @@ public class LoverService {
 					}
 				}
 			}
+
 			Element ageElement = document.createElement("age");
 			ageElement.setTextContent(calculateAge(lover).toString());
 			sectionElement.appendChild(ageElement);
@@ -2754,17 +2815,19 @@ public class LoverService {
 						locale
 					));
 			}
-			if (Objects.nonNull(lover.getLocations())) {
-				JSONArray jaLocations = new JSONArray();
-				Set<Location> locations = lover.getLocations();
-				List<Location> locationList = new ArrayList<>(locations);
-				Collections.shuffle(locationList);
+
+			/*
+			 出没地区
+			 */
+			Collection<Location> locations = getLocations(lover, true);
+			if (!locations.isEmpty()) {
+				JSONArray jsonArrayLocation = new JSONArray();
 				int count = 0;
-				for (Location location : locationList) {
-					JSONObject joLocation = new JSONObject();
-					count += 1;
+				for (Location location : locations) {
+					JSONObject jsonObjectLocation = new JSONObject();
+					++count;
 					if (count <= 3) {
-						joLocation.put(
+						jsonObjectLocation.put(
 							"location",
 							messageSource.getMessage(
 								location.getName(),
@@ -2772,11 +2835,11 @@ public class LoverService {
 								locale
 							)
 						);
-						jaLocations.put(joLocation);
+						jsonArrayLocation.put(jsonObjectLocation);
 					}
 				}
 				json.put(
-					"location", jaLocations
+					"location", jsonArrayLocation
 				);
 			}
 			json.put("profileImage", String.format(
@@ -2865,7 +2928,15 @@ public class LoverService {
 		);
 	}
 
-	public JSONObject groupGreeting(Lover female, String greetingMessage, Locale locale) {
+	/**
+	 * 群发打招呼。
+	 *
+	 * @param honey 甜心
+	 * @param greetingMessage 打招呼语
+	 * @param locale 语言环境
+	 * @return 杰森格式对象
+	 */
+	public JSONObject groupGreeting(Lover honey, String greetingMessage, Locale locale) {
 		LOGGER.debug(
 			"2143\t群發進到服務層:\n\n{}\n",
 			greetingMessage
@@ -2877,7 +2948,7 @@ public class LoverService {
 			);
 			throw new RuntimeException("greet.greetingMessageMustntBeNull");
 		}
-		if (within12hrsFromLastGroupGreeting(female)) { //24小時內已群發過打招呼
+		if (within12hrsFromLastGroupGreeting(honey)) { //24小時內已群發過打招呼
 			LOGGER.debug(
 				"2155\t上次群發在12小時內:\n\n{}\n"
 			);
@@ -2886,16 +2957,21 @@ public class LoverService {
 
 		LOGGER.debug(
 			"2161\t{}發出群發打招呼:\n\n{}\n",
-			female.getNickname(),
+			honey.getNickname(),
 			greetingMessage
 		);
 
-		Set<Location> locations = female.getLocations();
+		Collection<Location> locations = getLocations(honey);
 		LOGGER.debug(
 			"2168\t女神的地區s\n\n{}\n",
 			locations
 		);
-		List<Lover> lovers = loverRepository.findAll(LoverSpecification.malesListForGroupGreeting(true, locations));
+		List<Lover> lovers = loverRepository.findAll(
+			LoverSpecification.malesListForGroupGreeting(
+				true,
+				new HashSet<>(locations)
+			)
+		);
 		LOGGER.debug(
 			"2173\t和女神一樣地區的男士\n\n{}\n",
 			lovers
@@ -2913,7 +2989,7 @@ public class LoverService {
 			}
 			count += 1;
 			History history = new History(
-				female,
+				honey,
 				male,
 				Behavior.QUN_FA,
 				(short) 0
@@ -2926,7 +3002,7 @@ public class LoverService {
 				male.getIdentifier().toString(),
 				String.format(
 					"%s向你打招呼：「%s」",
-					female.getNickname(),
+					honey.getNickname(),
 					greetingMessage
 				));
 			if (hasLineNotify(male)) {
@@ -3123,7 +3199,7 @@ public class LoverService {
 				return false;
 			}//期望零用钱
 		}
-		return !(mofo.getLocations().isEmpty() || mofo.getServices().isEmpty());//(地点|服务)标签
+		return !(getLocations(mofo).isEmpty() || mofo.getServices().isEmpty());//(地点|服务)标签
 	}
 
 	/**
@@ -3234,7 +3310,7 @@ public class LoverService {
 	/**
 	 * 日期轉換成字串形式顯示在前端頁面
 	 *
-	 * @param date
+	 * @param d
 	 * @return
 	 */
 	public String calendarToString(Date d) {

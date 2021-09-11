@@ -22,7 +22,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -1560,13 +1559,15 @@ public class WelcomeController {
 					);
 					peekerElement.appendChild(relationshipElement);
 				}
-				if (Objects.nonNull(peeker.getLocations())) {
-					Set<Location> locations = peeker.getLocations();
-					List<Location> locationList = new ArrayList<>(locations);
-					Collections.shuffle(locationList);
+
+				/*
+				 出没地区
+				 */
+				Collection<Location> locations = loverService.getLocations(peeker, true);
+				if (!locations.isEmpty()) {
 					int count = 0;
-					for (Location location : locationList) {
-						count += 1;
+					for (Location location : locations) {
+						++count;
 						if (count <= 3) {
 							Element locationElement = document.createElement("location");
 							locationElement.setTextContent(
