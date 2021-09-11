@@ -37,6 +37,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import tw.musemodel.dingzhiqingren.entity.embedded.AppearedLocation;
 
 /**
  * 情人
@@ -315,14 +316,9 @@ public class Lover implements java.io.Serializable {
 	/**
 	 * 出没地区
 	 */
-	@JoinTable(
-		name = "qing_ren_yu_di_qu",
-		joinColumns = @JoinColumn(name = "qing_ren", referencedColumnName = "id"),
-		inverseJoinColumns = @JoinColumn(name = "di_qu", referencedColumnName = "id")
-	)
-	@ManyToMany(fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "lover")
 	@JsonIgnore
-	private Set<Location> locations;
+	private Set<AppearedLocation> locations;
 
 	/**
 	 * 服务(分类)标签
@@ -398,7 +394,7 @@ public class Lover implements java.io.Serializable {
 		}
 	)
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@ManyToMany()
+	@ManyToMany
 	@JsonManagedReference
 	private Collection<Lover> blocking;
 
@@ -971,16 +967,16 @@ public class Lover implements java.io.Serializable {
 	}
 
 	/**
-	 * @return 地點
+	 * @return 出没地区
 	 */
-	public Set<Location> getLocations() {
+	public Set<AppearedLocation> getLocations() {
 		return locations;
 	}
 
 	/**
-	 * @param locations 地點
+	 * @param locations 出没地区
 	 */
-	public void setLocations(Set<Location> locations) {
+	public void setLocations(Set<AppearedLocation> locations) {
 		this.locations = locations;
 	}
 

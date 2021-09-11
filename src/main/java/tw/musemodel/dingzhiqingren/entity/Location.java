@@ -13,14 +13,13 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import tw.musemodel.dingzhiqingren.entity.embedded.AppearedLocation;
 
 /**
  * 地区
@@ -55,8 +54,8 @@ public class Location implements java.io.Serializable {
 	@JsonBackReference
 	private Collection<Lover> loversCollection;
 
-	@ManyToMany(mappedBy = "locations", fetch = FetchType.EAGER)
-	private Set<Lover> lovers;
+	@OneToMany(mappedBy = "location")
+	private Set<AppearedLocation> lovers;
 
 	/**
 	 * 默认构造器
@@ -139,16 +138,16 @@ public class Location implements java.io.Serializable {
 	}
 
 	/**
-	 * @return 多對多 情人們
+	 * @return 出没地区
 	 */
-	public Set<Lover> getLovers() {
+	public Set<AppearedLocation> getLovers() {
 		return lovers;
 	}
 
 	/**
-	 * @param lovers 多對多 情人們
+	 * @param lovers 出没地区
 	 */
-	public void setLovers(Set<Lover> lovers) {
+	public void setLovers(Set<AppearedLocation> lovers) {
 		this.lovers = lovers;
 	}
 }

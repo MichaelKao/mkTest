@@ -575,7 +575,7 @@ INSERT INTO"fu_wu"("fu_wu_biao_qian")VALUES
  * 情人與服務
  */
 CREATE TABLE"qing_ren_yu_fu_wu"(
-	"qing_ren"int8 NOT NULL REFERENCES"qing_ren"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
+	"qing_ren"int NOT NULL REFERENCES"qing_ren"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
 	"fu_wu"int2 NOT NULL REFERENCES"fu_wu"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
 	PRIMARY KEY("qing_ren","fu_wu")
 );
@@ -584,16 +584,16 @@ COMMENT ON COLUMN"qing_ren_yu_fu_wu"."qing_ren"IS'情人';
 COMMENT ON COLUMN"qing_ren_yu_fu_wu"."fu_wu"IS'服務';
 
 /**
- * 情人與地區
+ * 情人与地区
  */
 CREATE TABLE"qing_ren_yu_di_qu"(
-	"qing_ren"int8 NOT NULL REFERENCES"qing_ren"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
+	"qing_ren"int NOT NULL REFERENCES"qing_ren"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
 	"di_qu"int2 NOT NULL REFERENCES"di_qu"("id")ON UPDATE CASCADE ON DELETE RESTRICT,
 	PRIMARY KEY("qing_ren","di_qu")
 );
-COMMENT ON TABLE"qing_ren_yu_di_qu"IS'情人與地區';
+COMMENT ON TABLE"qing_ren_yu_di_qu"IS'情人与地区';
 COMMENT ON COLUMN"qing_ren_yu_di_qu"."qing_ren"IS'情人';
-COMMENT ON COLUMN"qing_ren_yu_di_qu"."di_qu"IS'服務';
+COMMENT ON COLUMN"qing_ren_yu_di_qu"."di_qu"IS'地区';
 
 /**
  * 安心認證欄位
