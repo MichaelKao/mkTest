@@ -63,24 +63,27 @@
 				<DIV class="modal fade" id="weChatModel">
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
-							<DIV class="modal-header">
-								<H5 class="modal-title">微信 WeCaht QRcode</H5>
-								<BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
-							</DIV>
 							<DIV class="modal-body">
+								<DIV class="d-flex">
+									<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+										<I class="fal fa-times"></I>
+									</BUTTON>
+								</DIV>
+								<DIV class="my-3 text-center">
+									<I class="fad fa-user-plus mb-1" style="font-size: 50px;"></I>
+									<H5 class="modal-title">微信 WeCaht QRcode</H5>
+								</DIV>
 								<DIV class="form-group">
-									<P>使用微信 APP 掃描加入好友</P>
-									<P>若是用手機，需以截圖或下載 QRCode 的方式使用微信 APP 加入好友</P>
-									<P class="text-primary">點擊 QRcode 可直接下載</P>
-									<A class="weChatQRcode" href="" download="weChatQRcode.png">
+									<DIV class="text-center">使用微信 APP 掃描加入好友</DIV>
+									<DIV class="text-center">若是用手機，需以截圖或下載 QRCode 的方式使用微信 APP 加入好友</DIV>
+									<DIV class="text-center text-primary">點擊 QRcode 可直接下載</DIV>
+									<A class="weChatQRcode d-flex justify-content-center" href="" download="weChatQRcode.png">
 										<IMG alt="weChatQRCode" class="weChatQRcode" src=""/>
 									</A>
 								</DIV>
-							</DIV>
-							<DIV class="modal-footer">
-								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
-									<xsl:value-of select="@i18n-cancel"/>
-								</BUTTON>
+								<DIV class="text-center">
+									<BUTTON class="btn btn-outline-dark px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+								</DIV>
 							</DIV>
 						</DIV>
 					</DIV>
@@ -90,7 +93,9 @@
 						<DIV class="modal-content">
 							<DIV class="modal-body">
 								<DIV class="d-flex">
-									<BUTTON class="btn-close bg-dark ms-auto" data-bs-dismiss="modal" type="button"></BUTTON>
+									<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+										<I class="fal fa-times"></I>
+									</BUTTON>
 								</DIV>
 								<DIV class="mt-3 text-center">
 									<I class="far fa-comment-alt-smile text-success mb-1" style="font-size: 50px;"></I>
@@ -145,33 +150,38 @@
 									</DIV>
 									<xsl:if test="@decideButton">
 										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
-											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 accept" type="button">接受</BUTTON>
-											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 refuse" type="button">拒絕</BUTTON>
+											<BUTTON class="btn btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 accept" type="button">接受</BUTTON>
+											<BUTTON class="btn btn-outline-dark px-2 py-1 p-md-2 m-0 me-1 refuse" type="button">拒絕</BUTTON>
 										</DIV>
 									</xsl:if>
-									<xsl:if test="not(@decideButton)">
+									<xsl:if test="/document/@female and @rateButton">
 										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
-											<xsl:if test="@addLineButton">
-												<BUTTON class="btn btn-success px-2 py-1 p-md-2 m-0 me-1 openLine" type="button">
-													<SPAN>加入好友</SPAN>
-													<xsl:if test="@remindDeduct">
-														<DIV class="text-xxs">需 100 愛心</DIV>
-													</xsl:if>
-												</BUTTON>
-											</xsl:if>
+											<BUTTON class="btn btn-outline-dark px-2 py-1 p-md-2 m-0 me-1 rate" type="button">評價</BUTTON>
+										</DIV>
+									</xsl:if>
+									<xsl:if test="@addLineButton">
+										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
+											<BUTTON class="btn btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 openLine" type="button">
+												<SPAN>加入好友</SPAN>
+												<xsl:if test="@remindDeduct">
+													<DIV class="text-xxs">需 100 愛心</DIV>
+												</xsl:if>
+											</BUTTON>
 											<xsl:if test="@rateButton">
-												<BUTTON class="btn btn-warning px-2 py-1 p-md-2 m-0 me-1 rate" type="button">評價</BUTTON>
+												<BUTTON class="btn btn-outline-dark px-2 py-1 p-md-2 m-0 me-1 rate" type="button">評價</BUTTON>
 											</xsl:if>
-										</DIV>
-									</xsl:if>
-									<xsl:if test="@requestLineButton">
-										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
-											<BUTTON class="btn btn-primary px-2 py-1 p-md-2 m-0 me-1 requestLine" type="button">要求通訊軟體</BUTTON>
 										</DIV>
 									</xsl:if>
 									<xsl:if test="@pixAuthBtn">
 										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 acceptPixAuth" type="button">同意</BUTTON>
+										</DIV>
+									</xsl:if>
+									<xsl:if test="@replyFareReqBtn">
+										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
+											<INPUT name="historyId" type="hidden" value="{@historyId}"/>
+											<BUTTON class="btn btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 acceptFare resBtn" type="button">給出</BUTTON>
+											<BUTTON class="btn btn-outline-dark px-2 py-1 p-md-2 m-0 me-1 refuseFare resBtn" type="button">下次</BUTTON>
 										</DIV>
 									</xsl:if>
 								</DIV>

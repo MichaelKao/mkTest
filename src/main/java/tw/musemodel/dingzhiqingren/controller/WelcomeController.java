@@ -1933,13 +1933,11 @@ public class WelcomeController {
 			return Servant.redirectToProfile();
 		}
 
-		Document document = servant.parseDocument();
+		Document document = historyService.historiesToDocument(me);
 		Element documentElement = servant.documentElement(
 			document,
 			authentication
 		);
-
-		document = historyService.historiesToDocument(me);
 
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.activeLogs",

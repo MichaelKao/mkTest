@@ -159,7 +159,7 @@ public class WebSocketChatServer {
 		}
 
 		if ("chat".equals(chatMessage.getType()) && "YAO_CHE_MA_FEI".equals(chatMessage.getBehavior())) {
-			History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(female, male, BEHAVIOR_REQ_FARE);
+			History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(female, male, BEHAVIOR_ASK_FOR_FARE);
 			chatMessage.setId(history.getId().toString());
 			message = gson.toJson(chatMessage);
 			Session receiverSession = sessionPools.get(chatMessage.getReceiver());

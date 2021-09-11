@@ -730,13 +730,15 @@
 									<SPAN>您已封鎖對方</SPAN>
 								</xsl:when>
 							</xsl:choose>
+							<DIV class="customerBtnWrap">
+								<A class="customerBtn d-flex align-items-center justify-content-center bg-dark fontSize22 opacity-8 text-white" href="#">
+									<I class="fad fa-user-headset"></I>
+								</A>
+							</DIV>
 						</div>
 					</div>
 				</div>
 			</div>
-			<A class="customerBtn d-flex align-items-center justify-content-center position-fixed bg-dark fontSize22 opacity-8 text-white" href="#">
-				<I class="fad fa-user-headset"></I>
-			</A>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/chatroom.js"/>
 			<xsl:if test="@signIn">

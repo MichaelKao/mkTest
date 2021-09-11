@@ -93,7 +93,7 @@ body{
 	min-height: 0;
 	overflow-x: hidden;
 	overflow-y: auto;
-	padding: 5px 4px 0px;
+	padding: 5px 4px 40px;
 	z-index: 1;
 }
 
@@ -148,12 +148,16 @@ body{
 	box-shadow: rgba(0, 0, 0, 0.3) 0px 3px 8px;
 }
 
+.customerBtnWrap {
+	margin-top: -60px;
+	position: absolute;
+	right: 13px;
+	z-index: 999;
+}
+
 .customerBtn{
 	width: 40px;
 	height: 40px;
-	top: 112px;
-	right: 8px;
-	border-radius:50px;
+	border-radius: 50px;
 	box-shadow: 2px 2px 3px #999;
-	z-index: 9999;
 }
