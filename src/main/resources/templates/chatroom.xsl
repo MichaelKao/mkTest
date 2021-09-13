@@ -61,8 +61,8 @@
 								<TEXTAREA class="form-control" name="comment" placeholder="留下評價..." type="text"></TEXTAREA>
 							</DIV>
 							<DIV class="text-center">
-								<BUTTON class="btn btn-outline-dark mx-1" data-bs-dismiss="modal" type="button">取消</BUTTON>
-								<BUTTON class="btn btn-outline-primary commentBtn mx-1" type="button">確認</BUTTON>
+								<BUTTON class="btn btn-outline-primary commentBtn mx-1 px-3 py-2" type="button">確認</BUTTON>
+								<BUTTON class="btn btn-outline-dark mx-1 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
 							</DIV>
 						</DIV>
 					</DIV>
@@ -84,7 +84,7 @@
 									<xsl:if test="@female">要求車馬費</xsl:if>
 								</H5>
 							</DIV>
-							<DIV class="form-group mx-auto col-10">
+							<DIV class="form-group mx-auto col-10 text-center">
 								<xsl:if test="@male">
 									<LABEL class="text-xs" for="fare">使用平台支付不必擔心私下給甜心爽約，可檢舉查證屬實退回</LABEL>
 								</xsl:if>
@@ -361,13 +361,13 @@
 					</DIV>
 				</NAV>
 			</DIV>
-			<div class="d-flex chatContainer container px-0">
-				<div class="d-none d-lg-block col-lg-3">
-					<div class="list">
-						<div class="tabs">
+			<DIV class="d-flex chatContainer container px-0">
+				<DIV class="d-none d-lg-block col-lg-3 chatList">
+					<DIV class="list">
+						<DIV class="tabs">
 							<UL class="nav nav-tabs flex-row">
 								<LI class="nav-item col-6 text-center">
-									<A class="nav-link cursor-pointer active" data-bs-toggle="tab" href="#first">
+									<A class="nav-link cursor-pointer" data-bs-toggle="tab" href="#first">
 										<xsl:if test="@male">
 											<I class="fad fa-users"></I>
 											<SPAN class="ms-1">好友</SPAN>
@@ -400,9 +400,9 @@
 									</A>
 								</LI>
 							</UL>
-						</div>
+						</DIV>
 						<DIV class="tab-content">
-							<DIV class="row justify-content-center mx-0 tab-pane active" id="first">
+							<DIV class="row justify-content-center mx-0 tab-pane" id="first">
 								<xsl:for-each select="conversation">
 									<xsl:if test="@isMatchedOrIsVip = 'true'">
 										<DIV class="card my-2 px-2 mx-auto conversationWrap position-relative shadow">
@@ -412,10 +412,10 @@
 											<A class="inboxLink" href="/chatroom/{@identifier}/"></A>
 											<DIV class="d-flex justify-content-between align-items-center py-2">
 												<DIV>
-													<IMG src="{@profileImage}" alt="大頭貼" class="rounded-circle" width="60px"/>
+													<IMG alt="大頭貼" class="rounded-circle" src="{@profileImage}" width="50px"/>
 												</DIV>
 												<DIV class="me-auto" style="overflow: hidden;">
-													<DIV class="d-flex flex-column align-items-start ms-3">
+													<DIV class="d-flex flex-column align-items-start ms-2">
 														<A class=" font-weight-bold text-dark text-sm mb-1">
 															<xsl:value-of select="@nickname"/>
 														</A>
@@ -453,10 +453,10 @@
 											<A class="inboxLink" href="/chatroom/{@identifier}/"></A>
 											<DIV class="d-flex justify-content-between align-items-center py-2">
 												<DIV>
-													<IMG src="{@profileImage}" alt="大頭貼" class="rounded-circle" width="60px"/>
+													<IMG alt="大頭貼" class="rounded-circle" src="{@profileImage}" width="50px"/>
 												</DIV>
 												<DIV class="me-auto" style="overflow: hidden;">
-													<DIV class="d-flex flex-column align-items-start ms-3">
+													<DIV class="d-flex flex-column align-items-start ms-2">
 														<A class=" font-weight-bold text-dark text-sm mb-1">
 															<xsl:value-of select="@nickname"/>
 														</A>
@@ -485,19 +485,20 @@
 								</xsl:for-each>
 							</DIV>
 						</DIV>
-					</div>
-				</div>
-				<div class="col-12 col-lg-9">
-					<div class="list">
-						<div class="d-flex align-items-center bg-dark py-1 px-2 chatHeader">
-							<DIV class="me-3">
-								<BUTTON class="btn btn-link text-primary m-0 p-0 locationBack">
-									<I class="fal fa-arrow-left fontSize30 text-white"></I>
-								</BUTTON>
-							</DIV>
+						<DIV class="hideSideBar d-lg-none position-absolute top-0 bottom-0 bg-dark opacity-7 text-white fontSize35 text-center cursor-pointer">
+							<I class="fal fa-angle-left"></I>
+						</DIV>
+					</DIV>
+				</DIV>
+				<DIV class="showSideBar d-lg-none position-absolute top-0 bottom-0 left-0 bg-dark opacity-7 text-white fontSize35 text-center cursor-pointer">
+					<I class="fal fa-angle-right"></I>
+				</DIV>
+				<DIV class="col-12 col-lg-9">
+					<DIV class="list">
+						<DIV class="d-flex align-items-center bg-dark py-1 px-2 chatHeader">
 							<DIV>
 								<A href="/profile/{@friendIdentifier}/">
-									<IMG alt="profileImage" class="rounded-circle" src="{@friendProfileImage}" width="30"/>
+									<IMG alt="profileImage" class="rounded-circle" src="{@friendProfileImage}" width="35"/>
 									<SPAN class="ms-2 text-white">
 										<xsl:value-of select="@friendNickname"/>
 									</SPAN>
@@ -529,9 +530,9 @@
 									</DIV>
 								</DIV>
 							</xsl:if>
-						</div>
-						<div class="messages" id="messagesArea"></div>
-						<div class="inputContainer">
+						</DIV>
+						<DIV class="messages" id="messagesArea"></DIV>
+						<DIV class="inputContainer">
 							<xsl:choose>
 								<xsl:when test="not(@blocking) and not(@blockedBy)">
 									<xsl:if test="@female">
@@ -540,7 +541,7 @@
 												<DIV class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
 													<DIV class="text-primary">
 														<DIV>
-															<I aria-hidden="true" class="fad fa-user-plus"></I>
+															<I class="fad fa-user-plus"></I>
 															<SPAN>確認後對方將取得您的通訊軟體</SPAN>
 														</DIV>
 														<DIV>拒絕後對方12小時後可再次提出邀請</DIV>
@@ -551,68 +552,75 @@
 											</DIV>
 										</xsl:if>
 										<xsl:if test="@rateBtn">
-											<div class="d-flex justify-content-center femaleBtn floatBtn">
-												<div class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
-													<div class="text-primary">
-														<div>
-															<i class="fad fa-star-half"></i>
-															<span>給予對方評價</span>
-														</div>
-													</div>
-													<button class="btn btn-sm btn-primary btn-round px-2 py-1 m-0 rate" data-bs-target="#rateModal" data-bs-toggle="modal" type="button">評價</button>
-												</div>
-											</div>
+											<DIV class="d-flex justify-content-center femaleBtn floatBtn">
+												<DIV class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
+													<DIV class="text-primary">
+														<DIV>
+															<I class="fad fa-star-half"></I>
+															<SPAN>給予對方評價</SPAN>
+														</DIV>
+													</DIV>
+													<BUTTON class="btn btn-sm btn-primary btn-round px-2 py-1 m-0 rate" data-bs-target="#rateModal" data-bs-toggle="modal" type="button">評價</BUTTON>
+												</DIV>
+											</DIV>
 										</xsl:if>
 									</xsl:if>
 									<xsl:if test="@male">
-										<DIV class="d-flex align-items-center justify-content-center maleBtn floatBtn">
-											<div class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
-												<xsl:choose>
-													<xsl:when test="@reqSocialMediaBtn">
-														<div class="text-primary">
-															<i class="far fa-user-plus ms-1"></i>
-															<span>向對方提出通訊軟體要求</span>
-														</div>
-														<button type="button" id="giveMeLine" class="btn btn-primary btn-round px-2 py-1 m-0">要求</button>
-													</xsl:when>
-													<xsl:when test="@waitingForRes">
-														<div class="text-primary">
-															<div>
-																<i class="fad fa-user-plus"></i>
+										<xsl:choose>
+											<xsl:when test="@reqSocialMediaBtn">
+												<DIV class="d-flex justify-content-center maleBtn floatBtn">
+													<DIV class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
+														<DIV class="text-primary">
+															<I class="far fa-user-plus ms-1"></I>
+															<SPAN>向對方提出通訊軟體要求</SPAN>
+														</DIV>
+														<BUTTON type="button" id="giveMeLine" class="btn btn-primary btn-round px-2 py-1 m-0">要求</BUTTON>
+													</DIV>
+												</DIV>
+											</xsl:when>
+											<xsl:when test="@waitingForRes">
+												<DIV class="d-flex justify-content-center maleBtn floatBtn">
+													<DIV class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
+														<DIV class="text-primary">
+															<DIV>
+																<I class="fad fa-user-plus"></I>
 																<SPAN>您已送出邀請加入通訊軟體邀請，</SPAN>
-															</div>
-															<div>請等待對方回應。</div>
-														</div>
-													</xsl:when>
-													<xsl:when test="@addLineBtn">
-														<div class="text-primary">
-															<div>
-																<i class="fad fa-star-half"></i>
-																<span>加入對方通訊軟體</span>
-															</div>
-
-														</div>
-														<button type="button" class="btn btn-sm btn-primary btn-round px-2 py-1 m-0 openSocialMedia">
+															</DIV>
+															<DIV>請等待對方回應。</DIV>
+														</DIV>
+													</DIV>
+												</DIV>
+											</xsl:when>
+											<xsl:when test="@addLineBtn">
+												<DIV class="d-flex justify-content-center maleBtn floatBtn">
+													<DIV class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
+														<DIV class="text-primary">
+															<DIV>
+																<I class="fad fa-star-half"></I>
+																<SPAN>加入對方通訊軟體</SPAN>
+															</DIV>
+														</DIV>
+														<BUTTON class="btn btn-sm btn-primary btn-round px-2 py-1 m-0 openSocialMedia" type="button">
 															<SPAN>加入好友</SPAN>
 															<xsl:if test="@remindDeduct">
 																<DIV class="text-xxs">需 100 愛心</DIV>
 															</xsl:if>
-														</button>
-													</xsl:when>
-												</xsl:choose>
-												<xsl:if test="@rateBtn">
-													<button data-bs-target="#rateModal" data-bs-toggle="modal" type="button" class="btn btn-sm btn-dark btn-round px-2 py-1 m-0 ms-1 rate">評價</button>
-												</xsl:if>
-											</div>
-										</DIV>
+														</BUTTON>
+														<xsl:if test="@rateBtn">
+															<BUTTON class="btn btn-sm btn-dark btn-round px-2 py-1 m-0 ms-1 rate" data-bs-target="#rateModal" data-bs-toggle="modal" type="button">評價</BUTTON>
+														</xsl:if>
+													</DIV>
+												</DIV>
+											</xsl:when>
+										</xsl:choose>
 									</xsl:if>
 									<xsl:if test="not(@notAbleToSendMsgs)">
-										<div class="textareaContainer">
-											<textarea id="chatInput" type="text" placeholder="說點什麼吧..."></textarea>
-										</div>
-										<button class="btn btn-link m-0 p-0 sendMsgBtn">
+										<DIV class="textareaContainer">
+											<TEXTAREA id="chatInput" placeholder="說點什麼吧..." type="text"></TEXTAREA>
+										</DIV>
+										<BUTTON class="btn btn-link m-0 p-0 sendMsgBtn">
 											<i class="fa fa-paper-plane"></i>
-										</button>
+										</BUTTON>
 									</xsl:if>
 									<xsl:if test="@notAbleToSendMsgs">
 										<SPAN>12小時內僅能發送3句話給甜心</SPAN>
@@ -630,10 +638,10 @@
 									<I class="fad fa-user-headset"></I>
 								</A>
 							</DIV>
-						</div>
-					</div>
-				</div>
-			</div>
+						</DIV>
+					</DIV>
+				</DIV>
+			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/chatroom.js"/>
 			<xsl:if test="@signIn">

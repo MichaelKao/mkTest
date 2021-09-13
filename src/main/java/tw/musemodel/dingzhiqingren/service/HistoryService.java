@@ -237,9 +237,15 @@ public class HistoryService {
 	 */
 	@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
 	public final static Collection<History.Behavior> BEHAVIORS_OF_CONVERSATIONS = Arrays.asList(new History.Behavior[]{
-		HistoryService.BEHAVIOR_CHAT_MORE,
-		HistoryService.BEHAVIOR_GREETING,
-		HistoryService.BEHAVIOR_GROUP_GREETING
+		BEHAVIOR_CHAT_MORE,
+		BEHAVIOR_GREETING,
+		BEHAVIOR_GROUP_GREETING,
+		BEHAVIOR_FARE,
+		BEHAVIOR_ASK_FOR_FARE,
+		BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
+		BEHAVIOR_INVITE_ME_AS_LINE_FRIEND,
+		BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND,
+		BEHAVIOR_LAI_KOU_DIAN
 	});
 
 	/**

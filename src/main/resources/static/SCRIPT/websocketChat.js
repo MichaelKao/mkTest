@@ -75,12 +75,12 @@ $(document).ready(function () {
 								if (self === msg.sender) {
 									contentDiv.append('您已拒絕給對方通訊軟體');
 								} else {
-									var div1 = document.createElement('DIV');
-									div1.append('對方拒絕給您通訊軟體');
-									contentDiv.appendChild(div1);
-									var div2 = document.createElement('DIV');
-									div2.append('12小時後才能再要求');
-									contentDiv.appendChild(div2);
+									var span = document.createElement('SPAN');
+									span.append('對方拒絕給您通訊軟體');
+									contentDiv.appendChild(span);
+									var div = document.createElement('DIV');
+									div.append('12小時後才能再要求');
+									contentDiv.appendChild(div);
 								}
 								break;
 							case 'LAI_KOU_DIAN':
@@ -352,7 +352,6 @@ $(document).ready(function () {
 							});
 							$(refuseBtn).html('拒絕');
 							$(borderDiv).append(refuseBtn);
-							floatWrapResize();
 							$('BUTTON.accept').dblclick(function (e) {
 								e.preventDefault();
 							});
@@ -531,15 +530,15 @@ $(document).ready(function () {
 					case 'BU_JI_LAI':
 						icon.className += 'fas fa-frown';
 						contentDiv.appendChild(icon);
-						if (self === msg.sender) {
+						if (self === jsonObj.sender) {
 							contentDiv.append('您已拒絕給對方通訊軟體');
 						} else {
-							var div1 = document.createElement('DIV');
-							div1.append('對方拒絕給您通訊軟體');
-							contentDiv.appendChild(div1);
-							var div2 = document.createElement('DIV');
-							div2.append('12小時後才能再要求');
-							contentDiv.appendChild(div2);
+							var span = document.createElement('SPAN');
+							span.append('對方拒絕給您通訊軟體');
+							contentDiv.appendChild(span);
+							var div = document.createElement('DIV');
+							div.append('12小時後才能再要求');
+							contentDiv.appendChild(div);
 						}
 						$('DIV.floatBtn').empty();
 						break;
@@ -551,6 +550,7 @@ $(document).ready(function () {
 					default:
 						console.log(jsonObj.behavior);
 				}
+				floatWrapResize();
 				scrollToEnd();
 				return;
 			}

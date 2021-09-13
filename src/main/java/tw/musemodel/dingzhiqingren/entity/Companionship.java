@@ -47,7 +47,7 @@ public class Companionship implements java.io.Serializable {
 	@Column(name = "fu_wu_biao_qian", nullable = false)
 	private String name;
 
-	@ManyToMany(mappedBy = "services", fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "companionships", fetch = FetchType.EAGER)
 	private Set<Lover> lovers;
 
 	/**

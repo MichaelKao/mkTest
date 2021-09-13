@@ -21,10 +21,7 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_CHAT_MORE;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_LAI_KOU_DIAN;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_RATE;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
 
 /**
  * 服务层：聊天室
@@ -212,16 +209,16 @@ public class WebSocketService {
 			String identifier = null;
 			String profileImage = null;
 			String nickname = null;
-			String content = history.getGreeting();
+			String content = null;
 			Boolean isMatchedOrIsVip = null;
 			// 某個人的未讀訊息數
 			int notSeenCount = 0;
 			Collection<Behavior> BEHAVIORS_OF_MALE = Arrays.asList(new History.Behavior[]{
-				HistoryService.BEHAVIOR_CHAT_MORE
+				BEHAVIOR_CHAT_MORE
 			});
 			Collection<Behavior> BEHAVIORS_OF_FEMALE = Arrays.asList(new History.Behavior[]{
-				HistoryService.BEHAVIOR_GREETING,
-				HistoryService.BEHAVIOR_GROUP_GREETING
+				BEHAVIOR_GREETING,
+				BEHAVIOR_GROUP_GREETING
 			});
 			if (Objects.equals(me, history.getInitiative())) {
 				if (isMale) {
@@ -229,10 +226,34 @@ public class WebSocketService {
 					isMatchedOrIsVip = loverService.areMatched(history.getPassive(), me);
 					// 未讀訊息數量
 					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), me, BEHAVIORS_OF_FEMALE);
+					if (Objects.equals(history.getBehavior(), BEHAVIOR_FARE)) {
+						content = String.format(
+							"您已給 💗 %d 車馬費",
+							Math.abs(history.getPoints())
+						);
+					}
+					if (Objects.equals(history.getBehavior(), BEHAVIOR_GIMME_YOUR_LINE_INVITATION)) {
+						content = "您已發出要求通訊軟體";
+					}
+					if (Objects.equals(history.getBehavior(), BEHAVIOR_LAI_KOU_DIAN)) {
+						content = "您開啟了對方的通訊軟體QRcode";
+					}
 				}
 				if (!isMale) {
 					isMatchedOrIsVip = loverService.isVIP(history.getPassive()) || loverService.isVVIP(history.getPassive());
 					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), me, BEHAVIORS_OF_MALE);
+					if (Objects.equals(history.getBehavior(), BEHAVIOR_ASK_FOR_FARE)) {
+						content = String.format(
+							"您已和對方要求 💗 %d 車馬費",
+							Math.abs(history.getPoints())
+						);
+					}
+					if (Objects.equals(history.getBehavior(), BEHAVIOR_INVITE_ME_AS_LINE_FRIEND)) {
+						content = "您已接受給對方通訊軟體";
+					}
+					if (Objects.equals(history.getBehavior(), BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND)) {
+						content = "您已拒絕給對方通訊軟體";
+					}
 				}
 				identifier = history.getPassive().getIdentifier().toString();
 				profileImage = String.format(
@@ -245,10 +266,34 @@ public class WebSocketService {
 				if (isMale) {
 					isMatchedOrIsVip = loverService.areMatched(history.getInitiative(), me);
 					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), me, BEHAVIORS_OF_FEMALE);
+					if (Objects.equals(history.getBehavior(), BEHAVIOR_ASK_FOR_FARE)) {
+						content = String.format(
+							"對方和您要求 💗 %d 車馬費",
+							Math.abs(history.getPoints())
+						);
+					}
+					if (Objects.equals(history.getBehavior(), BEHAVIOR_INVITE_ME_AS_LINE_FRIEND)) {
+						content = "對方同意給您通訊軟體";
+					}
+					if (Objects.equals(history.getBehavior(), BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND)) {
+						content = "對方拒絕給您通訊軟體";
+					}
 				}
 				if (!isMale) {
 					isMatchedOrIsVip = loverService.isVIP(history.getInitiative()) || loverService.isVVIP(history.getInitiative());
 					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), me, BEHAVIORS_OF_MALE);
+					if (Objects.equals(history.getBehavior(), BEHAVIOR_FARE)) {
+						content = String.format(
+							"對方給了您 💗 %d 車馬費",
+							Math.abs(history.getPoints())
+						);
+					}
+					if (Objects.equals(history.getBehavior(), BEHAVIOR_GIMME_YOUR_LINE_INVITATION)) {
+						content = "收到對方要求通訊軟體";
+					}
+					if (Objects.equals(history.getBehavior(), BEHAVIOR_LAI_KOU_DIAN)) {
+						content = "對方已開啟了您的通訊軟體QRcode";
+					}
 				}
 				identifier = history.getInitiative().getIdentifier().toString();
 				profileImage = String.format(
@@ -270,6 +315,11 @@ public class WebSocketService {
 				"nickname",
 				nickname
 			);
+			// 若是"聊聊"、"打招呼"、"群發"行為就直接 getGreeting()
+			if (Objects.equals(history.getBehavior(), BEHAVIOR_CHAT_MORE) || Objects.equals(history.getBehavior(), BEHAVIOR_GREETING)
+				|| Objects.equals(history.getBehavior(), BEHAVIOR_GROUP_GREETING)) {
+				content = history.getGreeting();
+			}
 			conversationElement.setAttribute(
 				"content",
 				content

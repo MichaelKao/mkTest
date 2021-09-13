@@ -107,7 +107,6 @@ public class WebSocketChatServer {
 	public void onMessage(Session userSession, String message) {
 		ChatMessage chatMessage = gson.fromJson(message, ChatMessage.class);
 		String receiverConn = chatMessage.getReceiver() + chatMessage.getSender();
-		LOGGER.debug("測試{}", receiverConn);
 
 		Lover sender = loverService.
 			loadByIdentifier(
