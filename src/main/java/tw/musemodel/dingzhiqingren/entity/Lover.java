@@ -330,7 +330,7 @@ public class Lover implements java.io.Serializable {
 	)
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JsonIgnore
-	private Set<ServiceTag> services;
+	private Set<Companionship> companionships;
 
 	/**
 	 * 通过安心认证
@@ -983,15 +983,15 @@ public class Lover implements java.io.Serializable {
 	/**
 	 * @return 服務
 	 */
-	public Set<ServiceTag> getServices() {
-		return services;
+	public Set<Companionship> getCompanionships() {
+		return companionships;
 	}
 
 	/**
-	 * @param services 服務
+	 * @param companionships 服務
 	 */
-	public void setServices(Set<ServiceTag> services) {
-		this.services = services;
+	public void setCompanionships(Set<Companionship> companionships) {
+		this.companionships = companionships;
 	}
 
 	/**

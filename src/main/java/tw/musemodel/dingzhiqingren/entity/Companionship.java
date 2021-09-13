@@ -33,7 +33,7 @@ import javax.persistence.UniqueConstraint;
 	property = "id"
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ServiceTag implements java.io.Serializable {
+public class Companionship implements java.io.Serializable {
 
 	private static final long serialVersionUID = -6700464522011040939L;
 
@@ -53,13 +53,13 @@ public class ServiceTag implements java.io.Serializable {
 	/**
 	 * 默认构造器
 	 */
-	public ServiceTag() {
+	public Companionship() {
 	}
 
 	/**
 	 * @param name 县市名(i18n 键)
 	 */
-	public ServiceTag(String name) {
+	public Companionship(String name) {
 		this.name = name;
 	}
 
@@ -72,10 +72,10 @@ public class ServiceTag implements java.io.Serializable {
 
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof ServiceTag)) {
+		if (!(object instanceof Companionship)) {
 			return false;
 		}
-		ServiceTag other = (ServiceTag) object;
+		Companionship other = (Companionship) object;
 		return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
 	}
 

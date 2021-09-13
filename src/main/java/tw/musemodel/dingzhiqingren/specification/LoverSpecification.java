@@ -14,13 +14,13 @@ import javax.persistence.criteria.Subquery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
+import tw.musemodel.dingzhiqingren.entity.Companionship;
+import tw.musemodel.dingzhiqingren.entity.Companionship_;
 import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Location_;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Lover.MaleSpecies;
 import tw.musemodel.dingzhiqingren.entity.Lover_;
-import tw.musemodel.dingzhiqingren.entity.ServiceTag;
-import tw.musemodel.dingzhiqingren.entity.ServiceTag_;
 
 /**
  * @author p@musemodel.tw
@@ -292,10 +292,10 @@ public class LoverSpecification {
 	 *
 	 * @param mofo 用户号
 	 * @param location 地区
-	 * @param serviceTag 服务
+	 * @param companionship 服务
 	 * @return 符合条件的(甜心|男士)们
 	 */
-	public static Specification<Lover> search(Lover mofo, Location location, ServiceTag serviceTag) {
+	public static Specification<Lover> search(Lover mofo, Location location, Companionship companionship) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
 			boolean gender = !mofo.getGender();
 			Collection<Predicate> predicates = new ArrayList<>();
@@ -355,24 +355,24 @@ public class LoverSpecification {
 			/*
 			 服务
 			 */
-			if (Objects.nonNull(serviceTag)) {
-				Subquery<ServiceTag> subqueryServiceTag = criteriaQuery.subquery(
-					ServiceTag.class
+			if (Objects.nonNull(companionship)) {
+				Subquery<Companionship> subqueryServiceTag = criteriaQuery.subquery(
+					Companionship.class
 				);
-				Root<ServiceTag> serviceTagRoot = subqueryServiceTag.from(
-					ServiceTag.class
+				Root<Companionship> serviceTagRoot = subqueryServiceTag.from(
+					Companionship.class
 				);
 				subqueryServiceTag.select(
 					serviceTagRoot.
 						join(
-							ServiceTag_.lovers,
+							Companionship_.lovers,
 							JoinType.LEFT
 						).
 						get("id")
 				);
 				subqueryServiceTag.where(criteriaBuilder.equal(
-					serviceTagRoot.get(ServiceTag_.id),
-					serviceTag.getId()
+					serviceTagRoot.get(Companionship_.id),
+					companionship.getId()
 				));
 				predicates.add(root.
 					get(Lover_.id).

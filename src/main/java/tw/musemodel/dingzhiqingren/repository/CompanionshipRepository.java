@@ -2,7 +2,7 @@ package tw.musemodel.dingzhiqingren.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import tw.musemodel.dingzhiqingren.entity.ServiceTag;
+import tw.musemodel.dingzhiqingren.entity.Companionship;
 
 /**
  * 数据访问对象：服務
@@ -10,5 +10,5 @@ import tw.musemodel.dingzhiqingren.entity.ServiceTag;
  * @author m@musemodel.tw
  */
 @Repository
-public interface ServiceTagRepository extends JpaRepository<ServiceTag, Short> {
+public interface CompanionshipRepository extends JpaRepository<Companionship, Short> {
 }

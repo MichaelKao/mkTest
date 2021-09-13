@@ -67,7 +67,7 @@ import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.Plan;
-import tw.musemodel.dingzhiqingren.entity.ServiceTag;
+import tw.musemodel.dingzhiqingren.entity.Companionship;
 import tw.musemodel.dingzhiqingren.entity.StopRecurringPaymentApplication;
 import tw.musemodel.dingzhiqingren.entity.TrialCode;
 import tw.musemodel.dingzhiqingren.model.Activated;
@@ -2845,7 +2845,7 @@ public class WelcomeController {
 	@PostMapping(path = "/service.json")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String loaction(@RequestParam ServiceTag service, Authentication authentication, Locale locale) {
+	String loaction(@RequestParam Companionship service, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -3012,7 +3012,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/search.json")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView search(@RequestParam(required = false) Location location, @RequestParam(required = false) ServiceTag serviceTag, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView search(@RequestParam(required = false) Location location, @RequestParam(required = false) Companionship serviceTag, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);

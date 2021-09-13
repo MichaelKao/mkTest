@@ -87,7 +87,7 @@ import tw.musemodel.dingzhiqingren.entity.Privilege;
 import tw.musemodel.dingzhiqingren.entity.PrivilegeKey;
 import tw.musemodel.dingzhiqingren.entity.ResetShadow;
 import tw.musemodel.dingzhiqingren.entity.Role;
-import tw.musemodel.dingzhiqingren.entity.ServiceTag;
+import tw.musemodel.dingzhiqingren.entity.Companionship;
 import tw.musemodel.dingzhiqingren.entity.TrialCode;
 import tw.musemodel.dingzhiqingren.entity.User;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalInfo;
@@ -115,7 +115,6 @@ import tw.musemodel.dingzhiqingren.repository.PictureRepository;
 import tw.musemodel.dingzhiqingren.repository.PrivilegeRepository;
 import tw.musemodel.dingzhiqingren.repository.ResetShadowRepository;
 import tw.musemodel.dingzhiqingren.repository.RoleRepository;
-import tw.musemodel.dingzhiqingren.repository.ServiceTagRepository;
 import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
@@ -137,6 +136,7 @@ import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_WITHDR
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_WITHDRAWAL_SUCCESS;
 import static tw.musemodel.dingzhiqingren.service.Servant.PAGE_SIZE_ON_THE_WALL;
 import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
+import tw.musemodel.dingzhiqingren.repository.CompanionshipRepository;
 
 /**
  * 服务层：情人
@@ -243,7 +243,7 @@ public class LoverService {
 	private RoleRepository roleRepository;
 
 	@Autowired
-	private ServiceTagRepository serviceTagRepository;
+	private CompanionshipRepository serviceTagRepository;
 
 	@Autowired
 	private TrialCodeRepository trialCodeRepository;
@@ -1347,8 +1347,8 @@ public class LoverService {
 			});
 		}
 
-		if (Objects.nonNull(lover.getServices())) {
-			lover.getServices().stream().map(service -> {
+		if (Objects.nonNull(lover.getCompanionships())) {
+			lover.getCompanionships().stream().map(service -> {
 				Element serviceElement = document.createElement("service");
 				serviceElement.setAttribute("id", service.getId().toString());
 				serviceElement.setTextContent(
@@ -1803,7 +1803,7 @@ public class LoverService {
 			serviceElement.setAttribute(
 				"serviceID", service.getId().toString()
 			);
-			lover.getServices().stream().filter(ser -> (Objects.equals(ser, service))).forEachOrdered(_item -> {
+			lover.getCompanionships().stream().filter(ser -> (Objects.equals(ser, service))).forEachOrdered(_item -> {
 				serviceElement.setAttribute(
 					"serviceSelected", ""
 				);
@@ -2036,7 +2036,7 @@ public class LoverService {
 				toJSONObject();
 		}
 
-		if (lover.getServices().size() < 1) {
+		if (lover.getCompanionships().size() < 1) {
 			return new JavaScriptObjectNotation().
 				withReason("請至少填入服務標籤").
 				withResponse(false).
@@ -2448,12 +2448,12 @@ public class LoverService {
 	 * @return
 	 */
 	@Transactional
-	public JSONObject updateService(ServiceTag service, Lover honey) {
-		Set<ServiceTag> services = honey.getServices();
-		for (ServiceTag ser : services) {
+	public JSONObject updateService(Companionship service, Lover honey) {
+		Set<Companionship> services = honey.getCompanionships();
+		for (Companionship ser : services) {
 			if (Objects.equals(ser, service)) {
 				services.remove(ser);
-				honey.setServices(services);
+				honey.setCompanionships(services);
 				loverRepository.saveAndFlush(honey);
 				return new JavaScriptObjectNotation().
 					withResponse(true).
@@ -2462,7 +2462,7 @@ public class LoverService {
 		}
 
 		services.add(service);
-		honey.setServices(services);
+		honey.setCompanionships(services);
 		loverRepository.saveAndFlush(honey);
 		return new JavaScriptObjectNotation().
 			withResponse(true).
@@ -3199,7 +3199,7 @@ public class LoverService {
 				return false;
 			}//期望零用钱
 		}
-		return !(getLocations(mofo).isEmpty() || mofo.getServices().isEmpty());//(地点|服务)标签
+		return !(getLocations(mofo).isEmpty() || mofo.getCompanionships().isEmpty());//(地点|服务)标签
 	}
 
 	/**
