@@ -3,6 +3,8 @@ package tw.musemodel.dingzhiqingren.entity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -30,7 +32,7 @@ public class LineGiven implements java.io.Serializable {
 	private static final long serialVersionUID = 2786894097864889670L;
 
 	@EmbeddedId
-	protected LineGivenPK lineGivenPK;
+	protected LineGivenKey id;
 
 	@Column(name = "jie_guo")
 	private Boolean response;
@@ -48,15 +50,15 @@ public class LineGiven implements java.io.Serializable {
 	public LineGiven() {
 	}
 
-	public LineGiven(LineGivenPK lineGivenPK, Boolean response) {
-		this.lineGivenPK = lineGivenPK;
+	public LineGiven(LineGivenKey id, Boolean response) {
+		this.id = id;
 		this.response = response;
 	}
 
 	@Override
 	public int hashCode() {
 		int hash = 7;
-		hash = 19 * hash + Objects.hashCode(this.lineGivenPK);
+		hash = 19 * hash + Objects.hashCode(this.id);
 		return hash;
 	}
 
@@ -72,7 +74,7 @@ public class LineGiven implements java.io.Serializable {
 			return false;
 		}
 		final LineGiven other = (LineGiven) obj;
-		if (!Objects.equals(this.lineGivenPK, other.lineGivenPK)) {
+		if (!Objects.equals(this.id, other.id)) {
 			return false;
 		}
 		return true;
@@ -80,21 +82,25 @@ public class LineGiven implements java.io.Serializable {
 
 	@Override
 	public String toString() {
-		return "LineGiven{" + "lineGivenPK=" + lineGivenPK + '}';
+		try {
+			return new JsonMapper().writeValueAsString(this);
+		} catch (JsonProcessingException ignore) {
+			return Objects.isNull(id) ? "null" : id.toString();
+		}
 	}
 
 	/**
 	 * @return 複合主鍵
 	 */
-	public LineGivenPK getLineGivenPK() {
-		return lineGivenPK;
+	public LineGivenKey getId() {
+		return id;
 	}
 
 	/**
-	 * @param lineGivenPK 複合主鍵
+	 * @param id 複合主鍵
 	 */
-	public void setLineGivenPK(LineGivenPK lineGivenPK) {
-		this.lineGivenPK = lineGivenPK;
+	public void setId(LineGivenKey id) {
+		this.id = id;
 	}
 
 	/**

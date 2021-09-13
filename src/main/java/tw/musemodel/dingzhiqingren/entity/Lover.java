@@ -38,6 +38,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import tw.musemodel.dingzhiqingren.entity.embedded.AppearedLocation;
 import tw.musemodel.dingzhiqingren.entity.embedded.DesiredCompanionship;
+import tw.musemodel.dingzhiqingren.entity.embedded.Follow;
 
 /**
  * 养蜜

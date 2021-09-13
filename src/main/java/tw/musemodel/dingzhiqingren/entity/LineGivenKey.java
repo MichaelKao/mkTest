@@ -11,7 +11,9 @@ import javax.persistence.Embeddable;
  * @author m@musemodel.tw
  */
 @Embeddable
-public class LineGivenPK implements Serializable {
+public class LineGivenKey implements Serializable {
+
+	private static final long serialVersionUID = 4958473382527438476L;
 
 	@Basic(optional = false)
 	@Column(name = "nu_sheng", nullable = false)
@@ -21,14 +23,14 @@ public class LineGivenPK implements Serializable {
 	@Column(name = "nan_sheng", nullable = false)
 	private Integer male;
 
-	public LineGivenPK() {
+	public LineGivenKey() {
 	}
 
 	/**
 	 * @param female
 	 * @param male
 	 */
-	public LineGivenPK(Integer female, Integer male) {
+	public LineGivenKey(Integer female, Integer male) {
 		this.female = female;
 		this.male = male;
 	}
@@ -50,7 +52,7 @@ public class LineGivenPK implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		final LineGivenPK other = (LineGivenPK) obj;
+		final LineGivenKey other = (LineGivenKey) obj;
 		if (!Objects.equals(this.female, other.female)) {
 			return false;
 		}

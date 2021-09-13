@@ -3,7 +3,7 @@ package tw.musemodel.dingzhiqingren.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import tw.musemodel.dingzhiqingren.entity.LineGiven;
-import tw.musemodel.dingzhiqingren.entity.LineGivenPK;
+import tw.musemodel.dingzhiqingren.entity.LineGivenKey;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 
 /**
@@ -12,7 +12,7 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
  * @author m@musemodel.tw
  */
 @Repository
-public interface LineGivenRepository extends JpaRepository<LineGiven, LineGivenPK> {
+public interface LineGivenRepository extends JpaRepository<LineGiven, LineGivenKey> {
 
 	public LineGiven findByGirlAndGuy(Lover girl, Lover guy);
 }

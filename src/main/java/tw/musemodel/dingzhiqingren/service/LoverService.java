@@ -75,7 +75,7 @@ import tw.musemodel.dingzhiqingren.entity.Activation;
 import tw.musemodel.dingzhiqingren.entity.Allowance;
 import tw.musemodel.dingzhiqingren.entity.AnnualIncome;
 import tw.musemodel.dingzhiqingren.entity.Country;
-import tw.musemodel.dingzhiqingren.entity.Follow;
+import tw.musemodel.dingzhiqingren.entity.embedded.Follow;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.LineGiven;

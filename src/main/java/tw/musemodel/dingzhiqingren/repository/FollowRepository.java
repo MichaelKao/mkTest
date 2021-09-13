@@ -4,8 +4,8 @@ import java.util.Collection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import tw.musemodel.dingzhiqingren.entity.Follow;
-import tw.musemodel.dingzhiqingren.entity.FollowKey;
+import tw.musemodel.dingzhiqingren.entity.embedded.Follow;
+import tw.musemodel.dingzhiqingren.entity.embedded.FollowKey;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 
 /**

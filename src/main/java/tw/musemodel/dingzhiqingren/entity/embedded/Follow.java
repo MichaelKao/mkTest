@@ -1,4 +1,4 @@
-package tw.musemodel.dingzhiqingren.entity;
+package tw.musemodel.dingzhiqingren.entity.embedded;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -12,6 +12,7 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import lombok.Data;
+import tw.musemodel.dingzhiqingren.entity.Lover;
 
 /**
  * 追踪(收藏)谁、被追踪(收藏)
@@ -40,17 +41,17 @@ public class Follow implements Serializable {
 	/**
 	 * 追踪(收藏)谁
 	 */
+	@JoinColumn(name = "shou_cang_de")
 	@ManyToOne
 	@MapsId("followingId")
-	@JoinColumn(name = "shou_cang_de")
 	private Lover following;
 
 	/**
 	 * 被追踪(收藏)
 	 */
+	@JoinColumn(name = "bei_shou_cang")
 	@ManyToOne
 	@MapsId("followedId")
-	@JoinColumn(name = "bei_shou_cang")
 	private Lover followed;
 
 	@Override

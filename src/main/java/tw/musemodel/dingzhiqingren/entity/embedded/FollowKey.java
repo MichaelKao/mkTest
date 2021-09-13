@@ -1,4 +1,4 @@
-package tw.musemodel.dingzhiqingren.entity;
+package tw.musemodel.dingzhiqingren.entity.embedded;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
