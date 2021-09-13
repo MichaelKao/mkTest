@@ -19,7 +19,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,9 +37,10 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import tw.musemodel.dingzhiqingren.entity.embedded.AppearedLocation;
+import tw.musemodel.dingzhiqingren.entity.embedded.DesiredCompanionship;
 
 /**
- * 情人
+ * 养蜜
  *
  * @author p@musemodel.tw
  */
@@ -129,12 +129,12 @@ public class Lover implements java.io.Serializable {
 	private Date vip;
 
 	/**
-	 * 地区
+	 * 所在地区
 	 */
 	@JoinColumn(name = "di_qu", referencedColumnName = "id")
 	@ManyToOne
 	@JsonManagedReference
-	private Location location;
+	private Location residence;
 
 	/**
 	 * 昵称
@@ -314,23 +314,18 @@ public class Lover implements java.io.Serializable {
 	private WithdrawalInfo withdrawalInfo;
 
 	/**
-	 * 出没地区
+	 * 出没哪些地区
 	 */
 	@OneToMany(mappedBy = "lover")
 	@JsonIgnore
 	private Set<AppearedLocation> locations;
 
 	/**
-	 * 服务(分类)标签
+	 * 期望哪些陪伴
 	 */
-	@JoinTable(
-		name = "qing_ren_yu_fu_wu",
-		joinColumns = @JoinColumn(name = "qing_ren", referencedColumnName = "id"),
-		inverseJoinColumns = @JoinColumn(name = "fu_wu", referencedColumnName = "id")
-	)
-	@ManyToMany(fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "lover")
 	@JsonIgnore
-	private Set<Companionship> companionships;
+	private Set<DesiredCompanionship> companionships;
 
 	/**
 	 * 通过安心认证
@@ -585,17 +580,17 @@ public class Lover implements java.io.Serializable {
 	}
 
 	/**
-	 * @return 地区
+	 * @return 所在地区
 	 */
-	public Location getLocation() {
-		return location;
+	public Location getResidence() {
+		return residence;
 	}
 
 	/**
-	 * @param location 地区
+	 * @param residence 所在地区
 	 */
-	public void setLocation(Location location) {
-		this.location = location;
+	public void setResidence(Location residence) {
+		this.residence = residence;
 	}
 
 	/**
@@ -981,16 +976,16 @@ public class Lover implements java.io.Serializable {
 	}
 
 	/**
-	 * @return 服務
+	 * @return 友谊
 	 */
-	public Set<Companionship> getCompanionships() {
+	public Set<DesiredCompanionship> getCompanionships() {
 		return companionships;
 	}
 
 	/**
-	 * @param companionships 服務
+	 * @param companionships 友谊
 	 */
-	public void setCompanionships(Set<Companionship> companionships) {
+	public void setCompanionships(Set<DesiredCompanionship> companionships) {
 		this.companionships = companionships;
 	}
 

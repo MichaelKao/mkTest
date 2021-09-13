@@ -12,32 +12,32 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import lombok.Data;
-import tw.musemodel.dingzhiqingren.entity.Location;
+import tw.musemodel.dingzhiqingren.entity.Companionship;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 
 /**
- * 出没地区
+ * 期望的陪伴
  *
  * @author p@musemodel.tw
  */
 @Data
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(name = "qing_ren_yu_di_qu", uniqueConstraints = {
+@Table(name = "qing_ren_yu_fu_wu", uniqueConstraints = {
 	@UniqueConstraint(columnNames = {
 		"qing_ren",
-		"di_qu"
+		"fu_wu"
 	})
 })
-public class AppearedLocation implements Serializable {
+public class DesiredCompanionship implements Serializable {
 
-	private static final long serialVersionUID = 8382422345222787556L;
+	private static final long serialVersionUID = -5609294658365500173L;
 
 	/**
 	 * 主键
 	 */
 	@EmbeddedId
-	private AppearedLocationKey id;
+	private DesiredCompanionshipKey id;
 
 	/**
 	 * 情人
@@ -48,12 +48,12 @@ public class AppearedLocation implements Serializable {
 	private Lover lover;
 
 	/**
-	 * 地区
+	 * 友谊
 	 */
-	@JoinColumn(name = "di_qu")
+	@JoinColumn(name = "fu_wu")
 	@ManyToOne
-	@MapsId("locationId")
-	private Location location;
+	@MapsId("companionshipId")
+	private Companionship companionship;
 
 	@Override
 	public String toString() {
