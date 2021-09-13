@@ -95,6 +95,8 @@ import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
 import tw.musemodel.dingzhiqingren.entity.embedded.AppearedLocation;
 import tw.musemodel.dingzhiqingren.entity.embedded.AppearedLocationKey;
+import tw.musemodel.dingzhiqingren.entity.embedded.DesiredCompanionship;
+import tw.musemodel.dingzhiqingren.entity.embedded.DesiredCompanionshipKey;
 import tw.musemodel.dingzhiqingren.event.SignedUpEvent;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.Descendant;
@@ -137,6 +139,7 @@ import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_WITHDR
 import static tw.musemodel.dingzhiqingren.service.Servant.PAGE_SIZE_ON_THE_WALL;
 import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 import tw.musemodel.dingzhiqingren.repository.CompanionshipRepository;
+import tw.musemodel.dingzhiqingren.repository.DesiredCompanionshipRepository;
 
 /**
  * 服务层：情人
@@ -216,6 +219,9 @@ public class LoverService {
 	private CountryRepository countryRepository;
 
 	@Autowired
+	private DesiredCompanionshipRepository desiredCompanionshipRepository;
+
+	@Autowired
 	private FollowRepository followRepository;
 
 	@Autowired
@@ -243,7 +249,7 @@ public class LoverService {
 	private RoleRepository roleRepository;
 
 	@Autowired
-	private CompanionshipRepository serviceTagRepository;
+	private CompanionshipRepository companionshipRepository;
 
 	@Autowired
 	private TrialCodeRepository trialCodeRepository;
@@ -532,28 +538,47 @@ public class LoverService {
 	}
 
 	/**
+	 * 取得某咪郎的期望的友谊。
+	 *
+	 * @param someone 某咪郎
+	 * @return 某咪郎的期望友谊
+	 */
+	@Transactional(readOnly = true)
+	public Collection<Companionship> getCompanionships(Lover someone) {
+		Collection<Companionship> companionships = new ArrayList<>();
+
+		desiredCompanionshipRepository.findByLover(someone).forEach(desiredCompanionship -> {
+			companionships.add(
+				desiredCompanionship.getCompanionship()
+			);
+		});
+
+		return companionships;
+	}
+
+	/**
 	 * 取得某咪郎的出没地区。
 	 *
-	 * @param lover 某咪郎
+	 * @param someone 某咪郎
 	 * @return 某咪郎的出没地区
 	 */
 	@Transactional(readOnly = true)
-	public Collection<Location> getLocations(Lover lover) {
-		return getLocations(lover, false);
+	public Collection<Location> getLocations(Lover someone) {
+		return getLocations(someone, false);
 	}
 
 	/**
 	 * 取得某咪郎的出没地区并随机排列。
 	 *
-	 * @param lover 某咪郎
+	 * @param someone 某咪郎
 	 * @param random 随机排列
 	 * @return 某咪郎的出没地区
 	 */
 	@Transactional(readOnly = true)
-	public Collection<Location> getLocations(Lover lover, boolean random) {
+	public Collection<Location> getLocations(Lover someone, boolean random) {
 		Collection<Location> locations = new ArrayList<>();
 
-		appearedLocationRepository.findByLover(lover).forEach(appearedLocation -> {
+		appearedLocationRepository.findByLover(someone).forEach(appearedLocation -> {
 			locations.add(appearedLocation.getLocation());
 		});
 
@@ -1240,11 +1265,14 @@ public class LoverService {
 			&& Objects.equals(maleSpecies, Lover.MaleSpecies.VVIP);
 	}
 
-	public Document readDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	public Document readDocument(Lover someone, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		Element loverElement = document.createElement("lover");
-		loverElement.setAttribute("identifier", lover.getIdentifier().toString());
+		loverElement.setAttribute(
+			"identifier",
+			someone.getIdentifier().toString()
+		);
 		documentElement.appendChild(loverElement);
 
 		// 確認按鈕
@@ -1278,25 +1306,25 @@ public class LoverService {
 		);
 
 		// 是否為長期貴賓 vvip
-		if (isVVIP(lover)) {
+		if (isVVIP(someone)) {
 			loverElement.setAttribute("vvip", null);
 		}
 		// 是否為短期貴賓 vip
-		if (isVIP(lover)) {
+		if (isVIP(someone)) {
 			loverElement.setAttribute("vip", null);
 		}
 
-		if (Objects.nonNull(lover.getRelief())) {
-			Boolean relief = lover.getRelief();
+		if (Objects.nonNull(someone.getRelief())) {
+			Boolean relief = someone.getRelief();
 			loverElement.setAttribute(
 				"relief",
 				relief.toString()
 			);
 		}
 
-		String inviteMeAsFreind = lover.getInviteMeAsLineFriend();
+		String inviteMeAsFreind = someone.getInviteMeAsLineFriend();
 		if (Objects.nonNull(inviteMeAsFreind) && !inviteMeAsFreind.isBlank() && !inviteMeAsFreind.isEmpty()) {
-			String uri = lover.getInviteMeAsLineFriend();
+			String uri = someone.getInviteMeAsLineFriend();
 			Boolean isLine = Servant.isLine(URI.create(uri));
 			//Boolean isWeChat = Servant.isWeChat(URI.create(uri));
 
@@ -1307,18 +1335,18 @@ public class LoverService {
 		}
 
 		Element profileImageElement = document.createElement("profileImage");
-		if (Objects.nonNull(lover.getProfileImage())) {
+		if (Objects.nonNull(someone.getProfileImage())) {
 			profileImageElement.setTextContent(
 				String.format(
 					"https://%s/profileImage/%s",
 					Servant.STATIC_HOST,
-					lover.getProfileImage()
+					someone.getProfileImage()
 				)
 			);
 		}
 		loverElement.appendChild(profileImageElement);
 
-		List<Picture> pictures = pictureRepository.findByLover(lover);
+		List<Picture> pictures = pictureRepository.findByLover(someone);
 		pictures.stream().map(picture -> {
 			Element pictureElement = document.createElement("picture");
 			pictureElement.setTextContent(
@@ -1329,7 +1357,7 @@ public class LoverService {
 			loverElement.appendChild(pictureElement);
 		});
 
-		Collection<Location> locations = getLocations(lover);
+		Collection<Location> locations = getLocations(someone);
 		if (!locations.isEmpty()) {
 			locations.stream().map(location -> {
 				Element locationElement = document.createElement("location");
@@ -1347,13 +1375,17 @@ public class LoverService {
 			});
 		}
 
-		if (Objects.nonNull(lover.getCompanionships())) {
-			lover.getCompanionships().stream().map(service -> {
+		Collection<Companionship> companionships = getCompanionships(someone);
+		if (!companionships.isEmpty()) {
+			getCompanionships(someone).stream().map(companionship -> {
 				Element serviceElement = document.createElement("service");
-				serviceElement.setAttribute("id", service.getId().toString());
+				serviceElement.setAttribute(
+					"id",
+					companionship.getId().toString()
+				);
 				serviceElement.setTextContent(
 					messageSource.getMessage(
-						service.getName(),
+						companionship.getName(),
 						null,
 						locale
 					)
@@ -1364,23 +1396,23 @@ public class LoverService {
 			});
 		}
 
-		if (Objects.nonNull(lover.getNickname())) {
+		if (Objects.nonNull(someone.getNickname())) {
 			Element nicknameElement = document.createElement("nickname");
-			nicknameElement.setTextContent(lover.getNickname());
+			nicknameElement.setTextContent(someone.getNickname());
 			loverElement.appendChild(nicknameElement);
 		}
 
-		Date birth = lover.getBirthday();
+		Date birth = someone.getBirthday();
 		if (Objects.nonNull(birth)) {
 			Element ageElement = document.createElement("age");
 			ageElement.setTextContent(
-				calculateAge(lover).toString()
+				calculateAge(someone).toString()
 			);
 			loverElement.appendChild(ageElement);
 		}
 
-		if (Objects.nonNull(lover.getGender())) {
-			Boolean gender = lover.getGender();
+		if (Objects.nonNull(someone.getGender())) {
+			Boolean gender = someone.getGender();
 			Element genderElement = document.createElement("gender");
 			genderElement.setTextContent(
 				gender ? messageSource.getMessage(
@@ -1400,19 +1432,19 @@ public class LoverService {
 			loverElement.appendChild(genderElement);
 		}
 
-		if (Objects.nonNull(lover.getAboutMe())) {
-			String html = servant.markdownToHtml(lover.getAboutMe());
+		if (Objects.nonNull(someone.getAboutMe())) {
+			String html = servant.markdownToHtml(someone.getAboutMe());
 			Element aboutMeElement = document.createElement("aboutMe");
 			CDATASection cDATASection = document.createCDATASection(html);
 			aboutMeElement.appendChild(cDATASection);
 			loverElement.appendChild(aboutMeElement);
 		}
 
-		if (Objects.nonNull(lover.getBodyType())) {
+		if (Objects.nonNull(someone.getBodyType())) {
 			Element bodyTypeElement = document.createElement("bodyType");
 			bodyTypeElement.setTextContent(
 				messageSource.getMessage(
-					lover.getBodyType().toString(),
+					someone.getBodyType().toString(),
 					null,
 					locale
 				)
@@ -1420,23 +1452,23 @@ public class LoverService {
 			loverElement.appendChild(bodyTypeElement);
 		}
 
-		if (Objects.nonNull(lover.getHeight())) {
+		if (Objects.nonNull(someone.getHeight())) {
 			Element heightElement = document.createElement("height");
-			heightElement.setTextContent(lover.getHeight().toString());
+			heightElement.setTextContent(someone.getHeight().toString());
 			loverElement.appendChild(heightElement);
 		}
 
-		if (Objects.nonNull(lover.getWeight())) {
+		if (Objects.nonNull(someone.getWeight())) {
 			Element weightElement = document.createElement("weight");
-			weightElement.setTextContent(lover.getWeight().toString());
+			weightElement.setTextContent(someone.getWeight().toString());
 			loverElement.appendChild(weightElement);
 		}
 
-		if (Objects.nonNull(lover.getEducation())) {
+		if (Objects.nonNull(someone.getEducation())) {
 			Element educationElement = document.createElement("education");
 			educationElement.setTextContent(
 				messageSource.getMessage(
-					lover.getEducation().toString(),
+					someone.getEducation().toString(),
 					null,
 					locale
 				)
@@ -1444,11 +1476,11 @@ public class LoverService {
 			loverElement.appendChild(educationElement);
 		}
 
-		if (Objects.nonNull(lover.getMarriage())) {
+		if (Objects.nonNull(someone.getMarriage())) {
 			Element marriageElement = document.createElement("marriage");
 			marriageElement.setTextContent(
 				messageSource.getMessage(
-					lover.getMarriage().toString(),
+					someone.getMarriage().toString(),
 					null,
 					locale
 				)
@@ -1456,17 +1488,17 @@ public class LoverService {
 			loverElement.appendChild(marriageElement);
 		}
 
-		if (Objects.nonNull(lover.getOccupation())) {
+		if (Objects.nonNull(someone.getOccupation())) {
 			Element occupationElement = document.createElement("occupation");
-			occupationElement.setTextContent(lover.getOccupation());
+			occupationElement.setTextContent(someone.getOccupation());
 			loverElement.appendChild(occupationElement);
 		}
 
-		if (Objects.nonNull(lover.getSmoking())) {
+		if (Objects.nonNull(someone.getSmoking())) {
 			Element smokingElement = document.createElement("smoking");
 			smokingElement.setTextContent(
 				messageSource.getMessage(
-					lover.getSmoking().toString(),
+					someone.getSmoking().toString(),
 					null,
 					locale
 				)
@@ -1474,11 +1506,11 @@ public class LoverService {
 			loverElement.appendChild(smokingElement);
 		}
 
-		if (Objects.nonNull(lover.getDrinking())) {
+		if (Objects.nonNull(someone.getDrinking())) {
 			Element drinkingElement = document.createElement("drinking");
 			drinkingElement.setTextContent(
 				messageSource.getMessage(
-					lover.getDrinking().toString(),
+					someone.getDrinking().toString(),
 					null,
 					locale
 				)
@@ -1486,11 +1518,11 @@ public class LoverService {
 			loverElement.appendChild(drinkingElement);
 		}
 
-		if (Objects.nonNull(lover.getRelationship())) {
+		if (Objects.nonNull(someone.getRelationship())) {
 			Element relationshipElement = document.createElement("relationship");
 			relationshipElement.setTextContent(
 				messageSource.getMessage(
-					lover.getRelationship().toString(),
+					someone.getRelationship().toString(),
 					null,
 					locale
 				)
@@ -1498,9 +1530,9 @@ public class LoverService {
 			loverElement.appendChild(relationshipElement);
 		}
 
-		if (lover.getGender() && Objects.nonNull(lover.getAnnualIncome())) {
+		if (someone.getGender() && Objects.nonNull(someone.getAnnualIncome())) {
 			Element annualIncomeElement = document.createElement("annualIncome");
-			AnnualIncome annualIncome = lover.getAnnualIncome();
+			AnnualIncome annualIncome = someone.getAnnualIncome();
 			annualIncomeElement.setTextContent(
 				messageSource.getMessage(
 					annualIncome.getName(),
@@ -1511,9 +1543,9 @@ public class LoverService {
 			loverElement.appendChild(annualIncomeElement);
 		}
 
-		if (!lover.getGender() && Objects.nonNull(lover.getAllowance())) {
+		if (!someone.getGender() && Objects.nonNull(someone.getAllowance())) {
 			Element allowanceElement = document.createElement("allowance");
-			Allowance allowance = lover.getAllowance();
+			Allowance allowance = someone.getAllowance();
 			allowanceElement.setTextContent(
 				messageSource.getMessage(
 					allowance.getName(),
@@ -1524,35 +1556,35 @@ public class LoverService {
 			loverElement.appendChild(allowanceElement);
 		}
 
-		if (Objects.nonNull(lover.getIdealConditions())) {
-			String html = servant.markdownToHtml(lover.getIdealConditions());
+		if (Objects.nonNull(someone.getIdealConditions())) {
+			String html = servant.markdownToHtml(someone.getIdealConditions());
 			Element idealConditionsElement = document.createElement("idealConditions");
 			CDATASection cDATASection = document.createCDATASection(html);
 			idealConditionsElement.appendChild(cDATASection);
 			loverElement.appendChild(idealConditionsElement);
 		}
 
-		if (Objects.nonNull(lover.getInviteMeAsLineFriend())) {
+		if (Objects.nonNull(someone.getInviteMeAsLineFriend())) {
 			Element inviteMeAsLineFriendElement = document.createElement("inviteMeAsLineFriend");
-			inviteMeAsLineFriendElement.setTextContent(lover.getInviteMeAsLineFriend());
+			inviteMeAsLineFriendElement.setTextContent(someone.getInviteMeAsLineFriend());
 			loverElement.appendChild(inviteMeAsLineFriendElement);
 		}
 
-		if (Objects.nonNull(lover.getGreeting())) {
+		if (Objects.nonNull(someone.getGreeting())) {
 			Element greetingElement = document.createElement("greeting");
-			greetingElement.setTextContent(lover.getGreeting());
+			greetingElement.setTextContent(someone.getGreeting());
 			loverElement.appendChild(greetingElement);
 		}
 
-		if (Objects.nonNull(lover.getActive())) {
+		if (Objects.nonNull(someone.getActive())) {
 			Element activeElement = document.createElement("active");
-			activeElement.setTextContent(calendarToString(lover.getActive()));
+			activeElement.setTextContent(calendarToString(someone.getActive()));
 			loverElement.appendChild(activeElement);
 		}
 
 		Page<History> ratePage = historyRepository.
 			findByPassiveAndBehaviorOrderByOccurredDesc(
-				lover,
+				someone,
 				History.Behavior.PING_JIA,
 				PageRequest.of(0, 3)
 			);
@@ -1605,6 +1637,7 @@ public class LoverService {
 		return document;
 	}
 
+	@Transactional(readOnly = true)
 	public Document writeDocument(Lover lover, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -1781,7 +1814,7 @@ public class LoverService {
 			locationElement.setAttribute(
 				"locationID", location.getId().toString()
 			);
-			getLocations(lover).stream().filter(loc -> (Objects.equals(loc, location))).forEachOrdered(_item -> {
+			getLocations(lover).stream().filter(l -> (Objects.equals(l, location))).forEachOrdered(_item -> {
 				locationElement.setAttribute(
 					"locationSelected", ""
 				);
@@ -1791,19 +1824,19 @@ public class LoverService {
 			loverElement.appendChild(locationElement);
 		});
 
-		serviceTagRepository.findAll().stream().map(service -> {
+		companionshipRepository.findAll().stream().map(companionship -> {
 			Element serviceElement = document.createElement("service");
 			serviceElement.setTextContent(
 				messageSource.getMessage(
-					service.getName(),
+					companionship.getName(),
 					null,
 					locale
 				)
 			);
 			serviceElement.setAttribute(
-				"serviceID", service.getId().toString()
+				"serviceID", companionship.getId().toString()
 			);
-			lover.getCompanionships().stream().filter(ser -> (Objects.equals(ser, service))).forEachOrdered(_item -> {
+			getCompanionships(lover).stream().filter(c -> (Objects.equals(c, companionship))).forEachOrdered(_item -> {
 				serviceElement.setAttribute(
 					"serviceSelected", ""
 				);
@@ -2029,14 +2062,14 @@ public class LoverService {
 				toJSONObject();
 		}
 
-		if (getLocations(lover).size() < 1) {
+		if (getLocations(lover).isEmpty()) {
 			return new JavaScriptObjectNotation().
 				withReason("請至少填入一個地區").
 				withResponse(false).
 				toJSONObject();
 		}
 
-		if (lover.getCompanionships().size() < 1) {
+		if (getCompanionships(lover).isEmpty()) {
 			return new JavaScriptObjectNotation().
 				withReason("請至少填入服務標籤").
 				withResponse(false).
@@ -2399,13 +2432,13 @@ public class LoverService {
 	 * 更新出没地区。
 	 *
 	 * @param location 地区
-	 * @param lover 情人
+	 * @param someone 某咪郎
 	 * @return 出没地区
 	 */
 	@Transactional
-	public JSONObject updateLocation(Location location, Lover lover) {
+	public JSONObject updateLocation(Location location, Lover someone) {
 		Set<Location> locations = new HashSet<>();
-		appearedLocationRepository.findByLover(lover).forEach(appearedLocation -> {
+		appearedLocationRepository.findByLover(someone).forEach(appearedLocation -> {
 			locations.add(appearedLocation.getLocation());
 		});
 
@@ -2415,7 +2448,7 @@ public class LoverService {
 			 已存在则删除
 			 */
 			appearedLocation = appearedLocationRepository.
-				findOneByLoverAndLocation(lover, location).
+				findOneByLoverAndLocation(someone, location).
 				orElseThrow();
 			appearedLocationRepository.delete(appearedLocation);
 		} else {
@@ -2423,12 +2456,12 @@ public class LoverService {
 			 不存在则创建
 			 */
 			AppearedLocationKey id = new AppearedLocationKey();
-			id.setLoverId(lover.getId());
+			id.setLoverId(someone.getId());
 			id.setLocationId(location.getId());
 
 			appearedLocation = new AppearedLocation();
 			appearedLocation.setId(id);
-			appearedLocation.setLover(lover);
+			appearedLocation.setLover(someone);
 			appearedLocation.setLocation(location);
 			appearedLocationRepository.save(appearedLocation);
 		}
@@ -2441,31 +2474,47 @@ public class LoverService {
 	}
 
 	/**
-	 * 更新服務
+	 * 更新期望陪伴。
 	 *
-	 * @param service
-	 * @param honey
-	 * @return
+	 * @param companionship 友谊
+	 * @param someone 某咪郎
+	 * @return 期望陪伴
 	 */
 	@Transactional
-	public JSONObject updateService(Companionship service, Lover honey) {
-		Set<Companionship> services = honey.getCompanionships();
-		for (Companionship ser : services) {
-			if (Objects.equals(ser, service)) {
-				services.remove(ser);
-				honey.setCompanionships(services);
-				loverRepository.saveAndFlush(honey);
-				return new JavaScriptObjectNotation().
-					withResponse(true).
-					toJSONObject();
-			}
-		}
+	public JSONObject updateService(Companionship companionship, Lover someone) {
+		Set<Companionship> companionships = new HashSet<>();
+		desiredCompanionshipRepository.findByLover(someone).forEach(desiredCompanionship -> {
+			companionships.add(desiredCompanionship.getCompanionship());
+		});
 
-		services.add(service);
-		honey.setCompanionships(services);
-		loverRepository.saveAndFlush(honey);
+		DesiredCompanionship desiredCompanionship;
+		if (companionships.contains(companionship)) {
+			/*
+			 已存在则删除
+			 */
+			desiredCompanionship = desiredCompanionshipRepository.
+				findOneByLoverAndCompanionship(someone, companionship).
+				orElseThrow();
+			desiredCompanionshipRepository.delete(desiredCompanionship);
+		} else {
+			/*
+			 不存在则创建
+			 */
+			DesiredCompanionshipKey id = new DesiredCompanionshipKey();
+			id.setLoverId(someone.getId());
+			id.setCompanionshipId(companionship.getId());
+
+			desiredCompanionship = new DesiredCompanionship();
+			desiredCompanionship.setId(id);
+			desiredCompanionship.setLover(someone);
+			desiredCompanionship.setCompanionship(companionship);
+			desiredCompanionshipRepository.save(desiredCompanionship);
+		}
+		desiredCompanionshipRepository.flush();
+
 		return new JavaScriptObjectNotation().
 			withResponse(true).
+			//withResult(desiredCompanionship).
 			toJSONObject();
 	}
 
@@ -3127,79 +3176,79 @@ public class LoverService {
 	/**
 	 * 是否已经完成填写注册个人资讯
 	 *
-	 * @param mofo 某咪郎
+	 * @param someone 某咪郎
 	 * @return 真或伪布林值
 	 */
-	public boolean isEligible(Lover mofo) {
-		String login = mofo.getLogin();
+	public boolean isEligible(Lover someone) {
+		String login = someone.getLogin();
 		if (Objects.isNull(login) || login.isBlank()) {
 			return false;
 		}//帐号(手机号)
-		String shadow = mofo.getShadow();
+		String shadow = someone.getShadow();
 		if (Objects.isNull(shadow) || shadow.isBlank()) {
 			return false;
 		}//密码
-		String nickname = mofo.getNickname();
+		String nickname = someone.getNickname();
 		if (Objects.isNull(nickname) || nickname.isBlank()) {
 			return false;
 		}//昵称
-		String aboutMe = mofo.getAboutMe();
+		String aboutMe = someone.getAboutMe();
 		if (Objects.isNull(aboutMe) || aboutMe.isBlank()) {
 			return false;
 		}//自介
-		String greeting = mofo.getGreeting();
+		String greeting = someone.getGreeting();
 		if (Objects.isNull(greeting) || greeting.isBlank()) {
 			return false;
 		}//哈啰
-		if (Objects.isNull(mofo.getBodyType())) {
+		if (Objects.isNull(someone.getBodyType())) {
 			return false;
 		}//体型
-		if (Objects.isNull(mofo.getHeight())) {
+		if (Objects.isNull(someone.getHeight())) {
 			return false;
 		}//身高
-		if (Objects.isNull(mofo.getWeight())) {
+		if (Objects.isNull(someone.getWeight())) {
 			return false;
 		}//体重
-		if (Objects.isNull(mofo.getEducation())) {
+		if (Objects.isNull(someone.getEducation())) {
 			return false;
 		}//学历
-		if (Objects.isNull(mofo.getMarriage())) {
+		if (Objects.isNull(someone.getMarriage())) {
 			return false;
 		}//婚姻
-		String occupation = mofo.getOccupation();
+		String occupation = someone.getOccupation();
 		if (Objects.isNull(occupation) || occupation.isBlank()) {
 			return false;
 		}//职业
-		if (Objects.isNull(mofo.getSmoking())) {
+		if (Objects.isNull(someone.getSmoking())) {
 			return false;
 		}//抽烟习惯
-		if (Objects.isNull(mofo.getDrinking())) {
+		if (Objects.isNull(someone.getDrinking())) {
 			return false;
 		}//饮酒习惯
-		String idealConditions = mofo.getIdealConditions();
+		String idealConditions = someone.getIdealConditions();
 		if (Objects.isNull(idealConditions) || idealConditions.isBlank()) {
 			return false;
 		}//简述理想对象条件
-		if (Objects.nonNull(mofo.getDelete())) {
+		if (Objects.nonNull(someone.getDelete())) {
 			return false;
 		}//封号
-		if (Objects.isNull(mofo.getRelationship())) {
+		if (Objects.isNull(someone.getRelationship())) {
 			return false;
 		}//预期关系
-		if (mofo.getGender()) {
-			if (Objects.isNull(mofo.getAnnualIncome())) {
+		if (someone.getGender()) {
+			if (Objects.isNull(someone.getAnnualIncome())) {
 				return false;
 			}//年收入
 		} else {
-			String inviteMeAsFriend = mofo.getInviteMeAsLineFriend();
+			String inviteMeAsFriend = someone.getInviteMeAsLineFriend();
 			if (Objects.isNull(inviteMeAsFriend) || inviteMeAsFriend.isBlank()) {
 				return false;
 			}//添加好友链结
-			if (Objects.isNull(mofo.getAllowance())) {
+			if (Objects.isNull(someone.getAllowance())) {
 				return false;
 			}//期望零用钱
 		}
-		return !(getLocations(mofo).isEmpty() || mofo.getCompanionships().isEmpty());//(地点|服务)标签
+		return !(getLocations(someone).isEmpty() || getCompanionships(someone).isEmpty());//(地区|友谊)标签
 	}
 
 	/**

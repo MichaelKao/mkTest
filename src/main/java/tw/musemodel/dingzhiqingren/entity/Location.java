@@ -40,20 +40,32 @@ public class Location implements java.io.Serializable {
 
 	private static final long serialVersionUID = -8980376544581458604L;
 
+	/**
+	 * 主键
+	 */
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	private Short id;
 
+	/**
+	 * 县市名(i18n 键)
+	 */
 	@Basic(optional = false)
 	@Column(name = "xian_shi_ming", nullable = false)
 	private String name;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "location")
+	/**
+	 * 此地区所在的养蜜
+	 */
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "residence")
 	@JsonBackReference
-	private Collection<Lover> loversCollection;
+	private Collection<Lover> residents;
 
+	/**
+	 * 哪些养蜜出没
+	 */
 	@OneToMany(mappedBy = "location")
 	private Set<AppearedLocation> lovers;
 
@@ -124,28 +136,28 @@ public class Location implements java.io.Serializable {
 	}
 
 	/**
-	 * @return 一對多 情人們
+	 * @return 居住在此地的养蜜
 	 */
-	public Collection<Lover> getLoversCollection() {
-		return loversCollection;
+	public Collection<Lover> getResidents() {
+		return residents;
 	}
 
 	/**
-	 * @param loversCollection 一對多 情人們
+	 * @param residents 居住在此地的养蜜
 	 */
-	public void setLoversCollection(Collection<Lover> loversCollection) {
-		this.loversCollection = loversCollection;
+	public void setResidents(Collection<Lover> residents) {
+		this.residents = residents;
 	}
 
 	/**
-	 * @return 出没地区
+	 * @return 此地区出没的养蜜
 	 */
 	public Set<AppearedLocation> getLovers() {
 		return lovers;
 	}
 
 	/**
-	 * @param lovers 出没地区
+	 * @param lovers 此地区出没的养蜜
 	 */
 	public void setLovers(Set<AppearedLocation> lovers) {
 		this.lovers = lovers;
