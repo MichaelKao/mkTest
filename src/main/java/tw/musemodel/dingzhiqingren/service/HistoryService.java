@@ -45,13 +45,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.WebSocketServer;
-import tw.musemodel.dingzhiqingren.entity.embedded.Follow;
-import tw.musemodel.dingzhiqingren.entity.embedded.FollowKey;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.LineGiven;
-import tw.musemodel.dingzhiqingren.entity.LineGivenPK;
+import tw.musemodel.dingzhiqingren.entity.LineGivenKey;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.entity.embedded.Follow;
+import tw.musemodel.dingzhiqingren.entity.embedded.FollowKey;
 import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.FollowRepository;
@@ -603,7 +603,7 @@ public class HistoryService {
 			//第一次
 			lineGivenRepository.saveAndFlush(
 				new LineGiven(
-					new LineGivenPK(passive.getId(), initiative.getId()),
+					new LineGivenKey(passive.getId(), initiative.getId()),
 					null
 				));
 		} else if (Objects.nonNull(lineGiven)) {
@@ -786,7 +786,7 @@ public class HistoryService {
 		historyRepository.saveAndFlush(historyReply);
 
 		LineGiven lineGiven = new LineGiven(
-			new LineGivenPK(initiative.getId(), passive.getId()),
+			new LineGivenKey(initiative.getId(), passive.getId()),
 			true
 		);
 		lineGivenRepository.saveAndFlush(lineGiven);
@@ -1031,7 +1031,7 @@ public class HistoryService {
 		}
 
 		LineGiven lineGiven = new LineGiven(
-			new LineGivenPK(initiative.getId(), passive.getId()),
+			new LineGivenKey(initiative.getId(), passive.getId()),
 			false
 		);
 		lineGivenRepository.saveAndFlush(lineGiven);

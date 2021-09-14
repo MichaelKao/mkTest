@@ -43,7 +43,7 @@
 									<SPAN class="ms-1">VIP</SPAN>
 								</xsl:if>
 								<xsl:if test="@matchedOrVipNotSeenCount">
-									<SPAN class="text-xs border-radius-md px-1 ms-1 notSeen">
+									<SPAN class="text-xs border-radius-md px-1 ms-1 firstNotSeen notSeen">
 										<xsl:value-of select="@matchedOrVipNotSeenCount"/>
 									</SPAN>
 								</xsl:if>
@@ -59,7 +59,7 @@
 									<SPAN class="ms-1">一般</SPAN>
 								</xsl:if>
 								<xsl:if test="@notMatchedOrNotVipNotSeenCount">
-									<SPAN class="text-xs border-radius-md px-1 ms-1 notSeen">
+									<SPAN class="text-xs border-radius-md px-1 ms-1 secondNotSeen notSeen">
 										<xsl:value-of select="@notMatchedOrNotVipNotSeenCount"/>
 									</SPAN>
 								</xsl:if>
@@ -75,11 +75,11 @@
 									<A class="inboxLink" href="/chatroom/{@identifier}/"></A>
 									<DIV class="d-flex justify-content-between align-items-center py-2">
 										<DIV>
-											<IMG src="{@profileImage}" alt="大頭貼" class="rounded-circle" width="60px"/>
+											<IMG alt="大頭照" src="{@profileImage}" class="rounded-circle" width="60px"/>
 										</DIV>
 										<DIV class="me-auto" style="overflow: hidden;">
 											<DIV class="d-flex flex-column align-items-start ms-3">
-												<A class=" font-weight-bold text-dark text-sm mb-1">
+												<A class="font-weight-bold text-dark text-sm mb-1">
 													<xsl:value-of select="@nickname"/>
 												</A>
 												<P class="text-sm mb-0 content">
@@ -149,7 +149,7 @@
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<xsl:if test="@signIn">
-				<SCRIPT src="/SCRIPT/websocket.js"/>
+				<SCRIPT src="/SCRIPT/websocketInbox.js"/>
 			</xsl:if>
 		</BODY>
 	</xsl:template>

@@ -3683,4 +3683,30 @@ public class WelcomeController {
 			withResponse(true).
 			toJSONObject().toString();
 	}
+
+	@PostMapping(path = "/updateInbox.json")
+	@ResponseBody
+	String updateInbox(Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		JSONObject jSONObject;
+		try {
+			jSONObject = webSocketService.updateInbox(me);
+		} catch (Exception exception) {
+			return new JavaScriptObjectNotation().
+				withReason(exception.getMessage()).
+				withResponse(false).
+				toJSONObject().toString();
+		}
+
+		return new JavaScriptObjectNotation().
+			withResult(jSONObject).
+			withResponse(false).
+			toJSONObject().toString();
+	}
 }

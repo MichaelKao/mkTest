@@ -20,6 +20,9 @@ $(document).ready(function () {
 		$('A[href="#first"]').addClass('active');
 	} else if (whichTab === 'second') {
 		$('A[href="#second"]').addClass('active');
+	} else if (typeof (whichTab) === 'undefined') {
+		$('A[href="#first"]').addClass('active');
+		$('DIV#first').addClass('active');
 	}
 
 	// 手機版時可以拉出聊天列表
