@@ -24,20 +24,24 @@ $(document).ready(function () {
 		//獲得訊息事件
 		socket.onmessage = function (msg) {
 			var count;
+			var $notify;
 
-			if (msg.data.slice(0, 5) !== 'inbox') {
-				$('.toast-body').html(msg.data);
-				$('.toast').toast('show');
+			if (typeof (friend) === 'undefined' && msg.data.slice(0, 5) === 'inbox') {
+				$notify = $('.inbox');
+			} else if (typeof (friend) !== 'undefined' && msg.data.slice(0, 5) !== 'inbox') {
+				$notify = $('.announcement');
+			} else if (typeof (friend) === 'undefined' && msg.data.slice(0, 5) !== 'inbox') {
+				$notify = $('.announcement');
 			}
 
 			// 增加'通知數'和'訊息數'
-			if (isNaN(parseInt($('.announcement').html()))) {
+			if (isNaN(parseInt($notify.html()))) {
 				count = 1;
-				$('.announcement').attr('style', 'display: inline;');
+				$notify.attr('style', 'display: inline;');
 			} else {
-				count = parseInt($('.announcement').html()) + 1;
+				count = parseInt($notify.html()) + 1;
 			}
-			$('.announcement').html(count);
+			$notify.html(count);
 
 			$.post(
 				'/updateInbox.json',
