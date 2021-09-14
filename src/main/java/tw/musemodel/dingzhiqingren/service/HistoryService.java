@@ -1448,6 +1448,12 @@ public class HistoryService {
 						initiativeNickname,
 						Math.abs(activeLogs.getPoints())
 					);
+					if (Objects.equals(activeLogs.getBehavior(), BEHAVIOR_FARE) && loverService.within48hrs(activeLogs.getOccurred())) {
+						historyElement.setAttribute(
+							"ableToReturn",
+							null
+						);
+					}
 				}
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_ASK_FOR_FARE) {

@@ -207,7 +207,7 @@
 	</xsl:template>
 	<xsl:template match="area">
 		<xsl:if test="vip">
-			<ARTICLE class="col-md-8 border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
+			<ARTICLE class="border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
 				<DIV class="d-flex m-2 align-items-center">
 					<DIV class="text-lg m-2 text-bold text-primary">貴賓會員</DIV>
 					<xsl:if test="not(vip/@lastPage)">
@@ -265,7 +265,7 @@
 			</ARTICLE>
 		</xsl:if>
 		<xsl:if test="relief">
-			<ARTICLE class="col-md-8 border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
+			<ARTICLE class="border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
 				<DIV class="d-flex m-2 align-items-center">
 					<DIV class="text-lg m-2 text-bold text-primary">安心認證</DIV>
 					<xsl:if test="not(relief/@lastPage)">
@@ -323,7 +323,7 @@
 			</ARTICLE>
 		</xsl:if>
 		<xsl:if test="active">
-			<ARTICLE class="col-md-8 border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
+			<ARTICLE class="border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
 				<DIV class="d-flex m-2 align-items-center">
 					<DIV class="text-lg m-2 text-bold text-primary">最近活躍</DIV>
 					<xsl:if test="not(active/@lastPage)">
@@ -381,7 +381,7 @@
 			</ARTICLE>
 		</xsl:if>
 		<xsl:if test="register">
-			<ARTICLE class="col-md-8 border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
+			<ARTICLE class="border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
 				<DIV class="d-flex m-2 align-items-center">
 					<DIV class="text-lg m-2 text-bold text-primary">最新註冊</DIV>
 					<xsl:if test="not(register/@lastPage)">
@@ -438,11 +438,11 @@
 				</DIV>
 			</ARTICLE>
 		</xsl:if>
-		<ARTICLE class="d-block d-md-none text-center">
+		<SECTION class="d-block d-md-none text-center">
 			<DIV class="d-flex flex-wrap justify-content-center mobileMode"></DIV>
 			<BUTTON class="btn btn-link text-lg seeMoreBtn" id="mobileMode"  data-page="0">看更多<I class="fad fa-angle-double-right ms-1"></I></BUTTON>
-		</ARTICLE>
-		<SECTION class="fixed-bottom d-block d-md-none bg-light shadow m-2 bottom-2 text-lg">
+		</SECTION>
+		<SECTION class="fixed-bottom d-block d-md-none bg-light shadow m-2 bottom13rem text-lg">
 			<UL class="navbar-nav flex-row mobileMode">
 				<xsl:if test="vip">
 					<LI class="nav-item col-3 text-center">

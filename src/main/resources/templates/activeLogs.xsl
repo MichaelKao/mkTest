@@ -177,6 +177,11 @@
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 acceptPixAuth" type="button">同意</BUTTON>
 										</DIV>
 									</xsl:if>
+									<xsl:if test="@ableToReturn">
+										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
+											<BUTTON class="btn btn-sm btn-outline-dark px-2 py-1 p-md-2 m-0 me-1" type="button">退回</BUTTON>
+										</DIV>
+									</xsl:if>
 									<xsl:if test="@replyFareReqBtn">
 										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
 											<BUTTON class="btn btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 acceptFare resBtn" type="button">給出</BUTTON>
