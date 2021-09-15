@@ -834,3 +834,16 @@ ADD COLUMN"ti_yan_ma"int2 REFERENCES"ti_yan_ma"("id")ON DELETE RESTRICT ON UPDAT
 ADD CHECK(CASE WHEN"xing_wei"='DUAN_QI_GUI_BIN_TI_YAN'THEN"ti_yan_ma"IS NOT NULL END);
 COMMENT ON COLUMN"li_cheng"."ti_yan_ma"IS'体验码';
 
+/*
+ * 行為
+ */
+ALTER TYPE"xing_wei"
+ADD VALUE'TUI_HUI_CHE_MA_FEI';--退回車馬費
+
+/*
+ * 添加關聯的歷程欄位到歷程表
+ */
+ALTER TABLE"li_cheng"
+ADD COLUMN"guan_lian_li_cheng"int2 REFERENCES"li_cheng"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+ADD CHECK(CASE WHEN"xing_wei"='TUI_HUI_CHE_MA_FEI'THEN"guan_lian_li_cheng"IS NOT NULL END);
+COMMENT ON COLUMN"li_cheng"."guan_lian_li_cheng"IS'關聯的歷程';
