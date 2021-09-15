@@ -16,6 +16,7 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.sql.ResultSet;
 import java.sql.Types;
@@ -47,8 +48,10 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -62,9 +65,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileCopyUtils;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -95,6 +99,8 @@ import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
 import tw.musemodel.dingzhiqingren.entity.embedded.AppearedLocation;
 import tw.musemodel.dingzhiqingren.entity.embedded.AppearedLocationKey;
+import tw.musemodel.dingzhiqingren.entity.embedded.Blacklist;
+import tw.musemodel.dingzhiqingren.entity.embedded.BlacklistKey;
 import tw.musemodel.dingzhiqingren.entity.embedded.DesiredCompanionship;
 import tw.musemodel.dingzhiqingren.entity.embedded.DesiredCompanionshipKey;
 import tw.musemodel.dingzhiqingren.event.SignedUpEvent;
@@ -107,6 +113,7 @@ import tw.musemodel.dingzhiqingren.repository.ActivationRepository;
 import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
 import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.AppearedLocationRepository;
+import tw.musemodel.dingzhiqingren.repository.BlacklistRepository;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
 import tw.musemodel.dingzhiqingren.repository.FollowRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
@@ -216,6 +223,9 @@ public class LoverService {
 	private AppearedLocationRepository appearedLocationRepository;
 
 	@Autowired
+	private BlacklistRepository blacklistRepository;
+
+	@Autowired
 	private CountryRepository countryRepository;
 
 	@Autowired
@@ -250,6 +260,12 @@ public class LoverService {
 
 	@Autowired
 	private CompanionshipRepository companionshipRepository;
+
+	@Value("classpath:sql/我拉黑了谁.sql")
+	private Resource thoseIBlockResource;
+
+	@Value("classpath:sql/谁拉黑了我.sql")
+	private Resource thoseWhoBlockMeResource;
 
 	@Autowired
 	private TrialCodeRepository trialCodeRepository;
@@ -468,7 +484,7 @@ public class LoverService {
 		);
 		HttpSession session = request.getSession(true);
 		session.setAttribute(
-			SPRING_SECURITY_CONTEXT_KEY,
+			HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
 			securityContext
 		);
 
@@ -538,6 +554,92 @@ public class LoverService {
 	}
 
 	/**
+	 * 期待某种友谊的家伙们。
+	 *
+	 * @param companionship 友谊
+	 * @return 用户号键值
+	 */
+	@Transactional(readOnly = true)
+	public Collection<Integer> findByCompanion(Companionship companionship) {
+		Collection<Integer> collection = new ArrayList<>();
+
+		desiredCompanionshipRepository.findByCompanionship(companionship).forEach(desiredCompanionship -> {
+			collection.add(
+				desiredCompanionship.getLover().getId()
+			);
+		});
+
+		return new HashSet<>(collection);
+	}
+
+	/**
+	 * 出没于某地区的家伙们。
+	 *
+	 * @param location 地区
+	 * @return 用户号键值
+	 */
+	@Transactional(readOnly = true)
+	public Collection<Integer> findByLocation(Location location) {
+		Collection<Integer> collection = new ArrayList<>();
+
+		appearedLocationRepository.findByLocation(location).forEach(appearedLocation -> {
+			collection.add(
+				appearedLocation.getLover().getId()
+			);
+		});
+
+		return new HashSet<>(collection);
+	}
+
+	@Transactional(readOnly = true)
+	public Collection<Integer> findInceptions(Companionship companionship, Location location) {
+		Collection<Integer> collection = new ArrayList<>();
+
+		collection.addAll(findByCompanion(companionship));
+		collection.addAll(findByLocation(location));
+
+		return new HashSet<>(collection);
+	}
+
+	/**
+	 * 谁拉黑了某咪郎
+	 *
+	 * @param someone 某咪郎
+	 * @return 把某咪郎拉黑的用户号们
+	 */
+	@Transactional(readOnly = true)
+	public Collection<Lover> getBlockeds(Lover someone) {
+		Collection<Lover> blockeds = new ArrayList<>();
+
+		blacklistRepository.findByBlocked(someone).forEach(blacklist -> {
+			blockeds.add(
+				blacklist.getBlocked()
+			);
+		});
+
+		return blockeds;
+	}
+
+	/**
+	 * 某咪郎拉黑了谁
+	 *
+	 * @param someone 某咪郎
+	 * @return 被某咪郎拉黑的用户号们
+	 */
+	@Transactional(readOnly = true)
+	public Collection<Lover> getBlockers(Lover someone) {
+		Collection<Lover> blockers = new ArrayList<>();
+
+		blacklistRepository.findByBlocker(someone).forEach(blacklist -> {
+			blockers.add(
+				blacklist.getBlocker()
+			);
+		});
+
+		return blockers;
+	}
+
+	/**
 	 * 取得某咪郎的期望的友谊。
 	 *
 	 * @param someone 某咪郎
@@ -554,6 +656,22 @@ public class LoverService {
 		});
 
 		return companionships;
+	}
+
+	/**
+	 * 捞用户号时应排除的家伙们。
+	 *
+	 * @param someone 某咪郎
+	 * @return 黑名单
+	 */
+	@Transactional(readOnly = true)
+	public Collection<Integer> getExceptions(Lover someone) {
+		Set<Integer> exceptions = new HashSet<>();
+
+		exceptions.addAll(getThoseIBlock(someone));//某咪郎拉黑的用户们
+		exceptions.addAll(getThoseWhoBlockMe(someone));//拉黑某咪郎的用户们
+
+		return exceptions;
 	}
 
 	/**
@@ -642,6 +760,64 @@ public class LoverService {
 	}
 
 	/**
+	 * 我拉黑了谁。
+	 *
+	 * @param someone 某咪郎
+	 * @return 我拉黑的用户键值
+	 */
+	@Transactional(readOnly = true)
+	public Collection<Integer> getThoseIBlock(Lover someone) {
+		Collection<Integer> ids;
+
+		try {
+			ids = jdbcTemplate.query(
+				FileCopyUtils.copyToString(new InputStreamReader(
+					thoseIBlockResource.getInputStream(),
+					Servant.UTF_8
+				)),
+				(ps) -> {
+					ps.setInt(1, someone.getId());
+				},
+				(resultSet, rowNum) -> resultSet.getInt("id")
+			);
+		} catch (IOException iOException) {
+			ids = new ArrayList<>();
+			LOGGER.debug("我拉黑了谁。", iOException);
+		}
+
+		return ids;
+	}
+
+	/**
+	 * 谁拉黑了我。
+	 *
+	 * @param someone 某咪郎
+	 * @return 拉黑我的用户键值
+	 */
+	@Transactional(readOnly = true)
+	public Collection<Integer> getThoseWhoBlockMe(Lover someone) {
+		Collection<Integer> ids;
+
+		try {
+			ids = jdbcTemplate.query(
+				FileCopyUtils.copyToString(new InputStreamReader(
+					thoseWhoBlockMeResource.getInputStream(),
+					Servant.UTF_8
+				)),
+				(ps) -> {
+					ps.setInt(1, someone.getId());
+				},
+				(resultSet, rowNum) -> resultSet.getInt("id")
+			);
+		} catch (IOException iOException) {
+			ids = new ArrayList<>();
+			LOGGER.debug("谁拉黑了我。", iOException);
+		}
+
+		return ids;
+	}
+
+	/**
 	 * 追踪(收藏)了谁。
 	 *
 	 * @param someone 某咪郎
@@ -688,6 +864,44 @@ public class LoverService {
 		} catch (Exception ignore) {
 		}
 		return false;
+	}
+
+	/**
+	 * 未封号的用户号们，以活跃降幂排序；适用于首页的最近活跃列表区块。
+	 *
+	 * @param someone 某咪郎
+	 * @param p 第几页
+	 * @param s 每页几笔
+	 * @return 未封号的(甜心|男士)们
+	 */
+	@Transactional(readOnly = true)
+	public Page<Lover> latestActiveOnTheWall(Lover someone, int p, int s) {
+		return loverRepository.findAll(
+			LoverSpecification.latestActiveOnTheWall(
+				someone,
+				new HashSet<>(getExceptions(someone))
+			),
+			PageRequest.of(p, s)
+		);
+	}
+
+	/**
+	 * 未封号的用户号们，以註冊时间降幂排序；用于首页的最新注册列表区块。
+	 *
+	 * @param someone 用户号
+	 * @param p 第几页
+	 * @param s 每页几笔
+	 * @return 以註冊时间排序的(甜心|男士)们
+	 */
+	@Transactional(readOnly = true)
+	public Page<Lover> latestRegisteredOnTheWall(Lover someone, int p, int s) {
+		return loverRepository.findAll(
+			LoverSpecification.latestRegisteredOnTheWall(
+				someone,
+				new HashSet<>(getExceptions(someone))
+			),
+			PageRequest.of(p, s)
+		);
 	}
 
 	/**
@@ -2906,15 +3120,18 @@ public class LoverService {
 	/**
 	 * 未封号的情人们，以活跃降幂排序；用于首页的安心认证列表区块。
 	 *
-	 * @param mofo 用户号
+	 * @param someone 用户号
 	 * @param p 第几页
 	 * @param s 每页几笔
 	 * @return 通过安心认证的甜心们
 	 */
 	@Transactional(readOnly = true)
-	public Page<Lover> relievingOnTheWall(Lover mofo, int p, int s) {
+	public Page<Lover> relievingOnTheWall(Lover someone, int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.relievingOnTheWall(mofo),
+			LoverSpecification.relievingOnTheWall(
+				someone,
+				new HashSet<>(getExceptions(someone))
+			),
 			PageRequest.of(p, s)
 		);
 	}
@@ -2932,47 +3149,18 @@ public class LoverService {
 	}
 
 	/**
-	 * 未封号的情人们，以活跃降幂排序；用于首页的最近活跃列表区块。
-	 *
-	 * @param mofo 用户号
-	 * @param p 第几页
-	 * @param s 每页几笔
-	 * @return 以活跃排序的男士们
-	 */
-	@Transactional(readOnly = true)
-	public Page<Lover> latestActiveOnTheWall(Lover mofo, int p, int s) {
-		return loverRepository.findAll(
-			LoverSpecification.latestActiveOnTheWall(mofo),
-			PageRequest.of(p, s)
-		);
-	}
-
-	/**
-	 * 未封号的情人们，以註冊时间降幂排序；用于首页的最新注册列表区块。
-	 *
-	 * @param mofo 用户号
-	 * @param p 第几页
-	 * @param s 每页几笔
-	 * @return 以註冊时间排序的甜心们
-	 */
-	@Transactional(readOnly = true)
-	public Page<Lover> latestRegisteredOnTheWall(Lover mofo, int p, int s) {
-		return loverRepository.findAll(
-			LoverSpecification.latestRegisteredOnTheWall(mofo),
-			PageRequest.of(p, s)
-		);
-	}
-
-	/**
-	 * @param mofo 用户号
+	 * @param someone 用户号
 	 * @param p 第几页
 	 * @param s 每页几笔
 	 * @return 貴賓男士们
 	 */
 	@Transactional(readOnly = true)
-	public Page<Lover> vipOnTheWall(Lover mofo, int p, int s) {
+	public Page<Lover> vipOnTheWall(Lover someone, int p, int s) {
 		return loverRepository.findAll(
-			LoverSpecification.vipOnTheWall(mofo),
+			LoverSpecification.vipOnTheWall(
+				someone,
+				new HashSet<>(getExceptions(someone))
+			),
 			PageRequest.of(p, s)
 		);
 	}
@@ -3252,12 +3440,12 @@ public class LoverService {
 	}
 
 	/**
-	 * 封鎖
+	 * 甲拉黑或漂白乙。
 	 *
-	 * @param initiative
-	 * @param passive
-	 * @param locale
-	 * @return
+	 * @param initiative 把别人拉黑的一方
+	 * @param passive 要被拉黑的一方
+	 * @param locale 语言环境
+	 * @return 杰森格式对象
 	 */
 	public JSONObject block(Lover initiative, Lover passive, Locale locale) {
 		if (Objects.isNull(initiative)) {
@@ -3273,27 +3461,43 @@ public class LoverService {
 			throw new RuntimeException("block.mustBeStraight");
 		}
 
-		Collection<Lover> blocking = initiative.getBlocking();
-		for (Lover blocked : blocking) {
-			if (Objects.equals(passive, blocked)) {
-				LOGGER.debug("測試{}", blocked);
-				blocking.remove(blocked);
-				initiative.setBlocking(blocking);
-				loverRepository.saveAndFlush(initiative);
-				return new JavaScriptObjectNotation().
-					withReason(messageSource.getMessage(
-						"unblock.done",
-						null,
-						locale
-					)).
-					withResponse(true).
-					toJSONObject();
-			}
+		Collection<Lover> blockers = new HashSet<>();
+		blacklistRepository.findByBlocker(initiative).forEach(blacklist -> {
+			blockers.add(blacklist.getBlocked());
+		});
+
+		Blacklist blacklist;
+		if (blockers.contains(passive)) {
+			/*
+			 已存在则删除
+			 */
+			blacklist = blacklistRepository.findOneByBlockerAndBlocked(initiative, passive).
+				orElseThrow();
+			blacklistRepository.delete(blacklist);
+			blacklistRepository.flush();
+
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"unblock.done",
+					null,
+					locale
+				)).
+				withResponse(true).
+				toJSONObject();
 		}
 
-		blocking.add(passive);
-		initiative.setBlocking(blocking);
-		loverRepository.saveAndFlush(initiative);
+		/*
+		 不存在则创建
+		 */
+		BlacklistKey id = new BlacklistKey();
+		id.setInitiativeId(initiative.getId());
+		id.setPassiveId(passive.getId());
+
+		blacklist = new Blacklist();
+		blacklist.setId(id);
+		//blacklist.setBlocker(initiative);
+		//blacklist.setBlocked(passive);
+		blacklistRepository.saveAndFlush(blacklist);
 
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(

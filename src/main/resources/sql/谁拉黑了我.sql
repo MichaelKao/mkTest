@@ -1,0 +1,1 @@
+SELECT"qing_ren"."id"FROM"feng_suo"LEFT JOIN"qing_ren"ON("qing_ren"."id"="feng_suo"."zhu_dong_fang")WHERE"bei_dong_fang"=?

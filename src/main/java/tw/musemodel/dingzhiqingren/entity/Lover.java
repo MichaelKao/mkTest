@@ -23,8 +23,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -32,11 +30,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import tw.musemodel.dingzhiqingren.entity.embedded.AppearedLocation;
+import tw.musemodel.dingzhiqingren.entity.embedded.Blacklist;
 import tw.musemodel.dingzhiqingren.entity.embedded.DesiredCompanionship;
 import tw.musemodel.dingzhiqingren.entity.embedded.Follow;
 
@@ -378,29 +375,18 @@ public class Lover implements java.io.Serializable {
 	private MaleSpecies maleSpecies;
 
 	/**
-	 * 封锁了谁
+	 * 哪些拉黑了我
 	 */
-	@JoinTable(
-		name = "feng_suo",
-		joinColumns = {
-			@JoinColumn(name = "zhu_dong_fang", referencedColumnName = "id", nullable = false)
-		},
-		inverseJoinColumns = {
-			@JoinColumn(name = "bei_dong_fang", referencedColumnName = "id", nullable = false)
-		}
-	)
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@ManyToMany
-	@JsonManagedReference
-	private Collection<Lover> blocking;
+	@OneToMany(mappedBy = "blocker")
+	@JsonIgnore
+	private Set<Blacklist> blockers;
 
 	/**
-	 * 封锁了我
+	 * 我拉黑了哪些
 	 */
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@ManyToMany(mappedBy = "blocking")
-	@JsonBackReference
-	private Collection<Lover> blockedBy;
+	@OneToMany(mappedBy = "blocked")
+	@JsonIgnore
+	private Set<Blacklist> blocked;
 
 	/**
 	 * 默认构造器
@@ -1089,31 +1075,31 @@ public class Lover implements java.io.Serializable {
 	}
 
 	/**
-	 * @return 封锁了谁
+	 * @return 哪些拉黑了我
 	 */
-	public Collection<Lover> getBlocking() {
-		return blocking;
+	public Set<Blacklist> getBlockers() {
+		return blockers;
 	}
 
 	/**
-	 * @param blocking 封锁了谁
+	 * @param blockers 哪些拉黑了我
 	 */
-	public void setBlocking(Collection<Lover> blocking) {
-		this.blocking = blocking;
+	public void setBlockers(Set<Blacklist> blockers) {
+		this.blockers = blockers;
 	}
 
 	/**
-	 * @return 封锁了我
+	 * @return 我拉黑了哪些
 	 */
-	public Collection<Lover> getBlockedBy() {
-		return blockedBy;
+	public Set<Blacklist> getBlocked() {
+		return blocked;
 	}
 
 	/**
-	 * @param blockedBy 封锁了我
+	 * @param blocked 我拉黑了哪些
 	 */
-	public void setBlockedBy(Collection<Lover> blockedBy) {
-		this.blockedBy = blockedBy;
+	public void setBlocked(Set<Blacklist> blocked) {
+		this.blocked = blocked;
 	}
 
 	/**

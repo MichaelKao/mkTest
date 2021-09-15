@@ -105,7 +105,7 @@ public class HistoryService {
 	@Autowired
 	private LoverRepository loverRepository;
 
-	@Value("classpath:与其它用户近期的对话.sql")
+	@Value("classpath:sql/与其它用户近期的对话.sql")
 	private Resource latestConversationsResource;
 
 	@Data
@@ -1260,6 +1260,7 @@ public class HistoryService {
 			String identifier = null;
 			String profileImage = null;
 			String message = null;
+			boolean isBlacklisted = !loverService.getBlockers(initiative).contains(passive) && !loverService.getBlockeds(initiative).contains(passive);
 
 			Element historyElement = document.createElement("history");
 			documentElement.appendChild(historyElement);
@@ -1307,8 +1308,7 @@ public class HistoryService {
 						"%s向您要求通訊軟體",
 						initiativeNickname
 					);
-					if (Objects.isNull(activeLogs.getReply())
-						&& (!initiative.getBlocking().contains(passive) && !initiative.getBlockedBy().contains(passive))) {
+					if (Objects.isNull(activeLogs.getReply()) && isBlacklisted) {
 						historyElement.setAttribute(
 							"decideButton",
 							null
@@ -1325,7 +1325,7 @@ public class HistoryService {
 						initiativeNickname
 					);
 					LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(initiative, passive);
-					if (Objects.nonNull(lineGiven) && lineGiven.getResponse() && (!initiative.getBlocking().contains(passive) && !initiative.getBlockedBy().contains(passive))) {
+					if (Objects.nonNull(lineGiven) && lineGiven.getResponse() && isBlacklisted) {
 						historyElement.setAttribute(
 							"addLineButton",
 							null
@@ -1338,9 +1338,7 @@ public class HistoryService {
 							);
 						}
 					}
-					if (Objects.isNull(
-						historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(passive, initiative, BEHAVIOR_RATE))
-						&& (!initiative.getBlocking().contains(passive) && !initiative.getBlockedBy().contains(passive))) {
+					if (Objects.isNull(historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(passive, initiative, BEHAVIOR_RATE)) && isBlacklisted) {
 						historyElement.setAttribute(
 							"rateButton",
 							null
@@ -1354,9 +1352,7 @@ public class HistoryService {
 						"您已同意給 %s 通訊軟體",
 						passiveNickname
 					);
-					if (Objects.isNull(
-						historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(initiative, passive, BEHAVIOR_RATE))
-						&& (!initiative.getBlocking().contains(passive) && !initiative.getBlockedBy().contains(passive))) {
+					if (Objects.isNull(historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(initiative, passive, BEHAVIOR_RATE)) && isBlacklisted) {
 						historyElement.setAttribute(
 							"rateButton",
 							null
