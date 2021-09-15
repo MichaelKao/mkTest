@@ -1197,7 +1197,7 @@ public class WelcomeController {
 		}
 
 		// 是否已封鎖此人
-		if (me.getBlocking().contains(mofo)) {
+		if (loverService.getBlockers(me).contains(mofo)) {
 			documentElement.setAttribute(
 				"blocking",
 				null
@@ -1205,7 +1205,7 @@ public class WelcomeController {
 		}
 
 		// 是否已被此人封鎖
-		if (me.getBlockedBy().contains(mofo)) {
+		if (loverService.getBlockeds(me).contains(mofo)) {
 			documentElement.setAttribute(
 				"blockedBy",
 				null
@@ -3002,7 +3002,7 @@ public class WelcomeController {
 	 * 搜尋頁
 	 *
 	 * @param location 地区
-	 * @param serviceTag 服务
+	 * @param companionship 服务
 	 * @param authentication 认证
 	 * @param locale 语言环境
 	 * @return 网页页面
@@ -3012,7 +3012,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/search.json")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView search(@RequestParam(required = false) Location location, @RequestParam(required = false) Companionship serviceTag, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView search(@RequestParam(required = false) Location location, @RequestParam(required = false) Companionship companionship, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -3039,8 +3039,11 @@ public class WelcomeController {
 		Collection<Lover> lovers = loverRepository.findAll(
 			LoverSpecification.search(
 				me,
-				location,
-				serviceTag
+				new HashSet<>(loverService.findInceptions(
+					companionship,
+					location
+				)),
+				new HashSet<>(loverService.getExceptions(me))
 			)
 		);
 
@@ -3066,9 +3069,9 @@ public class WelcomeController {
 				locale
 			);
 		}
-		if (Objects.nonNull(serviceTag)) {
+		if (Objects.nonNull(companionship)) {
 			searchName = messageSource.getMessage(
-				serviceTag.getName(),
+				companionship.getName(),
 				null,
 				locale
 			);
@@ -3329,14 +3332,14 @@ public class WelcomeController {
 			me.getIdentifier().toString()
 		);
 
-		if (me.getBlocking().contains(partner)) {
+		if (loverService.getBlockers(me).contains(partner)) {
 			documentElement.setAttribute(
 				"blocking",
 				null
 			);//是否已封锁此人
 		}
 
-		if (me.getBlockedBy().contains(partner)) {
+		if (loverService.getBlockeds(me).contains(partner)) {
 			documentElement.setAttribute(
 				"blockedBy",
 				null

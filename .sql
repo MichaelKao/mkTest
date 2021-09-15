@@ -834,6 +834,67 @@ ADD COLUMN"ti_yan_ma"int2 REFERENCES"ti_yan_ma"("id")ON DELETE RESTRICT ON UPDAT
 ADD CHECK(CASE WHEN"xing_wei"='DUAN_QI_GUI_BIN_TI_YAN'THEN"ti_yan_ma"IS NOT NULL END);
 COMMENT ON COLUMN"li_cheng"."ti_yan_ma"IS'体验码';
 
+/**
+ * 我拉黑了谁
+ */
+SELECT"qing_ren"."id"
+FROM"feng_suo"
+LEFT JOIN"qing_ren"ON("qing_ren"."id"="feng_suo"."bei_dong_fang")
+WHERE"zhu_dong_fang"=?;
+
+/**
+ * 谁拉黑了我
+ */
+SELECT"qing_ren"."id"
+FROM"feng_suo"
+LEFT JOIN"qing_ren"ON("qing_ren"."id"="feng_suo"."zhu_dong_fang")
+WHERE"bei_dong_fang"=?;
+
+CREATE OR REPLACE VIEW"合格男士们"AS
+SELECT"id"
+FROM"qing_ren"
+WHERE"zhang_hao"IS NOT NULL
+AND"mi_ma"IS NOT NULL
+AND"ni_cheng"IS NOT NULL
+AND"zi_jie"IS NOT NULL
+AND"ha_luo"IS NOT NULL
+AND"ti_xing"IS NOT NULL
+AND"shen_gao"IS NOT NULL
+AND"ti_zhong"IS NOT NULL
+AND"xue_li"IS NOT NULL
+AND"hun_yin"IS NOT NULL
+AND"zhi_ye"IS NOT NULL
+AND"chou_yan"IS NOT NULL
+AND"yin_jiu"IS NOT NULL
+AND"li_xiang_dui_xiang"IS NOT NULL
+AND"shan_chu"IS NULL
+AND"xiang_chu_guan_xi"IS NOT NULL
+AND"xing_bie"IS TRUE
+AND"nian_shou_ru"IS NOT NULL;
+
+CREATE OR REPLACE VIEW"合格甜心们"AS
+SELECT"id"
+FROM"qing_ren"
+WHERE"zhang_hao"IS NOT NULL
+AND"mi_ma"IS NOT NULL
+AND"ni_cheng"IS NOT NULL
+AND"zi_jie"IS NOT NULL
+AND"ha_luo"IS NOT NULL
+AND"ti_xing"IS NOT NULL
+AND"shen_gao"IS NOT NULL
+AND"ti_zhong"IS NOT NULL
+AND"xue_li"IS NOT NULL
+AND"hun_yin"IS NOT NULL
+AND"zhi_ye"IS NOT NULL
+AND"chou_yan"IS NOT NULL
+AND"yin_jiu"IS NOT NULL
+AND"li_xiang_dui_xiang"IS NOT NULL
+AND"shan_chu"IS NULL
+AND"xiang_chu_guan_xi"IS NOT NULL
+AND"xing_bie"IS FALSE
+AND"tian_jia_hao_you"IS NOT NULL
+AND"ling_yong_qian"IS NOT NULL;
+
 /*
  * 行為
  */
