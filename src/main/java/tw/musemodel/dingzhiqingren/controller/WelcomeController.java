@@ -84,6 +84,7 @@ import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
 import tw.musemodel.dingzhiqingren.service.AmazonWebServices;
 import tw.musemodel.dingzhiqingren.service.DashboardService;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_RETURN_FARE;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 import static tw.musemodel.dingzhiqingren.service.Servant.PAGE_SIZE_ON_THE_WALL;
@@ -1857,9 +1858,11 @@ public class WelcomeController {
 
 		Element heartsElement = document.createElement("hearts");
 		documentElement.appendChild(heartsElement);
-		heartsElement.setTextContent(
-			historyRepository.countByInitiative(me) > 0 ? historyRepository.sumByInitiativeHearts(me).toString() : "0"
-		);
+		long sumHeart = historyRepository.countByInitiative(me) > 0 ? historyRepository.sumByInitiativeHearts(me) : 0;
+		if (Objects.nonNull(historyRepository.sumHeartsByPassiveAndBehavior(me, BEHAVIOR_RETURN_FARE))) {
+			sumHeart += historyRepository.sumHeartsByPassiveAndBehavior(me, BEHAVIOR_RETURN_FARE);
+		}
+		heartsElement.setTextContent(Long.toString(sumHeart));
 
 		ModelAndView modelAndView = new ModelAndView("recharge");
 		modelAndView.getModelMap().addAttribute(document);

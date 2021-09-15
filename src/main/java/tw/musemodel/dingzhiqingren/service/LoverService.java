@@ -130,21 +130,7 @@ import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_ASK_FOR_FARE;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_CERTIFICATION_FAIL;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_CERTIFICATION_SUCCESS;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_CHAT_MORE;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_FARE;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_GIMME_YOUR_LINE_INVITATION;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_GREETING;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_GROUP_GREETING;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_INVITE_ME_AS_LINE_FRIEND;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_LAI_KOU_DIAN;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_MONTHLY_CHARGED;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_PICTURES_VIEWABLE;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_WITHDRAWAL_FAIL;
-import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_WITHDRAWAL_SUCCESS;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
 import static tw.musemodel.dingzhiqingren.service.Servant.PAGE_SIZE_ON_THE_WALL;
 import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
@@ -670,7 +656,6 @@ public class LoverService {
 
 		exceptions.addAll(getThoseIBlock(someone));//某咪郎拉黑的用户们
 		exceptions.addAll(getThoseWhoBlockMe(someone));//拉黑某咪郎的用户们
-
 		return exceptions;
 	}
 
@@ -1342,6 +1327,17 @@ public class LoverService {
 			lover.setReferrer(referrer);
 		}
 		lover = loverRepository.saveAndFlush(lover);
+
+		// 將自己加入封鎖名單
+		BlacklistKey id = new BlacklistKey();
+		id.setInitiativeId(lover.getId());
+		id.setPassiveId(lover.getId());
+
+		Blacklist blacklist = new Blacklist();
+		blacklist.setId(id);
+		blacklist.setBlocker(lover);
+		blacklist.setBlocked(lover);
+		blacklistRepository.saveAndFlush(blacklist);
 
 		// 上傳預設大頭照
 		amazonWebServices.copyDefaultImageToLover(
@@ -2357,6 +2353,10 @@ public class LoverService {
 
 		// 目前可提領的紀錄
 		historyRepository.findAll(Specifications.withdrawal(lover)).forEach(history -> {
+			// 已經退回的不列出
+			if (Objects.nonNull(historyRepository.findByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history))) {
+				return;
+			}
 			Element recordElement = document.createElement("record");
 			documentElement.appendChild(recordElement);
 
@@ -2395,6 +2395,10 @@ public class LoverService {
 		});
 
 		historyRepository.findAll(Specifications.notAbleTowithdrawal(lover)).forEach(history -> {
+			// 已經退回的不列出
+			if (Objects.nonNull(historyRepository.findByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history))) {
+				return;
+			}
 			Element notAbleToWithdrawalElement = document.createElement("notAbleToWithdrawal");
 			documentElement.appendChild(notAbleToWithdrawalElement);
 
@@ -2424,7 +2428,11 @@ public class LoverService {
 					locale
 				));
 
-			if (Objects.equals(history.getBehavior(), BEHAVIOR_FARE) && within48hrs(history.getOccurred())) {
+			if (historyService.ableToReturnFare(history)) {
+				notAbleToWithdrawalElement.setAttribute(
+					"returnFareId",
+					history.getId().toString()
+				);
 				notAbleToWithdrawalElement.setAttribute(
 					"ableToReturn",
 					null
@@ -2596,6 +2604,10 @@ public class LoverService {
 		);
 		Long fareSum = 0L;
 		for (History history : fareList) {
+			// 已經退回的不列出
+			if (Objects.nonNull(historyRepository.findByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history))) {
+				continue;
+			}
 			fareSum += Math.abs(history.getPoints());
 		}
 
@@ -2626,20 +2638,6 @@ public class LoverService {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_MONTH, -7);
 		return calendar.getTime();
-	}
-
-	/**
-	 * 48小時之內
-	 *
-	 * @return java.util.Date
-	 */
-	public boolean within48hrs(Date compareDate) {
-		Calendar cal = Calendar.getInstance();
-		cal.getTime();
-		cal.add(Calendar.DAY_OF_MONTH, -2);
-		Date twoDaysAgo = cal.getTime();
-
-		return twoDaysAgo.before(compareDate);
 	}
 
 	/**
@@ -3495,8 +3493,8 @@ public class LoverService {
 
 		blacklist = new Blacklist();
 		blacklist.setId(id);
-		//blacklist.setBlocker(initiative);
-		//blacklist.setBlocked(passive);
+		blacklist.setBlocker(initiative);
+		blacklist.setBlocked(passive);
 		blacklistRepository.saveAndFlush(blacklist);
 
 		return new JavaScriptObjectNotation().

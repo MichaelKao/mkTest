@@ -224,6 +224,7 @@
 										</DIV>
 										<xsl:if test="@ableToReturn">
 											<DIV class="ms-auto text-end d-flex flex-column justify-content-around align-items-end">
+												<INPUT name="returnFareId" type="hidden" value="{@returnFareId}"/>
 												<BUTTON class="btn btn-warning px-2 py-1 mb-0 returnFare" type="button">
 													<I class="fas fa-trash-undo me-1"></I>
 													<SPAN>退回</SPAN>
