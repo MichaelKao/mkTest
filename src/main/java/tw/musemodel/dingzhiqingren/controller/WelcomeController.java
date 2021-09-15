@@ -2656,7 +2656,7 @@ public class WelcomeController {
 			return Servant.redirectToRoot();
 		}
 
-		Document document = servant.parseDocument();
+		Document document = loverService.withdrawalDocument(me, locale);
 		Element documentElement = servant.documentElement(
 			document,
 			authentication
@@ -3301,7 +3301,14 @@ public class WelcomeController {
 			return Servant.redirectToProfile();
 		}
 
+		/*
+		 聊天对象
+		 */
+		Lover partner = loverService.loadByIdentifier(identifier);
+
 		Document document = servant.parseDocument();
+		document = webSocketService.chatroom(document, me, partner);
+		document = webSocketService.inbox(document, me);
 		Element documentElement = servant.documentElement(
 			document,
 			authentication
@@ -3316,10 +3323,6 @@ public class WelcomeController {
 			)
 		);//网页标题
 
-		/*
-		 聊天对象
-		 */
-		Lover partner = loverService.loadByIdentifier(identifier);
 		if (Objects.equals(me, partner)) {
 			return Servant.redirectToRoot();
 		}
@@ -3342,9 +3345,6 @@ public class WelcomeController {
 				null
 			);//是否已被此人封锁
 		}
-
-		document = webSocketService.chatroom(document, me, partner);
-		document = webSocketService.inbox(document, me);
 
 		ModelAndView modelAndView = new ModelAndView("chatroom");
 		modelAndView.getModelMap().addAttribute(document);
@@ -3684,6 +3684,39 @@ public class WelcomeController {
 				locale
 			)).
 			withResponse(true).
+			toJSONObject().toString();
+	}
+
+	/**
+	 * 聊天列表即時更新訊息
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/updateInbox.json")
+	@ResponseBody
+	String updateInbox(Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		JSONObject jSONObject;
+		try {
+			jSONObject = webSocketService.updateInbox(me);
+		} catch (Exception exception) {
+			return new JavaScriptObjectNotation().
+				withReason(exception.getMessage()).
+				withResponse(false).
+				toJSONObject().toString();
+		}
+
+		return new JavaScriptObjectNotation().
+			withResult(jSONObject).
+			withResponse(false).
 			toJSONObject().toString();
 	}
 }

@@ -45,13 +45,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.WebSocketServer;
-import tw.musemodel.dingzhiqingren.entity.embedded.Follow;
-import tw.musemodel.dingzhiqingren.entity.embedded.FollowKey;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.LineGiven;
 import tw.musemodel.dingzhiqingren.entity.LineGivenKey;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.entity.embedded.Follow;
+import tw.musemodel.dingzhiqingren.entity.embedded.FollowKey;
 import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.FollowRepository;
@@ -128,11 +128,6 @@ public class HistoryService {
 	}
 
 	/**
-	 * 历程：要求車馬費
-	 */
-	public static final Behavior BEHAVIOR_ASK_FOR_FARE = Behavior.YAO_CHE_MA_FEI;
-
-	/**
 	 * 历程：充值行为
 	 */
 	public static final Behavior BEHAVIOR_CHARGED = Behavior.CHU_ZHI;
@@ -146,6 +141,16 @@ public class HistoryService {
 	 * 历程：车马费(男对女)行为
 	 */
 	public static final Behavior BEHAVIOR_FARE = Behavior.CHE_MA_FEI;
+
+	/**
+	 * 历程：要求車馬費
+	 */
+	public static final Behavior BEHAVIOR_ASK_FOR_FARE = Behavior.YAO_CHE_MA_FEI;
+
+	/**
+	 * 历程：退回車馬費
+	 */
+	public static final Behavior BEHAVIOR_RETURN_FARE = Behavior.TUI_HUI_CHE_MA_FEI;
 
 	/**
 	 * 历程：给我赖(男对女)行为
@@ -1444,6 +1449,12 @@ public class HistoryService {
 						initiativeNickname,
 						Math.abs(activeLogs.getPoints())
 					);
+					if (Objects.equals(activeLogs.getBehavior(), BEHAVIOR_FARE) && loverService.within48hrs(activeLogs.getOccurred())) {
+						historyElement.setAttribute(
+							"ableToReturn",
+							null
+						);
+					}
 				}
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_ASK_FOR_FARE) {

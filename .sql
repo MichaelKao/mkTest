@@ -894,3 +894,17 @@ AND"xiang_chu_guan_xi"IS NOT NULL
 AND"xing_bie"IS FALSE
 AND"tian_jia_hao_you"IS NOT NULL
 AND"ling_yong_qian"IS NOT NULL;
+
+/*
+ * 行為
+ */
+ALTER TYPE"xing_wei"
+ADD VALUE'TUI_HUI_CHE_MA_FEI';--退回車馬費
+
+/*
+ * 添加關聯的歷程欄位到歷程表
+ */
+ALTER TABLE"li_cheng"
+ADD COLUMN"guan_lian_li_cheng"int2 REFERENCES"li_cheng"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+ADD CHECK(CASE WHEN"xing_wei"='TUI_HUI_CHE_MA_FEI'THEN"guan_lian_li_cheng"IS NOT NULL END);
+COMMENT ON COLUMN"li_cheng"."guan_lian_li_cheng"IS'關聯的歷程';

@@ -78,8 +78,8 @@ import tw.musemodel.dingzhiqingren.WebSocketServer;
 import tw.musemodel.dingzhiqingren.entity.Activation;
 import tw.musemodel.dingzhiqingren.entity.Allowance;
 import tw.musemodel.dingzhiqingren.entity.AnnualIncome;
+import tw.musemodel.dingzhiqingren.entity.Companionship;
 import tw.musemodel.dingzhiqingren.entity.Country;
-import tw.musemodel.dingzhiqingren.entity.embedded.Follow;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.LineGiven;
@@ -91,7 +91,6 @@ import tw.musemodel.dingzhiqingren.entity.Privilege;
 import tw.musemodel.dingzhiqingren.entity.PrivilegeKey;
 import tw.musemodel.dingzhiqingren.entity.ResetShadow;
 import tw.musemodel.dingzhiqingren.entity.Role;
-import tw.musemodel.dingzhiqingren.entity.Companionship;
 import tw.musemodel.dingzhiqingren.entity.TrialCode;
 import tw.musemodel.dingzhiqingren.entity.User;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalInfo;
@@ -103,6 +102,7 @@ import tw.musemodel.dingzhiqingren.entity.embedded.Blacklist;
 import tw.musemodel.dingzhiqingren.entity.embedded.BlacklistKey;
 import tw.musemodel.dingzhiqingren.entity.embedded.DesiredCompanionship;
 import tw.musemodel.dingzhiqingren.entity.embedded.DesiredCompanionshipKey;
+import tw.musemodel.dingzhiqingren.entity.embedded.Follow;
 import tw.musemodel.dingzhiqingren.event.SignedUpEvent;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.Descendant;
@@ -114,7 +114,9 @@ import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
 import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.AppearedLocationRepository;
 import tw.musemodel.dingzhiqingren.repository.BlacklistRepository;
+import tw.musemodel.dingzhiqingren.repository.CompanionshipRepository;
 import tw.musemodel.dingzhiqingren.repository.CountryRepository;
+import tw.musemodel.dingzhiqingren.repository.DesiredCompanionshipRepository;
 import tw.musemodel.dingzhiqingren.repository.FollowRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
@@ -145,8 +147,6 @@ import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_WITHDR
 import static tw.musemodel.dingzhiqingren.service.HistoryService.BEHAVIOR_WITHDRAWAL_SUCCESS;
 import static tw.musemodel.dingzhiqingren.service.Servant.PAGE_SIZE_ON_THE_WALL;
 import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
-import tw.musemodel.dingzhiqingren.repository.CompanionshipRepository;
-import tw.musemodel.dingzhiqingren.repository.DesiredCompanionshipRepository;
 
 /**
  * 服务层：情人
@@ -3551,11 +3551,17 @@ public class LoverService {
 		if (lover.getGender()) {
 			return Arrays.asList(new History.Behavior[]{
 				BEHAVIOR_GREETING,
-				BEHAVIOR_GROUP_GREETING
+				BEHAVIOR_GROUP_GREETING,
+				BEHAVIOR_ASK_FOR_FARE,
+				BEHAVIOR_INVITE_ME_AS_LINE_FRIEND,
+				BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND
 			});
 		} else {
 			return Arrays.asList(new History.Behavior[]{
-				BEHAVIOR_CHAT_MORE
+				BEHAVIOR_CHAT_MORE,
+				BEHAVIOR_FARE,
+				BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
+				BEHAVIOR_LAI_KOU_DIAN
 			});
 		}
 	}

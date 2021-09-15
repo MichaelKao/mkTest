@@ -377,7 +377,7 @@
 											<SPAN class="ms-1">VIP</SPAN>
 										</xsl:if>
 										<xsl:if test="@matchedOrVipNotSeenCount">
-											<SPAN class="text-xs border-radius-md px-1 ms-1 notSeen">
+											<SPAN class="text-xs border-radius-md px-1 ms-1 firstNotSeen notSeen">
 												<xsl:value-of select="@matchedOrVipNotSeenCount"/>
 											</SPAN>
 										</xsl:if>
@@ -393,7 +393,7 @@
 											<SPAN class="ms-1">一般</SPAN>
 										</xsl:if>
 										<xsl:if test="@notMatchedOrNotVipNotSeenCount">
-											<SPAN class="text-xs border-radius-md px-1 ms-1 notSeen">
+											<SPAN class="text-xs border-radius-md px-1 ms-1 secondNotSeen notSeen">
 												<xsl:value-of select="@notMatchedOrNotVipNotSeenCount"/>
 											</SPAN>
 										</xsl:if>
@@ -420,6 +420,9 @@
 															<xsl:value-of select="@nickname"/>
 														</A>
 														<P class="text-sm mb-0 content">
+															<xsl:if test="/document/@friendIdentifier = @identifier">
+																<xsl:attribute name="class">text-sm mb-0 content currentContent</xsl:attribute>
+															</xsl:if>
 															<xsl:value-of select="@content"/>
 														</P>
 													</DIV>
@@ -461,6 +464,9 @@
 															<xsl:value-of select="@nickname"/>
 														</A>
 														<P class="text-sm mb-0 content">
+															<xsl:if test="/document/@friendIdentifier = @identifier">
+																<xsl:attribute name="class">text-sm mb-0 content currentContent</xsl:attribute>
+															</xsl:if>
 															<xsl:value-of select="@content"/>
 														</P>
 													</DIV>
@@ -646,6 +652,7 @@
 			<SCRIPT src="/SCRIPT/chatroom.js"/>
 			<xsl:if test="@signIn">
 				<SCRIPT src="/SCRIPT/websocketChat.js"/>
+				<SCRIPT src="/SCRIPT/websocketInbox.js"/>
 			</xsl:if>
 		</BODY>
 	</xsl:template>

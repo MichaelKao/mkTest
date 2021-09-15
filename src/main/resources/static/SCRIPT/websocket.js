@@ -5,9 +5,9 @@ $(document).ready(function () {
 
 	var socket;
 	if (typeof (WebSocket) == "undefined") {
-		console.log("Not support WebSocket");
+		console.log("[Notify]Not support WebSocket");
 	} else {
-		console.log("Support WebSocket");
+		console.log("[Notify]Support WebSocket");
 		connect();
 	}
 
@@ -17,7 +17,7 @@ $(document).ready(function () {
 
 		//開啟事件
 		socket.onopen = function () {
-			console.log("WebSocket is open");
+			console.log("[Notify]WebSocket is open");
 		};
 
 		//獲得訊息事件
@@ -46,7 +46,7 @@ $(document).ready(function () {
 
 		//關閉事件
 		socket.onclose = function () {
-			console.log("WebSocket is close");
+			console.log("[Notify]WebSocket is close");
 			setTimeout(function () {
 				connect();
 			}, 1000);
@@ -54,7 +54,7 @@ $(document).ready(function () {
 
 		//發生了錯誤事件
 		socket.onerror = function () {
-			console.log("WebSocket is error");
+			console.log("[Notify]WebSocket is error");
 		}
 	}
 

@@ -99,6 +99,11 @@ public class History implements java.io.Serializable {
 	@JsonManagedReference
 	private TrialCode trialCode;
 
+	@JoinColumn(name = "guan_lian_li_cheng", referencedColumnName = "id")
+	@ManyToOne
+	@JsonManagedReference
+	private History history;
+
 	/**
 	 * 默认构造器
 	 */
@@ -404,6 +409,20 @@ public class History implements java.io.Serializable {
 	}
 
 	/**
+	 * @return 關聯的歷程
+	 */
+	public History getHistory() {
+		return history;
+	}
+
+	/**
+	 * @param history 關聯的歷程
+	 */
+	public void setHistory(History history) {
+		this.history = history;
+	}
+
+	/**
 	 * 行为
 	 *
 	 * @author p@musemodel.tw
@@ -493,7 +512,11 @@ public class History implements java.io.Serializable {
 		/**
 		 * 短期贵宾体验
 		 */
-		DUAN_QI_GUI_BIN_TI_YAN("DUAN_QI_GUI_BIN_TI_YAN", 21);
+		DUAN_QI_GUI_BIN_TI_YAN("DUAN_QI_GUI_BIN_TI_YAN", 21),
+		/**
+		 * 退回車馬費
+		 */
+		TUI_HUI_CHE_MA_FEI("TUI_HUI_CHE_MA_FEI", 22);
 
 		private String label;
 
