@@ -1453,7 +1453,11 @@ public class HistoryService {
 						initiativeNickname,
 						Math.abs(activeLogs.getPoints())
 					);
-					if (Objects.equals(activeLogs.getBehavior(), BEHAVIOR_FARE) && loverService.within48hrs(activeLogs.getOccurred())) {
+					if (ableToReturnFare(historyRepository.findById(activeLogs.getId()).orElseThrow())) {
+						historyElement.setAttribute(
+							"returnFareId",
+							activeLogs.getId().toString()
+						);
 						historyElement.setAttribute(
 							"ableToReturn",
 							null
@@ -1486,6 +1490,26 @@ public class HistoryService {
 					identifier = passiveIdentifier;
 					message = String.format(
 						"您向%s要求 %d 車馬費",
+						passiveNickname,
+						Math.abs(activeLogs.getPoints())
+					);
+				}
+			}
+			if (activeLogs.getBehavior() == BEHAVIOR_RETURN_FARE) {
+				if (isMale) {
+					profileImage = initiativeProfileImage;
+					identifier = initiativeIdentifier;
+					message = String.format(
+						"%s退回您給的 %d 車馬費",
+						initiativeNickname,
+						Math.abs(activeLogs.getPoints())
+					);
+				}
+				if (!isMale) {
+					profileImage = passiveProfileImage;
+					identifier = passiveIdentifier;
+					message = String.format(
+						"您已退回%s給您的 %d 車馬費",
 						passiveNickname,
 						Math.abs(activeLogs.getPoints())
 					);
@@ -1644,6 +1668,73 @@ public class HistoryService {
 				));
 		}
 		return new JavaScriptObjectNotation().
+			withResponse(true).
+			toJSONObject();
+	}
+
+	/**
+	 * 48小時內可以退回車馬費
+	 *
+	 * @param history
+	 * @return
+	 */
+	public boolean ableToReturnFare(History fareHistory) {
+
+		Calendar cal = Calendar.getInstance();
+		cal.getTime();
+		cal.add(Calendar.DAY_OF_MONTH, -2);
+
+		// 車馬費歷程的行為是'車馬費'
+		// 兩天前的時戳在車馬費歷程之前
+		// 還沒有被退回過('退回車馬費'的歷程是空的)
+		return Objects.equals(fareHistory.getBehavior(), BEHAVIOR_FARE)
+			&& cal.getTime().before(fareHistory.getOccurred())
+			&& Objects.isNull(historyRepository.findByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, fareHistory));
+	}
+
+	/**
+	 * 退回車馬費
+	 *
+	 * @param fareHistory
+	 * @return
+	 */
+	@Transactional
+	public JSONObject returnFare(History fareHistory, Locale locale) {
+		Lover male = fareHistory.getInitiative();
+		Lover female = fareHistory.getPassive();
+
+		// 新增歷程
+		History returnFareHistory = new History(
+			female,
+			male,
+			BEHAVIOR_RETURN_FARE,
+			(short) Math.abs(fareHistory.getPoints()),
+			fareHistory
+		);
+		historyRepository.saveAndFlush(returnFareHistory);
+
+		// 推送通知給對方
+		webSocketServer.sendNotification(
+			male.getIdentifier().toString(),
+			String.format(
+				"%s退回您給的看車馬費!",
+				female.getNickname()
+			));
+		if (loverService.hasLineNotify(male)) {
+			// LINE Notify
+			lineMessagingService.notify(
+				male,
+				String.format(
+					"有養蜜退回您給的車馬費..馬上查看 https://%s/activeLogs.asp",
+					servant.LOCALHOST
+				));
+		}
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"returnFare.done",
+				null,
+				locale
+			)).
 			withResponse(true).
 			toJSONObject();
 	}

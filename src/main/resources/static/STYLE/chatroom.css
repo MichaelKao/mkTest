@@ -110,15 +110,6 @@ body{
 	z-index: 1;
 }
 
-.sendMsgBtn {
-	background: #d63384;
-	color: white;
-	font-size: 20px;
-	border-radius: 50%;
-	max-height: 40px;
-	max-width: 40px;
-}
-
 .inputContainer {
 	display: grid;
 	grid-template-columns: auto 7vh;
@@ -141,7 +132,7 @@ body{
 	width: 100%;
 	height: 7vh;
 	box-sizing: content-box;
-	margin-left: 10px;
+	margin-left: 15px;
 	background: #ebecf0;
 }
 
@@ -195,4 +186,12 @@ body{
 
 .hideSideBar {
 	right: -20px;
+}
+
+.maleAlert {
+	background: #D63384CC;
+	width: 280px;
+	border: 2px solid #FFFFFFEE;
+	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+	z-index: 999;
 }

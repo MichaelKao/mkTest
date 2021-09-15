@@ -175,6 +175,23 @@ public class History implements java.io.Serializable {
 	}
 
 	/**
+	 * 构造器：适用于「退回车马费」。
+	 *
+	 * @param initiative 主动方
+	 * @param passive 被动方
+	 * @param behavior 行为
+	 * @param points 点数
+	 */
+	public History(Lover initiative, Lover passive, Behavior behavior, short points, History history) {
+		this();
+		this.initiative = initiative;
+		this.passive = passive;
+		this.behavior = behavior;
+		this.points = points;
+		this.history = history;
+	}
+
+	/**
 	 * 构造器：适用于「短期贵宾体验」。
 	 *
 	 * @param initiative 主动方

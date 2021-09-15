@@ -537,7 +537,22 @@
 								</DIV>
 							</xsl:if>
 						</DIV>
-						<DIV class="messages" id="messagesArea"></DIV>
+						<DIV class="messages">
+							<xsl:if test="@male">
+								<DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 p-2 maleAlert">
+									<DIV class="d-flex">
+										<BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 p-0 me-2 maleAlertClose" data-bs-dismiss="modal" type="button">
+											<I class="fal fa-times"></I>
+										</BUTTON>
+									</DIV>
+									<DIV class="text-white text-center text-sm">
+										<DIV>非好友12小時內僅能傳送三句話</DIV>
+										<DIV>想辦法用甜言蜜語打動甜心吧！</DIV>
+									</DIV>
+								</DIV>
+							</xsl:if>
+							<DIV id="messagesArea"></DIV>
+						</DIV>
 						<DIV class="inputContainer">
 							<xsl:choose>
 								<xsl:when test="not(@blocking) and not(@blockedBy)">
@@ -624,8 +639,8 @@
 										<DIV class="textareaContainer">
 											<TEXTAREA id="chatInput" placeholder="說點什麼吧..." type="text"></TEXTAREA>
 										</DIV>
-										<BUTTON class="btn btn-link m-0 p-0 sendMsgBtn">
-											<i class="fa fa-paper-plane"></i>
+										<BUTTON class="btn btn-link m-0 p-0 fontSize25 sendMsgBtn" disabled="">
+											<I class="fa fa-paper-plane"></I>
 										</BUTTON>
 									</xsl:if>
 									<xsl:if test="@notAbleToSendMsgs">
@@ -640,7 +655,7 @@
 								</xsl:when>
 							</xsl:choose>
 							<DIV class="customerBtnWrap">
-								<A class="customerBtn d-flex align-items-center justify-content-center bg-dark fontSize22 opacity-8 text-white" href="#">
+								<A class="customerBtn d-flex align-items-center justify-content-center bg-dark fontSize22 opacity-8 text-white" href="https://line.me/R/ti/p/%40017zadfy">
 									<I class="fad fa-user-headset"></I>
 								</A>
 							</DIV>

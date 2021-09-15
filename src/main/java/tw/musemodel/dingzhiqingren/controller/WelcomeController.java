@@ -3713,7 +3713,29 @@ public class WelcomeController {
 
 		return new JavaScriptObjectNotation().
 			withResult(jSONObject).
-			withResponse(false).
+			withResponse(true).
 			toJSONObject().toString();
+	}
+
+	@PostMapping(path = "/returnFare.json")
+	@ResponseBody
+	String returnFare(@RequestParam History history, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		JSONObject jSONObject;
+		try {
+			jSONObject = historyService.returnFare(history, locale);
+		} catch (Exception exception) {
+			return new JavaScriptObjectNotation().
+				withReason(exception.getMessage()).
+				withResponse(false).
+				toJSONObject().toString();
+		}
+		return jSONObject.toString();
 	}
 }

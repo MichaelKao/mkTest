@@ -179,7 +179,8 @@
 									</xsl:if>
 									<xsl:if test="@ableToReturn">
 										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
-											<BUTTON class="btn btn-sm btn-outline-dark px-2 py-1 p-md-2 m-0 me-1" type="button">退回</BUTTON>
+											<INPUT name="returnFareId" type="hidden" value="{@returnFareId}"/>
+											<BUTTON class="btn btn-sm btn-outline-dark px-2 py-1 p-md-2 m-0 me-1 returnFare" type="button">退回</BUTTON>
 										</DIV>
 									</xsl:if>
 									<xsl:if test="@replyFareReqBtn">

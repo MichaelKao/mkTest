@@ -642,8 +642,8 @@ $(document).ready(function () {
 	}
 
 	function scrollToEnd() {
-		var scrollHeight = $('#messagesArea').prop('scrollHeight');
-		$('#messagesArea').scrollTop(scrollHeight);
+		var scrollHeight = $('.messages').prop('scrollHeight');
+		$('.messages').scrollTop(scrollHeight);
 	}
 
 	var $textarea = $('#chatInput');
