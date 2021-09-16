@@ -3024,8 +3024,6 @@ public class WelcomeController {
 			return Servant.redirectToProfile();
 		}
 
-		LOGGER.debug("測試{}", companionship.getName());
-
 		Document document = servant.parseDocument();
 		Element documentElement = servant.documentElement(
 			document,
