@@ -29,7 +29,7 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container pt-7 pb-4 px-3 col-11 col-md-6 col-lg-5">
+			<DIV class="container pt-7 pt-md-8 pb-4 px-3 col-11 col-md-6 col-lg-5">
 				<DIV class="text-center">
 					<I class="fad fa-users-crown mb-1 fontSize50"></I>
 					<H4 class="text-primary">好友邀請碼</H4>

@@ -544,7 +544,7 @@
 				<DIV class="mt-2">
 					<I class="fad fa-book-heart fontSize22 me-2"></I>
 					<xsl:for-each select="service">
-						<A class="me-1 btn btn-outline-dark m-0 p-1" href="/search.json?serviceTag={@id}">
+						<A class="me-1 btn btn-outline-dark m-0 p-1" href="/search.json?companionship={@id}">
 							<SPAN>#</SPAN>
 							<SPAN>
 								<xsl:value-of select="."/>
