@@ -27,6 +27,9 @@ public class Activity implements Comparable<Activity> {
 
 	private Date reply;
 
+	// 放行生活照
+	private Boolean showAllPictures;
+
 	// 用於聊天室：紀錄寄送人
 	private String sender;
 
@@ -132,6 +135,14 @@ public class Activity implements Comparable<Activity> {
 
 	public void setReply(Date reply) {
 		this.reply = reply;
+	}
+
+	public Boolean getShowAllPictures() {
+		return showAllPictures;
+	}
+
+	public void setShowAllPictures(Boolean showAllPictures) {
+		this.showAllPictures = showAllPictures;
 	}
 
 	public String getSender() {

@@ -274,7 +274,7 @@
 					</DIV>
 					<xsl:for-each select="picture">
 						<DIV class="carousel-item">
-							<IMG class="d-block w-100 border-radius-xl" src="{.}" alt="照片{position()}">
+							<IMG class="d-block w-100" src="{.}" alt="照片{position()}">
 								<xsl:if test="/document/@unlockedPix">
 									<xsl:attribute name="src">
 										<xsl:value-of select="/document/@unlockedPix"/>
@@ -398,7 +398,7 @@
 											</DIV>
 										</xsl:when>
 										<xsl:otherwise>
-											<SPAN>升級 VIP 查看</SPAN>
+											<A href="/upgrade.asp">升級 VIP 查看</A>
 										</xsl:otherwise>
 									</xsl:choose>
 								</DIV>

@@ -170,7 +170,7 @@ public class WelcomeController {
 			);//登录者
 			if (!loverService.isEligible(me)) {
 				//未完成填写注册个人资讯
-				return Servant.redirectToRoot();
+				return Servant.redirectToProfile();
 			}
 			documentElement.setAttribute(
 				"identifier",
@@ -1260,10 +1260,6 @@ public class WelcomeController {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		if (!loverService.isEligible(me)) {
-			//补齐个人资料
-			return Servant.redirectToProfile();
-		}
 
 		Document document = loverService.writeDocument(me, locale);
 		Element documentElement = servant.documentElement(

@@ -1190,6 +1190,9 @@ public class HistoryService {
 				history.getSeen(),
 				history.getReply()
 			);
+			if (Objects.equals(history.getBehavior(), BEHAVIOR_PICTURES_VIEWABLE)) {
+				history.setShowAllPictures(history.getShowAllPictures());
+			}
 			list.add(activeLogs);
 		}
 		for (History history : historyRepository.findByPassiveAndBehaviorNotIn(lover, BEHAVIORS_ANNO_IGNORE)) {
@@ -1387,10 +1390,12 @@ public class HistoryService {
 				if (Objects.equals(initiative, lover)) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
-					message = String.format(
-						"您向%s要求生活照授權",
-						passiveNickname
-					);
+					if (activeLogs.getShowAllPictures() == true) {
+						message = String.format(
+							"您向%s要求生活照授權",
+							passiveNickname
+						);
+					}
 				}
 				if (Objects.equals(passive, lover)) {
 					profileImage = initiativeProfileImage;
