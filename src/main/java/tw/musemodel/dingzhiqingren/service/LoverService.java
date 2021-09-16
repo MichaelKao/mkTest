@@ -2550,15 +2550,17 @@ public class LoverService {
 		}
 
 		Date current = new Date(System.currentTimeMillis());
-		historyRepository.findAll(Specifications.withdrawal(honey)).stream().map(history -> {
-			@SuppressWarnings("null")
+		for (History history : historyRepository.findAll(Specifications.withdrawal(honey))) {
+			// 已經退回的不列出
+			if (Objects.nonNull(historyRepository.findByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history))) {
+				continue;
+			}
 			Short points = Objects.equals(history.getBehavior(), BEHAVIOR_FARE) ? history.getPoints() : (short) (history.getPoints() / 2);
 			WithdrawalRecord withdrawalRecord = new WithdrawalRecord(honey, (short) -points, WayOfWithdrawal.WIRE_TRANSFER, current);
 			withdrawalRecord.setId(history.getId());
-			return withdrawalRecord;
-		}).forEachOrdered(withdrawalRecord -> {
-			withdrawalRecordRepository.saveAndFlush(withdrawalRecord);
-		});
+			withdrawalRecordRepository.save(withdrawalRecord);
+		}
+		withdrawalRecordRepository.flush();
 
 		WithdrawalInfo withdrawalInfo = null;
 		if (withdrawalInfoRepository.countByHoney(honey) > 0) {

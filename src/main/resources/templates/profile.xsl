@@ -227,41 +227,6 @@
 							</DIV>
 						</DIV>
 					</DIV>
-					<DIV class="modal fade" id="referralCodeModal" tabindex="-1">
-						<DIV class="modal-dialog modal-dialog-centered">
-							<DIV class="modal-content">
-								<DIV class="modal-body">
-									<DIV class="d-flex">
-										<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
-											<I class="fal fa-times"></I>
-										</BUTTON>
-									</DIV>
-									<DIV class="mt-3">
-										<DIV class="text-center">
-											<I class="fad fa-users-crown mb-1 fontSize50"></I>
-											<H4 class="text-primary">好友邀請碼</H4>
-											<DIV class="d-flex justify-content-center">
-												<DIV class="h2 text-lighter" id="referralCode">
-													<xsl:value-of select="@referralCode"/>
-												</DIV>
-												<BUTTON class="btn btn-link m-0 p-0 text-lg ms-2 text-dark" id="referralCodeCopy">
-													<I class="fal fa-copy"></I>
-												</BUTTON>
-											</DIV>
-										</DIV>
-										<HR class="text-primary opacity-8 my-2"/>
-										<DIV class="position-relative">
-											<DIV class="descendants"></DIV>
-											<DIV class="pagination text-center text-sm text-primary cursor-pointer"></DIV>
-										</DIV>
-									</DIV>
-									<DIV class="text-center">
-										<BUTTON class="btn btn-outline-dark my-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
-									</DIV>
-								</DIV>
-							</DIV>
-						</DIV>
-					</DIV>
 				</xsl:if>
 				<xsl:if test="@blocking or @blockedBy">
 					<DIV class="modal fade show" id="blockedModal">
@@ -557,11 +522,6 @@
 						</DIV>
 					</xsl:if>
 				</DIV>
-				<xsl:if test="/document/@me">
-					<DIV class="d-flex align-items-center my-2">
-						<BUTTON class="btn text-xs bg-gradient-primary px-2 py-1 m-0" data-bs-target="#referralCodeModal" data-bs-toggle="modal">邀請碼</BUTTON>
-					</DIV>
-				</xsl:if>
 				<DIV class="text-xs my-1">
 					<I class="fal fa-clock"></I>
 					<SAPN class="ms-1">

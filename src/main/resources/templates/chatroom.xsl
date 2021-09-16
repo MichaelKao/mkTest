@@ -199,6 +199,10 @@
 													<I class="fad fa-user-edit fontSize22 col-1"></I>
 													<SPAN class="ms-1">個人檔案</SPAN>
 												</A>
+												<A class="dropdown-item border-radius-md row" href="/referralCode.asp">
+													<I class="fad fa-users-crown fontSize22 col-1"></I>
+													<SPAN class="ms-1">好友邀請碼</SPAN>
+												</A>
 												<A class="dropdown-item border-radius-md row" href="/favorite.asp">
 													<I class="fad fa-box-heart fontSize22 col-1"></I>
 													<SPAN class="ms-1">我的收藏</SPAN>
@@ -222,6 +226,10 @@
 												<A class="dropdown-item border-radius-md row" href="/profile/">
 													<I class="fad fa-user-edit fontSize22 col-1"></I>
 													<SPAN class="ms-1">個人檔案</SPAN>
+												</A>
+												<A class="dropdown-item border-radius-md row" href="/referralCode.asp">
+													<I class="fad fa-users-crown fontSize22 col-1"></I>
+													<SPAN class="ms-1">好友邀請碼</SPAN>
 												</A>
 												<A class="dropdown-item border-radius-md row" href="/favorite.asp">
 													<I class="fad fa-box-heart fontSize22 col-1"></I>

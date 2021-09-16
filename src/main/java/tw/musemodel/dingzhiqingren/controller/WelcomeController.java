@@ -3723,6 +3723,14 @@ public class WelcomeController {
 			toJSONObject().toString();
 	}
 
+	/**
+	 * 退回車馬費
+	 *
+	 * @param history
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
 	@PostMapping(path = "/returnFare.json")
 	@ResponseBody
 	String returnFare(@RequestParam History history, Authentication authentication, Locale locale) {
@@ -3743,5 +3751,50 @@ public class WelcomeController {
 				toJSONObject().toString();
 		}
 		return jSONObject.toString();
+	}
+
+	/**
+	 * 邀請碼頁面
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/referralCode.asp")
+	@Secured({Servant.ROLE_ADVENTURER})
+	ModelAndView refferalCode(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+		if (!loverService.isEligible(me)) {
+			//补齐个人资料
+			return Servant.redirectToProfile();
+		}
+
+		Document document = servant.parseDocument();
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
+		);
+
+		documentElement.setAttribute(
+			"title",
+			messageSource.getMessage(
+				"title.referralCode",
+				null,
+				locale
+			)
+		);//网页标题
+
+		Element referralCodeElement = document.createElement("referralCode");
+		referralCodeElement.setTextContent(me.getReferralCode());
+		documentElement.appendChild(referralCodeElement);
+
+		ModelAndView modelAndView = new ModelAndView("referralCode");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
 	}
 }

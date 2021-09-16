@@ -39,37 +39,52 @@
 					</H4>
 					<HR class="horizontal dark"/>
 				</DIV>
-				<DIV class="col-lg-9 mx-auto d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center">
+				<DIV class="d-flex flex-wrap justify-content-center mx-0">
 					<xsl:for-each select="lover">
-						<DIV class="col-11 col-sm-8 card card-frame mb-2">
-							<DIV class="card-body d-flex align-items-center p-3">
+						<A class="position-relative m-1" href="/profile/{@identifier}/">
+							<IMG class="border-radius-md" src="{@profileImage}" width="150"/>
+							<DIV class="position-absolute right-0 text-center" style="width: 32px; top: 5px;">
+								<xsl:if test="@vvip">
+									<I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>
+								</xsl:if>
+								<xsl:if test="@relief = 'true'">
+									<I class="fas fa-shield-check fontSize22 text-success text-shadow"></I>
+								</xsl:if>
+							</DIV>
+							<DIV class="position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center">
 								<DIV>
-									<A href="/profile/{@identifier}/">
-										<IMG alt="profile_photo" class="border-radius-lg" src="{@profileImage}" width="70"/>
-									</A>
+									<SPAN>
+										<xsl:value-of select="@nickname"/>
+									</SPAN>
+									<SPAN class="ms-2">
+										<xsl:value-of select="@age"/>
+									</SPAN>
 								</DIV>
-								<DIV class="ms-4">
-									<A class="h6 d-flex align-items-end justify-content-center" href="/profile/{@identifier}/">
-										<SPAN class="me-2">
-											<xsl:value-of select="@nickname"/>
-										</SPAN>
+								<xsl:if test="relationship">
+									<DIV>
+										<SPAN>尋找</SPAN>
 										<SPAN>
-											<xsl:value-of select="@age"/>
+											<xsl:value-of select="relationship"/>
 										</SPAN>
-										<xsl:if test="@vip">
-											<SPAN class="ms-2">
-												<IMG class="border-radius-md" src="/vip.svg" width="27"/>
-											</SPAN>
-										</xsl:if>
-										<xsl:if test="@relief = 'true'">
-											<SPAN class="ms-2">
-												<IMG class="border-radius-md" src="/accept.svg" width="27"/>
-											</SPAN>
-										</xsl:if>
-									</A>
+									</DIV>
+								</xsl:if>
+								<DIV>
+									<xsl:for-each select="location">
+										<SPAN class="me-1">
+											<xsl:if test="position() = last()">
+												<xsl:attribute name="class"></xsl:attribute>
+											</xsl:if>
+											<xsl:value-of select="."/>
+										</SPAN>
+									</xsl:for-each>
 								</DIV>
 							</DIV>
-						</DIV>
+							<xsl:if test="@following">
+								<DIV class="position-absolute left-0" style="width: 32px; top: 5px;">
+									<I class="fas fa-heart-circle text-primary fontSize22"></I>
+								</DIV>
+							</xsl:if>
+						</A>
 					</xsl:for-each>
 				</DIV>
 				<xsl:call-template name="footer"/>
