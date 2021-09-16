@@ -533,7 +533,15 @@ public class History implements java.io.Serializable {
 		/**
 		 * 退回車馬費
 		 */
-		TUI_HUI_CHE_MA_FEI("TUI_HUI_CHE_MA_FEI", 22);
+		TUI_HUI_CHE_MA_FEI("TUI_HUI_CHE_MA_FEI", 22),
+		/**
+		 * 可放行生活照
+		 */
+		KE_FANG_XING("KE_FANG_XING", 23),
+		/**
+		 * 不放行生活照
+		 */
+		BU_FANG_XING("BU_FANG_XING", 24);
 
 		private String label;
 

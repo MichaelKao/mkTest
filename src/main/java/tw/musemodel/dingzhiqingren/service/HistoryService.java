@@ -238,6 +238,16 @@ public class HistoryService {
 	public static final Behavior BEHAVIOR_PICTURES_VIEWABLE = Behavior.FANG_XING_SHENG_HUO_ZHAO;
 
 	/**
+	 * 历程：可放行生活照
+	 */
+	public static final Behavior BEHAVIOR_ACCEPT_PICTURES_VIEWABLE = Behavior.KE_FANG_XING;
+
+	/**
+	 * 历程：不放行生活照
+	 */
+	public static final Behavior BEHAVIOR_REFUSE_PICTURES_VIEWABLE = Behavior.BU_FANG_XING;
+
+	/**
 	 * 聊天相关行为
 	 */
 	@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
@@ -1390,12 +1400,10 @@ public class HistoryService {
 				if (Objects.equals(initiative, lover)) {
 					profileImage = passiveProfileImage;
 					identifier = passiveIdentifier;
-					if (activeLogs.getShowAllPictures() == true) {
-						message = String.format(
-							"您向%s要求生活照授權",
-							passiveNickname
-						);
-					}
+					message = String.format(
+						"您向%s要求生活照授權",
+						passiveNickname
+					);
 				}
 				if (Objects.equals(passive, lover)) {
 					profileImage = initiativeProfileImage;
@@ -1415,6 +1423,24 @@ public class HistoryService {
 							null
 						);
 					}
+				}
+			}
+			if (activeLogs.getBehavior() == BEHAVIOR_ACCEPT_PICTURES_VIEWABLE) {
+				if (Objects.equals(initiative, lover)) {
+					profileImage = passiveProfileImage;
+					identifier = passiveIdentifier;
+					message = String.format(
+						"您已同意給%s看您的生活照",
+						passiveNickname
+					);
+				}
+				if (Objects.equals(passive, lover)) {
+					profileImage = initiativeProfileImage;
+					identifier = initiativeIdentifier;
+					message = String.format(
+						"%s同意給您看生活照",
+						initiativeNickname
+					);
 				}
 			}
 			if (activeLogs.getBehavior() == BEHAVIOR_LAI_KOU_DIAN) {
@@ -1652,6 +1678,8 @@ public class HistoryService {
 			throw new RuntimeException("picturesAuth.mustBeStraight");
 		}
 		toggleShowAllPictures(requester, acceptant);
+		History history = new History(acceptant, requester, BEHAVIOR_ACCEPT_PICTURES_VIEWABLE);
+		historyRepository.saveAndFlush(history);
 		// 推送通知給對方
 		webSocketServer.sendNotification(
 			requester.getIdentifier().toString(),
@@ -1664,7 +1692,7 @@ public class HistoryService {
 			lineMessagingService.notify(
 				requester,
 				String.format(
-					"有養蜜拒絕同意給您看生活照..馬上查看 https://%s/activeLogs.asp",
+					"有養蜜同意給您看生活照..馬上查看 https://%s/activeLogs.asp",
 					servant.LOCALHOST
 				));
 		}
