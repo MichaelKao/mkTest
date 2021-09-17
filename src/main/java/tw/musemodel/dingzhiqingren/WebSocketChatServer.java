@@ -27,6 +27,7 @@ import tw.musemodel.dingzhiqingren.model.ChatMessage;
 import tw.musemodel.dingzhiqingren.model.WebsocketState;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
+import tw.musemodel.dingzhiqingren.service.HistoryService;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.WebSocketService;
@@ -70,6 +71,13 @@ public class WebSocketChatServer {
 	@Autowired
 	public void setWebSocketServer(WebSocketServer webSocketServer) {
 		WebSocketChatServer.webSocketServer = webSocketServer;
+	}
+
+	static HistoryService historyService;
+
+	@Autowired
+	public void setHistoryService(HistoryService historyService) {
+		WebSocketChatServer.historyService = historyService;
 	}
 
 	//靜態常數，用來記錄當前的再現連接數。應該用執行緒較安全。
@@ -174,6 +182,20 @@ public class WebSocketChatServer {
 		}
 
 		if ("chat".equals(chatMessage.getType()) && "CHE_MA_FEI".equals(chatMessage.getBehavior())) {
+			History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(male, female, BEHAVIOR_FARE);
+			chatMessage.setId(history.getId().toString());
+			message = gson.toJson(chatMessage);
+			Session receiverSession = sessionPools.get(receiverConn);
+			if (receiverSession != null && receiverSession.isOpen()) {
+				receiverSession.getAsyncRemote().sendText(message);
+			}
+			if (userSession != null && userSession.isOpen()) {
+				userSession.getAsyncRemote().sendText(message);
+			}
+			return;
+		}
+
+		if ("chat".equals(chatMessage.getType()) && "TUI_HUI_CHE_MA_FEI".equals(chatMessage.getBehavior())) {
 			Session receiverSession = sessionPools.get(receiverConn);
 			if (receiverSession != null && receiverSession.isOpen()) {
 				receiverSession.getAsyncRemote().sendText(message);

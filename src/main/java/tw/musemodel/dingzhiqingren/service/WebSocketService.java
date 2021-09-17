@@ -95,6 +95,11 @@ public class WebSocketService {
 			male,
 			HistoryService.BEHAVIOR_ASK_FOR_FARE
 		);
+		List<History> returnFareHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
+			female,
+			male,
+			HistoryService.BEHAVIOR_RETURN_FARE
+		);
 		List<Activity> wholeHistoryMsgs = new ArrayList<>();
 		for (History history : maleTalkHistoryMsgs) {
 			Activity activity = new Activity(
@@ -134,7 +139,13 @@ public class WebSocketService {
 				history.getGreeting(),
 				history.getSeen()
 			);
+			if (historyService.ableToReturnFare(history)) {
+				activity.setAbleToReturnFare(Boolean.TRUE);
+			} else {
+				activity.setAbleToReturnFare(Boolean.FALSE);
+			}
 			activity.setPoints((short) Math.abs(history.getPoints()));
+			activity.setId(history.getId());
 			wholeHistoryMsgs.add(activity);
 		}
 		for (History history : femaleTalkHistoryMsgs) {
@@ -188,6 +199,17 @@ public class WebSocketService {
 			activity.setPoints(history.getPoints());
 			activity.setId(history.getId());
 			activity.setReply(history.getReply());
+			wholeHistoryMsgs.add(activity);
+		}
+		for (History history : returnFareHistoryMsgs) {
+			Activity activity = new Activity(
+				female.getIdentifier().toString(),
+				history.getBehavior(),
+				history.getOccurred(),
+				history.getGreeting(),
+				history.getSeen()
+			);
+			activity.setPoints(history.getPoints());
 			wholeHistoryMsgs.add(activity);
 		}
 		Collections.sort(wholeHistoryMsgs);

@@ -1163,6 +1163,14 @@ public class WelcomeController {
 		if (loverService.isVVIP(me)) {
 			//长期贵宾
 			documentElement.setAttribute(
+				"vvip",
+				null
+			);
+		}
+
+		if (loverService.isVIP(me)) {
+			//短期贵宾
+			documentElement.setAttribute(
 				"vip",
 				null
 			);
@@ -1887,6 +1895,9 @@ public class WelcomeController {
 			document,
 			authentication
 		);
+		if (servant.isDevelopment() || servant.isTesting()) {
+			documentElement.setAttribute("development", "true");
+		}
 
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.recharge",
@@ -2134,6 +2145,9 @@ public class WelcomeController {
 			document,
 			authentication
 		);
+		if (servant.isDevelopment() || servant.isTesting()) {
+			documentElement.setAttribute("development", "true");
+		}
 
 		documentElement.setAttribute(
 			"title",

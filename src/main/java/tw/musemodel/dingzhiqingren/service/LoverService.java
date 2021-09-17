@@ -1013,23 +1013,34 @@ public class LoverService {
 					lover.getLogin()
 				),
 				string
-			));
-
-		PublishResult publishResult = AMAZON_SNS.publish(
-			new PublishRequest().
-				withMessage(messageSource.getMessage(
-					"reactivate.sms",
-					new String[]{
-						activation.getString()
-					},
-					locale
-				)).
-				withPhoneNumber(String.format(
-					"+%s%s",
-					lover.getCountry().getCallingCode(),
-					lover.getLogin()
-				))
+			)
 		);
+
+		PublishResult publishResult = null;
+		if (!servant.isDevelopment() && !servant.isTesting()) {
+			publishResult = AMAZON_SNS.publish(
+				new PublishRequest().
+					withMessage(messageSource.getMessage(
+						"reactivate.sms",
+						new String[]{
+							activation.getString()
+						},
+						locale
+					)).
+					withPhoneNumber(String.format(
+						"+%s%s",
+						lover.getCountry().getCallingCode(),
+						lover.getLogin()
+					))
+			);
+
+			LOGGER.debug(
+				"%s.reactivate();\n再激活：{}",
+				publishResult
+			);
+		} else {
+			LOGGER.debug("开发模式下再激活不发送短信息。");
+		}
 
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
@@ -1164,21 +1175,25 @@ public class LoverService {
 			).replace(' ', '0')
 		);
 
-		PublishResult publishResult = AMAZON_SNS.publish(
-			new PublishRequest().
-				withMessage(messageSource.getMessage(
-					"resetPassword.sms",
-					new String[]{
-						resetShadow.getString()
-					},
-					locale
-				)).
-				withPhoneNumber(String.format(
-					"+%s%s",
-					country.getCallingCode(),
-					login
-				))
-		);
+		if (!servant.isDevelopment() && !servant.isTesting()) {
+			AMAZON_SNS.publish(
+				new PublishRequest().
+					withMessage(messageSource.getMessage(
+						"resetPassword.sms",
+						new String[]{
+							resetShadow.getString()
+						},
+						locale
+					)).
+					withPhoneNumber(String.format(
+						"+%s%s",
+						country.getCallingCode(),
+						login
+					))
+			);
+		} else {
+			LOGGER.debug("开发模式下重设密码不发送短信息。");
+		}
 
 		LineMessagingService.notifyDev(
 			Arrays.asList(

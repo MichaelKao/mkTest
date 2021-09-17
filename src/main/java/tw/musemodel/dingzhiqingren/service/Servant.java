@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -63,13 +64,16 @@ public class Servant {
 	private static final String EMPTY_DOCUMENT_URI = "classpath:/skeleton/default.xml";
 
 	@Autowired
-	private CountryRepository countryRepository;
+	private Environment environment;
+
+	@Autowired
+	private MessageSource messageSource;
 
 	@Autowired
 	private LoverService loverService;
 
 	@Autowired
-	private MessageSource messageSource;
+	private CountryRepository countryRepository;
 
 	@Autowired
 	private RoleRepository roleRepository;
@@ -417,8 +421,30 @@ public class Servant {
 		return documentElement;
 	}
 
+	public String[] getActiveProfiles() {
+		return environment.getActiveProfiles();
+	}
+
 	public List<Country> getCountries() {
 		return countryRepository.findAll();
+	}
+
+	public boolean isDevelopment() {
+		for (String profile : getActiveProfiles()) {
+			if ("DEVELOPMENT".equalsIgnoreCase(profile)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isTesting() {
+		for (String profile : getActiveProfiles()) {
+			if ("TESTING".equalsIgnoreCase(profile)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public boolean isNull(Authentication authentication) {
