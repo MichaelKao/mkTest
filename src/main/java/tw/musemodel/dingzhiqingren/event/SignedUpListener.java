@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import tw.musemodel.dingzhiqingren.entity.Activation;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.service.LoverService;
+import tw.musemodel.dingzhiqingren.service.Servant;
 
 /**
  * @author p@musemodel.tw
@@ -39,6 +40,9 @@ public class SignedUpListener implements ApplicationListener<SignedUpEvent> {
 		withRegion(Regions.AP_SOUTHEAST_1).build();
 
 	@Autowired
+	private Servant servant;
+
+	@Autowired
 	private LoverService loverService;
 
 	/**
@@ -51,23 +55,27 @@ public class SignedUpListener implements ApplicationListener<SignedUpEvent> {
 		Lover lover = event.getLover();
 		Activation activation = loverService.signedUp(lover);
 
-		PublishResult publishResult = AMAZON_SNS.publish(
-			new PublishRequest().
-				withMessage(String.format(
-					"歡迎加入「養蜜youngme」您的激活碼為：%s，使用期限為1小時，如超過時間需重新申請唷！",
-					activation.getString()
-				)).
-				withPhoneNumber(String.format(
-					"+%s%s",
-					lover.getCountry().getCallingCode(),
-					lover.getLogin()
-				))
-		);
+		if (!servant.isDevelopment()) {
+			PublishResult publishResult = AMAZON_SNS.publish(
+				new PublishRequest().
+					withMessage(String.format(
+						"歡迎加入「養蜜youngme」您的激活碼為：%s，使用期限為1小時，如超過時間需重新申請唷！",
+						activation.getString()
+					)).
+					withPhoneNumber(String.format(
+						"+%s%s",
+						lover.getCountry().getCallingCode(),
+						lover.getLogin()
+					))
+			);
 
-		LOGGER.debug(
-			"%s.onApplicationEvent(\n\tSignedUpEvent = {}\n);\n使用 AWS 开发工具包提供的 Amazon SNS 客户端发送消息：{}",
-			event,
-			publishResult
-		);
+			LOGGER.debug(
+				"%s.onApplicationEvent(\n\tSignedUpEvent = {}\n);\n使用 AWS 开发工具包提供的 Amazon SNS 客户端发送消息：{}",
+				event,
+				publishResult
+			);
+		} else {
+			LOGGER.debug("开发模式下不发送短信息。");
+		}
 	}
 }
