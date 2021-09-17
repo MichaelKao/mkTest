@@ -313,12 +313,26 @@
 		<!-- Global site tag (gtag.js) - Google Analytics -->
 		<SCRIPT async="" src="https://www.googletagmanager.com/gtag/js?id={/document/seo/googleAnalytics/@id}"/>
 		<SCRIPT>
-			<!--<xsl:copy>-->
 			<xsl:value-of
 				select="/document/seo/googleAnalytics"
 				disable-output-escaping="yes"
 			/>
-			<!--</xsl:copy>-->
 		</SCRIPT>
+		<!-- Facebook Pixel Code -->
+		<SCRIPT>
+			<xsl:value-of
+				select="/document/seo/facebookPixel"
+				disable-output-escaping="yes"
+			/>
+		</SCRIPT>
+		<NOSCRIPT>
+			<IMG
+				height="1"
+				width="1"
+				style="display:none"
+				src="https://www.facebook.com/tr?id={/document/seo/facebookPixel/@id}&#38;ev=PageView&#38;noscript=1"
+			/>
+		</NOSCRIPT>
+		<!-- End Facebook Pixel Code -->
 	</xsl:template>
 </xsl:stylesheet>

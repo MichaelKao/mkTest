@@ -53,7 +53,7 @@
 							<xsl:if test="not(@signIn)">
 								<DIV class="mt-2">
 									<A class="btn btn-primary btn-round btn-sm mx-2" href="/signIn.asp">登入</A>
-									<A class="btn btn-primary btn-round btn-sm mx-2" href="/signUp.asp">註冊</A>
+									<A class="btn btn-primary btn-round btn-sm mx-2" href="/signUp.asp" onclick="fbq('track','StartTrial');">註冊</A>
 								</DIV>
 							</xsl:if>
 						</DIV>
@@ -205,6 +205,7 @@
 			</xsl:if>
 		</BODY>
 	</xsl:template>
+
 	<xsl:template match="area">
 		<xsl:if test="vip">
 			<ARTICLE class="border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
