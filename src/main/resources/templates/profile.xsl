@@ -278,11 +278,11 @@
 								</BUTTON>
 							</DIV>
 						</xsl:if>
-						<DIV>
+						<!--						<DIV>
 							<BUTTON class="btn btn-icon-only btn-link ms-4">
 								<I class="fad fa-lightbulb-exclamation fontSize35"></I>
 							</BUTTON>
-						</DIV>
+						</DIV>-->
 						<DIV>
 							<BUTTON class="btn btn-icon-only btn-link ms-3 me-1" data-bs-target="#blockModal" data-bs-toggle="modal">
 								<I class="fad fa-user-slash fontSize35"></I>

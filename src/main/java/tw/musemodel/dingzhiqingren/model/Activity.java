@@ -36,6 +36,9 @@ public class Activity implements Comparable<Activity> {
 	// 用於聊天室：要求車馬費的歷程 id
 	private Long id;
 
+	// 用於聊天室：可否退回
+	private Boolean ableToReturnFare;
+
 	@Override
 	public int compareTo(Activity other) {
 		return occurred.compareTo(other.occurred);
@@ -159,5 +162,13 @@ public class Activity implements Comparable<Activity> {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Boolean getAbleToReturnFare() {
+		return ableToReturnFare;
+	}
+
+	public void setAbleToReturnFare(Boolean ableToReturnFare) {
+		this.ableToReturnFare = ableToReturnFare;
 	}
 }

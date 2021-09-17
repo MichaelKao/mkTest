@@ -48,7 +48,7 @@ $(document).ready(function () {
 					divWrap.appendChild(divParent);
 					divParent.appendChild(divChild);
 					if (behavior !== 'LIAO_LIAO' && behavior !== 'DA_ZHAO_HU' && behavior !== 'QUN_FA'
-						&& behavior !== 'YAO_CHE_MA_FEI' && behavior !== 'CHE_MA_FEI') {
+						&& behavior !== 'YAO_CHE_MA_FEI' && behavior !== 'CHE_MA_FEI' && behavior !== 'TUI_HUI_CHE_MA_FEI') {
 						var contentDiv = document.createElement('DIV');
 						divChild.appendChild(contentDiv);
 						var dateDiv = document.createElement('DIV');
@@ -157,7 +157,8 @@ $(document).ready(function () {
 													'sender': self,
 													'receiver': friend,
 													'behavior': 'CHE_MA_FEI',
-													'points': msg.points
+													'points': msg.points,
+													'ableToReturnFare': true
 												};
 												websocket.send(JSON.stringify(jsonObj));
 											}
@@ -178,6 +179,57 @@ $(document).ready(function () {
 					}
 					if (behavior === 'CHE_MA_FEI') {
 						self === msg.sender ? divChild.innerHTML = '您已給 💗 ' + msg.points + ' 車馬費' : divChild.innerHTML = '對方給了您 💗 ' + msg.points + ' 車馬費';
+						if (isMale === 'false' && msg.ableToReturnFare == true) {
+							var div = document.createElement('DIV');
+							$(divChild).attr('id', msg.id);
+							$(divChild).append(div);
+							var btn = document.createElement('BUTTON');
+							$(btn).attr({
+								'class': 'btn btn-light btn-round px-2 py-1 m-0 me-1 border-radius-lg returnFare',
+								'type': 'button'
+							});
+							$(div).append(btn);
+							$(btn).html('退回');
+
+							$('BUTTON.returnFare').dblclick(function (e) {
+								e.preventDefault();
+							});
+							$('BUTTON.returnFare').click(function (e) {
+								e.preventDefault();
+								var btn = this;
+								$(btn).attr('disabled', true);
+								$.post(
+									'/returnFare.json',
+									{
+										history: $(btn).closest('DIV.wordBreak').attr('id')
+									},
+									function (data) {
+										if (data.response) {
+											var jsonObj = {
+												'type': 'chat',
+												'sender': self,
+												'receiver': friend,
+												'behavior': 'TUI_HUI_CHE_MA_FEI',
+												'points': msg.points
+											};
+											websocket.send(JSON.stringify(jsonObj));
+											$(btn).closest('DIV').remove();
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+										} else {
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+										}
+									},
+									'json'
+									);
+								return false;
+							});
+						}
+						return;
+					}
+					if (behavior === 'TUI_HUI_CHE_MA_FEI') {
+						self === msg.sender ? divChild.innerHTML = '您已退回對方給您的 💗 ' + msg.points + ' 車馬費' : divChild.innerHTML = '對方退回您給的 💗 ' + msg.points + ' 車馬費';
 						return;
 					}
 					divChild.innerHTML = msg.greeting;
@@ -266,7 +318,8 @@ $(document).ready(function () {
 													'sender': self,
 													'receiver': friend,
 													'behavior': 'CHE_MA_FEI',
-													'points': points
+													'points': points,
+													'ableToReturnFare': true
 												};
 												websocket.send(JSON.stringify(jsonObj));
 											}
@@ -286,6 +339,57 @@ $(document).ready(function () {
 						break;
 					case 'CHE_MA_FEI':
 						self === jsonObj.sender ? divChild.innerHTML += '您已給 💗 ' + jsonObj.points + ' 車馬費' : divChild.innerHTML += '對方給了您 💗 ' + jsonObj.points + ' 車馬費';
+						if (isMale === 'false' && jsonObj.ableToReturnFare == true) {
+							console.log("456", jsonObj.id)
+							var div = document.createElement('DIV');
+							$(divChild).attr('id', jsonObj.id);
+							$(divChild).append(div);
+							var btn = document.createElement('BUTTON');
+							$(btn).attr({
+								'class': 'btn btn-light btn-round px-2 py-1 m-0 me-1 border-radius-lg returnFare',
+								'type': 'button'
+							});
+							$(div).append(btn);
+							$(btn).html('退回');
+
+							$('BUTTON.returnFare').dblclick(function (e) {
+								e.preventDefault();
+							});
+							$('BUTTON.returnFare').click(function (e) {
+								e.preventDefault();
+								var btn = this;
+								$(btn).attr('disabled', true);
+								$.post(
+									'/returnFare.json',
+									{
+										history: $(btn).closest('DIV.wordBreak').attr('id')
+									},
+									function (data) {
+										if (data.response) {
+											var jsonObj = {
+												'type': 'chat',
+												'sender': self,
+												'receiver': friend,
+												'behavior': 'TUI_HUI_CHE_MA_FEI',
+												'points': msg.points
+											};
+											websocket.send(JSON.stringify(jsonObj));
+											$(btn).closest('DIV').remove();
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+										} else {
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+										}
+									},
+									'json'
+									);
+								return false;
+							});
+						}
+						break;
+					case 'TUI_HUI_CHE_MA_FEI':
+						self === jsonObj.sender ? divChild.innerHTML += '您已退回對方給您的 💗 ' + jsonObj.points + ' 車馬費' : divChild.innerHTML += '對方退回您給的 💗 ' + jsonObj.points + ' 車馬費';
 						break;
 					default:
 						divChild.innerHTML = jsonObj.message;
@@ -887,7 +991,8 @@ $(document).ready(function () {
 						'sender': self,
 						'receiver': friend,
 						'behavior': behavior,
-						'points': howMany
+						'points': howMany,
+						'ableToReturnFare': true
 					};
 					websocket.send(JSON.stringify(jsonObj));
 					$('.toast-body').html(data.reason);

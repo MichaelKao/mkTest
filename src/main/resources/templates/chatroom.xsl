@@ -533,10 +533,10 @@
 										<I class="fas fa-comment-alt-times mb-0 fontSize25 text-white"></I>
 									</A>
 									<DIV class="dropdown-menu shadow">
-										<BUTTON class="dropdown-item">
+										<!--										<BUTTON class="dropdown-item">
 											<I class="fad fa-lightbulb-exclamation fontSize22 col-2 text-center"></I>
 											<SPAN class="ms-2">檢舉對方</SPAN>
-										</BUTTON>
+										</BUTTON>-->
 										<BUTTON class="dropdown-item" data-bs-target="#blockModal" data-bs-toggle="modal">
 											<I class="fad fa-user-slash fontSize22 col-2"></I>
 											<SPAN class="ms-2">封鎖對方</SPAN>
