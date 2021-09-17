@@ -205,6 +205,7 @@
 			</xsl:if>
 		</BODY>
 	</xsl:template>
+
 	<xsl:template match="area">
 		<xsl:if test="vip">
 			<ARTICLE class="border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">

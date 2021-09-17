@@ -90,6 +90,11 @@ public class Servant {
 	public static final DateTimeFormatter DATE_TIME_FORMATTER_yyyyMMdd = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	/**
+	 * Facebook 像素 ID
+	 */
+	public static final String FACEBOOK_PIXEL_ID = System.getenv("FACEBOOK_PIXEL_ID");
+
+	/**
 	 * JSON 映射器
 	 */
 	public static final JsonMapper JSON_MAPPER = new JsonMapper();
@@ -440,6 +445,20 @@ public class Servant {
 
 		Element seoElement = document.createElement("seo");
 		documentElement.appendChild(seoElement);
+
+		Element facebookPixelElement = document.createElement("facebookPixel");
+		facebookPixelElement.setAttribute("id", FACEBOOK_PIXEL_ID);
+		facebookPixelElement.appendChild(document.createCDATASection(
+			String.format(
+				new BufferedReader(new InputStreamReader(
+					new ClassPathResource("skeleton/facebookPixel.js").
+						getInputStream(),
+					UTF_8
+				)).lines().collect(Collectors.joining("\n")),
+				FACEBOOK_PIXEL_ID
+			)
+		));
+		seoElement.appendChild(facebookPixelElement);
 
 		Element googleAnalyticsElement = document.createElement("googleAnalytics");
 		googleAnalyticsElement.setAttribute("id", MEASUREMENT_ID);
