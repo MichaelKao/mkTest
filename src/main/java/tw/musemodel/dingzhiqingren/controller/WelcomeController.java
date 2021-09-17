@@ -1168,15 +1168,6 @@ public class WelcomeController {
 			);
 		}
 
-		if (me.getGender()) {
-			if (Objects.nonNull(historyRepository.findByInitiativeAndPassiveAndBehavior(me, mofo, HistoryService.BEHAVIOR_LAI_KOU_DIAN))) {
-				documentElement.setAttribute(
-					"matched",
-					null
-				);//已交换过 LINE 或微信
-			}
-		}
-
 		/*
 		 登录者是否追踪此页情人
 		 */
