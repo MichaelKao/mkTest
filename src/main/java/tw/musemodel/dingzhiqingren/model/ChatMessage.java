@@ -29,6 +29,11 @@ public class ChatMessage {
 	 */
 	private int msgCount;
 
+	/**
+	 * 是否可以退回車馬費
+	 */
+	private Boolean ableToReturnFare;
+
 	public ChatMessage() {
 	}
 
@@ -116,5 +121,13 @@ public class ChatMessage {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Boolean getAbleToReturnFare() {
+		return ableToReturnFare;
+	}
+
+	public void setAbleToReturnFare(Boolean ableToReturnFare) {
+		this.ableToReturnFare = ableToReturnFare;
 	}
 }
