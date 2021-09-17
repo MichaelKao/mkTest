@@ -54,7 +54,7 @@ public class SignedUpListener implements ApplicationListener<SignedUpEvent> {
 		PublishResult publishResult = AMAZON_SNS.publish(
 			new PublishRequest().
 				withMessage(String.format(
-					"【訂製情人】您的激活碼為：%s",
+					"歡迎加入「養蜜youngme」您的激活碼為：%s，使用期限為1小時，如超過時間需重新申請唷！",
 					activation.getString()
 				)).
 				withPhoneNumber(String.format(

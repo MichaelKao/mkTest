@@ -1164,9 +1164,22 @@ public class LoverService {
 			).replace(' ', '0')
 		);
 
-		/*
-		 TODO:	Amazon SNS 并/或 LINE Notify
-		 */
+		PublishResult publishResult = AMAZON_SNS.publish(
+			new PublishRequest().
+				withMessage(messageSource.getMessage(
+					"resetPassword.sms",
+					new String[]{
+						resetShadow.getString()
+					},
+					locale
+				)).
+				withPhoneNumber(String.format(
+					"+%s%s",
+					country.getCallingCode(),
+					login
+				))
+		);
+
 		LineMessagingService.notifyDev(
 			Arrays.asList(
 				LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST
