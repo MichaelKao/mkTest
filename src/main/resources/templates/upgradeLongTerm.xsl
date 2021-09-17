@@ -54,7 +54,14 @@
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="https://cdn.jsdelivr.net/npm/node-forge@0.7.0/dist/forge.min.js"/>
-			<SCRIPT src="https://ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116"/>
+			<SCRIPT>
+				<xsl:attribute name="src">
+					<xsl:choose>
+						<xsl:when test="@development">https://ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116</xsl:when>
+						<xsl:otherwise>https://ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+			</SCRIPT>
 			<SCRIPT src="/SCRIPT/upgradeLongTerm.js"/>
 		</BODY>
 	</xsl:template>

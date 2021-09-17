@@ -1887,6 +1887,9 @@ public class WelcomeController {
 			document,
 			authentication
 		);
+		if (servant.isDevelopment()) {
+			documentElement.setAttribute("development", "true");
+		}
 
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.recharge",
@@ -2134,6 +2137,9 @@ public class WelcomeController {
 			document,
 			authentication
 		);
+		if (servant.isDevelopment()) {
+			documentElement.setAttribute("development", "true");
+		}
 
 		documentElement.setAttribute(
 			"title",
