@@ -194,6 +194,7 @@ $(document).ready(function () {
 				if (data.response) {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');
+					window.location.reload();
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');

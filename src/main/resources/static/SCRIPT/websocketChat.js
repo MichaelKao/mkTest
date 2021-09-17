@@ -1018,6 +1018,8 @@ $(document).ready(function () {
 				if (data.response) {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');
+					console.log('456')
+					window.location.reload();
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');

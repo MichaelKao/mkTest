@@ -599,7 +599,7 @@ public class LoverService {
 
 		blacklistRepository.findByBlocked(someone).forEach(blacklist -> {
 			blockeds.add(
-				blacklist.getBlocked()
+				blacklist.getBlocker()
 			);
 		});
 
@@ -618,7 +618,7 @@ public class LoverService {
 
 		blacklistRepository.findByBlocker(someone).forEach(blacklist -> {
 			blockers.add(
-				blacklist.getBlocker()
+				blacklist.getBlocked()
 			);
 		});
 
