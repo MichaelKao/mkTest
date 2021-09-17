@@ -55,7 +55,7 @@ public class SignedUpListener implements ApplicationListener<SignedUpEvent> {
 		Lover lover = event.getLover();
 		Activation activation = loverService.signedUp(lover);
 
-		if (!servant.isDevelopment()) {
+		if (!servant.isDevelopment() && !servant.isTesting()) {
 			PublishResult publishResult = AMAZON_SNS.publish(
 				new PublishRequest().
 					withMessage(String.format(

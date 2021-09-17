@@ -1017,7 +1017,7 @@ public class LoverService {
 		);
 
 		PublishResult publishResult = null;
-		if (!servant.isDevelopment()) {
+		if (!servant.isDevelopment() && !servant.isTesting()) {
 			publishResult = AMAZON_SNS.publish(
 				new PublishRequest().
 					withMessage(messageSource.getMessage(
@@ -1175,7 +1175,7 @@ public class LoverService {
 			).replace(' ', '0')
 		);
 
-		if (!servant.isDevelopment()) {
+		if (!servant.isDevelopment() && !servant.isTesting()) {
 			AMAZON_SNS.publish(
 				new PublishRequest().
 					withMessage(messageSource.getMessage(

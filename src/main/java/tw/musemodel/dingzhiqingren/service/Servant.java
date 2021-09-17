@@ -438,6 +438,15 @@ public class Servant {
 		return false;
 	}
 
+	public boolean isTesting() {
+		for (String profile : getActiveProfiles()) {
+			if ("TESTING".equalsIgnoreCase(profile)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public boolean isNull(Authentication authentication) {
 		return Objects.isNull(authentication);
 	}
