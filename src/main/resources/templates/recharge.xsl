@@ -75,7 +75,7 @@
 										<xsl:value-of select="@amount"/>
 									</SPAN>
 									<DIV class="text-center mt-2">
-										<A class="btn btn-round btn-light px-4 py-2 m-0" href="/recharge/{position()}.asp">購買</A>
+										<A class="btn btn-round btn-light px-4 py-2 m-0" href="/recharge/{position()}.asp" onclick="fbq('track', 'InitiateCheckout');">購買</A>
 									</DIV>
 								</DIV>
 							</DIV>
@@ -83,7 +83,7 @@
 					</xsl:for-each>
 				</DIV>
 				<DIV class="text-center text-primary text-sm border-radius-xl mx-auto col-11 col-md-6 p-1" style="border: 1px solid #D63384;">
-					<SPAN class="text-primary">本筆款項將在信用卡帳單僅會顯示為 「線上儲值」</SPAN>
+					<SPAN class="text-primary">本筆款項將在信用卡帳單僅會顯示為 「遊戲點數購買」</SPAN>
 				</DIV>
 				<xsl:call-template name="footer"/>
 			</DIV>

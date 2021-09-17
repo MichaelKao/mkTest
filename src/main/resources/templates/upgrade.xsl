@@ -128,7 +128,7 @@
 							</DIV>
 							<xsl:if test="not(@vvip) and not(@vip)">
 								<DIV class="text-center">
-									<A class="btn btn-light btn-round px-4 m-0" href="/upgrade/1.asp">升級</A>
+									<A class="btn btn-light btn-round px-4 m-0" href="/upgrade/1.asp" onclick="fbq('track', 'InitiateCheckout');">升級</A>
 								</DIV>
 							</xsl:if>
 						</DIV>
@@ -166,14 +166,14 @@
 							</DIV>
 							<xsl:if test="not(@vvip)">
 								<DIV class="text-center">
-									<A class="btn btn-light btn-round px-4 m-0" href="/upgrade/2.asp">升級</A>
+									<A class="btn btn-light btn-round px-4 m-0" href="/upgrade/2.asp" onclick="fbq('track', 'InitiateCheckout');">升級</A>
 								</DIV>
 							</xsl:if>
 						</DIV>
 					</DIV>
 				</DIV>
 				<DIV class="text-center border-radius-xl mx-auto col-11 col-md-10 col-xl-8 px-1" style="border: 1px solid #D63384;">
-					<SPAN class="text-primary">本筆款項將在信用卡帳單僅會顯示為 「線上儲值」</SPAN>
+					<SPAN class="text-primary">本筆款項將在信用卡帳單僅會顯示為 「遊戲點數購買」</SPAN>
 				</DIV>
 				<xsl:call-template name="footer"/>
 			</DIV>

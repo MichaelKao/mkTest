@@ -56,7 +56,7 @@
 							</DIV>
 							<DIV class="d-flex mb-2">
 								<DIV>支付金額：</DIV>
-								<DIV class="text-primary text-gradient">
+								<DIV class="text-primary text-gradient totalAmount">
 									<xsl:value-of select="@amount"/>
 								</DIV>
 							</DIV>
@@ -86,11 +86,13 @@
 					</DIV>
 				</DIV>
 			</DIV>
+			<xsl:call-template name="footer"/>
 			<xsl:call-template name="bodyScriptTags"/>
-			<SCRIPT src="/SCRIPT/activate.js"/>
 			<xsl:if test="@signIn">
 				<SCRIPT src="/SCRIPT/websocket.js"/>
 			</xsl:if>
+			<SCRIPT src="/SCRIPT/orderResult.js"/>
+
 		</BODY>
 	</xsl:template>
 </xsl:stylesheet>
