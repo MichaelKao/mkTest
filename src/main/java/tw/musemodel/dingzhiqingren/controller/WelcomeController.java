@@ -1895,7 +1895,7 @@ public class WelcomeController {
 			document,
 			authentication
 		);
-		if (servant.isDevelopment()) {
+		if (servant.isDevelopment() || servant.isTesting()) {
 			documentElement.setAttribute("development", "true");
 		}
 
@@ -2145,7 +2145,7 @@ public class WelcomeController {
 			document,
 			authentication
 		);
-		if (servant.isDevelopment()) {
+		if (servant.isDevelopment() || servant.isTesting()) {
 			documentElement.setAttribute("development", "true");
 		}
 

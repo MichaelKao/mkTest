@@ -11,6 +11,7 @@ $(document).ready(function () {
 					$('.toast').toast('show');
 					if (data.redirect) {
 						$('.toast').on('hidden.bs.toast', function () {
+							fbq('track', 'CompleteRegistration');
 							location.href = data.redirect;
 						});
 					}

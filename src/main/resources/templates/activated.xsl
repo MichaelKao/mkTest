@@ -33,8 +33,9 @@
 					<xsl:apply-templates select="form"/>
 				</DIV>
 			</DIV>
+			<xsl:call-template name="footer"/>
 			<xsl:call-template name="bodyScriptTags"/>
-			<SCRIPT src="/SCRIPT/activate.js"/>
+			<SCRIPT src="/SCRIPT/activated.js"/>
 		</BODY>
 	</xsl:template>
 
