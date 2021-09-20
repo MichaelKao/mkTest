@@ -3,7 +3,7 @@ $(document).ready(function () {
 
 	const shareData = {
 		title: 'MDN',
-		text: 'Youngme 養蜜之旅, 註冊 Youngme 帳號並在註冊後輸入我的專屬邀請碼：' + $('#referralCode').html(),
+		text: 'Youngme 養蜜之旅, 註冊時輸入我的專屬邀請碼：' + $('#referralCode').html(),
 		url: 'https://' + hostName
 	}
 

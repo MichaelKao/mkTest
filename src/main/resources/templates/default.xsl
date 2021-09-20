@@ -84,14 +84,6 @@
 												<I class="fad fa-users-crown fontSize22 col-1"></I>
 												<SPAN class="ms-1">好友邀請碼</SPAN>
 											</A>
-											<A class="dropdown-item border-radius-md row" href="/favorite.asp">
-												<I class="fad fa-box-heart fontSize22 col-1"></I>
-												<SPAN class="ms-1">我的收藏</SPAN>
-											</A>
-											<A class="dropdown-item border-radius-md row" href="/looksMe.asp">
-												<I class="fad fa-shoe-prints fontSize22 col-1"></I>
-												<SPAN class="ms-1">誰看過我</SPAN>
-											</A>
 											<xsl:if test="@female">
 												<A class="dropdown-item border-radius-md row" href="/groupGreeting.asp">
 													<I class="fad fa-comments-alt fontSize22 col-1"></I>
@@ -111,14 +103,6 @@
 											<A class="dropdown-item border-radius-md row" href="/referralCode.asp">
 												<I class="fad fa-users-crown fontSize22 col-1"></I>
 												<SPAN class="ms-1">好友邀請碼</SPAN>
-											</A>
-											<A class="dropdown-item border-radius-md row" href="/favorite.asp">
-												<I class="fad fa-box-heart fontSize22 col-1"></I>
-												<SPAN class="ms-1">我的收藏</SPAN>
-											</A>
-											<A class="dropdown-item border-radius-md row" href="/looksMe.asp">
-												<I class="fad fa-shoe-prints fontSize22 col-1"></I>
-												<SPAN class="ms-1">誰看過我</SPAN>
 											</A>
 											<xsl:if test="@female">
 												<A class="dropdown-item border-radius-md row" href="/groupGreeting.asp">
@@ -204,6 +188,18 @@
 											<xsl:if test="@male">所有甜心</xsl:if>
 											<xsl:if test="@female">所有男仕</xsl:if>
 										</SPAN>
+									</A>
+								</LI>
+								<LI class="nav-item">
+									<A class="nav-link nav-link-icon d-flex align-items-center" href="/favorite.asp">
+										<I class="fad fa-box-heart fontSize22 me-1"></I>
+										<SPAN class="d-lg-none">我的收藏</SPAN>
+									</A>
+								</LI>
+								<LI class="nav-item">
+									<A class="nav-link nav-link-icon d-flex align-items-center" href="/looksMe.asp">
+										<I class="fad fa-shoe-prints fontSize22 me-1"></I>
+										<SPAN class="d-lg-none">誰看過我</SPAN>
 									</A>
 								</LI>
 								<xsl:if test="@female">

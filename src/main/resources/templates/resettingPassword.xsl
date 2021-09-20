@@ -54,7 +54,7 @@
 									<I class="fad fa-shield-check text-lg"/>
 								</DIV>
 								<DIV class="col-11">
-									<INPUT class="form-control" id="string" name="string" placeholder="輸入驗證碼" required="" type="text"/>
+									<INPUT autocomplete="one-time-code" class="form-control" id="string" name="string" inputmode="numeric" placeholder="輸入驗證碼" required="" type="text"/>
 								</DIV>
 							</DIV>
 							<DIV class="row align-items-center mb-3">

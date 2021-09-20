@@ -55,7 +55,7 @@
 									<I class="fad fa-shield-check text-lg"></I>
 								</DIV>
 								<DIV class="col-11">
-									<INPUT class="form-control" id="string" name="string" placeholder="輸入激活碼" required="" type="text"/>
+									<INPUT class="form-control" id="string" inputmode="numeric" name="string" placeholder="輸入激活碼" required="" type="text"/>
 								</DIV>
 							</DIV>
 							<DIV class="text-center">

@@ -62,7 +62,7 @@
 									<I class="fad fa-phone-square-alt text-lg"></I>
 								</DIV>
 								<DIV class="col-11">
-									<INPUT class="form-control form-control-lg" name="login" placeholder="手機號碼" required="" type="text" value=""/>
+									<INPUT class="form-control form-control-lg" inputmode="numeric" name="login" placeholder="手機號碼" required="" type="text" value=""/>
 								</DIV>
 							</DIV>
 							<HR class="horizontal dark my-3"/>

@@ -135,13 +135,13 @@
 							<LABEL for="height">
 								<I class="fad fa-ruler-vertical text-lg"></I>
 							</LABEL>
-							<INPUT class="form-control" id="height" name="height" placeholder="身高" required="" type="text" value="{height}"/>
+							<INPUT class="form-control" id="height" inputmode="numeric" name="height" placeholder="身高" required="" type="text" value="{height}"/>
 						</DIV>
 						<DIV class="col-6 mb-3 ps-1">
 							<LABEL for="weight">
 								<I class="fad fa-weight text-lg"></I>
 							</LABEL>
-							<INPUT class="form-control" id="weight" name="weight" placeholder="體重" required="" type="text" value="{weight}"/>
+							<INPUT class="form-control" id="weight" inputmode="numeric" name="weight" placeholder="體重" required="" type="text" value="{weight}"/>
 						</DIV>
 					</DIV>
 					<DIV class="form-group">

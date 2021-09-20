@@ -61,7 +61,7 @@
 									<I class="fas fa-mobile-alt text-lg"></I>
 								</DIV>
 								<DIV class="col-11">
-									<INPUT class="form-control" id="cellularPhoneNumber" placeholder="手機號碼" required="" type="text"/>
+									<INPUT class="form-control" id="cellularPhoneNumber" inputmode="numeric" placeholder="手機號碼" required="" type="text"/>
 								</DIV>
 							</DIV>
 							<DIV class="text-center">

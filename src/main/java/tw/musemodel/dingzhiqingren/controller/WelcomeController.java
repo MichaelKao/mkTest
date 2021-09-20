@@ -502,6 +502,17 @@ public class WelcomeController {
 	@Secured({Servant.ROLE_ADVENTURER})
 	String changePassword(@RequestParam String password, Authentication authentication, Locale locale) {
 		Lover me = loverService.loadByUsername(authentication.getName());
+		if (password.isBlank() || password.isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"resetPassword.shadowMustntBeNull",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject().
+				toString();
+		}
 		loverService.changePassword(me, password);
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
@@ -825,6 +836,18 @@ public class WelcomeController {
 				toString();
 		}
 
+		if (shadow.isBlank() || shadow.isEmpty()) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"resetPassword.shadowMustntBeNull",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject().
+				toString();
+		}
+
 		try {
 			return loverService.resetPassword(
 				hexadecimalId,
@@ -836,6 +859,7 @@ public class WelcomeController {
 			return new JavaScriptObjectNotation().
 				withReason(runtimeException.getMessage()).
 				withResponse(false).
+				toJSONObject().
 				toString();
 		}
 	}
