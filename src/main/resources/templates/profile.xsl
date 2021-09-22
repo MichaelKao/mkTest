@@ -245,7 +245,7 @@
 					<SPAN class="visually-hidden">Next</SPAN>
 				</BUTTON>
 				<xsl:if test="/document/@me">
-					<A class="text-primary" href="/album.asp">
+					<A class="btn btn-link m-0 p-0" href="/album.asp">
 						<I class="fad fa-camera fontSize35"></I>
 					</A>
 				</xsl:if>
@@ -291,8 +291,14 @@
 					</DIV>
 				</xsl:if>
 				<xsl:if test="/document/@me">
-					<DIV class="ms-md-auto ms-md-5">
-						<A class="btn btn-link m-2 p-0 text-primary" href="/me.asp">
+					<DIV class="ms-auto">
+						<xsl:if test="not(@relief)">
+							<BUTTON class="btn btn-link m-2 p-0 reliefBtn" data-bs-target="#cropModal" data-bs-toggle="modal">
+								<I class="fad fa-shield-check fontSize35"></I>
+
+							</BUTTON>
+						</xsl:if>
+						<A class="btn btn-link m-2 p-0" href="/me.asp">
 							<I class="fad fa-pen fontSize35"></I>
 						</A>
 					</DIV>
@@ -400,7 +406,7 @@
 			</xsl:if>
 		</DIV>
 		<DIV class="col-md-6 col-lg-5">
-			<SECTION class="my-3">
+			<SECTION class="mb-3">
 				<DIV class="d-flex align-items-baseline mb-1">
 					<DIV class="me-2">
 						<xsl:if test="gender/@gender = 'male'">
@@ -421,16 +427,9 @@
 							<I class="fad fa-crown fontSize25 text-yellow"></I>
 						</DIV>
 					</xsl:if>
-					<xsl:if test="(/document/@me) and (not(@relief) or @relief = 'false')">
+					<xsl:if test="not(@relief) or @relief = 'false'">
 						<DIV class="mx-1 reliefBadge">
-							<xsl:if test="@relief = 'false'">
-								<I class="fad fa-shield-check fontSize25"></I>
-							</xsl:if>
-							<xsl:if test="not(@relief)">
-								<DIV class="cursor-pointer" data-bs-target="#cropModal" data-bs-toggle="modal">
-									<I class="fad fa-shield-check fontSize25"></I>
-								</DIV>
-							</xsl:if>
+							<I class="fad fa-shield-check fontSize25"></I>
 						</DIV>
 					</xsl:if>
 					<xsl:if test="@relief = 'true'">

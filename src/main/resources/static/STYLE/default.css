@@ -34,6 +34,16 @@ INPUT, TEXTAREA {
 	font-size: 50px;
 }
 
+.width30 {
+	width: 30px;
+}
+
+@media (max-width: 991.98px){
+	.width30whenMobile {
+		width: 30px;
+	}
+}
+
 .text-yellow {
 	color: #FF8C00;
 }

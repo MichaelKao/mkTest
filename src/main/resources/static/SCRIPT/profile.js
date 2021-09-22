@@ -31,14 +31,12 @@ $(document).ready(function () {
 		}
 	}
 
-	$('.imgContainer').css({'max-height': $(window).height() - 250 + "px"});
-
 	var result = document.querySelector('.result');
 	var cropBtn = document.querySelector('#cropBtn');
 	var input;
 	var $cropModal = $('#cropModal');
+	var $reliefBtn = $('.reliefBtn');
 	var cropper;
-	var relief = document.querySelector('.relief');
 
 	$('INPUT[name="image"]').on("change", function (e) {
 		var files = e.target.files;
@@ -140,10 +138,8 @@ $(document).ready(function () {
 			success: function (data) {
 				$('.toast-body').html('上傳成功，等待人員審核');
 				$('.toast').toast('show');
-				var i = document.createElement('I');
-				$(i).attr('class', 'fad fa-shield-check fontSize25');
-				$('DIV.reliefBadge').empty().append(i);
 				$cropModal.modal('hide');
+				$reliefBtn.remove();
 			},
 			error: function (request, status, error) {
 				$('.toast-body').html('上傳失敗');
@@ -204,41 +200,19 @@ $(document).ready(function () {
 			);
 	});
 
-	var $giftModal = $('#giftModal');
-	var $modal = $('#modal');
-	var url;
-
-	$('.gift').click(function () {
-		$giftModal.modal('show');
-		url = '/fare.json';
-	});
-
-	$('A#giveMeLine').on("click", function () {
-		$modal.modal('show');
-		url = '/stalking.json';
-	});
-
-	$('A#greeting').on("click", function () {
-		$modal.modal('show');
-		url = '/greet.json';
-	});
-
-	$('.confirmBtn').click(function (event) {
+	$('.confirmFareBtn').click(function (event) {
 		event.preventDefault();
-		let form = this;
 		$.post(
-			url,
+			'/fare.json',
 			{
 				howMany: $('INPUT[name="howMany"]').val(),
-				whom: $('INPUT[name="whom"]').val(),
-				what: $('TEXTAREA[name="what"]').val()
+				whom: $('INPUT[name="whom"]').val()
 			},
 			function (data) {
 				if (data.response) {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');
-					$giftModal.modal('hide');
-					$modal.modal('hide');
+					$('#giftModal').modal('hide');
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');

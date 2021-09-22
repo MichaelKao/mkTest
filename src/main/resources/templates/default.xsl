@@ -76,42 +76,42 @@
 									</A>
 									<DIV class="dropdown-menu dropdown-menu-animation p-3 border-radius-lg mt-0 mt-lg-3">
 										<DIV class="d-none d-lg-block">
-											<A class="dropdown-item border-radius-md row" href="/profile/">
-												<I class="fad fa-user-edit fontSize22 col-1"></I>
+											<A class="dropdown-item border-radius-md" href="/profile/">
+												<I class="fad fa-user-edit fontSize22 width30"></I>
 												<SPAN class="ms-1">個人檔案</SPAN>
 											</A>
-											<A class="dropdown-item border-radius-md row" href="/referralCode.asp">
-												<I class="fad fa-users-crown fontSize22 col-1"></I>
+											<A class="dropdown-item border-radius-md" href="/referralCode.asp">
+												<I class="fad fa-users-crown fontSize22 width30"></I>
 												<SPAN class="ms-1">好友邀請碼</SPAN>
 											</A>
 											<xsl:if test="@female">
-												<A class="dropdown-item border-radius-md row" href="/groupGreeting.asp">
-													<I class="fad fa-comments-alt fontSize22 col-1"></I>
+												<A class="dropdown-item border-radius-md" href="/groupGreeting.asp">
+													<I class="fad fa-comments-alt fontSize22 width30"></I>
 													<SPAN class="ms-1">群發打招呼</SPAN>
 												</A>
 											</xsl:if>
-											<A class="dropdown-item border-radius-md row" href="/setting.asp">
-												<I class="fad fa-cog fontSize22 col-1"></I>
+											<A class="dropdown-item border-radius-md" href="/setting.asp">
+												<I class="fad fa-cog fontSize22 width30"></I>
 												<SPAN class="ms-1">進階設定</SPAN>
 											</A>
 										</DIV>
 										<DIV class="d-lg-none">
-											<A class="dropdown-item border-radius-md row" href="/profile/">
-												<I class="fad fa-user-edit fontSize22 col-1"></I>
+											<A class="dropdown-item border-radius-md" href="/profile/">
+												<I class="fad fa-user-edit fontSize22 width30"></I>
 												<SPAN class="ms-1">個人檔案</SPAN>
 											</A>
-											<A class="dropdown-item border-radius-md row" href="/referralCode.asp">
-												<I class="fad fa-users-crown fontSize22 col-1"></I>
+											<A class="dropdown-item border-radius-md" href="/referralCode.asp">
+												<I class="fad fa-users-crown fontSize22 width30"></I>
 												<SPAN class="ms-1">好友邀請碼</SPAN>
 											</A>
 											<xsl:if test="@female">
-												<A class="dropdown-item border-radius-md row" href="/groupGreeting.asp">
-													<I class="fad fa-comments-alt fontSize22 col-1"></I>
+												<A class="dropdown-item border-radius-md" href="/groupGreeting.asp">
+													<I class="fad fa-comments-alt fontSize22 width30"></I>
 													<SPAN class="ms-1">群發打招呼</SPAN>
 												</A>
 											</xsl:if>
-											<A class="dropdown-item border-radius-md row" href="/setting.asp">
-												<I class="fad fa-cog fontSize22 col-1"></I>
+											<A class="dropdown-item border-radius-md" href="/setting.asp">
+												<I class="fad fa-cog fontSize22 width30"></I>
 												<SPAN class="ms-1">進階設定</SPAN>
 											</A>
 										</DIV>
@@ -183,7 +183,7 @@
 								</xsl:if>
 								<LI class="nav-item">
 									<A class="nav-link nav-link-icon d-flex align-items-center" href="/">
-										<I class="fad fa-home-heart fontSize22 me-1"></I>
+										<I class="fad fa-home-heart fontSize22 width30whenMobile"></I>
 										<SPAN class="d-lg-none">
 											<xsl:if test="@male">所有甜心</xsl:if>
 											<xsl:if test="@female">所有男仕</xsl:if>
@@ -192,20 +192,20 @@
 								</LI>
 								<LI class="nav-item">
 									<A class="nav-link nav-link-icon d-flex align-items-center" href="/favorite.asp">
-										<I class="fad fa-box-heart fontSize22 me-1"></I>
+										<I class="fad fa-box-heart fontSize22 width30whenMobile"></I>
 										<SPAN class="d-lg-none">我的收藏</SPAN>
 									</A>
 								</LI>
 								<LI class="nav-item">
 									<A class="nav-link nav-link-icon d-flex align-items-center" href="/looksMe.asp">
-										<I class="fad fa-shoe-prints fontSize22 me-1"></I>
+										<I class="fad fa-shoe-prints fontSize22 width30whenMobile"></I>
 										<SPAN class="d-lg-none">誰看過我</SPAN>
 									</A>
 								</LI>
 								<xsl:if test="@female">
 									<LI class="nav-item">
 										<A class="nav-link nav-link-icon d-flex align-items-center" href="/withdrawal.asp">
-											<I class="fad fa-badge-dollar fontSize22 me-1"></I>
+											<I class="fad fa-badge-dollar fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">提領車馬費</SPAN>
 										</A>
 									</LI>
@@ -213,13 +213,13 @@
 								<xsl:if test="@male">
 									<LI class="nav-item">
 										<A class="nav-link nav-link-icon d-flex align-items-center" href="/recharge.asp">
-											<I class="fad fa-badge-dollar fontSize22 me-1"></I>
+											<I class="fad fa-badge-dollar fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">購買ME點</SPAN>
 										</A>
 									</LI>
 									<LI class="nav-item">
 										<A class="nav-link nav-link-icon d-flex align-items-center" href="/upgrade.asp">
-											<I class="fad fa-crown fontSize22 me-1"></I>
+											<I class="fad fa-crown fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">升級 VIP</SPAN>
 										</A>
 									</LI>
@@ -229,13 +229,13 @@
 								<xsl:choose>
 									<xsl:when test="@signIn">
 										<A class="nav-link nav-link-icon d-flex align-items-center" href="/signOut.asp">
-											<I class="fad fa-sign-out fontSize22 me-1"></I>
+											<I class="fad fa-sign-out fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">登出</SPAN>
 										</A>
 									</xsl:when>
 									<xsl:otherwise>
 										<A class="nav-link nav-link-icon d-flex align-items-center" href="/signIn.asp">
-											<I class="fad fa-sign-in fontSize22 me-1"></I>
+											<I class="fad fa-sign-in fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">登入</SPAN>
 										</A>
 									</xsl:otherwise>
