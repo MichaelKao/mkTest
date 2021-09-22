@@ -39,7 +39,7 @@
 									</BUTTON>
 								</DIV>
 								<DIV class="mt-3 text-center">
-									<H5 class="modal-title">請聯絡系統客服為您升級</H5>
+									<H5 class="modal-title">請聯絡系統客服為您購買</H5>
 									<A class="btn btn-primary btn-round text-lg py-1 mt-2" href="https://line.me/R/ti/p/%40017zadfy">
 										<I class="fad fa-user-headset me-1"></I>
 										<SPAN>客服</SPAN>
