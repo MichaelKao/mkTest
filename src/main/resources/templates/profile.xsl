@@ -273,7 +273,7 @@
 						</DIV>
 						<xsl:if test="/document/@male">
 							<DIV>
-								<BUTTON class="btn btn-icon-only btn-link ms-4 gift" type="button">
+								<BUTTON class="btn btn-icon-only btn-link ms-4 gift" data-bs-target="#giftModal" data-bs-toggle="modal" type="button">
 									<I class="fad fa-badge-dollar fontSize35"></I>
 								</BUTTON>
 							</DIV>

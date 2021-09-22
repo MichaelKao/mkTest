@@ -253,6 +253,9 @@ public class LoverService {
 	@Value("classpath:sql/谁拉黑了我.sql")
 	private Resource thoseWhoBlockMeResource;
 
+	@Value("classpath:sql/甜心可群發的對象.sql")
+	private Resource groupGreetingList;
+
 	@Autowired
 	private TrialCodeRepository trialCodeRepository;
 
@@ -3196,65 +3199,85 @@ public class LoverService {
 	/**
 	 * 群发打招呼。
 	 *
-	 * @param honey 甜心
+	 * @param female 甜心
 	 * @param greetingMessage 打招呼语
 	 * @param locale 语言环境
 	 * @return 杰森格式对象
 	 */
-	public JSONObject groupGreeting(Lover honey, String greetingMessage, Locale locale) {
-		LOGGER.debug(
-			"2143\t群發進到服務層:\n\n{}\n",
-			greetingMessage
-		);
+	public JSONObject groupGreeting(Lover female, String greetingMessage, Locale locale) {
 		if (Objects.isNull(greetingMessage) || greetingMessage.isBlank()) { //招呼語不能為空
-			LOGGER.debug(
-				"2148\t群發招呼語為空?:\n\n{}\n",
-				greetingMessage
-			);
 			throw new RuntimeException("greet.greetingMessageMustntBeNull");
 		}
-		if (within12hrsFromLastGroupGreeting(honey)) { //24小時內已群發過打招呼
-			LOGGER.debug(
-				"2155\t上次群發在12小時內:\n\n{}\n"
-			);
+		if (within12hrsFromLastGroupGreeting(female)) { //24小時內已群發過打招呼
 			throw new RuntimeException("groupGreeting.within24hrsHasSent");
 		}
 
+		Collection<Location> locations = getLocations(female);
 		LOGGER.debug(
-			"2161\t{}發出群發打招呼:\n\n{}\n",
-			honey.getNickname(),
-			greetingMessage
-		);
-
-		Collection<Location> locations = getLocations(honey);
-		LOGGER.debug(
-			"2168\t女神的地區s\n\n{}\n",
+			"3216\t女神的地區s\n\n{}\n",
 			locations
 		);
-		List<Lover> lovers = loverRepository.findAll(
+		List<Lover> men = loverRepository.findAll(
 			LoverSpecification.malesListForGroupGreeting(
 				true,
 				new HashSet<>(locations)
 			)
 		);
-		LOGGER.debug(
-			"2173\t和女神一樣地區的男士\n\n{}\n",
-			lovers
-		);
+
+//		List<Lover> men = jdbcTemplate.query(
+//			(Connection connection) -> {
+//				StringBuilder stringBuilder = new StringBuilder();
+//				locations.forEach(location -> {
+//					stringBuilder.append(String.format(
+//						"'%s',",
+//						location.getId()
+//					));
+//				});
+//				final String SAME_LOCATION = stringBuilder.
+//					toString().
+//					replaceAll(
+//						",$",
+//						""
+//					);
+//
+//				PreparedStatement preparedStatement;
+//				try {
+//					preparedStatement = connection.prepareStatement(
+//						String.format(
+//							FileCopyUtils.copyToString(
+//								new InputStreamReader(
+//									groupGreetingList.getInputStream(),
+//									UTF_8
+//								)
+//							),
+//							SAME_LOCATION
+//						)
+//					);
+//					preparedStatement.setInt(1, female.getId());
+//					preparedStatement.setInt(2, female.getId());
+//					preparedStatement.setInt(3, NUMBER_OF_GROUP_GREETING);
+//					return preparedStatement;
+//				} catch (IOException ex) {
+//					return null;
+//				}
+//			},
+//			(ResultSet resultSet, int rowNum) -> {
+//				return new Dialogist(
+//					resultSet.getInt("zhu_dong_de"),
+//					resultSet.getInt("bei_dong_de")
+//				);
+//			}
+//		);
 		Date current = new Date(System.currentTimeMillis());
 		int count = 0;
-		for (Lover male : lovers) {
-			LOGGER.debug(
-				"2180\t和女神一樣地區的各個男士\n\n{}\n",
-				male.getNickname()
-			);
+		for (Lover male : men) {
 			// 發給 30 位男仕
 			if (count >= NUMBER_OF_GROUP_GREETING) {
 				break;
 			}
 			count += 1;
 			History history = new History(
-				honey,
+				female,
 				male,
 				Behavior.QUN_FA,
 				(short) 0
@@ -3263,11 +3286,9 @@ public class LoverService {
 			history.setGreeting(greetingMessage);
 			historyRepository.save(history);
 			// 推送通知給男生
-			webSocketServer.sendNotification(
-				male.getIdentifier().toString(),
-				String.format(
-					"%s向你打招呼：「%s」",
-					honey.getNickname(),
+			webSocketServer.sendNotification(male.getIdentifier().toString(),
+				String.format("%s向你打招呼：「%s」",
+					female.getNickname(),
 					greetingMessage
 				));
 			if (hasLineNotify(male)) {
@@ -3280,18 +3301,11 @@ public class LoverService {
 				);
 			}
 		}
+
 		historyRepository.flush();
 
-		LOGGER.debug(
-			"2217\t完成群發\n\n{}\n",
-			messageSource.getMessage(
-				"groupGreeting.done",
-				null,
-				locale
-			)
-		);
-
-		return new JavaScriptObjectNotation().
+		return new JavaScriptObjectNotation()
+			.
 			withReason(messageSource.getMessage(
 				"groupGreeting.done",
 				null,
