@@ -779,8 +779,6 @@ public class WelcomeController {
 			return Servant.redirectToRoot();
 		}
 
-		Integer id = Integer.parseUnsignedInt(hexadecimalId, 16);
-
 		/*
 		 文件
 		 */
@@ -1500,7 +1498,7 @@ public class WelcomeController {
 		);
 
 		Collection<Lover> following = loverService.getThoseIFollow(me);
-		Set<Lover> peekers = new HashSet<Lover>();
+		Set<Lover> peekers = new HashSet<>();
 		for (History history : histories) {
 			if (!peekers.contains(history.getInitiative()) && Objects.isNull(history.getInitiative().getDelete())) {
 				peekers.add(history.getInitiative());
@@ -1530,7 +1528,7 @@ public class WelcomeController {
 					"profileImage",
 					String.format(
 						"https://%s/profileImage/%s",
-						servant.STATIC_HOST,
+						Servant.STATIC_HOST,
 						peeker.getProfileImage()
 					)
 				);
@@ -1843,6 +1841,7 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/recharge.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
+	@SuppressWarnings("null")
 	ModelAndView recharge(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -1867,13 +1866,14 @@ public class WelcomeController {
 			null,
 			locale
 		));//网页标题
-
-		for (Plan plan : planRepository.findAll()) {
+		planRepository.findAll().stream().map(plan -> {
 			Element planElement = document.createElement("plan");
 			planElement.setAttribute("points", Short.toString(plan.getPoints()));
 			planElement.setAttribute("amount", Integer.toString(plan.getAmount()));
+			return planElement;
+		}).forEachOrdered(planElement -> {
 			documentElement.appendChild(planElement);
-		}
+		});
 
 		Element heartsElement = document.createElement("hearts");
 		documentElement.appendChild(heartsElement);
@@ -2783,8 +2783,9 @@ public class WelcomeController {
 	 * @return
 	 */
 	@PostMapping(path = "/rate.json")
-	@Secured({Servant.ROLE_ADVENTURER})
 	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	@SuppressWarnings("UseSpecificCatch")
 	String rate(@RequestParam String rate, @RequestParam String comment, @RequestParam UUID whom, Authentication authentication, Locale locale) {
 		if (rate.isBlank() || rate.isEmpty()) {
 			return new JavaScriptObjectNotation().
@@ -3450,10 +3451,14 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/lockedPic/{picIdentifier}.png", produces = MediaType.IMAGE_PNG_VALUE)
 	@Secured({"ROLE_YONGHU"})
+	@SuppressWarnings("UnusedAssignment")
 	void pictures(@PathVariable String picIdentifier, Authentication authentication, HttpServletResponse response) throws IOException, WriterException {
 		File tmp = null;
 		try {
-			S3Object o = amazonWebServices.AMAZON_S3.getObject(amazonWebServices.BUCKET_NAME, "pictures/" + picIdentifier);
+			S3Object o = AmazonWebServices.AMAZON_S3.getObject(
+				AmazonWebServices.BUCKET_NAME,
+				"pictures/" + picIdentifier
+			);
 			S3ObjectInputStream s3is = o.getObjectContent();
 			tmp = File.createTempFile("s3test", ".png");
 			Files.copy(s3is, tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -3485,13 +3490,12 @@ public class WelcomeController {
 			response.setHeader("Pragma", "no-cache");
 			response.setDateHeader("Expires", 0);
 			response.setContentType("image/png");
-			ServletOutputStream responseOutputStream = response.getOutputStream();
-			responseOutputStream.write(imgByte);
-			responseOutputStream.flush();
-			responseOutputStream.close();
 
+			try (ServletOutputStream responseOutputStream = response.getOutputStream()) {
+				responseOutputStream.write(imgByte);
+				responseOutputStream.flush();
+			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
 		}
 	}
 
@@ -3500,7 +3504,7 @@ public class WelcomeController {
 	 *
 	 * @param femaleUUID
 	 * @param authentication
-	 * @param locale
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/picturesAuth.json", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -3539,7 +3543,7 @@ public class WelcomeController {
 	 *
 	 * @param uuid
 	 * @param authentication
-	 * @param locale
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/acceptPixAuth.json", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -3579,7 +3583,7 @@ public class WelcomeController {
 	 * @param p
 	 * @param type
 	 * @param authentication
-	 * @param locale
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/moreRate.json", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -3587,11 +3591,6 @@ public class WelcomeController {
 	@Secured({Servant.ROLE_ADVENTURER})
 	@SuppressWarnings("null")
 	String moreRate(@RequestParam int p, @RequestParam UUID whom, Authentication authentication, Locale locale) {
-		// 本人
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
-		);
-
 		// 誰
 		Lover lover = loverService.loadByIdentifier(whom);
 
@@ -3621,7 +3620,7 @@ public class WelcomeController {
 	 * @param p
 	 * @param s
 	 * @param authentication
-	 * @param locale
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/descendants.json")
@@ -3645,7 +3644,7 @@ public class WelcomeController {
 	 * @param p
 	 * @param s
 	 * @param authentication
-	 * @param locale
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/trial.json")
@@ -3695,7 +3694,7 @@ public class WelcomeController {
 	 * 聊天列表即時更新訊息
 	 *
 	 * @param authentication
-	 * @param locale
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/updateInbox.json")
@@ -3729,7 +3728,7 @@ public class WelcomeController {
 	 *
 	 * @param history
 	 * @param authentication
-	 * @param locale
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@PostMapping(path = "/returnFare.json")
@@ -3738,27 +3737,24 @@ public class WelcomeController {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
-		);
 
-		JSONObject jSONObject;
+		JSONObject jsonObject;
 		try {
-			jSONObject = historyService.returnFare(history, locale);
+			jsonObject = historyService.returnFare(history, locale);
 		} catch (Exception exception) {
 			return new JavaScriptObjectNotation().
 				withReason(exception.getMessage()).
 				withResponse(false).
 				toJSONObject().toString();
 		}
-		return jSONObject.toString();
+		return jsonObject.toString();
 	}
 
 	/**
 	 * 邀請碼頁面
 	 *
 	 * @param authentication
-	 * @param locale
+	 * @param locale 语言环境
 	 * @return
 	 * @throws SAXException
 	 * @throws IOException

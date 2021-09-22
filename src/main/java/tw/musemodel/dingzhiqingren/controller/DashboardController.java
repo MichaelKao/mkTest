@@ -270,8 +270,9 @@ public class DashboardController {
 	 * @return
 	 */
 	@PostMapping(path = "/identityFailed.json")
-	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	@SuppressWarnings("UnusedAssignment")
 	String identityFailed(@RequestParam("id") Lover lover, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -314,8 +315,9 @@ public class DashboardController {
 	 * @return
 	 */
 	@PostMapping(path = "/identityPassed.json")
-	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	@SuppressWarnings("UnusedAssignment")
 	String identityPassed(@RequestParam("id") Lover lover, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);

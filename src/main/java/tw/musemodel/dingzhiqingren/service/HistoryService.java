@@ -401,7 +401,7 @@ public class HistoryService {
 	 * @param initiative 男生
 	 * @param passive 女生
 	 * @param points 点数
-	 * @param locale
+	 * @param locale 语言环境
 	 * @return 杰森对象
 	 */
 	@Transactional
@@ -446,7 +446,7 @@ public class HistoryService {
 				passive,
 				String.format(
 					"有一位男仕給妳車馬費！馬上查看 https://%s/activeLogs.asp",
-					servant.LOCALHOST
+					Servant.LOCALHOST
 				));
 		}
 
@@ -500,7 +500,7 @@ public class HistoryService {
 				passive,
 				String.format(
 					"有一位甜心和你要求車馬費！馬上查看 https://%s/activeLogs.asp",
-					servant.LOCALHOST
+					Servant.LOCALHOST
 				));
 		}
 
@@ -520,7 +520,7 @@ public class HistoryService {
 	 *
 	 * @param initiative
 	 * @param passive
-	 * @param locale
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@Transactional
@@ -596,7 +596,7 @@ public class HistoryService {
 	 *
 	 * @param initiative 男生
 	 * @param passive 女生
-	 * @param locale
+	 * @param locale 语言环境
 	 * @return 杰森对象
 	 */
 	@Transactional
@@ -663,7 +663,7 @@ public class HistoryService {
 				passive,
 				String.format(
 					"您收到一位男仕的通訊軟體要求！馬上查看 https://%s/activeLogs.asp",
-					servant.LOCALHOST
+					Servant.LOCALHOST
 				));
 		}
 
@@ -684,7 +684,7 @@ public class HistoryService {
 	 * @param initiative 女生
 	 * @param passive 男生
 	 * @param greetingMessage 招呼语
-	 * @param locale
+	 * @param locale 语言环境
 	 * @return 杰森对象
 	 */
 	@Transactional
@@ -727,7 +727,7 @@ public class HistoryService {
 				passive,
 				String.format(
 					"有位甜心向你打招呼！馬上查看 https://%s/activeLogs.asp",
-					servant.LOCALHOST
+					Servant.LOCALHOST
 				));
 		}
 
@@ -747,7 +747,7 @@ public class HistoryService {
 	 *
 	 * @param initiative 女生
 	 * @param passive 男生
-	 * @param locale
+	 * @param locale 语言环境
 	 * @return 杰森对象
 	 */
 	@Transactional
@@ -790,7 +790,7 @@ public class HistoryService {
 				passive,
 				String.format(
 					"有位甜心答應給你通訊軟體！馬上查看 https://%s/activeLogs.asp",
-					servant.LOCALHOST
+					Servant.LOCALHOST
 				));
 		}
 
@@ -822,6 +822,7 @@ public class HistoryService {
 	 *
 	 * @param male
 	 * @param female
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@Transactional
@@ -863,8 +864,8 @@ public class HistoryService {
 				toJSONObject();
 		}
 
-		Boolean isLine = servant.isLine(URI.create(female.getInviteMeAsLineFriend()));
-		Boolean isWeChat = servant.isWeChat(URI.create(female.getInviteMeAsLineFriend()));
+		Boolean isLine = Servant.isLine(URI.create(female.getInviteMeAsLineFriend()));
+		Boolean isWeChat = Servant.isWeChat(URI.create(female.getInviteMeAsLineFriend()));
 		String redirect = null;
 		if (isLine) {
 			redirect = female.getInviteMeAsLineFriend();
@@ -937,6 +938,9 @@ public class HistoryService {
 	 *
 	 * @param initiative
 	 * @param passive
+	 * @param rate
+	 * @param comment
+	 * @param locale
 	 * @return
 	 */
 	@Transactional
@@ -996,7 +1000,7 @@ public class HistoryService {
 	 *
 	 * @param initiative
 	 * @param passive
-	 * @param locale
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@Transactional
@@ -1041,7 +1045,7 @@ public class HistoryService {
 				passive,
 				String.format(
 					"有位甜心拒絕給你通訊軟體..馬上查看 https://%s/activeLogs.asp",
-					servant.LOCALHOST
+					Servant.LOCALHOST
 				));
 		}
 
@@ -1155,17 +1159,16 @@ public class HistoryService {
 	 */
 	@Transactional(readOnly = true)
 	public boolean withinRequiredLimit(Lover male) {
-		Date twelveHrsAgo = null;
-		Date nowDate = null;
-		Calendar twelveHrs = Calendar.getInstance();
-		twelveHrs.add(Calendar.HOUR, -12);
-		twelveHrsAgo = twelveHrs.getTime();
-		nowDate = new Date();
+		Calendar twelveHours = Calendar.getInstance();
+		twelveHours.add(Calendar.HOUR, -12);
+
+		Date twelveHoursAgo = twelveHours.getTime();
+
 		Long dailyCount = historyRepository.countByInitiativeAndBehaviorAndOccurredBetween(
 			male,
 			BEHAVIOR_LAI_KOU_DIAN,
-			twelveHrsAgo,
-			nowDate
+			twelveHoursAgo,
+			new Date(System.currentTimeMillis())
 		);
 		return (loverService.isVVIP(male) || loverService.isVIP(male)) && Objects.nonNull(dailyCount) && dailyCount < VIP_DAILY_TOLERANCE;
 	}
@@ -1178,7 +1181,7 @@ public class HistoryService {
 	 */
 	@Transactional(readOnly = true)
 	public List<Activity> findActiveLogsOrderByOccurredDesc(Lover lover) {
-		List<Activity> list = new ArrayList<Activity>();
+		List<Activity> list = new ArrayList<>();
 
 		Collection<Behavior> BEHAVIORS_ANNO_IGNORE = Arrays.asList(new History.Behavior[]{
 			BEHAVIOR_GREETING,
@@ -1243,7 +1246,7 @@ public class HistoryService {
 
 		// 將通知已讀
 		Date now = new Date(System.currentTimeMillis());
-		List<History> historyList = new ArrayList<History>();
+		List<History> historyList = new ArrayList<>();
 		for (History history : loverService.annoucementHistories(lover)) {
 			history.setSeen(now);
 			historyList.add(history);
@@ -1654,7 +1657,7 @@ public class HistoryService {
 				passive,
 				String.format(
 					"有養蜜和您要求生活照授權..馬上查看 https://%s/activeLogs.asp",
-					servant.LOCALHOST
+					Servant.LOCALHOST
 				));
 		}
 		return new JavaScriptObjectNotation().
@@ -1693,7 +1696,7 @@ public class HistoryService {
 				requester,
 				String.format(
 					"有養蜜同意給您看生活照..馬上查看 https://%s/activeLogs.asp",
-					servant.LOCALHOST
+					Servant.LOCALHOST
 				));
 		}
 		return new JavaScriptObjectNotation().
@@ -1707,8 +1710,7 @@ public class HistoryService {
 	 * @param history
 	 * @return
 	 */
-	public boolean ableToReturnFare(History fareHistory) {
-
+	public boolean ableToReturnFare(History history) {
 		Calendar cal = Calendar.getInstance();
 		cal.getTime();
 		cal.add(Calendar.DAY_OF_MONTH, -2);
@@ -1716,15 +1718,16 @@ public class HistoryService {
 		// 車馬費歷程的行為是'車馬費'
 		// 兩天前的時戳在車馬費歷程之前
 		// 還沒有被退回過('退回車馬費'的歷程是空的)
-		return Objects.equals(fareHistory.getBehavior(), BEHAVIOR_FARE)
-			&& cal.getTime().before(fareHistory.getOccurred())
-			&& Objects.isNull(historyRepository.findByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, fareHistory));
+		return Objects.equals(history.getBehavior(), BEHAVIOR_FARE)
+			&& cal.getTime().before(history.getOccurred())
+			&& Objects.isNull(historyRepository.findByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history));
 	}
 
 	/**
 	 * 退回車馬費
 	 *
 	 * @param fareHistory
+	 * @param locale 语言环境
 	 * @return
 	 */
 	@Transactional
@@ -1755,7 +1758,7 @@ public class HistoryService {
 				male,
 				String.format(
 					"有養蜜退回您給的車馬費..馬上查看 https://%s/activeLogs.asp",
-					servant.LOCALHOST
+					Servant.LOCALHOST
 				));
 		}
 		return new JavaScriptObjectNotation().

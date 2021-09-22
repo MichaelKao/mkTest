@@ -216,6 +216,7 @@ public class WebSocketService {
 		return wholeHistoryMsgs;
 	}
 
+	@SuppressWarnings({"UnusedAssignment", "null"})
 	public Document inbox(Document document, Lover me) {
 		Element documentElement = document.getDocumentElement();
 
@@ -392,6 +393,7 @@ public class WebSocketService {
 		return document;
 	}
 
+	@SuppressWarnings("UnusedAssignment")
 	public Document chatroom(Document document, Lover me, Lover chatPartner) {
 		Element documentElement = document.getDocumentElement();
 
@@ -524,6 +526,7 @@ public class WebSocketService {
 		return msgsCount < 3;
 	}
 
+	@SuppressWarnings("UnusedAssignment")
 	public int msgsCountWithin12Hrs(Lover male, Lover female) {
 		Date twelveHrsAgo = null;
 		Date nowDate = null;
@@ -540,6 +543,7 @@ public class WebSocketService {
 		return msgsCount;
 	}
 
+	@SuppressWarnings("UnusedAssignment")
 	public String calculateOccurredTime(Date date) {
 		Date now = new Date();
 		long l = now.getTime() - date.getTime();
@@ -561,6 +565,7 @@ public class WebSocketService {
 		return occurredTime;
 	}
 
+	@SuppressWarnings({"UnusedAssignment", "null"})
 	public JSONObject updateInbox(Lover lover) {
 		JSONArray jsonArrayForList = new JSONArray();
 		boolean isMale = lover.getGender();
