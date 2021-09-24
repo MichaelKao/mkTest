@@ -148,7 +148,7 @@
 					<DIV class="tab-pane mt-3 active" id="mainOne">
 						<DIV class="text-sm opacity-8 p-0 col-md-8 mx-auto">
 							<DIV class="card p-3">
-								<H6 class="text-center text-bold text-primary">目前可提領的總費用：<xsl:value-of select="@points"/></H6>
+								<H6 class="text-center text-bold text-primary">目前可提領的總費用：<xsl:value-of select="@totalPoints"/></H6>
 								<DIV class="text-bold text-xs text-center my-1">
 									<SPAN>僅能提領</SPAN>
 									<xsl:value-of select="@before7days"/>
@@ -178,7 +178,7 @@
 												</TD>
 												<TD class="text-sm text-center">
 													<SPAN class="text-secondary text-xs font-weight-bold">
-														<xsl:value-of select="@type"/>
+														<xsl:value-of select="@mePoints"/>
 													</SPAN>
 												</TD>
 												<TD class="text-sm text-center">
@@ -190,7 +190,7 @@
 										</xsl:for-each>
 									</TBODY>
 								</TABLE>
-								<xsl:if test="(@points &gt; 0)">
+								<xsl:if test="(@totalPoints &gt; 0)">
 									<BUTTON class="btn btn-block btn-primary m-0 py-2 withdrawal border-radius-xl mt-2" data-bs-toggle="modal" data-bs-target="#paymentModal" type="button">提領</BUTTON>
 								</xsl:if>
 							</DIV>
@@ -220,6 +220,7 @@
 												<SPAN>
 													<xsl:value-of select="@points"/>
 												</SPAN>
+												<SPAN class="ms-2 text-xs">(ME點: <xsl:value-of select="@mePoints"/>)</SPAN>
 											</DIV>
 										</DIV>
 										<xsl:if test="@ableToReturn">
@@ -291,7 +292,7 @@
 																</TD>
 																<TD class="text-sm text-center">
 																	<SPAN class="text-secondary text-xs font-weight-bold">
-																		<xsl:value-of select="@type"/>
+																		<xsl:value-of select="@mePoints"/>
 																	</SPAN>
 																</TD>
 																<TD class="text-sm text-center">
@@ -364,7 +365,7 @@
 																</TD>
 																<TD class="text-sm text-center">
 																	<SPAN class="text-secondary text-xs font-weight-bold">
-																		<xsl:value-of select="@type"/>
+																		<xsl:value-of select="@mePoints"/>
 																	</SPAN>
 																</TD>
 																<TD class="text-sm text-center">

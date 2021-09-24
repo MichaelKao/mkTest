@@ -131,7 +131,7 @@
 												<TR>
 													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
 													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
-													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
+													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">ME點</TH>
 													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
 												</TR>
 											</THEAD>
@@ -150,7 +150,7 @@
 														</TD>
 														<TD class="text-sm text-center">
 															<SPAN class="text-secondary text-xs font-weight-bold">
-																<xsl:value-of select="@type"/>
+																<xsl:value-of select="@mePoints"/>
 															</SPAN>
 														</TD>
 														<TD class="text-sm text-center">
@@ -204,7 +204,7 @@
 												<TR>
 													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
 													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
-													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
+													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">ME點</TH>
 													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
 												</TR>
 											</THEAD>
@@ -223,7 +223,7 @@
 														</TD>
 														<TD class="text-sm text-center">
 															<SPAN class="text-secondary text-xs font-weight-bold">
-																<xsl:value-of select="@type"/>
+																<xsl:value-of select="@mePoints"/>
 															</SPAN>
 														</TD>
 														<TD class="text-sm text-center">

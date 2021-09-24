@@ -471,9 +471,10 @@ public class DashboardService {
 				recordElement.appendChild(paypalElement);
 			}
 
+			// 總共提領金額
 			recordElement.setAttribute(
 				"points",
-				eachWithdrawal.getPoints().toString()
+				Long.toString(Math.round(eachWithdrawal.getPoints() * 0.9))
 			);
 
 			Boolean status = eachWithdrawal.getStatus();
@@ -527,10 +528,14 @@ public class DashboardService {
 					));
 
 				historyElement.setAttribute(
-					"points",
+					"mePoints",
 					Short.toString(withdrawalRecord.getPoints())
 				);
 
+				historyElement.setAttribute(
+					"points",
+					Long.toString(Math.round(withdrawalRecord.getPoints() * 0.9))
+				);
 			}
 		}
 		documentElement.appendChild(recordsElement);

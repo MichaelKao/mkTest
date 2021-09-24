@@ -2366,7 +2366,7 @@ public class LoverService {
 		// 甜心剩餘的可提領車馬費(抽一成)
 		Long leftPoints = honeyLeftPointsBefore7Days(lover);
 		documentElement.setAttribute(
-			"points",
+			"totalPoints",
 			leftPoints.toString()
 		);
 
@@ -2436,9 +2436,15 @@ public class LoverService {
 
 			@SuppressWarnings("null")
 			Short points = Objects.equals(history.getBehavior().name(), "CHE_MA_FEI") ? history.getPoints() : (short) (history.getPoints() / 2);
+			// ME點
+			recordElement.setAttribute(
+				"mePoints",
+				Integer.toString(Math.abs(points))
+			);
+			// 抽完1成可提領的金額
 			recordElement.setAttribute(
 				"points",
-				Integer.toString(Math.abs(points))
+				Long.toString(Math.round(Math.abs(points) * 0.9))
 			);
 		});
 
@@ -2490,8 +2496,13 @@ public class LoverService {
 			@SuppressWarnings("null")
 			Short points = Objects.equals(history.getBehavior().name(), "CHE_MA_FEI") ? history.getPoints() : (short) (history.getPoints() / 2);
 			notAbleToWithdrawalElement.setAttribute(
-				"points",
+				"mePoints",
 				Integer.toString(Math.abs(points))
+			);
+			// 抽完1成可提領的金額
+			notAbleToWithdrawalElement.setAttribute(
+				"points",
+				Long.toString(Math.round(Math.abs(points) * 0.9))
 			);
 		});
 
@@ -2521,8 +2532,13 @@ public class LoverService {
 				));
 
 			recordElement.setAttribute(
-				"points",
+				"mePoints",
 				eachWithdrawal.getPoints().toString()
+			);
+			// 抽完1成可提領的金額
+			recordElement.setAttribute(
+				"points",
+				Long.toString(Math.round(eachWithdrawal.getPoints() * 0.9))
 			);
 
 			Boolean status = eachWithdrawal.getStatus();
@@ -2561,8 +2577,13 @@ public class LoverService {
 					));
 
 				historyElement.setAttribute(
-					"points",
+					"mePoints",
 					Short.toString(withdrawalRecord.getPoints())
+				);
+				// 抽完1成可提領的金額
+				historyElement.setAttribute(
+					"points",
+					Long.toString(Math.round(withdrawalRecord.getPoints() * 0.9))
 				);
 			});
 		});
