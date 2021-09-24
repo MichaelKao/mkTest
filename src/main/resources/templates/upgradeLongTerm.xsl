@@ -62,7 +62,14 @@
 					</xsl:choose>
 				</xsl:attribute>
 			</SCRIPT>
-			<SCRIPT src="/SCRIPT/upgradeLongTerm.js"/>
+			<SCRIPT>
+				<xsl:attribute name="src">
+					<xsl:choose>
+						<xsl:when test="@development and @development='true'">/SCRIPT/upgradeLongTerm_.js</xsl:when>
+						<xsl:otherwise>/SCRIPT/upgradeLongTerm.js</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+			</SCRIPT>
 		</BODY>
 	</xsl:template>
 </xsl:stylesheet>

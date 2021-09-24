@@ -1,6 +1,6 @@
 $(document).ready(function () {
 	ECPay.initialize(
-		ECPay.ServerType.Stage,
+		ECPay.ServerType.Prod,
 		1,
 		function (errMsg) {
 			if (errMsg !== null) {
@@ -33,7 +33,7 @@ $(document).ready(function () {
 					}
 				},
 				'json'
-				);
+			);
 		}
 	);
 
@@ -49,10 +49,10 @@ $(document).ready(function () {
 				let payToken = paymentInfo.PayToken;
 				$(form.payToken).val(
 					payToken
-					);
+				);
 				$(form.paymentType).val(
 					paymentInfo.PaymentType
-					);
+				);
 				$('DIV.loadingWrap').css('display', 'block');
 				$.post(
 					`/inpay2/createPayment/${payToken}.json`,
@@ -65,7 +65,7 @@ $(document).ready(function () {
 						}
 					},
 					'json'
-					);
+				);
 			});
 		} catch (error) {
 			alert(error);
