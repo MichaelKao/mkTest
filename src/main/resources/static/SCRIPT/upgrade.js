@@ -1,7 +1,7 @@
 $(document).ready(function () {
-	
+
 	fbq('track', 'vippageview');
-	
+
 	$('BUTTON.stopRecurring').click(function () {
 		$(this).attr('disabled', true);
 		$.post(

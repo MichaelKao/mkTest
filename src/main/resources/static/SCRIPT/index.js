@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+	fbq('track', 'toppageview');
 	let p;
 	let type;
 	let wrap;
