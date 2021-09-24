@@ -579,7 +579,9 @@ public class DashboardController {
 	@GetMapping(path = "/manualUpgrade.xml")
 //	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	@ResponseBody
-	void manualUpgrade(@RequestParam(defaultValue = "0") int p, @RequestParam(defaultValue = "10") int s, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
+	void manualUpgrade(@RequestParam(defaultValue = "0") int p, @RequestParam(defaultValue = "10") int s, HttpServletResponse response)
+		throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
+
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 
@@ -587,6 +589,7 @@ public class DashboardController {
 		documentElement.appendChild(usersElement);
 
 		for (Lover lover : loverRepository.findAll(PageRequest.of(p, s))) {
+
 			Element userElement = document.createElement("user");
 
 			Element nicknameElement = document.createElement("nickname");
@@ -597,19 +600,29 @@ public class DashboardController {
 			loginElement.setTextContent(lover.getLogin());
 			userElement.appendChild(loginElement);
 
-			Date vipDate = lover.getVip();
-			if (Objects.nonNull(vipDate)) {
+			if (loverService.isVIP(lover)) {
 				Element vipElement = document.createElement("vip");
 				vipElement.setTextContent(
 					LoverService.DATE_TIME_FORMATTER.format(
 						servant.
-							toTaipeiZonedDateTime(vipDate).
+							toTaipeiZonedDateTime(lover.getVip()).
 							withZoneSameInstant(
 								Servant.ASIA_TAIPEI
 							)
 					)
 				);
 				userElement.appendChild(vipElement);
+
+			} else if (loverService.isVVIP(lover)) {
+				Element vvipElement = document.createElement("vvip");
+				vvipElement.setTextContent(
+					LoverService.DATE_TIME_FORMATTER.format(
+						servant.toTaipeiZonedDateTime(lover.getVip()).
+							withZoneSameInstant(
+								Servant.ASIA_TAIPEI
+							)
+					)
+				);
 			}
 
 			Element idElement = document.createElement("id");
@@ -618,7 +631,6 @@ public class DashboardController {
 
 			usersElement.appendChild(userElement);
 		}
-
 		TransformerFactory.
 			newDefaultInstance().
 			newTransformer().
@@ -627,4 +639,5 @@ public class DashboardController {
 				new StreamResult(response.getOutputStream())
 			);
 	}
+
 }
