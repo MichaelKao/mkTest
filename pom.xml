@@ -11,7 +11,7 @@
 	<artifactId>youngme-web</artifactId>
 	<version>1.0.0-RELEASE</version>
 	<name>养蜜</name>
-	<description>一起跑步呗！</description>
+	<description>比闺蜜更亲密</description>
 	<properties>
 		<java.version>11</java.version>
 		<maven.compiler.source>11</maven.compiler.source>
