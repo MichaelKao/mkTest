@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
 	ECPay.initialize(
-		ECPay.ServerType.Stage,
+		ECPay.ServerType.Prod,
 		1,
 		function (errMsg) {
 			if (errMsg !== null) {
@@ -33,7 +33,7 @@ $(document).ready(function () {
 					}
 				},
 				'json'
-				);
+			);
 		}
 	);
 
@@ -67,7 +67,7 @@ $(document).ready(function () {
 						}
 					},
 					'json'
-					);
+				);
 			});
 		} catch (error) {
 			alert(error);

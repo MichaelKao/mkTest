@@ -61,7 +61,14 @@
 					</xsl:choose>
 				</xsl:attribute>
 			</SCRIPT>
-			<SCRIPT src="/SCRIPT/rechargeByInpay2.js"/>
+			<SCRIPT>
+				<xsl:attribute name="src">
+					<xsl:choose>
+						<xsl:when test="@development and @development='true'">/SCRIPT/rechargeByInpay2_.js</xsl:when>
+						<xsl:otherwise>/SCRIPT/rechargeByInpay2.js</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+			</SCRIPT>
 		</BODY>
 	</xsl:template>
 </xsl:stylesheet>

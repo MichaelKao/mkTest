@@ -1,21 +1,21 @@
 $(document).ready(function () {
-
 	ECPay.initialize(
-		ECPay.ServerType.Prod,
+		ECPay.ServerType.Stage,
 		1,
 		function (errMsg) {
 			if (errMsg !== null) {
 				alert(errMsg);
 			}
+			$('DIV.loadingWrap').css('display', 'none');
 			$.post(
-				'/inpay2/getPeriodTokenByTrade.json',
+				'/inpay2/getTokenByTrade.json',
 				{
-					me: $('#me').val()
+					me: $('#me').val(),
+					plan: $('#plan').val()
 				},
 				function (data) {
 					if (data.RtnCode === 1) {
 						try {
-							$('DIV.loadingWrap').css('display', 'none');
 							ECPay.createPayment(
 								data.Token,
 								null === navigator.language.match(/^zh/gi) ? ECPay.Language.enUS : ECPay.Language.zhTW,
@@ -39,7 +39,6 @@ $(document).ready(function () {
 
 	$('FORM[name="payment"]').submit(function (event) {
 		event.preventDefault();
-
 		let form = this;
 		try {
 			ECPay.getPayToken(function (paymentInfo, errMsg) {
@@ -50,10 +49,10 @@ $(document).ready(function () {
 				let payToken = paymentInfo.PayToken;
 				$(form.payToken).val(
 					payToken
-					);
+				);
 				$(form.paymentType).val(
 					paymentInfo.PaymentType
-					);
+				);
 				$('DIV.loadingWrap').css('display', 'block');
 				$.post(
 					`/inpay2/createPayment/${payToken}.json`,
@@ -63,7 +62,6 @@ $(document).ready(function () {
 							location.replace(data.ThreeDInfo.ThreeDURL);
 						} else {
 							alert('呃!?');
-							$('DIV.loadingWrap').css('display', 'none');
 						}
 					},
 					'json'

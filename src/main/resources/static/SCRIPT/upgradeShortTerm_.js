@@ -1,14 +1,14 @@
 $(document).ready(function () {
 
 	ECPay.initialize(
-		ECPay.ServerType.Prod,
+		ECPay.ServerType.Stage,
 		1,
 		function (errMsg) {
 			if (errMsg !== null) {
 				alert(errMsg);
 			}
 			$.post(
-				'/inpay2/getPeriodTokenByTrade.json',
+				'/inpay2/getTokenByTradeForShortTerm.json',
 				{
 					me: $('#me').val()
 				},
