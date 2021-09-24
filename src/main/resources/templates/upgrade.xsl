@@ -37,26 +37,6 @@
 						</SPAN>
 					</H4>
 				</DIV>
-				<DIV class="modal fade" id="contactModal">
-					<DIV class="modal-dialog modal-dialog-centered">
-						<DIV class="modal-content">
-							<DIV class="modal-body">
-								<DIV class="d-flex">
-									<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
-										<I class="fal fa-times"></I>
-									</BUTTON>
-								</DIV>
-								<DIV class="mt-3 text-center">
-									<H5 class="modal-title">請聯絡系統客服為您升級</H5>
-									<A class="btn btn-primary btn-round text-lg py-1 mt-2" href="https://line.me/R/ti/p/%40017zadfy">
-										<I class="fad fa-user-headset me-1"></I>
-										<SPAN>客服</SPAN>
-									</A>
-								</DIV>
-							</DIV>
-						</DIV>
-					</DIV>
-				</DIV>
 				<xsl:if test="@vvip or @vip or @trial">
 					<DIV class="text-center border-radius-xl mx-auto col-11 col-md-10 col-xl-8 p-1 mb-3" style="border: 1px solid #D63384;">
 						<xsl:if test="@trial">
@@ -148,8 +128,7 @@
 							</DIV>
 							<xsl:if test="not(@vvip) and not(@vip)">
 								<DIV class="text-center">
-									<!--<A class="btn btn-light btn-round px-4 m-0" href="/upgrade/1.asp" onclick="fbq('track', 'InitiateCheckout');">升級</A>-->
-									<BUTTON class="btn btn-light btn-round px-4 m-0" data-bs-target="#contactModal" data-bs-toggle="modal" onclick="fbq('track', 'InitiateCheckout');">升級</BUTTON>
+									<A class="btn btn-light btn-round px-4 m-0" href="/upgrade/1.asp" onclick="fbq('track', 'InitiateCheckout');">升級</A>
 								</DIV>
 							</xsl:if>
 						</DIV>
@@ -187,8 +166,7 @@
 							</DIV>
 							<xsl:if test="not(@vvip)">
 								<DIV class="text-center">
-									<!--<A class="btn btn-light btn-round px-4 m-0" href="/upgrade/2.asp" onclick="fbq('track', 'InitiateCheckout');">升級</A>-->
-									<BUTTON class="btn btn-light btn-round px-4 m-0" data-bs-target="#contactModal" data-bs-toggle="modal" onclick="fbq('track', 'InitiateCheckout');">升級</BUTTON>
+									<A class="btn btn-light btn-round px-4 m-0" href="/upgrade/2.asp" onclick="fbq('track', 'InitiateCheckout');">升級</A>
 								</DIV>
 							</xsl:if>
 						</DIV>
