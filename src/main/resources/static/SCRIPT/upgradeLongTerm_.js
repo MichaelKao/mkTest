@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
 	ECPay.initialize(
-		ECPay.ServerType.Prod,
+		ECPay.ServerType.Stage,
 		1,
 		function (errMsg) {
 			if (errMsg !== null) {
