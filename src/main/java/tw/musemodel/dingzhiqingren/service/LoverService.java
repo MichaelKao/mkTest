@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.sql.ResultSet;
 import java.sql.Types;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -318,10 +320,19 @@ public class LoverService {
 			Date deadline = mofo.getVip();
 			Date registered = mofo.getRegistered();
 
+			// 轉換成台北時區
+			TimeZone TaipeitimeZone = TimeZone.getTimeZone("Asia/Taipei");
+			DateFormat TaipeiDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			TaipeiDateFormat.setTimeZone(TaipeitimeZone);
+
 			Descendant descendant = new Descendant(
 				mofo.getIdentifier(),
 				mofo.getNickname(),
-				registered
+				DATE_TIME_FORMATTER.format(
+					servant.toTaipeiZonedDateTime(
+						mofo.getRegistered()
+					).withZoneSameInstant(servant.ASIA_TAIPEI)
+				).replaceAll("\\+\\d{2}$", "")
 			);
 			descendant.setVip(
 				Objects.nonNull(deadline) && deadline.after(new Date(System.currentTimeMillis()))
@@ -3623,6 +3634,7 @@ public class LoverService {
 	 */
 	public String calendarToString(Date d) {
 		Calendar cal = new GregorianCalendar();
+		cal.setTimeZone(TimeZone.getTimeZone(servant.ASIA_TAIPEI));
 		cal.setTime(d);
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH) + 1;

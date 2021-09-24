@@ -3,7 +3,6 @@ package tw.musemodel.dingzhiqingren.model;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.Data;
@@ -36,7 +35,7 @@ public class Descendant implements Serializable {
 	/**
 	 * 注册(未来会改为最后付费成为贵宾的)时戳
 	 */
-	private Date timestamp;
+	private String timestamp;
 
 	/**
 	 * 构造器
@@ -45,7 +44,7 @@ public class Descendant implements Serializable {
 	 * @param nickname 昵称
 	 * @param timestamp 注册时戳(未来会改为最后付费成为贵宾的时戳)
 	 */
-	public Descendant(UUID identifier, String nickname, Date timestamp) {
+	public Descendant(UUID identifier, String nickname, String timestamp) {
 		this.identifier = identifier;
 		this.nickname = nickname;
 		this.timestamp = timestamp;
