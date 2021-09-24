@@ -1186,9 +1186,9 @@ public class HistoryService {
 		Collection<Behavior> BEHAVIORS_ANNO_IGNORE = Arrays.asList(new History.Behavior[]{
 			BEHAVIOR_GREETING,
 			BEHAVIOR_GROUP_GREETING,
-			BEHAVIOR_CHAT_MORE,
-			BEHAVIOR_PEEK,
-			BEHAVIOR_FOLLOW
+			BEHAVIOR_CHAT_MORE
+		//			BEHAVIOR_PEEK,
+		//			BEHAVIOR_FOLLOW
 		});
 
 		for (History history : historyRepository.findByInitiativeAndBehaviorNotIn(lover, BEHAVIORS_ANNO_IGNORE)) {
@@ -1259,7 +1259,7 @@ public class HistoryService {
 			Lover initiative = activeLogs.getInitiative();
 			Lover passive = activeLogs.getPassive();
 			// 這幾個行為主動者不須通知
-			if (activeLogs.getBehavior() == BEHAVIOR_RATE || activeLogs.getBehavior() == BEHAVIOR_FOLLOW
+			if (activeLogs.getBehavior() == BEHAVIOR_RATE || activeLogs.getBehavior() == BEHAVIOR_FOLLOW || activeLogs.getBehavior() == BEHAVIOR_PEEK
 				|| activeLogs.getBehavior() == BEHAVIOR_WITHDRAWAL_FAIL || activeLogs.getBehavior() == BEHAVIOR_WITHDRAWAL_SUCCESS
 				|| activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_FAIL || activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_SUCCESS
 				|| activeLogs.getBehavior() == BEHAVIOR_GROUP_GREETING) {
@@ -1553,6 +1553,26 @@ public class HistoryService {
 					initiativeNickname
 				);
 			}
+
+			// 人數較多後拿掉***********
+			if (activeLogs.getBehavior() == BEHAVIOR_FOLLOW) {
+				profileImage = initiativeProfileImage;
+				identifier = initiativeIdentifier;
+				message = String.format(
+					"%s已收藏您",
+					initiativeNickname
+				);
+			}
+			// 人數較多後拿掉***********
+			if (activeLogs.getBehavior() == BEHAVIOR_PEEK) {
+				profileImage = initiativeProfileImage;
+				identifier = initiativeIdentifier;
+				message = String.format(
+					"%s已看過您",
+					initiativeNickname
+				);
+			}
+
 			if (activeLogs.getBehavior() == BEHAVIOR_WITHDRAWAL_SUCCESS) {
 				profileImage = passiveProfileImage;
 				identifier = passiveIdentifier;

@@ -2835,6 +2835,10 @@ public class LoverService {
 		behaviors.add(BEHAVIOR_CERTIFICATION_SUCCESS);
 		behaviors.add(BEHAVIOR_CERTIFICATION_FAIL);
 		behaviors.add(BEHAVIOR_PICTURES_VIEWABLE);
+		behaviors.add(BEHAVIOR_RATE);
+		// 人數較多後拿掉**************
+		behaviors.add(BEHAVIOR_FOLLOW);
+		behaviors.add(BEHAVIOR_PEEK);
 		if (gender) {
 			behaviors.add(BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
 			behaviors.add(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
