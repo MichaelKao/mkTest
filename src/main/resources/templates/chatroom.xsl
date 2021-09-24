@@ -88,7 +88,7 @@
 								<xsl:if test="@male">
 									<LABEL class="text-xs" for="fare">使用平台支付不必擔心私下給甜心爽約，可檢舉查證屬實退回</LABEL>
 								</xsl:if>
-								<INPUT class="form-control" id="fare" min="1" name="howMany" required="" type="number"/>
+								<INPUT class="form-control" id="fare"inputmode="numeric" min="1" name="howMany" required="" type="number"/>
 							</DIV>
 							<DIV class="text-center">
 								<BUTTON class="btn btn-outline-primary confirmFare mx-1 px-3 py-2" type="button">確認</BUTTON>

@@ -81,7 +81,7 @@
 								<IMG alt="identity" src="" style="max-width: 100%;"/>
 							</DIV>
 							<DIV class="modal-footer">
-								<BUTTON class="btn bg-gradient-secondary" data-bs-dismiss="modal" type="button">取消</BUTTON>
+								<BUTTON class="btn btn-outline-dark" data-bs-dismiss="modal" type="button">取消</BUTTON>
 							</DIV>
 						</DIV>
 					</DIV>

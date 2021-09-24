@@ -34,32 +34,6 @@
 				<H4 class="text-primary text-center">
 					<xsl:value-of select="@title"/>
 				</H4>
-				<DIV class="modal fade" id="modal">
-					<DIV class="modal-dialog modal-dialog-centered">
-						<DIV class="modal-content">
-							<DIV class="modal-header">
-								<H5 class="modal-title">和女生要求通訊軟體</H5>
-								<BUTTON aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></BUTTON>
-							</DIV>
-							<DIV class="modal-body">
-								<DIV class="form-group col-8">
-									<LABEL class="h6" for="hello">請用一句話打動甜心</LABEL>
-									<TEXTAREA class="form-control" id="hello" name="what" type="text">
-										<xsl:value-of select="@greeting"/>
-									</TEXTAREA>
-								</DIV>
-							</DIV>
-							<DIV class="modal-footer">
-								<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
-									<xsl:value-of select="@i18n-cancel"/>
-								</BUTTON>
-								<BUTTON class="btn btn-primary requestLineBtn" type="button">
-									<xsl:value-of select="@i18n-confirm"/>
-								</BUTTON>
-							</DIV>
-						</DIV>
-					</DIV>
-				</DIV>
 				<DIV class="modal fade" id="weChatModel">
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
@@ -117,11 +91,11 @@
 									<TEXTAREA class="form-control" name="comment" placeholder="留下評價..." type="text"></TEXTAREA>
 								</DIV>
 								<DIV class="text-center">
-									<BUTTON class="btn btn-secondary mx-1" data-bs-dismiss="modal" type="button">
-										<xsl:value-of select="@i18n-cancel"/>
-									</BUTTON>
-									<BUTTON class="btn btn-primary commentBtn mx-1" type="button">
+									<BUTTON class="btn btn-outline-primary commentBtn mx-1 px-3 py-2" type="button">
 										<xsl:value-of select="@i18n-confirm"/>
+									</BUTTON>
+									<BUTTON class="btn btn-outline-dark mx-1 px-3 py-2" data-bs-dismiss="modal" type="button">
+										<xsl:value-of select="@i18n-cancel"/>
 									</BUTTON>
 								</DIV>
 							</DIV>

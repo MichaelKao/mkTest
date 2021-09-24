@@ -314,10 +314,10 @@ $(document).ready(function () {
 					$('DIV.selfStar').data('star', rate);
 					showStar($('DIV.selfStar'));
 					$('#rateModal').modal('hide');
-					$(btn).attr('disabled', false);
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');
+					$(btn).attr('disabled', false);
 				}
 			},
 			'json'

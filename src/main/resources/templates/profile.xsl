@@ -51,14 +51,14 @@
 									</DIV>
 									<DIV class="form-group text-center">
 										<LABEL class="text-xs" for="fare">使用平台支付不必擔心私下給甜心爽約，可檢舉查證屬實退回</LABEL>
-										<INPUT class="form-control" id="fare" min="1" name="howMany" required="" type="number"/>
+										<INPUT class="form-control" id="fare" inputmode="numeric" min="1" name="howMany" required="" type="number"/>
 									</DIV>
 									<DIV class="text-center">
-										<BUTTON class="btn btn-secondary mx-1" data-bs-dismiss="modal" type="button">
-											<xsl:value-of select="@i18n-cancel"/>
-										</BUTTON>
-										<BUTTON class="btn btn-primary confirmBtn mx-1" type="button">
+										<BUTTON class="btn btn-outline-primary confirmFareBtn mx-1" type="button">
 											<xsl:value-of select="@i18n-confirm"/>
+										</BUTTON>
+										<BUTTON class="btn btn-outline-dark mx-1" data-bs-dismiss="modal" type="button">
+											<xsl:value-of select="@i18n-cancel"/>
 										</BUTTON>
 									</DIV>
 								</DIV>
@@ -392,8 +392,8 @@
 										</TEXTAREA>
 									</DIV>
 									<DIV class="text-center">
-										<BUTTON class="btn btn-secondary mx-1" data-bs-dismiss="modal" type="button">取消</BUTTON>
-										<BUTTON class="btn btn-primary commentBtn mx-1" type="button">確認</BUTTON>
+										<BUTTON class="btn btn-outline-primary commentBtn mx-1 px-3 py-2" type="button">確認</BUTTON>
+										<BUTTON class="btn btn-outline-dark mx-1 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
 									</DIV>
 								</DIV>
 							</DIV>

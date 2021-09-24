@@ -5,14 +5,12 @@ $(document).ready(function () {
 	$('BUTTON.seePic').click(function () {
 		let button = this;
 		id = $(button).closest('TBODY').find('INPUT[name="id"]').val();
-		console.log(id)
 		$.post(
 			'/dashboard/seeCetificationPic.json',
 			{
 				id: id
 			},
 			function (data) {
-				console.log(data.result)
 				if (data.response) {
 					$('DIV.modal-body>IMG').attr('src', data.result);
 				} else {

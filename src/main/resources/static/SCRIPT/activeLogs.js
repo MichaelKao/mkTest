@@ -107,7 +107,8 @@ $(document).ready(function () {
 
 	$('BUTTON.commentBtn').click(function (event) {
 		event.preventDefault();
-		$(this).attr('disabled', true);
+		var btn = this;
+		$(btn).attr('disabled', true);
 		var rate = $('INPUT[name="rating"]:checked').val();
 		if (rate === undefined) {
 			rate = null;
@@ -128,6 +129,7 @@ $(document).ready(function () {
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').toast('show');
+					$(btn).attr('disabled', false);
 				}
 			},
 			'json'

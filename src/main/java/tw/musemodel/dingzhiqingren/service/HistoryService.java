@@ -421,7 +421,7 @@ public class HistoryService {
 		if (points < 1) {
 			throw new RuntimeException("fare.pointsMustBeValid");//點數不能為負數
 		}
-		if (points(initiative) < Math.abs(points)) {
+		if (maleLeftPoints(initiative) < Math.abs(points)) {
 			throw new RuntimeException("fare.insufficientPoints");//点数不足
 		}
 		History history = new History(
@@ -835,7 +835,7 @@ public class HistoryService {
 			historyRepository.saveAndFlush(historyReply);
 			if (!withinRequiredLimit(male)) {
 				Short cost = COST_GIMME_YOUR_LINE_INVITATION;
-				if (points(male) < Math.abs(cost)) {
+				if (maleLeftPoints(male) < Math.abs(cost)) {
 					throw new RuntimeException("openLine.insufficientPoints");//点数不足
 				}
 				historyRepository.saveAndFlush(new History(
@@ -926,11 +926,15 @@ public class HistoryService {
 	 * @return 点数
 	 */
 	@Transactional(readOnly = true)
-	public Long points(Lover lover) {
+	public Long maleLeftPoints(Lover lover) {
 		if (Objects.isNull(lover)) {
 			throw new IllegalArgumentException("points.loverMustntBeNull");
 		}
-		return historyRepository.sumByInitiativeHearts(lover);
+		Long hearts = historyRepository.sumByInitiativeHearts(lover);
+		if (Objects.nonNull(historyRepository.sumByPassiveAndBehaviorHearts(lover, BEHAVIOR_RETURN_FARE))) {
+			hearts += historyRepository.sumByPassiveAndBehaviorHearts(lover, BEHAVIOR_RETURN_FARE);
+		}
+		return hearts;
 	}
 
 	/**
