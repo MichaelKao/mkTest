@@ -4,7 +4,7 @@ $(document).ready(function () {
 
 	$('BUTTON.seePic').click(function () {
 		let button = this;
-		id = $(button).closest('TBODY').find('INPUT[name="id"]').val();
+		id = $(button).closest('TR').find('INPUT[name="id"]').val();
 		$.post(
 			'/dashboard/seeCetificationPic.json',
 			{
@@ -25,7 +25,7 @@ $(document).ready(function () {
 
 	$('BUTTON.fail').click(function () {
 		let button = this;
-		id = $(button).closest('TBODY').find('INPUT[name="id"]').val();
+		id = $(button).closest('TR').find('INPUT[name="id"]').val();
 		$.post(
 			'/dashboard/identityFailed.json',
 			{

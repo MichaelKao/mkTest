@@ -42,8 +42,8 @@
 							</THEAD>
 							<TBODY>
 								<xsl:for-each select="lover">
-									<INPUT name="id" type="hidden" value="{@id}"/>
 									<TR>
+										<INPUT name="id" type="hidden" value="{@id}"/>
 										<TD class="text-sm text-center">
 											<SPAN class="text-secondary text-xs font-weight-bold">
 												<xsl:value-of select="@name"/>

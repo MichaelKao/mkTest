@@ -47,7 +47,8 @@
 						</H1>
 					</DIV>
 					<DIV class="mx-auto my-5">
-						<xsl:if test="not(@fail)">
+						<xsl:if test="@orderResult = 'success'">
+							<INPUT name="orderResult" type="hidden" value="true"/><
 							<DIV class="d-flex mb-2">
 								<DIV>交易時間：</DIV>
 								<DIV class="text-primary text-gradient">
@@ -67,7 +68,8 @@
 								</DIV>
 							</DIV>
 						</xsl:if>
-						<xsl:if test="@fail">
+						<xsl:if test="@orderResult = 'fail'">
+							<INPUT name="orderResult" type="hidden" value="false"/>
 							<DIV class="d-flex mb-2">
 								<DIV>失敗原因：</DIV>
 								<DIV class="text-primary text-gradient">
@@ -88,11 +90,10 @@
 			</DIV>
 			<xsl:call-template name="footer"/>
 			<xsl:call-template name="bodyScriptTags"/>
+			<SCRIPT src="/SCRIPT/orderResult.js"/>
 			<xsl:if test="@signIn">
 				<SCRIPT src="/SCRIPT/websocket.js"/>
 			</xsl:if>
-			<SCRIPT src="/SCRIPT/orderResult.js"/>
-
 		</BODY>
 	</xsl:template>
 </xsl:stylesheet>

@@ -1217,10 +1217,12 @@ public class LoverService {
 			LOGGER.debug("开发模式下重设密码不发送短信息。");
 		}
 
+		// 暫時將激活碼送到 Line notify
+		List<String> accessTokens = new ArrayList<>();
+		accessTokens.add(LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST);
+		accessTokens.add(LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_SECOND);
 		LineMessagingService.notifyDev(
-			Arrays.asList(
-				LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST
-			),
+			accessTokens,
 			String.format(
 				"去 %s 輸入驗證碼 %s",
 				uri,

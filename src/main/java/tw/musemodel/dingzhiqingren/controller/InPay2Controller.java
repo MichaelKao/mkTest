@@ -175,6 +175,7 @@ public class InPay2Controller {
 			getJSONObject("result").
 			getString("itemName");
 		if (jsonObject.getBoolean("response")) {
+			documentElement.setAttribute("orderResult", "success");
 			documentElement.setAttribute(
 				"date",
 				jsonObject.
@@ -244,7 +245,7 @@ public class InPay2Controller {
 			documentElement.setAttribute("result", result);
 			documentElement.setAttribute("redirect", "/");
 		} else {
-			documentElement.setAttribute("fail", null);
+			documentElement.setAttribute("orderResult", "fail");
 			documentElement.setAttribute(
 				"message",
 				messageSource.getMessage(
