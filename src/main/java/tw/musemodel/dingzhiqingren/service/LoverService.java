@@ -401,6 +401,32 @@ public class LoverService {
 		activation.setString(null);
 		activation.setOccurred(new Date(System.currentTimeMillis()));
 		activation = activationRepository.saveAndFlush(activation);
+
+		Lover lover = activation.getLover();
+
+		/*
+		 初始化身份
+		 */
+		Role role = servant.getRole(Servant.ROLE_ADVENTURER);
+		PrivilegeKey privilegeKey = new PrivilegeKey();
+		privilegeKey.setLoverId(lover.getId());
+		privilegeKey.setRoleId(role.getId());
+		Privilege privilege = new Privilege();
+		privilege.setId(privilegeKey);
+		privilege.setLover(lover);
+		privilege.setRole(role);
+		privilegeRepository.saveAndFlush(privilege);
+
+		/*
+		 初始化推荐码
+		 */
+		String string = RandomStringUtils.randomAlphanumeric(8);
+		while (loverRepository.countByReferralCode(string) > 0) {
+			string = RandomStringUtils.randomAlphanumeric(8);
+		}
+		lover.setReferralCode(string);
+		loverRepository.saveAndFlush(lover);
+
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
 				"activate.done",
@@ -445,28 +471,6 @@ public class LoverService {
 		lover.setShadow(
 			passwordEncoder.encode(shadow)
 		);
-
-		/*
-		 初始化身份
-		 */
-		Role role = servant.getRole(Servant.ROLE_ADVENTURER);
-		PrivilegeKey privilegeKey = new PrivilegeKey();
-		privilegeKey.setLoverId(lover.getId());
-		privilegeKey.setRoleId(role.getId());
-		Privilege privilege = new Privilege();
-		privilege.setId(privilegeKey);
-		privilege.setLover(lover);
-		privilege.setRole(role);
-		privilegeRepository.saveAndFlush(privilege);
-
-		/*
-		 初始化推荐码
-		 */
-		String string = RandomStringUtils.randomAlphanumeric(8);
-		while (loverRepository.countByReferralCode(string) > 0) {
-			string = RandomStringUtils.randomAlphanumeric(8);
-		}
-		lover.setReferralCode(string);
 
 		lover = loverRepository.saveAndFlush(lover);
 
