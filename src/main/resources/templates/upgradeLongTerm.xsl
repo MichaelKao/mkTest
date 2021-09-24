@@ -57,7 +57,7 @@
 			<SCRIPT>
 				<xsl:attribute name="src">
 					<xsl:choose>
-						<xsl:when test="@development">https://ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116</xsl:when>
+						<xsl:when test="@development and @development='true'">https://ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116</xsl:when>
 						<xsl:otherwise>https://ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
