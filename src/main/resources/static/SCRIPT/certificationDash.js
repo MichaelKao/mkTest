@@ -5,7 +5,24 @@ $(document).ready(function () {
 	$('BUTTON.seePic').click(function () {
 		let button = this;
 		id = $(button).closest('TBODY').find('INPUT[name="id"]').val();
-		$('DIV.modal-body>IMG').attr('src', 'https://d35hi420xc5ji7.cloudfront.net/identity/' + id);
+		console.log(id)
+		$.post(
+			'/dashboard/seeCetificationPic.json',
+			{
+				id: id
+			},
+			function (data) {
+				console.log(data.result)
+				if (data.response) {
+					$('DIV.modal-body>IMG').attr('src', data.result);
+				} else {
+					$('.toast-body').html(data.reason);
+					$('.toast').toast('show');
+				}
+			},
+			'json'
+			);
+		return false;
 	});
 
 	$('BUTTON.fail').click(function () {

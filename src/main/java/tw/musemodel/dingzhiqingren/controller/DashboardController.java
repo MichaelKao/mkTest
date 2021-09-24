@@ -189,6 +189,36 @@ public class DashboardController {
 	}
 
 	/**
+	 * 查看安心認證的照片
+	 *
+	 * @param lover
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/seeCetificationPic.json")
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	@ResponseBody
+	String seeCetificationPic(@RequestParam long id, Authentication authentication, Locale locale) {
+		try {
+			return new JavaScriptObjectNotation().
+				withResult(
+					String.format(
+						"https://%s/identity/%d",
+						Servant.STATIC_HOST,
+						id
+					)).
+				withResponse(true).
+				toJSONObject().toString();
+		} catch (Exception exception) {
+			return new JavaScriptObjectNotation().
+				withReason(exception.getMessage()).
+				withResponse(false).
+				toJSONObject().toString();
+		}
+	}
+
+	/**
 	 * 匯款車馬費失敗
 	 *
 	 * @param withdrawalRecord
