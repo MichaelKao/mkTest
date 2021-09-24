@@ -2363,6 +2363,7 @@ public class LoverService {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 
+		// 甜心剩餘的可提領車馬費(抽一成)
 		Long leftPoints = honeyLeftPointsBefore7Days(lover);
 		documentElement.setAttribute(
 			"points",
@@ -2638,7 +2639,7 @@ public class LoverService {
 	}
 
 	/**
-	 * 甜心剩餘的可提領車馬費
+	 * 甜心剩餘的可提領車馬費(抽一成)
 	 *
 	 * @param honey
 	 * @return
@@ -2675,7 +2676,7 @@ public class LoverService {
 
 		Long leftPoints = (fareSum + lineSum) - withdrawnPoints;
 
-		return leftPoints;
+		return Math.round(leftPoints * 0.9);
 	}
 
 	/**

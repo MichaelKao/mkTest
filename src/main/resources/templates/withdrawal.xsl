@@ -159,7 +159,7 @@
 										<TR>
 											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
 											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
-											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
+											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">ME點</TH>
 											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
 										</TR>
 									</THEAD>
@@ -272,7 +272,7 @@
 														<TR>
 															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
 															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
-															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
+															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">ME點</TH>
 															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
 														</TR>
 													</THEAD>
@@ -345,7 +345,7 @@
 														<TR>
 															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
 															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
-															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">項目</TH>
+															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">ME點</TH>
 															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
 														</TR>
 													</THEAD>
