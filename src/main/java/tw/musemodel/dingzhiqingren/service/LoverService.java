@@ -163,6 +163,10 @@ public class LoverService {
 
 	private static final Short NUMBER_OF_GROUP_GREETING = Short.valueOf(System.getenv("NUMBER_OF_GROUP_GREETING"));
 
+	public static Object DATE_TIME_FORMATTER(String yyyyMMdd_HHmm) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
 
@@ -1438,6 +1442,7 @@ public class LoverService {
 	 * 令用户开始体验，为期一天。
 	 *
 	 * @param mofo 用户号
+	 * @param trialCode
 	 * @return 体验截止时戳
 	 * @throws RuntimeException 若用户曾付费或曾体验过
 	 */
@@ -2816,6 +2821,8 @@ public class LoverService {
 	 *
 	 * @param document
 	 * @param lovers
+	 * @param me
+	 * @param locale
 	 * @return
 	 */
 	public Document loversSimpleInfo(Document document, Collection<Lover> lovers, Lover me, Locale locale) {

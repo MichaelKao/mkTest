@@ -6,11 +6,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -21,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.WebSocketServer;
 import tw.musemodel.dingzhiqingren.entity.History;
@@ -536,5 +544,57 @@ public class DashboardController {
 		ModelAndView modelAndView = new ModelAndView("dashboard/withdrawal");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
+	}
+
+	@GetMapping(path = "/manualUpgrade.xml")
+//	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	@ResponseBody
+	void manualUpgrade(@RequestParam(defaultValue = "0") int p, @RequestParam(defaultValue = "10") int s, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+
+		Element usersElement = document.createElement("users");
+		documentElement.appendChild(usersElement);
+
+		for (Lover lover : loverRepository.findAll(PageRequest.of(p, s))) {
+			Element userElement = document.createElement("user");
+
+			Element nicknameElement = document.createElement("nickname");
+			nicknameElement.setTextContent(lover.getNickname());
+			userElement.appendChild(nicknameElement);
+
+			Element loginElement = document.createElement("login");
+			loginElement.setTextContent(lover.getLogin());
+			userElement.appendChild(loginElement);
+
+			Date vipDate = lover.getVip();
+			if (Objects.nonNull(vipDate)) {
+				Element vipElement = document.createElement("vip");
+				vipElement.setTextContent(
+					LoverService.DATE_TIME_FORMATTER.format(
+						servant.
+							toTaipeiZonedDateTime(vipDate).
+							withZoneSameInstant(
+								Servant.ASIA_TAIPEI
+							)
+					)
+				);
+				userElement.appendChild(vipElement);
+			}
+
+			Element idElement = document.createElement("id");
+			idElement.setTextContent(lover.getId().toString());
+			userElement.appendChild(idElement);
+
+			usersElement.appendChild(userElement);
+		}
+
+		TransformerFactory.
+			newDefaultInstance().
+			newTransformer().
+			transform(
+				new DOMSource(document),
+				new StreamResult(response.getOutputStream())
+			);
 	}
 }

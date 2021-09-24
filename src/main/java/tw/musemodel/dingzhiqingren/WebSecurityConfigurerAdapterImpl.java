@@ -74,7 +74,8 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 						"/resetPassword/**",
 						"/signIn.asp",
 						"/signUp.asp",
-						"/*.png"
+						"/*.png",
+						"/dashboard/manualUpgrade.xml"
 					).permitAll().
 					anyRequest().authenticated()
 			).
