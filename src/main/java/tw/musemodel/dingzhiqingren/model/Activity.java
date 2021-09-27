@@ -76,6 +76,19 @@ public class Activity implements Comparable<Activity> {
 		this.seen = seen;
 	}
 
+	/**
+	 * 群發 GroupBy
+	 *
+	 * @param initiative
+	 * @param behavior
+	 * @param occurred
+	 */
+	public Activity(Lover initiative, Behavior behavior, Date occurred) {
+		this.initiative = initiative;
+		this.behavior = behavior;
+		this.occurred = occurred;
+	}
+
 	public Lover getInitiative() {
 		return initiative;
 	}

@@ -3,7 +3,6 @@ package tw.musemodel.dingzhiqingren.specification;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -201,72 +200,6 @@ public class LoverSpecification {
 					root.get(Lover_.id).in(exceptions)
 				)
 			);
-		};
-	}
-
-	/**
-	 * 甜心依照自己服務地區群發打招呼給男仕
-	 *
-	 * @param gender
-	 * @param locations
-	 * @return
-	 */
-	public static Specification<Lover> malesListForGroupGreeting(boolean gender, Set<Location> locations) {
-		return (root, criteriaQuery, criteriaBuilder) -> {
-			Collection<Predicate> predicates = new ArrayList<>();
-			criteriaQuery.orderBy(
-				criteriaBuilder.desc(
-					root.get(Lover_.active)
-				));
-			predicates.add(criteriaBuilder.equal(
-				root.get(Lover_.gender),
-				gender
-			));//性别
-			predicates.add(root.
-				get(Lover_.delete).
-				isNull()
-			);//未封号
-
-			/*
-			 地区
-			 */
-			if (locations.size() > 0) {
-				Subquery<Location> subqueryLocation = criteriaQuery.subquery(
-					Location.class
-				);
-				Root<Location> locationRoot = subqueryLocation.from(
-					Location.class
-				);
-				subqueryLocation.select(
-					locationRoot.
-						join(
-							Location_.lovers,
-							JoinType.LEFT
-						).
-						get("id")
-				);
-				List<Predicate> locationPredicate = new ArrayList<>();
-				for (Location location : locations) {
-					locationPredicate.add(
-						criteriaBuilder.equal(
-							locationRoot.get(Location_.id),
-							location.getId()
-						)
-					);
-				}
-				subqueryLocation.where(
-					criteriaBuilder.or(
-						locationPredicate.toArray(new Predicate[0])
-					));
-				predicates.add(root.
-					get(Lover_.id).
-					in(subqueryLocation)
-				);
-			}
-
-			Predicate predicate = criteriaBuilder.conjunction();
-			predicate.getExpressions().addAll(predicates);
-			return predicate;
 		};
 	}
 
