@@ -43,6 +43,7 @@ import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRep
 import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 import tw.musemodel.dingzhiqingren.service.DashboardService;
+import tw.musemodel.dingzhiqingren.service.HistoryService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 
@@ -61,7 +62,7 @@ public class DashboardController {
 	private MessageSource messageSource;
 
 	@Autowired
-	private Servant servant;
+	private WebSocketServer webSocketServer;
 
 	@Autowired
 	private LoverService loverService;
@@ -70,16 +71,16 @@ public class DashboardController {
 	private DashboardService dashboardService;
 
 	@Autowired
-	private WithdrawalRecordRepository withdrawalRecordRepository;
+	private Servant servant;
 
 	@Autowired
-	private LoverRepository loverRepository;
+	private WithdrawalRecordRepository withdrawalRecordRepository;
 
 	@Autowired
 	private HistoryRepository historyRepository;
 
 	@Autowired
-	private WebSocketServer webSocketServer;
+	private LoverRepository loverRepository;
 
 	@Autowired
 	private StopRecurringPaymentApplicationRepository stopRecurringPaymentApplicationRepository;
@@ -97,8 +98,8 @@ public class DashboardController {
 	 * @return
 	 */
 	@PostMapping(path = "/addTrialCode.json")
-	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	String addTrialCode(@RequestParam String code, @RequestParam String keyOpinionLeader, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -197,8 +198,8 @@ public class DashboardController {
 	 * @return
 	 */
 	@PostMapping(path = "/seeCetificationPic.json")
-	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	String seeCetificationPic(@RequestParam long id, Authentication authentication, Locale locale) {
 		try {
 			return new JavaScriptObjectNotation().
@@ -228,8 +229,8 @@ public class DashboardController {
 	 * @return
 	 */
 	@PostMapping(path = "/withdrawalFail.json")
-	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	String fail(@RequestParam UUID identifier, @RequestParam Boolean status, @RequestParam Long timestamp, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -430,8 +431,8 @@ public class DashboardController {
 	 * @return
 	 */
 	@PostMapping(path = "/stopRecurring.json")
-	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	String stopRecurring(@RequestParam("applyID") Long applyID, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -455,64 +456,6 @@ public class DashboardController {
 	}
 
 	/**
-	 * 匯款車馬費成功
-	 *
-	 * @param authentication
-	 * @param locale
-	 * @return
-	 */
-	@PostMapping(path = "/withdrawalSuccess.json")
-	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
-	@ResponseBody
-	String success(@RequestParam UUID identifier, @RequestParam Boolean status, @RequestParam Long timestamp, Authentication authentication, Locale locale) {
-		if (servant.isNull(authentication)) {
-			return servant.mustBeAuthenticated(locale);
-		}
-
-		// 財務
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
-		);
-
-		// 甜心
-		Lover honey = loverService.loadByIdentifier(identifier);
-
-		Date current = new Date(timestamp);
-		List<WithdrawalRecord> withdrawalRecords
-			= withdrawalRecordRepository.findByHoneyAndStatusAndTimestamp(honey, status, current);
-
-		int totalPoints = 0;
-		for (WithdrawalRecord withdrawalRecord : withdrawalRecords) {
-			totalPoints += withdrawalRecord.getPoints();
-			withdrawalRecord.setStatus(Boolean.TRUE);
-			withdrawalRecordRepository.save(withdrawalRecord);
-		}
-
-		withdrawalRecordRepository.flush();
-
-		History history = new History(
-			me,
-			honey,
-			History.Behavior.TI_LING_CHENG_GONG
-		);
-		history.setGreeting(Integer.toString(totalPoints));
-		historyRepository.saveAndFlush(history);
-
-		// 推送通知給甜心
-		webSocketServer.sendNotification(
-			honey.getIdentifier().toString(),
-			String.format(
-				"您提領的車馬費 %d 已匯款成功!",
-				totalPoints
-			));
-
-		return new JavaScriptObjectNotation().
-			withReason("已撥款成功").
-			withResponse(true).
-			toJSONObject().toString();
-	}
-
-	/**
 	 * 更新體驗碼
 	 *
 	 * @param trialCode
@@ -522,8 +465,8 @@ public class DashboardController {
 	 * @return
 	 */
 	@PostMapping(path = "/updateTrialCode.json")
-	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	String updateTrialCode(@RequestParam TrialCode trialCode, @RequestParam String editedCode, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -542,6 +485,86 @@ public class DashboardController {
 		return new JavaScriptObjectNotation().
 			withResponse(true).
 			toJSONObject().toString();
+	}
+
+	/**
+	 * 手动升级贵宾。
+	 *
+	 * @author r@musemodel.tw
+	 * @param p 第几页
+	 * @param s 每页几笔
+	 * @param response
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 * @throws TransformerConfigurationException
+	 * @throws TransformerException
+	 */
+	@GetMapping(path = "/upgradeManually.xml")
+	@ResponseBody
+	//@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	void upgradeManually(@RequestParam(defaultValue = "0") int p, @RequestParam(defaultValue = "10") int s, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+
+		Element usersElement = document.createElement("users");
+		documentElement.appendChild(usersElement);
+
+		for (Lover lover : loverRepository.findAll(PageRequest.of(p, s))) {
+			Element userElement = document.createElement("user");
+
+			Element nicknameElement = document.createElement("nickname");
+			nicknameElement.setTextContent(lover.getNickname());
+			userElement.appendChild(nicknameElement);
+
+			Element loginElement = document.createElement("login");
+			loginElement.setTextContent(lover.getLogin());
+			userElement.appendChild(loginElement);
+
+			Date vipExpiration = lover.getVip();
+			if (loverService.isVIP(lover)) {
+				Element vipElement = document.createElement("vip");
+				vipElement.setTextContent(
+					LoverService.DATE_TIME_FORMATTER.format(
+						servant.
+							toTaipeiZonedDateTime(
+								vipExpiration
+							).
+							withZoneSameInstant(
+								Servant.ASIA_TAIPEI
+							)
+					)
+				);
+				userElement.appendChild(vipElement);
+			}
+			if (loverService.isVVIP(lover)) {
+				Element vvipElement = document.createElement("vvip");
+				vvipElement.setTextContent(
+					LoverService.DATE_TIME_FORMATTER.format(
+						servant.
+							toTaipeiZonedDateTime(
+								vipExpiration
+							).
+							withZoneSameInstant(
+								Servant.ASIA_TAIPEI
+							)
+					)
+				);
+			}
+
+			Element idElement = document.createElement("id");
+			idElement.setTextContent(lover.getId().toString());
+			userElement.appendChild(idElement);
+
+			usersElement.appendChild(userElement);
+		}
+		TransformerFactory.
+			newDefaultInstance().
+			newTransformer().
+			transform(
+				new DOMSource(document),
+				new StreamResult(response.getOutputStream())
+			);
 	}
 
 	/**
@@ -576,68 +599,62 @@ public class DashboardController {
 		return modelAndView;
 	}
 
-	@GetMapping(path = "/manualUpgrade.xml")
-//	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	/**
+	 * 匯款車馬費成功
+	 *
+	 * @author m@musemodel.tw
+	 * @param identifier 识别码
+	 * @param status 状态
+	 * @param timestamp EPOCH 秒数
+	 * @param authentication 认证
+	 * @param locale 语言环境
+	 * @return 杰森
+	 */
+	@PostMapping(path = "/withdrawalSuccess.json")
 	@ResponseBody
-	void manualUpgrade(@RequestParam(defaultValue = "0") int p, @RequestParam(defaultValue = "10") int s, HttpServletResponse response)
-		throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
-
-		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-
-		Element usersElement = document.createElement("users");
-		documentElement.appendChild(usersElement);
-
-		for (Lover lover : loverRepository.findAll(PageRequest.of(p, s))) {
-
-			Element userElement = document.createElement("user");
-
-			Element nicknameElement = document.createElement("nickname");
-			nicknameElement.setTextContent(lover.getNickname());
-			userElement.appendChild(nicknameElement);
-
-			Element loginElement = document.createElement("login");
-			loginElement.setTextContent(lover.getLogin());
-			userElement.appendChild(loginElement);
-
-			if (loverService.isVIP(lover)) {
-				Element vipElement = document.createElement("vip");
-				vipElement.setTextContent(
-					LoverService.DATE_TIME_FORMATTER.format(
-						servant.
-							toTaipeiZonedDateTime(lover.getVip()).
-							withZoneSameInstant(
-								Servant.ASIA_TAIPEI
-							)
-					)
-				);
-				userElement.appendChild(vipElement);
-
-			} else if (loverService.isVVIP(lover)) {
-				Element vvipElement = document.createElement("vvip");
-				vvipElement.setTextContent(
-					LoverService.DATE_TIME_FORMATTER.format(
-						servant.toTaipeiZonedDateTime(lover.getVip()).
-							withZoneSameInstant(
-								Servant.ASIA_TAIPEI
-							)
-					)
-				);
-			}
-
-			Element idElement = document.createElement("id");
-			idElement.setTextContent(lover.getId().toString());
-			userElement.appendChild(idElement);
-
-			usersElement.appendChild(userElement);
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	String withdrawalSuccess(@RequestParam UUID identifier, @RequestParam Boolean status, @RequestParam Long timestamp, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
 		}
-		TransformerFactory.
-			newDefaultInstance().
-			newTransformer().
-			transform(
-				new DOMSource(document),
-				new StreamResult(response.getOutputStream())
-			);
-	}
 
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+		Lover honey = loverService.loadByIdentifier(identifier);
+
+		Date current = new Date(timestamp);
+		List<WithdrawalRecord> withdrawalRecords = withdrawalRecordRepository.findByHoneyAndStatusAndTimestamp(honey, status, current);
+
+		int totalPoints = 0;
+		for (WithdrawalRecord withdrawalRecord : withdrawalRecords) {
+			totalPoints += withdrawalRecord.getPoints();
+			withdrawalRecord.setStatus(Boolean.TRUE);
+			withdrawalRecordRepository.save(withdrawalRecord);
+		}
+
+		withdrawalRecordRepository.flush();
+
+		History history = new History(
+			me,
+			honey,
+			HistoryService.BEHAVIOR_WITHDRAWAL_SUCCESS
+		);
+		history.setGreeting(Integer.toString(totalPoints));
+		historyRepository.saveAndFlush(history);
+
+		// 推送通知給甜心
+		webSocketServer.sendNotification(
+			honey.getIdentifier().toString(),
+			String.format(
+				"您提領的車馬費 %d 已匯款成功!",
+				totalPoints
+			)
+		);
+
+		return new JavaScriptObjectNotation().
+			withReason("已撥款成功").
+			withResponse(true).
+			toJSONObject().toString();
+	}
 }
