@@ -1485,6 +1485,7 @@ public class LoverService {
 		return mofo.getVip();
 	}
 
+	@Transactional(readOnly = true)
 	public boolean isValidCode(String code) {
 		return trialCodeRepository.countByCode(code) > 0;
 	}
@@ -1495,9 +1496,12 @@ public class LoverService {
 	 * @param lover
 	 * @return
 	 */
+	@Transactional(readOnly = true)
 	public boolean isTrial(Lover lover) {
-		return Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date(System.currentTimeMillis()))
-			&& Objects.nonNull(lover.getMaleSpecies()) && Objects.equals(lover.getMaleSpecies(), Lover.MaleSpecies.VIP)
+		Date vipExpiration = lover.getVip();
+		Lover.MaleSpecies maleSpecies = lover.getMaleSpecies();
+		return (Objects.nonNull(vipExpiration) && vipExpiration.after(new Date(System.currentTimeMillis())))
+			&& (Objects.nonNull(maleSpecies) && Objects.equals(maleSpecies, Lover.MaleSpecies.VIP))
 			&& historyRepository.countByInitiativeAndBehaviorOrderByOccurredDesc(lover, BEHAVIOR_MONTHLY_CHARGED) < 1;
 	}
 
@@ -1507,9 +1511,12 @@ public class LoverService {
 	 * @param lover 用户
 	 * @return 布尔值
 	 */
+	@Transactional(readOnly = true)
 	public boolean isVIP(Lover lover) {
-		return Objects.nonNull(lover.getVip()) && lover.getVip().after(new Date(System.currentTimeMillis()))
-			&& Objects.nonNull(lover.getMaleSpecies()) && Objects.equals(lover.getMaleSpecies(), Lover.MaleSpecies.VIP);
+		Date vipExpiration = lover.getVip();
+		Lover.MaleSpecies maleSpecies = lover.getMaleSpecies();
+		return (Objects.nonNull(vipExpiration) && vipExpiration.after(new Date(System.currentTimeMillis())))
+			&& (Objects.nonNull(maleSpecies) && Objects.equals(maleSpecies, Lover.MaleSpecies.VIP));
 	}
 
 	/**
@@ -1518,14 +1525,13 @@ public class LoverService {
 	 * @param lover
 	 * @return
 	 */
+	@Transactional(readOnly = true)
 	public boolean isVVIP(Lover lover) {
 		// 貴賓到期日
-		Date vip = lover.getVip();
+		Date vipExpiration = lover.getVip();
 		Lover.MaleSpecies maleSpecies = lover.getMaleSpecies();
-		return Objects.nonNull(vip)
-			&& vip.after(new Date(System.currentTimeMillis()))
-			&& Objects.nonNull(maleSpecies)
-			&& Objects.equals(maleSpecies, Lover.MaleSpecies.VVIP);
+		return (Objects.nonNull(vipExpiration) && vipExpiration.after(new Date(System.currentTimeMillis())))
+			&& (Objects.nonNull(maleSpecies) && Objects.equals(maleSpecies, Lover.MaleSpecies.VVIP));
 	}
 
 	public Document readDocument(Lover someone, Locale locale) throws SAXException, IOException, ParserConfigurationException {
