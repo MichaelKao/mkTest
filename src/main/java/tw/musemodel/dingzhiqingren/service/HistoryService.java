@@ -128,6 +128,11 @@ public class HistoryService {
 	}
 
 	/**
+	 * 历程：要求車馬費
+	 */
+	public static final Behavior BEHAVIOR_ASK_FOR_FARE = Behavior.YAO_CHE_MA_FEI;
+
+	/**
 	 * 历程：充值行为
 	 */
 	public static final Behavior BEHAVIOR_CHARGED = Behavior.CHU_ZHI;
@@ -141,11 +146,6 @@ public class HistoryService {
 	 * 历程：车马费(男对女)行为
 	 */
 	public static final Behavior BEHAVIOR_FARE = Behavior.CHE_MA_FEI;
-
-	/**
-	 * 历程：要求車馬費
-	 */
-	public static final Behavior BEHAVIOR_ASK_FOR_FARE = Behavior.YAO_CHE_MA_FEI;
 
 	/**
 	 * 历程：退回車馬費

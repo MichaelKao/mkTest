@@ -538,7 +538,7 @@ public class Servant {
 			toString();
 	}
 
-	public ZonedDateTime toTaipeiZonedDateTime(Instant instant) {
+	public static ZonedDateTime toTaipeiZonedDateTime(Instant instant) {
 		return ZonedDateTime.ofInstant(instant, ASIA_TAIPEI);
 	}
 

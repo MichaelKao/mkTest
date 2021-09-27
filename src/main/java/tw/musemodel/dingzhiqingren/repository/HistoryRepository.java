@@ -50,6 +50,14 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
 	public Long sumByPassiveAndBehaviorHearts(Lover passive, Behavior behavior);
 
 	/**
+	 * @author p@usemodel.tw
+	 * @param behaviors 行为们
+	 * @param pageable 可分页
+	 * @return 符合行为们的历程们
+	 */
+	public List<History> findByBehaviorInOrderByOccurredDesc(Collection<Behavior> behaviors, Pageable pageable);
+
+	/**
 	 * @param initiative 主动方
 	 * @param passive 被动方
 	 * @param behaviors 行为们

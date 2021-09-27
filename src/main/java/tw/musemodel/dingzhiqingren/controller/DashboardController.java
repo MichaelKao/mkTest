@@ -1,6 +1,9 @@
 package tw.musemodel.dingzhiqingren.controller;
 
+import com.beust.jcommander.internal.Lists;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -13,6 +16,12 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -390,6 +399,100 @@ public class DashboardController {
 			toJSONObject().toString();
 	}
 
+	@GetMapping(path = "/log/chat.xlsx")
+	@ResponseBody
+	//@Secured({"ROLE_ALMIGHTY"})
+	void logsOfChat(@RequestParam(defaultValue = "0") int p, @RequestParam(defaultValue = "10") int s, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
+		final Collection<History.Behavior> behaviors = Lists.newArrayList(
+			HistoryService.BEHAVIOR_CHAT_MORE,
+			HistoryService.BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
+			HistoryService.BEHAVIOR_FOLLOW,
+			HistoryService.BEHAVIOR_PEEK
+		);
+
+		SXSSFWorkbook workbook = new SXSSFWorkbook();
+		Sheet sheet = workbook.createSheet();
+		Row firstRow = sheet.createRow(0);
+		firstRow.createCell(0, CellType.STRING).setCellValue("主動方");
+		firstRow.createCell(1, CellType.STRING).setCellValue("被動方");
+		firstRow.createCell(2, CellType.STRING).setCellValue("行為");
+		firstRow.createCell(3, CellType.STRING).setCellValue("發生時戳");
+
+		int rowNumber = 1;
+		for (History history : historyRepository.findByBehaviorInOrderByOccurredDesc(behaviors, PageRequest.of(p, s))) {
+			String behavior = "";
+			switch (history.getBehavior()) {
+				case LIAO_LIAO:
+					behavior = "聊聊";
+					break;
+				case JI_WO_LAI:
+					behavior = "給我 LINE";
+					break;
+				case SHOU_CANG:
+					behavior = "收藏";
+					break;
+				case KAN_GUO_WO:
+					behavior = "看過我";
+					break;
+			}
+
+			Row row = sheet.createRow(rowNumber);
+			row.createCell(
+				0,
+				CellType.STRING
+			).setCellValue(
+				history.getInitiative().getNickname()
+			);
+			row.createCell(
+				1,
+				CellType.STRING
+			).setCellValue(
+				history.getPassive().getNickname()
+			);
+			row.createCell(
+				2,
+				CellType.STRING
+			).setCellValue(
+				behavior
+			);
+
+			CellStyle cellStyle = workbook.createCellStyle();
+			cellStyle.setDataFormat(
+				workbook.
+					getCreationHelper().
+					createDataFormat().
+					getFormat("yyyy/m/d hh:mm:ss")
+			);
+			Cell cell = row.createCell(
+				3,
+				CellType.STRING
+			);
+			cell.setCellStyle(cellStyle);
+			cell.setCellValue(
+				history.getOccurred()
+			);
+
+			++rowNumber;
+		}
+
+		response.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		response.setHeader(
+			"Content-Disposition",
+			String.format(
+				"attachment; filename=\"chat@%s.xlsx\"",
+				Servant.toTaipeiZonedDateTime(
+					new Date(
+						System.currentTimeMillis()
+					).toInstant()
+				).format(Servant.TAIWAN_DATE_TIME_FORMATTER)
+			)
+		);
+		OutputStream outputStream = response.getOutputStream();
+		workbook.write(outputStream);
+		outputStream.close();
+		workbook.dispose();
+	}
+
 	/**
 	 * 长期贵宾解除定期定额。
 	 *
@@ -558,6 +661,7 @@ public class DashboardController {
 
 			usersElement.appendChild(userElement);
 		}
+
 		TransformerFactory.
 			newDefaultInstance().
 			newTransformer().
