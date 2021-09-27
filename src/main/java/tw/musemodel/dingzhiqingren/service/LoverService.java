@@ -7,6 +7,8 @@ import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.FormatException;
@@ -17,7 +19,10 @@ import com.google.zxing.qrcode.QRCodeReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.URI;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
 import java.text.DateFormat;
@@ -44,6 +49,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
+import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -107,6 +113,7 @@ import tw.musemodel.dingzhiqingren.entity.embedded.DesiredCompanionshipKey;
 import tw.musemodel.dingzhiqingren.entity.embedded.Follow;
 import tw.musemodel.dingzhiqingren.event.SignedUpEvent;
 import tw.musemodel.dingzhiqingren.model.Activated;
+import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.model.Descendant;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.ResetPassword;
@@ -134,6 +141,7 @@ import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
 import static tw.musemodel.dingzhiqingren.service.Servant.PAGE_SIZE_ON_THE_WALL;
+import static tw.musemodel.dingzhiqingren.service.Servant.UTF_8;
 import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
 /**
@@ -3252,6 +3260,23 @@ public class LoverService {
 		);
 	}
 
+	@Data
+	private class Man implements Serializable {
+
+		private static final long serialVersionUID = -7867929167569711132L;
+
+		private final int maleId;
+
+		@Override
+		public String toString() {
+			try {
+				return new JsonMapper().writeValueAsString(this);
+			} catch (JsonProcessingException ignore) {
+				return "null";
+			}
+		}
+	}
+
 	/**
 	 * 群发打招呼。
 	 *
@@ -3269,69 +3294,54 @@ public class LoverService {
 		}
 
 		Collection<Location> locations = getLocations(female);
-		LOGGER.debug(
-			"3216\t女神的地區s\n\n{}\n",
-			locations
-		);
-		List<Lover> men = loverRepository.findAll(
-			LoverSpecification.malesListForGroupGreeting(
-				true,
-				new HashSet<>(locations)
-			)
+
+		List<Man> men = jdbcTemplate.query(
+			(Connection connection) -> {
+				StringBuilder stringBuilder = new StringBuilder();
+				locations.forEach(location -> {
+					stringBuilder.append(String.format(
+						"'%s',",
+						location.getId()
+					));
+				});
+				final String SAME_LOCATION = stringBuilder.
+					toString().
+					replaceAll(
+						",$",
+						""
+					);
+
+				PreparedStatement preparedStatement;
+				try {
+					preparedStatement = connection.prepareStatement(
+						String.format(
+							FileCopyUtils.copyToString(
+								new InputStreamReader(
+									groupGreetingList.getInputStream(),
+									UTF_8
+								)
+							),
+							SAME_LOCATION
+						)
+					);
+					preparedStatement.setInt(1, female.getId());
+					preparedStatement.setInt(2, female.getId());
+					preparedStatement.setInt(3, NUMBER_OF_GROUP_GREETING);
+					return preparedStatement;
+				} catch (IOException ex) {
+					return null;
+				}
+			},
+			(ResultSet resultSet, int rowNum) -> {
+				return new Man(
+					resultSet.getInt("id")
+				);
+			}
 		);
 
-//		List<Lover> men = jdbcTemplate.query(
-//			(Connection connection) -> {
-//				StringBuilder stringBuilder = new StringBuilder();
-//				locations.forEach(location -> {
-//					stringBuilder.append(String.format(
-//						"'%s',",
-//						location.getId()
-//					));
-//				});
-//				final String SAME_LOCATION = stringBuilder.
-//					toString().
-//					replaceAll(
-//						",$",
-//						""
-//					);
-//
-//				PreparedStatement preparedStatement;
-//				try {
-//					preparedStatement = connection.prepareStatement(
-//						String.format(
-//							FileCopyUtils.copyToString(
-//								new InputStreamReader(
-//									groupGreetingList.getInputStream(),
-//									UTF_8
-//								)
-//							),
-//							SAME_LOCATION
-//						)
-//					);
-//					preparedStatement.setInt(1, female.getId());
-//					preparedStatement.setInt(2, female.getId());
-//					preparedStatement.setInt(3, NUMBER_OF_GROUP_GREETING);
-//					return preparedStatement;
-//				} catch (IOException ex) {
-//					return null;
-//				}
-//			},
-//			(ResultSet resultSet, int rowNum) -> {
-//				return new Dialogist(
-//					resultSet.getInt("zhu_dong_de"),
-//					resultSet.getInt("bei_dong_de")
-//				);
-//			}
-//		);
 		Date current = new Date(System.currentTimeMillis());
-		int count = 0;
-		for (Lover male : men) {
-			// 發給 30 位男仕
-			if (count >= NUMBER_OF_GROUP_GREETING) {
-				break;
-			}
-			count += 1;
+		for (Man man : men) {
+			Lover male = loverRepository.findById(man.getMaleId()).orElseThrow();
 			History history = new History(
 				female,
 				male,
@@ -3360,8 +3370,7 @@ public class LoverService {
 
 		historyRepository.flush();
 
-		return new JavaScriptObjectNotation()
-			.
+		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
 				"groupGreeting.done",
 				null,
@@ -3389,20 +3398,16 @@ public class LoverService {
 		cal.add(Calendar.DAY_OF_MONTH, -5);
 		Date fiveDaysAgo = cal.getTime();
 
-		// 查看五天內的招呼紀錄
-		List<History> histories = historyRepository.findByInitiativeAndBehaviorAndOccurredGreaterThanOrderByOccurredDesc(
-			female,
-			BEHAVIOR_GROUP_GREETING,
-			fiveDaysAgo
-		);
-		histories.forEach(history -> {
-			Element historyElement = document.createElement("history");
-			documentElement.appendChild(historyElement);
-			historyElement.setAttribute(
+		Element recordsElement = document.createElement("records");
+		documentElement.appendChild(recordsElement);
+		for (Activity activity : historyRepository.findGroupGreetingListGroupBy(female, BEHAVIOR_GROUP_GREETING, fiveDaysAgo)) {
+			Element recordElement = document.createElement("record");
+			recordsElement.appendChild(recordElement);
+			recordElement.setAttribute(
 				"date",
 				DATE_FORMATTER.format(servant.
 					toTaipeiZonedDateTime(
-						history.getOccurred()
+						activity.getOccurred()
 					).
 					withZoneSameInstant(
 						Servant.ASIA_TAIPEI
@@ -3410,37 +3415,88 @@ public class LoverService {
 				)
 			);
 
-			Lover male = history.getPassive();
+			for (History history : historyRepository.findByInitiativeAndBehaviorAndOccurred(female, BEHAVIOR_GROUP_GREETING, activity.getOccurred())) {
+				Element historyElement = document.createElement("history");
+				recordElement.appendChild(historyElement);
+				Lover male = history.getPassive();
 
-			historyElement.setAttribute("nickname", male.getNickname());
-			historyElement.setAttribute("age", calculateAge(male).toString());
-			historyElement.setAttribute("profileImage", male.getProfileImage());
-			historyElement.setAttribute("identifier", male.getIdentifier().toString());
-			if (isVVIP(history.getPassive())) {
-				historyElement.setAttribute("vip", null);
-			}
-			if (Objects.nonNull(male.getRelief())) {
-				Boolean relief = male.getRelief();
+				historyElement.setAttribute("nickname", male.getNickname());
+				historyElement.setAttribute("age", calculateAge(male).toString());
+				historyElement.setAttribute("profileImage", male.getProfileImage());
+				historyElement.setAttribute("identifier", male.getIdentifier().toString());
+				if (isVVIP(history.getPassive())) {
+					historyElement.setAttribute("vvip", null);
+				}
+				if (Objects.nonNull(male.getRelief())) {
+					Boolean relief = male.getRelief();
+					historyElement.setAttribute(
+						"relief",
+						relief ? "true" : "false"
+					);
+				}
 				historyElement.setAttribute(
-					"relief",
-					relief ? "true" : "false"
+					"profileImage",
+					String.format(
+						"https://%s/profileImage/%s",
+						Servant.STATIC_HOST,
+						male.getProfileImage()
+					)
 				);
 			}
-			historyElement.setAttribute(
-				"profileImage",
-				String.format(
-					"https://%s/profileImage/%s",
-					Servant.STATIC_HOST,
-					male.getProfileImage()
-				)
-			);
-		});
+		}
 
+		// 查看五天內的招呼紀錄
+//		List<History> histories = historyRepository.findByInitiativeAndBehaviorAndOccurredGreaterThanOrderByOccurredDesc(
+//			female,
+//			BEHAVIOR_GROUP_GREETING,
+//			fiveDaysAgo
+//		);
+//		histories.forEach(history -> {
+//			Element historyElement = document.createElement("history");
+//			documentElement.appendChild(historyElement);
+//			historyElement.setAttribute(
+//				"date",
+//				DATE_FORMATTER.format(servant.
+//					toTaipeiZonedDateTime(
+//						history.getOccurred()
+//					).
+//					withZoneSameInstant(
+//						Servant.ASIA_TAIPEI
+//					)
+//				)
+//			);
+//
+//			Lover male = history.getPassive();
+//
+//			historyElement.setAttribute("nickname", male.getNickname());
+//			historyElement.setAttribute("age", calculateAge(male).toString());
+//			historyElement.setAttribute("profileImage", male.getProfileImage());
+//			historyElement.setAttribute("identifier", male.getIdentifier().toString());
+//			if (isVVIP(history.getPassive())) {
+//				historyElement.setAttribute("vip", null);
+//			}
+//			if (Objects.nonNull(male.getRelief())) {
+//				Boolean relief = male.getRelief();
+//				historyElement.setAttribute(
+//					"relief",
+//					relief ? "true" : "false"
+//				);
+//			}
+//			historyElement.setAttribute(
+//				"profileImage",
+//				String.format(
+//					"https://%s/profileImage/%s",
+//					Servant.STATIC_HOST,
+//					male.getProfileImage()
+//				)
+//			);
+//		});
 		return document;
 	}
 
 	@SuppressWarnings("null")
-	public boolean within12hrsFromLastGroupGreeting(Lover female) {
+	public boolean within12hrsFromLastGroupGreeting(Lover female
+	) {
 		Date gpDate = null;
 		Date nowDate = null;
 		History history = historyRepository.findTop1ByInitiativeAndBehaviorOrderByIdDesc(

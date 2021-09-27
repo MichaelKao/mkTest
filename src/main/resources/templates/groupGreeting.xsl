@@ -31,57 +31,72 @@
 			<DIV class="modal fade" id="greetingRecord" tabindex="-1">
 				<DIV class="modal-dialog modal-dialog-centered">
 					<DIV class="modal-content">
-						<DIV class="modal-header">
-							<H6 class="modal-title">群發紀錄</H6>
-							<SPAN class="text-xs ms-1">查看五天內的招呼紀錄</SPAN>
-							<BUTTON class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
-						</DIV>
 						<DIV class="modal-body">
-							<xsl:for-each select="history">
-								<DIV class="d-flex align-items-center justify-content-start py-1">
-									<DIV>
-										<A href="/profile/{@identifier}/">
-											<IMG alt="profileImage" class="rounded-circle" src="{@profileImage}" width="40"/>
-										</A>
+							<DIV class="d-flex">
+								<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+									<I class="fal fa-times"></I>
+								</BUTTON>
+							</DIV>
+							<DIV class="mt-3">
+								<DIV class="mb-3">
+									<DIV class="d-flex justify-content-start align-items-baseline mb-3">
+										<I class="fad fa-comments-alt text-info fontSize50"></I>
+										<SPAN class="text-bold text-dark mx-2">群發紀錄</SPAN>
 									</DIV>
-									<DIV class="ms-4">
-										<A href="/profile/{@identifier}/">
-											<SPAN class="me-2">
-												<xsl:value-of select="@nickname"/>
-											</SPAN>
-											<SPAN>
-												<xsl:value-of select="@age"/>
-											</SPAN>
-											<xsl:if test="@vip">
-												<SPAN class="ms-1">
-													<IMG class="border-radius-md" src="/vip.svg" width="20"/>
-												</SPAN>
-											</xsl:if>
-											<xsl:if test="@relief = 'true'">
-												<SPAN class="ms-1">
-													<IMG class="border-radius-md" src="/accept.svg" width="20"/>
-												</SPAN>
-											</xsl:if>
-											<DIV class="text-xs text-secondary text-lighter">
+									<SPAN class="text-xs">可查看五天內的招呼紀錄</SPAN>
+								</DIV>
+								<DIV>
+									<xsl:for-each select="records/record">
+										<DIV class="mb-3">
+											<DIV class="text-primary">
 												<xsl:value-of select="@date"/>
 											</DIV>
-										</A>
-									</DIV>
+											<xsl:for-each select="history">
+												<DIV class="d-flex align-items-center justify-content-start">
+													<DIV>
+														<A href="/profile/{@identifier}/">
+															<IMG alt="profileImage" class="rounded-circle" src="{@profileImage}" width="40"/>
+														</A>
+													</DIV>
+													<DIV class="ms-4">
+														<A href="/profile/{@identifier}/">
+															<SPAN class="me-2">
+																<xsl:value-of select="@nickname"/>
+															</SPAN>
+															<SPAN>
+																<xsl:value-of select="@age"/>
+															</SPAN>
+															<xsl:if test="@vvip">
+																<SPAN class="ms-1">
+																	<I class="fad fa-crown text-yellow text-shadow"></I>
+																</SPAN>
+															</xsl:if>
+															<xsl:if test="@relief = 'true'">
+																<SPAN class="ms-1">
+																	<I class="fas fa-shield-check text-success text-shadow"></I>
+																</SPAN>
+															</xsl:if>
+														</A>
+													</DIV>
+												</DIV>
+												<HR class="horizontal dark my-1"/>
+											</xsl:for-each>
+										</DIV>
+									</xsl:for-each>
 								</DIV>
-								<HR class="horizontal dark mb-1"/>
-							</xsl:for-each>
-						</DIV>
-						<DIV class="modal-footer">
-							<BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">關閉</BUTTON>
+							</DIV>
+							<DIV class="text-center">
+								<BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+							</DIV>
 						</DIV>
 					</DIV>
 				</DIV>
 			</DIV>
-			<DIV class="container py-8 text-center">
+			<DIV class="container pt-7 pt-md-8 text-center">
 				<DIV class="row">
 					<DIV class="col-lg-7 mx-auto d-flex justify-content-center flex-column">
 						<H3 class="text-center">群發打招呼</H3>
-						<BUTTON class="btn bg-gradient-dark w-40 mx-auto" data-bs-target="#greetingRecord" data-bs-toggle="modal" type="button">群發紀錄</BUTTON>
+						<BUTTON class="btn btn-outline-dark btn-round w-40 mx-auto" data-bs-target="#greetingRecord" data-bs-toggle="modal" type="button">群發紀錄</BUTTON>
 						<P class="px-4">每 24 小時可依照您的地區標籤來向 30 位男仕群發打招呼一次。</P>
 						<xsl:if test="not(@within24hr)">
 							<FORM action="/groupGreeting.json" method="post">
@@ -94,13 +109,14 @@
 									</DIV>
 									<DIV class="row">
 										<DIV class="col-md-12">
-											<BUTTON class="btn bg-gradient-primary w-100" type="submit">打招呼</BUTTON>
+											<BUTTON class="btn btn-primary btn-round w-100" type="submit">打招呼</BUTTON>
 										</DIV>
 									</DIV>
 								</DIV>
 							</FORM>
 						</xsl:if>
 						<xsl:if test="@within24hr">
+							<I class="fad fa-alarm-exclamation text-primary fontSize50"></I>
 							<DIV class="text-primary">24小時僅能群發一次</DIV>
 							<SPAN class="text-primary">您在 <xsl:value-of select="@within24hr"/> 已有群發打招呼</SPAN>
 						</xsl:if>

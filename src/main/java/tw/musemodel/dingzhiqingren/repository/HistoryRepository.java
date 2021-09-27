@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.model.Activity;
 
 /**
  * 数据访问对象：历程
@@ -105,4 +106,12 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
 	public int countByInitiativeAndBehaviorOrderByOccurredDesc(Lover initiative, Behavior behavior);
 
 	public History findByBehaviorAndHistory(Behavior behavior, History history);
+
+	@Query("SELECT new tw.musemodel.dingzhiqingren.model.Activity(h.initiative, h.behavior, h.occurred) "
+		+ "FROM History h WHERE h.initiative = :initiative AND h.behavior = :behavior AND h.occurred >= :occurred "
+		+ "GROUP BY h.initiative, h.behavior, h.occurred "
+		+ "ORDER BY h.occurred DESC")
+	public List<Activity> findGroupGreetingListGroupBy(Lover initiative, Behavior behavior, Date occurred);
+
+	public List<History> findByInitiativeAndBehaviorAndOccurred(Lover initiative, Behavior behavior, Date occurred);
 }
