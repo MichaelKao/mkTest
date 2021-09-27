@@ -48,7 +48,7 @@
 					</DIV>
 					<DIV class="mx-auto my-5">
 						<xsl:if test="@orderResult = 'success'">
-							<INPUT name="orderResult" type="hidden" value="true"/><
+							<INPUT name="orderResult" type="hidden" value="true"/>
 							<DIV class="d-flex mb-2">
 								<DIV>交易時間：</DIV>
 								<DIV class="text-primary text-gradient">
