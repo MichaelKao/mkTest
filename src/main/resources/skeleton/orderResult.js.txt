@@ -1,0 +1,1 @@
+fbq('track','Purchase',{value:%d,currency:'TWD'});fbq('trackCustom','PaymentResult',{succeed:%s});

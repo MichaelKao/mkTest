@@ -1,15 +1,19 @@
 package tw.musemodel.dingzhiqingren.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpSession;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -174,7 +178,12 @@ public class InPay2Controller {
 		String itemName = jsonObject.
 			getJSONObject("result").
 			getString("itemName");
-		if (jsonObject.getBoolean("response")) {
+		Boolean isSuccessful = jsonObject.
+			getBoolean("response");
+		Integer totalAmount = jsonObject.
+			getJSONObject("result").
+			getInt("totalAmount");
+		if (isSuccessful) {
 			documentElement.setAttribute("orderResult", "success");
 			documentElement.setAttribute(
 				"date",
@@ -191,9 +200,7 @@ public class InPay2Controller {
 				));
 			documentElement.setAttribute(
 				"amount",
-				jsonObject.
-					getJSONObject("result").
-					get("totalAmount").toString()
+				totalAmount.toString()
 			);
 			String result = null;
 			if (Objects.equals(itemName, "1")) {
@@ -258,7 +265,20 @@ public class InPay2Controller {
 				jsonObject.get("reason").toString()
 			);
 			documentElement.setAttribute("redirect", "/");
-		}
+		}//if;else
+		Element fbqElement = document.createElement("fbq");
+		fbqElement.appendChild(document.createCDATASection(
+			String.format(
+				new BufferedReader(new InputStreamReader(
+					new ClassPathResource("skeleton/orderResult.js.txt").
+						getInputStream(),
+					Servant.UTF_8
+				)).lines().collect(Collectors.joining("\n")),
+				totalAmount,
+				isSuccessful.toString()
+			)
+		));
+		documentElement.appendChild(fbqElement);
 
 		ModelAndView modelAndView = new ModelAndView("orderResult");
 		modelAndView.getModelMap().addAttribute(document);
