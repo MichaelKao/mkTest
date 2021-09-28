@@ -401,7 +401,7 @@ public class DashboardController {
 
 	@GetMapping(path = "/log/chat.xlsx")
 	@ResponseBody
-	@Secured({"ROLE_ALMIGHTY"})
+	//@Secured({"ROLE_ALMIGHTY"})
 	void logsOfChat(@RequestParam(defaultValue = "0") int p, @RequestParam(defaultValue = "10") int s, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
 		final Collection<History.Behavior> behaviors = Lists.newArrayList(
 			HistoryService.BEHAVIOR_CHAT_MORE,
