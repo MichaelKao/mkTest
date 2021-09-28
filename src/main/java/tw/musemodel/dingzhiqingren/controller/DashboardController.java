@@ -474,7 +474,7 @@ public class DashboardController {
 
 			++rowNumber;
 		}//for
-		sheet.createFreezePane(1, 4);
+		sheet.createFreezePane(4, 0);
 
 		response.setHeader("Content-Type", "application/vnd.ms-excel");
 		response.setHeader(
