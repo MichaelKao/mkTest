@@ -23,75 +23,74 @@
 			<TITLE>
 				<xsl:value-of select="@title"/>
 			</TITLE>
-			<xsl:call-template name="headLinkTags"/>
+			<xsl:call-template name="dashHeadLinkTags"/>
 		</HEAD>
-		<BODY>
-			<xsl:call-template name="navbar"/>
-			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container pt-7">
-				<H4 class="text-center text-primary">安心認證審核</H4>
-				<DIV class="card col-md-8 mx-auto">
-					<DIV class="table-responsive">
-						<TABLE class="table align-items-center mb-0">
-							<THEAD>
-								<TR>
-									<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">會員</TH>
-									<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">照片</TH>
-									<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">審核結果</TH>
-								</TR>
-							</THEAD>
-							<TBODY>
-								<xsl:for-each select="lover">
+		<BODY class="g-sidenav-show bg-gray-100">
+			<xsl:call-template name="dashSideNavBar"/>
+			<MAIN class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg ">
+				<xsl:call-template name="dashTopNavBar"/>
+				<DIV class="container-fluid py-4 px-2">
+					<H4 class="text-center text-primary">安心認證審核</H4>
+					<DIV class="card col-md-8 mx-auto">
+						<DIV class="table-responsive">
+							<TABLE class="table align-items-center mb-0">
+								<THEAD>
 									<TR>
-										<INPUT name="id" type="hidden" value="{@id}"/>
-										<TD class="text-sm text-center">
-											<SPAN class="text-secondary text-xs font-weight-bold">
-												<xsl:value-of select="@name"/>
-											</SPAN>
-										</TD>
-										<TD class="text-sm text-center">
-											<BUTTON class="btn btn-dark p-1 mb-0 seePic" data-bs-target="#seePicModal" data-bs-toggle="modal" type="button">
-												<I class="fas fa-eye me-1"></I>
-												<SPAN>查看</SPAN>
-											</BUTTON>
-										</TD>
-										<TD class="text-sm text-center">
-											<BUTTON class="btn btn-success p-1 mb-0 me-2 success" type="button">
-												<I class="fas fa-check me-1"></I>
-												<SPAN>通過</SPAN>
-											</BUTTON>
-											<BUTTON class="btn btn-warning p-1 mb-0 fail" type="button">
-												<I class="fas fa-times me-1"></I>
-												<SPAN>不通過</SPAN>
-											</BUTTON>
-										</TD>
+										<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">會員</TH>
+										<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">照片</TH>
+										<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">審核結果</TH>
 									</TR>
-								</xsl:for-each>
-							</TBODY>
-						</TABLE>
+								</THEAD>
+								<TBODY>
+									<xsl:for-each select="lover">
+										<TR>
+											<INPUT name="id" type="hidden" value="{@id}"/>
+											<TD class="text-sm text-center">
+												<SPAN class="text-secondary text-xs font-weight-bold">
+													<xsl:value-of select="@name"/>
+												</SPAN>
+											</TD>
+											<TD class="text-sm text-center">
+												<BUTTON class="btn btn-dark p-1 mb-0 seePic" data-bs-target="#seePicModal" data-bs-toggle="modal" type="button">
+													<I class="fas fa-eye me-1"></I>
+													<SPAN>查看</SPAN>
+												</BUTTON>
+											</TD>
+											<TD class="text-sm text-center">
+												<BUTTON class="btn btn-success p-1 mb-0 me-2 success" type="button">
+													<I class="fas fa-check me-1"></I>
+													<SPAN>通過</SPAN>
+												</BUTTON>
+												<BUTTON class="btn btn-warning p-1 mb-0 fail" type="button">
+													<I class="fas fa-times me-1"></I>
+													<SPAN>不通過</SPAN>
+												</BUTTON>
+											</TD>
+										</TR>
+									</xsl:for-each>
+								</TBODY>
+							</TABLE>
+						</DIV>
 					</DIV>
-				</DIV>
-				<DIV class="modal fade" id="seePicModal">
-					<DIV class="modal-dialog modal-dialog-centered">
-						<DIV class="modal-content">
-							<DIV class="modal-header">
-								<H5 class="modal-title">手持證件</H5>
-							</DIV>
-							<DIV class="modal-body">
-								<IMG alt="identity" src="" style="max-width: 100%;"/>
-							</DIV>
-							<DIV class="modal-footer">
-								<BUTTON class="btn btn-outline-dark" data-bs-dismiss="modal" type="button">取消</BUTTON>
+					<DIV class="modal fade" id="seePicModal">
+						<DIV class="modal-dialog modal-dialog-centered">
+							<DIV class="modal-content">
+								<DIV class="modal-header">
+									<H5 class="modal-title">手持證件</H5>
+								</DIV>
+								<DIV class="modal-body">
+									<IMG alt="identity" src="" style="max-width: 100%;"/>
+								</DIV>
+								<DIV class="modal-footer">
+									<BUTTON class="btn btn-outline-dark" data-bs-dismiss="modal" type="button">取消</BUTTON>
+								</DIV>
 							</DIV>
 						</DIV>
 					</DIV>
 				</DIV>
-			</DIV>
-			<xsl:call-template name="bodyScriptTags"/>
+			</MAIN>
+			<xsl:call-template name="dashScriptTags"/>
 			<SCRIPT src="/SCRIPT/certificationDash.js"/>
-			<xsl:if test="@signIn">
-				<SCRIPT src="/SCRIPT/websocket.js"/>
-			</xsl:if>
 		</BODY>
 	</xsl:template>
 </xsl:stylesheet>

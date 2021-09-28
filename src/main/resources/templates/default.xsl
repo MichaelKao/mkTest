@@ -118,49 +118,11 @@
 									</DIV>
 								</LI>
 								<xsl:if test="@almighty or @finance">
-									<LI class="nav-item dropdown dropdown-hover">
-										<A class="nav-link cursor-pointer text-primary" id="dropdownMenuPages" data-bs-toggle="dropdown">
-											<SPAN class="me-1">
-												<I class="fad fa-id-card-alt fontSize22"></I>
-											</SPAN>
-											<I class="fas fa-chevron-down"></I>
+									<LI class="nav-item">
+										<A class="nav-link nav-link-icon d-flex align-items-center text-primary" href="/dashboard/certification.asp">
+											<I class="fad fa-id-card-alt fontSize22 width30whenMobile" aria-hidden="true"></I>
+											<SPAN class="d-lg-none">YoungMe 後台</SPAN>
 										</A>
-										<DIV class="dropdown-menu dropdown-menu-animation p-3 border-radius-lg mt-0 mt-lg-3">
-											<DIV class="d-none d-lg-block">
-												<A class="dropdown-item border-radius-md" href="/dashboard/withdrawal.asp">
-													<SPAN>甜心提領紀錄</SPAN>
-												</A>
-												<A class="dropdown-item border-radius-md" href="/dashboard/certification.asp">
-													<SPAN>安心認證審核</SPAN>
-												</A>
-												<A class="dropdown-item border-radius-md" href="/dashboard/stopRecurring.asp">
-													<SPAN>解除定期定額</SPAN>
-												</A>
-												<A class="dropdown-item border-radius-md" href="/dashboard/genTrialCode.asp">
-													<SPAN>產生體驗碼</SPAN>
-												</A>
-												<A class="dropdown-item border-radius-md" href="/dashboard/log/chat.xls">
-													<SPAN>聊天報表</SPAN>
-												</A>
-											</DIV>
-											<DIV class="d-lg-none">
-												<A class="dropdown-item border-radius-md" href="/dashboard/withdrawal.asp">
-													<SPAN>甜心提領紀錄</SPAN>
-												</A>
-												<A class="dropdown-item border-radius-md" href="/dashboard/certification.asp">
-													<SPAN>安心認證審核</SPAN>
-												</A>
-												<A class="dropdown-item border-radius-md" href="/dashboard/stopRecurring.asp">
-													<SPAN>解除定期定額</SPAN>
-												</A>
-												<A class="dropdown-item border-radius-md" href="/dashboard/genTrialCode.asp">
-													<SPAN>產生體驗碼</SPAN>
-												</A>
-												<A class="dropdown-item border-radius-md" href="/dashboard/log/chat.xls">
-													<SPAN>聊天報表</SPAN>
-												</A>
-											</DIV>
-										</DIV>
 									</LI>
 								</xsl:if>
 								<xsl:if test="@signIn">
@@ -279,15 +241,6 @@
 		<LINK href="/STYLE/default.css" rel="stylesheet"/>
 	</xsl:template>
 
-	<xsl:template name="dashScriptTags">
-		<script src="/SCRIPT/soft-ui-dashboard.min.js"/>
-	</xsl:template>
-
-	<xsl:template name="dashHeadLinkTags">
-		<LINK href="/STYLE/soft-ui-dashboard.css" rel="stylesheet"/>
-		<LINK href="/STYLE/default.css" rel="stylesheet"/>
-	</xsl:template>
-
 	<xsl:template name="headMetaTags">
 		<META content="IE=edge" http-equiv="X-UA-Compatible"/>
 		<META content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
@@ -344,4 +297,106 @@
 		</NOSCRIPT>
 		<!-- End Facebook Pixel Code -->
 	</xsl:template>
+
+	<!-- 後台需要的 -->
+	<xsl:template name="dashScriptTags">
+		<SCRIPT src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"/>
+		<SCRIPT crossorigin="anonymous" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"/>
+		<SCRIPT crossorigin="anonymous" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"/>
+		<SCRIPT crossorigin="anonymous" integrity="sha512-yUNtg0k40IvRQNR20bJ4oH6QeQ/mgs9Lsa6V+3qxTj58u2r+JiAYOhOW0o+ijuMmqCtCEg7LZRA+T4t84/ayVA==" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.0/perfect-scrollbar.min.js"/>
+		<SCRIPT src="https://kit.fontawesome.com/5ed1767edc.js"/>
+		<SCRIPT src="/SCRIPT/soft-ui-dashboard.min.js"/>
+	</xsl:template>
+
+	<xsl:template name="dashHeadLinkTags">
+		<LINK href="/STYLE/soft-ui-dashboard.css" rel="stylesheet"/>
+		<LINK href="/STYLE/default.css" rel="stylesheet"/>
+	</xsl:template>
+
+	<xsl:template name="dashSideNavBar">
+		<ASIDE class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 " id="sidenav-main">
+			<DIV class="sidenav-header">
+				<I class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" id="iconSidenav"></I>
+				<DIV class="navbar-brand m-0">
+					<I class="fal fa-id-card-alt text-lg"></I>
+					<SPAN class="ms-1 font-weight-bold">養蜜YoungMe後台</SPAN>
+				</DIV>
+			</DIV>
+			<HR class="horizontal dark mt-0"/>
+			<DIV class="collapse navbar-collapse w-auto max-height-vh-100 h-100" id="sidenav-collapse-main">
+				<UL class="navbar-nav">
+					<LI class="nav-item">
+						<A class="nav-link" href="/dashboard/certification.asp">
+							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
+								<I class="fal fa-shield-check text-dark text-lg"></I>
+							</DIV>
+							<SPAN class="nav-link-text ms-1">安心認證審核</SPAN>
+						</A>
+					</LI>
+					<LI class="nav-item">
+						<A class="nav-link" href="/dashboard/withdrawal.asp">
+							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
+								<I class="fal fa-badge-dollar text-dark text-lg"></I>
+							</DIV>
+							<SPAN class="nav-link-text ms-1">甜心提領紀錄</SPAN>
+						</A>
+					</LI>
+					<LI class="nav-item">
+						<A class="nav-link" href="/dashboard/genTrialCode.asp">
+							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
+								<I class="fal fa-meteor text-dark text-lg"></I>
+							</DIV>
+							<SPAN class="nav-link-text ms-1">產生體驗碼</SPAN>
+						</A>
+					</LI>
+					<LI class="nav-item">
+						<A class="nav-link" href="/dashboard/stopRecurring.asp">
+							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
+								<I class="fal fa-credit-card text-dark text-lg"></I>
+							</DIV>
+							<SPAN class="nav-link-text ms-1">解除定期定額</SPAN>
+						</A>
+					</LI>
+					<LI class="nav-item">
+						<A class="nav-link" href="/dashboard/log/chat.xls">
+							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
+								<I class="fal fa-comments text-lg text-dark"></I>
+							</DIV>
+							<SPAN class="nav-link-text ms-1">聊天訊息報表</SPAN>
+						</A>
+					</LI>
+				</UL>
+			</DIV>
+		</ASIDE>
+	</xsl:template>
+
+	<xsl:template name="dashTopNavBar">
+		<!-- Navbar -->
+		<NAV class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
+			<DIV class="container-fluid py-1 px-2 px-sm-4">
+				<H6 class="font-weight-bolder mb-0">養蜜YoungMe後台</H6>
+				<DIV class="collapse navbar-collapse" id="navbar">
+					<UL class="navbar-nav justify-content-end ms-auto">
+						<LI class="nav-item d-flex align-items-center">
+							<A class="btn btn-outline-primary btn-round p-1 mb-0" href="/">
+								<I class="fad fa-home-heart text-lg"></I>
+								<SPAN>前台</SPAN>
+							</A>
+						</LI>
+						<LI class="nav-item d-xl-none ps-3 d-flex align-items-center">
+							<A href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
+								<DIV class="sidenav-toggler-inner">
+									<I class="sidenav-toggler-line"></I>
+									<I class="sidenav-toggler-line"></I>
+									<I class="sidenav-toggler-line"></I>
+								</DIV>
+							</A>
+						</LI>
+					</UL>
+				</DIV>
+			</DIV>
+		</NAV>
+		<!-- End Navbar -->
+	</xsl:template>
+
 </xsl:stylesheet>
