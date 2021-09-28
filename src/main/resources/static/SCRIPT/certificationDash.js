@@ -48,7 +48,7 @@ $(document).ready(function () {
 
 	$('BUTTON.success').click(function () {
 		let button = this;
-		id = $(button).closest('TBODY').find('INPUT[name="id"]').val();
+		id = $(button).closest('TR').find('INPUT[name="id"]').val();
 		$.post(
 			'/dashboard/identityPassed.json',
 			{
