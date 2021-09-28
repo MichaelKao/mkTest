@@ -2603,7 +2603,7 @@ public class WelcomeController {
 		documentElement.setAttribute(
 			"title",
 			messageSource.getMessage(
-				"title.privacy",
+				"title.terms",
 				null,
 				locale
 			)
@@ -2631,6 +2631,7 @@ public class WelcomeController {
 		Element documentElement;
 		if (servant.isNull(authentication)) {
 			//未登录
+			LOGGER.debug("測試isNull()");
 			documentElement = document.getDocumentElement();
 		} else {
 			//已登录

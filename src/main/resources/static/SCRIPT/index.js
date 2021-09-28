@@ -1,5 +1,5 @@
 $(document).ready(function () {
-	
+
 	let p;
 	let type;
 	let wrap;
