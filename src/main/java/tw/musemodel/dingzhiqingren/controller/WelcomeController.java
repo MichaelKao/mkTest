@@ -153,7 +153,6 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/")
-	@ResponseBody
 	ModelAndView index(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -162,7 +161,10 @@ public class WelcomeController {
 			null,
 			locale
 		));
-		// 登入狀態
+
+		/*
+		 未登入状态下
+		 */
 		if (!servant.isNull(authentication)) {
 			Lover me = loverService.loadByUsername(
 				authentication.getName()
@@ -224,14 +226,11 @@ public class WelcomeController {
 					null
 				);
 			}
-		}
+		}//if
 
 		ModelAndView modelAndView = new ModelAndView("index");
-		modelAndView.
-			getModelMap().
-			addAttribute(document).
-			addAttribute(messageSource);
-		LOGGER.debug("首頁\n\n{}", modelAndView);
+		modelAndView.getModelMap().addAttribute(document);
+		LOGGER.debug("首頁\n{}", modelAndView);
 		return modelAndView;
 	}
 

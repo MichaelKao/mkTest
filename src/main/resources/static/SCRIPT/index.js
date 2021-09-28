@@ -1,15 +1,7 @@
 $(document).ready(function () {
-	
 	let p;
 	let type;
 	let wrap;
-
-	if ($('INPUT[name="signIn"]').val() === 'true') {
-		fbq('track', 'memberspageview');
-		showModal();
-	} else {
-		fbq('track', 'toppageview');
-	}
 
 	if (isMobile() && $('INPUT[name="signIn"]').val() === 'true') {
 		if ($('INPUT[name="gender"]').val() === 'male') {

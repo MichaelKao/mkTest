@@ -159,7 +159,6 @@
 						</DIV>
 					</DIV>
 				</SECTION>
-				<xsl:call-template name="footer"/>
 			</xsl:if>
 			<xsl:if test="not(@lineNotify) and @signIn">
 				<DIV class="modal fade" id="lineNotifyModal" tabindex="-1">
@@ -195,18 +194,25 @@
 						</xsl:if>
 					</INPUT>
 					<xsl:apply-templates select="area"/>
-					<xsl:call-template name="footer"/>
 				</DIV>
 			</xsl:if>
+			<xsl:call-template name="footer"/>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/index.js"/>
-			<xsl:if test="@signIn">
-				<SCRIPT src="/SCRIPT/websocket.js"/>
-			</xsl:if>
+			<xsl:choose>
+				<xsl:when test="@signIn">
+					<SCRIPT><![CDATA[fbq('track', 'memberspageview');]]></SCRIPT>
+					<SCRIPT src="/SCRIPT/websocket.js"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<SCRIPT><![CDATA[fbq('track', 'toppageview');]]></SCRIPT>						
+				</xsl:otherwise>
+			</xsl:choose>
 		</BODY>
 	</xsl:template>
 
 	<xsl:template match="area">
+		<!--貴賓會員區塊-->
 		<xsl:if test="vip">
 			<ARTICLE class="border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
 				<DIV class="d-flex m-2 align-items-center">
@@ -265,6 +271,7 @@
 				</DIV>
 			</ARTICLE>
 		</xsl:if>
+		<!--安心認證區塊-->
 		<xsl:if test="relief">
 			<ARTICLE class="border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
 				<DIV class="d-flex m-2 align-items-center">
@@ -323,6 +330,7 @@
 				</DIV>
 			</ARTICLE>
 		</xsl:if>
+		<!--最近活躍區塊-->
 		<xsl:if test="active">
 			<ARTICLE class="border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
 				<DIV class="d-flex m-2 align-items-center">
@@ -381,6 +389,7 @@
 				</DIV>
 			</ARTICLE>
 		</xsl:if>
+		<!--最新註冊區塊-->
 		<xsl:if test="register">
 			<ARTICLE class="border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
 				<DIV class="d-flex m-2 align-items-center">
@@ -441,7 +450,7 @@
 		</xsl:if>
 		<SECTION class="d-block d-md-none text-center">
 			<DIV class="d-flex flex-wrap justify-content-center mobileMode"></DIV>
-			<BUTTON class="btn btn-link text-lg seeMoreBtn" id="mobileMode"  data-page="0">看更多<I class="fad fa-angle-double-right ms-1"></I></BUTTON>
+			<BUTTON class="btn btn-link text-lg seeMoreBtn" id="mobileMode" data-page="0">看更多<I class="fad fa-angle-double-right ms-1"/></BUTTON>
 		</SECTION>
 		<SECTION class="fixed-bottom d-block d-md-none bg-light shadow m-2 bottom13rem text-lg">
 			<UL class="navbar-nav flex-row mobileMode">

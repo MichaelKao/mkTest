@@ -16,12 +16,12 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -399,9 +399,9 @@ public class DashboardController {
 			toJSONObject().toString();
 	}
 
-	@GetMapping(path = "/log/chat.xlsx")
+	@GetMapping(path = "/log/chat.xls")
 	@ResponseBody
-	//@Secured({"ROLE_ALMIGHTY"})
+	@Secured({"ROLE_ALMIGHTY"})
 	void logsOfChat(@RequestParam(defaultValue = "0") int p, @RequestParam(defaultValue = "10") int s, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
 		final Collection<History.Behavior> behaviors = Lists.newArrayList(
 			HistoryService.BEHAVIOR_CHAT_MORE,
@@ -410,7 +410,7 @@ public class DashboardController {
 			HistoryService.BEHAVIOR_PEEK
 		);
 
-		SXSSFWorkbook workbook = new SXSSFWorkbook();
+		HSSFWorkbook workbook = new HSSFWorkbook();
 		Sheet sheet = workbook.createSheet();
 		Row firstRow = sheet.createRow(0);
 		firstRow.createCell(0, CellType.STRING).setCellValue("主動方");
@@ -473,13 +473,14 @@ public class DashboardController {
 			);
 
 			++rowNumber;
-		}
+		}//for
+		sheet.createFreezePane(1, 4);
 
-		response.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		response.setHeader("Content-Type", "application/vnd.ms-excel");
 		response.setHeader(
 			"Content-Disposition",
 			String.format(
-				"attachment; filename=\"chat@%s.xlsx\"",
+				"attachment; filename=\"chat@%s.xls\"",
 				Servant.toTaipeiZonedDateTime(
 					new Date(
 						System.currentTimeMillis()
@@ -490,7 +491,7 @@ public class DashboardController {
 		OutputStream outputStream = response.getOutputStream();
 		workbook.write(outputStream);
 		outputStream.close();
-		workbook.dispose();
+		workbook.close();
 	}
 
 	/**
