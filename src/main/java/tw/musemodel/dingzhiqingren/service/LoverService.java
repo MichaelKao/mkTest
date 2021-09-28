@@ -3398,6 +3398,7 @@ public class LoverService {
 		cal.add(Calendar.DAY_OF_MONTH, -5);
 		Date fiveDaysAgo = cal.getTime();
 
+		// 查看五天內的招呼紀錄
 		Element recordsElement = document.createElement("records");
 		documentElement.appendChild(recordsElement);
 		for (Activity activity : historyRepository.findGroupGreetingListGroupBy(female, BEHAVIOR_GROUP_GREETING, fiveDaysAgo)) {
@@ -3444,53 +3445,6 @@ public class LoverService {
 				);
 			}
 		}
-
-		// 查看五天內的招呼紀錄
-//		List<History> histories = historyRepository.findByInitiativeAndBehaviorAndOccurredGreaterThanOrderByOccurredDesc(
-//			female,
-//			BEHAVIOR_GROUP_GREETING,
-//			fiveDaysAgo
-//		);
-//		histories.forEach(history -> {
-//			Element historyElement = document.createElement("history");
-//			documentElement.appendChild(historyElement);
-//			historyElement.setAttribute(
-//				"date",
-//				DATE_FORMATTER.format(servant.
-//					toTaipeiZonedDateTime(
-//						history.getOccurred()
-//					).
-//					withZoneSameInstant(
-//						Servant.ASIA_TAIPEI
-//					)
-//				)
-//			);
-//
-//			Lover male = history.getPassive();
-//
-//			historyElement.setAttribute("nickname", male.getNickname());
-//			historyElement.setAttribute("age", calculateAge(male).toString());
-//			historyElement.setAttribute("profileImage", male.getProfileImage());
-//			historyElement.setAttribute("identifier", male.getIdentifier().toString());
-//			if (isVVIP(history.getPassive())) {
-//				historyElement.setAttribute("vip", null);
-//			}
-//			if (Objects.nonNull(male.getRelief())) {
-//				Boolean relief = male.getRelief();
-//				historyElement.setAttribute(
-//					"relief",
-//					relief ? "true" : "false"
-//				);
-//			}
-//			historyElement.setAttribute(
-//				"profileImage",
-//				String.format(
-//					"https://%s/profileImage/%s",
-//					Servant.STATIC_HOST,
-//					male.getProfileImage()
-//				)
-//			);
-//		});
 		return document;
 	}
 

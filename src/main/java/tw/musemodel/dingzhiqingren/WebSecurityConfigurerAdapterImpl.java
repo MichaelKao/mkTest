@@ -75,7 +75,9 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 						"/signIn.asp",
 						"/signUp.asp",
 						"/*.png",
-						"/dashboard/manualUpgrade.xml"
+						"/dashboard/manualUpgrade.xml",
+						"/privacy.asp",
+						"/terms.asp"
 					).permitAll().
 					anyRequest().authenticated()
 			).
@@ -142,8 +144,6 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 				"/inpay2/**",
 				"/manifest.json",
 				"/poc/**",
-				"/privacy.asp",
-				"/terms.asp",
 				"/webhook/**",
 				"/ICON/**"
 			);

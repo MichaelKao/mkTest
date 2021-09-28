@@ -38,7 +38,7 @@ $(document).ready(function () {
 						'class': 'position-relative m-1',
 						'href': '/profile/' + item.identifier + '/'
 					});
-					wrap.append(outterA)
+					wrap.append(outterA);
 
 					let IMG = document.createElement('IMG');
 					$(IMG).attr({
@@ -138,7 +138,7 @@ $(document).ready(function () {
 						'class': 'position-relative m-1',
 						'href': '/profile/' + item.identifier + '/'
 					});
-					wrap.append(outterA)
+					wrap.append(outterA);
 
 					let IMG = document.createElement('IMG');
 					$(IMG).attr({
@@ -244,8 +244,9 @@ $(document).ready(function () {
 		var ca = document.cookie.split(';');
 		for (var i = 0; i < ca.length; i++) {
 			var c = ca[i].trim();
-			if (c.indexOf(name) == 0)
+			if (c.indexOf(name) === 0){
 				return c.substring(name.length, c.length);
+			}
 		}
 		return '';
 	}
