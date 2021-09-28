@@ -474,7 +474,7 @@ public class DashboardController {
 
 			++rowNumber;
 		}//for
-		sheet.createFreezePane(0, 4);
+		sheet.createFreezePane(0, 1);
 
 		response.setHeader("Content-Type", "application/vnd.ms-excel");
 		response.setHeader(
@@ -606,7 +606,7 @@ public class DashboardController {
 	 */
 	@GetMapping(path = "/upgradeManually.xml")
 	@ResponseBody
-	//@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	void upgradeManually(@RequestParam(defaultValue = "0") int p, @RequestParam(defaultValue = "10") int s, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
 		Document document = servant.parseDocument();
 		Element documentElement = document.getDocumentElement();

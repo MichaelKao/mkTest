@@ -47,7 +47,7 @@
 						</H1>
 					</DIV>
 					<DIV class="mx-auto my-5">
-						<xsl:if test="@orderResult = 'success'">
+						<xsl:if test="@orderResult='success'">
 							<INPUT name="orderResult" type="hidden" value="true"/>
 							<DIV class="d-flex mb-2">
 								<DIV>交易時間：</DIV>
@@ -91,6 +91,12 @@
 			<xsl:call-template name="footer"/>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/orderResult.js"/>
+			<SCRIPT>
+				<xsl:value-of
+					disable-output-escaping="yes"
+					select="/document/fbq"
+				/>
+			</SCRIPT>
 			<xsl:if test="@signIn">
 				<SCRIPT src="/SCRIPT/websocket.js"/>
 			</xsl:if>
