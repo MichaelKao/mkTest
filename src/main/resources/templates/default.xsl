@@ -139,6 +139,9 @@
 												<A class="dropdown-item border-radius-md" href="/dashboard/genTrialCode.asp">
 													<SPAN>產生體驗碼</SPAN>
 												</A>
+												<A class="dropdown-item border-radius-md" href="/dashboard/log/chat.xls">
+													<SPAN>聊天報表</SPAN>
+												</A>
 											</DIV>
 											<DIV class="d-lg-none">
 												<A class="dropdown-item border-radius-md" href="/dashboard/withdrawal.asp">
@@ -152,6 +155,9 @@
 												</A>
 												<A class="dropdown-item border-radius-md" href="/dashboard/genTrialCode.asp">
 													<SPAN>產生體驗碼</SPAN>
+												</A>
+												<A class="dropdown-item border-radius-md" href="/dashboard/log/chat.xls">
+													<SPAN>聊天報表</SPAN>
 												</A>
 											</DIV>
 										</DIV>
@@ -270,6 +276,15 @@
 		<LINK href="/ICON/apple-touch-icon-180x180.png" rel="apple-touch-icon" sizes="180x180"/>
 		<LINK href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet"/>
 		<LINK href="/STYLE/soft-design-system.css" rel="stylesheet"/>
+		<LINK href="/STYLE/default.css" rel="stylesheet"/>
+	</xsl:template>
+
+	<xsl:template name="dashScriptTags">
+		<script src="/SCRIPT/soft-ui-dashboard.min.js"/>
+	</xsl:template>
+
+	<xsl:template name="dashHeadLinkTags">
+		<LINK href="/STYLE/soft-ui-dashboard.css" rel="stylesheet"/>
 		<LINK href="/STYLE/default.css" rel="stylesheet"/>
 	</xsl:template>
 
