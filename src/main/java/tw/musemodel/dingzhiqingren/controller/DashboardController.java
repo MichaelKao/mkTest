@@ -113,7 +113,7 @@ public class DashboardController {
 //			new DOMSource(document),
 //			new StreamResult(response.getOutputStream())
 //		);
-		return date;
+		return Objects.isNull(date) ? new Date(System.currentTimeMillis()) : date;
 	}
 
 	/**
@@ -435,8 +435,15 @@ public class DashboardController {
 			firstRow.createCell(0, CellType.STRING).setCellValue("主動方");
 			firstRow.createCell(1, CellType.STRING).setCellValue("被動方");
 			firstRow.createCell(2, CellType.STRING).setCellValue("行為");
-			firstRow.createCell(3, CellType.STRING).setCellValue("發生時戳");
+			firstRow.createCell(3, CellType.NUMERIC).setCellValue("發生時戳");
 			sheet.createFreezePane(0, 1);
+
+			CellStyle cellStyle = workbook.createCellStyle();
+			cellStyle.setDataFormat(workbook.
+				getCreationHelper().
+				createDataFormat().
+				getFormat("yyyy/m/d hh:mm:ss")
+			);//格式化时戳
 
 			int rowNumber = 1;
 			for (History history : historyRepository.findByBehaviorInOrderByOccurredDesc(behaviors, PageRequest.of(p < 1 ? 0 : p - 1, s))) {
@@ -476,13 +483,6 @@ public class DashboardController {
 					behavior
 				);
 
-				CellStyle cellStyle = workbook.createCellStyle();
-				cellStyle.setDataFormat(
-					workbook.
-						getCreationHelper().
-						createDataFormat().
-						getFormat("yyyy/m/d hh:mm:ss")
-				);
 				Cell cell = row.createCell(
 					3,
 					CellType.STRING
