@@ -23,22 +23,21 @@
 			<TITLE>
 				<xsl:value-of select="@title"/>
 			</TITLE>
-			<xsl:call-template name="headLinkTags"/>
+			<xsl:call-template name="dashHeadLinkTags"/>
 			<LINK href="/STYLE/withdrawal.css" rel="stylesheet"/>
 		</HEAD>
-		<BODY>
-			<xsl:call-template name="navbar"/>
-			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container pt-7 px-2 px-md-3">
-				<DIV class="col-md-9 mx-auto">
-					<xsl:apply-templates select="records"/>
+		<BODY class="g-sidenav-show bg-gray-100">
+			<xsl:call-template name="dashSideNavBar"/>
+			<MAIN class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg ">
+				<xsl:call-template name="dashTopNavBar"/>
+				<DIV class="container-fluid py-4 px-2">
+					<DIV class="col-md-9 mx-auto">
+						<xsl:apply-templates select="records"/>
+					</DIV>
 				</DIV>
-			</DIV>
-			<xsl:call-template name="bodyScriptTags"/>
+			</MAIN>
+			<xsl:call-template name="dashScriptTags"/>
 			<SCRIPT src="/SCRIPT/withdrawalDash.js"/>
-			<xsl:if test="@signIn">
-				<SCRIPT src="/SCRIPT/websocket.js"/>
-			</xsl:if>
 		</BODY>
 	</xsl:template>
 	<xsl:template match="records">
@@ -64,11 +63,11 @@
 							<xsl:if test="@status = 'false'">
 								<LI class="list-group-item border-0 d-flex p-2 p-md-3 mb-2 border-radius-lg">
 									<DIV class="d-flex flex-column">
-										<DIV class="mb-3 text-sm h6">
+										<DIV class="mb-3 text-sm">
 											<A href="/profile/{@identifier}/">
 												<xsl:value-of select="@name"/>
 											</A>
-											<SPAN class="text-dark font-weight-bold ms-1 text-xs">
+											<SPAN class="text-dark ms-1 text-xs">
 												<xsl:value-of select="@date"/>
 											</SPAN>
 
@@ -129,32 +128,32 @@
 										<TABLE class="table align-items-center mb-0">
 											<THEAD>
 												<TR>
-													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
-													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
-													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">ME點</TH>
-													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
+													<TH class="text-xs text-center">日期</TH>
+													<TH class="text-xs text-center">男仕</TH>
+													<TH class="text-xs text-center">ME點</TH>
+													<TH class="text-xs text-center">金額</TH>
 												</TR>
 											</THEAD>
 											<TBODY>
 												<xsl:for-each select="history">
 													<TR>
-														<TD class="text-sm text-center">
-															<SPAN class="text-xs font-weight-bold">
+														<TD class="text-xs text-center">
+															<SPAN>
 																<xsl:value-of select="@date"/>
 															</SPAN>
 														</TD>
-														<TD class="text-sm text-center">
-															<A class="text-secondary text-xs font-weight-bold" href="/profile/{@maleId}/">
+														<TD class="text-xs text-center">
+															<A href="/profile/{@maleId}/">
 																<xsl:value-of select="@male"/>
 															</A>
 														</TD>
-														<TD class="text-sm text-center">
-															<SPAN class="text-secondary text-xs font-weight-bold">
+														<TD class="text-xs text-center">
+															<SPAN>
 																<xsl:value-of select="@mePoints"/>
 															</SPAN>
 														</TD>
-														<TD class="text-sm text-center">
-															<SPAN class="text-secondary text-xs font-weight-bold">
+														<TD class="text-xs text-center">
+															<SPAN>
 																<xsl:value-of select="@points"/>
 															</SPAN>
 														</TD>
@@ -175,11 +174,11 @@
 						<xsl:for-each select="record">
 							<xsl:if test="@status = 'true'">
 								<LI class="list-group-item border-0 d-flex p-3 mb-2 border-radius-lg">
-									<DIV class="text-sm h6 m-0">
+									<DIV class="text-sm m-0">
 										<A href="/profile/{@identifier}/">
 											<xsl:value-of select="@name"/>
 										</A>
-										<SPAN class="text-dark font-weight-bold ms-1 text-xs">
+										<SPAN class="text-dark ms-1 text-xs">
 											<xsl:value-of select="@date"/>
 										</SPAN>
 
@@ -202,32 +201,32 @@
 										<TABLE class="table align-items-center mb-0">
 											<THEAD>
 												<TR>
-													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
-													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
-													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">ME點</TH>
-													<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
+													<TH class="text-xs text-center">日期</TH>
+													<TH class="text-xs text-center">男仕</TH>
+													<TH class="text-xs text-center">ME點</TH>
+													<TH class="text-xs text-center">金額</TH>
 												</TR>
 											</THEAD>
 											<TBODY>
 												<xsl:for-each select="history">
 													<TR>
-														<TD class="text-sm text-center">
-															<SPAN class="text-xs font-weight-bold">
+														<TD class="text-xs text-center">
+															<SPAN>
 																<xsl:value-of select="@date"/>
 															</SPAN>
 														</TD>
-														<TD class="text-sm text-center">
-															<A class="text-secondary text-xs font-weight-bold" href="/profile/{@maleId}/">
+														<TD class="text-xs text-center">
+															<A href="/profile/{@maleId}/">
 																<xsl:value-of select="@male"/>
 															</A>
 														</TD>
-														<TD class="text-sm text-center">
-															<SPAN class="text-secondary text-xs font-weight-bold">
+														<TD class="text-xs text-center">
+															<SPAN>
 																<xsl:value-of select="@mePoints"/>
 															</SPAN>
 														</TD>
-														<TD class="text-sm text-center">
-															<SPAN class="text-secondary text-xs font-weight-bold">
+														<TD class="text-xs text-center">
+															<SPAN>
 																<xsl:value-of select="@points"/>
 															</SPAN>
 														</TD>

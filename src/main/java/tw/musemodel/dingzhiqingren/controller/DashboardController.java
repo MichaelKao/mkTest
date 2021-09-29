@@ -557,7 +557,6 @@ public class DashboardController {
 
 		return new JavaScriptObjectNotation().
 			withResponse(true).
-			withResult(stopRecurringPaymentApplication).
 			toJSONObject().toString();
 	}
 
@@ -589,6 +588,7 @@ public class DashboardController {
 		}
 
 		return new JavaScriptObjectNotation().
+			withReason("已解除成功").
 			withResponse(true).
 			toJSONObject().toString();
 	}

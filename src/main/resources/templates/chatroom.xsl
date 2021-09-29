@@ -237,43 +237,11 @@
 										</DIV>
 									</LI>
 									<xsl:if test="@almighty or @finance">
-										<LI class="nav-item dropdown dropdown-hover">
-											<A class="nav-link cursor-pointer text-primary" id="dropdownMenuPages" data-bs-toggle="dropdown">
-												<SPAN class="me-1">
-													<I class="fad fa-id-card-alt fontSize22"></I>
-												</SPAN>
-												<I class="fas fa-chevron-down"></I>
+										<LI class="nav-item">
+											<A class="nav-link nav-link-icon d-flex align-items-center text-primary" href="/dashboard/certification.asp">
+												<I class="fad fa-id-card-alt fontSize22 width30whenMobile" aria-hidden="true"></I>
+												<SPAN class="d-lg-none">YoungMe 後台</SPAN>
 											</A>
-											<DIV class="dropdown-menu dropdown-menu-animation p-3 border-radius-lg mt-0 mt-lg-3">
-												<DIV class="d-none d-lg-block">
-													<A class="dropdown-item border-radius-md" href="/dashboard/withdrawal.asp">
-														<SPAN>甜心提領紀錄</SPAN>
-													</A>
-													<A class="dropdown-item border-radius-md" href="/dashboard/certification.asp">
-														<SPAN>安心認證審核</SPAN>
-													</A>
-													<A class="dropdown-item border-radius-md" href="/dashboard/stopRecurring.asp">
-														<SPAN>解除定期定額</SPAN>
-													</A>
-													<A class="dropdown-item border-radius-md" href="/dashboard/genTrialCode.asp">
-														<SPAN>產生體驗碼</SPAN>
-													</A>
-												</DIV>
-												<DIV class="d-lg-none">
-													<A class="dropdown-item border-radius-md" href="/dashboard/withdrawal.asp">
-														<SPAN>甜心提領紀錄</SPAN>
-													</A>
-													<A class="dropdown-item border-radius-md" href="/dashboard/certification.asp">
-														<SPAN>安心認證審核</SPAN>
-													</A>
-													<A class="dropdown-item border-radius-md" href="/dashboard/stopRecurring.asp">
-														<SPAN>解除定期定額</SPAN>
-													</A>
-													<A class="dropdown-item border-radius-md" href="/dashboard/genTrialCode.asp">
-														<SPAN>產生體驗碼</SPAN>
-													</A>
-												</DIV>
-											</DIV>
 										</LI>
 									</xsl:if>
 									<xsl:if test="@signIn">
