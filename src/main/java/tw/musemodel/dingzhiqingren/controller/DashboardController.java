@@ -32,6 +32,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -98,10 +99,10 @@ public class DashboardController {
 	@Autowired
 	private TrialCodeRepository trialCodeRepository;
 
-	@GetMapping(path = "/accountsCreatedOfTheDay.asp")
+	@GetMapping(path = "/{date:\\d{4}-\\d{2}-\\d{2}}/newAccounts.asp")
 	@ResponseBody
 	//@Secured({"ROLE_ALMIGHTY"})
-	Date accountsCreatedOfTheDay(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(defaultValue = "") Date date, @RequestParam(defaultValue = "1") int p, @RequestParam(defaultValue = "100") int s, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
+	Date accountsCreatedOfTheDay(@DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable Date date, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
 //		Document document = Servant.parseDocument();
 //		Element documentElement = document.getDocumentElement();
 //
@@ -418,6 +419,19 @@ public class DashboardController {
 			toJSONObject().toString();
 	}
 
+	/**
+	 * 用户号互动报表。
+	 *
+	 * @author p@musemodel.tw
+	 * @param p 第几页
+	 * @param s 每页几笔
+	 * @param response
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 * @throws TransformerConfigurationException
+	 * @throws TransformerException
+	 */
 	@GetMapping(path = "/log/chat.xls")
 	@ResponseBody
 	@Secured({"ROLE_ALMIGHTY"})
