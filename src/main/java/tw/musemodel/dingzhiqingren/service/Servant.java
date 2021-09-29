@@ -333,6 +333,67 @@ public class Servant {
 	}
 
 	/**
+	 * 解析为 DOM Document。
+	 *
+	 * @author p@musemodel.tw
+	 * @return org.w3.dom.Docment
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	public static Document parseDocument() throws SAXException, IOException, ParserConfigurationException {
+		Document document = parseDocument(EMPTY_DOCUMENT_URI);
+		Element documentElement = document.getDocumentElement();
+
+		Element seoElement = document.createElement("seo");
+		documentElement.appendChild(seoElement);
+
+		Element facebookPixelElement = document.createElement("facebookPixel");
+		facebookPixelElement.setAttribute("id", FACEBOOK_PIXEL_ID);
+		facebookPixelElement.appendChild(document.createCDATASection(
+			String.format(
+				new BufferedReader(new InputStreamReader(
+					new ClassPathResource("skeleton/facebookPixel.js").
+						getInputStream(),
+					UTF_8
+				)).lines().collect(Collectors.joining("\n")),
+				FACEBOOK_PIXEL_ID
+			)
+		));
+		seoElement.appendChild(facebookPixelElement);
+
+		Element googleAnalyticsElement = document.createElement("googleAnalytics");
+		googleAnalyticsElement.setAttribute("id", MEASUREMENT_ID);
+		googleAnalyticsElement.appendChild(document.createCDATASection(
+			String.format(
+				new BufferedReader(new InputStreamReader(
+					new ClassPathResource("skeleton/googleAnalytics.js").
+						getInputStream(),
+					UTF_8
+				)).lines().collect(Collectors.joining("\n")),
+				MEASUREMENT_ID
+			)
+		));
+		seoElement.appendChild(googleAnalyticsElement);
+
+		return document;
+	}
+
+	/**
+	 * 解析为 DOM Document。
+	 *
+	 * @author p@musemodel.tw
+	 * @param uri 来源
+	 * @return org.w3.dom.Docment
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	public static Document parseDocument(String uri) throws SAXException, IOException, ParserConfigurationException {
+		return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(uri);
+	}
+
+	/**
 	 * 重定向到编辑个人资料页面。
 	 *
 	 * @return org.​springframework.​web.​servlet.ModelAndView
@@ -348,6 +409,46 @@ public class Servant {
 	 */
 	public static ModelAndView redirectToRoot() {
 		return new ModelAndView("redirect:/");
+	}
+
+	/**
+	 * 转换为台湾时区。
+	 *
+	 * @param date
+	 * @return
+	 */
+	public static ZonedDateTime toTaipeiZonedDateTime(Date date) {
+		return toTaipeiZonedDateTime(date.toInstant());
+	}
+
+	/**
+	 * 转换为台湾时区。
+	 *
+	 * @param instant
+	 * @return
+	 */
+	public static ZonedDateTime toTaipeiZonedDateTime(Instant instant) {
+		return ZonedDateTime.ofInstant(instant, ASIA_TAIPEI);
+	}
+
+	/**
+	 * 转换为世界标准时间。
+	 *
+	 * @param date
+	 * @return
+	 */
+	public static ZonedDateTime toUTC(Date date) {
+		return toUTC(date.toInstant());
+	}
+
+	/**
+	 * 转换为世界标准时间。
+	 *
+	 * @param instant
+	 * @return
+	 */
+	public static ZonedDateTime toUTC(Instant instant) {
+		return ZonedDateTime.ofInstant(instant, UTC);
 	}
 
 	/**
@@ -465,48 +566,6 @@ public class Servant {
 		return DocumentBuilderFactory.newDefaultInstance().newDocumentBuilder().newDocument();
 	}
 
-	public Document parseDocument() throws SAXException, IOException, ParserConfigurationException {
-		Document document = parseDocument(EMPTY_DOCUMENT_URI);
-		Element documentElement = document.getDocumentElement();
-
-		Element seoElement = document.createElement("seo");
-		documentElement.appendChild(seoElement);
-
-		Element facebookPixelElement = document.createElement("facebookPixel");
-		facebookPixelElement.setAttribute("id", FACEBOOK_PIXEL_ID);
-		facebookPixelElement.appendChild(document.createCDATASection(
-			String.format(
-				new BufferedReader(new InputStreamReader(
-					new ClassPathResource("skeleton/facebookPixel.js").
-						getInputStream(),
-					UTF_8
-				)).lines().collect(Collectors.joining("\n")),
-				FACEBOOK_PIXEL_ID
-			)
-		));
-		seoElement.appendChild(facebookPixelElement);
-
-		Element googleAnalyticsElement = document.createElement("googleAnalytics");
-		googleAnalyticsElement.setAttribute("id", MEASUREMENT_ID);
-		googleAnalyticsElement.appendChild(document.createCDATASection(
-			String.format(
-				new BufferedReader(new InputStreamReader(
-					new ClassPathResource("skeleton/googleAnalytics.js").
-						getInputStream(),
-					UTF_8
-				)).lines().collect(Collectors.joining("\n")),
-				MEASUREMENT_ID
-			)
-		));
-		seoElement.appendChild(googleAnalyticsElement);
-
-		return document;
-	}
-
-	public Document parseDocument(String uri) throws SAXException, IOException, ParserConfigurationException {
-		return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(uri);
-	}
-
 	/**
 	 * 将 markdown 转为 HTML
 	 *
@@ -536,13 +595,5 @@ public class Servant {
 			)).
 			withResponse(false).
 			toString();
-	}
-
-	public static ZonedDateTime toTaipeiZonedDateTime(Instant instant) {
-		return ZonedDateTime.ofInstant(instant, ASIA_TAIPEI);
-	}
-
-	public ZonedDateTime toTaipeiZonedDateTime(Date date) {
-		return Servant.this.toTaipeiZonedDateTime(date.toInstant());
 	}
 }

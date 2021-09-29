@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -96,6 +97,24 @@ public class DashboardController {
 
 	@Autowired
 	private TrialCodeRepository trialCodeRepository;
+
+	@GetMapping(path = "/accountsCreatedOfTheDay.asp")
+	@ResponseBody
+	//@Secured({"ROLE_ALMIGHTY"})
+	Date accountsCreatedOfTheDay(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(defaultValue = "") Date date, @RequestParam(defaultValue = "1") int p, @RequestParam(defaultValue = "100") int s, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
+//		Document document = Servant.parseDocument();
+//		Element documentElement = document.getDocumentElement();
+//
+//		Element accountsElement = document.createElement("document");
+//		for(Lover account:)
+//		documentElement.appendChild(accountsElement);
+//
+//		TransformerFactory.newDefaultInstance().newTransformer().transform(
+//			new DOMSource(document),
+//			new StreamResult(response.getOutputStream())
+//		);
+		return date;
+	}
 
 	/**
 	 * 新增體驗碼
@@ -539,6 +558,7 @@ public class DashboardController {
 	@PostMapping(path = "/stopRecurring.json")
 	@ResponseBody
 	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	@SuppressWarnings("UnusedAssignment")
 	String stopRecurring(@RequestParam("applyID") Long applyID, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -553,7 +573,11 @@ public class DashboardController {
 			authentication.getName()
 		);
 
-		stopRecurringPaymentApplication = dashboardService.handleStopRecurringPaymentApplication(stopRecurringPaymentApplication, me);
+		stopRecurringPaymentApplication = dashboardService.
+			handleStopRecurringPaymentApplication(
+				stopRecurringPaymentApplication,
+				me
+			);
 
 		return new JavaScriptObjectNotation().
 			withResponse(true).
@@ -610,7 +634,7 @@ public class DashboardController {
 	@ResponseBody
 	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
 	void upgradeManually(@RequestParam(defaultValue = "0") int p, @RequestParam(defaultValue = "10") int s, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
-		Document document = servant.parseDocument();
+		Document document = Servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 
 		Element usersElement = document.createElement("users");

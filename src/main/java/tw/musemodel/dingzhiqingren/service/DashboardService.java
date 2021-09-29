@@ -1,6 +1,7 @@
 package tw.musemodel.dingzhiqingren.service;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -10,9 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -120,6 +123,13 @@ public class DashboardService {
 		return servant.documentElement(document, authentication);
 	}
 
+	public void accountsCreatedOfTheDay(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(required = false) Date date) {
+		if (Objects.isNull(date)) {
+			date = new Date(System.currentTimeMillis());
+		}
+		Servant.toUTC(date);
+	}
+
 	/**
 	 * 在金流平台的后台处理完解除定期定额申请后纪录谁处理的、什么时候处理的。
 	 *
@@ -225,7 +235,7 @@ public class DashboardService {
 	 */
 	@Transactional(readOnly = true)
 	public Document certification(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		Document document = servant.parseDocument();
+		Document document = Servant.parseDocument();
 
 		Element documentElement = documentElement(
 			document,
@@ -263,7 +273,7 @@ public class DashboardService {
 	 */
 	@Transactional(readOnly = true)
 	public Document generateTrialCode(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		Document document = servant.parseDocument();
+		Document document = Servant.parseDocument();
 
 		Element documentElement = documentElement(
 			document,
@@ -304,7 +314,7 @@ public class DashboardService {
 	 */
 	@Transactional(readOnly = true)
 	public Document stopRecurringDocument(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		Document document = servant.parseDocument();
+		Document document = Servant.parseDocument();
 
 		Element documentElement = documentElement(
 			document,
@@ -343,7 +353,7 @@ public class DashboardService {
 			pendingElement.setAttribute(
 				"expiry",
 				Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
-					servant.toTaipeiZonedDateTime(
+					Servant.toTaipeiZonedDateTime(
 						applicant.getVip()
 					).withZoneSameInstant(
 						Servant.ASIA_TAIPEI
@@ -378,7 +388,7 @@ public class DashboardService {
 			finishedElement.setAttribute(
 				"handleDate",
 				Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
-					servant.toTaipeiZonedDateTime(
+					Servant.toTaipeiZonedDateTime(
 						stopRecurringPaymentApplication.
 							getHandledAt()
 					).withZoneSameInstant(
@@ -405,7 +415,7 @@ public class DashboardService {
 	 */
 	@Transactional(readOnly = true)
 	public Document withdrawal(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		Document document = servant.parseDocument();
+		Document document = Servant.parseDocument();
 
 		Element documentElement = documentElement(
 			document,
@@ -432,7 +442,7 @@ public class DashboardService {
 			recordElement.setAttribute(
 				"date",
 				Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
-					servant.toTaipeiZonedDateTime(
+					Servant.toTaipeiZonedDateTime(
 						eachWithdrawal.getTimestamp()
 					).withZoneSameInstant(Servant.ASIA_TAIPEI)
 				));
@@ -489,7 +499,7 @@ public class DashboardService {
 				historyElement.setAttribute(
 					"date",
 					Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
-						servant.toTaipeiZonedDateTime(
+						Servant.toTaipeiZonedDateTime(
 							withdrawalRecord.
 								getHistory().
 								getOccurred()
