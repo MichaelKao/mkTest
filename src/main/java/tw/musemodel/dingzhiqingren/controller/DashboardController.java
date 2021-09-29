@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -99,22 +99,29 @@ public class DashboardController {
 	@Autowired
 	private TrialCodeRepository trialCodeRepository;
 
-	@GetMapping(path = "/{date:\\d{4}-\\d{2}-\\d{2}}/newAccounts.asp")
+	/**
+	 * 一天内注册的新用户号。
+	 *
+	 * @param year 年
+	 * @param month 月
+	 * @param dayOfMonth 日
+	 * @param response
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 * @throws TransformerConfigurationException
+	 * @throws TransformerException
+	 */
+	@GetMapping(path = "/{year:20\\d{2}}/{month:[01]\\d}/{dayOfMonth:[0-3]\\d}/newAccounts.asp", produces = MediaType.APPLICATION_XML_VALUE)
 	@ResponseBody
-	//@Secured({"ROLE_ALMIGHTY"})
-	Date accountsCreatedOfTheDay(@DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable Date date, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
-//		Document document = Servant.parseDocument();
-//		Element documentElement = document.getDocumentElement();
-//
-//		Element accountsElement = document.createElement("document");
-//		for(Lover account:)
-//		documentElement.appendChild(accountsElement);
-//
-//		TransformerFactory.newDefaultInstance().newTransformer().transform(
-//			new DOMSource(document),
-//			new StreamResult(response.getOutputStream())
-//		);
-		return Objects.isNull(date) ? new Date(System.currentTimeMillis()) : date;
+	@Secured({"ROLE_ALMIGHTY"})
+	void accountsCreatedOfTheDay(@PathVariable int year, @PathVariable int month, @PathVariable int dayOfMonth, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
+		Document document = dashboardService.accountsCreatedOfTheDay(year, month, dayOfMonth);
+
+		TransformerFactory.newDefaultInstance().newTransformer().transform(
+			new DOMSource(document),
+			new StreamResult(response.getOutputStream())
+		);
 	}
 
 	/**
@@ -674,8 +681,7 @@ public class DashboardController {
 							toTaipeiZonedDateTime(
 								vipExpiration
 							).
-							withZoneSameInstant(
-								Servant.ASIA_TAIPEI
+							withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID
 							)
 					)
 				);
@@ -689,8 +695,7 @@ public class DashboardController {
 							toTaipeiZonedDateTime(
 								vipExpiration
 							).
-							withZoneSameInstant(
-								Servant.ASIA_TAIPEI
+							withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID
 							)
 					)
 				);

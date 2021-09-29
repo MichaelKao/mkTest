@@ -1512,7 +1512,7 @@ public class WelcomeController {
 					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
 						servant.toTaipeiZonedDateTime(
 							history.getOccurred()
-						).withZoneSameInstant(Servant.ASIA_TAIPEI)
+						).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
 					));
 				peekerElement.setAttribute(
 					"times",
@@ -2070,8 +2070,7 @@ public class WelcomeController {
 				LoverService.DATE_TIME_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						me.getVip()
-					).withZoneSameInstant(
-						Servant.ASIA_TAIPEI
+					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID
 					)
 				)
 			);
@@ -2093,8 +2092,7 @@ public class WelcomeController {
 				LoverService.DATE_TIME_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						me.getVip()
-					).withZoneSameInstant(
-						Servant.ASIA_TAIPEI
+					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID
 					)
 				)
 			);
@@ -2113,8 +2111,7 @@ public class WelcomeController {
 				LoverService.DATE_TIME_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						me.getVip()
-					).withZoneSameInstant(
-						Servant.ASIA_TAIPEI
+					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID
 					)
 				)
 			);

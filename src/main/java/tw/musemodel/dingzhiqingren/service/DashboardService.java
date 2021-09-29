@@ -1,7 +1,6 @@
 package tw.musemodel.dingzhiqingren.service;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -11,11 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -123,11 +120,59 @@ public class DashboardService {
 		return servant.documentElement(document, authentication);
 	}
 
-	public void accountsCreatedOfTheDay(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(required = false) Date date) {
-		if (Objects.isNull(date)) {
-			date = new Date(System.currentTimeMillis());
+	/**
+	 * 一天内注册的新用户号。
+	 *
+	 * @param year 年
+	 * @param month 月
+	 * @param dayOfMonth 日
+	 * @return org.w3.dom.Document
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	public Document accountsCreatedOfTheDay(int year, int month, int dayOfMonth) throws SAXException, IOException, ParserConfigurationException {
+		Document document = Servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+
+		int fakeCount = 0, genuineCount = 0;
+		Element accountsElement = document.createElement("accounts");
+		for (Lover mofo : loverService.accountsCreatedOfTheDay(year, month, dayOfMonth)) {
+			Element accountElement = document.createElement("account");
+
+			Element idElement = document.createElement("id");
+			idElement.setTextContent(mofo.getId().toString());
+			accountElement.appendChild(idElement);//主键
+
+			Element nicknameElement = document.createElement("nickname");
+			nicknameElement.setTextContent(mofo.getNickname());
+			accountElement.appendChild(nicknameElement);//昵称
+
+			Element registeredElement = document.createElement("registered");
+			registeredElement.setTextContent(
+				Servant.TAIWAN_SIMPLE_DATE_FORMAT.format(
+					mofo.getRegistered()
+				)
+			);
+			accountElement.appendChild(registeredElement);//註冊时间
+
+			boolean fake = mofo.isFake();
+			if (fake) {
+				++fakeCount;
+			} else {
+				++genuineCount;
+			}
+			Element fakeElement = document.createElement("fake");
+			fakeElement.setTextContent(Boolean.toString(fake));
+			accountElement.appendChild(fakeElement);//伪用户号
+
+			accountsElement.appendChild(accountElement);
 		}
-		Servant.toUTC(date);
+		documentElement.appendChild(accountsElement);
+		accountsElement.setAttribute("fake", Integer.toString(fakeCount));
+		accountsElement.setAttribute("genuine", Integer.toString(genuineCount));
+
+		return document;
 	}
 
 	/**
@@ -355,8 +400,7 @@ public class DashboardService {
 				Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
 					Servant.toTaipeiZonedDateTime(
 						applicant.getVip()
-					).withZoneSameInstant(
-						Servant.ASIA_TAIPEI
+					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID
 					)
 				)
 			);
@@ -391,8 +435,7 @@ public class DashboardService {
 					Servant.toTaipeiZonedDateTime(
 						stopRecurringPaymentApplication.
 							getHandledAt()
-					).withZoneSameInstant(
-						Servant.ASIA_TAIPEI
+					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID
 					)
 				)
 			);
@@ -444,7 +487,7 @@ public class DashboardService {
 				Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
 					Servant.toTaipeiZonedDateTime(
 						eachWithdrawal.getTimestamp()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI)
+					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
 				));
 
 			Date timestamp = eachWithdrawal.getTimestamp();
@@ -503,8 +546,7 @@ public class DashboardService {
 							withdrawalRecord.
 								getHistory().
 								getOccurred()
-						).withZoneSameInstant(
-							Servant.ASIA_TAIPEI
+						).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID
 						)
 					)
 				);

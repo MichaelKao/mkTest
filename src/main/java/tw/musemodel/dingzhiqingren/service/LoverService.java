@@ -339,7 +339,7 @@ public class LoverService {
 				DATE_TIME_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						mofo.getRegistered()
-					).withZoneSameInstant(servant.ASIA_TAIPEI)
+					).withZoneSameInstant(servant.ASIA_TAIPEI_ZONE_ID)
 				).replaceAll("\\+\\d{2}$", "")
 			);
 			descendant.setVip(
@@ -388,6 +388,21 @@ public class LoverService {
 			map.put(key, 1);
 		}
 		return false;
+	}
+
+	/**
+	 * 某段时间区间内注册的用户号。
+	 *
+	 * @param year 年
+	 * @param month 月
+	 * @param dayOfMonth 日
+	 * @return 用户号们
+	 */
+	public Collection<Lover> accountsCreatedOfTheDay(int year, int month, int dayOfMonth) {
+		return loverRepository.findByRegisteredBetweenOrderByRegisteredDesc(
+			Servant.earliestDate(year, month, dayOfMonth),
+			Servant.latestDate(year, month, dayOfMonth)
+		);
 	}
 
 	/**
@@ -1889,7 +1904,7 @@ public class LoverService {
 					DATE_FORMATTER.format(
 						servant.toTaipeiZonedDateTime(
 							rate.getOccurred()
-						).withZoneSameInstant(Servant.ASIA_TAIPEI)
+						).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
 					).replaceAll("\\+\\d{2}$", "")
 				);
 				rateElement.setAttribute(
@@ -2416,7 +2431,7 @@ public class LoverService {
 			DATE_FORMATTER.format(
 				servant.toTaipeiZonedDateTime(
 					before7DaysAgo()
-				).withZoneSameInstant(Servant.ASIA_TAIPEI)
+				).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
 			));
 
 		// 目前可提領的紀錄
@@ -2433,7 +2448,7 @@ public class LoverService {
 				DATE_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						history.getOccurred()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI)
+					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
 				));
 
 			recordElement.setAttribute(
@@ -2481,7 +2496,7 @@ public class LoverService {
 				DATE_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						history.getOccurred()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI)
+					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
 				));
 
 			notAbleToWithdrawalElement.setAttribute(
@@ -2548,7 +2563,7 @@ public class LoverService {
 				DATE_FORMATTER.format(
 					servant.toTaipeiZonedDateTime(
 						timestamp
-					).withZoneSameInstant(Servant.ASIA_TAIPEI)
+					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
 				));
 
 			recordElement.setAttribute(
@@ -2575,7 +2590,7 @@ public class LoverService {
 					DATE_FORMATTER.format(
 						servant.toTaipeiZonedDateTime(
 							withdrawalRecord.getHistory().getOccurred()
-						).withZoneSameInstant(Servant.ASIA_TAIPEI)
+						).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
 					));
 
 				historyElement.setAttribute(
@@ -3410,8 +3425,7 @@ public class LoverService {
 					toTaipeiZonedDateTime(
 						activity.getOccurred()
 					).
-					withZoneSameInstant(
-						Servant.ASIA_TAIPEI
+					withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID
 					)
 				)
 			);
@@ -3682,7 +3696,7 @@ public class LoverService {
 	 */
 	public String calendarToString(Date d) {
 		Calendar cal = new GregorianCalendar();
-		cal.setTimeZone(TimeZone.getTimeZone(servant.ASIA_TAIPEI));
+		cal.setTimeZone(TimeZone.getTimeZone(servant.ASIA_TAIPEI_ZONE_ID));
 		cal.setTime(d);
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH) + 1;

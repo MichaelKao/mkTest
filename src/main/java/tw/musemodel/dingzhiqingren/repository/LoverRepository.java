@@ -1,5 +1,6 @@
 package tw.musemodel.dingzhiqingren.repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,9 +38,18 @@ public interface LoverRepository extends JpaRepository<Lover, Integer>, JpaSpeci
 	 * 找下线用户。
 	 *
 	 * @param referrer 上线用户
-	 * @return 下线用户们
+	 * @return 下线用户号们
 	 */
 	public List<Lover> findByReferrerOrderByRegisteredDesc(Lover referrer);
+
+	/**
+	 * 某段时间区间内注册的用户号。
+	 *
+	 * @param since 开始时戳
+	 * @param until 结束时戳
+	 * @return 用户号们
+	 */
+	public List<Lover> findByRegisteredBetweenOrderByRegisteredDesc(Date since, Date until);
 
 	public List<Lover> findByRelief(Boolean relief);
 
