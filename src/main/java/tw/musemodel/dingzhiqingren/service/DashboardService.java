@@ -1,6 +1,7 @@
 package tw.musemodel.dingzhiqingren.service;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -131,11 +132,30 @@ public class DashboardService {
          * @throws IOException
          * @throws ParserConfigurationException
          */
-        public Document accountsCreatedOfTheDay(int year, int month, int dayOfMonth) throws SAXException, IOException, ParserConfigurationException {
+        public Document accountsCreatedOfTheDay(int year, int month, int dayOfMonth, Locale locale) throws SAXException, IOException, ParserConfigurationException {
                 Document document = Servant.parseDocument();
                 Element documentElement = document.getDocumentElement();
 
+                // 給當日新進會員報表的URL
+                Calendar today = Calendar.getInstance();
+                int m = today.get(Calendar.MONTH) + 1;
+                int date = today.get(Calendar.DATE);
+                documentElement.setAttribute("year", Integer.toString(today.get(Calendar.YEAR)));
+                documentElement.setAttribute("month", m < 10 ? "0" + m : Integer.toString(m));
+                documentElement.setAttribute("date", date < 10 ? "0" + date : Integer.toString(date));
+
                 int fakeCount = 0, genuineCount = 0;
+                Element registeredElement = document.createElement("registered");
+                registeredElement.setTextContent(
+                        String.format(
+                                "%s/%s/%s",
+                                year,
+                                month,
+                                dayOfMonth
+                        )
+                );
+                documentElement.appendChild(registeredElement);//註冊时间
+
                 Element accountsElement = document.createElement("accounts");
                 for (Lover mofo : loverService.accountsCreatedOfTheDay(year, month, dayOfMonth)) {
                         Element accountElement = document.createElement("account");
@@ -144,17 +164,30 @@ public class DashboardService {
                         idElement.setTextContent(mofo.getId().toString());
                         accountElement.appendChild(idElement);//主键
 
+                        Element identifierElement = document.createElement("identifier");
+                        identifierElement.setTextContent(mofo.getIdentifier().toString());
+                        accountElement.appendChild(identifierElement);//識別碼
+
                         Element nicknameElement = document.createElement("nickname");
                         nicknameElement.setTextContent(mofo.getNickname());
                         accountElement.appendChild(nicknameElement);//昵称
 
-                        Element registeredElement = document.createElement("registered");
-                        registeredElement.setTextContent(
-                                Servant.TAIWAN_SIMPLE_DATE_FORMAT.format(
-                                        mofo.getRegistered()
-                                )
-                        );
-                        accountElement.appendChild(registeredElement);//註冊时间
+                        Element loginElement = document.createElement("login");
+                        loginElement.setTextContent(mofo.getLogin());
+                        accountElement.appendChild(loginElement);//帳號
+
+                        Element genderElement = document.createElement("gender");
+                        genderElement.setTextContent(
+                                mofo.getGender() ? messageSource.getMessage(
+                                "gender.male",
+                                null,
+                                locale
+                        ) : messageSource.getMessage(
+                                "gender.female",
+                                null,
+                                locale
+                        ));
+                        accountElement.appendChild(genderElement);//性別
 
                         boolean fake = mofo.isFake();
                         if (fake) {
@@ -287,6 +320,14 @@ public class DashboardService {
                         authentication
                 );//根元素
 
+                // 給當日新進會員報表的URL
+                Calendar today = Calendar.getInstance();
+                int month = today.get(Calendar.MONTH) + 1;
+                int date = today.get(Calendar.DATE);
+                documentElement.setAttribute("year", Integer.toString(today.get(Calendar.YEAR)));
+                documentElement.setAttribute("month", month < 10 ? "0" + month : Integer.toString(month));
+                documentElement.setAttribute("date", date < 10 ? "0" + date : Integer.toString(date));
+
                 for (Lover lover : loverRepository.findByRelief(false)) {
                         Element loverElement = document.createElement("lover");
 
@@ -324,6 +365,14 @@ public class DashboardService {
                         document,
                         authentication
                 );//根元素
+
+                // 給當日新進會員報表的URL
+                Calendar today = Calendar.getInstance();
+                int month = today.get(Calendar.MONTH) + 1;
+                int date = today.get(Calendar.DATE);
+                documentElement.setAttribute("year", Integer.toString(today.get(Calendar.YEAR)));
+                documentElement.setAttribute("month", month < 10 ? "0" + month : Integer.toString(month));
+                documentElement.setAttribute("date", date < 10 ? "0" + date : Integer.toString(date));
 
                 for (TrialCode trialCode : trialCodeRepository.findAll()) {
                         Element trialElement = document.createElement("trial");
@@ -365,6 +414,14 @@ public class DashboardService {
                         document,
                         authentication
                 );//根元素
+
+                // 給當日新進會員報表的URL
+                Calendar today = Calendar.getInstance();
+                int month = today.get(Calendar.MONTH) + 1;
+                int date = today.get(Calendar.DATE);
+                documentElement.setAttribute("year", Integer.toString(today.get(Calendar.YEAR)));
+                documentElement.setAttribute("month", month < 10 ? "0" + month : Integer.toString(month));
+                documentElement.setAttribute("date", date < 10 ? "0" + date : Integer.toString(date));
 
                 /*
 		 未處理
@@ -464,6 +521,14 @@ public class DashboardService {
                         document,
                         authentication
                 );//根元素
+
+                // 給當日新進會員報表的URL
+                Calendar today = Calendar.getInstance();
+                int month = today.get(Calendar.MONTH) + 1;
+                int date = today.get(Calendar.DATE);
+                documentElement.setAttribute("year", Integer.toString(today.get(Calendar.YEAR)));
+                documentElement.setAttribute("month", month < 10 ? "0" + month : Integer.toString(month));
+                documentElement.setAttribute("date", date < 10 ? "0" + date : Integer.toString(date));
 
                 Element recordsElement = document.createElement("records");
                 for (EachWithdrawal eachWithdrawal : withdrawalRecordRepository.findAllGroupByHoneyAndStatusAndWayAndTimeStamp()) {
@@ -608,6 +673,14 @@ public class DashboardService {
                                 locale
                         )
                 );
+
+                // 給當日新進會員報表的URL
+                Calendar today = Calendar.getInstance();
+                int month = today.get(Calendar.MONTH) + 1;
+                int date = today.get(Calendar.DATE);
+                documentElement.setAttribute("year", Integer.toString(today.get(Calendar.YEAR)));
+                documentElement.setAttribute("month", month < 10 ? "0" + month : Integer.toString(month));
+                documentElement.setAttribute("date", date < 10 ? "0" + date : Integer.toString(date));
 
                 //所有男士
                 Element maleElement = document.createElement("male");

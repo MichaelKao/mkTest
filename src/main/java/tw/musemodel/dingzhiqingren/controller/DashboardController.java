@@ -14,9 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -102,12 +99,13 @@ public class DashboardController {
         private TrialCodeRepository trialCodeRepository;
 
         /**
-         * 一天内注册的新用户号。
+         * 一天內註冊的用戶
          *
-         * @param year 年
-         * @param month 月
-         * @param dayOfMonth 日
-         * @param response
+         * @param year
+         * @param month
+         * @param dayOfMonth
+         * @param locale
+         * @return
          * @throws SAXException
          * @throws IOException
          * @throws ParserConfigurationException
@@ -117,13 +115,21 @@ public class DashboardController {
         @GetMapping(path = "/{year:20\\d{2}}/{month:[01]\\d}/{dayOfMonth:[0-3]\\d}/newAccounts.asp", produces = MediaType.APPLICATION_XML_VALUE)
         @ResponseBody
         @Secured({"ROLE_ALMIGHTY"})
-        void accountsCreatedOfTheDay(@PathVariable int year, @PathVariable int month, @PathVariable int dayOfMonth, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
-                Document document = dashboardService.accountsCreatedOfTheDay(year, month, dayOfMonth);
+        ModelAndView accountsCreatedOfTheDay(@PathVariable int year, @PathVariable int month, @PathVariable int dayOfMonth, Locale locale) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
+                Document document = dashboardService.accountsCreatedOfTheDay(year, month, dayOfMonth, locale);
 
-                TransformerFactory.newDefaultInstance().newTransformer().transform(
-                        new DOMSource(document),
-                        new StreamResult(response.getOutputStream())
+                document.getDocumentElement().setAttribute(
+                        "title",
+                        messageSource.getMessage(
+                                "title.accountsOfTheDay",
+                                null,
+                                locale
+                        )
                 );
+
+                ModelAndView modelAndView = new ModelAndView("dashboard/accountsOfTheDay");
+                modelAndView.getModelMap().addAttribute(document);
+                return modelAndView;
         }
 
         /**
