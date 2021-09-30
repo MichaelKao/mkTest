@@ -122,6 +122,61 @@ public class DashboardService {
 	}
 
 	/**
+	 * 一天内注册的新用户号。
+	 *
+	 * @param year 年
+	 * @param month 月
+	 * @param dayOfMonth 日
+	 * @return org.w3.dom.Document
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	public Document accountsCreatedOfTheDay(int year, int month, int dayOfMonth) throws SAXException, IOException, ParserConfigurationException {
+		Document document = Servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+
+		int fakeCount = 0, genuineCount = 0;
+		Element accountsElement = document.createElement("accounts");
+		for (Lover mofo : loverService.accountsCreatedOfTheDay(year, month, dayOfMonth)) {
+			Element accountElement = document.createElement("account");
+
+			Element idElement = document.createElement("id");
+			idElement.setTextContent(mofo.getId().toString());
+			accountElement.appendChild(idElement);//主键
+
+			Element nicknameElement = document.createElement("nickname");
+			nicknameElement.setTextContent(mofo.getNickname());
+			accountElement.appendChild(nicknameElement);//昵称
+
+			Element registeredElement = document.createElement("registered");
+			registeredElement.setTextContent(
+				Servant.TAIWAN_SIMPLE_DATE_FORMAT.format(
+					mofo.getRegistered()
+				)
+			);
+			accountElement.appendChild(registeredElement);//註冊时间
+
+			boolean fake = mofo.isFake();
+			if (fake) {
+				++fakeCount;
+			} else {
+				++genuineCount;
+			}
+			Element fakeElement = document.createElement("fake");
+			fakeElement.setTextContent(Boolean.toString(fake));
+			accountElement.appendChild(fakeElement);//伪用户号
+
+			accountsElement.appendChild(accountElement);
+		}
+		documentElement.appendChild(accountsElement);
+		accountsElement.setAttribute("fake", Integer.toString(fakeCount));
+		accountsElement.setAttribute("genuine", Integer.toString(genuineCount));
+
+		return document;
+	}
+
+	/**
 	 * 在金流平台的后台处理完解除定期定额申请后纪录谁处理的、什么时候处理的。
 	 *
 	 * @param application 申请书
@@ -226,7 +281,7 @@ public class DashboardService {
 	 */
 	@Transactional(readOnly = true)
 	public Document certification(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		Document document = servant.parseDocument();
+		Document document = Servant.parseDocument();
 
 		Element documentElement = documentElement(
 			document,
@@ -264,7 +319,7 @@ public class DashboardService {
 	 */
 	@Transactional(readOnly = true)
 	public Document generateTrialCode(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		Document document = servant.parseDocument();
+		Document document = Servant.parseDocument();
 
 		Element documentElement = documentElement(
 			document,
@@ -305,7 +360,7 @@ public class DashboardService {
 	 */
 	@Transactional(readOnly = true)
 	public Document stopRecurringDocument(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		Document document = servant.parseDocument();
+		Document document = Servant.parseDocument();
 
 		Element documentElement = documentElement(
 			document,
@@ -344,10 +399,9 @@ public class DashboardService {
 			pendingElement.setAttribute(
 				"expiry",
 				Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
-					servant.toTaipeiZonedDateTime(
+					Servant.toTaipeiZonedDateTime(
 						applicant.getVip()
-					).withZoneSameInstant(
-						Servant.ASIA_TAIPEI
+					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID
 					)
 				)
 			);
@@ -379,11 +433,10 @@ public class DashboardService {
 			finishedElement.setAttribute(
 				"handleDate",
 				Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
-					servant.toTaipeiZonedDateTime(
+					Servant.toTaipeiZonedDateTime(
 						stopRecurringPaymentApplication.
 							getHandledAt()
-					).withZoneSameInstant(
-						Servant.ASIA_TAIPEI
+					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID
 					)
 				)
 			);
@@ -406,7 +459,7 @@ public class DashboardService {
 	 */
 	@Transactional(readOnly = true)
 	public Document withdrawal(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		Document document = servant.parseDocument();
+		Document document = Servant.parseDocument();
 
 		Element documentElement = documentElement(
 			document,
@@ -433,9 +486,9 @@ public class DashboardService {
 			recordElement.setAttribute(
 				"date",
 				Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
-					servant.toTaipeiZonedDateTime(
+					Servant.toTaipeiZonedDateTime(
 						eachWithdrawal.getTimestamp()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI)
+					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
 				));
 
 			Date timestamp = eachWithdrawal.getTimestamp();
@@ -490,12 +543,11 @@ public class DashboardService {
 				historyElement.setAttribute(
 					"date",
 					Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
-						servant.toTaipeiZonedDateTime(
+						Servant.toTaipeiZonedDateTime(
 							withdrawalRecord.
 								getHistory().
 								getOccurred()
-						).withZoneSameInstant(
-							Servant.ASIA_TAIPEI
+						).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID
 						)
 					)
 				);
@@ -589,7 +641,7 @@ public class DashboardService {
 							lover.getRegistered()
 						).
 						withZoneSameInstant(
-							Servant.ASIA_TAIPEI
+							Servant.ASIA_TAIPEI_ZONE_ID
 						)
 				));
 			userElement.appendChild(registeredElement);
@@ -604,7 +656,7 @@ public class DashboardService {
 								vipExpiration
 							).
 							withZoneSameInstant(
-								Servant.ASIA_TAIPEI
+								Servant.ASIA_TAIPEI_ZONE_ID
 							)
 					)
 				);
@@ -619,7 +671,7 @@ public class DashboardService {
 								vipExpiration
 							).
 							withZoneSameInstant(
-								Servant.ASIA_TAIPEI
+								Servant.ASIA_TAIPEI_ZONE_ID
 							)
 					)
 				);
@@ -634,7 +686,7 @@ public class DashboardService {
 								vipExpiration
 							).
 							withZoneSameInstant(
-								Servant.ASIA_TAIPEI
+								Servant.ASIA_TAIPEI_ZONE_ID
 							)
 					)
 				);
@@ -673,7 +725,7 @@ public class DashboardService {
 							lover.getRegistered()
 						).
 						withZoneSameInstant(
-							Servant.ASIA_TAIPEI
+							Servant.ASIA_TAIPEI_ZONE_ID
 						)
 				));
 			userElement.appendChild(registeredElement);

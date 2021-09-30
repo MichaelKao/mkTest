@@ -10,16 +10,20 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -81,7 +85,12 @@ public class Servant {
 	/**
 	 * 东八时区
 	 */
-	public static final ZoneId ASIA_TAIPEI = ZoneId.of("Asia/Taipei");
+	public static final ZoneId ASIA_TAIPEI_ZONE_ID = ZoneId.of("Asia/Taipei");
+
+	/**
+	 * 东八时区
+	 */
+	public static final TimeZone ASIA_TAIPEI_TIME_ZONE = TimeZone.getTimeZone(ASIA_TAIPEI_ZONE_ID);
 
 	/**
 	 * 一个月有(算)几天
@@ -164,14 +173,19 @@ public class Servant {
 	public static final String STATIC_HOST = System.getenv("STATIC_HOST");
 
 	/**
+	 * 语言环境：臺湾(繁体中文)
+	 */
+	public static final Locale TAIWAN = Locale.TAIWAN;
+
+	/**
 	 * 中华民族日期时间格式化器
 	 */
 	public static final DateTimeFormatter TAIWAN_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX");
 
 	/**
-	 * 语言环境：臺湾(繁体中文)
+	 * 中华民族日期时间格式
 	 */
-	public static final Locale TAIWAN = Locale.TAIWAN;
+	public static final SimpleDateFormat TAIWAN_SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssX");
 
 	/**
 	 * 系统暂存目录
@@ -181,7 +195,12 @@ public class Servant {
 	/**
 	 * 协调世界时
 	 */
-	public static final ZoneId UTC = ZoneId.of("UTC");
+	public static final ZoneId UTC_ZONE_ID = ZoneId.of("UTC");
+
+	/**
+	 * 协调世界时
+	 */
+	public static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone(UTC_ZONE_ID);
 
 	/**
 	 * 一种针对 Unicode 的可变长度字符编码
@@ -192,6 +211,21 @@ public class Servant {
 	 * 服务器时区
 	 */
 	public static final ZoneId ZONE_ID = ZoneId.of(System.getenv("ZONE_ID"));
+
+	/**
+	 * 一天最早的时戳。
+	 *
+	 * @param year 年
+	 * @param month 月
+	 * @param dayOfMonth 日
+	 * @return 日期时间时戳
+	 */
+	public static final Date earliestDate(int year, int month, int dayOfMonth) {
+		Calendar calendar = new GregorianCalendar(Servant.ASIA_TAIPEI_TIME_ZONE);
+		calendar.set(year, month - 1, dayOfMonth, 0, 0, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		return calendar.getTime();
+	}
 
 	/**
 	 * 十六进制转换为十进制。
@@ -241,6 +275,22 @@ public class Servant {
 		}
 
 		return false;
+	}
+
+	/**
+	 * 一天最晚的时戳。
+	 *
+	 * @param year 年
+	 * @param month 月
+	 * @param dayOfMonth 日
+	 * @return 日期时间时戳
+	 */
+	public static final Date latestDate(int year, int month, int dayOfMonth) {
+		Calendar calendar = new GregorianCalendar(Servant.ASIA_TAIPEI_TIME_ZONE);
+		calendar.setTime(earliestDate(year, month, dayOfMonth));
+		calendar.add(Calendar.DAY_OF_MONTH, 1);
+		calendar.add(Calendar.MILLISECOND, -1);
+		return calendar.getTime();
 	}
 
 	/**
@@ -299,16 +349,13 @@ public class Servant {
 	 * @return java.util.Date
 	 */
 	public static Date maximumToday(long timeMillis) {
-		return new Date(ZonedDateTime.ofInstant(
-			ZonedDateTime.of(
-				LocalDate.ofInstant(
-					new Date(timeMillis).toInstant(),
-					ASIA_TAIPEI
-				),
-				LocalTime.MAX,
-				ASIA_TAIPEI
-			).toInstant(),
-			UTC
+		return new Date(ZonedDateTime.ofInstant(ZonedDateTime.of(LocalDate.ofInstant(new Date(timeMillis).toInstant(),
+			ASIA_TAIPEI_ZONE_ID
+		),
+			LocalTime.MAX,
+			ASIA_TAIPEI_ZONE_ID
+		).toInstant(),
+			UTC_ZONE_ID
 		).toInstant().toEpochMilli());
 	}
 
@@ -319,17 +366,75 @@ public class Servant {
 	 * @return java.util.Date
 	 */
 	public static Date minimumToday(long timeMillis) {
-		return new Date(ZonedDateTime.ofInstant(
-			ZonedDateTime.of(
-				LocalDate.ofInstant(
-					new Date(timeMillis).toInstant(),
-					ASIA_TAIPEI
-				),
-				LocalTime.MIN,
-				ASIA_TAIPEI
-			).toInstant(),
-			UTC
+		return new Date(ZonedDateTime.ofInstant(ZonedDateTime.of(LocalDate.ofInstant(new Date(timeMillis).toInstant(),
+			ASIA_TAIPEI_ZONE_ID
+		),
+			LocalTime.MIN,
+			ASIA_TAIPEI_ZONE_ID
+		).toInstant(),
+			UTC_ZONE_ID
 		).toInstant().toEpochMilli());
+	}
+
+	/**
+	 * 解析为 DOM Document。
+	 *
+	 * @author p@musemodel.tw
+	 * @return org.w3.dom.Docment
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	public static Document parseDocument() throws SAXException, IOException, ParserConfigurationException {
+		Document document = parseDocument(EMPTY_DOCUMENT_URI);
+		Element documentElement = document.getDocumentElement();
+
+		Element seoElement = document.createElement("seo");
+		documentElement.appendChild(seoElement);
+
+		Element facebookPixelElement = document.createElement("facebookPixel");
+		facebookPixelElement.setAttribute("id", FACEBOOK_PIXEL_ID);
+		facebookPixelElement.appendChild(document.createCDATASection(
+			String.format(
+				new BufferedReader(new InputStreamReader(
+					new ClassPathResource("skeleton/facebookPixel.js").
+						getInputStream(),
+					UTF_8
+				)).lines().collect(Collectors.joining("\n")),
+				FACEBOOK_PIXEL_ID
+			)
+		));
+		seoElement.appendChild(facebookPixelElement);
+
+		Element googleAnalyticsElement = document.createElement("googleAnalytics");
+		googleAnalyticsElement.setAttribute("id", MEASUREMENT_ID);
+		googleAnalyticsElement.appendChild(document.createCDATASection(
+			String.format(
+				new BufferedReader(new InputStreamReader(
+					new ClassPathResource("skeleton/googleAnalytics.js").
+						getInputStream(),
+					UTF_8
+				)).lines().collect(Collectors.joining("\n")),
+				MEASUREMENT_ID
+			)
+		));
+		seoElement.appendChild(googleAnalyticsElement);
+
+		return document;
+	}
+
+	/**
+	 * 解析为 DOM Document。
+	 *
+	 * @author p@musemodel.tw
+	 * @param uri 来源
+	 * @return org.w3.dom.Docment
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	public static Document parseDocument(String uri) throws SAXException, IOException, ParserConfigurationException {
+		return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(uri);
 	}
 
 	/**
@@ -348,6 +453,46 @@ public class Servant {
 	 */
 	public static ModelAndView redirectToRoot() {
 		return new ModelAndView("redirect:/");
+	}
+
+	/**
+	 * 转换为台湾时区。
+	 *
+	 * @param date
+	 * @return
+	 */
+	public static ZonedDateTime toTaipeiZonedDateTime(Date date) {
+		return toTaipeiZonedDateTime(date.toInstant());
+	}
+
+	/**
+	 * 转换为台湾时区。
+	 *
+	 * @param instant
+	 * @return
+	 */
+	public static ZonedDateTime toTaipeiZonedDateTime(Instant instant) {
+		return ZonedDateTime.ofInstant(instant, ASIA_TAIPEI_ZONE_ID);
+	}
+
+	/**
+	 * 转换为世界标准时间。
+	 *
+	 * @param date
+	 * @return
+	 */
+	public static ZonedDateTime toUTC(Date date) {
+		return toUTC(date.toInstant());
+	}
+
+	/**
+	 * 转换为世界标准时间。
+	 *
+	 * @param instant
+	 * @return
+	 */
+	public static ZonedDateTime toUTC(Instant instant) {
+		return ZonedDateTime.ofInstant(instant, UTC_ZONE_ID);
 	}
 
 	/**
@@ -465,48 +610,6 @@ public class Servant {
 		return DocumentBuilderFactory.newDefaultInstance().newDocumentBuilder().newDocument();
 	}
 
-	public Document parseDocument() throws SAXException, IOException, ParserConfigurationException {
-		Document document = parseDocument(EMPTY_DOCUMENT_URI);
-		Element documentElement = document.getDocumentElement();
-
-		Element seoElement = document.createElement("seo");
-		documentElement.appendChild(seoElement);
-
-		Element facebookPixelElement = document.createElement("facebookPixel");
-		facebookPixelElement.setAttribute("id", FACEBOOK_PIXEL_ID);
-		facebookPixelElement.appendChild(document.createCDATASection(
-			String.format(
-				new BufferedReader(new InputStreamReader(
-					new ClassPathResource("skeleton/facebookPixel.js").
-						getInputStream(),
-					UTF_8
-				)).lines().collect(Collectors.joining("\n")),
-				FACEBOOK_PIXEL_ID
-			)
-		));
-		seoElement.appendChild(facebookPixelElement);
-
-		Element googleAnalyticsElement = document.createElement("googleAnalytics");
-		googleAnalyticsElement.setAttribute("id", MEASUREMENT_ID);
-		googleAnalyticsElement.appendChild(document.createCDATASection(
-			String.format(
-				new BufferedReader(new InputStreamReader(
-					new ClassPathResource("skeleton/googleAnalytics.js").
-						getInputStream(),
-					UTF_8
-				)).lines().collect(Collectors.joining("\n")),
-				MEASUREMENT_ID
-			)
-		));
-		seoElement.appendChild(googleAnalyticsElement);
-
-		return document;
-	}
-
-	public Document parseDocument(String uri) throws SAXException, IOException, ParserConfigurationException {
-		return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(uri);
-	}
-
 	/**
 	 * 将 markdown 转为 HTML
 	 *
@@ -536,13 +639,5 @@ public class Servant {
 			)).
 			withResponse(false).
 			toString();
-	}
-
-	public static ZonedDateTime toTaipeiZonedDateTime(Instant instant) {
-		return ZonedDateTime.ofInstant(instant, ASIA_TAIPEI);
-	}
-
-	public ZonedDateTime toTaipeiZonedDateTime(Date date) {
-		return Servant.this.toTaipeiZonedDateTime(date.toInstant());
 	}
 }

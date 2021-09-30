@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -25,10 +28,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -95,6 +100,31 @@ public class DashboardController {
 
 	@Autowired
 	private TrialCodeRepository trialCodeRepository;
+
+	/**
+	 * 一天内注册的新用户号。
+	 *
+	 * @param year 年
+	 * @param month 月
+	 * @param dayOfMonth 日
+	 * @param response
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 * @throws TransformerConfigurationException
+	 * @throws TransformerException
+	 */
+	@GetMapping(path = "/{year:20\\d{2}}/{month:[01]\\d}/{dayOfMonth:[0-3]\\d}/newAccounts.asp", produces = MediaType.APPLICATION_XML_VALUE)
+	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY"})
+	void accountsCreatedOfTheDay(@PathVariable int year, @PathVariable int month, @PathVariable int dayOfMonth, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
+		Document document = dashboardService.accountsCreatedOfTheDay(year, month, dayOfMonth);
+
+		TransformerFactory.newDefaultInstance().newTransformer().transform(
+			new DOMSource(document),
+			new StreamResult(response.getOutputStream())
+		);
+	}
 
 	/**
 	 * 新增體驗碼
@@ -398,10 +428,23 @@ public class DashboardController {
 			toJSONObject().toString();
 	}
 
+	/**
+	 * 用户号互动报表。
+	 *
+	 * @author p@musemodel.tw
+	 * @param p 第几页
+	 * @param s 每页几笔
+	 * @param response
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 * @throws TransformerConfigurationException
+	 * @throws TransformerException
+	 */
 	@GetMapping(path = "/log/chat.xls")
 	@ResponseBody
 	@Secured({"ROLE_ALMIGHTY"})
-	void logsOfChat(@RequestParam(defaultValue = "0") int p, @RequestParam(defaultValue = "10") int s, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
+	void logsOfChat(@RequestParam(defaultValue = "1") int p, @RequestParam(defaultValue = "100") int s, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
 		final Collection<History.Behavior> behaviors = Lists.newArrayList(
 			HistoryService.BEHAVIOR_CHAT_MORE,
 			HistoryService.BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
@@ -409,88 +452,90 @@ public class DashboardController {
 			HistoryService.BEHAVIOR_PEEK
 		);
 
-		HSSFWorkbook workbook = new HSSFWorkbook();
-		Sheet sheet = workbook.createSheet();
-		Row firstRow = sheet.createRow(0);
-		firstRow.createCell(0, CellType.STRING).setCellValue("主動方");
-		firstRow.createCell(1, CellType.STRING).setCellValue("被動方");
-		firstRow.createCell(2, CellType.STRING).setCellValue("行為");
-		firstRow.createCell(3, CellType.STRING).setCellValue("發生時戳");
-
-		int rowNumber = 1;
-		for (History history : historyRepository.findByBehaviorInOrderByOccurredDesc(behaviors, PageRequest.of(p, s))) {
-			String behavior = "";
-			switch (history.getBehavior()) {
-				case LIAO_LIAO:
-					behavior = "聊聊";
-					break;
-				case JI_WO_LAI:
-					behavior = "給我 LINE";
-					break;
-				case SHOU_CANG:
-					behavior = "收藏";
-					break;
-				case KAN_GUO_WO:
-					behavior = "看過我";
-					break;
-			}
-
-			Row row = sheet.createRow(rowNumber);
-			row.createCell(
-				0,
-				CellType.STRING
-			).setCellValue(
-				history.getInitiative().getNickname()
-			);
-			row.createCell(
-				1,
-				CellType.STRING
-			).setCellValue(
-				history.getPassive().getNickname()
-			);
-			row.createCell(
-				2,
-				CellType.STRING
-			).setCellValue(
-				behavior
-			);
+		try (HSSFWorkbook workbook = new HSSFWorkbook()) {
+			Sheet sheet = workbook.createSheet();
+			Row firstRow = sheet.createRow(0);
+			firstRow.createCell(0, CellType.STRING).setCellValue("主動方");
+			firstRow.createCell(1, CellType.STRING).setCellValue("被動方");
+			firstRow.createCell(2, CellType.STRING).setCellValue("行為");
+			firstRow.createCell(3, CellType.NUMERIC).setCellValue("發生時戳");
+			sheet.createFreezePane(0, 1);
 
 			CellStyle cellStyle = workbook.createCellStyle();
-			cellStyle.setDataFormat(
-				workbook.
-					getCreationHelper().
-					createDataFormat().
-					getFormat("yyyy/m/d hh:mm:ss")
-			);
-			Cell cell = row.createCell(
-				3,
-				CellType.STRING
-			);
-			cell.setCellStyle(cellStyle);
-			cell.setCellValue(
-				history.getOccurred()
-			);
+			cellStyle.setDataFormat(workbook.
+				getCreationHelper().
+				createDataFormat().
+				getFormat("yyyy/m/d hh:mm:ss")
+			);//格式化时戳
 
-			++rowNumber;
-		}//for
-		sheet.createFreezePane(0, 1);
+			int rowNumber = 1;
+			for (History history : historyRepository.findByBehaviorInOrderByOccurredDesc(behaviors, PageRequest.of(p < 1 ? 0 : p - 1, s))) {
+				String behavior = "";
+				switch (history.getBehavior()) {
+					case LIAO_LIAO:
+						behavior = "聊聊";
+						break;
+					case JI_WO_LAI:
+						behavior = "給我 LINE";
+						break;
+					case SHOU_CANG:
+						behavior = "收藏";
+						break;
+					case KAN_GUO_WO:
+						behavior = "看過我";
+						break;
+				}
 
-		response.setHeader("Content-Type", "application/vnd.ms-excel");
-		response.setHeader(
-			"Content-Disposition",
-			String.format(
-				"attachment; filename=\"chat@%s.xls\"",
-				Servant.toTaipeiZonedDateTime(
-					new Date(
-						System.currentTimeMillis()
-					).toInstant()
-				).format(Servant.TAIWAN_DATE_TIME_FORMATTER)
-			)
-		);
-		OutputStream outputStream = response.getOutputStream();
-		workbook.write(outputStream);
-		outputStream.close();
-		workbook.close();
+				Row row = sheet.createRow(rowNumber);
+				row.createCell(
+					0,
+					CellType.STRING
+				).setCellValue(
+					history.getInitiative().getNickname()
+				);
+				row.createCell(
+					1,
+					CellType.STRING
+				).setCellValue(
+					history.getPassive().getNickname()
+				);
+				row.createCell(
+					2,
+					CellType.STRING
+				).setCellValue(
+					behavior
+				);
+
+				Cell cell = row.createCell(
+					3,
+					CellType.STRING
+				);
+				cell.setCellStyle(cellStyle);
+				cell.setCellValue(
+					history.getOccurred()
+				);
+
+				++rowNumber;
+			}//for
+
+			try (OutputStream outputStream = response.getOutputStream()) {
+				response.setHeader("Content-Type", "application/vnd.ms-excel");
+				response.setHeader(
+					"Content-Disposition",
+					String.format(
+						"attachment; filename=\"chat@%s.xls\"",
+						Servant.toTaipeiZonedDateTime(
+							new Date(
+								System.currentTimeMillis()
+							).toInstant()
+						).format(Servant.TAIWAN_DATE_TIME_FORMATTER)
+					)
+				);
+				workbook.write(outputStream);
+				outputStream.close();
+			}
+			workbook.close();
+		}//try
 	}
 
 	/**
@@ -536,6 +581,7 @@ public class DashboardController {
 	@PostMapping(path = "/stopRecurring.json")
 	@ResponseBody
 	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	@SuppressWarnings("UnusedAssignment")
 	String stopRecurring(@RequestParam("applyID") Long applyID, Authentication authentication, Locale locale) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -550,7 +596,11 @@ public class DashboardController {
 			authentication.getName()
 		);
 
-		stopRecurringPaymentApplication = dashboardService.handleStopRecurringPaymentApplication(stopRecurringPaymentApplication, me);
+		stopRecurringPaymentApplication = dashboardService.
+			handleStopRecurringPaymentApplication(
+				stopRecurringPaymentApplication,
+				me
+			);
 
 		return new JavaScriptObjectNotation().
 			withResponse(true).
@@ -675,7 +725,7 @@ public class DashboardController {
 							lover.getRegistered()
 						).
 						withZoneSameInstant(
-							Servant.ASIA_TAIPEI
+							Servant.ASIA_TAIPEI_ZONE_ID
 						)
 				)
 			);
