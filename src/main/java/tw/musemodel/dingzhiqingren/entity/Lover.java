@@ -45,7 +45,7 @@ import tw.musemodel.dingzhiqingren.entity.embedded.Follow;
  */
 @Data
 @Entity
-@SuppressWarnings("PersistenceUnitPresent")
+@SuppressWarnings({"EqualsAndHashcode", "PersistenceUnitPresent"})
 @Table(name = "qing_ren", uniqueConstraints = {
 	@UniqueConstraint(columnNames = {"shi_bie_ma"})
 })
@@ -395,6 +395,15 @@ public class Lover implements java.io.Serializable {
 	@OneToMany(mappedBy = "blocked")
 	@JsonIgnore
 	private Set<Blacklist> blocked;
+
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof Lover)) {
+			return false;
+		}
+		Lover other = (Lover) object;
+		return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
+	}
 
 	@Override
 	public String toString() {
