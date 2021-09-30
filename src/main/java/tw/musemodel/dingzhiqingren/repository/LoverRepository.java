@@ -57,5 +57,7 @@ public interface LoverRepository extends JpaRepository<Lover, Integer>, JpaSpeci
 
 	public Lover findOneByIdentifier(UUID identifier);
 
-	public Page<Lover> findAllByGenderOrderByIdAsc(Boolean gender, Pageable pageable);
+	public Page<Lover> findAllByGenderOrderByIdDesc(Boolean gender, Pageable pageable);
+
+	public List<Lover> findAllByGenderOrderByIdDesc(Boolean gender);
 }

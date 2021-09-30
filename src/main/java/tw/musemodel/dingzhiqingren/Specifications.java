@@ -23,216 +23,219 @@ import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
  */
 public class Specifications {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(Specifications.class);
+        private final static Logger LOGGER = LoggerFactory.getLogger(Specifications.class);
 
-	/**
-	 * 根據行為通知被動者
-	 *
-	 * @param passive
-	 * @param behaviors
-	 * @return
-	 */
-	public static Specification<History> passive(Lover passive, List<Behavior> behaviors) {
-		return (root, criteriaQuery, criteriaBuilder) -> {
-			criteriaQuery.orderBy(criteriaBuilder.desc(
-				root.get("occurred"))
-			);
+        /**
+         * 根據行為通知被動者
+         *
+         * @param passive
+         * @param behaviors
+         * @return
+         */
+        public static Specification<History> passive(Lover passive, List<Behavior> behaviors) {
+                return (root, criteriaQuery, criteriaBuilder) -> {
+                        criteriaQuery.orderBy(criteriaBuilder.desc(
+                                root.get("occurred"))
+                        );
 
-			Root<History> historyRoot = root;
-			List<Predicate> predicates = new ArrayList<>();
+                        Root<History> historyRoot = root;
+                        List<Predicate> predicates = new ArrayList<>();
 
-			for (Behavior behavior : behaviors) {
-				predicates.add(
-					criteriaBuilder.equal(
-						historyRoot.get("behavior"),
-						behavior
-					)
-				);
-			}
+                        for (Behavior behavior : behaviors) {
+                                predicates.add(
+                                        criteriaBuilder.equal(
+                                                historyRoot.get("behavior"),
+                                                behavior
+                                        )
+                                );
+                        }
 
-			return criteriaBuilder.and(
-				criteriaBuilder.equal(
-					root.get("passive"),
-					passive
-				),
-				criteriaBuilder.or(
-					predicates.toArray(new Predicate[0])
-				),
-				criteriaBuilder.isNull(
-					root.get("seen")
-				)
-			);
-		};
-	}
+                        return criteriaBuilder.and(
+                                criteriaBuilder.equal(
+                                        root.get("passive"),
+                                        passive
+                                ),
+                                criteriaBuilder.or(
+                                        predicates.toArray(new Predicate[0])
+                                ),
+                                criteriaBuilder.isNull(
+                                        root.get("seen")
+                                )
+                        );
+                };
+        }
 
-	/**
-	 * 甜心目前可以提領的紀錄
-	 *
-	 * @param passive
-	 * @return
-	 */
-	public static Specification<History> withdrawal(Lover passive) {
-		return (Root<History> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
-			Root<History> historyRoot = root;
-			Subquery<WithdrawalRecord> subquery = criteriaQuery.subquery(
-				WithdrawalRecord.class
-			);
-			Root<WithdrawalRecord> withdrawalRecordRoot = subquery.from(WithdrawalRecord.class);
-			criteriaQuery.orderBy(criteriaBuilder.desc(
-				historyRoot.get("occurred"))
-			);
+        /**
+         * 甜心目前可以提領的紀錄
+         *
+         * @param passive
+         * @return
+         */
+        public static Specification<History> withdrawal(Lover passive) {
+                return (Root<History> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
+                        Root<History> historyRoot = root;
+                        Subquery<WithdrawalRecord> subquery = criteriaQuery.subquery(
+                                WithdrawalRecord.class
+                        );
+                        Root<WithdrawalRecord> withdrawalRecordRoot = subquery.from(WithdrawalRecord.class);
+                        criteriaQuery.orderBy(criteriaBuilder.desc(
+                                historyRoot.get("occurred"))
+                        );
 
-			List<Predicate> predicates = new ArrayList<>();
+                        List<Predicate> predicates = new ArrayList<>();
 
-			predicates.add(
-				criteriaBuilder.equal(
-					historyRoot.get("behavior"),
-					Behavior.CHE_MA_FEI
-				)
-			);
-			predicates.add(
-				criteriaBuilder.and(
-					criteriaBuilder.equal(
-						historyRoot.get("behavior"),
-						Behavior.LAI_KOU_DIAN
-					),
-					criteriaBuilder.equal(
-						historyRoot.get("points"),
-						-100
-					)
-				)
-			);
+                        predicates.add(
+                                criteriaBuilder.equal(
+                                        historyRoot.get("behavior"),
+                                        Behavior.CHE_MA_FEI
+                                )
+                        );
+                        predicates.add(
+                                criteriaBuilder.and(
+                                        criteriaBuilder.equal(
+                                                historyRoot.get("behavior"),
+                                                Behavior.LAI_KOU_DIAN
+                                        ),
+                                        criteriaBuilder.equal(
+                                                historyRoot.get("points"),
+                                                -100
+                                        )
+                                )
+                        );
 
-			Calendar cal = Calendar.getInstance();
-			cal.getTime();
-			cal.add(Calendar.DAY_OF_MONTH, -7);
-			Date sevenDaysAgo = cal.getTime();
+                        Calendar cal = Calendar.getInstance();
+                        cal.getTime();
+                        cal.add(Calendar.DAY_OF_MONTH, -7);
+                        Date sevenDaysAgo = cal.getTime();
 
-			return criteriaBuilder.and(
-				criteriaBuilder.equal(
-					historyRoot.get("passive"),
-					passive
-				),
-				criteriaBuilder.or(
-					predicates.toArray(new Predicate[0])
-				),
-				criteriaBuilder.lessThanOrEqualTo(
-					historyRoot.get("occurred"),
-					sevenDaysAgo
-				),
-				criteriaBuilder.not(
-					criteriaBuilder.exists(
-						subquery.
-							select(withdrawalRecordRoot).
-							where(
-								criteriaBuilder.equal(
-									historyRoot.get("id"), withdrawalRecordRoot.get("id")
-								)
-							)
-					)
-				)
-			);
-		};
-	}
+                        return criteriaBuilder.and(
+                                criteriaBuilder.equal(
+                                        historyRoot.get("passive"),
+                                        passive
+                                ),
+                                criteriaBuilder.or(
+                                        predicates.toArray(new Predicate[0])
+                                ),
+                                criteriaBuilder.lessThanOrEqualTo(
+                                        historyRoot.get("occurred"),
+                                        sevenDaysAgo
+                                ),
+                                criteriaBuilder.not(
+                                        criteriaBuilder.exists(
+                                                subquery.
+                                                        select(withdrawalRecordRoot).
+                                                        where(
+                                                                criteriaBuilder.equal(
+                                                                        historyRoot.get("id"), withdrawalRecordRoot.get("id")
+                                                                )
+                                                        )
+                                        )
+                                )
+                        );
+                };
+        }
 
-	/**
-	 * 尚未能提領的紀錄
-	 *
-	 * @param passive
-	 * @return
-	 */
-	public static Specification<History> notAbleTowithdrawal(Lover passive) {
-		return (Root<History> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
-			Root<History> historyRoot = root;
-			Subquery<WithdrawalRecord> subquery = criteriaQuery.subquery(
-				WithdrawalRecord.class
-			);
-			Root<WithdrawalRecord> withdrawalRecordRoot = subquery.from(WithdrawalRecord.class);
-			criteriaQuery.orderBy(criteriaBuilder.desc(
-				historyRoot.get("occurred"))
-			);
+        /**
+         * 尚未能提領的紀錄
+         *
+         * @param passive
+         * @return
+         */
+        public static Specification<History> notAbleTowithdrawal(Lover passive) {
+                return (Root<History> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
+                        Root<History> historyRoot = root;
+                        Subquery<WithdrawalRecord> subquery = criteriaQuery.subquery(
+                                WithdrawalRecord.class
+                        );
+                        Root<WithdrawalRecord> withdrawalRecordRoot = subquery.from(WithdrawalRecord.class);
+                        criteriaQuery.orderBy(criteriaBuilder.desc(
+                                historyRoot.get("occurred"))
+                        );
 
-			List<Predicate> predicates = new ArrayList<>();
+                        List<Predicate> predicates = new ArrayList<>();
 
-			predicates.add(
-				criteriaBuilder.equal(
-					historyRoot.get("behavior"),
-					Behavior.CHE_MA_FEI
-				)
-			);
-			predicates.add(
-				criteriaBuilder.and(
-					criteriaBuilder.equal(
-						historyRoot.get("behavior"),
-						Behavior.LAI_KOU_DIAN
-					),
-					criteriaBuilder.equal(
-						historyRoot.get("points"),
-						-100
-					)
-				)
-			);
+                        predicates.add(
+                                criteriaBuilder.equal(
+                                        historyRoot.get("behavior"),
+                                        Behavior.CHE_MA_FEI
+                                )
+                        );
+                        predicates.add(
+                                criteriaBuilder.and(
+                                        criteriaBuilder.equal(
+                                                historyRoot.get("behavior"),
+                                                Behavior.LAI_KOU_DIAN
+                                        ),
+                                        criteriaBuilder.equal(
+                                                historyRoot.get("points"),
+                                                -100
+                                        )
+                                )
+                        );
 
-			Calendar cal = Calendar.getInstance();
-			cal.getTime();
-			cal.add(Calendar.DAY_OF_MONTH, -7);
-			Date sevenDaysAgo = cal.getTime();
+                        Calendar cal = Calendar.getInstance();
+                        cal.getTime();
+                        cal.add(Calendar.DAY_OF_MONTH, -7);
+                        Date sevenDaysAgo = cal.getTime();
 
-			return criteriaBuilder.and(
-				criteriaBuilder.equal(
-					historyRoot.get("passive"),
-					passive
-				),
-				criteriaBuilder.or(
-					predicates.toArray(new Predicate[0])
-				),
-				criteriaBuilder.greaterThanOrEqualTo(
-					historyRoot.get("occurred"),
-					sevenDaysAgo
-				),
-				criteriaBuilder.not(
-					criteriaBuilder.exists(
-						subquery.
-							select(withdrawalRecordRoot).
-							where(
-								criteriaBuilder.equal(
-									historyRoot.get("id"), withdrawalRecordRoot.get("id")
-								)
-							)
-					)
-				)
-			);
-		};
-	}
+                        return criteriaBuilder.and(
+                                criteriaBuilder.equal(
+                                        historyRoot.get("passive"),
+                                        passive
+                                ),
+                                criteriaBuilder.or(
+                                        predicates.toArray(new Predicate[0])
+                                ),
+                                criteriaBuilder.greaterThanOrEqualTo(
+                                        historyRoot.get("occurred"),
+                                        sevenDaysAgo
+                                ),
+                                criteriaBuilder.not(
+                                        criteriaBuilder.exists(
+                                                subquery.
+                                                        select(withdrawalRecordRoot).
+                                                        where(
+                                                                criteriaBuilder.equal(
+                                                                        historyRoot.get("id"), withdrawalRecordRoot.get("id")
+                                                                )
+                                                        )
+                                        )
+                                )
+                        );
+                };
+        }
 
-	public static Specification<Lover> findByGenderAndNicknameLikeOrLoginAccount(Boolean searchGender, String searchValue) {
-		return (Root<Lover> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
+        public static Specification<Lover> findByGenderAndNicknameLikeOrLoginAccount(Boolean searchGender, String searchValue) {
+                return (Root<Lover> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
+                        criteriaQuery.orderBy(criteriaBuilder.desc(
+                                root.get(Lover_.ID))
+                        );
 
-			List<Predicate> predicates = new ArrayList<>();
+                        List<Predicate> predicates = new ArrayList<>();
 
-			predicates.add(
-				criteriaBuilder.like(
-					root.get(Lover_.LOGIN),
-					String.format("%%%s%%", searchValue)
-				)
-			);
+                        predicates.add(
+                                criteriaBuilder.like(
+                                        root.get(Lover_.LOGIN),
+                                        String.format("%%%s%%", searchValue)
+                                )
+                        );
 
-			predicates.add(
-				criteriaBuilder.like(
-					criteriaBuilder.lower(root.get(Lover_.NICKNAME)),
-					String.format("%%%s%%", searchValue.toLowerCase())
-				)
-			);
+                        predicates.add(
+                                criteriaBuilder.like(
+                                        criteriaBuilder.lower(root.get(Lover_.NICKNAME)),
+                                        String.format("%%%s%%", searchValue.toLowerCase())
+                                )
+                        );
 
-			return criteriaBuilder.and(
-				criteriaBuilder.or(
-					predicates.toArray(new Predicate[0])
-				),
-				criteriaBuilder.equal(
-					root.get(Lover_.GENDER),
-					searchGender
-				)
-			);
-		};
-	}
+                        return criteriaBuilder.and(
+                                criteriaBuilder.or(
+                                        predicates.toArray(new Predicate[0])
+                                ),
+                                criteriaBuilder.equal(
+                                        root.get(Lover_.GENDER),
+                                        searchGender
+                                )
+                        );
+                };
+        }
 }
