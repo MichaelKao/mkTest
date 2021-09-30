@@ -39,14 +39,10 @@ LABEL {
 }
 
 .titleBorder {
-	border-bottom: 1px solid #D63384;
+	border-bottom: 1px solid #D6338477;
 }
 
 .uploadPictureWrap {
 	width: 120px;
 	height: 120px;
-}
-
-.uploadPictureWrap > LABEL > I {
-	font-size: 70px;
 }

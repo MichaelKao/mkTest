@@ -61,10 +61,12 @@
 								<IMG alt="照片{position()}" class="border-radius-md" src="{.}" width="120"/>
 							</DIV>
 						</xsl:for-each>
-						<DIV class="m-1 uploadPictureWrap d-flex align-items-center justify-content-center">
-							<LABEL>
+						<DIV>
+							<LABEL class="m-0">
 								<INPUT accept="image/*" class="sr-only" data-type="picture" name="image" type="file"/>
-								<I class="fal fa-plus-circle text-dark"></I>
+								<DIV class="card card-plain border border-dark m-1 uploadPictureWrap d-flex align-items-center justify-content-center">
+									<I class="fal fa-plus text-dark fontSize35"></I>
+								</DIV>
 							</LABEL>
 						</DIV>
 					</DIV>

@@ -2077,12 +2077,10 @@ public class WelcomeController {
 			);
 		}
 
-		boolean isInTrialPeriod = loverService.isTrial(me);//在体验期内
-
 		/*
 		 短期贵宾但非体验
 		 */
-		if (loverService.isVIP(me) && !isInTrialPeriod) {
+		if (loverService.isVIP(me)) {
 			documentElement.setAttribute(
 				"vip",
 				null
@@ -2103,7 +2101,7 @@ public class WelcomeController {
 		/*
 		 短期体验
 		 */
-		if (isInTrialPeriod) {
+		if (loverService.isTrial(me)) {
 			documentElement.setAttribute(
 				"trial",
 				null
@@ -2188,7 +2186,7 @@ public class WelcomeController {
 			);
 		}
 
-		if (isShortTermVip && !isInTrialPeriod) {
+		if (isShortTermVip) {
 			//短期贵宾但非体验
 			documentElement.setAttribute(
 				"vip",
@@ -2198,13 +2196,13 @@ public class WelcomeController {
 
 		String view = null;
 		if (vipType == 1) {
-			if (isLongTermVip || (isShortTermVip && !isInTrialPeriod)) {
-				//长期贵宾，或，短期贵宾但非体验；则无法升级❗️
+			if (isLongTermVip || isShortTermVip) {
+				//长期贵宾，或，短期贵宾；则无法升级❗️
 				return Servant.redirectToRoot();
 			}
 			view = "upgradeShortTerm";
 		} else if (vipType == 2) {
-			if (loverService.isVVIP(me)) {
+			if (isLongTermVip) {
 				//长期贵宾无法再升级❗
 				return Servant.redirectToRoot();
 			}

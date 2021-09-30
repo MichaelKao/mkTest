@@ -725,14 +725,14 @@ public class LoverService {
 	/**
 	 * 找下线用户；支持分页。
 	 *
-	 * @param me 上线用户
+	 * @param lover 上线用户
 	 * @param PAGE 第几页
 	 * @param SIZE 每页几笔
 	 * @return 杰森格式对象
 	 */
 	@Transactional(readOnly = true)
-	public JSONObject getReferralCodeAndDescendants(final Lover me, final int PAGE, final int SIZE) {
-		List<Descendant> descendants = findDescendants(me);
+	public JSONObject getReferralCodeAndDescendants(final Lover lover, final int PAGE, final int SIZE) {
+		List<Descendant> descendants = findDescendants(lover);
 		final int numberOfElements = descendants.size(),
 			numberOfElementsUpToPage = SIZE * (PAGE + 1);
 
@@ -748,28 +748,32 @@ public class LoverService {
 
 		return new JavaScriptObjectNotation().
 			withResponse(true).
-			withResult(
-				new JSONObject().
-					put(
-						"referralCode",
-						me.getReferralCode()
-					).//上线用户的推荐码
-					put(
-						"descendants",
-						page.getContent()
-					).//下线用户们
-					put(
-						"pagination",
-						new JSONObject().
-							put(
-								"next",
-								page.hasNext() ? page.nextOrLastPageable().getPageNumber() : null
-							).
-							put(
-								"previous",
-								page.hasPrevious() ? page.previousOrFirstPageable().getPageNumber() : null
-							)
-					)//分页元数据
+			withResult(new JSONObject().
+				put("referralCode",
+					lover.getReferralCode()
+				).//上线用户的推荐码
+				put("invitedCode",
+					Objects.nonNull(lover.getReferrer()) ? lover.getReferrer().getReferralCode() : "無"
+				).//上线用户的上线用户
+				put("invitedUserName",
+					Objects.nonNull(lover.getReferrer()) ? lover.getReferrer().getNickname() : null
+				).//上线用户的上线用户id
+				put(
+					"descendants",
+					page.getContent()
+				).//下线用户们
+				put(
+					"pagination",
+					new JSONObject().
+						put(
+							"next",
+							page.hasNext() ? page.nextOrLastPageable().getPageNumber() : null
+						).
+						put(
+							"previous",
+							page.hasPrevious() ? page.previousOrFirstPageable().getPageNumber() : null
+						)
+				)//分页元数据
 			).
 			toJSONObject();
 	}
@@ -1524,7 +1528,8 @@ public class LoverService {
 		Date vipExpiration = lover.getVip();
 		Lover.MaleSpecies maleSpecies = lover.getMaleSpecies();
 		return (Objects.nonNull(vipExpiration) && vipExpiration.after(new Date(System.currentTimeMillis())))
-			&& (Objects.nonNull(maleSpecies) && Objects.equals(maleSpecies, Lover.MaleSpecies.VIP));
+			&& (Objects.nonNull(maleSpecies) && Objects.equals(maleSpecies, Lover.MaleSpecies.VIP))
+			&& historyRepository.countByInitiativeAndBehaviorOrderByOccurredDesc(lover, BEHAVIOR_MONTHLY_CHARGED) > 0;
 	}
 
 	/**

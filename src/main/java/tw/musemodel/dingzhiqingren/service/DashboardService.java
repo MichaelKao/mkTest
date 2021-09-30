@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -539,6 +540,144 @@ public class DashboardService {
 			}
 		}
 		documentElement.appendChild(recordsElement);
+
+		return document;
+	}
+
+	@Transactional(readOnly = true)
+	public Document members(Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		Document document = servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+
+		document.getDocumentElement().setAttribute(
+			"title",
+			messageSource.getMessage(
+				"title.members",
+				null,
+				locale
+			)
+		);
+
+		//所有男士
+		Element maleElement = document.createElement("male");
+		documentElement.appendChild(maleElement);
+		for (Lover lover : loverRepository.findAllByGenderOrderByIdAsc(true, PageRequest.of(0, 15))) {
+			Element userElement = document.createElement("user");
+			maleElement.appendChild(userElement);
+
+			Element nicknameElement = document.createElement("nickname");
+			nicknameElement.setTextContent(lover.getNickname());
+			userElement.appendChild(nicknameElement);
+
+			Element idElement = document.createElement("id");
+			idElement.setTextContent(lover.getId().toString());
+			userElement.appendChild(idElement);
+
+			Element identifierElement = document.createElement("identifier");
+			identifierElement.setTextContent(lover.getIdentifier().toString());
+			userElement.appendChild(identifierElement);
+
+			Element loginElement = document.createElement("login");
+			loginElement.setTextContent(lover.getLogin());
+			userElement.appendChild(loginElement);
+
+			Element registeredElement = document.createElement("registered");
+			registeredElement.setTextContent(
+				LoverService.DATE_FORMATTER.format(
+					servant.
+						toTaipeiZonedDateTime(
+							lover.getRegistered()
+						).
+						withZoneSameInstant(
+							Servant.ASIA_TAIPEI
+						)
+				));
+			userElement.appendChild(registeredElement);
+
+			Date vipExpiration = lover.getVip();
+			if (loverService.isVIP(lover)) {
+				Element vipElement = document.createElement("vip");
+				vipElement.setTextContent(
+					LoverService.DATE_FORMATTER.format(
+						servant.
+							toTaipeiZonedDateTime(
+								vipExpiration
+							).
+							withZoneSameInstant(
+								Servant.ASIA_TAIPEI
+							)
+					)
+				);
+				userElement.appendChild(vipElement);
+			}
+			if (loverService.isVVIP(lover)) {
+				Element vvipElement = document.createElement("vvip");
+				vvipElement.setTextContent(
+					LoverService.DATE_FORMATTER.format(
+						servant.
+							toTaipeiZonedDateTime(
+								vipExpiration
+							).
+							withZoneSameInstant(
+								Servant.ASIA_TAIPEI
+							)
+					)
+				);
+				userElement.appendChild(vvipElement);
+			}
+			if (loverService.isTrial(lover)) {
+				Element trialElement = document.createElement("trial");
+				trialElement.setTextContent(
+					LoverService.DATE_FORMATTER.format(
+						servant.
+							toTaipeiZonedDateTime(
+								vipExpiration
+							).
+							withZoneSameInstant(
+								Servant.ASIA_TAIPEI
+							)
+					)
+				);
+				userElement.appendChild(trialElement);
+			}
+		}
+
+		//所有甜心
+		Element femaleElement = document.createElement("female");
+		documentElement.appendChild(femaleElement);
+		for (Lover lover : loverRepository.findAllByGenderOrderByIdAsc(false, PageRequest.of(0, 15))) {
+			Element userElement = document.createElement("user");
+			femaleElement.appendChild(userElement);
+
+			Element nicknameElement = document.createElement("nickname");
+			nicknameElement.setTextContent(lover.getNickname());
+			userElement.appendChild(nicknameElement);
+
+			Element idElement = document.createElement("id");
+			idElement.setTextContent(lover.getId().toString());
+			userElement.appendChild(idElement);
+
+			Element identifierElement = document.createElement("identifier");
+			identifierElement.setTextContent(lover.getIdentifier().toString());
+			userElement.appendChild(identifierElement);
+
+			Element loginElement = document.createElement("login");
+			loginElement.setTextContent(lover.getLogin());
+			userElement.appendChild(loginElement);
+
+			Element registeredElement = document.createElement("registered");
+			registeredElement.setTextContent(
+				LoverService.DATE_FORMATTER.format(
+					servant.
+						toTaipeiZonedDateTime(
+							lover.getRegistered()
+						).
+						withZoneSameInstant(
+							Servant.ASIA_TAIPEI
+						)
+				));
+			userElement.appendChild(registeredElement);
+		}
 
 		return document;
 	}

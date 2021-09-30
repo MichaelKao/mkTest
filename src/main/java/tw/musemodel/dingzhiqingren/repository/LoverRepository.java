@@ -3,6 +3,8 @@ package tw.musemodel.dingzhiqingren.repository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -44,4 +46,6 @@ public interface LoverRepository extends JpaRepository<Lover, Integer>, JpaSpeci
 	public List<Lover> findByRelief(Boolean relief);
 
 	public Lover findOneByIdentifier(UUID identifier);
+
+	public Page<Lover> findAllByGenderOrderByIdAsc(Boolean gender, Pageable pageable);
 }

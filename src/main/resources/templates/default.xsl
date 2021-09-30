@@ -119,8 +119,8 @@
 								</LI>
 								<xsl:if test="@almighty or @finance">
 									<LI class="nav-item">
-										<A class="nav-link nav-link-icon d-flex align-items-center text-primary" href="/dashboard/certification.asp">
-											<I class="fad fa-id-card-alt fontSize22 width30whenMobile" aria-hidden="true"></I>
+										<A class="nav-link nav-link-icon d-flex align-items-center text-primary" href="/dashboard/members.asp">
+											<I class="fad fa-id-card-alt fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">YoungMe 後台</SPAN>
 										</A>
 									</LI>
@@ -314,7 +314,7 @@
 	</xsl:template>
 
 	<xsl:template name="dashSideNavBar">
-		<ASIDE class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 " id="sidenav-main">
+		<ASIDE class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-white" id="sidenav-main">
 			<DIV class="sidenav-header">
 				<I class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" id="iconSidenav"></I>
 				<DIV class="navbar-brand m-0">
@@ -325,6 +325,14 @@
 			<HR class="horizontal dark mt-0"/>
 			<DIV class="collapse navbar-collapse w-auto max-height-vh-100 h-100" id="sidenav-collapse-main">
 				<UL class="navbar-nav">
+					<LI class="nav-item">
+						<A class="nav-link" href="/dashboard/members.asp">
+							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
+								<I class="fal fa-users-cog text-dark text-lg"></I>
+							</DIV>
+							<SPAN class="nav-link-text ms-1">會員管理</SPAN>
+						</A>
+					</LI>
 					<LI class="nav-item">
 						<A class="nav-link" href="/dashboard/certification.asp">
 							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
@@ -378,12 +386,12 @@
 				<DIV class="collapse navbar-collapse" id="navbar">
 					<UL class="navbar-nav justify-content-end ms-auto">
 						<LI class="nav-item d-flex align-items-center">
-							<A class="btn btn-outline-primary btn-round p-1 mb-0" href="/">
+							<A class="btn btn-outline-primary btn-round px-2 py-1 mb-0" href="/">
 								<I class="fad fa-home-heart text-lg"></I>
 								<SPAN>前台</SPAN>
 							</A>
 						</LI>
-						<LI class="nav-item d-xl-none ps-3 d-flex align-items-center">
+						<LI class="nav-item d-xl-none ps-2 d-flex align-items-center">
 							<A href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
 								<DIV class="sidenav-toggler-inner">
 									<I class="sidenav-toggler-line"></I>

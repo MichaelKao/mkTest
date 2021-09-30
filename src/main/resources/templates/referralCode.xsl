@@ -24,7 +24,7 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
-			<STYLE>BODY{background: #F3F3F3 !important;} .resultIcon{font-size: 60px;}</STYLE>
+			<STYLE>BODY{background: #F3F3F3 !important;}</STYLE>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>

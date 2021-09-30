@@ -934,7 +934,7 @@ public class HistoryService {
 		if (Objects.nonNull(historyRepository.sumByPassiveAndBehaviorHearts(lover, BEHAVIOR_RETURN_FARE))) {
 			hearts += historyRepository.sumByPassiveAndBehaviorHearts(lover, BEHAVIOR_RETURN_FARE);
 		}
-		return hearts;
+		return Objects.nonNull(hearts) ? hearts : 0;
 	}
 
 	/**

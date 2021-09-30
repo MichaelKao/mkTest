@@ -73,3 +73,12 @@ INPUT, TEXTAREA {
 	}
 }
 
+.modal-content {
+	border: 0;
+	opacity: 0.9;
+}
+
+.right-0 {
+	right: 0;
+}
+

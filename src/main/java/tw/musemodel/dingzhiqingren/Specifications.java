@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.entity.Lover_;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 
 /**
@@ -199,6 +200,37 @@ public class Specifications {
 								)
 							)
 					)
+				)
+			);
+		};
+	}
+
+	public static Specification<Lover> findByGenderAndNicknameLikeOrLoginAccount(Boolean searchGender, String searchValue) {
+		return (Root<Lover> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
+
+			List<Predicate> predicates = new ArrayList<>();
+
+			predicates.add(
+				criteriaBuilder.like(
+					root.get(Lover_.LOGIN),
+					String.format("%%%s%%", searchValue)
+				)
+			);
+
+			predicates.add(
+				criteriaBuilder.like(
+					criteriaBuilder.lower(root.get(Lover_.NICKNAME)),
+					String.format("%%%s%%", searchValue.toLowerCase())
+				)
+			);
+
+			return criteriaBuilder.and(
+				criteriaBuilder.or(
+					predicates.toArray(new Predicate[0])
+				),
+				criteriaBuilder.equal(
+					root.get(Lover_.GENDER),
+					searchGender
 				)
 			);
 		};

@@ -3,6 +3,7 @@ package tw.musemodel.dingzhiqingren.controller;
 import com.beust.jcommander.internal.Lists;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -13,9 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -37,8 +35,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import tw.musemodel.dingzhiqingren.Specifications;
 import tw.musemodel.dingzhiqingren.WebSocketServer;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.Lover;
@@ -46,6 +44,7 @@ import tw.musemodel.dingzhiqingren.entity.StopRecurringPaymentApplication;
 import tw.musemodel.dingzhiqingren.entity.TrialCode;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
+import tw.musemodel.dingzhiqingren.model.Member;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRepository;
@@ -592,7 +591,7 @@ public class DashboardController {
 	}
 
 	/**
-	 * 手动升级贵宾。
+	 * 會員們
 	 *
 	 * @author r@musemodel.tw
 	 * @param p 第几页
@@ -604,72 +603,86 @@ public class DashboardController {
 	 * @throws TransformerConfigurationException
 	 * @throws TransformerException
 	 */
-	@GetMapping(path = "/upgradeManually.xml")
+	@GetMapping(path = "/members.asp")
 	@ResponseBody
 	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
-	void upgradeManually(@RequestParam(defaultValue = "0") int p, @RequestParam(defaultValue = "10") int s, HttpServletResponse response) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
-		Document document = servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
+	ModelAndView members(Locale locale) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
 
-		Element usersElement = document.createElement("users");
-		documentElement.appendChild(usersElement);
+		Document document = dashboardService.members(locale);
 
-		for (Lover lover : loverRepository.findAll(PageRequest.of(p, s))) {
-			Element userElement = document.createElement("user");
+		ModelAndView modelAndView = new ModelAndView("dashboard/members");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
 
-			Element nicknameElement = document.createElement("nickname");
-			nicknameElement.setTextContent(lover.getNickname());
-			userElement.appendChild(nicknameElement);
+	/**
+	 * 查看會員的邀請碼、下線
+	 *
+	 * @param p
+	 * @param s
+	 * @param lover
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/referralCode.json")
+	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	String referralCode(@RequestParam(defaultValue = "0") final int p, @RequestParam(defaultValue = "5") final int s,
+		@RequestParam Lover lover, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
 
-			Element loginElement = document.createElement("login");
-			loginElement.setTextContent(lover.getLogin());
-			userElement.appendChild(loginElement);
+		return loverService.
+			getReferralCodeAndDescendants(lover, p, s).
+			toString();
+	}
 
-			Date vipExpiration = lover.getVip();
-			if (loverService.isVIP(lover)) {
-				Element vipElement = document.createElement("vip");
-				vipElement.setTextContent(
-					LoverService.DATE_TIME_FORMATTER.format(
-						servant.
-							toTaipeiZonedDateTime(
-								vipExpiration
-							).
-							withZoneSameInstant(
-								Servant.ASIA_TAIPEI
-							)
-					)
-				);
-				userElement.appendChild(vipElement);
-			}
-			if (loverService.isVVIP(lover)) {
-				Element vvipElement = document.createElement("vvip");
-				vvipElement.setTextContent(
-					LoverService.DATE_TIME_FORMATTER.format(
-						servant.
-							toTaipeiZonedDateTime(
-								vipExpiration
-							).
-							withZoneSameInstant(
-								Servant.ASIA_TAIPEI
-							)
-					)
-				);
-			}
+	@PostMapping(path = "/searchMember.json")
+	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	String searchMember(@RequestParam Boolean searchGender, @RequestParam String searchValue, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
 
-			Element idElement = document.createElement("id");
-			idElement.setTextContent(lover.getId().toString());
-			userElement.appendChild(idElement);
+		List<Lover> loverList = loverRepository.findAll(
+			Specifications.findByGenderAndNicknameLikeOrLoginAccount(
+				searchGender,
+				searchValue
+			)
+		);
 
-			usersElement.appendChild(userElement);
+		List<Member> memberList = new ArrayList<Member>();
+
+		for (Lover lover : loverList) {
+			Member member = new Member(
+				lover.getId(),
+				lover.getIdentifier(),
+				lover.getNickname(),
+				lover.getLogin(),
+				lover.getVip(),
+				LoverService.DATE_FORMATTER.format(
+					servant.
+						toTaipeiZonedDateTime(
+							lover.getRegistered()
+						).
+						withZoneSameInstant(
+							Servant.ASIA_TAIPEI
+						)
+				)
+			);
+			memberList.add(member);
 		}
 
-		TransformerFactory.
-			newDefaultInstance().
-			newTransformer().
-			transform(
-				new DOMSource(document),
-				new StreamResult(response.getOutputStream())
-			);
+		return memberList.toString();
 	}
 
 	/**
