@@ -3650,17 +3650,36 @@ public class LoverService {
 	 * @return
 	 */
 	public int unreadMessages(Lover mofo) {
-		int notSeenCount = 0;
+		int unreadCount = 0;
 		List<History> conversations = historyService.latestConversations(mofo);
+		Collection<Behavior> behaviors = behaviorOfConversation(mofo);
 
 		for (History history : conversations) {
-			if (Objects.equals(mofo, history.getInitiative()) && historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), mofo, behaviorOfConversation(mofo)) > 0) {
-				notSeenCount += historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), mofo, behaviorOfConversation(mofo));
-			} else if (Objects.equals(mofo, history.getPassive()) && historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), mofo, behaviorOfConversation(mofo)) > 0) {
-				notSeenCount += historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), mofo, behaviorOfConversation(mofo));
+			boolean isInitiative = Objects.equals(
+				mofo,
+				history.getInitiative()
+			), isPassive = Objects.equals(
+				mofo,
+				history.getPassive()
+			);
+			long unreadPassiveMessagesCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+				history.getInitiative(),
+				mofo,
+				behaviors
+			), unreadInitiativeMessagesCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+				history.getInitiative(),
+				mofo,
+				behaviors
+			);
+
+			if (isInitiative && unreadPassiveMessagesCount > 0) {
+				unreadCount += unreadPassiveMessagesCount;
+			}
+			if (isPassive && unreadInitiativeMessagesCount > 0) {
+				unreadCount += unreadInitiativeMessagesCount;
 			}
 		}
-		return notSeenCount;
+		return unreadCount;
 	}
 
 	/**
