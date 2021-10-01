@@ -3,10 +3,13 @@ package tw.musemodel.dingzhiqingren.service;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +22,19 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Lover.MaleSpecies;
+import tw.musemodel.dingzhiqingren.entity.Privilege;
+import tw.musemodel.dingzhiqingren.entity.PrivilegeKey;
+import tw.musemodel.dingzhiqingren.entity.Role;
 import tw.musemodel.dingzhiqingren.entity.StopRecurringPaymentApplication;
 import tw.musemodel.dingzhiqingren.entity.TrialCode;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalInfo;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
 import tw.musemodel.dingzhiqingren.model.EachWithdrawal;
+import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
+import tw.musemodel.dingzhiqingren.repository.PrivilegeRepository;
+import tw.musemodel.dingzhiqingren.repository.RoleRepository;
 import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRepository;
 import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
@@ -64,6 +73,12 @@ public class DashboardService {
 
         @Autowired
         private WithdrawalRecordRepository withdrawalRecordRepository;
+
+        @Autowired
+        private RoleRepository roleRepository;
+
+        @Autowired
+        private PrivilegeRepository privilegeRepository;
 
         /**
          * 构建根元素。
@@ -682,6 +697,20 @@ public class DashboardService {
                 documentElement.setAttribute("month", month < 10 ? "0" + month : Integer.toString(month));
                 documentElement.setAttribute("date", date < 10 ? "0" + date : Integer.toString(date));
 
+                // 權限管理
+                for (Role role : roleRepository.findAll()) {
+                        Element roleElement = document.createElement("role");
+                        roleElement.setAttribute("roleID", role.getId().toString());
+                        roleElement.setTextContent(
+                                messageSource.getMessage(
+                                        role.getTextualRepresentation(),
+                                        null,
+                                        locale
+                                )
+                        );
+                        documentElement.appendChild(roleElement);
+                }
+
                 //所有男士
                 Element maleElement = document.createElement("male");
                 documentElement.appendChild(maleElement);
@@ -804,5 +833,53 @@ public class DashboardService {
                 }
 
                 return document;
+        }
+
+        @Transactional
+        public JSONObject updatePrivilege(Role role, Lover someone) {
+                Set<Short> rolesID = new HashSet<>();
+                privilegeRepository.findByLover(someone).forEach(privilege -> {
+                        rolesID.add(privilege.getRole().getId());
+                });
+
+                Privilege privilege;
+                if (rolesID.contains(role.getId())) {
+                        /*
+			 已存在则删除
+                         */
+                        privilege = privilegeRepository.
+                                findOneByLoverAndRole(someone, role).
+                                orElseThrow();
+                        privilegeRepository.delete(privilege);
+                } else {
+                        /*
+			 不存在则创建
+                         */
+                        PrivilegeKey id = new PrivilegeKey();
+                        id.setLoverId(someone.getId());
+                        id.setRoleId(role.getId());
+
+                        privilege = new Privilege();
+                        privilege.setId(id);
+                        privilege.setLover(someone);
+                        privilege.setRole(role);
+                        privilegeRepository.save(privilege);
+                }
+                privilegeRepository.flush();
+
+                return new JavaScriptObjectNotation().
+                        withResponse(true).
+                        toJSONObject();
+        }
+
+        public JSONObject privilege(Lover someone) {
+                Set<Short> rolesID = new HashSet<>();
+                privilegeRepository.findByLover(someone).forEach(privilege -> {
+                        rolesID.add(privilege.getRole().getId());
+                });
+                return new JavaScriptObjectNotation().
+                        withResponse(true).
+                        withResult(rolesID).
+                        toJSONObject();
         }
 }

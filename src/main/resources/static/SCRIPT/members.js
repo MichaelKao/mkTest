@@ -130,7 +130,7 @@ $(document).ready(function () {
                         return false;
                 });
         }
-        
+
         let searchValue;
         let searchGender;
 
@@ -398,4 +398,64 @@ $(document).ready(function () {
                         });
                 }
         }
+
+        $('.privilegeBtn').click(function () {
+                var btn = this;
+                lover = $(btn).data('id');
+                $.post(
+                        '/dashboard/privilege.json',
+                        {
+                                p: 0,
+                                s: 5,
+                                lover: lover
+                        },
+                        function (data) {
+                                if (data.response) {
+                                        data.result.forEach(function (item) {
+                                                $('INPUT[name="role"]').each(function () {
+                                                        var role = this;
+                                                        if ($(role).val() == item) {
+                                                                console.log(item)
+                                                                $(role).prop('checked', true);
+                                                        }
+                                                });
+                                        });
+                                } else {
+                                        $('.toast-body').html('error');
+                                        $('.toast').toast('show');
+                                }
+                        },
+                        'json'
+                        );
+                return false;
+        });
+
+        $('#privilege').on('hidden.bs.modal', function () {
+                $('INPUT[name="role"]').each(function () {
+                        var role = this;
+                        if ($(role).prop('checked')) {
+                                $(role).prop('checked', false);
+                        }
+                });
+        });
+
+        $('INPUT[name="role"]').change(function () {
+                let input = this;
+                $.post(
+                        '/dashboard/updatePrivilege.json',
+                        {
+                                role: $(this).val(),
+                                lover: lover
+                        },
+                        function (data) {
+                                if (data.response) {
+                                } else {
+                                        $('.toast-body').html(data.reason);
+                                        $('.toast').toast('show');
+                                }
+                        },
+                        'json'
+                        );
+                return false;
+        });
 });

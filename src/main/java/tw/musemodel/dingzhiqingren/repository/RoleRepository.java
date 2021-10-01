@@ -12,5 +12,5 @@ import tw.musemodel.dingzhiqingren.entity.Role;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Short> {
 
-	public Role findOneByTextualRepresentation(String textualRepresentation);
+        public Role findOneByTextualRepresentation(String textualRepresentation);
 }

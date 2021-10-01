@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ import tw.musemodel.dingzhiqingren.Specifications;
 import tw.musemodel.dingzhiqingren.WebSocketServer;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.entity.Role;
 import tw.musemodel.dingzhiqingren.entity.StopRecurringPaymentApplication;
 import tw.musemodel.dingzhiqingren.entity.TrialCode;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
@@ -847,5 +849,62 @@ public class DashboardController {
                         withReason("已撥款成功").
                         withResponse(true).
                         toJSONObject().toString();
+        }
+
+        @PostMapping(path = "/updatePrivilege.json")
+        @ResponseBody
+        @Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+        String updatePrivilege(@RequestParam Role role, @RequestParam Lover lover, Authentication authentication, Locale locale) {
+                if (servant.isNull(authentication)) {
+                        return servant.mustBeAuthenticated(locale);
+                }
+
+                Lover me = loverService.loadByUsername(
+                        authentication.getName()
+                );
+
+                JSONObject jsonObject;
+                jsonObject = dashboardService.updatePrivilege(role, lover);
+//                try {
+//                        jsonObject = dashboardService.updatePrivilege(role, lover);
+//                } catch (Exception exception) {
+//                        jsonObject = new JavaScriptObjectNotation().
+//                                withReason(messageSource.getMessage(
+//                                        exception.getMessage(),
+//                                        null,
+//                                        locale
+//                                )).
+//                                withResponse(false).
+//                                toJSONObject();
+//                }
+                return jsonObject.toString();
+        }
+
+        @PostMapping(path = "/privilege.json")
+        @ResponseBody
+        @Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+        String privilege(@RequestParam Lover lover, Authentication authentication, Locale locale) {
+                if (servant.isNull(authentication)) {
+                        return servant.mustBeAuthenticated(locale);
+                }
+
+                Lover me = loverService.loadByUsername(
+                        authentication.getName()
+                );
+
+                JSONObject jsonObject;
+                try {
+                        jsonObject = dashboardService.privilege(lover);
+                } catch (Exception exception) {
+                        jsonObject = new JavaScriptObjectNotation().
+                                withReason(messageSource.getMessage(
+                                        exception.getMessage(),
+                                        null,
+                                        locale
+                                )).
+                                withResponse(false).
+                                toJSONObject();
+                }
+                return jsonObject.toString();
         }
 }

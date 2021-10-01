@@ -189,57 +189,55 @@
                                                 </DIV>
                                         </DIV>
                                 </xsl:if>
-                                <div class="row mx-auto justify-content-center">
-                                        <div class="col-6 col-md-5 col-xl-4 mb-3 pe-1 ps-0" style="">
-                                                <div class="p-2 card" style="border-radius: 10px;height: 100%;/* background: #E176AB; *//* border: 1px #d63384 solid; */">
-                                                        <div class="text-center border-radius-xl py-2">
-                                                                <span class="text-primary text-lg font-weight-bold my-2">meKing</span>
-                                                                <span class="text-yellow fontSize22 ms-1">
-                                                                        <i class="fas fa-plus" aria-hidden="true"></i>
-                                                                </span>
-                                                                <div class="text-lg text-bold text-center my-1">
-                                                                        <div class="text-sm">
-                                                                                <div class="fontSize35">1</div>
-                                                                                <div>個月</div>
-                                                                        </div>
-                                                                </div>
-                                                                <div class="text-lg text-bold text-center my-1">
-                                                                        <div class="text-lg">$1688/月
-                                                                        </div>
-                                                                        <div class="text-xs">單次付款</div>
-                                                                        <div class="text-xs">不可取消</div>
-                                                                </div>
-                                                        </div>
+                                <DIV class="row mx-auto justify-content-center">
+                                        <DIV class="col-6 col-md-5 col-xl-4 mb-3 pe-1 ps-0">
+                                                <DIV class="p-2 card h-100">
+                                                        <DIV class="text-center border-radius-xl py-2">
+                                                                <SPAN class="text-primary text-lg font-weight-bold my-2">meKing</SPAN>
+                                                                <SPAN class="text-yellow fontSize22 ms-1">
+                                                                        <I class="fas fa-plus"></I>
+                                                                </SPAN>
+                                                                <DIV class="text-lg text-bold text-center my-1">
+                                                                        <DIV class="text-sm">
+                                                                                <DIV class="fontSize35">1</DIV>
+                                                                                <DIV>個月</DIV>
+                                                                        </DIV>
+                                                                </DIV>
+                                                                <DIV class="text-lg text-bold text-center my-1">
+                                                                        <DIV class="text-lg">$1688/月</DIV>
+                                                                        <DIV class="text-xs">單次付款</DIV>
+                                                                        <DIV class="text-xs">不可取消</DIV>
+                                                                </DIV>
+                                                        </DIV>
                                                         <xsl:if test="not(@vvip) and not(@vip)">
                                                                 <A class="btn btn-primary btn-round text-center py-2 col-11 col-md-8 mx-auto" href="/upgrade/1.asp" onclick="fbq('track', 'InitiateCheckout');">升級</A>
                                                         </xsl:if>
-                                                </div>
-                                        </div>
-                                        <div class="col-6 col-md-5 col-xl-4 mb-3 ps-1 pe-0" style="">
-                                                <div class="p-2 text-center card" style="/* border: 1px #d63384 solid; */border-radius: 10px;height: 100%;">
-                                                        <div class="text-center border-radius-xl py-2">
-                                                                <span class="text-primary text-lg font-weight-bold my-2">meKing</span>
-                                                                <span class="text-yellow text-bolder fontSize22 ms-1">PRO</span>
-                                                                <div class="text-lg text-bold text-center my-1">
-                                                                        <div class="text-sm">
-                                                                                <div class="fontSize35">12</div>
-                                                                                <div>個月</div>
-                                                                        </div>
-                                                                </div>
-                                                                <div class="text-lg text-bold text-center my-1">
-                                                                        <div class="text-lg">$1288/月
-                                                                        </div>
-                                                                        <div class="text-xs">定期定額扣款12次</div>
-                                                                        <div class="text-xs">可於期限內取消</div>
-                                                                </div>
-                                                        </div>
+                                                </DIV>
+                                        </DIV>
+                                        <DIV class="col-6 col-md-5 col-xl-4 mb-3 ps-1 pe-0" style="">
+                                                <DIV class="p-2 card h-100">
+                                                        <DIV class="text-center border-radius-xl py-2">
+                                                                <SPAN class="text-primary text-lg font-weight-bold my-2">meKing</SPAN>
+                                                                <SPAN class="text-yellow text-bolder fontSize22 ms-1">PRO</SPAN>
+                                                                <DIV class="text-lg text-bold text-center my-1">
+                                                                        <DIV class="text-sm">
+                                                                                <DIV class="fontSize35">12</DIV>
+                                                                                <DIV>個月</DIV>
+                                                                        </DIV>
+                                                                </DIV>
+                                                                <DIV class="text-lg text-bold text-center my-1">
+                                                                        <DIV class="text-lg">$1288/月</DIV>
+                                                                        <DIV class="text-xs">定期定額扣款12次</DIV>
+                                                                        <DIV class="text-xs">可於期限內取消</DIV>
+                                                                </DIV>
+                                                        </DIV>
                                                         <xsl:if test="not(@vvip)">
                                                                 <A class="btn btn-primary btn-round text-center py-2 col-11 col-md-8 mx-auto" href="/upgrade/2.asp" onclick="fbq('track', 'InitiateCheckout');">升級</A>
                                                         </xsl:if>
-                                                </div>
-                                        </div>
-                                        <div class=""></div>
-                                </div>
+                                                </DIV>
+                                        </DIV>
+                                        <DIV class=""></DIV>
+                                </DIV>
                                 <DIV class="text-center card border-radius-xl text-xs mx-auto col-12 col-md-10 col-xl-8 p-1">
                                         <DIV class="text-primary">本筆款項將在信用卡帳單</DIV>
                                         <DIV class="text-primary">僅會顯示為 「遊戲點數購買」</DIV>

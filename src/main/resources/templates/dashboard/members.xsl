@@ -37,7 +37,7 @@
                                                                 <DIV class="modal-body p-2">
                                                                         <DIV class="d-flex">
                                                                                 <BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
-                                                                                        <I class="fal fa-times" aria-hidden="true"></I>
+                                                                                        <I class="fal fa-times"></I>
                                                                                 </BUTTON>
                                                                         </DIV>
                                                                         <DIV class="my-4 text-center">
@@ -49,6 +49,34 @@
                                                                                         <DIV class="descendants"></DIV>
                                                                                         <DIV class="pagination text-center text-sm text-primary cursor-pointer"></DIV>
                                                                                 </DIV>
+                                                                        </DIV>
+                                                                        <DIV class="text-center">
+                                                                                <BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+                                                                        </DIV>
+                                                                </DIV>
+                                                        </DIV>
+                                                </DIV>
+                                        </DIV>
+                                        <DIV class="modal fade" id="privilege" style="display: none;">
+                                                <DIV class="modal-dialog modal-dialog-centered">
+                                                        <DIV class="modal-content shadow">
+                                                                <DIV class="modal-body p-2">
+                                                                        <DIV class="d-flex">
+                                                                                <BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+                                                                                        <I class="fal fa-times"></I>
+                                                                                </BUTTON>
+                                                                        </DIV>
+                                                                        <DIV class="my-4 text-center">
+                                                                                <DIV class="text-dark text-bold myReferralCode">會員權限</DIV>
+                                                                                <HR class="w-80 mx-auto"/>
+                                                                                <xsl:for-each select="role">
+                                                                                        <DIV class="form-check col-3 mx-auto">
+                                                                                                <INPUT class="form-check-input" id="role{@roleID}" name="role" type="checkbox" value="{@roleID}"/>
+                                                                                                <LABEL class="custom-control-label" for="role{@roleID}">
+                                                                                                        <xsl:value-of select="."/>
+                                                                                                </LABEL>
+                                                                                        </DIV>
+                                                                                </xsl:for-each>
                                                                         </DIV>
                                                                         <DIV class="text-center">
                                                                                 <BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
@@ -87,7 +115,8 @@
                                                                         <DIV class="col-3 text-dark d-flex justify-content-start">暱稱/帳號</DIV>
                                                                         <DIV class="col-3 text-dark">註冊日期</DIV>
                                                                         <DIV class="col-3 text-dark">VIP</DIV>
-                                                                        <DIV class="col-3 text-dark">邀請碼</DIV>
+                                                                        <DIV class="col-2 text-dark p-0">邀請碼</DIV>
+                                                                        <DIV class="col-1 text-dark p-0">權限</DIV>
                                                                 </DIV>
                                                                 <DIV class="text-xs maleMembers">
                                                                         <xsl:for-each select="male/user">
@@ -141,9 +170,14 @@
                                                                                                         </xsl:when>
                                                                                                 </xsl:choose>
                                                                                         </DIV>
-                                                                                        <DIV class="col-3">
-                                                                                                <BUTTON class="btn btn-link m-0 px-2 py-1 referralCodeBtn" data-bs-target="#referralCode" data-bs-toggle="modal" data-id="{id}" type="button">
+                                                                                        <DIV class="col-2 p-0">
+                                                                                                <BUTTON class="btn btn-link m-0 px-0 py-1 referralCodeBtn" data-bs-target="#referralCode" data-bs-toggle="modal" data-id="{id}" type="button">
                                                                                                         <I class="fal fa-users-crown fontSize22"></I>
+                                                                                                </BUTTON>
+                                                                                        </DIV>
+                                                                                        <DIV class="col-1 p-0">
+                                                                                                <BUTTON class="btn btn-link m-0 px-0 py-1 privilegeBtn" data-bs-target="#privilege" data-bs-toggle="modal" data-id="{id}" type="button">
+                                                                                                        <I class="fal fa-user-shield fontSize22"></I>
                                                                                                 </BUTTON>
                                                                                         </DIV>
                                                                                 </DIV>
@@ -163,9 +197,10 @@
                                                         </DIV>
                                                         <DIV class="col-11 mx-auto">
                                                                 <DIV class="row text-center mt-3 mb-1 text-xs">
-                                                                        <DIV class="col-4 text-dark d-flex justify-content-start">暱稱/帳號</DIV>
-                                                                        <DIV class="col-4 text-dark">註冊日期</DIV>
-                                                                        <DIV class="col-4 text-dark">邀請碼</DIV>
+                                                                        <DIV class="col-3 text-dark d-flex justify-content-start">暱稱/帳號</DIV>
+                                                                        <DIV class="col-3 text-dark">註冊日期</DIV>
+                                                                        <DIV class="col-3 text-dark">邀請碼</DIV>
+                                                                        <DIV class="col-3 text-dark">權限</DIV>
                                                                 </DIV>
                                                                 <DIV class="text-xs femaleMembers">
                                                                         <xsl:for-each select="female/user">
@@ -173,7 +208,7 @@
                                                                                         <xsl:if test="position() mod 2 = 1">
                                                                                                 <xsl:attribute name="class">row text-center align-items-center bg-light border-radius-xl py-2</xsl:attribute>
                                                                                         </xsl:if>
-                                                                                        <DIV class="col-4 d-flex justify-content-start">
+                                                                                        <DIV class="col-3 d-flex justify-content-start">
                                                                                                 <A class="d-flex flex-column align-items-start" href="/profile/{identifier}">
                                                                                                         <SPAN class="text-primary">
                                                                                                                 <xsl:value-of select="nickname"/>
@@ -183,14 +218,19 @@
                                                                                                         </DIV>
                                                                                                 </A>
                                                                                         </DIV>
-                                                                                        <DIV class="col-4">
+                                                                                        <DIV class="col-3">
                                                                                                 <SPAN>
                                                                                                         <xsl:value-of select="registered"/>
                                                                                                 </SPAN>
                                                                                         </DIV>
-                                                                                        <DIV class="col-4">
+                                                                                        <DIV class="col-3">
                                                                                                 <BUTTON class="btn btn-link m-0 px-2 py-1 referralCodeBtn" data-bs-target="#referralCode" data-bs-toggle="modal" data-id="{id}" type="button">
                                                                                                         <I class="fal fa-users-crown fontSize22"></I>
+                                                                                                </BUTTON>
+                                                                                        </DIV>
+                                                                                        <DIV class="col-3">
+                                                                                                <BUTTON class="btn btn-link m-0 px-0 py-1 privilegeBtn" data-bs-target="#privilege" data-bs-toggle="modal" data-id="{id}" type="button">
+                                                                                                        <I class="fal fa-user-shield fontSize22"></I>
                                                                                                 </BUTTON>
                                                                                         </DIV>
                                                                                 </DIV>
