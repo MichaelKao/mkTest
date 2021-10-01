@@ -48,7 +48,7 @@
                                                 </SPAN>
                                                 <SPAN class="ms-1">新進會員</SPAN>
                                         </DIV>
-                                        <DIV class="col-11 mx-auto">
+                                        <DIV class="col-11 col-md-7 mx-auto">
                                                 <DIV class="row text-center mt-3 mb-1 text-xs">
                                                         <DIV class="col-4 text-dark d-flex justify-content-start">暱稱/帳號</DIV>
                                                         <DIV class="col-4 text-dark">性別</DIV>

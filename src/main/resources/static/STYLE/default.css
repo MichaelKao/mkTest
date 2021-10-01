@@ -1,84 +1,88 @@
+* {
+        box-sizing: border-box;
+}
+
 HTML, BODY{
-	-webkit-text-size-adjust: none;
-	-moz-text-size-adjust: none;
-	-ms-text-size-adjust: none;
-	text-size-adjust: none;
+        -webkit-text-size-adjust: none;
+        -moz-text-size-adjust: none;
+        -ms-text-size-adjust: none;
+        text-size-adjust: none;
 }
 
 INPUT, TEXTAREA {
-	font-size: initial;
+        font-size: initial;
 }
 
 .announcement, .inbox {
-	padding: 0 5px;
-	vertical-align: sub;
+        padding: 0 5px;
+        vertical-align: sub;
 }
 
 .fontSize22 {
-	font-size: 22px;
+        font-size: 22px;
 }
 
 .fontSize25 {
-	font-size: 25px;
+        font-size: 25px;
 }
 
 .fontSize30 {
-	font-size: 30px;
+        font-size: 30px;
 }
 
 .fontSize35 {
-	font-size: 35px;
+        font-size: 35px;
 }
 
 .fontSize50 {
-	font-size: 50px;
+        font-size: 50px;
 }
 
 .width30 {
-	width: 30px;
+        width: 30px;
 }
 
 @media (max-width: 991.98px){
-	.width30whenMobile {
-		width: 30px;
-	}
+        .width30whenMobile {
+                width: 30px;
+        }
 }
 
 .text-yellow {
-	color: #FF8C00;
+        color: #FF8C00;
 }
 
 .text-shadow {
-	text-shadow: white 0 0px 1px, black 1px 0px 2px, white -1px 0px 2px;
+        text-shadow: white 0 0px 1px, black 1px 0px 2px, white -1px 0px 2px;
 }
 
 .customerFloatBtn{
-	width: 50px;
-	height: 50px;
-	bottom: 94px;
-	right: 8px;
-	border-radius:50px;
-	box-shadow: 2px 2px 3px #999;
-	z-index: 9999;
+        width: 50px;
+        height: 50px;
+        bottom: 94px;
+        right: 8px;
+        border-radius:50px;
+        box-shadow: 2px 2px 3px #999;
+        z-index: 9999;
 }
 
 @media (max-width: 991.98px){
-	.dropdown.nav-item .dropdown-menu-animation {
-		transition: all .35s ease-in;
-	}
+        .dropdown.nav-item .dropdown-menu-animation {
+                transition: all .35s ease-in;
+        }
 
-	.dropdown.nav-item .dropdown-menu-animation.show {
-		height: auto;
-		overflow: hidden;
-	}
+        .dropdown.nav-item .dropdown-menu-animation.show {
+                height: auto;
+                overflow: hidden;
+        }
 }
 
 .modal-content {
-	border: 0;
-	opacity: 0.9;
+        border: 0;
+        opacity: 0.9;
 }
 
 .right-0 {
-	right: 0;
+        right: 0;
 }
 
