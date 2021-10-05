@@ -38,7 +38,7 @@
                                                         <DIV class="h4 d-block text-darker my-2">
                                                                 <SPAN>馬上升級</SPAN>
                                                                 <span class="fontSize22 text-primary mx-1">meKing</span>
-                                                                <SPAN class="text-yellow text-bolder fontSize22">PRO</SPAN>
+                                                                <SPAN class="text-bolder fontSize22">PRO</SPAN>
                                                         </DIV>
                                                         <DIV id="ECPayPayment"/>
                                                         <FORM action="" class="text-center mt-2" method="post" name="payment">

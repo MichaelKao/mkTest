@@ -38,7 +38,7 @@
                                                         <DIV class="h4 d-block text-darker my-2">
                                                                 <SPAN>馬上升級</SPAN>
                                                                 <span class="fontSize22 text-primary mx-1">meKing</span>
-                                                                <SPAN class="text-yellow fontSize22">
+                                                                <SPAN class="fontSize22">
                                                                         <I class="fas fa-plus"></I>
                                                                 </SPAN>
                                                         </DIV>

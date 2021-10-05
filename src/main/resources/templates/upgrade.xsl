@@ -43,7 +43,7 @@
                                                         <SPAN class="text-white text-sm">提高 meQueen 主動找您的機會</SPAN>
                                                 </DIV>
                                                 <DIV>
-                                                        <SPAN class="text-yellow text-bolder">PRO</SPAN>
+                                                        <SPAN class="text-dark text-bolder">PRO</SPAN>
                                                         <SPAN class="text-white text-sm">only</SPAN>
                                                 </DIV>
                                         </DIV>
@@ -54,12 +54,12 @@
                                                                 <I class="fad fa-thumbs-up fontSize22"></I>
                                                         </SPAN>
                                                 </DIV>
-                                                <DIV class=" d-flex flex-column align-items-center">
+                                                <DIV class="d-flex flex-column align-items-center">
                                                         <SPAN class="text-white text-sm">於首頁 VIP 專區顯示您的資訊</SPAN>
                                                         <SPAN class="text-white text-sm">讓 meQueen 更容易注意到您</SPAN>
                                                 </DIV>
                                                 <DIV>
-                                                        <SPAN class="text-yellow text-bolder">PRO</SPAN>
+                                                        <SPAN class="text-dark text-bolder">PRO</SPAN>
                                                         <SPAN class="text-white text-sm">only</SPAN>
                                                 </DIV>
                                         </DIV>
@@ -74,9 +74,9 @@
                                                         <SPAN class="text-white text-sm">和 meQueen 聊天次數無限制</SPAN>
                                                 </DIV>
                                                 <DIV>
-                                                        <SPAN class="text-yellow text-bolder">PRO</SPAN>
+                                                        <SPAN class="text-dark text-bolder">PRO</SPAN>
                                                         <SPAN class="text-white text-bolder mx-1">·</SPAN>
-                                                        <SPAN class="text-yellow">
+                                                        <SPAN class="text-dark">
                                                                 <I class="fas fa-plus"></I>
                                                         </SPAN>
                                                 </DIV>
@@ -93,9 +93,9 @@
                                                         <SPAN class="text-white text-sm">同時得到對方的通訊軟體聯繫方式</SPAN>
                                                 </DIV>
                                                 <DIV>
-                                                        <SPAN class="text-yellow text-bolder">PRO</SPAN>
+                                                        <SPAN class="text-dark text-bolder">PRO</SPAN>
                                                         <SPAN class="text-white text-bolder mx-1">·</SPAN>
-                                                        <SPAN class="text-yellow">
+                                                        <SPAN class="text-dark">
                                                                 <I class="fas fa-plus"></I>
                                                         </SPAN>
                                                 </DIV>
@@ -111,9 +111,9 @@
                                                         <SPAN class="text-white text-sm">可看見 meQueen 文字評價</SPAN>
                                                 </DIV>
                                                 <DIV>
-                                                        <SPAN class="text-yellow text-bolder">PRO</SPAN>
+                                                        <SPAN class="text-dark text-bolder">PRO</SPAN>
                                                         <SPAN class="text-white text-bolder mx-1">·</SPAN>
-                                                        <SPAN class="text-yellow">
+                                                        <SPAN class="text-dark">
                                                                 <I class="fas fa-plus"></I>
                                                         </SPAN>
                                                 </DIV>
@@ -130,9 +130,9 @@
                                                         <SPAN class="text-white text-sm">邀請接受後可查看更多</SPAN>
                                                 </DIV>
                                                 <DIV>
-                                                        <SPAN class="text-yellow text-bolder">PRO</SPAN>
+                                                        <SPAN class="text-dark text-bolder">PRO</SPAN>
                                                         <SPAN class="text-white text-bolder mx-1">·</SPAN>
-                                                        <SPAN class="text-yellow">
+                                                        <SPAN class="text-dark">
                                                                 <I class="fas fa-plus"></I>
                                                         </SPAN>
                                                 </DIV>
@@ -150,9 +150,9 @@
                                                         </DIV>
                                                 </xsl:if>
                                                 <xsl:if test="@vip">
-                                                        <DIV class="text-primary text-bold">
-                                                                <SPAN>目前為 meKing</SPAN>
-                                                                <SPAN class="text-yellow fontSize22 ms-1">
+                                                        <DIV>
+                                                                <SPAN class="text-primary text-bold">目前為 meKing</SPAN>
+                                                                <SPAN class="fontSize22 ms-1">
                                                                         <I class="fas fa-plus"></I>
                                                                 </SPAN>
                                                         </DIV>
@@ -166,7 +166,7 @@
                                                 <xsl:if test="@vvip">
                                                         <DIV class="text-primary text-bold">
                                                                 <SPAN>目前為 meKing</SPAN>
-                                                                <SPAN class="text-yellow text-bolder fontSize22 ms-1">PRO</SPAN>
+                                                                <SPAN class="text-bolder fontSize22 ms-1">PRO</SPAN>
                                                         </DIV>
                                                         <DIV class="text-dark text-xs">
                                                                 <xsl:if test="@isEligibleToStopRecurring">
@@ -202,7 +202,7 @@
                                                 <DIV class="p-2 card h-100">
                                                         <DIV class="text-center border-radius-xl py-2">
                                                                 <SPAN class="text-primary text-lg font-weight-bold my-2">meKing</SPAN>
-                                                                <SPAN class="text-yellow fontSize22 ms-1">
+                                                                <SPAN class="fontSize22 ms-1">
                                                                         <I class="fas fa-plus"></I>
                                                                 </SPAN>
                                                                 <DIV class="text-lg text-bold text-center my-1">
@@ -226,7 +226,7 @@
                                                 <DIV class="p-2 card h-100">
                                                         <DIV class="text-center border-radius-xl py-2">
                                                                 <SPAN class="text-primary text-lg font-weight-bold my-2">meKing</SPAN>
-                                                                <SPAN class="text-yellow text-bolder fontSize22 ms-1">PRO</SPAN>
+                                                                <SPAN class="text-bolder fontSize22 ms-1">PRO</SPAN>
                                                                 <DIV class="text-lg text-bold text-center my-1">
                                                                         <DIV class="text-sm">
                                                                                 <DIV class="fontSize35">12</DIV>

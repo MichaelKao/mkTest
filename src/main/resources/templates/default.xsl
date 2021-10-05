@@ -188,7 +188,7 @@
                                                                         <LI class="nav-item">
                                                                                 <A class="nav-link nav-link-icon d-flex align-items-center" href="/upgrade.asp">
                                                                                         <I class="fad fa-crown fontSize22 width30whenMobile"></I>
-                                                                                        <SPAN class="d-lg-none">升級 VIP</SPAN>
+                                                                                        <SPAN class="d-lg-none">meKing 升級</SPAN>
                                                                                 </A>
                                                                         </LI>
                                                                 </xsl:if>
