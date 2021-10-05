@@ -350,6 +350,14 @@
                                                 </A>
                                         </LI>
                                         <LI class="nav-item">
+                                                <A class="nav-link" href="/dashboard/mePointsRecordsForMale.asp">
+                                                        <DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
+                                                                <I class="fal fa-badge-dollar text-dark text-lg"></I>
+                                                        </DIV>
+                                                        <SPAN class="nav-link-text ms-1">男仕ME點紀錄</SPAN>
+                                                </A>
+                                        </LI>
+                                        <LI class="nav-item">
                                                 <A class="nav-link" href="/dashboard/genTrialCode.asp">
                                                         <DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
                                                                 <I class="fal fa-meteor text-dark text-lg"></I>

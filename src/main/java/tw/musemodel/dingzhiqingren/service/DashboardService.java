@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import tw.musemodel.dingzhiqingren.WebSocketServer;
+import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Lover.MaleSpecies;
 import tw.musemodel.dingzhiqingren.entity.Privilege;
@@ -35,6 +37,7 @@ import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
 import tw.musemodel.dingzhiqingren.model.EachWithdrawal;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
+import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PrivilegeRepository;
 import tw.musemodel.dingzhiqingren.repository.RoleRepository;
@@ -42,6 +45,7 @@ import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRep
 import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
+import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
 
 /**
  * 服务层：情人
@@ -83,6 +87,15 @@ public class DashboardService {
         @Autowired
         private PrivilegeRepository privilegeRepository;
 
+        @Autowired
+        private HistoryRepository historyRepository;
+
+        @Autowired
+        private WebSocketServer webSocketServer;
+
+        @Autowired
+        private LineMessagingService lineMessagingService;
+
         /**
          * 构建根元素。
          *
@@ -109,6 +122,14 @@ public class DashboardService {
                         mofo.getGender() ? "male" : "female",
                         null
                 );//性别
+
+                // 給當日新進會員報表的URL
+                Calendar today = Calendar.getInstance();
+                int m = today.get(Calendar.MONTH) + 1;
+                int date = today.get(Calendar.DATE);
+                documentElement.setAttribute("year", Integer.toString(today.get(Calendar.YEAR)));
+                documentElement.setAttribute("month", m < 10 ? "0" + m : Integer.toString(m));
+                documentElement.setAttribute("date", date < 10 ? "0" + date : Integer.toString(date));
 
                 /*
 		 身份
@@ -150,17 +171,13 @@ public class DashboardService {
          * @throws IOException
          * @throws ParserConfigurationException
          */
-        public Document accountsCreatedOfTheDay(int year, int month, int dayOfMonth, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+        public Document accountsCreatedOfTheDay(int year, int month, int dayOfMonth, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
                 Document document = Servant.parseDocument();
-                Element documentElement = document.getDocumentElement();
 
-                // 給當日新進會員報表的URL
-                Calendar today = Calendar.getInstance();
-                int m = today.get(Calendar.MONTH) + 1;
-                int date = today.get(Calendar.DATE);
-                documentElement.setAttribute("year", Integer.toString(today.get(Calendar.YEAR)));
-                documentElement.setAttribute("month", m < 10 ? "0" + m : Integer.toString(m));
-                documentElement.setAttribute("date", date < 10 ? "0" + date : Integer.toString(date));
+                Element documentElement = documentElement(
+                        document,
+                        authentication
+                );//根元素
 
                 int fakeCount = 0, genuineCount = 0;
                 Element registeredElement = document.createElement("registered");
@@ -350,14 +367,6 @@ public class DashboardService {
                         authentication
                 );//根元素
 
-                // 給當日新進會員報表的URL
-                Calendar today = Calendar.getInstance();
-                int month = today.get(Calendar.MONTH) + 1;
-                int date = today.get(Calendar.DATE);
-                documentElement.setAttribute("year", Integer.toString(today.get(Calendar.YEAR)));
-                documentElement.setAttribute("month", month < 10 ? "0" + month : Integer.toString(month));
-                documentElement.setAttribute("date", date < 10 ? "0" + date : Integer.toString(date));
-
                 for (Lover lover : loverRepository.findByRelief(false)) {
                         Element loverElement = document.createElement("lover");
 
@@ -395,14 +404,6 @@ public class DashboardService {
                         document,
                         authentication
                 );//根元素
-
-                // 給當日新進會員報表的URL
-                Calendar today = Calendar.getInstance();
-                int month = today.get(Calendar.MONTH) + 1;
-                int date = today.get(Calendar.DATE);
-                documentElement.setAttribute("year", Integer.toString(today.get(Calendar.YEAR)));
-                documentElement.setAttribute("month", month < 10 ? "0" + month : Integer.toString(month));
-                documentElement.setAttribute("date", date < 10 ? "0" + date : Integer.toString(date));
 
                 for (TrialCode trialCode : trialCodeRepository.findAll()) {
                         Element trialElement = document.createElement("trial");
@@ -444,14 +445,6 @@ public class DashboardService {
                         document,
                         authentication
                 );//根元素
-
-                // 給當日新進會員報表的URL
-                Calendar today = Calendar.getInstance();
-                int month = today.get(Calendar.MONTH) + 1;
-                int date = today.get(Calendar.DATE);
-                documentElement.setAttribute("year", Integer.toString(today.get(Calendar.YEAR)));
-                documentElement.setAttribute("month", month < 10 ? "0" + month : Integer.toString(month));
-                documentElement.setAttribute("date", date < 10 ? "0" + date : Integer.toString(date));
 
                 /*
 		 未處理
@@ -551,14 +544,6 @@ public class DashboardService {
                         document,
                         authentication
                 );//根元素
-
-                // 給當日新進會員報表的URL
-                Calendar today = Calendar.getInstance();
-                int month = today.get(Calendar.MONTH) + 1;
-                int date = today.get(Calendar.DATE);
-                documentElement.setAttribute("year", Integer.toString(today.get(Calendar.YEAR)));
-                documentElement.setAttribute("month", month < 10 ? "0" + month : Integer.toString(month));
-                documentElement.setAttribute("date", date < 10 ? "0" + date : Integer.toString(date));
 
                 Element recordsElement = document.createElement("records");
                 for (EachWithdrawal eachWithdrawal : withdrawalRecordRepository.findAllGroupByHoneyAndStatusAndWayAndTimeStamp()) {
@@ -691,9 +676,13 @@ public class DashboardService {
         }
 
         @Transactional(readOnly = true)
-        public Document members(Locale locale) throws SAXException, IOException, ParserConfigurationException {
+        public Document members(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
                 Document document = servant.parseDocument();
-                Element documentElement = document.getDocumentElement();
+
+                Element documentElement = documentElement(
+                        document,
+                        authentication
+                );//根元素
 
                 document.getDocumentElement().setAttribute(
                         "title",
@@ -703,14 +692,6 @@ public class DashboardService {
                                 locale
                         )
                 );
-
-                // 給當日新進會員報表的URL
-                Calendar today = Calendar.getInstance();
-                int month = today.get(Calendar.MONTH) + 1;
-                int date = today.get(Calendar.DATE);
-                documentElement.setAttribute("year", Integer.toString(today.get(Calendar.YEAR)));
-                documentElement.setAttribute("month", month < 10 ? "0" + month : Integer.toString(month));
-                documentElement.setAttribute("date", date < 10 ? "0" + date : Integer.toString(date));
 
                 // 權限管理
                 for (Role role : roleRepository.findAll()) {
@@ -937,6 +918,140 @@ public class DashboardService {
                 return new JavaScriptObjectNotation().
                         withResponse(true).
                         withReason("更新成功").
+                        toJSONObject();
+        }
+
+        /**
+         * 男仕 ME 點紀錄頁面
+         *
+         * @param authentication
+         * @param locale
+         * @return
+         * @throws SAXException
+         * @throws IOException
+         * @throws ParserConfigurationException
+         */
+        @Transactional(readOnly = true)
+        public Document mePointsRecords(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+                Document document = Servant.parseDocument();
+                Element documentElement = documentElement(
+                        document,
+                        authentication
+                );//根元素
+
+                Element recordsElement = document.createElement("records");
+                documentElement.appendChild(recordsElement);
+                for (History history : historyRepository.findByBehaviorOrderByOccurredDesc(BEHAVIOR_FARE)) {
+                        Lover male = history.getInitiative();
+                        Lover female = history.getPassive();
+
+                        Element recordElement = document.createElement("record");
+                        recordsElement.appendChild(recordElement);
+
+                        recordElement.setAttribute(
+                                "historyId",
+                                history.getId().toString()
+                        );
+
+                        recordElement.setAttribute(
+                                "maleIdentifier",
+                                male.getIdentifier().toString()
+                        );
+
+                        recordElement.setAttribute(
+                                "maleNickname",
+                                male.getNickname()
+                        );
+
+                        recordElement.setAttribute(
+                                "maleLogin",
+                                male.getLogin()
+                        );
+
+                        recordElement.setAttribute(
+                                "femaleIdentifier",
+                                female.getIdentifier().toString()
+                        );
+
+                        recordElement.setAttribute(
+                                "femaleNickname",
+                                female.getNickname()
+                        );
+
+                        recordElement.setAttribute(
+                                "femaleLogin",
+                                female.getLogin()
+                        );
+
+                        recordElement.setAttribute(
+                                "date",
+                                Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
+                                        Servant.toTaipeiZonedDateTime(
+                                                history.getOccurred()
+                                        ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
+                                ));
+
+                        recordElement.setAttribute(
+                                "mePoints",
+                                Integer.toString(Math.abs(history.getPoints()))
+                        );
+
+                        if (Objects.nonNull(historyRepository.findByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history))) {
+                                recordElement.setAttribute(
+                                        "notAbleToReturn",
+                                        null
+                                );
+                        }
+                }
+
+                return document;
+        }
+
+        /**
+         * 退回 ME 點
+         *
+         * @param fareHistory
+         * @param locale
+         * @return
+         */
+        @Transactional
+        public JSONObject returnFare(History fareHistory, Locale locale) {
+                Lover male = fareHistory.getInitiative();
+                Lover female = fareHistory.getPassive();
+
+                // 新增歷程
+                History returnFareHistory = new History(
+                        female,
+                        male,
+                        BEHAVIOR_RETURN_FARE,
+                        (short) Math.abs(fareHistory.getPoints()),
+                        fareHistory
+                );
+                historyRepository.saveAndFlush(returnFareHistory);
+
+                // 推送通知給對方
+                webSocketServer.sendNotification(
+                        male.getIdentifier().toString(),
+                        String.format(
+                                "%s退回您給的看車馬費!",
+                                female.getNickname()
+                        ));
+                if (loverService.hasLineNotify(male)) {
+                        // LINE Notify
+                        lineMessagingService.notify(
+                                male,
+                                String.format(
+                                        "有養蜜退回您給的車馬費..馬上查看 https://%s/activeLogs.asp",
+                                        Servant.LOCALHOST
+                                ));
+                }
+                return new JavaScriptObjectNotation().
+                        withReason(messageSource.getMessage(
+                                "returnFare.done",
+                                null,
+                                locale
+                        )).
+                        withResponse(true).
                         toJSONObject();
         }
 }

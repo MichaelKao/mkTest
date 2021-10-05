@@ -118,8 +118,9 @@ public class DashboardController {
         @GetMapping(path = "/{year:20\\d{2}}/{month:[01]\\d}/{dayOfMonth:[0-3]\\d}/newAccounts.asp", produces = MediaType.APPLICATION_XML_VALUE)
         @ResponseBody
         @Secured({"ROLE_ALMIGHTY"})
-        ModelAndView accountsCreatedOfTheDay(@PathVariable int year, @PathVariable int month, @PathVariable int dayOfMonth, Locale locale) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
-                Document document = dashboardService.accountsCreatedOfTheDay(year, month, dayOfMonth, locale);
+        ModelAndView accountsCreatedOfTheDay(@PathVariable int year, @PathVariable int month, @PathVariable int dayOfMonth,
+                Locale locale, Authentication authentication) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
+                Document document = dashboardService.accountsCreatedOfTheDay(year, month, dayOfMonth, authentication, locale);
 
                 document.getDocumentElement().setAttribute(
                         "title",
@@ -683,9 +684,9 @@ public class DashboardController {
         @GetMapping(path = "/members.asp")
         @ResponseBody
         @Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
-        ModelAndView members(Locale locale) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
+        ModelAndView members(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
 
-                Document document = dashboardService.members(locale);
+                Document document = dashboardService.members(authentication, locale);
 
                 ModelAndView modelAndView = new ModelAndView("dashboard/members");
                 modelAndView.getModelMap().addAttribute(document);
@@ -952,6 +953,65 @@ public class DashboardController {
                                 )).
                                 withResponse(false).
                                 toJSONObject();
+                }
+                return jsonObject.toString();
+        }
+
+        /**
+         * 男仕 ME 點紀錄
+         *
+         * @param authentication
+         * @param locale
+         * @return
+         * @throws SAXException
+         * @throws IOException
+         * @throws ParserConfigurationException
+         */
+        @GetMapping(path = "/mePointsRecordsForMale.asp")
+        @Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+        ModelAndView mePointsRecordsForMale(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+                Document document = dashboardService.mePointsRecords(
+                        authentication,
+                        locale
+                );
+
+                document.getDocumentElement().setAttribute(
+                        "title",
+                        messageSource.getMessage(
+                                "title.mePointsRecords",
+                                null,
+                                locale
+                        )
+                );
+
+                ModelAndView modelAndView = new ModelAndView("dashboard/mePointsRecords");
+                modelAndView.getModelMap().addAttribute(document);
+                return modelAndView;
+        }
+
+        /**
+         * 退回 ME 點
+         *
+         * @param history
+         * @param authentication
+         * @param locale
+         * @return
+         */
+        @PostMapping(path = "/returnFare.json")
+        @ResponseBody
+        String returnFare(@RequestParam History history, Authentication authentication, Locale locale) {
+                if (servant.isNull(authentication)) {
+                        return servant.mustBeAuthenticated(locale);
+                }
+
+                JSONObject jsonObject;
+                try {
+                        jsonObject = dashboardService.returnFare(history, locale);
+                } catch (Exception exception) {
+                        return new JavaScriptObjectNotation().
+                                withReason(exception.getMessage()).
+                                withResponse(false).
+                                toJSONObject().toString();
                 }
                 return jsonObject.toString();
         }
