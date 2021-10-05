@@ -48,9 +48,6 @@ public class InPay2Controller {
 	private static final String OKAY = "1|OK";
 
 	@Autowired
-	private Servant servant;
-
-	@Autowired
 	private MessageSource messageSource;
 
 	@Autowired
@@ -141,7 +138,7 @@ public class InPay2Controller {
 			getString("customField")
 		);//目前登录的用户
 
-		Document document = servant.parseDocument();
+		Document document = Servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute(
 			"identifier",
