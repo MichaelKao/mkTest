@@ -406,6 +406,23 @@ public class LoverService {
         }
 
         /**
+         * 某段时间区间内注册的用户号依性別計算數量。
+         *
+         * @param year 年
+         * @param month 月
+         * @param dayOfMonth 日
+         * @return 用户号们
+         */
+        public long countAccountsCreatedOfTheDay(Boolean gender, int year, int month, int dayOfMonth) {
+                return loverRepository.countByGenderAndRegisteredBetweenAndFakeOrderByRegisteredDesc(
+                        gender,
+                        Servant.earliestDate(year, month, dayOfMonth),
+                        Servant.latestDate(year, month, dayOfMonth),
+                        false
+                );
+        }
+
+        /**
          * 激活
          *
          * @param inputString 激活码

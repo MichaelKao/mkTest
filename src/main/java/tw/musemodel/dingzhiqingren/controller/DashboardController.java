@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -118,7 +119,12 @@ public class DashboardController {
 	@ResponseBody
 	@Secured({"ROLE_ALMIGHTY"})
 	ModelAndView accountsCreatedOfTheDay(@PathVariable int year, @PathVariable int month, @PathVariable int dayOfMonth, Locale locale) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
-		Document document = dashboardService.accountsCreatedOfTheDay(year, month, dayOfMonth, locale);
+		Document document = dashboardService.accountsCreatedOfTheDay(
+			year,
+			month,
+			dayOfMonth,
+			locale
+		);
 
 		document.getDocumentElement().setAttribute(
 			"title",
@@ -233,36 +239,6 @@ public class DashboardController {
 		ModelAndView modelAndView = new ModelAndView("dashboard/certification");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
-	}
-
-	/**
-	 * 查看安心認證的照片
-	 *
-	 * @param lover
-	 * @param authentication
-	 * @param locale
-	 * @return
-	 */
-	@PostMapping(path = "/seeCetificationPic.json")
-	@ResponseBody
-	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
-	String seeCetificationPic(@RequestParam long id, Authentication authentication, Locale locale) {
-		try {
-			return new JavaScriptObjectNotation().
-				withResult(
-					String.format(
-						"https://%s/identity/%d",
-						Servant.STATIC_HOST,
-						id
-					)).
-				withResponse(true).
-				toJSONObject().toString();
-		} catch (Exception exception) {
-			return new JavaScriptObjectNotation().
-				withReason(exception.getMessage()).
-				withResponse(false).
-				toJSONObject().toString();
-		}
 	}
 
 	/**
@@ -547,6 +523,187 @@ public class DashboardController {
 	}
 
 	/**
+	 * 會員們
+	 *
+	 * @author r@musemodel.tw
+	 * @param locale
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 * @throws TransformerConfigurationException
+	 * @throws TransformerException
+	 */
+	@GetMapping(path = "/members.asp")
+	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	ModelAndView members(Locale locale) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
+
+		Document document = dashboardService.members(locale);
+
+		ModelAndView modelAndView = new ModelAndView("dashboard/members");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
+	 * 顯示權限
+	 *
+	 * @param lover
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/privilege.json")
+	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	String privilege(@RequestParam Lover lover, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = dashboardService.privilege(lover);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
+	}
+
+	/**
+	 * 查看會員的邀請碼、下線
+	 *
+	 * @param p
+	 * @param s
+	 * @param lover
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/referralCode.json")
+	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	String referralCode(@RequestParam(defaultValue = "0") final int p, @RequestParam(defaultValue = "5") final int s, @RequestParam Lover lover, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+
+		return loverService.
+			getReferralCodeAndDescendants(lover, p, s).
+			toString();
+	}
+
+	/**
+	 * 搜尋會員
+	 *
+	 * @param searchGender
+	 * @param searchValue
+	 * @param pageSearch
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/searchMember.json")
+	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	String searchMember(@RequestParam Boolean searchGender, @RequestParam String searchValue, @RequestParam int pageSearch, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+
+		Page<Lover> loverPage = loverRepository.findAll(
+			Specifications.findByGenderAndNicknameLikeOrLoginAccount(
+				searchGender,
+				searchValue
+			),
+			PageRequest.of(pageSearch - 1, 10)
+		);
+		List<Member> memberList = new ArrayList<Member>();
+
+		for (Lover lover : loverPage.getContent()) {
+			Date vip = lover.getVip();
+			Member member = new Member(
+				lover.getId(),
+				lover.getIdentifier(),
+				lover.getNickname(),
+				lover.getLogin(),
+				Objects.nonNull(vip) ? LoverService.DATE_FORMATTER.format(
+				Servant.
+					toTaipeiZonedDateTime(
+						vip
+					).
+					withZoneSameInstant(
+						Servant.ASIA_TAIPEI_ZONE_ID
+					)) : null,
+				LoverService.DATE_FORMATTER.format(
+					Servant.
+						toTaipeiZonedDateTime(
+							lover.getRegistered()
+						).
+						withZoneSameInstant(
+							Servant.ASIA_TAIPEI_ZONE_ID
+						)
+				)
+			);
+			if (loverService.isVIP(lover)) {
+				member.setIsVIP(true);
+			}
+			if (loverService.isVVIP(lover)) {
+				member.setIsVVIP(true);
+			}
+			if (loverService.isTrial(lover)) {
+				member.setIsTrial(true);
+			}
+			memberList.add(member);
+		}
+		JSONObject jSONObject = new JSONObject();
+		return jSONObject.put("result", memberList).
+			put("totalPages", loverPage.getTotalPages()).
+			put("currentPage", pageSearch).toString();
+	}
+
+	/**
+	 * 查看安心認證的照片
+	 *
+	 * @param lover
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/seeCetificationPic.json")
+	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	String seeCetificationPic(@RequestParam long id, Authentication authentication, Locale locale) {
+		try {
+			return new JavaScriptObjectNotation().
+				withResult(
+					String.format(
+						"https://%s/identity/%d",
+						Servant.STATIC_HOST,
+						id
+					)).
+				withResponse(true).
+				toJSONObject().toString();
+		} catch (Exception exception) {
+			return new JavaScriptObjectNotation().
+				withReason(exception.getMessage()).
+				withResponse(false).
+				toJSONObject().toString();
+		}
+	}
+
+	/**
 	 * 长期贵宾解除定期定额。
 	 *
 	 * @param authentication 认证
@@ -615,6 +772,63 @@ public class DashboardController {
 			toJSONObject().toString();
 	}
 
+	@PostMapping(path = "/updateGenuineMemebr.json")
+	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	String updateGenuineMemebr(@RequestParam Lover lover, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = dashboardService.updateGenuineMember(lover);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(exception.getMessage()).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
+	}
+
+	/**
+	 * 更新權限
+	 *
+	 * @param role
+	 * @param lover
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/updatePrivilege.json")
+	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	String updatePrivilege(@RequestParam Role role, @RequestParam Lover lover, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = dashboardService.updatePrivilege(role, lover);
+		} catch (Exception exception) {
+			jsonObject = new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					exception.getMessage(),
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject();
+		}
+		return jsonObject.toString();
+	}
+
 	/**
 	 * 更新體驗碼
 	 *
@@ -646,110 +860,6 @@ public class DashboardController {
 			withReason("已解除成功").
 			withResponse(true).
 			toJSONObject().toString();
-	}
-
-	/**
-	 * 會員們
-	 *
-	 * @author r@musemodel.tw
-	 * @param p 第几页
-	 * @param s 每页几笔
-	 * @param response
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws TransformerConfigurationException
-	 * @throws TransformerException
-	 */
-	@GetMapping(path = "/members.asp")
-	@ResponseBody
-	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
-	ModelAndView members(Locale locale) throws SAXException, IOException, ParserConfigurationException, TransformerConfigurationException, TransformerException {
-		Document document = dashboardService.members(locale);
-
-		ModelAndView modelAndView = new ModelAndView("dashboard/members");
-		modelAndView.getModelMap().addAttribute(document);
-		return modelAndView;
-	}
-
-	/**
-	 * 查看會員的邀請碼、下線
-	 *
-	 * @param p
-	 * @param s
-	 * @param lover
-	 * @param authentication
-	 * @param locale
-	 * @return
-	 */
-	@PostMapping(path = "/referralCode.json")
-	@ResponseBody
-	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
-	String referralCode(@RequestParam(defaultValue = "0") final int p, @RequestParam(defaultValue = "5") final int s, @RequestParam Lover lover, Authentication authentication, Locale locale) {
-		if (servant.isNull(authentication)) {
-			return servant.mustBeAuthenticated(locale);
-		}
-
-		return loverService.
-			getReferralCodeAndDescendants(lover, p, s).
-			toString();
-	}
-
-	@PostMapping(path = "/searchMember.json")
-	@ResponseBody
-	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
-	String searchMember(@RequestParam Boolean searchGender, @RequestParam String searchValue, Authentication authentication, Locale locale) {
-		if (servant.isNull(authentication)) {
-			return servant.mustBeAuthenticated(locale);
-		}
-
-		List<Lover> loverList = loverRepository.findAll(
-			Specifications.findByGenderAndNicknameLikeOrLoginAccount(
-				searchGender,
-				searchValue
-			)
-		);
-
-		List<Member> memberList = new ArrayList<>();
-
-		for (Lover lover : loverList) {
-			Date vip = lover.getVip();
-			Member member = new Member(
-				lover.getId(),
-				lover.getIdentifier(),
-				lover.getNickname(),
-				lover.getLogin(),
-				Objects.nonNull(vip) ? LoverService.DATE_FORMATTER.format(
-				Servant.
-					toTaipeiZonedDateTime(
-						vip
-					).
-					withZoneSameInstant(
-						Servant.ASIA_TAIPEI_ZONE_ID
-					)) : null,
-				LoverService.DATE_FORMATTER.format(
-					Servant.
-						toTaipeiZonedDateTime(
-							lover.getRegistered()
-						).
-						withZoneSameInstant(
-							Servant.ASIA_TAIPEI_ZONE_ID
-						)
-				)
-			);
-			if (loverService.isVIP(lover)) {
-				member.setIsVIP(true);
-			}
-			if (loverService.isVVIP(lover)) {
-				member.setIsVVIP(true);
-			}
-			if (loverService.isTrial(lover)) {
-				member.setIsTrial(true);
-			}
-			memberList.add(member);
-		}
-
-		return memberList.toString();
 	}
 
 	/**
@@ -841,44 +951,5 @@ public class DashboardController {
 			withReason("已撥款成功").
 			withResponse(true).
 			toJSONObject().toString();
-	}
-
-	@PostMapping(path = "/updatePrivilege.json")
-	@ResponseBody
-	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
-	String updatePrivilege(@RequestParam Role role, @RequestParam Lover lover, Authentication authentication, Locale locale) {
-		if (servant.isNull(authentication)) {
-			return servant.mustBeAuthenticated(locale);
-		}
-
-		return dashboardService.updatePrivilege(role, lover).toString();
-	}
-
-	@PostMapping(path = "/privilege.json")
-	@ResponseBody
-	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
-	String privilege(@RequestParam Lover lover, Authentication authentication, Locale locale) {
-		if (servant.isNull(authentication)) {
-			return servant.mustBeAuthenticated(locale);
-		}
-
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
-		);
-
-		JSONObject jsonObject;
-		try {
-			jsonObject = dashboardService.privilege(lover);
-		} catch (Exception exception) {
-			jsonObject = new JavaScriptObjectNotation().
-				withReason(messageSource.getMessage(
-					exception.getMessage(),
-					null,
-					locale
-				)).
-				withResponse(false).
-				toJSONObject();
-		}
-		return jsonObject.toString();
 	}
 }

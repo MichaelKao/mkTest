@@ -14,6 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -170,6 +173,18 @@ public class DashboardService {
                         )
                 );
                 documentElement.appendChild(registeredElement);//註冊时间
+
+                Element genuineMaleElement = document.createElement("genuineMale");
+                genuineMaleElement.setTextContent(
+                        Long.toString(loverService.countAccountsCreatedOfTheDay(true, year, month, dayOfMonth))
+                );
+                documentElement.appendChild(genuineMaleElement);//優質男仕總數
+
+                Element genuineFemaleElement = document.createElement("genuineFemale");
+                genuineFemaleElement.setTextContent(
+                        Long.toString(loverService.countAccountsCreatedOfTheDay(false, year, month, dayOfMonth))
+                );
+                documentElement.appendChild(genuineFemaleElement);//優質甜心總數
 
                 Element accountsElement = document.createElement("accounts");
                 for (Lover mofo : loverService.accountsCreatedOfTheDay(year, month, dayOfMonth)) {
@@ -711,10 +726,15 @@ public class DashboardService {
                         documentElement.appendChild(roleElement);
                 }
 
+                Pageable pageable = PageRequest.of(0, 10);
+
                 //所有男士
                 Element maleElement = document.createElement("male");
                 documentElement.appendChild(maleElement);
-                for (Lover lover : loverRepository.findAllByGenderOrderByIdDesc(true)) {
+
+                Page<Lover> malePage = loverRepository.findAllByGenderOrderByIdDesc(true, pageable);
+                maleElement.setAttribute("maleTotalPage", Integer.toString(malePage.getTotalPages()));
+                for (Lover lover : malePage.getContent()) {
                         Element userElement = document.createElement("user");
                         maleElement.appendChild(userElement);
 
@@ -798,7 +818,10 @@ public class DashboardService {
                 //所有甜心
                 Element femaleElement = document.createElement("female");
                 documentElement.appendChild(femaleElement);
-                for (Lover lover : loverRepository.findAllByGenderOrderByIdDesc(false)) {
+
+                Page<Lover> femalePage = loverRepository.findAllByGenderOrderByIdDesc(false, pageable);
+                femaleElement.setAttribute("femaleTotalPage", Integer.toString(femalePage.getTotalPages()));
+                for (Lover lover : femalePage.getContent()) {
                         Element userElement = document.createElement("user");
                         femaleElement.appendChild(userElement);
 
@@ -835,6 +858,13 @@ public class DashboardService {
                 return document;
         }
 
+        /**
+         * 更新會員的權限
+         *
+         * @param role
+         * @param someone
+         * @return
+         */
         @Transactional
         public JSONObject updatePrivilege(Role role, Lover someone) {
                 Set<Short> rolesID = new HashSet<>();
@@ -872,6 +902,12 @@ public class DashboardService {
                         toJSONObject();
         }
 
+        /**
+         * 顯示會員的權限
+         *
+         * @param someone
+         * @return
+         */
         public JSONObject privilege(Lover someone) {
                 Set<Short> rolesID = new HashSet<>();
                 privilegeRepository.findByLover(someone).forEach(privilege -> {
@@ -880,6 +916,27 @@ public class DashboardService {
                 return new JavaScriptObjectNotation().
                         withResponse(true).
                         withResult(rolesID).
+                        toJSONObject();
+        }
+
+        /**
+         * 更新優質會員
+         *
+         * @param someone
+         * @return
+         */
+        @Transactional
+        public JSONObject updateGenuineMember(Lover someone) {
+                if (someone.isFake()) {
+                        someone.setFake(false);
+                } else {
+                        someone.setFake(true);
+                }
+                loverRepository.saveAndFlush(someone);
+
+                return new JavaScriptObjectNotation().
+                        withResponse(true).
+                        withReason("更新成功").
                         toJSONObject();
         }
 }

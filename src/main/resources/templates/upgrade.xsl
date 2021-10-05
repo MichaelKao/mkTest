@@ -150,7 +150,12 @@
                                                         </DIV>
                                                 </xsl:if>
                                                 <xsl:if test="@vip">
-                                                        <DIV class="text-primary text-bold">目前為 $1688 VIP</DIV>
+                                                        <DIV class="text-primary text-bold">
+                                                                <SPAN>目前為 meKing</SPAN>
+                                                                <SPAN class="text-yellow fontSize22 ms-1">
+                                                                        <I class="fas fa-plus"></I>
+                                                                </SPAN>
+                                                        </DIV>
                                                         <DIV class="text-dark text-bold text-xs">
                                                                 <SPAN class="me-1">到期日</SPAN>
                                                                 <SPAN>
@@ -159,7 +164,10 @@
                                                         </DIV>
                                                 </xsl:if>
                                                 <xsl:if test="@vvip">
-                                                        <DIV class="text-primary text-bold">目前為 $1288 VIP</DIV>
+                                                        <DIV class="text-primary text-bold">
+                                                                <SPAN>目前為 meKing</SPAN>
+                                                                <SPAN class="text-yellow text-bolder fontSize22 ms-1">PRO</SPAN>
+                                                        </DIV>
                                                         <DIV class="text-dark text-xs">
                                                                 <xsl:if test="@isEligibleToStopRecurring">
                                                                         <SPAN class="me-1">下次扣款</SPAN>
