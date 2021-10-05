@@ -24,6 +24,7 @@
                                 <xsl:value-of select="@title"/>
                         </TITLE>
                         <xsl:call-template name="dashHeadLinkTags"/>
+                        <LINK href="/STYLE/members.css" rel="stylesheet"/>
                         <STYLE>.nav.nav-pills {background: #EDEDED;}</STYLE>
                 </HEAD>
                 <BODY class="g-sidenav-show bg-gray-100">
@@ -47,7 +48,7 @@
                                                                                 <DIV class="text-dark text-bold">下線名單</DIV>
                                                                                 <DIV class="position-relative">
                                                                                         <DIV class="descendants"></DIV>
-                                                                                        <DIV class="pagination text-center text-sm text-primary cursor-pointer"></DIV>
+                                                                                        <DIV class="referralPage text-center text-sm text-primary cursor-pointer"></DIV>
                                                                                 </DIV>
                                                                         </DIV>
                                                                         <DIV class="text-center">
@@ -109,6 +110,9 @@
                                                                                 <I class="fas fa-search"></I>
                                                                         </BUTTON>
                                                                 </DIV>
+                                                        </DIV>
+                                                        <DIV class="pagination malePagination" data-page="{male/@maleTotalPage}">
+                                                                <UL></UL>
                                                         </DIV>
                                                         <DIV class="col-11 mx-auto">
                                                                 <DIV class="row text-center mt-3 mb-1 text-xs">
@@ -195,6 +199,9 @@
                                                                         </BUTTON>
                                                                 </DIV>
                                                         </DIV>
+                                                        <DIV class="pagination femalePagination" data-page="{female/@femaleTotalPage}">
+                                                                <UL></UL>
+                                                        </DIV>
                                                         <DIV class="col-11 mx-auto">
                                                                 <DIV class="row text-center mt-3 mb-1 text-xs">
                                                                         <DIV class="col-3 text-dark d-flex justify-content-start">暱稱/帳號</DIV>
@@ -209,7 +216,7 @@
                                                                                                 <xsl:attribute name="class">row text-center align-items-center bg-light border-radius-xl py-2</xsl:attribute>
                                                                                         </xsl:if>
                                                                                         <DIV class="col-3 d-flex justify-content-start">
-                                                                                                <A class="d-flex flex-column align-items-start" href="/profile/{identifier}">
+                                                                                                <A class="d-flex flex-column align-items-start" href="/profile/{identifier}/">
                                                                                                         <SPAN class="text-primary">
                                                                                                                 <xsl:value-of select="nickname"/>
                                                                                                         </SPAN>

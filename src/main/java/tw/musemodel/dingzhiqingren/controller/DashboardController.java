@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -132,6 +133,26 @@ public class DashboardController {
                 ModelAndView modelAndView = new ModelAndView("dashboard/accountsOfTheDay");
                 modelAndView.getModelMap().addAttribute(document);
                 return modelAndView;
+        }
+
+        @PostMapping(path = "/updateGenuineMemebr.json")
+        @ResponseBody
+        @Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+        String updateGenuineMemebr(@RequestParam Lover lover, Authentication authentication, Locale locale) {
+                if (servant.isNull(authentication)) {
+                        return servant.mustBeAuthenticated(locale);
+                }
+
+                JSONObject jsonObject;
+                try {
+                        jsonObject = dashboardService.updateGenuineMember(lover);
+                } catch (Exception exception) {
+                        jsonObject = new JavaScriptObjectNotation().
+                                withReason(exception.getMessage()).
+                                withResponse(false).
+                                toJSONObject();
+                }
+                return jsonObject.toString();
         }
 
         /**
@@ -652,9 +673,7 @@ public class DashboardController {
          * 會員們
          *
          * @author r@musemodel.tw
-         * @param p 第几页
-         * @param s 每页几笔
-         * @param response
+         * @param locale
          * @throws SAXException
          * @throws IOException
          * @throws ParserConfigurationException
@@ -700,10 +719,21 @@ public class DashboardController {
                         toString();
         }
 
+        /**
+         * 搜尋會員
+         *
+         * @param searchGender
+         * @param searchValue
+         * @param pageSearch
+         * @param authentication
+         * @param locale
+         * @return
+         */
         @PostMapping(path = "/searchMember.json")
         @ResponseBody
         @Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
-        String searchMember(@RequestParam Boolean searchGender, @RequestParam String searchValue, Authentication authentication, Locale locale) {
+        String searchMember(@RequestParam Boolean searchGender, @RequestParam String searchValue,
+                @RequestParam int pageSearch, Authentication authentication, Locale locale) {
                 if (servant.isNull(authentication)) {
                         return servant.mustBeAuthenticated(locale);
                 }
@@ -711,16 +741,16 @@ public class DashboardController {
                         authentication.getName()
                 );
 
-                List<Lover> loverList = loverRepository.findAll(
+                Page<Lover> loverPage = loverRepository.findAll(
                         Specifications.findByGenderAndNicknameLikeOrLoginAccount(
                                 searchGender,
                                 searchValue
-                        )
+                        ),
+                        PageRequest.of(pageSearch - 1, 10)
                 );
-
                 List<Member> memberList = new ArrayList<Member>();
 
-                for (Lover lover : loverList) {
+                for (Lover lover : loverPage.getContent()) {
                         Date vip = lover.getVip();
                         Member member = new Member(
                                 lover.getId(),
@@ -756,8 +786,10 @@ public class DashboardController {
                         }
                         memberList.add(member);
                 }
-
-                return memberList.toString();
+                JSONObject jSONObject = new JSONObject();
+                return jSONObject.put("result", memberList).
+                        put("totalPages", loverPage.getTotalPages()).
+                        put("currentPage", pageSearch).toString();
         }
 
         /**
@@ -851,6 +883,15 @@ public class DashboardController {
                         toJSONObject().toString();
         }
 
+        /**
+         * 更新權限
+         *
+         * @param role
+         * @param lover
+         * @param authentication
+         * @param locale
+         * @return
+         */
         @PostMapping(path = "/updatePrivilege.json")
         @ResponseBody
         @Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
@@ -864,22 +905,29 @@ public class DashboardController {
                 );
 
                 JSONObject jsonObject;
-                jsonObject = dashboardService.updatePrivilege(role, lover);
-//                try {
-//                        jsonObject = dashboardService.updatePrivilege(role, lover);
-//                } catch (Exception exception) {
-//                        jsonObject = new JavaScriptObjectNotation().
-//                                withReason(messageSource.getMessage(
-//                                        exception.getMessage(),
-//                                        null,
-//                                        locale
-//                                )).
-//                                withResponse(false).
-//                                toJSONObject();
-//                }
+                try {
+                        jsonObject = dashboardService.updatePrivilege(role, lover);
+                } catch (Exception exception) {
+                        jsonObject = new JavaScriptObjectNotation().
+                                withReason(messageSource.getMessage(
+                                        exception.getMessage(),
+                                        null,
+                                        locale
+                                )).
+                                withResponse(false).
+                                toJSONObject();
+                }
                 return jsonObject.toString();
         }
 
+        /**
+         * 顯示權限
+         *
+         * @param lover
+         * @param authentication
+         * @param locale
+         * @return
+         */
         @PostMapping(path = "/privilege.json")
         @ResponseBody
         @Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})

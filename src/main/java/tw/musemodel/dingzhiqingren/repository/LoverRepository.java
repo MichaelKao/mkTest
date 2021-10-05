@@ -21,43 +21,43 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 @Repository
 public interface LoverRepository extends JpaRepository<Lover, Integer>, JpaSpecificationExecutor<Lover> {
 
-	public long countByCountryAndLogin(Country country, String login);
+        public long countByCountryAndLogin(Country country, String login);
 
-	public long countByReferralCode(String referralCode);
+        public long countByReferralCode(String referralCode);
 
-	@Query("SELECT l FROM Lover l WHERE l.gender = :gender AND l.delete IS NULL")
-	public List<Lover> findByGender(Boolean gender);
+        @Query("SELECT l FROM Lover l WHERE l.gender = :gender AND l.delete IS NULL")
+        public List<Lover> findByGender(Boolean gender);
 
-	/**
-	 * @param identifier 识别码
-	 * @return 情人
-	 */
-	public Optional<Lover> findByIdentifier(UUID identifier);
+        /**
+         * @param identifier 识别码
+         * @return 情人
+         */
+        public Optional<Lover> findByIdentifier(UUID identifier);
 
-	public Lover findByReferralCode(String referralCode);
+        public Lover findByReferralCode(String referralCode);
 
-	/**
-	 * 找下线用户。
-	 *
-	 * @param referrer 上线用户
-	 * @return 下线用户号们
-	 */
-	public List<Lover> findByReferrerOrderByRegisteredDesc(Lover referrer);
+        /**
+         * 找下线用户。
+         *
+         * @param referrer 上线用户
+         * @return 下线用户号们
+         */
+        public List<Lover> findByReferrerOrderByRegisteredDesc(Lover referrer);
 
-	/**
-	 * 某段时间区间内注册的用户号。
-	 *
-	 * @param since 开始时戳
-	 * @param until 结束时戳
-	 * @return 用户号们
-	 */
-	public List<Lover> findByRegisteredBetweenOrderByRegisteredDesc(Date since, Date until);
+        /**
+         * 某段时间区间内注册的用户号。
+         *
+         * @param since 开始时戳
+         * @param until 结束时戳
+         * @return 用户号们
+         */
+        public List<Lover> findByRegisteredBetweenOrderByRegisteredDesc(Date since, Date until);
 
-	public List<Lover> findByRelief(Boolean relief);
+        public long countByGenderAndRegisteredBetweenAndFakeOrderByRegisteredDesc(Boolean gender, Date since, Date until, boolean fake);
 
-	public Lover findOneByIdentifier(UUID identifier);
+        public List<Lover> findByRelief(Boolean relief);
 
-	public Page<Lover> findAllByGenderOrderByIdDesc(Boolean gender, Pageable pageable);
+        public Lover findOneByIdentifier(UUID identifier);
 
-	public List<Lover> findAllByGenderOrderByIdDesc(Boolean gender);
+        public Page<Lover> findAllByGenderOrderByIdDesc(Boolean gender, Pageable pageable);
 }

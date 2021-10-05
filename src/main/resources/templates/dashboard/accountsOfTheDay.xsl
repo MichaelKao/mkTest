@@ -29,6 +29,7 @@
                 </HEAD>
                 <BODY class="g-sidenav-show bg-gray-100">
                         <xsl:call-template name="dashSideNavBar"/>
+                        <xsl:call-template name="bootstrapToast"/>
                         <MAIN class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg">
                                 <xsl:call-template name="dashTopNavBar"/>
                                 <DIV class="container-fluid py-4 px-2">
@@ -47,6 +48,22 @@
                                                         <xsl:value-of select="registered"/>
                                                 </SPAN>
                                                 <SPAN class="ms-1">新進會員</SPAN>
+                                        </DIV>
+                                        <DIV class="my-4 col-9 col-md-5 text-center mx-auto text-bold text-dark">
+                                                <DIV>
+                                                        <SPAN>男仕優質會員：</SPAN>
+                                                        <SPAN class="text-primary mx-1">
+                                                                <xsl:value-of select="genuineMale"/>
+                                                        </SPAN>
+                                                        <SPAN>位</SPAN>
+                                                </DIV>
+                                                <DIV>
+                                                        <SPAN>甜心優質會員：</SPAN>
+                                                        <SPAN class="text-primary mx-1">
+                                                                <xsl:value-of select="genuineFemale"/>
+                                                        </SPAN>
+                                                        <SPAN>位</SPAN>
+                                                </DIV>
                                         </DIV>
                                         <DIV class="col-11 col-md-7 mx-auto">
                                                 <DIV class="row text-center mt-3 mb-1 text-xs">
@@ -75,13 +92,15 @@
                                                                                         <xsl:value-of select="gender"/>
                                                                                 </SPAN>
                                                                         </DIV>
-                                                                        <DIV class="col-4">
-                                                                                <xsl:if test="fake = 'true'">
-                                                                                        <I class="fal fa-times fontSize22"></I>
-                                                                                </xsl:if>
-                                                                                <xsl:if test="fake = 'false'">
-                                                                                        <I class="fal fa-check fontSize22 text-primary"></I>
-                                                                                </xsl:if>
+                                                                        <DIV class="col-4 d-flex justify-content-center">
+                                                                                <DIV class="form-check">
+                                                                                        <INPUT name="id" type="hidden" value="{id}"/>
+                                                                                        <INPUT class="form-check-input" name="genuine" type="checkbox" value="false">
+                                                                                                <xsl:if test="fake = 'false'">
+                                                                                                        <xsl:attribute name="checked">true</xsl:attribute>
+                                                                                                </xsl:if>
+                                                                                        </INPUT>
+                                                                                </DIV>
                                                                         </DIV>
                                                                 </DIV>
                                                         </xsl:for-each>
