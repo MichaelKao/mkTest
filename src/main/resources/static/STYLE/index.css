@@ -1,50 +1,591 @@
-.manPic {
-	width: 200px;
-	background-image: url('https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/MAN/MAN+(8).jpg');
-	background-position: center;
-	background-size: 300px;
+.imageShadow {
+        box-shadow: 3px 6px 5px 0 rgba(0,0,0,0.28);
 }
 
-.manPicFrame {
-	width: 200px;
-	top: -22px;
-	left: -22px;
-	z-index: -1;
+.indexBg {
+        background-image: url('/IMAGE/indexBg.jpg');
 }
 
-.womanPic {
-	width: 200px;
-	background-image: url('https://s3-ap-southeast-1.amazonaws.com/www.youngme.vip/IMAGE/WOMAN/WOMAN+(13).jpg');
-	background-position: center;
-	background-size: 200px;
+.introBox {
+        background-color: #FFFFFF66
 }
 
-.womanPicFrame {
-	width: 200px;
-	top: 22px;
-	left: 22px;
-	z-index: -1;
+@media (min-width: 991px) {
+        .introBox {
+                width: 40%
+        }
 }
 
-SECTION.fixed-bottom, UL.mobileMode A:first-child {
-	border-radius: 30px;
+@media (max-width: 991px) {
+        .introBox {
+                width: 50%
+        }
 }
 
-UL.mobileMode A.active {
-	background: #D63384;
-	color: #E9ECEF;
+@media (max-width: 768px) {
+        .introBox {
+                width: 100%
+        }
+}
+
+.iconImg {
+        width: 300px;
+        height: 300px;
+}
+
+@media (max-width: 576px) {
+        .iconImg {
+                width: 220px;
+                height: 220px;
+        }
+        .introBox > DIV {
+                font-size: 20px;
+        }
+}
+
+.aboutIntro {
+        border: 2px solid #D63384;
+}
+
+.aboutTitle {
+        font-size: 120px;
+        opacity: 0.5;
+        font-family: 'Crimson Text', serif;
+}
+
+.aboutSubTitle {
+        top: -30px;
+}
+
+.aboutIntroTag {
+        background: #D63384;
+        right: 10px;
+}
+
+.aboutImgDiv {
+        margin-left: -30px;
+}
+
+.aboutImgDiv IMG {
+        width: 500px;
+}
+
+.mbersTitle {
+        font-size: 88px;
+        color: #00000077;
+        bottom: -75px;
+        left: 85px;
+        font-family: 'Crimson Text', serif;
+}
+
+.meMbersWrap {
+        border: 2px solid #D63384;
+        border-radius: 30px;
+}
+
+.meQueenWrap {
+        top: -70px;
+        left: 20px;
+}
+
+.meQueen {
+        width: 300px;
+        height: 400px;
+        background-repeat: no-repeat;
+        background-image: url('/IMAGE/woman.jpg');
+        background-position: center;
+        background-size: 300px;
+        border-radius: 3px;
+}
+
+.meQueenIntro {
+        height: 130px;
+        width: 400px;
+        left: 135px;
+        top: 111px;
+        z-index: 999;
+        background: #D63384DE;
+}
+
+.meQueenImg {
+        left: -50px;
+        top: 20px;
+}
+
+.meQueenImg IMG {
+        width: 90px;
+        border-radius: 10px;
+        border: 2px solid #D63384;
+}
+
+.meKingWrap {
+        top: 95px;
+        right: 35px;
+}
+
+.meKing {
+        background-size: 550px;
+        background-position: left;
+        background-image: url('/IMAGE/man.jpg');
+        width: 300px;
+        height: 400px;
+        background-repeat: no-repeat;
+        border-radius: 3px;
+}
+
+.meKingIntro {
+        height: 130px;
+        width: 420px;
+        left: -215px;
+        top: 115px;
+        z-index: 999;
+        background: #252f40EE;
+}
+
+.meKingImg {
+        right: -45px;
+        top: 20px;
+}
+
+.meKingImg IMG {
+        width: 90px;
+        border-radius: 10px;
+        border: 2px solid #17C1E8;
+}
+
+.introSmall {
+        display: none !important;
+}
+
+.carousel-cell {
+        width: 100%;
+        height: 400px;
+        margin-right: 10px;
+        background: #D63384;
+        border-radius: 30px;
+}
+
+.flickity-prev-next-button {
+        display: none;
+}
+
+.datingMode {
+        padding-left: 70px;
+}
+
+.socialMedia {
+        padding-left: 52px;
+        margin-top: -120px;
+}
+
+@media (min-width: 1400px) {
+        .meMbers {
+                width: 80%;
+                margin: 0 auto;
+        }
+}
+
+@media (min-width: 1200px) {
+        .meMbers {
+                width: 90%;
+                margin: 0 auto;
+        }
+        .carousel {
+                width: 90%;
+                margin: 0 auto;
+        }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+
+}
+
+.datingMode IMG {
+        width: 380px;
+}
+
+.socialMedia IMG {
+        width: 420px;
+}
+
+.reliefIntro IMG {
+        width: 330px;
+}
+
+.mePoint IMG, .mePoint2 IMG {
+        width: 400px;
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+        .aboutImgDiv IMG {
+                width: 70%;
+        }
+        .aboutImgDiv {
+                text-align: center;
+                margin-right: -58px;
+                margin-top: -20px;
+                margin-left: 0;
+        }
+        .aboutIntro {
+                margin-left: -40px;
+        }
+        .meMbersWrap {
+                height: 755px;
+                width: 90%;
+                margin: 0 auto;
+        }
+        .meKingWrap {
+                top: 300px;
+                left: 270px;
+        }
+        .mbersTitle {
+                left: 50px;
+        }
+        .carousel-cell {
+                height: 300px;
+        }
+        .datingMode IMG {
+                width: 280px;
+        }
+        .socialMedia IMG {
+                width: 315px;
+        }
+        .reliefIntro IMG {
+                width: 250px;
+        }
+        .mePoint IMG, .mePoint2 IMG {
+                width: 300px;
+        }
+}
+
+@media screen and (max-width: 767.98px) {
+        .carousel-cell {
+                height: 650px;
+        }
+        .datingMode {
+                padding: 0px;
+        }
+        .datingMode IMG {
+                width: 400px;
+                border-bottom-left-radius: 25px;
+                border-bottom-right-radius: 25px;
+        }
+        .socialMedia {
+                padding: 0px;
+                margin-top: 0px;
+        }
+        .socialMedia IMG {
+                width: 425px;
+        }
+        .mePoint IMG, .mePoint2 IMG {
+                width: 360px;
+        }
+        .mePoint IMG {
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+                border-bottom-left-radius: 25px !important;
+                border-bottom-right-radius: 25px !important;
+        }
+        .mePoint2 IMG {
+                border-top-left-radius: 25px !important;
+                border-top-right-radius: 25px !important;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+        }
+}
+
+@media screen and (max-width: 460px) {
+        .carousel-cell {
+                height: 500px;
+        }
+        .datingMode IMG {
+                width: 300px;
+                border-bottom-left-radius: 25px;
+                border-bottom-right-radius: 25px;
+        }
+        .socialMedia {
+                margin-top: 0px;
+        }
+        .socialMedia IMG {
+                width: 310px;
+        }
+        .socialMediaIntro {
+                margin-top: -90px;
+        }
+        .reliefIntro IMG {
+                width: 250px;
+        }
+        .mePoint IMG, .mePoint2 IMG {
+                width: 300px;
+        }
+}
+
+@media screen and (max-width: 350px) {
+        .socialMedia IMG {
+                width: 250px;
+        }
+        .mePoint IMG, .mePoint2 IMG {
+                width: 270px;
+        }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+        .aboutTitle {
+                font-size: 80px;
+        }
+        .aboutImgDiv IMG {
+                width: 80%;
+        }
+        .aboutImgDiv {
+                text-align: center;
+                margin-right: -25px;
+                margin-top: -15px;
+                margin-left: 0;
+        }
+        .aboutIntroTag {
+                bottom: -15px;
+        }
+        .aboutIntro {
+                margin-left: -40px;
+        }
+        .meMbersWrap {
+                height: 650px;
+                margin: 0 auto;
+        }
+        .meQueen {
+                width: 240px;
+                height: 320px;
+                background-size: 280px;
+        }
+        .meQueenWrap {
+                top: -50px;
+                left: 15px;
+        }
+        .meQueenIntro {
+                width: 360px;
+                left: 115px;
+                top: 68px;
+        }
+        .meQueenImg {
+                left: -40px;
+        }
+        .meQueenIntro, .meKingIntro {
+                font-size: 16px;
+                height: 120px;
+        }
+        .meQueenImg IMG, .meKingImg IMG {
+                width: 80px;
+        }
+        .meKing {
+                width: 240px;
+                height: 320px;
+                background-size: 450px;
+        }
+        .meKingWrap {
+                top: 275px;
+                left: 215px;
+        }
+        .meKingIntro {
+                width: 380px;
+                left: -235px;
+                top: 85px;
+        }
+        .mbersTitle {
+                font-size: 80px;
+                left: 13px;
+                bottom: -66px;
+        }
+}
+
+@media (max-width: 575.98px) {
+        .aboutTitle {
+                font-size: 80px;
+        }
+        .aboutIntroMainContent {
+                font-size: 15px;
+        }
+        .contentTitle {
+                font-size: 22px;
+        }
+        .aboutImgDiv IMG {
+                width: 90%;
+        }
+        .aboutImgDiv {
+                text-align: center;
+                margin-right: -25px;
+                margin-top: -15px;
+                margin-left: 0;
+        }
+        .aboutIntroTag {
+                bottom: -15px;
+        }
+
+}
+
+@media (min-width: 460px) and (max-width: 575.98px) {
+        .meMbersWrap {
+                height: 620px;
+                margin: 0 auto;
+        }
+        .meQueen {
+                width: 210px;
+                height: 280px;
+                background-size: 250px;
+        }
+        .meQueenWrap {
+                top: -60px;
+                left: 0px;
+        }
+        .meQueenIntro {
+                width: 307px;
+                left: 85px;
+                top: 70px;
+        }
+        .meQueenImg {
+                left: -35px;
+        }
+        .meQueenIntro, .meKingIntro {
+                font-size: 14px;
+                height: 100px;
+        }
+        .meQueenImg IMG, .meKingImg IMG {
+                width: 70px;
+        }
+        .meKingImg {
+                right: -30px;
+                top: 20px;
+        }
+        .meKing {
+                width: 210px;
+                height: 280px;
+                background-size: 420px;
+        }
+        .meKingWrap {
+                position: inherit !important;
+                display: flex;
+                justify-content: flex-end;
+                margin-top: -35px;
+        }
+        .meKingIntro {
+                width: 340px;
+                left: -190px;
+                top: 75px;
+        }
+        .mbersTitle {
+                font-size: 80px;
+                left: 13px;
+                bottom: -66px;
+        }
+}
+
+@media (max-width: 460px) {
+        .meMbersWrap {
+                height: 520px;
+                margin: 0 auto;
+        }
+        .meQueen {
+                width: 180px;
+                height: 240px;
+                background-size: 220px;
+        }
+        .meQueenWrap {
+                top: -55px;
+                left: -7px;
+        }
+        .meQueenIntro {
+                width: 283px;
+                left: 40px;
+                top: 55px;
+                padding: 7px 0;
+        }
+        .meQueenImg {
+                left: -25px;
+                top: 38px;
+        }
+        .meQueenIntro, .meKingIntro {
+                font-size: 14px;
+                height: auto;
+        }
+        .meQueenImg IMG, .meKingImg IMG {
+                width: 65px;
+        }
+        .meKingImg {
+                right: -41px;
+                top: 50px;
+        }
+        .meKing {
+                width: 180px;
+                height: 240px;
+                background-size: 320px;
+        }
+        .meKingWrap {
+                position: inherit !important;
+                display: flex;
+                justify-content: flex-end;
+                margin-top: -35px;
+                margin-right: -5px;
+        }
+        .meKingIntro {
+                width: 262px;
+                left: -143px;
+                top: 62px;
+                padding: 7px 0 7px 82px !important;
+        }
+        .mbersTitle {
+                font-size: 60px;
+                left: 12px;
+                bottom: -47px;
+        }
+        .introSmall {
+                display: flex !important;
+        }
+        .introLarge {
+                display: none !important;
+        }
+}
+
+@media (max-width: 370px) {
+        .meQueenIntro {
+                width: 235px;
+                left: 32px;
+                top: 57px;
+                padding: 5px 0 5px 40px !important;
+        }
+        .meQueenImg IMG, .meKingImg IMG {
+                width: 60px;
+        }
+        .meKingIntro {
+                width: 218px;
+                left: -96px;
+                top: 58px;
+                padding: 5px 0 7px 45px !important;
+        }
+        .mbersTitle {
+                font-size: 50px;
+                left: 7px;
+                bottom: -39px;
+        }
 }
 
 .bottom13rem {
-	bottom: 1.3rem;
+        bottom: 1.3rem;
 }
 
 @media (max-width: 321px){
-	IMG {
-		width: 148px;
-	}
+        IMG {
+                width: 148px;
+        }
 }
 
 ARTICLE {
-	width: 686px;
+        width: 686px;
+}
+
+SECTION.fixed-bottom, UL.mobileMode A:first-child {
+        border-radius: 30px;
+}
+
+UL.mobileMode A.active {
+        background: #D63384;
+        color: #E9ECEF;
 }
