@@ -154,7 +154,7 @@ public class WelcomeController {
          */
         @GetMapping(path = "/")
         ModelAndView index(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = document.getDocumentElement();
                 documentElement.setAttribute("title", messageSource.getMessage(
                         "title.home",
@@ -317,7 +317,7 @@ public class WelcomeController {
                         return Servant.redirectToRoot();
                 }
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = document.getDocumentElement();
                 documentElement.setAttribute("title", messageSource.getMessage(
                         "title.activate",
@@ -414,7 +414,7 @@ public class WelcomeController {
                         return new ModelAndView("redirect:/");
                 }
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = document.getDocumentElement();
                 documentElement.setAttribute("title", messageSource.getMessage(
                         "title.activated",
@@ -537,7 +537,7 @@ public class WelcomeController {
                         return new ModelAndView("redirect:/");
                 }
 
-                Document document = servant.parseDocument(
+                Document document = Servant.parseDocument(
                         "classpath:/skeleton/reactivate.xml"
                 );
                 Element documentElement = document.getDocumentElement();
@@ -669,7 +669,7 @@ public class WelcomeController {
                 /*
 		 文件
                  */
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = document.getDocumentElement();
                 documentElement.setAttribute("title", messageSource.getMessage(
                         "title.resetPassword",
@@ -780,7 +780,7 @@ public class WelcomeController {
                 /*
 		 文件
                  */
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = document.getDocumentElement();
                 documentElement.setAttribute("title", messageSource.getMessage(
                         "title.resetPassword",
@@ -876,7 +876,7 @@ public class WelcomeController {
                         return Servant.redirectToRoot();
                 }
 
-                Document document = servant.parseDocument(
+                Document document = Servant.parseDocument(
                         "classpath:/skeleton/signIn.xml"
                 );
                 Element documentElement = document.getDocumentElement();
@@ -955,7 +955,7 @@ public class WelcomeController {
                         return new ModelAndView("redirect:/");
                 }
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = document.getDocumentElement();
                 documentElement.setAttribute("title", messageSource.getMessage(
                         "title.signUp",
@@ -1350,7 +1350,7 @@ public class WelcomeController {
                         return Servant.redirectToProfile();
                 }
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = servant.documentElement(
                         document,
                         authentication
@@ -1478,7 +1478,7 @@ public class WelcomeController {
                         return Servant.redirectToProfile();
                 }
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = servant.documentElement(
                         document,
                         authentication
@@ -1510,7 +1510,7 @@ public class WelcomeController {
                                 peekerElement.setAttribute(
                                         "date",
                                         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
-                                                servant.toTaipeiZonedDateTime(
+                                                Servant.toTaipeiZonedDateTime(
                                                         history.getOccurred()
                                                 ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
                                         ));
@@ -1626,7 +1626,7 @@ public class WelcomeController {
                         return Servant.redirectToProfile();
                 }
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = servant.documentElement(
                         document,
                         authentication
@@ -1853,7 +1853,7 @@ public class WelcomeController {
                         return Servant.redirectToRoot();
                 }
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = servant.documentElement(
                         document,
                         authentication
@@ -1908,7 +1908,7 @@ public class WelcomeController {
                         return Servant.redirectToRoot();
                 }
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = servant.documentElement(
                         document,
                         authentication
@@ -2034,7 +2034,7 @@ public class WelcomeController {
                         return Servant.redirectToRoot();
                 }
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = servant.documentElement(
                         document,
                         authentication
@@ -2068,7 +2068,7 @@ public class WelcomeController {
                         documentElement.setAttribute(
                                 "vvipExpiry",
                                 LoverService.DATE_TIME_FORMATTER.format(
-                                        servant.toTaipeiZonedDateTime(
+                                        Servant.toTaipeiZonedDateTime(
                                                 me.getVip()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID
                                         )
@@ -2088,7 +2088,7 @@ public class WelcomeController {
                         documentElement.setAttribute(
                                 "vipExpiry",
                                 LoverService.DATE_TIME_FORMATTER.format(
-                                        servant.toTaipeiZonedDateTime(
+                                        Servant.toTaipeiZonedDateTime(
                                                 me.getVip()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID
                                         )
@@ -2107,7 +2107,7 @@ public class WelcomeController {
                         documentElement.setAttribute(
                                 "trialExpiry",
                                 LoverService.DATE_TIME_FORMATTER.format(
-                                        servant.toTaipeiZonedDateTime(
+                                        Servant.toTaipeiZonedDateTime(
                                                 me.getVip()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID
                                         )
@@ -2153,7 +2153,7 @@ public class WelcomeController {
                         return Servant.redirectToRoot();
                 }
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = servant.documentElement(
                         document,
                         authentication
@@ -2580,7 +2580,7 @@ public class WelcomeController {
          */
         @GetMapping(path = "/terms.asp")
         ModelAndView terms(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
 
                 Element documentElement;
                 if (servant.isNull(authentication)) {
@@ -2620,7 +2620,7 @@ public class WelcomeController {
          */
         @GetMapping(path = "/privacy.asp")
         ModelAndView privacy(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
 
                 Element documentElement;
                 if (servant.isNull(authentication)) {
@@ -3040,7 +3040,7 @@ public class WelcomeController {
                         return Servant.redirectToProfile();
                 }
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = servant.documentElement(
                         document,
                         authentication
@@ -3173,7 +3173,7 @@ public class WelcomeController {
                         return Servant.redirectToRoot();
                 }
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = servant.documentElement(
                         document,
                         authentication
@@ -3255,7 +3255,7 @@ public class WelcomeController {
                         return Servant.redirectToProfile();
                 }
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = servant.documentElement(
                         document,
                         authentication
@@ -3301,7 +3301,7 @@ public class WelcomeController {
                  */
                 Lover partner = loverService.loadByIdentifier(identifier);
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 document = webSocketService.chatroom(document, me, partner);
                 document = webSocketService.inbox(document, me);
                 Element documentElement = servant.documentElement(
@@ -3367,7 +3367,7 @@ public class WelcomeController {
                         return Servant.redirectToProfile();
                 }
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = servant.documentElement(
                         document,
                         authentication
@@ -3660,7 +3660,6 @@ public class WelcomeController {
 
                 TrialCode trialCode = trialCodeRepository.findByCode(code);
 
-                JSONObject jsonObject;
                 try {
                         loverService.trial(me, trialCode);
                 } catch (Exception exception) {
@@ -3761,7 +3760,7 @@ public class WelcomeController {
                         return Servant.redirectToProfile();
                 }
 
-                Document document = servant.parseDocument();
+                Document document = Servant.parseDocument();
                 Element documentElement = servant.documentElement(
                         document,
                         authentication

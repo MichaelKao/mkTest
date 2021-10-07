@@ -87,7 +87,7 @@ public class LineNotifyController {
 			oAuthAuthorizationCode
 		);
 
-		Document document = servant.parseDocument();
+		Document document = Servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 
 		documentElement.setAttribute(
@@ -123,7 +123,7 @@ public class LineNotifyController {
 			sucker
 		);
 
-		Document document = servant.parseDocument();
+		Document document = Servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 
 		documentElement.setAttribute(

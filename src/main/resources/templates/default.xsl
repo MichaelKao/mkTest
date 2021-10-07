@@ -28,6 +28,7 @@
                 </OPTION>
         </xsl:template>
 
+        <!--导航列-->
         <xsl:template name="navbar">
                 <xsl:call-template name="customerFloatBtn"/>
                 <DIV class="container position-sticky z-index-sticky top-0">
@@ -188,7 +189,7 @@
                                                                         <LI class="nav-item">
                                                                                 <A class="nav-link nav-link-icon d-flex align-items-center" href="/upgrade.asp">
                                                                                         <I class="fad fa-crown fontSize22 width30whenMobile"></I>
-                                                                                        <SPAN class="d-lg-none">meKing 升級</SPAN>
+                                                                                        <SPAN class="d-lg-none">meKING 升級</SPAN>
                                                                                 </A>
                                                                         </LI>
                                                                 </xsl:if>
@@ -216,6 +217,7 @@
                 </DIV>
         </xsl:template>
 
+        <!--哇爪脚本-->
         <xsl:template name="bodyScriptTags">
                 <SCRIPT src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"/>
                 <SCRIPT crossorigin="anonymous" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"/>
@@ -225,6 +227,7 @@
                 <SCRIPT src="/SCRIPT/soft-design-system.min.js"/>
         </xsl:template>
 
+        <!--样式表-->
         <xsl:template name="headLinkTags">
                 <LINK href="/favicon.ico" rel="icon" type="image/x-icon"/>
                 <LINK href="/ICON/apple-touch-icon.png" rel="apple-touch-icon"/>
@@ -249,22 +252,24 @@
         <xsl:template name="bootstrapToast">
                 <DIV class="position-fixed top-5 end-0 p-3" style="z-index: 10000">
                         <DIV class="toast fade hide bg-primary opacity-9" data-bs-delay="1800" >
-                                <BUTTON type="button" class="btn-close ms-2 mt-1" data-bs-dismiss="toast"></BUTTON>
+                                <BUTTON class="btn-close ms-2 mt-1" type="button" data-bs-dismiss="toast"/>
                                 <DIV class="toast-body text-light"/>
                         </DIV>
                 </DIV>
         </xsl:template>
 
+        <!--浮动式客服按钮-->
         <xsl:template name="customerFloatBtn">
                 <A class="customerFloatBtn d-flex align-items-center justify-content-center position-fixed bg-dark fontSize25 text-white opacity-9" href="https://line.me/R/ti/p/%40017zadfy">
-                        <I class="fad fa-user-headset"></I>
+                        <I class="fad fa-user-headset"/>
                 </A>
         </xsl:template>
 
+        <!--地-->
         <xsl:template name="footer">
                 <FOOTER class="text-xs my-4">
                         <DIV class="text-center">
-                                <I class="fal fa-copyright me-1"></I>
+                                <I class="fal fa-copyright me-1"/>
                                 <SPAN>2021 Young Me 養蜜</SPAN>
                         </DIV>
                         <DIV class="text-center">
@@ -313,6 +318,7 @@
                 <LINK href="/STYLE/default.css" rel="stylesheet"/>
         </xsl:template>
 
+        <!--侧导条-->
         <xsl:template name="dashSideNavBar">
                 <ASIDE class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-white" id="sidenav-main">
                         <DIV class="sidenav-header">
@@ -401,21 +407,21 @@
                 <!-- Navbar -->
                 <NAV class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
                         <DIV class="container-fluid py-1 px-2 px-sm-4">
-                                <H6 class="font-weight-bolder mb-0">養蜜YoungMe後台</H6>
+                                <H6 class="font-weight-bolder mb-0">養蜜 YoungMe 後台</H6>
                                 <DIV class="collapse navbar-collapse" id="navbar">
                                         <UL class="navbar-nav justify-content-end ms-auto">
                                                 <LI class="nav-item d-flex align-items-center">
                                                         <A class="btn btn-outline-primary btn-round px-2 py-1 mb-0" href="/">
-                                                                <I class="fal fa-home-heart text-lg"></I>
+                                                                <I class="fal fa-home-heart text-lg"/>
                                                                 <SPAN class="ms-1">前台</SPAN>
                                                         </A>
                                                 </LI>
                                                 <LI class="nav-item d-xl-none ps-2 d-flex align-items-center">
                                                         <A href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
                                                                 <DIV class="sidenav-toggler-inner">
-                                                                        <I class="sidenav-toggler-line"></I>
-                                                                        <I class="sidenav-toggler-line"></I>
-                                                                        <I class="sidenav-toggler-line"></I>
+                                                                        <I class="sidenav-toggler-line"/>
+                                                                        <I class="sidenav-toggler-line"/>
+                                                                        <I class="sidenav-toggler-line"/>
                                                                 </DIV>
                                                         </A>
                                                 </LI>

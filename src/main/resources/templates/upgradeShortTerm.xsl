@@ -37,7 +37,7 @@
                                                         <SPAN class="text-gradient text-primary text-sm font-weight-bold my-2">養蜜 Young me</SPAN>
                                                         <DIV class="h4 d-block text-darker my-2">
                                                                 <SPAN>馬上升級</SPAN>
-                                                                <span class="fontSize22 text-primary mx-1">meKing</span>
+                                                                <span class="fontSize22 text-primary mx-1">meKING</span>
                                                                 <SPAN class="fontSize22">
                                                                         <I class="fas fa-plus"></I>
                                                                 </SPAN>

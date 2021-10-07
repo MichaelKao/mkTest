@@ -40,7 +40,7 @@
                                                         <SPAN class="text-white text-bold">等級徽章</SPAN>
                                                 </DIV>
                                                 <DIV>
-                                                        <SPAN class="text-white text-sm">提高 meQueen 主動找您的機會</SPAN>
+                                                        <SPAN class="text-white text-sm">提高 meQUEEN 主動找您的機會</SPAN>
                                                 </DIV>
                                                 <DIV>
                                                         <SPAN class="text-dark text-bolder">PRO</SPAN>
@@ -56,7 +56,7 @@
                                                 </DIV>
                                                 <DIV class="d-flex flex-column align-items-center">
                                                         <SPAN class="text-white text-sm">於首頁 VIP 專區顯示您的資訊</SPAN>
-                                                        <SPAN class="text-white text-sm">讓 meQueen 更容易注意到您</SPAN>
+                                                        <SPAN class="text-white text-sm">讓 meQUEEN 更容易注意到您</SPAN>
                                                 </DIV>
                                                 <DIV>
                                                         <SPAN class="text-dark text-bolder">PRO</SPAN>
@@ -71,7 +71,7 @@
                                                         </SPAN>
                                                 </DIV>
                                                 <DIV class=" d-flex flex-column">
-                                                        <SPAN class="text-white text-sm">和 meQueen 聊天次數無限制</SPAN>
+                                                        <SPAN class="text-white text-sm">和 meQUEEN 聊天次數無限制</SPAN>
                                                 </DIV>
                                                 <DIV>
                                                         <SPAN class="text-dark text-bolder">PRO</SPAN>
@@ -108,7 +108,7 @@
                                                         </SPAN>
                                                 </DIV>
                                                 <DIV class=" d-flex flex-column">
-                                                        <SPAN class="text-white text-sm">可看見 meQueen 文字評價</SPAN>
+                                                        <SPAN class="text-white text-sm">可看見 meQUEEN 文字評價</SPAN>
                                                 </DIV>
                                                 <DIV>
                                                         <SPAN class="text-dark text-bolder">PRO</SPAN>
@@ -151,7 +151,7 @@
                                                 </xsl:if>
                                                 <xsl:if test="@vip">
                                                         <DIV>
-                                                                <SPAN class="text-primary text-bold">目前為 meKing</SPAN>
+                                                                <SPAN class="text-primary text-bold">目前為 meKING</SPAN>
                                                                 <SPAN class="fontSize22 ms-1">
                                                                         <I class="fas fa-plus"></I>
                                                                 </SPAN>
@@ -165,7 +165,7 @@
                                                 </xsl:if>
                                                 <xsl:if test="@vvip">
                                                         <DIV class="text-primary text-bold">
-                                                                <SPAN>目前為 meKing</SPAN>
+                                                                <SPAN>目前為 meKING</SPAN>
                                                                 <SPAN class="text-bolder fontSize22 ms-1">PRO</SPAN>
                                                         </DIV>
                                                         <DIV class="text-dark text-xs">
@@ -201,7 +201,7 @@
                                         <DIV class="col-6 col-md-5 col-xl-4 mb-3 pe-1 ps-0">
                                                 <DIV class="p-2 card h-100">
                                                         <DIV class="text-center border-radius-xl py-2">
-                                                                <SPAN class="text-primary text-lg font-weight-bold my-2">meKing</SPAN>
+                                                                <SPAN class="text-primary text-lg font-weight-bold my-2">meKING</SPAN>
                                                                 <SPAN class="fontSize22 ms-1">
                                                                         <I class="fas fa-plus"></I>
                                                                 </SPAN>
@@ -225,7 +225,7 @@
                                         <DIV class="col-6 col-md-5 col-xl-4 mb-3 ps-1 pe-0" style="">
                                                 <DIV class="p-2 card h-100">
                                                         <DIV class="text-center border-radius-xl py-2">
-                                                                <SPAN class="text-primary text-lg font-weight-bold my-2">meKing</SPAN>
+                                                                <SPAN class="text-primary text-lg font-weight-bold my-2">meKING</SPAN>
                                                                 <SPAN class="text-bolder fontSize22 ms-1">PRO</SPAN>
                                                                 <DIV class="text-lg text-bold text-center my-1">
                                                                         <DIV class="text-sm">
