@@ -1,31 +1,17 @@
+BODY {
+        background: #F3F3F3;
+}
+
 .imageShadow {
         box-shadow: 3px 6px 5px 0 rgba(0,0,0,0.28);
 }
 
 .indexBg {
-        background-image: url('/IMAGE/indexBg.jpg');
+        background-image: url('https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/indexBg.jpg');
 }
 
 .introBox {
         background-color: #FFFFFF66
-}
-
-@media (min-width: 991px) {
-        .introBox {
-                width: 40%
-        }
-}
-
-@media (max-width: 991px) {
-        .introBox {
-                width: 50%
-        }
-}
-
-@media (max-width: 768px) {
-        .introBox {
-                width: 100%
-        }
 }
 
 .iconImg {
@@ -78,7 +64,7 @@
         font-family: 'Crimson Text', serif;
 }
 
-.meMbersWrap {
+.meMbersWrap, .storiesWrap {
         border: 2px solid #D63384;
         border-radius: 30px;
 }
@@ -92,7 +78,7 @@
         width: 300px;
         height: 400px;
         background-repeat: no-repeat;
-        background-image: url('/IMAGE/woman.jpg');
+        background-image: url('https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg');
         background-position: center;
         background-size: 300px;
         border-radius: 3px;
@@ -126,7 +112,7 @@
 .meKing {
         background-size: 550px;
         background-position: left;
-        background-image: url('/IMAGE/man.jpg');
+        background-image: url('https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/man.jpg');
         width: 300px;
         height: 400px;
         background-repeat: no-repeat;
@@ -178,26 +164,24 @@
         margin-top: -120px;
 }
 
+.storiesTitle {
+        font-size: 88px;
+        color: #d6338477;
+        top: -70px;
+        right: 10px;
+        font-family: 'Crimson Text', serif;
+}
+
+.story {
+        top: 12px;
+        left: -25px;
+}
+
 @media (min-width: 1400px) {
-        .meMbers {
+        .meMbers, .stories {
                 width: 80%;
                 margin: 0 auto;
         }
-}
-
-@media (min-width: 1200px) {
-        .meMbers {
-                width: 90%;
-                margin: 0 auto;
-        }
-        .carousel {
-                width: 90%;
-                margin: 0 auto;
-        }
-}
-
-@media (min-width: 992px) and (max-width: 1199.98px) {
-
 }
 
 .datingMode IMG {
@@ -214,6 +198,35 @@
 
 .mePoint IMG, .mePoint2 IMG {
         width: 400px;
+}
+
+@media (min-width: 1200px) {
+        .meMbers, .stories {
+                width: 90%;
+                margin: 0 auto;
+        }
+        .carousel {
+                width: 90%;
+                margin: 0 auto;
+        }
+}
+
+@media screen and (min-width: 992px) {
+        .introBox {
+                width: 40%
+        }
+}
+
+@media screen and (max-width: 991.98px) {
+        .introBox {
+                width: 50%
+        }
+}
+
+@media (max-width: 768px) {
+        .introBox {
+                width: 100%
+        }
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
@@ -395,6 +408,9 @@
                 left: 13px;
                 bottom: -66px;
         }
+        .storiesTitle{
+                font-size: 80px;
+        }
 }
 
 @media (max-width: 575.98px) {
@@ -419,7 +435,6 @@
         .aboutIntroTag {
                 bottom: -15px;
         }
-
 }
 
 @media (min-width: 460px) and (max-width: 575.98px) {
@@ -475,6 +490,9 @@
                 font-size: 80px;
                 left: 13px;
                 bottom: -66px;
+        }
+        .storiesTitle{
+                font-size: 80px;
         }
 }
 
@@ -536,6 +554,10 @@
                 left: 12px;
                 bottom: -47px;
         }
+        .storiesTitle{
+                font-size: 60px;
+                top: -50px;
+        }
         .introSmall {
                 display: flex !important;
         }
@@ -564,6 +586,10 @@
                 font-size: 50px;
                 left: 7px;
                 bottom: -39px;
+        }
+        .storiesTitle{
+                font-size: 50px;
+                top: -40px;
         }
 }
 

@@ -86,7 +86,7 @@
                                                         <DIV class="position-absolute text-bold text-white bg-pink p-1 p-md-2 aboutIntroTag">#用甜蜜生活滋養你</DIV>
                                                 </DIV>
                                                 <DIV class="aboutImgDiv">
-                                                        <IMG class="imageShadow" src="/IMAGE/about.jpg"/>
+                                                        <IMG class="imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/about.jpg"/>
                                                 </DIV>
                                         </DIV>
                                 </SECTION>
@@ -114,7 +114,7 @@
                                                                                                 </DIV>
                                                                                         </DIV>
                                                                                         <DIV class="position-absolute meQueenImg">
-                                                                                                <IMG class="imageShadow" src="/IMAGE/whiteQueen.jpg"/>
+                                                                                                <IMG class="imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/whiteQueen.jpg"/>
                                                                                         </DIV>
                                                                                 </DIV>
                                                                         </DIV>
@@ -140,7 +140,7 @@
                                                                                                 </DIV>
                                                                                         </DIV>
                                                                                         <DIV class="position-absolute meKingImg">
-                                                                                                <IMG class="imageShadow" src="/IMAGE/whiteKing.jpg"/>
+                                                                                                <IMG class="imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/whiteKing.jpg"/>
                                                                                         </DIV>
                                                                                 </DIV>
                                                                         </DIV>
@@ -154,7 +154,7 @@
                                         <DIV class="carousel">
                                                 <DIV class="carousel-cell row">
                                                         <DIV class="datingMode col-md-6 d-flex flex-column align-items-center">
-                                                                <IMG class="imageShadow" src="/IMAGE/約會模式.jpg"/>
+                                                                <IMG class="imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/約會模式.jpg"/>
                                                         </DIV>
                                                         <DIV class="col-md-6 d-flex flex-column justify-content-center align-items-center mb-4 mb-md-0">
                                                                 <H3 class="text-dark">
@@ -167,7 +167,7 @@
                                                 </DIV>
                                                 <DIV class="carousel-cell row">
                                                         <DIV class="socialMedia col-md-6 d-flex flex-column align-items-center">
-                                                                <IMG class="imageShadow border-radius-2xl border-radius-top-end-0 border-radius-top-start-0" src="/IMAGE/通訊軟體.jpg"/>
+                                                                <IMG class="imageShadow border-radius-2xl border-radius-top-end-0 border-radius-top-start-0" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/通訊軟體.jpg"/>
                                                         </DIV>
                                                         <DIV class="col-md-6 socialMediaIntro d-flex flex-column justify-content-center align-items-center">
                                                                 <H3 class="text-dark">
@@ -183,7 +183,7 @@
                                                 <DIV class="carousel-cell row">
                                                         <DIV class="reliefIntro col-md-6 d-flex justify-content-center align-items-center">
                                                                 <DIV class="position-relative">
-                                                                        <IMG class="imageShadow border-radius-2xl" src="/IMAGE/relief.jpg"/>
+                                                                        <IMG class="imageShadow border-radius-2xl" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/relief.jpg"/>
                                                                         <DIV class="position-absolute right-0 text-center" style="width: 55px; top: 10px;">
                                                                                 <I class="fas fa-shield-check fontSize30 text-success text-shadow"></I>
                                                                         </DIV>
@@ -200,10 +200,10 @@
                                                 </DIV>
                                                 <DIV class="carousel-cell row">
                                                         <DIV class="mePoint col-md-6 d-flex justify-content-center align-items-start align-items-md-end">
-                                                                <IMG class="imageShadow border-radius-2xl border-radius-bottom-end-0 border-radius-bottom-start-0" src="/IMAGE/me點.jpg"/>
+                                                                <IMG class="imageShadow border-radius-2xl border-radius-bottom-end-0 border-radius-bottom-start-0" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/me點.jpg"/>
                                                         </DIV>
                                                         <DIV class="mePoint2 col-md-6 d-flex flex-column justify-content-end justify-content-md-start align-items-center">
-                                                                <IMG class="imageShadow border-radius-2xl border-radius-top-end-0 border-radius-top-start-0 order-2" src="/IMAGE/點數購買.jpg"/>
+                                                                <IMG class="imageShadow border-radius-2xl border-radius-top-end-0 border-radius-top-start-0 order-2" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/點數購買.jpg"/>
                                                                 <DIV class="mb-6 mb-md-0 mt-md-4 order-md-2">
                                                                         <H3 class="text-dark">
                                                                                 <I class="fad fa-badge-dollar fontSize30 me-2"></I>
@@ -213,6 +213,71 @@
                                                                         <DIV class="text-white text-lg text-bolder">。付款交易隱藏私密。</DIV>
                                                                 </DIV>
                                                         </DIV>
+                                                </DIV>
+                                        </DIV>
+                                </SECTION>
+                                <SECTION class="py-6 container">
+                                        <DIV class="stories">
+                                                <DIV class="position-relative text-dark px-3 py-4 storiesWrap">
+                                                        <DIV class="row">
+                                                                <DIV class="col-12 col-md-11 col-lg-4 mx-auto mb-4 mb-lg-0 px-1 px-md-3">
+                                                                        <DIV class="position-relative border-radius-xl pt-6 px-2 imageShadow bg-white h-100">
+                                                                                <DIV class="story position-absolute d-flex align-items-center">
+                                                                                        <DIV class="imageShadow bg-primary p-2 border-radius-2xl">
+                                                                                                <H6 class="text-white m-0">22歲 高雄市 超商店員</H6>
+                                                                                        </DIV>
+                                                                                        <SPAN class="ms-2">
+                                                                                                <I class="fad fa-chess-queen-alt fontSize35 text-primary"></I>
+                                                                                        </SPAN>
+                                                                                </DIV>
+                                                                                <DIV class="pt-2 pb-3">
+                                                                                        <H5>被照顧的感覺真好</H5>
+                                                                                        <DIV>每天要面對客人都好累，要會十八般武藝一樣，超級忙!!</DIV>
+                                                                                        <DIV>想找到有經濟能力的男友照顧自己，讓自己下班時可以快樂輕鬆，但又常常變成我要付出，或是AA制的方式。</DIV>
+                                                                                        <DIV>在這邊遇到的男會員，不僅照顧我的生活，也讓我在物慾上有辦法滿足，同時又很成熟穩重。</DIV>
+                                                                                </DIV>
+                                                                        </DIV>
+                                                                </DIV>
+                                                                <DIV class="col-12 col-md-11 col-lg-4 mx-auto mb-4 mb-lg-0 px-1 px-md-3">
+                                                                        <DIV class="position-relative border-radius-xl pt-6 px-2 imageShadow bg-white h-100">
+                                                                                <DIV class="story position-absolute d-flex align-items-center">
+                                                                                        <DIV class="imageShadow bg-dark p-2 border-radius-2xl">
+                                                                                                <H6 class="text-white m-0">35歲 台中市 產品經理</H6>
+                                                                                        </DIV>
+                                                                                        <SPAN class="ms-2">
+                                                                                                <I class="fad fa-chess-king-alt fontSize35 text-info"></I>
+                                                                                        </SPAN>
+                                                                                </DIV>
+                                                                                <DIV class="pt-2 pb-3">
+                                                                                        <H5>送ME點破冰，找到約會</H5>
+                                                                                        <DIV>工作忙碌加上生活圈封閉，其實被催婚很煩之外，假日休息都不知道約誰。</DIV>
+                                                                                        <DIV>加上又不太敢直接搭訕女生，怕尷尬也覺得身分年紀有差。</DIV>
+                                                                                        <DIV>嘗試一般交友軟體上的女生，又只看臉，不然就是詐騙投資客。</DIV>
+                                                                                        <DIV>在養蜜上，透過送喜歡的女孩ME點當作禮物，受到的回饋都很好，也有破冰的效果。</DIV>
+                                                                                        <DIV>出租約會的形式也讓邀約不會很奇怪，互動聊過後提出約會，並附上金額，也可以照顧到喜歡的女孩，後續也有繼續聯絡變成飯友。</DIV>
+                                                                                </DIV>
+                                                                        </DIV>
+                                                                </DIV>
+                                                                <DIV class="col-12 col-md-11 col-lg-4 mx-auto px-1 px-md-3">
+                                                                        <DIV class="position-relative border-radius-xl pt-6 px-2 imageShadow bg-white h-100">
+                                                                                <DIV class="story position-absolute d-flex align-items-center">
+                                                                                        <DIV class="imageShadow bg-primary p-2 border-radius-2xl">
+                                                                                                <H6 class="text-white m-0">26歲 台北市 直播主</H6>
+                                                                                        </DIV>
+                                                                                        <SPAN class="ms-2">
+                                                                                                <I class="fad fa-chess-queen-alt fontSize35 text-primary"></I>
+                                                                                        </SPAN>
+                                                                                </DIV>
+                                                                                <DIV class="pt-2 pb-3">
+                                                                                        <H5>支持夢想的最大幫手</H5>
+                                                                                        <DIV>維持自己的外貌跟打扮，其實真的很花錢，但又是自己的夢想職業。</DIV>
+                                                                                        <DIV>粉絲對我很好也有斗內，不過賺到的錢好多都拿去做生活開銷~</DIV>
+                                                                                        <DIV>經過廣告看到養蜜這個網站，結果遇到很多很棒的對象，也助長我的直播工作，還有固定的收入。</DIV>
+                                                                                </DIV>
+                                                                        </DIV>
+                                                                </DIV>
+                                                        </DIV>
+                                                        <DIV class="storiesTitle position-absolute">STORIES</DIV>
                                                 </DIV>
                                         </DIV>
                                 </SECTION>
