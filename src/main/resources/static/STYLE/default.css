@@ -9,6 +9,10 @@ HTML, BODY{
         text-size-adjust: none;
 }
 
+BODY {
+        background: #F3F3F3;
+}
+
 INPUT, TEXTAREA {
         font-size: initial;
 }

@@ -3020,53 +3020,57 @@ public class LoverService {
          * @param locale
          * @return
          */
-        public Document indexDocument(Document document, Lover lover, Locale locale) {
+        public Document indexDocument(Document document, Lover lover, String vipPage, String reliefPage, String activePage, String registerPage, Locale locale) {
                 Element documentElement = document.getDocumentElement();
 
                 Element areaElement = document.createElement("area");
                 documentElement.appendChild(areaElement);
 
+                int vipPageNum = !vipPage.isBlank() ? Integer.parseInt(vipPage) : 0;
                 if (!lover.getGender()) {
                         areaElement.appendChild(createElement(
                                 document.createElement("vip"),
                                 lover,
                                 vipOnTheWall(
                                         lover,
-                                        0,
+                                        vipPageNum,
                                         PAGE_SIZE_ON_THE_WALL
                                 ),
                                 locale
                         ));//甜心才会显示的贵宾会员列表区块
                 }
 
+                int reliefPageNum = !reliefPage.isBlank() ? Integer.parseInt(reliefPage) : 0;
                 areaElement.appendChild(createElement(
                         document.createElement("relief"),
                         lover,
                         relievingOnTheWall(
                                 lover,
-                                0,
+                                reliefPageNum,
                                 PAGE_SIZE_ON_THE_WALL
                         ),
                         locale
                 ));//安心认证列表区块
 
+                int activePageNum = !activePage.isBlank() ? Integer.parseInt(activePage) : 0;
                 areaElement.appendChild(createElement(
                         document.createElement("active"),
                         lover,
                         latestActiveOnTheWall(
                                 lover,
-                                0,
+                                activePageNum,
                                 PAGE_SIZE_ON_THE_WALL
                         ),
                         locale
                 ));//最近活跃列表区块
 
+                int registerPageNum = !registerPage.isBlank() ? Integer.parseInt(registerPage) : 0;
                 areaElement.appendChild(createElement(
                         document.createElement("register"),
                         lover,
                         latestRegisteredOnTheWall(
                                 lover,
-                                0,
+                                registerPageNum,
                                 PAGE_SIZE_ON_THE_WALL
                         ),
                         locale
@@ -3085,9 +3089,19 @@ public class LoverService {
          * @return
          */
         public Element createElement(Element element, Lover me, Page<Lover> page, Locale locale) {
-                if (page.getTotalPages() <= 1) {
-                        element.setAttribute("lastPage", null);
+                if (page.hasNext()) {
+                        element.setAttribute(
+                                "hasNext",
+                                Integer.toString(page.nextOrLastPageable().getPageNumber())
+                        );
                 }
+                if (page.hasPrevious()) {
+                        element.setAttribute(
+                                "hasPrev",
+                                Integer.toString(page.previousOrFirstPageable().getPageNumber())
+                        );
+                }
+
                 Document document = element.getOwnerDocument();
 
                 Collection<Lover> following = loverService.getThoseIFollow(me);

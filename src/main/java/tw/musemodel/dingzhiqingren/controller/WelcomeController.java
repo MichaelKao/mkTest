@@ -33,6 +33,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -49,6 +50,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -153,7 +155,10 @@ public class WelcomeController {
          * @throws ParserConfigurationException
          */
         @GetMapping(path = "/")
-        ModelAndView index(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+        ModelAndView index(Authentication authentication, Locale locale,
+                @CookieValue(defaultValue = "", name = "vipPage") String vipPage, @CookieValue(defaultValue = "", name = "reliefPage") String reliefPage,
+                @CookieValue(defaultValue = "", name = "activePage") String activePage, @CookieValue(defaultValue = "", name = "registerPage") String registerPage
+        ) throws SAXException, IOException, ParserConfigurationException {
                 Document document = Servant.parseDocument();
                 Element documentElement = document.getDocumentElement();
                 documentElement.setAttribute("title", messageSource.getMessage(
@@ -201,7 +206,15 @@ public class WelcomeController {
                         }
 
                         // 登入後的甜心或男仕列表
-                        document = loverService.indexDocument(document, me, locale);
+                        document = loverService.indexDocument(
+                                document,
+                                me,
+                                vipPage,
+                                reliefPage,
+                                activePage,
+                                registerPage,
+                                locale
+                        );
 
                         // 通知數
                         if (loverService.annoucementCount(me) > 0) {
@@ -248,13 +261,15 @@ public class WelcomeController {
         @ResponseBody
         @Secured({Servant.ROLE_ADVENTURER})
         @SuppressWarnings("null")
-        String seeMoreLover(@RequestParam int p, @RequestParam String type, Authentication authentication, Locale locale) {
+        String seeMoreLover(@RequestParam int p, @RequestParam String type,
+                HttpServletResponse response, Authentication authentication, Locale locale) {
                 // 本人
                 Lover me = loverService.loadByUsername(
                         authentication.getName()
                 );
 
                 Page<Lover> page = null;
+                Cookie currentPageTypeCookie = null;
                 if (!me.getGender()) {
                         if ("vip".equals(type)) {
                                 page = loverService.vipOnTheWall(
@@ -262,6 +277,18 @@ public class WelcomeController {
                                         p,
                                         PAGE_SIZE_ON_THE_WALL
                                 );//甜心才会显示的贵宾会员列表区块
+                                Cookie cookie = new Cookie(
+                                        "vipPage",
+                                        Integer.toString(p)
+                                );
+                                cookie.setSecure(true);
+                                response.addCookie(cookie);
+                                currentPageTypeCookie = new Cookie(
+                                        "currentPageType",
+                                        "vip"
+                                );
+                                currentPageTypeCookie.setSecure(true);
+                                response.addCookie(currentPageTypeCookie);
                         }
                 }
                 if ("relief".equals(type)) {
@@ -270,6 +297,18 @@ public class WelcomeController {
                                 p,
                                 PAGE_SIZE_ON_THE_WALL
                         );//安心认证列表区块
+                        Cookie cookie = new Cookie(
+                                "reliefPage",
+                                Integer.toString(p)
+                        );
+                        cookie.setSecure(true);
+                        response.addCookie(cookie);
+                        currentPageTypeCookie = new Cookie(
+                                "currentPageType",
+                                "relief"
+                        );
+                        currentPageTypeCookie.setSecure(true);
+                        response.addCookie(currentPageTypeCookie);
                 }
                 if ("active".equals(type)) {
                         page = loverService.latestActiveOnTheWall(
@@ -277,6 +316,18 @@ public class WelcomeController {
                                 p,
                                 PAGE_SIZE_ON_THE_WALL
                         );//最近活跃列表区块
+                        Cookie cookie = new Cookie(
+                                "activePage",
+                                Integer.toString(p)
+                        );
+                        cookie.setSecure(true);
+                        response.addCookie(cookie);
+                        currentPageTypeCookie = new Cookie(
+                                "currentPageType",
+                                "active"
+                        );
+                        currentPageTypeCookie.setSecure(true);
+                        response.addCookie(currentPageTypeCookie);
                 }
                 if ("register".equals(type)) {
                         page = loverService.latestRegisteredOnTheWall(
@@ -284,19 +335,39 @@ public class WelcomeController {
                                 p,
                                 PAGE_SIZE_ON_THE_WALL
                         );//最新注册列表区块
+                        Cookie cookie = new Cookie(
+                                "registerPage",
+                                Integer.toString(p)
+                        );
+                        cookie.setSecure(true);
+                        response.addCookie(cookie);
+                        currentPageTypeCookie = new Cookie(
+                                "currentPageType",
+                                "register"
+                        );
+                        currentPageTypeCookie.setSecure(true);
+                        response.addCookie(currentPageTypeCookie);
                 }
 
                 JSONObject jsonObject = new JSONObject();
-                if (Objects.nonNull(page) && page.getTotalPages() == p + 1) {
-                        jsonObject.put("lastPage", true);
-                }
                 return jsonObject.
                         put("response", true).
                         put(
                                 "result",
                                 loverService.seeMoreLover(me, page, locale)
                         ).
-                        toString();
+                        put(
+                                "pagination",
+                                new JSONObject().
+                                        put(
+                                                "hasNext",
+                                                page.hasNext() ? page.nextOrLastPageable().getPageNumber() : null
+                                        ).
+                                        put(
+                                                "hasPrev",
+                                                page.hasPrevious() ? page.previousOrFirstPageable().getPageNumber() : null
+                                        )
+                        ).toString();
         }
 
         /**
