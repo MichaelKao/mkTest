@@ -29,7 +29,7 @@
                         <LINK href="https://npmcdn.com/flickity@2/dist/flickity.css" rel="stylesheet"/>
                         <LINK href="/STYLE/index.css" rel="stylesheet"/>
                 </HEAD>
-                <BODY class="pb-7">
+                <BODY class="pb-6">
                         <xsl:call-template name="navbar"/>
                         <xsl:call-template name="bootstrapToast"/>
                         <xsl:if test="not(@signIn)">
@@ -356,7 +356,7 @@
                                                                         <I class="fas fa-shield-check fontSize22 text-success text-shadow"></I>
                                                                 </xsl:if>
                                                         </DIV>
-                                                        <DIV class="position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center">
+                                                        <DIV class="position-absolute imageShadow bottom-0 left-0 right-0 mx-3 mb-1 py-0 text-bolder text-dark bg-white opacity-7 border-radius-md p-1 text-xs text-center">
                                                                 <DIV>
                                                                         <SPAN>
                                                                                 <xsl:value-of select="nickname"/>
@@ -415,7 +415,7 @@
                                                                         <I class="fas fa-shield-check fontSize22 text-success text-shadow"></I>
                                                                 </xsl:if>
                                                         </DIV>
-                                                        <DIV class="position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center">
+                                                        <DIV class="position-absolute imageShadow bottom-0 left-0 right-0 mx-3 mb-1 py-0 text-bolder text-dark bg-white opacity-7 border-radius-md p-1 text-xs text-center">
                                                                 <DIV>
                                                                         <SPAN>
                                                                                 <xsl:value-of select="nickname"/>
@@ -474,7 +474,7 @@
                                                                         <I class="fas fa-shield-check fontSize22 text-success text-shadow"></I>
                                                                 </xsl:if>
                                                         </DIV>
-                                                        <DIV class="position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center">
+                                                        <DIV class="position-absolute imageShadow bottom-0 left-0 right-0 mx-3 mb-1 py-0 text-bolder text-dark bg-white opacity-7 border-radius-md p-1 text-xs text-center">
                                                                 <DIV>
                                                                         <SPAN>
                                                                                 <xsl:value-of select="nickname"/>
@@ -533,7 +533,7 @@
                                                                         <I class="fas fa-shield-check fontSize22 text-success text-shadow"></I>
                                                                 </xsl:if>
                                                         </DIV>
-                                                        <DIV class="position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center">
+                                                        <DIV class="position-absolute imageShadow bottom-0 left-0 right-0 mx-3 mb-1 py-0 text-bolder text-dark bg-white opacity-7 border-radius-md p-1 text-xs text-center">
                                                                 <DIV>
                                                                         <SPAN>
                                                                                 <xsl:value-of select="nickname"/>
@@ -575,7 +575,7 @@
                         <DIV class="d-flex flex-wrap justify-content-center mobileMode"></DIV>
                         <BUTTON class="btn btn-link text-lg seeMoreBtn" id="mobileMode" data-page="0">看更多<I class="fad fa-angle-double-right ms-1"/></BUTTON>
                 </SECTION>
-                <SECTION class="fixed-bottom d-block d-md-none bg-light shadow m-2 bottom13rem text-lg">
+                <SECTION class="fixed-bottom d-block d-md-none bg-white shadow m-2 bottom13rem text-lg">
                         <UL class="navbar-nav flex-row mobileMode">
                                 <xsl:if test="vip">
                                         <LI class="nav-item col-3 text-center">

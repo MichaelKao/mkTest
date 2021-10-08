@@ -82,7 +82,7 @@ $(document).ready(function () {
                                         }
 
                                         let infoDiv = document.createElement('DIV');
-                                        $(infoDiv).attr('class', 'position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center');
+                                        $(infoDiv).attr('class', 'position-absolute imageShadow bottom-0 left-0 right-0 mx-3 mb-1 py-0 text-bolder text-dark bg-white opacity-7 border-radius-md p-1 text-xs text-center');
                                         $(outterA).append(infoDiv);
                                         let nameAgeDiv = document.createElement('DIV');
                                         $(infoDiv).append(nameAgeDiv);
@@ -182,7 +182,7 @@ $(document).ready(function () {
                                         }
 
                                         let infoDiv = document.createElement('DIV');
-                                        $(infoDiv).attr('class', 'position-absolute bottom-0 right-0 text-bold text-light bg-dark opacity-7 border-radius-md p-1 text-xs text-center');
+                                        $(infoDiv).attr('class', 'position-absolute imageShadow bottom-0 left-0 right-0 mx-3 mb-1 py-0 text-bolder text-dark bg-white opacity-7 border-radius-md p-1 text-xs text-center');
                                         $(outterA).append(infoDiv);
                                         let nameAgeDiv = document.createElement('DIV');
                                         $(infoDiv).append(nameAgeDiv);
@@ -273,4 +273,7 @@ $(document).ready(function () {
         $('.carousel').flickity({
                 'autoPlay': 2500
         });
+
+
+        console.log('getCookie', document.cookie);
 });
