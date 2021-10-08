@@ -13,13 +13,15 @@ import javax.persistence.criteria.Subquery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
+import tw.musemodel.dingzhiqingren.entity.Allowance;
+import tw.musemodel.dingzhiqingren.entity.AnnualIncome;
 import tw.musemodel.dingzhiqingren.entity.Companionship;
 import tw.musemodel.dingzhiqingren.entity.Companionship_;
 import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Location_;
 import tw.musemodel.dingzhiqingren.entity.Lover;
-import tw.musemodel.dingzhiqingren.entity.Lover.MaleSpecies;
 import tw.musemodel.dingzhiqingren.entity.Lover_;
+import tw.musemodel.dingzhiqingren.service.LoverService;
 
 /**
  * @author p@musemodel.tw
@@ -149,6 +151,175 @@ public class LoverSpecification {
 
 		predicate.getExpressions().addAll(predicates);
 		return predicate;
+	}
+
+	/**
+	 * 过滤(搜寻)用户号。
+	 *
+	 * @param mofo 用户号
+	 * @param maximumAge 最大年龄
+	 * @param minimumAge 最小年龄
+	 * @param maximumHeight 最大身高
+	 * @param minimumHeight 最小身高
+	 * @param maximumWeight 最大体重
+	 * @param minimumWeight 最小体重
+	 * @param bodyType 体型
+	 * @param education 学历
+	 * @param marriage 婚姻
+	 * @param smoking 抽烟
+	 * @param drinking 饮酒
+	 * @param annualIncome 年收入
+	 * @param allowance 零用钱
+	 * @param inceptions 友谊及地区
+	 * @param exceptions 拉黑及黑名单
+	 * @return
+	 */
+	public static Specification<Lover> filter(
+		Lover mofo,
+		Integer maximumAge, Integer minimumAge,
+		Short maximumHeight, Short minimumHeight,
+		Short maximumWeight, Short minimumWeight,
+		Lover.BodyType bodyType,
+		Lover.Education education,
+		Lover.Marriage marriage,
+		Lover.Smoking smoking,
+		Lover.Drinking drinking,
+		AnnualIncome annualIncome,
+		Allowance allowance,
+		Collection<Integer> inceptions,
+		Set<Integer> exceptions
+	) {
+		return (root, criteriaQuery, criteriaBuilder) -> {
+			boolean gender = !mofo.getGender();
+			Collection<Predicate> predicates = new ArrayList<>();
+			predicates.add(criteriaBuilder.equal(
+				root.get(Lover_.gender),
+				gender
+			));//性别
+			predicates.add(root.
+				get(Lover_.delete).
+				isNull()
+			);//未封号
+			predicates.add(eligible(
+				gender,
+				root,
+				criteriaBuilder
+			));//合格用户号们
+
+			if (Objects.nonNull(maximumAge) && Objects.nonNull(minimumAge)) {
+				predicates.add(
+					criteriaBuilder.greaterThanOrEqualTo(
+						root.get(Lover_.birthday),
+						LoverService.getDateByAge(minimumAge)
+					)
+				);
+				predicates.add(
+					criteriaBuilder.lessThanOrEqualTo(
+						root.get(Lover_.birthday),
+						LoverService.getDateByAge(maximumAge)
+					)
+				);
+			}//年龄
+			if (Objects.nonNull(maximumHeight) && Objects.nonNull(minimumHeight)) {
+				predicates.add(
+					criteriaBuilder.lessThanOrEqualTo(
+						root.get(Lover_.height),
+						maximumHeight
+					)
+				);
+				predicates.add(
+					criteriaBuilder.greaterThanOrEqualTo(
+						root.get(Lover_.height),
+						minimumHeight
+					)
+				);
+			}//身高
+			if (Objects.nonNull(maximumWeight) && Objects.nonNull(minimumWeight)) {
+				predicates.add(
+					criteriaBuilder.lessThanOrEqualTo(
+						root.get(Lover_.weight),
+						maximumWeight
+					)
+				);
+				predicates.add(
+					criteriaBuilder.greaterThanOrEqualTo(
+						root.get(Lover_.weight),
+						minimumWeight
+					)
+				);
+			}//体重
+			if (Objects.nonNull(bodyType)) {
+				predicates.add(
+					criteriaBuilder.equal(
+						root.get(Lover_.bodyType),
+						bodyType
+					)
+				);
+			}//体型
+			if (Objects.nonNull(education)) {
+				predicates.add(
+					criteriaBuilder.equal(
+						root.get(Lover_.education),
+						education
+					)
+				);
+			}//学历
+			if (Objects.nonNull(marriage)) {
+				predicates.add(
+					criteriaBuilder.equal(
+						root.get(Lover_.marriage),
+						marriage
+					)
+				);
+			}//婚姻
+			if (Objects.nonNull(smoking)) {
+				predicates.add(
+					criteriaBuilder.equal(
+						root.get(Lover_.smoking),
+						smoking
+					)
+				);
+			}//抽烟
+			if (Objects.nonNull(drinking)) {
+				predicates.add(
+					criteriaBuilder.equal(
+						root.get(Lover_.drinking),
+						drinking
+					)
+				);
+			}//饮酒
+			if (Objects.nonNull(annualIncome)) {
+				predicates.add(
+					criteriaBuilder.equal(
+						root.get(Lover_.annualIncome),
+						annualIncome
+					)
+				);
+			}//年收入
+			if (Objects.nonNull(allowance)) {
+				predicates.add(
+					criteriaBuilder.equal(
+						root.get(Lover_.allowance),
+						allowance
+					)
+				);
+			}//零用钱
+			if (!inceptions.isEmpty()) {
+				predicates.add(root.
+					get(Lover_.id).
+					in(inceptions)
+				);
+			}//地区及友谊
+			predicates.add(
+				criteriaBuilder.not(
+					root.get(Lover_.id).in(exceptions)
+				)
+			);//黑名单
+
+			Predicate predicate = criteriaBuilder.conjunction();
+			predicate.getExpressions().addAll(predicates);
+			return predicate;
+		};
 	}
 
 	/**
@@ -403,7 +574,7 @@ public class LoverSpecification {
 				),//贵宾有效期须在目前之后
 				criteriaBuilder.equal(
 					root.get(Lover_.maleSpecies),
-					MaleSpecies.VVIP
+					Lover.MaleSpecies.VVIP
 				),//须为 VVIP
 				eligible(!mofo.getGender(), root, criteriaBuilder),//合格用户号们
 				//blacklist(mofo, root, criteriaBuilder),//黑名单
