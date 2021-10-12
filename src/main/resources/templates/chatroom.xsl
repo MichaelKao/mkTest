@@ -78,10 +78,10 @@
                                                                 </BUTTON>
                                                         </DIV>
                                                         <DIV class="mt-3 text-center">
-                                                                <I class="fad fa-taxi text-success mb-1" style="font-size: 50px;"></I>
+                                                                <I class="fad fa-badge-dollar text-success mb-1" style="font-size: 50px;"></I>
                                                                 <H5 class="modal-title">
-                                                                        <xsl:if test="@male">車馬費</xsl:if>
-                                                                        <xsl:if test="@female">要求車馬費</xsl:if>
+                                                                        <xsl:if test="@male">ME 點</xsl:if>
+                                                                        <xsl:if test="@female">要求 ME 點</xsl:if>
                                                                 </H5>
                                                         </DIV>
                                                         <DIV class="form-group mx-auto col-10 text-center">
@@ -293,7 +293,7 @@
                                                                                 <LI class="nav-item">
                                                                                         <A class="nav-link nav-link-icon d-flex align-items-center" href="/withdrawal.asp">
                                                                                                 <I class="fad fa-badge-dollar fontSize22 me-1"></I>
-                                                                                                <SPAN class="d-lg-none">提領車馬費</SPAN>
+                                                                                                <SPAN class="d-lg-none">提領 ME 點</SPAN>
                                                                                         </A>
                                                                                 </LI>
                                                                         </xsl:if>

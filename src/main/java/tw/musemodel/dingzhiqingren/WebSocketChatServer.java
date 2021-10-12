@@ -36,269 +36,269 @@ import tw.musemodel.dingzhiqingren.service.WebSocketService;
 @ServerEndpoint(value = "/webSocket/chat/{identifier}")
 public class WebSocketChatServer {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(WebSocketChatServer.class);
+        private final static Logger LOGGER = LoggerFactory.getLogger(WebSocketChatServer.class);
 
-	static HistoryRepository historyRepository;
+        static HistoryRepository historyRepository;
 
-	@Autowired
-	public void setHistoryRepository(HistoryRepository historyRepository) {
-		WebSocketChatServer.historyRepository = historyRepository;
-	}
+        @Autowired
+        public void setHistoryRepository(HistoryRepository historyRepository) {
+                WebSocketChatServer.historyRepository = historyRepository;
+        }
 
-	static LoverService loverService;
+        static LoverService loverService;
 
-	@Autowired
-	public void setLoverService(LoverService loverService) {
-		WebSocketChatServer.loverService = loverService;
-	}
+        @Autowired
+        public void setLoverService(LoverService loverService) {
+                WebSocketChatServer.loverService = loverService;
+        }
 
-	static WebSocketService webSocketService;
+        static WebSocketService webSocketService;
 
-	@Autowired
-	public void setWebSocketService(WebSocketService webSocketService) {
-		WebSocketChatServer.webSocketService = webSocketService;
-	}
+        @Autowired
+        public void setWebSocketService(WebSocketService webSocketService) {
+                WebSocketChatServer.webSocketService = webSocketService;
+        }
 
-	static LineGivenRepository lineGivenRepository;
+        static LineGivenRepository lineGivenRepository;
 
-	@Autowired
-	public void setLineGivenRepository(LineGivenRepository lineGivenRepository) {
-		WebSocketChatServer.lineGivenRepository = lineGivenRepository;
-	}
+        @Autowired
+        public void setLineGivenRepository(LineGivenRepository lineGivenRepository) {
+                WebSocketChatServer.lineGivenRepository = lineGivenRepository;
+        }
 
-	static WebSocketServer webSocketServer;
+        static WebSocketServer webSocketServer;
 
-	@Autowired
-	public void setWebSocketServer(WebSocketServer webSocketServer) {
-		WebSocketChatServer.webSocketServer = webSocketServer;
-	}
+        @Autowired
+        public void setWebSocketServer(WebSocketServer webSocketServer) {
+                WebSocketChatServer.webSocketServer = webSocketServer;
+        }
 
-	static HistoryService historyService;
+        static HistoryService historyService;
 
-	@Autowired
-	public void setHistoryService(HistoryService historyService) {
-		WebSocketChatServer.historyService = historyService;
-	}
+        @Autowired
+        public void setHistoryService(HistoryService historyService) {
+                WebSocketChatServer.historyService = historyService;
+        }
 
-	//靜態常數，用來記錄當前的再現連接數。應該用執行緒較安全。
-	private static AtomicInteger online = new AtomicInteger();
+        //靜態常數，用來記錄當前的再現連接數。應該用執行緒較安全。
+        private static AtomicInteger online = new AtomicInteger();
 
-	//concurrent 是 thread safe；用來存放每個客戶端對應的 WebSocketChatServer 對象。
-	private static Map<String, Session> sessionPools = new ConcurrentHashMap<>();
+        //concurrent 是 thread safe；用來存放每個客戶端對應的 WebSocketChatServer 對象。
+        private static Map<String, Session> sessionPools = new ConcurrentHashMap<>();
 
-	Gson gson = new Gson();
+        Gson gson = new Gson();
 
-	@OnOpen
-	public void onOpen(@PathParam("identifier") String identifier, Session userSession) throws IOException {
-		// save the new user in the map
-		sessionPools.put(identifier, userSession);
-		addOnlineCount();
-		// Sends all the connected users to the new user
-		Set<String> users = sessionPools.keySet();
-		WebsocketState stateMessage = new WebsocketState("open", identifier, users);
-		String stateMessageJson = gson.toJson(stateMessage);
-		Collection<Session> sessions = sessionPools.values();
-		for (Session session : sessions) {
-			if (session.isOpen()) {
-				session.getAsyncRemote().sendText(stateMessageJson);
-			}
-		}
-		LOGGER.debug(
-			String.format(
-				"%s加入 webSocket, 目前人數為%s",
-				identifier,
-				online
-			));
-	}
+        @OnOpen
+        public void onOpen(@PathParam("identifier") String identifier, Session userSession) throws IOException {
+                // save the new user in the map
+                sessionPools.put(identifier, userSession);
+                addOnlineCount();
+                // Sends all the connected users to the new user
+                Set<String> users = sessionPools.keySet();
+                WebsocketState stateMessage = new WebsocketState("open", identifier, users);
+                String stateMessageJson = gson.toJson(stateMessage);
+                Collection<Session> sessions = sessionPools.values();
+                for (Session session : sessions) {
+                        if (session.isOpen()) {
+                                session.getAsyncRemote().sendText(stateMessageJson);
+                        }
+                }
+                LOGGER.debug(
+                        String.format(
+                                "%s加入 webSocket, 目前人數為%s",
+                                identifier,
+                                online
+                        ));
+        }
 
-	@OnMessage
-	public void onMessage(Session userSession, String message) {
-		ChatMessage chatMessage = gson.fromJson(message, ChatMessage.class);
-		String receiverConn = chatMessage.getReceiver() + chatMessage.getSender();
+        @OnMessage
+        public void onMessage(Session userSession, String message) {
+                ChatMessage chatMessage = gson.fromJson(message, ChatMessage.class);
+                String receiverConn = chatMessage.getReceiver() + chatMessage.getSender();
 
-		Lover sender = loverService.
-			loadByIdentifier(
-				UUID.fromString(chatMessage.getSender())
-			);
-		Lover receiver = loverService.
-			loadByIdentifier(
-				UUID.fromString(chatMessage.getReceiver())
-			);
+                Lover sender = loverService.
+                        loadByIdentifier(
+                                UUID.fromString(chatMessage.getSender())
+                        );
+                Lover receiver = loverService.
+                        loadByIdentifier(
+                                UUID.fromString(chatMessage.getReceiver())
+                        );
 
-		Lover male = null;
-		Lover female = null;
-		if (sender.getGender()) {
-			male = sender;
-			female = receiver;
-		} else if (!sender.getGender()) {
-			male = receiver;
-			female = sender;
-		}
+                Lover male = null;
+                Lover female = null;
+                if (sender.getGender()) {
+                        male = sender;
+                        female = receiver;
+                } else if (!sender.getGender()) {
+                        male = receiver;
+                        female = sender;
+                }
 
-		// 列出歷史紀錄
-		if ("history".equals(chatMessage.getType())) {
-			List<Activity> wholeHistoryMsgs = webSocketService.wholeHistoryMsgs(male, female);
+                // 列出歷史紀錄
+                if ("history".equals(chatMessage.getType())) {
+                        List<Activity> wholeHistoryMsgs = webSocketService.wholeHistoryMsgs(male, female);
 
-			String historyMsgs = gson.toJson(wholeHistoryMsgs);
-			LOGGER.debug(String.format(
-				"訊息歷史紀錄toJson：%s",
-				historyMsgs
-			));
-			ChatMessage cmHistory = new ChatMessage("history", historyMsgs);
-			if (Objects.nonNull(userSession) && userSession.isOpen()) {
-				userSession.getAsyncRemote().sendText(gson.toJson(cmHistory));
-				LOGGER.debug(String.format(
-					"訊息歷史紀錄：%s",
-					gson.toJson(cmHistory)
-				));
-				return;
-			}
-			return;
-		}
+                        String historyMsgs = gson.toJson(wholeHistoryMsgs);
+                        LOGGER.debug(String.format(
+                                "訊息歷史紀錄toJson：%s",
+                                historyMsgs
+                        ));
+                        ChatMessage cmHistory = new ChatMessage("history", historyMsgs);
+                        if (Objects.nonNull(userSession) && userSession.isOpen()) {
+                                userSession.getAsyncRemote().sendText(gson.toJson(cmHistory));
+                                LOGGER.debug(String.format(
+                                        "訊息歷史紀錄：%s",
+                                        gson.toJson(cmHistory)
+                                ));
+                                return;
+                        }
+                        return;
+                }
 
-		if ("button".equals(chatMessage.getType())) {
-			Session receiverSession = sessionPools.get(receiverConn);
-			if (receiverSession != null && receiverSession.isOpen()) {
-				receiverSession.getAsyncRemote().sendText(message);
-			}
-			if (userSession != null && userSession.isOpen()) {
-				userSession.getAsyncRemote().sendText(message);
-			}
-			return;
-		}
+                if ("button".equals(chatMessage.getType())) {
+                        Session receiverSession = sessionPools.get(receiverConn);
+                        if (receiverSession != null && receiverSession.isOpen()) {
+                                receiverSession.getAsyncRemote().sendText(message);
+                        }
+                        if (userSession != null && userSession.isOpen()) {
+                                userSession.getAsyncRemote().sendText(message);
+                        }
+                        return;
+                }
 
-		if ("chat".equals(chatMessage.getType()) && "YAO_CHE_MA_FEI".equals(chatMessage.getBehavior())) {
-			History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(female, male, BEHAVIOR_ASK_FOR_FARE);
-			chatMessage.setId(history.getId().toString());
-			message = gson.toJson(chatMessage);
-			Session receiverSession = sessionPools.get(receiverConn);
-			if (receiverSession != null && receiverSession.isOpen()) {
-				receiverSession.getAsyncRemote().sendText(message);
-			}
-			if (userSession != null && userSession.isOpen()) {
-				userSession.getAsyncRemote().sendText(message);
-			}
-			return;
-		}
+                if ("chat".equals(chatMessage.getType()) && "YAO_CHE_MA_FEI".equals(chatMessage.getBehavior())) {
+                        History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(female, male, BEHAVIOR_ASK_FOR_FARE);
+                        chatMessage.setId(history.getId().toString());
+                        message = gson.toJson(chatMessage);
+                        Session receiverSession = sessionPools.get(receiverConn);
+                        if (receiverSession != null && receiverSession.isOpen()) {
+                                receiverSession.getAsyncRemote().sendText(message);
+                        }
+                        if (userSession != null && userSession.isOpen()) {
+                                userSession.getAsyncRemote().sendText(message);
+                        }
+                        return;
+                }
 
-		if ("chat".equals(chatMessage.getType()) && "CHE_MA_FEI".equals(chatMessage.getBehavior())) {
-			History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(male, female, BEHAVIOR_FARE);
-			chatMessage.setId(history.getId().toString());
-			message = gson.toJson(chatMessage);
-			Session receiverSession = sessionPools.get(receiverConn);
-			if (receiverSession != null && receiverSession.isOpen()) {
-				receiverSession.getAsyncRemote().sendText(message);
-			}
-			if (userSession != null && userSession.isOpen()) {
-				userSession.getAsyncRemote().sendText(message);
-			}
-			return;
-		}
+                if ("chat".equals(chatMessage.getType()) && "CHE_MA_FEI".equals(chatMessage.getBehavior())) {
+                        History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(male, female, BEHAVIOR_FARE);
+                        chatMessage.setId(history.getId().toString());
+                        message = gson.toJson(chatMessage);
+                        Session receiverSession = sessionPools.get(receiverConn);
+                        if (receiverSession != null && receiverSession.isOpen()) {
+                                receiverSession.getAsyncRemote().sendText(message);
+                        }
+                        if (userSession != null && userSession.isOpen()) {
+                                userSession.getAsyncRemote().sendText(message);
+                        }
+                        return;
+                }
 
-		if ("chat".equals(chatMessage.getType()) && "TUI_HUI_CHE_MA_FEI".equals(chatMessage.getBehavior())) {
-			Session receiverSession = sessionPools.get(receiverConn);
-			if (receiverSession != null && receiverSession.isOpen()) {
-				receiverSession.getAsyncRemote().sendText(message);
-			}
-			if (userSession != null && userSession.isOpen()) {
-				userSession.getAsyncRemote().sendText(message);
-			}
-			return;
-		}
+                if ("chat".equals(chatMessage.getType()) && "TUI_HUI_CHE_MA_FEI".equals(chatMessage.getBehavior())) {
+                        Session receiverSession = sessionPools.get(receiverConn);
+                        if (receiverSession != null && receiverSession.isOpen()) {
+                                receiverSession.getAsyncRemote().sendText(message);
+                        }
+                        if (userSession != null && userSession.isOpen()) {
+                                userSession.getAsyncRemote().sendText(message);
+                        }
+                        return;
+                }
 
-		Behavior behavior = null;
-		if (sender.getGender()) {
-			behavior = BEHAVIOR_CHAT_MORE;
-		} else {
-			behavior = BEHAVIOR_GREETING;
-		}
+                Behavior behavior = null;
+                if (sender.getGender()) {
+                        behavior = BEHAVIOR_CHAT_MORE;
+                } else {
+                        behavior = BEHAVIOR_GREETING;
+                }
 
-		// 加到歷程
-		History history = new History(
-			sender,
-			receiver,
-			behavior
-		);
-		history.setGreeting(chatMessage.getMessage());
-		historyRepository.saveAndFlush(history);
+                // 加到歷程
+                History history = new History(
+                        sender,
+                        receiver,
+                        behavior
+                );
+                history.setGreeting(chatMessage.getMessage());
+                historyRepository.saveAndFlush(history);
 
-		Session receiverSession = sessionPools.get(receiverConn);
+                Session receiverSession = sessionPools.get(receiverConn);
 
-		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
-		if (sender.getGender()) {
-			if ((!loverService.isVIP(male) && !loverService.isVVIP(male))
-				|| (Objects.isNull(lineGiven) || Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse())) {
-				int msgsCount = webSocketService.msgsCountWithin12Hrs(male, female);
-				chatMessage.setMsgCount(msgsCount);
-				message = gson.toJson(chatMessage);
-			}
-		}
+                LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
+                if (sender.getGender()) {
+                        if ((!loverService.isVIP(male) && !loverService.isVVIP(male))
+                                || (Objects.isNull(lineGiven) || Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse())) {
+                                int msgsCount = webSocketService.msgsCountWithin12Hrs(male, female);
+                                chatMessage.setMsgCount(msgsCount);
+                                message = gson.toJson(chatMessage);
+                        }
+                }
 
-		if (receiverSession != null && receiverSession.isOpen()) {
-			receiverSession.getAsyncRemote().sendText(message);
-			history.setSeen(new Date(System.currentTimeMillis()));
-			historyRepository.saveAndFlush(history);
-		}
-		if (userSession != null && userSession.isOpen()) {
-			userSession.getAsyncRemote().sendText(message);
-		}
+                if (receiverSession != null && receiverSession.isOpen()) {
+                        receiverSession.getAsyncRemote().sendText(message);
+                        history.setSeen(new Date(System.currentTimeMillis()));
+                        historyRepository.saveAndFlush(history);
+                }
+                if (userSession != null && userSession.isOpen()) {
+                        userSession.getAsyncRemote().sendText(message);
+                }
 
-		webSocketServer.sendNotification(
-			chatMessage.getReceiver().toString(),
-			"inbox你收到一則訊息!"
-		);
-	}
+                webSocketServer.sendNotification(
+                        chatMessage.getReceiver().toString(),
+                        "inbox你收到一則訊息!"
+                );
+        }
 
-	@OnError
-	public void onError(Session userSession, Throwable e) {
-		LOGGER.debug(
-			String.format(
-				"WebSocket 發生錯誤：%s",
-				e.toString()
-			));
-	}
+        @OnError
+        public void onError(Session userSession, Throwable e) {
+                LOGGER.debug(
+                        String.format(
+                                "WebSocket 發生錯誤：%s",
+                                e.toString()
+                        ));
+        }
 
-	@OnClose
-	public void onClose(Session userSession, CloseReason reason) {
-		String userClose = null;
-		Set<String> users = sessionPools.keySet();
-		for (String user : users) {
-			if (sessionPools.get(user).equals(userSession)) {
-				userClose = user;
-				sessionPools.remove(user);
-				subOnlineCount();
-				break;
-			}
-		}
+        @OnClose
+        public void onClose(Session userSession, CloseReason reason) {
+                String userClose = null;
+                Set<String> users = sessionPools.keySet();
+                for (String user : users) {
+                        if (sessionPools.get(user).equals(userSession)) {
+                                userClose = user;
+                                sessionPools.remove(user);
+                                subOnlineCount();
+                                break;
+                        }
+                }
 
-		if (userClose != null) {
-			WebsocketState stateMessage = new WebsocketState("close", userClose, users);
-			String stateMessageJson = gson.toJson(stateMessage);
-			Collection<Session> sessions = sessionPools.values();
-			for (Session session : sessions) {
-				session.getAsyncRemote().sendText(stateMessageJson);
-			}
-		}
+                if (userClose != null) {
+                        WebsocketState stateMessage = new WebsocketState("close", userClose, users);
+                        String stateMessageJson = gson.toJson(stateMessage);
+                        Collection<Session> sessions = sessionPools.values();
+                        for (Session session : sessions) {
+                                session.getAsyncRemote().sendText(stateMessageJson);
+                        }
+                }
 
-		LOGGER.debug(
-			String.format(
-				"%s關閉 webSocket 連線, 目前人數為%s",
-				userClose,
-				online
-			));
-		LOGGER.debug(
-			String.format(
-				"關閉原因：%s || %s",
-				reason.getCloseCode().getCode(),
-				reason.toString()
-			));
-	}
+                LOGGER.debug(
+                        String.format(
+                                "%s關閉 webSocket 連線, 目前人數為%s",
+                                userClose,
+                                online
+                        ));
+                LOGGER.debug(
+                        String.format(
+                                "關閉原因：%s || %s",
+                                reason.getCloseCode().getCode(),
+                                reason.toString()
+                        ));
+        }
 
-	public static void addOnlineCount() {
-		online.incrementAndGet();
-	}
+        public static void addOnlineCount() {
+                online.incrementAndGet();
+        }
 
-	public static void subOnlineCount() {
-		online.decrementAndGet();
-	}
+        public static void subOnlineCount() {
+                online.decrementAndGet();
+        }
 }

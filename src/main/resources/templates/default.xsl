@@ -175,7 +175,7 @@
                                                                         <LI class="nav-item">
                                                                                 <A class="nav-link nav-link-icon d-flex align-items-center" href="/withdrawal.asp">
                                                                                         <I class="fad fa-badge-dollar fontSize22 width30whenMobile"></I>
-                                                                                        <SPAN class="d-lg-none">提領車馬費</SPAN>
+                                                                                        <SPAN class="d-lg-none">提領 ME 點</SPAN>
                                                                                 </A>
                                                                         </LI>
                                                                 </xsl:if>

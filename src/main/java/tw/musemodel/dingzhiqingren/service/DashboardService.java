@@ -1010,11 +1010,10 @@ public class DashboardService {
 	 * 退回 ME 點
 	 *
 	 * @param fareHistory
-	 * @param locale
 	 * @return
 	 */
 	@Transactional
-	public JSONObject returnFare(History fareHistory, Locale locale) {
+	public JSONObject returnFare(History fareHistory) {
 		Lover male = fareHistory.getInitiative();
 		Lover female = fareHistory.getPassive();
 
@@ -1032,7 +1031,7 @@ public class DashboardService {
 		webSocketServer.sendNotification(
 			male.getIdentifier().toString(),
 			String.format(
-				"%s退回您給的看車馬費!",
+				"%s退回您給的 ME 點!",
 				female.getNickname()
 			));
 		if (loverService.hasLineNotify(male)) {
@@ -1040,15 +1039,16 @@ public class DashboardService {
 			lineMessagingService.notify(
 				male,
 				String.format(
-					"有養蜜退回您給的車馬費..馬上查看 https://%s/activeLogs.asp",
+					"有養蜜退回您給的 ME 點..馬上查看 https://%s/activeLogs.asp",
 					Servant.LOCALHOST
-				));
+				)
+			);
 		}
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
 				"returnFare.done",
 				null,
-				locale
+				Locale.TAIWAN//台湾化
 			)).
 			withResponse(true).
 			toJSONObject();

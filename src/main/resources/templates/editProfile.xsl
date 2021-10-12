@@ -122,7 +122,7 @@
                                                 <LABEL for="nickname">
                                                         <I class="fad fa-mask text-lg"></I>
                                                 </LABEL>
-                                                <INPUT class="form-control" id="nickname" name="nickname" placeholder="暱稱" required="" type="text" value="{nickname}"/>
+                                                <INPUT class="form-control" id="nickname" name="nickname" placeholder="暱稱" type="text" value="{nickname}"/>
                                         </DIV>
                                         <DIV class="form-group">
                                                 <LABEL>
@@ -135,13 +135,13 @@
                                                         <LABEL for="height">
                                                                 <I class="fad fa-ruler-vertical text-lg"></I>
                                                         </LABEL>
-                                                        <INPUT class="form-control" id="height" inputmode="numeric" name="height" placeholder="身高" required="" type="text" value="{height}"/>
+                                                        <INPUT class="form-control" id="height" inputmode="numeric" name="height" placeholder="身高" type="text" value="{height}"/>
                                                 </DIV>
                                                 <DIV class="col-6 mb-3 ps-1">
                                                         <LABEL for="weight">
                                                                 <I class="fad fa-weight text-lg"></I>
                                                         </LABEL>
-                                                        <INPUT class="form-control" id="weight" inputmode="numeric" name="weight" placeholder="體重" required="" type="text" value="{weight}"/>
+                                                        <INPUT class="form-control" id="weight" inputmode="numeric" name="weight" placeholder="體重" type="text" value="{weight}"/>
                                                 </DIV>
                                         </DIV>
                                         <DIV class="form-group">
@@ -163,7 +163,7 @@
                                                 <LABEL for="occupation">
                                                         <I class="fad fa-briefcase text-lg"></I>
                                                 </LABEL>
-                                                <INPUT class="form-control" id="occupation" name="occupation" placeholder="職業" required="" type="text" value="{occupation}"/>
+                                                <INPUT class="form-control" id="occupation" name="occupation" placeholder="職業" type="text" value="{occupation}"/>
                                         </DIV>
                                         <DIV class="form-group">
                                                 <LABEL for="education">
@@ -281,7 +281,7 @@
                                                         <I class="fad fa-file-user text-lg"></I>
                                                         <SPAN class="ms-1">關於我</SPAN>
                                                 </LABEL>
-                                                <TEXTAREA class="form-control" id="aboutMe" name="aboutMe" required="" rows="6">
+                                                <TEXTAREA class="form-control" id="aboutMe" name="aboutMe" rows="6">
                                                         <xsl:value-of select="aboutMe"/>
                                                 </TEXTAREA>
                                         </DIV>
@@ -290,7 +290,7 @@
                                                         <I class="fad fa-fire-alt text-lg"></I>
                                                         <SPAN class="ms-1">理想對象</SPAN>
                                                 </LABEL>
-                                                <TEXTAREA class="form-control" id="idealConditions" name="idealConditions" required="" rows="6">
+                                                <TEXTAREA class="form-control" id="idealConditions" name="idealConditions" rows="6">
                                                         <xsl:value-of select="idealConditions"/>
                                                 </TEXTAREA>
                                         </DIV>
@@ -304,7 +304,7 @@
                                                                 <SPAN class="ms-1">用一句話介紹自己來打動甜心</SPAN>
                                                         </xsl:if>
                                                 </LABEL>
-                                                <TEXTAREA class="form-control" id="greeting" name="greeting" required="" rows="4">
+                                                <TEXTAREA class="form-control" id="greeting" name="greeting" rows="4">
                                                         <xsl:value-of select="greeting"/>
                                                 </TEXTAREA>
                                         </DIV>

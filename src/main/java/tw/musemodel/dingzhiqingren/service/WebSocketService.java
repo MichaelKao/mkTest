@@ -310,7 +310,7 @@ public class WebSocketService {
                                         notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), me, BEHAVIORS_OF_FEMALE);
                                         if (Objects.equals(history.getBehavior(), BEHAVIOR_FARE)) {
                                                 content = String.format(
-                                                        "您已給 💗 %d 車馬費",
+                                                        "您已給 💗 %d ME 點",
                                                         Math.abs(history.getPoints())
                                                 );
                                         }
@@ -326,7 +326,7 @@ public class WebSocketService {
                                         notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), me, BEHAVIORS_OF_MALE);
                                         if (Objects.equals(history.getBehavior(), BEHAVIOR_ASK_FOR_FARE)) {
                                                 content = String.format(
-                                                        "您已和對方要求 💗 %d 車馬費",
+                                                        "您已和對方要求 💗 %d ME 點",
                                                         Math.abs(history.getPoints())
                                                 );
                                         }
@@ -350,7 +350,7 @@ public class WebSocketService {
                                         notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), me, BEHAVIORS_OF_FEMALE);
                                         if (Objects.equals(history.getBehavior(), BEHAVIOR_ASK_FOR_FARE)) {
                                                 content = String.format(
-                                                        "對方和您要求 💗 %d 車馬費",
+                                                        "對方和您要求 💗 %d ME 點",
                                                         Math.abs(history.getPoints())
                                                 );
                                         }
@@ -366,7 +366,7 @@ public class WebSocketService {
                                         notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), me, BEHAVIORS_OF_MALE);
                                         if (Objects.equals(history.getBehavior(), BEHAVIOR_FARE)) {
                                                 content = String.format(
-                                                        "對方給了您 💗 %d 車馬費",
+                                                        "對方給了您 💗 %d ME 點",
                                                         Math.abs(history.getPoints())
                                                 );
                                         }
@@ -657,7 +657,7 @@ public class WebSocketService {
                                         notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), lover, BEHAVIORS_OF_FEMALE);
                                         if (Objects.equals(history.getBehavior(), BEHAVIOR_FARE)) {
                                                 content = String.format(
-                                                        "您已給 💗 %d 車馬費",
+                                                        "您已給 💗 %d ME 點",
                                                         Math.abs(history.getPoints())
                                                 );
                                         }
@@ -673,7 +673,7 @@ public class WebSocketService {
                                         notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), lover, BEHAVIORS_OF_MALE);
                                         if (Objects.equals(history.getBehavior(), BEHAVIOR_ASK_FOR_FARE)) {
                                                 content = String.format(
-                                                        "您已和對方要求 💗 %d 車馬費",
+                                                        "您已和對方要求 💗 %d ME 點",
                                                         Math.abs(history.getPoints())
                                                 );
                                         }
@@ -697,7 +697,7 @@ public class WebSocketService {
                                         notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), lover, BEHAVIORS_OF_FEMALE);
                                         if (Objects.equals(history.getBehavior(), BEHAVIOR_ASK_FOR_FARE)) {
                                                 content = String.format(
-                                                        "對方和您要求 💗 %d 車馬費",
+                                                        "對方和您要求 💗 %d ME 點",
                                                         Math.abs(history.getPoints())
                                                 );
                                         }
@@ -713,7 +713,7 @@ public class WebSocketService {
                                         notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), lover, BEHAVIORS_OF_MALE);
                                         if (Objects.equals(history.getBehavior(), BEHAVIOR_FARE)) {
                                                 content = String.format(
-                                                        "對方給了您 💗 %d 車馬費",
+                                                        "對方給了您 💗 %d ME 點",
                                                         Math.abs(history.getPoints())
                                                 );
                                         }

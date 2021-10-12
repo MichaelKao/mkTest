@@ -51,8 +51,8 @@
                                                                                 </BUTTON>
                                                                         </DIV>
                                                                         <DIV class="mt-3 text-center">
-                                                                                <I class="fad fa-taxi text-success mb-1 fontSize50"></I>
-                                                                                <H5 class="modal-title">車馬費</H5>
+                                                                                <I class="fad fa-badge-dollar text-success mb-1 fontSize50"></I>
+                                                                                <H5 class="modal-title">ME 點</H5>
                                                                         </DIV>
                                                                         <DIV class="form-group text-center">
                                                                                 <LABEL class="text-xs" for="fare">使用平台支付不必擔心私下給甜心爽約，可檢舉查證屬實退回</LABEL>
@@ -259,38 +259,43 @@
                                 <xsl:if test="not(/document/@me) and not(/document/@blocking) and not(/document/@blockedBy)">
                                         <DIV class="d-flex justify-content-center justify-content-md-start" id="icon">
                                                 <DIV>
-                                                        <BUTTON type="button">
+                                                        <BUTTON onclick="fbq('track', 'Collect');" type="button">
                                                                 <xsl:choose>
                                                                         <xsl:when test="/document/follow">
-                                                                                <xsl:attribute name="class">btn btn-icon-only btn-link fav liked</xsl:attribute>
+                                                                                <xsl:attribute name="class">btn btn-link fav liked mt-2 mb-0 p-0</xsl:attribute>
                                                                         </xsl:when>
                                                                         <xsl:otherwise>
-                                                                                <xsl:attribute name="class">btn btn-icon-only btn-link fav</xsl:attribute>
+                                                                                <xsl:attribute name="class">btn btn-link fav mt-2 mb-0 p-0</xsl:attribute>
                                                                         </xsl:otherwise>
                                                                 </xsl:choose>
                                                                 <I class="fad fa-heart-circle fontSize35"></I>
+                                                                <DIV>收藏</DIV>
                                                         </BUTTON>
                                                 </DIV>
                                                 <DIV>
-                                                        <A class="btn btn-icon-only btn-link ms-4" href="/chatroom/{@identifier}/">
-                                                                <I class="fad fa-comment-smile fontSize35"></I>
+                                                        <A class="btn btn-link ms-4 mt-2 mb-0 p-0" href="/chatroom/{@identifier}/" onclick="fbq('track', 'StartChat');">
+                                                                <I class="fad fa-comment-smile fa-beat fontSize35"></I>
+                                                                <DIV>聊天</DIV>
                                                         </A>
                                                 </DIV>
                                                 <xsl:if test="/document/@male">
                                                         <DIV>
-                                                                <BUTTON class="btn btn-icon-only btn-link ms-4 gift" data-bs-target="#giftModal" data-bs-toggle="modal" type="button">
+                                                                <BUTTON class="btn btn-link ms-4 gift mt-2 mb-0 p-0" data-bs-target="#giftModal" data-bs-toggle="modal" onclick="fbq('track', 'SendAGift');" type="button">
                                                                         <I class="fad fa-badge-dollar fontSize35"></I>
+                                                                        <DIV>邀約</DIV>
                                                                 </BUTTON>
                                                         </DIV>
                                                 </xsl:if>
                                                 <!--						<DIV>
-                                                        <BUTTON class="btn btn-icon-only btn-link ms-4">
+                                                        <BUTTON class="btn btn-link ms-4 mt-2 mb-0 p-0">
                                                                 <I class="fad fa-lightbulb-exclamation fontSize35"></I>
+                                                                <DIV>檢舉</DIV>
                                                         </BUTTON>
                                                 </DIV>-->
                                                 <DIV>
-                                                        <BUTTON class="btn btn-icon-only btn-link ms-3 me-1" data-bs-target="#blockModal" data-bs-toggle="modal">
+                                                        <BUTTON class="btn btn-link ms-3 me-1 mt-2 mb-0 p-0" data-bs-target="#blockModal" data-bs-toggle="modal">
                                                                 <I class="fad fa-user-slash fontSize35"></I>
+                                                                <DIV>封鎖</DIV>
                                                         </BUTTON>
                                                 </DIV>
                                         </DIV>
@@ -300,11 +305,12 @@
                                                 <xsl:if test="not(@relief)">
                                                         <BUTTON class="btn btn-link m-2 p-0 reliefBtn" data-bs-target="#cropModal" data-bs-toggle="modal">
                                                                 <I class="fad fa-shield-check fontSize35"></I>
-
+                                                                <DIV>安心認證</DIV>
                                                         </BUTTON>
                                                 </xsl:if>
                                                 <A class="btn btn-link m-2 p-0" href="/me.asp">
                                                         <I class="fad fa-pen fontSize35"></I>
+                                                        <DIV>編輯檔案</DIV>
                                                 </A>
                                         </DIV>
                                 </xsl:if>
