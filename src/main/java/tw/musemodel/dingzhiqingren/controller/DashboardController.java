@@ -1003,8 +1003,7 @@ public class DashboardController {
 		JSONObject jsonObject;
 		try {
 			jsonObject = dashboardService.returnFare(
-				history,
-				Locale.TAIWAN//台湾化
+				history
 			);
 		} catch (Exception exception) {
 			return new JavaScriptObjectNotation().
