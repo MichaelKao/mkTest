@@ -544,6 +544,16 @@ public class DashboardController {
 					history.getOccurred()
 				);
 
+				String greeting = history.getGreeting();
+				if (Objects.nonNull(greeting)) {
+					row.createCell(
+						4,
+						CellType.STRING
+					).setCellValue(
+						history.getGreeting()
+					);
+				}
+
 				++rowNumber;
 			}//for
 
