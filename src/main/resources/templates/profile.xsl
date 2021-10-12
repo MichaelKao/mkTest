@@ -51,7 +51,7 @@
                                                                                 </BUTTON>
                                                                         </DIV>
                                                                         <DIV class="mt-3 text-center">
-                                                                                <I class="fad fa-taxi text-success mb-1 fontSize50"></I>
+                                                                                <I class="fad fa-badge-dollar text-success mb-1 fontSize50"></I>
                                                                                 <H5 class="modal-title">ME 點</H5>
                                                                         </DIV>
                                                                         <DIV class="form-group text-center">
@@ -188,7 +188,6 @@
                         <xsl:if test="@signIn">
                                 <SCRIPT src="/SCRIPT/websocket.js"/>
                         </xsl:if>
-                        <SCRIPT crossorigin="anonymous" src="https://kit.fontawesome.com/6d41b3bf88.js"></SCRIPT>
                 </BODY>
         </xsl:template>
         <xsl:template match="lover">
@@ -275,7 +274,7 @@
                                                 </DIV>
                                                 <DIV>
                                                         <A class="btn btn-link ms-4 mt-2 mb-0 p-0" href="/chatroom/{@identifier}/" onclick="fbq('track', 'StartChat');">
-                                                                <I class="fad fa-comment-smile fontSize35"></I>
+                                                                <I class="fad fa-comment-smile fa-beat fontSize35"></I>
                                                                 <DIV>聊天</DIV>
                                                         </A>
                                                 </DIV>

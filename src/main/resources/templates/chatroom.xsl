@@ -78,7 +78,7 @@
                                                                 </BUTTON>
                                                         </DIV>
                                                         <DIV class="mt-3 text-center">
-                                                                <I class="fad fa-taxi text-success mb-1" style="font-size: 50px;"></I>
+                                                                <I class="fad fa-badge-dollar text-success mb-1" style="font-size: 50px;"></I>
                                                                 <H5 class="modal-title">
                                                                         <xsl:if test="@male">ME 點</xsl:if>
                                                                         <xsl:if test="@female">要求 ME 點</xsl:if>
