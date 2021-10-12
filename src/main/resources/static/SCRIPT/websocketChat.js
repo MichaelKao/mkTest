@@ -39,6 +39,9 @@ $(document).ready(function () {
                                 var messages = JSON.parse(jsonObj.historyMsgs);
                                 console.log('messages.len' + messages.length);
                                 messages.forEach(function (msg) {
+                                        console.log('msg.occurred' + msg.occurred);
+                                        console.log('msg.occurredStr' + msg.occurredStr);
+
                                         var behavior = msg.behavior;
                                         var divWrap = document.createElement('DIV');
                                         var divParent = document.createElement('DIV');
@@ -53,7 +56,7 @@ $(document).ready(function () {
                                                 divChild.appendChild(contentDiv);
                                                 var dateDiv = document.createElement('DIV');
                                                 dateDiv.className += 'text-xs';
-                                                dateDiv.innerHTML = dateFormat(msg.occurredStr);
+                                                dateDiv.innerHTML = msg.occurredStr;
                                                 divChild.appendChild(dateDiv);
                                                 divWrap.className += 'd-flex justify-content-center mb-4';
                                                 divChild.className += 'text-sm wordBreak text-center';
@@ -94,7 +97,7 @@ $(document).ready(function () {
                                                 return;
                                         }
                                         var dateSpan = document.createElement('SPAN');
-                                        dateSpan.innerHTML = dateFormat(msg.occurredStr);
+                                        dateSpan.innerHTML = msg.occurredStr;
                                         divParent.appendChild(dateSpan);
                                         // 根據發送者是自己還是對方來給予不同的class名, 以達到訊息左右區分
                                         self === msg.sender ? divWrap.className += 'd-flex justify-content-end mb-2' : divWrap.className += 'd-flex justify-content-start mb-2';

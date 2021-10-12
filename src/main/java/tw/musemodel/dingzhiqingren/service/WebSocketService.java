@@ -107,7 +107,7 @@ public class WebSocketService {
                                 male.getIdentifier().toString(),
                                 history.getBehavior(),
                                 history.getOccurred(),
-                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
                                         Servant.toTaipeiZonedDateTime(
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
@@ -122,7 +122,7 @@ public class WebSocketService {
                                 male.getIdentifier().toString(),
                                 history.getBehavior(),
                                 history.getOccurred(),
-                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
                                         Servant.toTaipeiZonedDateTime(
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
@@ -137,7 +137,7 @@ public class WebSocketService {
                                 male.getIdentifier().toString(),
                                 history.getBehavior(),
                                 history.getOccurred(),
-                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
                                         Servant.toTaipeiZonedDateTime(
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
@@ -152,7 +152,7 @@ public class WebSocketService {
                                 male.getIdentifier().toString(),
                                 history.getBehavior(),
                                 history.getOccurred(),
-                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
                                         Servant.toTaipeiZonedDateTime(
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
@@ -174,7 +174,7 @@ public class WebSocketService {
                                 female.getIdentifier().toString(),
                                 history.getBehavior(),
                                 history.getOccurred(),
-                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
                                         Servant.toTaipeiZonedDateTime(
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
@@ -189,7 +189,7 @@ public class WebSocketService {
                                 female.getIdentifier().toString(),
                                 history.getBehavior(),
                                 history.getOccurred(),
-                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
                                         Servant.toTaipeiZonedDateTime(
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
@@ -204,7 +204,7 @@ public class WebSocketService {
                                 female.getIdentifier().toString(),
                                 history.getBehavior(),
                                 history.getOccurred(),
-                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
                                         Servant.toTaipeiZonedDateTime(
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
@@ -219,7 +219,7 @@ public class WebSocketService {
                                 female.getIdentifier().toString(),
                                 history.getBehavior(),
                                 history.getOccurred(),
-                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
                                         Servant.toTaipeiZonedDateTime(
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
@@ -234,7 +234,7 @@ public class WebSocketService {
                                 female.getIdentifier().toString(),
                                 history.getBehavior(),
                                 history.getOccurred(),
-                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
                                         Servant.toTaipeiZonedDateTime(
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
@@ -252,7 +252,7 @@ public class WebSocketService {
                                 female.getIdentifier().toString(),
                                 history.getBehavior(),
                                 history.getOccurred(),
-                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
                                         Servant.toTaipeiZonedDateTime(
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
