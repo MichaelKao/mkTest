@@ -39,9 +39,6 @@ $(document).ready(function () {
                                 var messages = JSON.parse(jsonObj.historyMsgs);
                                 console.log('messages.len' + messages.length);
                                 messages.forEach(function (msg) {
-                                        console.log('msg.occurred' + msg.occurred);
-                                        console.log('msg.occurredStr' + msg.occurredStr);
-
                                         var behavior = msg.behavior;
                                         var divWrap = document.createElement('DIV');
                                         var divParent = document.createElement('DIV');
@@ -104,7 +101,7 @@ $(document).ready(function () {
                                         self === msg.sender ? divChild.className += 'bg-primary text-light border-radius-xl px-3 py-1 me-1 align-self-end shadow wordBreak' : divChild.className += 'bg-dark text-white border-radius-xl px-3 py-1 ms-1 align-self-start shadow wordBreak';
                                         self === msg.sender ? dateSpan.className += 'text-xs align-self-end me-2' : dateSpan.className += 'text-xs align-self-start ms-2';
                                         if (behavior === 'YAO_CHE_MA_FEI') {
-                                                self === msg.sender ? divChild.innerHTML = '您已和對方要求 💗 ' + msg.points + ' 車馬費' : divChild.innerHTML = '對方和您要求 💗 ' + msg.points + ' 車馬費';
+                                                self === msg.sender ? divChild.innerHTML = '您已和對方要求 💗 ' + msg.points + ' ME 點' : divChild.innerHTML = '對方和您要求 💗 ' + msg.points + ' ME 點';
                                                 if (isMale === 'true' && msg.reply == null) {
                                                         var div = document.createElement('DIV');
                                                         $(divChild).attr('id', msg.id);
@@ -181,7 +178,7 @@ $(document).ready(function () {
                                                 return;
                                         }
                                         if (behavior === 'CHE_MA_FEI') {
-                                                self === msg.sender ? divChild.innerHTML = '您已給 💗 ' + msg.points + ' 車馬費' : divChild.innerHTML = '對方給了您 💗 ' + msg.points + ' 車馬費';
+                                                self === msg.sender ? divChild.innerHTML = '您已給 💗 ' + msg.points + ' ME 點' : divChild.innerHTML = '對方給了您 💗 ' + msg.points + ' ME 點';
                                                 if (isMale === 'false' && msg.ableToReturnFare == true) {
                                                         var div = document.createElement('DIV');
                                                         $(divChild).attr('id', msg.id);
@@ -232,7 +229,7 @@ $(document).ready(function () {
                                                 return;
                                         }
                                         if (behavior === 'TUI_HUI_CHE_MA_FEI') {
-                                                self === msg.sender ? divChild.innerHTML = '您已退回對方給您的 💗 ' + msg.points + ' 車馬費' : divChild.innerHTML = '對方退回您給的 💗 ' + msg.points + ' 車馬費';
+                                                self === msg.sender ? divChild.innerHTML = '您已退回對方給您的 💗 ' + msg.points + ' ME 點' : divChild.innerHTML = '對方退回您給的 💗 ' + msg.points + ' ME 點';
                                                 return;
                                         }
                                         divChild.innerHTML = msg.greeting;
@@ -265,7 +262,7 @@ $(document).ready(function () {
                                 switch (jsonObj.behavior) {
                                         case 'YAO_CHE_MA_FEI':
                                                 var points = jsonObj.points;
-                                                self === jsonObj.sender ? divChild.innerHTML += '您已和對方要求 💗 ' + points + ' 車馬費' : divChild.innerHTML += '對方和您要求 💗 ' + points + ' 車馬費';
+                                                self === jsonObj.sender ? divChild.innerHTML += '您已和對方要求 💗 ' + points + ' ME 點' : divChild.innerHTML += '對方和您要求 💗 ' + points + ' ME 點';
                                                 if (isMale === 'true') {
                                                         var div = document.createElement('DIV');
                                                         $(divChild).attr('id', jsonObj.id);
@@ -341,7 +338,7 @@ $(document).ready(function () {
                                                 }
                                                 break;
                                         case 'CHE_MA_FEI':
-                                                self === jsonObj.sender ? divChild.innerHTML += '您已給 💗 ' + jsonObj.points + ' 車馬費' : divChild.innerHTML += '對方給了您 💗 ' + jsonObj.points + ' 車馬費';
+                                                self === jsonObj.sender ? divChild.innerHTML += '您已給 💗 ' + jsonObj.points + ' ME 點' : divChild.innerHTML += '對方給了您 💗 ' + jsonObj.points + ' ME 點';
                                                 if (isMale === 'false' && jsonObj.ableToReturnFare == true) {
                                                         console.log("456", jsonObj.id)
                                                         var div = document.createElement('DIV');
@@ -392,7 +389,7 @@ $(document).ready(function () {
                                                 }
                                                 break;
                                         case 'TUI_HUI_CHE_MA_FEI':
-                                                self === jsonObj.sender ? divChild.innerHTML += '您已退回對方給您的 💗 ' + jsonObj.points + ' 車馬費' : divChild.innerHTML += '對方退回您給的 💗 ' + jsonObj.points + ' 車馬費';
+                                                self === jsonObj.sender ? divChild.innerHTML += '您已退回對方給您的 💗 ' + jsonObj.points + ' ME 點' : divChild.innerHTML += '對方退回您給的 💗 ' + jsonObj.points + ' ME 點';
                                                 break;
                                         default:
                                                 divChild.innerHTML = jsonObj.message;

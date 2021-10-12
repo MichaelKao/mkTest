@@ -436,7 +436,7 @@ public class HistoryService {
                 webSocketServer.sendNotification(
                         passive.getIdentifier().toString(),
                         String.format(
-                                "%s給了妳車馬費%d!",
+                                "%s給了妳 ME 點 %d!",
                                 initiative.getNickname(),
                                 points
                         ));
@@ -445,7 +445,7 @@ public class HistoryService {
                         lineMessagingService.notify(
                                 passive,
                                 String.format(
-                                        "有一位男仕給妳車馬費！馬上查看 https://%s/activeLogs.asp",
+                                        "有一位男仕給妳 ME 點！馬上查看 https://%s/activeLogs.asp",
                                         Servant.LOCALHOST
                                 ));
                 }
@@ -490,7 +490,7 @@ public class HistoryService {
                 webSocketServer.sendNotification(
                         passive.getIdentifier().toString(),
                         String.format(
-                                "%s和你要求車馬費%d!",
+                                "%s和你要求 ME 點 %d!",
                                 initiative.getNickname(),
                                 points
                         ));
@@ -499,7 +499,7 @@ public class HistoryService {
                         lineMessagingService.notify(
                                 passive,
                                 String.format(
-                                        "有一位甜心和你要求車馬費！馬上查看 https://%s/activeLogs.asp",
+                                        "有一位甜心和你要求 ME 點！馬上查看 https://%s/activeLogs.asp",
                                         Servant.LOCALHOST
                                 ));
                 }
@@ -1474,7 +1474,7 @@ public class HistoryService {
                                         profileImage = passiveProfileImage;
                                         identifier = passiveIdentifier;
                                         message = String.format(
-                                                "您給了%s %d 車馬費",
+                                                "您給了%s %d ME 點",
                                                 passiveNickname,
                                                 Math.abs(activeLogs.getPoints())
                                         );
@@ -1483,7 +1483,7 @@ public class HistoryService {
                                         profileImage = initiativeProfileImage;
                                         identifier = initiativeIdentifier;
                                         message = String.format(
-                                                "您收到了來自%s的 %d 車馬費",
+                                                "您收到了來自%s的 %d ME 點",
                                                 initiativeNickname,
                                                 Math.abs(activeLogs.getPoints())
                                         );
@@ -1504,7 +1504,7 @@ public class HistoryService {
                                         profileImage = initiativeProfileImage;
                                         identifier = initiativeIdentifier;
                                         message = String.format(
-                                                "%s向您要求 %d 車馬費",
+                                                "%s向您要求 %d ME 點",
                                                 initiativeNickname,
                                                 Math.abs(activeLogs.getPoints())
                                         );
@@ -1523,7 +1523,7 @@ public class HistoryService {
                                         profileImage = passiveProfileImage;
                                         identifier = passiveIdentifier;
                                         message = String.format(
-                                                "您向%s要求 %d 車馬費",
+                                                "您向%s要求 %d ME 點",
                                                 passiveNickname,
                                                 Math.abs(activeLogs.getPoints())
                                         );
@@ -1534,7 +1534,7 @@ public class HistoryService {
                                         profileImage = initiativeProfileImage;
                                         identifier = initiativeIdentifier;
                                         message = String.format(
-                                                "%s退回您給的 %d 車馬費",
+                                                "%s退回您給的 %d ME 點",
                                                 initiativeNickname,
                                                 Math.abs(activeLogs.getPoints())
                                         );
@@ -1543,7 +1543,7 @@ public class HistoryService {
                                         profileImage = passiveProfileImage;
                                         identifier = passiveIdentifier;
                                         message = String.format(
-                                                "您已退回%s給您的 %d 車馬費",
+                                                "您已退回%s給您的 %d ME 點",
                                                 passiveNickname,
                                                 Math.abs(activeLogs.getPoints())
                                         );
@@ -1581,7 +1581,7 @@ public class HistoryService {
                                 profileImage = passiveProfileImage;
                                 identifier = passiveIdentifier;
                                 message = String.format(
-                                        "您提領的 %s 車馬費已成功匯款!",
+                                        "您提領的 %s  ME 點已成功匯款!",
                                         activeLogs.getGreeting()
                                 );
                         }
@@ -1589,7 +1589,7 @@ public class HistoryService {
                                 profileImage = passiveProfileImage;
                                 identifier = passiveIdentifier;
                                 message = String.format(
-                                        "您欲提領的車馬費失敗，請重新提領。"
+                                        "您欲提領的 ME 點失敗，請重新提領。"
                                 );
                         }
                         if (activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_SUCCESS) {
@@ -1775,7 +1775,7 @@ public class HistoryService {
                 webSocketServer.sendNotification(
                         male.getIdentifier().toString(),
                         String.format(
-                                "%s退回您給的看車馬費!",
+                                "%s退回您給的看 ME 點！",
                                 female.getNickname()
                         ));
                 if (loverService.hasLineNotify(male)) {
@@ -1783,7 +1783,7 @@ public class HistoryService {
                         lineMessagingService.notify(
                                 male,
                                 String.format(
-                                        "有養蜜退回您給的車馬費..馬上查看 https://%s/activeLogs.asp",
+                                        "有養蜜退回您給的 ME 點..馬上查看 https://%s/activeLogs.asp",
                                         Servant.LOCALHOST
                                 ));
                 }

@@ -1033,7 +1033,7 @@ public class DashboardService {
                 webSocketServer.sendNotification(
                         male.getIdentifier().toString(),
                         String.format(
-                                "%s退回您給的看車馬費!",
+                                "%s退回您給的 ME 點!",
                                 female.getNickname()
                         ));
                 if (loverService.hasLineNotify(male)) {
@@ -1041,7 +1041,7 @@ public class DashboardService {
                         lineMessagingService.notify(
                                 male,
                                 String.format(
-                                        "有養蜜退回您給的車馬費..馬上查看 https://%s/activeLogs.asp",
+                                        "有養蜜退回您給的 ME 點..馬上查看 https://%s/activeLogs.asp",
                                         Servant.LOCALHOST
                                 ));
                 }

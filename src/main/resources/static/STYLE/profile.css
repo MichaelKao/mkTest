@@ -1,65 +1,68 @@
 @media screen and (max-width: 767px) {
-	#icon {
-		position: fixed;
-		right: 20px;
-		bottom: 20px;
-		z-index: 1000;
-	}
+        #icon {
+                position: fixed;
+                right: 20px;
+                bottom: 20px;
+                z-index: 1000;
+        }
 }
 
 .result IMG {
-	max-width: 100%;
+        max-width: 100%;
 }
 
 BUTTON.fav {
-	border-radius: 50%;
-	color: #6C757D;
+        color: #6C757D;
+}
+
+BUTTON.fav DIV {
+        color: #D63384;
 }
 
 BUTTON.fav.liked i {
-	animation: heart-grow .7s;
-	color: #D63384;
+        animation: heart-grow .7s;
+        color: #D63384;
 }
 
 @keyframes heart-grow {
-	0% {
-		transform: scale(3);
-		opacity: 0;
-	}
-	50% {
-		opacity: 1;
-	}
-	100% {
-		transform: scale(1);
-	}
+        0% {
+                transform: scale(3);
+                opacity: 0;
+        }
+        50% {
+                opacity: 1;
+        }
+        100% {
+                transform: scale(1);
+        }
 }
 
 .carousel {
-	position: relative;
+        position: relative;
 }
 
 .carousel A {
-	position: absolute;
-	bottom: 10px;
-	right: 10px;
-	font-size: 40px;
-	z-index: 10;
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        font-size: 40px;
+        z-index: 10;
 }
 
 DIV.star {
-	color: #FF8C00;
+        color: #FF8C00;
 }
 
 .carousel-indicators [data-bs-target] {
-	background-color: #D63384EE;
-	opacity: 0.4;
+        background-color: #D63384EE;
+        opacity: 0.4;
 }
 
 .carousel-indicators .active {
-	opacity: 1;
+        opacity: 1;
 }
 
 .carouselControlBtn {
-	font-size: 32px;
-	color: #D63384;
+        font-size: 32px;
+        color: #D63384;
 }
