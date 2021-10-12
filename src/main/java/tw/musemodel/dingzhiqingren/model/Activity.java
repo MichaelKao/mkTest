@@ -11,177 +11,190 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
  */
 public class Activity implements Comparable<Activity> {
 
-	private Lover initiative;
+        private Lover initiative;
 
-	private Lover passive;
+        private Lover passive;
 
-	private Behavior behavior;
+        private Behavior behavior;
 
-	private Date occurred;
+        private Date occurred;
 
-	private Short points;
+        private Short points;
 
-	private String greeting;
+        private String greeting;
 
-	private Date seen;
+        private Date seen;
 
-	private Date reply;
+        private Date reply;
 
-	// 放行生活照
-	private Boolean showAllPictures;
+        // 放行生活照
+        private Boolean showAllPictures;
 
-	// 用於聊天室：紀錄寄送人
-	private String sender;
+        // 用於聊天室：紀錄寄送人
+        private String sender;
 
-	// 用於聊天室：要求車馬費的歷程 id
-	private Long id;
+        // 用於聊天室：要求車馬費的歷程 id
+        private Long id;
 
-	// 用於聊天室：可否退回
-	private Boolean ableToReturnFare;
+        // 用於聊天室：可否退回
+        private Boolean ableToReturnFare;
 
-	@Override
-	public int compareTo(Activity other) {
-		return occurred.compareTo(other.occurred);
-	}
+        @Override
+        public int compareTo(Activity other) {
+                return occurred.compareTo(other.occurred);
+        }
 
-	public Activity() {
-	}
+        public Activity() {
+        }
 
-	public Activity(Long id, Lover initiative, Lover passive, Behavior behavior,
-		Date occurred, Short points, String greeting, Date seen, Date reply) {
-		this.id = id;
-		this.initiative = initiative;
-		this.passive = passive;
-		this.behavior = behavior;
-		this.occurred = occurred;
-		this.points = points;
-		this.greeting = greeting;
-		this.seen = seen;
-		this.reply = reply;
-	}
+        /**
+         * 通知歷程
+         *
+         * @param id
+         * @param initiative
+         * @param passive
+         * @param behavior
+         * @param occurred
+         * @param points
+         * @param greeting
+         * @param seen
+         * @param reply
+         */
+        public Activity(Long id, Lover initiative, Lover passive, Behavior behavior,
+                Date occurred, Short points, String greeting, Date seen, Date reply) {
+                this.id = id;
+                this.initiative = initiative;
+                this.passive = passive;
+                this.behavior = behavior;
+                this.occurred = occurred;
+                this.points = points;
+                this.greeting = greeting;
+                this.seen = seen;
+                this.reply = reply;
+        }
 
-	/**
-	 * 聊天歷史紀錄
-	 *
-	 * @param sender
-	 * @param occurred
-	 * @param greeting
-	 * @param seen
-	 */
-	public Activity(String sender, Behavior behavior, Date occurred, String greeting, Date seen) {
-		this.sender = sender;
-		this.behavior = behavior;
-		this.occurred = occurred;
-		this.greeting = greeting;
-		this.seen = seen;
-	}
+        /**
+         * 聊天歷史紀錄
+         *
+         * @param sender
+         * @param occurred
+         * @param greeting
+         * @param seen
+         */
+        public Activity(String sender, Behavior behavior, Date occurred, String greeting, Date seen) {
+                this.sender = sender;
+                this.behavior = behavior;
+                this.occurred = occurred;
+                this.greeting = greeting;
+                this.seen = seen;
+        }
 
-	/**
-	 * 群發 GroupBy
-	 *
-	 * @param initiative
-	 * @param behavior
-	 * @param occurred
-	 */
-	public Activity(Lover initiative, Behavior behavior, Date occurred) {
-		this.initiative = initiative;
-		this.behavior = behavior;
-		this.occurred = occurred;
-	}
+        /**
+         * 群發 GroupBy
+         *
+         * @param initiative
+         * @param behavior
+         * @param occurred
+         */
+        public Activity(Lover initiative, Behavior behavior, Date occurred) {
+                this.initiative = initiative;
+                this.behavior = behavior;
+                this.occurred = occurred;
+        }
 
-	public Lover getInitiative() {
-		return initiative;
-	}
+        public Lover getInitiative() {
+                return initiative;
+        }
 
-	public void setInitiative(Lover initiative) {
-		this.initiative = initiative;
-	}
+        public void setInitiative(Lover initiative) {
+                this.initiative = initiative;
+        }
 
-	public Lover getPassive() {
-		return passive;
-	}
+        public Lover getPassive() {
+                return passive;
+        }
 
-	public void setPassive(Lover passive) {
-		this.passive = passive;
-	}
+        public void setPassive(Lover passive) {
+                this.passive = passive;
+        }
 
-	public Behavior getBehavior() {
-		return behavior;
-	}
+        public Behavior getBehavior() {
+                return behavior;
+        }
 
-	public void setBehavior(Behavior behavior) {
-		this.behavior = behavior;
-	}
+        public void setBehavior(Behavior behavior) {
+                this.behavior = behavior;
+        }
 
-	public Date getOccurred() {
-		return occurred;
-	}
+        public Date getOccurred() {
+                return occurred;
+        }
 
-	public void setOccurred(Date occurred) {
-		this.occurred = occurred;
-	}
+        public void setOccurred(Date occurred) {
+                this.occurred = occurred;
+        }
 
-	public Short getPoints() {
-		return points;
-	}
+        public Short getPoints() {
+                return points;
+        }
 
-	public void setPoints(Short points) {
-		this.points = points;
-	}
+        public void setPoints(Short points) {
+                this.points = points;
+        }
 
-	public String getGreeting() {
-		return greeting;
-	}
+        public String getGreeting() {
+                return greeting;
+        }
 
-	public void setGreeting(String greeting) {
-		this.greeting = greeting;
-	}
+        public void setGreeting(String greeting) {
+                this.greeting = greeting;
+        }
 
-	public Date getSeen() {
-		return seen;
-	}
+        public Date getSeen() {
+                return seen;
+        }
 
-	public void setSeen(Date seen) {
-		this.seen = seen;
-	}
+        public void setSeen(Date seen) {
+                this.seen = seen;
+        }
 
-	public Date getReply() {
-		return reply;
-	}
+        public Date getReply() {
+                return reply;
+        }
 
-	public void setReply(Date reply) {
-		this.reply = reply;
-	}
+        public void setReply(Date reply) {
+                this.reply = reply;
+        }
 
-	public Boolean getShowAllPictures() {
-		return showAllPictures;
-	}
+        public Boolean getShowAllPictures() {
+                return showAllPictures;
+        }
 
-	public void setShowAllPictures(Boolean showAllPictures) {
-		this.showAllPictures = showAllPictures;
-	}
+        public void setShowAllPictures(Boolean showAllPictures) {
+                this.showAllPictures = showAllPictures;
+        }
 
-	public String getSender() {
-		return sender;
-	}
+        public String getSender() {
+                return sender;
+        }
 
-	public void setSender(String sender) {
-		this.sender = sender;
-	}
+        public void setSender(String sender) {
+                this.sender = sender;
+        }
 
-	public Long getId() {
-		return id;
-	}
+        public Long getId() {
+                return id;
+        }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+        public void setId(Long id) {
+                this.id = id;
+        }
 
-	public Boolean getAbleToReturnFare() {
-		return ableToReturnFare;
-	}
+        public Boolean getAbleToReturnFare() {
+                return ableToReturnFare;
+        }
 
-	public void setAbleToReturnFare(Boolean ableToReturnFare) {
-		this.ableToReturnFare = ableToReturnFare;
-	}
+        public void setAbleToReturnFare(Boolean ableToReturnFare) {
+                this.ableToReturnFare = ableToReturnFare;
+        }
 }

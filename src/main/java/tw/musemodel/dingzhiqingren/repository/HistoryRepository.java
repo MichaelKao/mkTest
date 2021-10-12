@@ -77,9 +77,9 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
 
         public List<History> findByPassiveAndBehaviorAndOccurredBefore(Lover passive, Behavior behavior, Date occurred);
 
-        public List<History> findByInitiativeAndBehaviorNotIn(Lover initiative, Collection<Behavior> behaviors);
+        public List<History> findByInitiativeAndBehaviorNotInOrderByIdDesc(Lover initiative, Collection<Behavior> behaviors);
 
-        public List<History> findByPassiveAndBehaviorNotIn(Lover passive, Collection<Behavior> behaviors);
+        public List<History> findByPassiveAndBehaviorNotInOrderByIdDesc(Lover passive, Collection<Behavior> behaviors);
 
         /**
          * @param initiative 主动方
