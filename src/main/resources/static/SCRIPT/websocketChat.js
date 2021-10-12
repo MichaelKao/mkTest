@@ -53,7 +53,7 @@ $(document).ready(function () {
                                                 divChild.appendChild(contentDiv);
                                                 var dateDiv = document.createElement('DIV');
                                                 dateDiv.className += 'text-xs';
-                                                dateDiv.innerHTML = dateFormat(new Date(msg.occurred));
+                                                dateDiv.innerHTML = dateFormat(msg.occurredStr);
                                                 divChild.appendChild(dateDiv);
                                                 divWrap.className += 'd-flex justify-content-center mb-4';
                                                 divChild.className += 'text-sm wordBreak text-center';
@@ -94,7 +94,7 @@ $(document).ready(function () {
                                                 return;
                                         }
                                         var dateSpan = document.createElement('SPAN');
-                                        dateSpan.innerHTML = dateFormat(new Date(msg.occurred));
+                                        dateSpan.innerHTML = dateFormat(msg.occurredStr);
                                         divParent.appendChild(dateSpan);
                                         // 根據發送者是自己還是對方來給予不同的class名, 以達到訊息左右區分
                                         self === msg.sender ? divWrap.className += 'd-flex justify-content-end mb-2' : divWrap.className += 'd-flex justify-content-start mb-2';

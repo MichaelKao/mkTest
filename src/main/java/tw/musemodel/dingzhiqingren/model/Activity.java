@@ -19,6 +19,8 @@ public class Activity implements Comparable<Activity> {
 
         private Date occurred;
 
+        private String occurredStr;
+
         private Short points;
 
         private String greeting;
@@ -81,10 +83,11 @@ public class Activity implements Comparable<Activity> {
          * @param greeting
          * @param seen
          */
-        public Activity(String sender, Behavior behavior, Date occurred, String greeting, Date seen) {
+        public Activity(String sender, Behavior behavior, Date occurred, String occurredStr, String greeting, Date seen) {
                 this.sender = sender;
                 this.behavior = behavior;
                 this.occurred = occurred;
+                this.occurredStr = occurredStr;
                 this.greeting = greeting;
                 this.seen = seen;
         }
