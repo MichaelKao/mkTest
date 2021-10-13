@@ -228,6 +228,21 @@ public class HistoryService {
         public static final Behavior BEHAVIOR_CERTIFICATION_FAIL = Behavior.AN_XIN_SHI_BAI;
 
         /**
+         * 历程：安心認證不通過；本人和證件清晰需可辨識合照。
+         */
+        public static final Behavior BEHAVIOR_CERTIFICATION_FAIL_1 = Behavior.AN_XIN_SHI_BAI_1;
+
+        /**
+         * 历程：安心認證不通過；照片中證件不可辨識。
+         */
+        public static final Behavior BEHAVIOR_CERTIFICATION_FAIL_2 = Behavior.AN_XIN_SHI_BAI_2;
+
+        /**
+         * 历程：安心認證不通過；照片中本人不可辨識。
+         */
+        public static final Behavior BEHAVIOR_CERTIFICATION_FAIL_3 = Behavior.AN_XIN_SHI_BAI_3;
+
+        /**
          * 历程：甜心群發打招呼
          */
         public static final Behavior BEHAVIOR_GROUP_GREETING = Behavior.QUN_FA;
@@ -1265,8 +1280,9 @@ public class HistoryService {
                         // 這幾個行為主動者不須通知
                         if (activeLogs.getBehavior() == BEHAVIOR_RATE || activeLogs.getBehavior() == BEHAVIOR_FOLLOW || activeLogs.getBehavior() == BEHAVIOR_PEEK
                                 || activeLogs.getBehavior() == BEHAVIOR_WITHDRAWAL_FAIL || activeLogs.getBehavior() == BEHAVIOR_WITHDRAWAL_SUCCESS
-                                || activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_FAIL || activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_SUCCESS
-                                || activeLogs.getBehavior() == BEHAVIOR_GROUP_GREETING) {
+                                || activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_FAIL || activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_FAIL_1
+                                || activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_FAIL_2 || activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_FAIL_3
+                                || activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_SUCCESS || activeLogs.getBehavior() == BEHAVIOR_GROUP_GREETING) {
                                 if (Objects.equals(lover, initiative)) {
                                         continue;
                                 }
@@ -1603,6 +1619,27 @@ public class HistoryService {
                                 profileImage = passiveProfileImage;
                                 message = String.format(
                                         "您申請的安心認證不通過，請重新上傳正確手持證件照!"
+                                );
+                                identifier = passiveIdentifier;
+                        }
+                        if (activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_FAIL_1) {
+                                profileImage = passiveProfileImage;
+                                message = String.format(
+                                        "您申請的安心認證不通過，本人和證件清晰需可辨識合照。請重新上傳正確手持證件照!"
+                                );
+                                identifier = passiveIdentifier;
+                        }
+                        if (activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_FAIL_2) {
+                                profileImage = passiveProfileImage;
+                                message = String.format(
+                                        "您申請的安心認證不通過，照片中證件不可辨識，請重新上傳正確手持證件照!"
+                                );
+                                identifier = passiveIdentifier;
+                        }
+                        if (activeLogs.getBehavior() == BEHAVIOR_CERTIFICATION_FAIL_3) {
+                                profileImage = passiveProfileImage;
+                                message = String.format(
+                                        "您申請的安心認證不通過，照片中本人不可辨識，請重新上傳正確手持證件照!"
                                 );
                                 identifier = passiveIdentifier;
                         }

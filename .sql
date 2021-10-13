@@ -924,3 +924,13 @@ ADD VALUE'BU_FANG_XING';--不放行
 ALTER TABLE"qing_ren"
 ADD COLUMN"wei"bool NOT NULL DEFAULT'0';
 COMMENT ON COLUMN"qing_ren"."wei"IS'伪号';
+
+/*
+ * 行為
+ */
+ALTER TYPE"xing_wei"
+ADD VALUE'AN_XIN_SHI_BAI_1';--本人和證件清晰需可辨識合照。
+ALTER TYPE"xing_wei"
+ADD VALUE'AN_XIN_SHI_BAI_2';--照片中證件不可辨識。
+ALTER TYPE"xing_wei"
+ADD VALUE'AN_XIN_SHI_BAI_3';--照片中本人不可辨識。

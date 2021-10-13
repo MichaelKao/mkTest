@@ -58,6 +58,8 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
          */
         public List<History> findByBehaviorInOrderByOccurredDesc(Collection<Behavior> behaviors, Pageable pageable);
 
+        public List<History> findByBehaviorInOrderByOccurredDesc(Collection<Behavior> behaviors);
+
         /**
          * @param initiative 主动方
          * @param passive 被动方
