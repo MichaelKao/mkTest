@@ -478,6 +478,7 @@ public class DashboardController {
                 final Collection<History.Behavior> behaviors = Lists.newArrayList(
                         HistoryService.BEHAVIOR_CHAT_MORE,
                         HistoryService.BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
+                        HistoryService.BEHAVIOR_GREETING,
                         HistoryService.BEHAVIOR_FOLLOW,
                         HistoryService.BEHAVIOR_PEEK
                 );
