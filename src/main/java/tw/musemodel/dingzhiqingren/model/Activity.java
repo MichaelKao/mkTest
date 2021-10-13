@@ -93,6 +93,22 @@ public class Activity implements Comparable<Activity> {
         }
 
         /**
+         * 聊天歷史紀錄
+         *
+         * @param sender
+         * @param occurred
+         * @param greeting
+         * @param seen
+         */
+        public Activity(String sender, Behavior behavior, Date occurred, String occurredStr, Date seen) {
+                this.sender = sender;
+                this.behavior = behavior;
+                this.occurred = occurred;
+                this.occurredStr = occurredStr;
+                this.seen = seen;
+        }
+
+        /**
          * 群發 GroupBy
          *
          * @param initiative
@@ -131,6 +147,14 @@ public class Activity implements Comparable<Activity> {
 
         public Date getOccurred() {
                 return occurred;
+        }
+
+        public String getOccurredStr() {
+                return occurredStr;
+        }
+
+        public void setOccurredStr(String occurredStr) {
+                this.occurredStr = occurredStr;
         }
 
         public void setOccurred(Date occurred) {
