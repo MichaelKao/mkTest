@@ -1024,4 +1024,26 @@ public class DashboardController {
                 }
                 return jsonObject.toString();
         }
+
+        @PostMapping(path = "/upgradeVip.json")
+        @ResponseBody
+        String upgradeVip(@RequestParam Lover lover, @RequestParam Date date, Authentication authentication) {
+                if (servant.isNull(authentication)) {
+                        return servant.mustBeAuthenticated(Locale.TAIWAN);
+                }
+
+                JSONObject jsonObject;
+                try {
+                        jsonObject = dashboardService.upgradeVip(
+                                lover,
+                                date
+                        );
+                } catch (Exception exception) {
+                        return new JavaScriptObjectNotation().
+                                withReason(exception.getMessage()).
+                                withResponse(false).
+                                toJSONObject().toString();
+                }
+                return jsonObject.toString();
+        }
 }

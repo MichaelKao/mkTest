@@ -1,5 +1,15 @@
 $(document).ready(function () {
 
+        $('#expDate').datepicker({
+                format: 'yyyy/mm/dd',
+                startDate: new Date() + 1,
+                todayHighlight: true
+        });
+
+        $('#expDate').datepicker().on('change', function () {
+                $('BUTTON.upgradeVip').attr('disabled', false);
+        });
+
         var $myReferralCode = $('DIV.myReferralCode');
         var $invitedCode = $('DIV.invitedCode');
         var $descendants = $('DIV.descendants');
@@ -737,6 +747,40 @@ $(document).ready(function () {
                         function (data) {
                                 createPagination(pagination, data.totalPages, page);
                                 search(data);
+                        },
+                        'json'
+                        );
+                return false;
+        });
+
+        $('BUTTON.upgradeVipBtn').click(function () {
+                var btn = this;
+                lover = $(btn).data('id');
+        });
+
+        $('BUTTON.upgradeVip').click(function () {
+                var date = $('INPUT[name="expDate"]').val();
+                $.post(
+                        '/dashboard/upgradeVip.json',
+                        {
+                                lover: lover,
+                                date: date
+                        },
+                        function (data) {
+                                $('#upgradeModal').modal('hide');
+                                var $upgradeVipWrap = $('BUTTON.upgradeVipBtn[data-id="' + lover + '"]').closest('DIV').siblings('DIV.upgradeVipWrap');
+                                $upgradeVipWrap.empty();
+                                var span = document.createElement('SPAN');
+                                $upgradeVipWrap.append(span);
+                                var i = document.createElement('I');
+                                $(i).attr('class', 'fad fa-crown me-1');
+                                $(span).append(i);
+                                var span2 = document.createElement('SPAN');
+                                $(span2).append('1288');
+                                $(span).append(span2);
+                                var div = document.createElement('DIV');
+                                $(div).append(date);
+                                $upgradeVipWrap.append(div);
                         },
                         'json'
                         );
