@@ -5,6 +5,7 @@ $(document).ready(function () {
                 showModal();
         }
 
+        let $mobileRefreshBtn = $('BUTTON#mobileRefreshBtn');
         if (isMobile() && $('INPUT[name="signIn"]').val() === 'true') {
                 var currentPageType = getCookie('currentPageType');
                 if ($('INPUT[name="gender"]').val() === 'male') {
@@ -13,20 +14,24 @@ $(document).ready(function () {
                                 var a = $('A.' + currentPageType + 'A');
                                 a.addClass('active');
                                 loverMobilePage(a);
+                                $mobileRefreshBtn.data('type', currentPageType);
                         } else {
                                 var a = $('A.reliefA');
                                 a.addClass('active');
                                 loverMobilePage(a);
+                                $mobileRefreshBtn.data('type', 'relief');
                         }
                 } else {
                         if (currentPageType !== '') {
                                 var a = $('A.' + currentPageType + 'A');
                                 a.addClass('active');
                                 loverMobilePage(a);
+                                $mobileRefreshBtn.data('type', currentPageType);
                         } else {
                                 var a = $('A.vipA');
                                 a.addClass('active');
                                 loverMobilePage(a);
+                                $mobileRefreshBtn.data('type', 'vip');
                         }
                 }
         }
@@ -38,6 +43,7 @@ $(document).ready(function () {
 
         function loverMobilePage(a) {
                 let type = $(a).data('type');
+                $mobileRefreshBtn.data('type', type);
                 let p = 0;
                 if (getCookie(type + 'Page') !== '') {
                         p = getCookie(type + 'Page');
@@ -67,12 +73,44 @@ $(document).ready(function () {
         }
 
         $('BUTTON.pageBtn').click(function () {
-                let button = this
+                let button = this;
                 let wrap;
                 var pageBtnWrap;
                 let p = $(button).data('page');
                 let type = $(button).data('type');
                 if ($(button).parent('DIV').attr('id') === 'mobilePageBtn') {
+                        wrap = $('DIV.mobileMode');
+                        pageBtnWrap = $('DIV#mobilePageBtn');
+                        $mobileRefreshBtn.data('type', type);
+                } else {
+                        wrap = $('DIV.' + type);
+                        pageBtnWrap = $('DIV.' + type + 'PageBtn');
+                }
+                $.post(
+                        '/seeMoreLover.json',
+                        {
+                                p: p,
+                                type: type
+                        },
+                        (data) => {
+                        if (data.response) {
+                                wrap.empty();
+                                pageBtnWrap.empty();
+                                loverWebPage(type, wrap, data, pageBtnWrap);
+                        }
+                },
+                        'json'
+                        );
+                return false;
+        });
+
+        $('BUTTON.refreshBtn').click(function () {
+                let button = this;
+                let wrap;
+                var pageBtnWrap;
+                let type = $(button).data('type');
+                console.log('mobiletype', type);
+                if ($(button).attr('id') === 'mobileRefreshBtn') {
                         wrap = $('DIV.mobileMode');
                         pageBtnWrap = $('DIV#mobilePageBtn');
                 } else {
@@ -82,7 +120,7 @@ $(document).ready(function () {
                 $.post(
                         '/seeMoreLover.json',
                         {
-                                p: p,
+                                p: 0,
                                 type: type
                         },
                         (data) => {
@@ -179,7 +217,7 @@ $(document).ready(function () {
                 if (typeof (data.pagination.hasPrev) != 'undefined') {
                         var prevBtn = document.createElement('BUTTON');
                         $(prevBtn).attr({
-                                'class': 'btn btn-primary btn-round pageBtn text-lg mx-2 m-0 px-2 py-1',
+                                'class': 'btn btn-primary btn-round pageBtn text-lg mx-1 m-0 px-2 py-1',
                                 'data-type': type,
                                 'data-page': data.pagination.hasPrev
                         });
@@ -222,7 +260,7 @@ $(document).ready(function () {
                 if (typeof (data.pagination.hasNext) != 'undefined') {
                         var nextBtn = document.createElement('BUTTON');
                         $(nextBtn).attr({
-                                'class': 'btn btn-primary btn-round pageBtn text-lg mx-2 m-0 px-2 py-1',
+                                'class': 'btn btn-primary btn-round pageBtn text-lg mx-1 m-0 px-2 py-1',
                                 'data-type': type,
                                 'data-page': data.pagination.hasNext
                         });

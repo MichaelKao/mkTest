@@ -337,22 +337,29 @@
         <xsl:template match="area">
                 <!--貴賓會員區塊-->
                 <xsl:if test="vip">
-                        <ARTICLE class="border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
-                                <DIV class="d-flex m-2 align-items-center">
+                        <ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
+                                <DIV class="d-flex mb-2 mx-3 align-items-center justify-content-between">
                                         <DIV class="text-lg m-2 text-bold text-primary">貴賓會員</DIV>
-                                        <DIV class="ms-auto vipPageBtn">
-                                                <xsl:if test="vip/@hasPrev">
-                                                        <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-2 m-0 px-2 py-1" data-type="vip" data-page="{vip/@hasPrev}">
-                                                                <I class="fad fa-angle-double-left me-1"></I>
-                                                                <SPAN>上一頁</SPAN>
+                                        <DIV class="d-flex">
+                                                <DIV class="vipPageBtn">
+                                                        <xsl:if test="vip/@hasPrev">
+                                                                <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-1 m-0 px-2 py-1" data-type="vip" data-page="{vip/@hasPrev}">
+                                                                        <I class="fad fa-angle-double-left me-1"></I>
+                                                                        <SPAN>上一頁</SPAN>
+                                                                </BUTTON>
+                                                        </xsl:if>
+                                                        <xsl:if test="vip/@hasNext">
+                                                                <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-1 m-0 px-2 py-1" data-type="vip" data-page="{vip/@hasNext}">
+                                                                        <SPAN>下一頁</SPAN>
+                                                                        <I class="fad fa-angle-double-right ms-1"></I>
+                                                                </BUTTON>
+                                                        </xsl:if>
+                                                </DIV>
+                                                <DIV>
+                                                        <BUTTON class="btn btn-link fontSize25 mx-1 m-0 p-0 refreshBtn" data-type="vip">
+                                                                <I class="fad fa-sync-alt"></I>
                                                         </BUTTON>
-                                                </xsl:if>
-                                                <xsl:if test="vip/@hasNext">
-                                                        <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-2 m-0 px-2 py-1" data-type="vip" data-page="{vip/@hasNext}">
-                                                                <SPAN>下一頁</SPAN>
-                                                                <I class="fad fa-angle-double-right ms-1"></I>
-                                                        </BUTTON>
-                                                </xsl:if>
+                                                </DIV>
                                         </DIV>
                                 </DIV>
                                 <DIV class="d-flex flex-wrap justify-content-center mx-2 vip">
@@ -407,22 +414,29 @@
                 </xsl:if>
                 <!--安心認證區塊-->
                 <xsl:if test="relief">
-                        <ARTICLE class="border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
-                                <DIV class="d-flex m-2 align-items-center">
+                        <ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
+                                <DIV class="d-flex mb-2 mx-3 align-items-center justify-content-between">
                                         <DIV class="text-lg m-2 text-bold text-primary">安心認證</DIV>
-                                        <DIV class="ms-auto reliefPageBtn">
-                                                <xsl:if test="relief/@hasPrev">
-                                                        <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-2 m-0 px-2 py-1" data-type="relief" data-page="{relief/@hasPrev}">
-                                                                <I class="fad fa-angle-double-left me-1"></I>
-                                                                <SPAN>上一頁</SPAN>
+                                        <DIV class="d-flex">
+                                                <DIV class="reliefPageBtn">
+                                                        <xsl:if test="relief/@hasPrev">
+                                                                <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-1 m-0 px-2 py-1" data-type="relief" data-page="{relief/@hasPrev}">
+                                                                        <I class="fad fa-angle-double-left me-1"></I>
+                                                                        <SPAN>上一頁</SPAN>
+                                                                </BUTTON>
+                                                        </xsl:if>
+                                                        <xsl:if test="relief/@hasNext">
+                                                                <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-1 m-0 px-2 py-1" data-type="relief" data-page="{relief/@hasNext}">
+                                                                        <SPAN>下一頁</SPAN>
+                                                                        <I class="fad fa-angle-double-right ms-1"></I>
+                                                                </BUTTON>
+                                                        </xsl:if>
+                                                </DIV>
+                                                <DIV>
+                                                        <BUTTON class="btn btn-link fontSize25 mx-1 m-0 p-0 refreshBtn" data-type="relief">
+                                                                <I class="fad fa-sync-alt"></I>
                                                         </BUTTON>
-                                                </xsl:if>
-                                                <xsl:if test="relief/@hasNext">
-                                                        <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-2 m-0 px-2 py-1" data-type="relief" data-page="{relief/@hasNext}">
-                                                                <SPAN>下一頁</SPAN>
-                                                                <I class="fad fa-angle-double-right ms-1"></I>
-                                                        </BUTTON>
-                                                </xsl:if>
+                                                </DIV>
                                         </DIV>
                                 </DIV>
                                 <DIV class="d-flex flex-wrap justify-content-center mx-2 relief">
@@ -477,22 +491,29 @@
                 </xsl:if>
                 <!--最近活躍區塊-->
                 <xsl:if test="active">
-                        <ARTICLE class="border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
-                                <DIV class="d-flex m-2 align-items-center">
-                                        <DIV class="text-lg m-2 text-bold text-primary">最近活躍</DIV>
-                                        <DIV class="ms-auto activePageBtn">
-                                                <xsl:if test="active/@hasPrev">
-                                                        <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-2 m-0 px-2 py-1" data-type="active" data-page="{active/@hasPrev}">
-                                                                <I class="fad fa-angle-double-left me-1"></I>
-                                                                <SPAN>上一頁</SPAN>
+                        <ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
+                                <DIV class="d-flex mb-2 mx-3 align-items-center justify-content-between">
+                                        <DIV class="text-lg text-bold text-primary">最近活躍</DIV>
+                                        <DIV class="d-flex">
+                                                <DIV class="activePageBtn">
+                                                        <xsl:if test="active/@hasPrev">
+                                                                <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-1 m-0 px-2 py-1" data-type="active" data-page="{active/@hasPrev}">
+                                                                        <I class="fad fa-angle-double-left me-1"></I>
+                                                                        <SPAN>上一頁</SPAN>
+                                                                </BUTTON>
+                                                        </xsl:if>
+                                                        <xsl:if test="active/@hasNext">
+                                                                <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-1 m-0 px-2 py-1" data-type="active" data-page="{active/@hasNext}">
+                                                                        <SPAN>下一頁</SPAN>
+                                                                        <I class="fad fa-angle-double-right ms-1"></I>
+                                                                </BUTTON>
+                                                        </xsl:if>
+                                                </DIV>
+                                                <DIV>
+                                                        <BUTTON class="btn btn-link fontSize25 mx-1 m-0 p-0 refreshBtn" data-type="active">
+                                                                <I class="fad fa-sync-alt"></I>
                                                         </BUTTON>
-                                                </xsl:if>
-                                                <xsl:if test="active/@hasNext">
-                                                        <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-2 m-0 px-2 py-1" data-type="active" data-page="{active/@hasNext}">
-                                                                <SPAN>下一頁</SPAN>
-                                                                <I class="fad fa-angle-double-right ms-1"></I>
-                                                        </BUTTON>
-                                                </xsl:if>
+                                                </DIV>
                                         </DIV>
                                 </DIV>
                                 <DIV class="d-flex flex-wrap justify-content-center mx-2 active">
@@ -547,22 +568,29 @@
                 </xsl:if>
                 <!--最新註冊區塊-->
                 <xsl:if test="register">
-                        <ARTICLE class="border-radius-xl shadow-lg pb-2 mx-auto mb-3 d-none d-md-block">
-                                <DIV class="d-flex m-2 align-items-center">
+                        <ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
+                                <DIV class="d-flex mb-2 mx-3 align-items-center justify-content-between">
                                         <DIV class="text-lg m-2 text-bold text-primary">最新註冊</DIV>
-                                        <DIV class="ms-auto registerPageBtn">
-                                                <xsl:if test="register/@hasPrev">
-                                                        <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-2 m-0 px-2 py-1" data-type="register" data-page="{register/@hasPrev}">
-                                                                <I class="fad fa-angle-double-left me-1"></I>
-                                                                <SPAN>上一頁</SPAN>
+                                        <DIV class="d-flex">
+                                                <DIV class="registerPageBtn">
+                                                        <xsl:if test="register/@hasPrev">
+                                                                <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-1 m-0 px-2 py-1" data-type="register" data-page="{register/@hasPrev}">
+                                                                        <I class="fad fa-angle-double-left me-1"></I>
+                                                                        <SPAN>上一頁</SPAN>
+                                                                </BUTTON>
+                                                        </xsl:if>
+                                                        <xsl:if test="register/@hasNext">
+                                                                <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-1 m-0 px-2 py-1" data-type="register" data-page="{register/@hasNext}">
+                                                                        <SPAN>下一頁</SPAN>
+                                                                        <I class="fad fa-angle-double-right ms-1"></I>
+                                                                </BUTTON>
+                                                        </xsl:if>
+                                                </DIV>
+                                                <DIV>
+                                                        <BUTTON class="btn btn-link fontSize25 mx-1 m-0 p-0 refreshBtn" data-type="register">
+                                                                <I class="fad fa-sync-alt"></I>
                                                         </BUTTON>
-                                                </xsl:if>
-                                                <xsl:if test="register/@hasNext">
-                                                        <BUTTON class="btn btn-primary btn-round pageBtn text-lg mx-2 m-0 px-2 py-1" data-type="register" data-page="{register/@hasNext}">
-                                                                <SPAN>下一頁</SPAN>
-                                                                <I class="fad fa-angle-double-right ms-1"></I>
-                                                        </BUTTON>
-                                                </xsl:if>
+                                                </DIV>
                                         </DIV>
                                 </DIV>
                                 <DIV class="d-flex flex-wrap justify-content-center mx-2 register">
@@ -618,7 +646,14 @@
                 <SECTION class="d-block d-md-none text-center">
                         <DIV class="mobileModeWrap">
                                 <DIV class="d-flex flex-wrap justify-content-center mobileMode"></DIV>
-                                <DIV class="mt-3" id="mobilePageBtn"></DIV>
+                                <DIV class="d-flex mt-3 justify-content-center">
+                                        <DIV id="mobilePageBtn"></DIV>
+                                        <DIV>
+                                                <BUTTON class="btn btn-link fontSize25 mx-1 m-0 p-0 refreshBtn" id="mobileRefreshBtn">
+                                                        <I class="fad fa-sync-alt"></I>
+                                                </BUTTON>
+                                        </DIV>
+                                </DIV>
                         </DIV>
                 </SECTION>
                 <SECTION class="fixed-bottom d-block d-md-none bg-white shadow m-2 bottom13rem text-lg">
