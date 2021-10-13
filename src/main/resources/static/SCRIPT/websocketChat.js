@@ -125,7 +125,7 @@ $(document).ready(function () {
                                                         $('BUTTON.acceptFare').click(function () {
                                                                 result = true;
                                                                 $(this).attr('disabled', true);
-                                                                $('BUTTON.refuseFare').attr('disabled', true);
+                                                                $(this).siblings('BUTTON.refuseFare').attr('disabled', true);
                                                         });
                                                         $('BUTTON.acceptFare').dblclick(function (e) {
                                                                 e.preventDefault();
@@ -133,7 +133,7 @@ $(document).ready(function () {
                                                         $('BUTTON.refuseFare').click(function () {
                                                                 result = false;
                                                                 $(this).attr('disabled', true);
-                                                                $('BUTTON.acceptFare').attr('disabled', true);
+                                                                $(this).siblings('BUTTON.acceptFare').attr('disabled', true);
                                                         });
                                                         $('BUTTON.refuseFare').dblclick(function (e) {
                                                                 e.preventDefault();
@@ -236,8 +236,6 @@ $(document).ready(function () {
                                 });
                                 scrollToEnd();
                         } else if ('chat' === jsonObj.type) {
-                                console.log(jsonObj);
-                                console.log(jsonObj.msgCount);
                                 if (parseInt(jsonObj.msgCount) === 3 && isMale === 'true') {
                                         $('.textareaContainer').remove();
                                         $('BUTTON.sendMsgBtn').remove();
@@ -392,7 +390,6 @@ $(document).ready(function () {
                                                 self === jsonObj.sender ? divChild.innerHTML += '您已退回對方給您的 💗 ' + jsonObj.points + ' ME 點' : divChild.innerHTML += '對方退回您給的 💗 ' + jsonObj.points + ' ME 點';
                                                 break;
                                         default:
-                                                console.log(jsonObj.message)
                                                 divChild.innerHTML = jsonObj.message;
                                 }
                                 scrollToEnd();
@@ -970,9 +967,11 @@ $(document).ready(function () {
                 behavior = 'YAO_CHE_MA_FEI';
         });
 
-        $('.confirmFare').click(function (event) {
+        $('BUTTON.confirmFare').dblclick(function (e) {
+                e.preventDefault();
+        });
+        $('BUTTON.confirmFare').click(function (event) {
                 event.preventDefault();
-                let btn = this;
                 let howMany = $('INPUT[name="howMany"]').val();
                 $.post(
                         url,
