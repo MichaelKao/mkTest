@@ -30,6 +30,7 @@ import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
 import tw.musemodel.dingzhiqingren.service.LoverService;
+import tw.musemodel.dingzhiqingren.service.Servant;
 import tw.musemodel.dingzhiqingren.service.WebSocketService;
 
 @Component
@@ -78,6 +79,13 @@ public class WebSocketChatServer {
         @Autowired
         public void setHistoryService(HistoryService historyService) {
                 WebSocketChatServer.historyService = historyService;
+        }
+
+        static Servant servant;
+
+        @Autowired
+        public void setServant(Servant servant) {
+                WebSocketChatServer.servant = servant;
         }
 
         //靜態常數，用來記錄當前的再現連接數。應該用執行緒較安全。
@@ -234,6 +242,8 @@ public class WebSocketChatServer {
                         }
                 }
 
+                chatMessage.setMessage(servant.markdownToHtml(chatMessage.getMessage()));
+                message = gson.toJson(chatMessage);
                 if (receiverSession != null && receiverSession.isOpen()) {
                         receiverSession.getAsyncRemote().sendText(message);
                         history.setSeen(new Date(System.currentTimeMillis()));

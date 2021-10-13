@@ -392,6 +392,7 @@ $(document).ready(function () {
                                                 self === jsonObj.sender ? divChild.innerHTML += '您已退回對方給您的 💗 ' + jsonObj.points + ' ME 點' : divChild.innerHTML += '對方退回您給的 💗 ' + jsonObj.points + ' ME 點';
                                                 break;
                                         default:
+                                                console.log(jsonObj.message)
                                                 divChild.innerHTML = jsonObj.message;
                                 }
                                 scrollToEnd();
@@ -754,11 +755,6 @@ $(document).ready(function () {
         $textarea
                 .on('keydown', function (e) {
                         if (e.keyCode === 13 && e.altKey) {
-                                $(this).val($(this).val() + '\n');
-                        }
-                })
-                .on('keypress', function (e) {
-                        if (e.keyCode === 13 && !e.ctrlKey) {
                                 sendMessage();
                                 return false;
                         }

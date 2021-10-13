@@ -50,6 +50,9 @@ public class WebSocketService {
         @Autowired
         private LineGivenRepository lineGivenRepository;
 
+        @Autowired
+        private Servant servant;
+
         public List<Activity> wholeHistoryMsgs(Lover male, Lover female) {
                 List<History> maleTalkHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
                         male,
@@ -112,7 +115,7 @@ public class WebSocketService {
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
                                 ),
-                                history.getGreeting(),
+                                servant.markdownToHtml(history.getGreeting()),
                                 history.getSeen()
                         );
                         wholeHistoryMsgs.add(activity);
@@ -127,7 +130,7 @@ public class WebSocketService {
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
                                 ),
-                                history.getGreeting(),
+                                servant.markdownToHtml(history.getGreeting()),
                                 history.getSeen()
                         );
                         wholeHistoryMsgs.add(activity);
@@ -142,7 +145,7 @@ public class WebSocketService {
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
                                 ),
-                                history.getGreeting(),
+                                servant.markdownToHtml(history.getGreeting()),
                                 history.getSeen()
                         );
                         wholeHistoryMsgs.add(activity);
@@ -157,7 +160,7 @@ public class WebSocketService {
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
                                 ),
-                                history.getGreeting(),
+                                servant.markdownToHtml(history.getGreeting()),
                                 history.getSeen()
                         );
                         if (historyService.ableToReturnFare(history)) {
@@ -179,7 +182,7 @@ public class WebSocketService {
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
                                 ),
-                                history.getGreeting(),
+                                servant.markdownToHtml(history.getGreeting()),
                                 history.getSeen()
                         );
                         wholeHistoryMsgs.add(activity);
@@ -194,7 +197,7 @@ public class WebSocketService {
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
                                 ),
-                                history.getGreeting(),
+                                servant.markdownToHtml(history.getGreeting()),
                                 history.getSeen()
                         );
                         wholeHistoryMsgs.add(activity);
@@ -209,7 +212,7 @@ public class WebSocketService {
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
                                 ),
-                                history.getGreeting(),
+                                servant.markdownToHtml(history.getGreeting()),
                                 history.getSeen()
                         );
                         wholeHistoryMsgs.add(activity);
@@ -224,7 +227,7 @@ public class WebSocketService {
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
                                 ),
-                                history.getGreeting(),
+                                servant.markdownToHtml(history.getGreeting()),
                                 history.getSeen()
                         );
                         wholeHistoryMsgs.add(activity);
@@ -239,7 +242,7 @@ public class WebSocketService {
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
                                 ),
-                                history.getGreeting(),
+                                servant.markdownToHtml(history.getGreeting()),
                                 history.getSeen()
                         );
                         activity.setPoints(history.getPoints());
@@ -257,7 +260,7 @@ public class WebSocketService {
                                                 history.getOccurred()
                                         ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
                                 ),
-                                history.getGreeting(),
+                                servant.markdownToHtml(history.getGreeting()),
                                 history.getSeen()
                         );
                         activity.setPoints(history.getPoints());
