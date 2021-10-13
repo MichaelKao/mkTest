@@ -43,6 +43,11 @@
 			<!--<version>2.6.0</version>-->
 		</dependency>
 		<dependency>
+			<groupId>com.jhlabs</groupId>
+			<artifactId>filters</artifactId>
+			<version>2.0.235-1</version>
+		</dependency>
+		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>
 			<version>1.11.915</version>
