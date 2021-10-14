@@ -71,7 +71,6 @@ import tw.musemodel.dingzhiqingren.service.Servant;
 @RequestMapping("/dashboard")
 public class DashboardController {
 
-	<<<<<<< HEAD
 	private final static Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
 
 	@Autowired
