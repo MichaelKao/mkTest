@@ -427,12 +427,12 @@ public class LoverService {
 		return loverRepository.findByRegisteredBetweenOrderByRegisteredDesc(
 			Servant.earliestDate(
 				sinceCalendar.get(Calendar.YEAR),
-				sinceCalendar.get(Calendar.MONTH),
+				sinceCalendar.get(Calendar.MONTH) + 1,
 				sinceCalendar.get(Calendar.DAY_OF_MONTH)
 			),
 			Servant.latestDate(
 				untilCalendar.get(Calendar.YEAR),
-				untilCalendar.get(Calendar.MONTH),
+				untilCalendar.get(Calendar.MONTH) + 1,
 				untilCalendar.get(Calendar.DAY_OF_MONTH)
 			)
 		);

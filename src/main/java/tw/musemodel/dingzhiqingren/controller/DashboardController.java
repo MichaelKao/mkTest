@@ -583,6 +583,14 @@ public class DashboardController {
 		}//try
 	}
 
+	/**
+	 * 用户号报表。
+	 *
+	 * @param since 开始日期
+	 * @param until 结束日期
+	 * @param response
+	 * @throws IOException
+	 */
 	@GetMapping(path = "/meMBERS.xls")
 	@ResponseBody
 	@Secured({"ROLE_ALMIGHTY"})
@@ -600,8 +608,9 @@ public class DashboardController {
 			firstRow.createCell(7, CellType.STRING).setCellValue("刪除");
 			firstRow.createCell(8, CellType.STRING).setCellValue("安心");
 			firstRow.createCell(9, CellType.STRING).setCellValue("註冊時間");
-			firstRow.createCell(10, CellType.STRING).setCellValue("推薦人");
-			firstRow.createCell(11, CellType.STRING).setCellValue("內測");
+			firstRow.createCell(10, CellType.STRING).setCellValue("活躍時間");
+			firstRow.createCell(11, CellType.STRING).setCellValue("推薦人");
+			firstRow.createCell(12, CellType.STRING).setCellValue("內測");
 			sheet.createFreezePane(0, 1);
 
 			CellStyle cellStyleDate = workbook.createCellStyle(),
@@ -657,8 +666,9 @@ public class DashboardController {
 					);
 					cell.setCellStyle(cellStyleDateTime);
 					cell.setCellValue(
-						Servant.TAIWAN_SIMPLE_DATE_FORMAT.
-							format(vip)
+						Servant.TAIWAN_DATE_TIME_FORMATTER.format(
+							Servant.toTaipeiZonedDateTime(vip)
+						)
 					);
 				}
 
@@ -683,8 +693,9 @@ public class DashboardController {
 					);
 					cell.setCellStyle(cellStyleDate);
 					cell.setCellValue(
-						Servant.SIMPLE_DATE_FORMAT_yyyyMMdd.
-							format(mofo.getBirthday())
+						Servant.DATE_TIME_FORMATTER_yyyyMMdd.format(
+							Servant.toTaipeiZonedDateTime(birthday)
+						)
 					);
 				}
 
@@ -725,10 +736,26 @@ public class DashboardController {
 						9,
 						CellType.STRING
 					);
-					cell.setCellStyle(cellStyleDate);
+					cell.setCellStyle(cellStyleDateTime);
 					cell.setCellValue(
-						Servant.SIMPLE_DATE_FORMAT_yyyyMMdd.
-							format(mofo.getRegistered())
+						Servant.TAIWAN_DATE_TIME_FORMATTER.format(
+							Servant.toTaipeiZonedDateTime(registered)
+						)
+					);
+				}
+
+				//最后活跃时间
+				Date active = mofo.getActive();
+				if (Objects.nonNull(active)) {
+					Cell cell = row.createCell(
+						10,
+						CellType.STRING
+					);
+					cell.setCellStyle(cellStyleDateTime);
+					cell.setCellValue(
+						Servant.TAIWAN_DATE_TIME_FORMATTER.format(
+							Servant.toTaipeiZonedDateTime(active)
+						)
 					);
 				}
 
@@ -736,7 +763,7 @@ public class DashboardController {
 				Lover referrer = mofo.getReferrer();
 				if (Objects.nonNull(referrer)) {
 					row.createCell(
-						10,
+						11,
 						CellType.STRING
 					).setCellValue(
 						referrer.getId().toString()
@@ -745,7 +772,7 @@ public class DashboardController {
 
 				//가짜 계좌
 				row.createCell(
-					11,
+					12,
 					CellType.STRING
 				).setCellValue(
 					mofo.isFake() ? "異常" : "一般"
