@@ -71,6 +71,7 @@ import tw.musemodel.dingzhiqingren.service.Servant;
 @RequestMapping("/dashboard")
 public class DashboardController {
 
+	<<<<<<< HEAD
 	private final static Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
 
 	@Autowired
@@ -1194,6 +1195,28 @@ public class DashboardController {
 		try {
 			jsonObject = dashboardService.returnFare(
 				history
+			);
+		} catch (Exception exception) {
+			return new JavaScriptObjectNotation().
+				withReason(exception.getMessage()).
+				withResponse(false).
+				toJSONObject().toString();
+		}
+		return jsonObject.toString();
+	}
+
+	@PostMapping(path = "/upgradeVip.json")
+	@ResponseBody
+	String upgradeVip(@RequestParam Lover lover, @RequestParam Date date, Authentication authentication) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(Locale.TAIWAN);
+		}
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = dashboardService.upgradeVip(
+				lover,
+				date
 			);
 		} catch (Exception exception) {
 			return new JavaScriptObjectNotation().

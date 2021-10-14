@@ -1101,4 +1101,17 @@ public class DashboardService {
                         withResponse(true).
                         toJSONObject();
         }
+
+        @Transactional
+        public JSONObject upgradeVip(Lover lover, Date date) {
+
+                lover.setVip(date);
+                lover.setMaleSpecies(MaleSpecies.VVIP);
+                loverRepository.saveAndFlush(lover);
+
+                return new JavaScriptObjectNotation().
+                        withReason("成功").
+                        withResponse(true).
+                        toJSONObject();
+        }
 }

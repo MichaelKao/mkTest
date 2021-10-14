@@ -24,7 +24,9 @@
                                 <xsl:value-of select="@title"/>
                         </TITLE>
                         <xsl:call-template name="dashHeadLinkTags"/>
+                        <LINK href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet"/>
                         <LINK href="/STYLE/members.css" rel="stylesheet"/>
+                        <LINK href="/STYLE/accountsOfTheDay.css" rel="stylesheet"/>
                         <STYLE>.nav.nav-pills {background: #EDEDED;}</STYLE>
                 </HEAD>
                 <BODY class="g-sidenav-show bg-gray-100">
@@ -80,6 +82,32 @@
                                                                                 </xsl:for-each>
                                                                         </DIV>
                                                                         <DIV class="text-center">
+                                                                                <BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+                                                                        </DIV>
+                                                                </DIV>
+                                                        </DIV>
+                                                </DIV>
+                                        </DIV>
+                                        <DIV class="modal fade" id="upgradeModal" style="display: none;">
+                                                <DIV class="modal-dialog modal-dialog-centered">
+                                                        <DIV class="modal-content shadow">
+                                                                <DIV class="modal-body p-2">
+                                                                        <DIV class="d-flex">
+                                                                                <BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+                                                                                        <I class="fal fa-times"></I>
+                                                                                </BUTTON>
+                                                                        </DIV>
+                                                                        <DIV class="my-4 text-center">
+                                                                                <DIV class="text-dark text-bold myReferralCode">升級 VIP</DIV>
+                                                                                <HR class="w-80 mx-auto"/>
+                                                                                <DIV class="d-flex justify-content-center">
+                                                                                        <DIV class="date" id="expDate">
+                                                                                                <input class="sr-only" name="expDate" type="text"/>
+                                                                                        </DIV>
+                                                                                </DIV>
+                                                                        </DIV>
+                                                                        <DIV class="text-center">
+                                                                                <BUTTON class="btn btn-outline-dark mx-2 px-3 py-2 upgradeVip" type="button" disabled="">確定</BUTTON>
                                                                                 <BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
                                                                         </DIV>
                                                                 </DIV>
@@ -144,35 +172,42 @@
                                                                                                 </SPAN>
                                                                                         </DIV>
                                                                                         <DIV class="col-3">
-                                                                                                <xsl:choose>
-                                                                                                        <xsl:when test="vvip">
-                                                                                                                <SPAN>
-                                                                                                                        <I class="fad fa-crown me-1"></I>
-                                                                                                                        <SAPN>1288</SAPN>
-                                                                                                                </SPAN>
-                                                                                                                <DIV>
-                                                                                                                        <xsl:value-of select="vvip"/>
-                                                                                                                </DIV>
-                                                                                                        </xsl:when>
-                                                                                                        <xsl:when test="vip">
-                                                                                                                <SPAN>
-                                                                                                                        <I class="fad fa-crown me-1"></I>
-                                                                                                                        <SAPN>1688</SAPN>
-                                                                                                                </SPAN>
-                                                                                                                <DIV>
-                                                                                                                        <xsl:value-of select="vip"/>
-                                                                                                                </DIV>
-                                                                                                        </xsl:when>
-                                                                                                        <xsl:when test="trial">
-                                                                                                                <SPAN>
-                                                                                                                        <I class="fad fa-crown me-1"></I>
-                                                                                                                        <SAPN>單日</SAPN>
-                                                                                                                </SPAN>
-                                                                                                                <DIV>
-                                                                                                                        <xsl:value-of select="trial"/>
-                                                                                                                </DIV>
-                                                                                                        </xsl:when>
-                                                                                                </xsl:choose>
+                                                                                                <DIV>
+                                                                                                        <BUTTON class="btn btn-link m-0 px-0 py-1 upgradeVipBtn" data-bs-target="#upgradeModal" data-bs-toggle="modal" data-id="{id}" type="button">
+                                                                                                                <I class="fal fa-crown fontSize22"></I>
+                                                                                                        </BUTTON>
+                                                                                                </DIV>
+                                                                                                <DIV class="upgradeVipWrap">
+                                                                                                        <xsl:choose>
+                                                                                                                <xsl:when test="vvip">
+                                                                                                                        <SPAN>
+                                                                                                                                <I class="fad fa-crown me-1"></I>
+                                                                                                                                <SAPN>1288</SAPN>
+                                                                                                                        </SPAN>
+                                                                                                                        <DIV>
+                                                                                                                                <xsl:value-of select="vvip"/>
+                                                                                                                        </DIV>
+                                                                                                                </xsl:when>
+                                                                                                                <xsl:when test="vip">
+                                                                                                                        <SPAN>
+                                                                                                                                <I class="fad fa-crown me-1"></I>
+                                                                                                                                <SAPN>1688</SAPN>
+                                                                                                                        </SPAN>
+                                                                                                                        <DIV>
+                                                                                                                                <xsl:value-of select="vip"/>
+                                                                                                                        </DIV>
+                                                                                                                </xsl:when>
+                                                                                                                <xsl:when test="trial">
+                                                                                                                        <SPAN>
+                                                                                                                                <I class="fad fa-crown me-1"></I>
+                                                                                                                                <SAPN>單日</SAPN>
+                                                                                                                        </SPAN>
+                                                                                                                        <DIV>
+                                                                                                                                <xsl:value-of select="trial"/>
+                                                                                                                        </DIV>
+                                                                                                                </xsl:when>
+                                                                                                        </xsl:choose>
+                                                                                                </DIV>
                                                                                         </DIV>
                                                                                         <DIV class="col-2 p-0">
                                                                                                 <BUTTON class="btn btn-link m-0 px-0 py-1 referralCodeBtn" data-bs-target="#referralCode" data-bs-toggle="modal" data-id="{id}" type="button">
@@ -249,6 +284,7 @@
                                 </DIV>
                         </MAIN>
                         <xsl:call-template name="dashScriptTags"/>
+                        <SCRIPT src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"/>
                         <SCRIPT src="/SCRIPT/members.js"/>
                 </BODY>
         </xsl:template>
