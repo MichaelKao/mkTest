@@ -467,7 +467,9 @@ public class Servant {
 	 * @return
 	 */
 	public static ZonedDateTime toTaipeiZonedDateTime(Date date) {
-		return toTaipeiZonedDateTime(date.toInstant());
+		return toTaipeiZonedDateTime(
+			Instant.ofEpochMilli(date.getTime())
+		);
 	}
 
 	/**
