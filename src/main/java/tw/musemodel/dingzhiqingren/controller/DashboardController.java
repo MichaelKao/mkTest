@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -503,6 +504,9 @@ public class DashboardController {
 			for (History history : historyRepository.findByBehaviorInOrderByOccurredDesc(behaviors, PageRequest.of(p < 1 ? 0 : p - 1, s))) {
 				String behavior = "";
 				switch (history.getBehavior()) {
+					case DA_ZHAO_HU:
+						behavior = "打招呼";
+						break;
 					case LIAO_LIAO:
 						behavior = "聊聊";
 						break;
@@ -570,6 +574,194 @@ public class DashboardController {
 								System.currentTimeMillis()
 							).toInstant()
 						).format(Servant.TAIWAN_DATE_TIME_FORMATTER)
+					)
+				);
+				workbook.write(outputStream);
+				outputStream.close();
+			}
+			workbook.close();
+		}//try
+	}
+
+	@GetMapping(path = "/meMBERS.xls")
+	@ResponseBody
+	@Secured({"ROLE_ALMIGHTY"})
+	void meMBERS(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam Date since, @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam Date until, HttpServletResponse response) throws IOException {
+		try (HSSFWorkbook workbook = new HSSFWorkbook()) {
+			Sheet sheet = workbook.createSheet();
+			Row firstRow = sheet.createRow(0);
+			firstRow.createCell(0, CellType.STRING).setCellValue("主鍵");
+			firstRow.createCell(1, CellType.STRING).setCellValue("國碼");
+			firstRow.createCell(2, CellType.STRING).setCellValue("手機號");
+			firstRow.createCell(3, CellType.STRING).setCellValue("貴賓到期日");
+			firstRow.createCell(4, CellType.STRING).setCellValue("暱稱");
+			firstRow.createCell(5, CellType.STRING).setCellValue("生日");
+			firstRow.createCell(6, CellType.STRING).setCellValue("性別");
+			firstRow.createCell(7, CellType.STRING).setCellValue("刪除");
+			firstRow.createCell(8, CellType.STRING).setCellValue("安心");
+			firstRow.createCell(9, CellType.STRING).setCellValue("註冊時間");
+			firstRow.createCell(10, CellType.STRING).setCellValue("推薦人");
+			firstRow.createCell(11, CellType.STRING).setCellValue("內測");
+			sheet.createFreezePane(0, 1);
+
+			CellStyle cellStyleDate = workbook.createCellStyle(),
+				cellStyleDateTime = workbook.createCellStyle();
+			cellStyleDate.setDataFormat(workbook.
+				getCreationHelper().
+				createDataFormat().
+				getFormat("yyyy/m/d")
+			);//格式化时戳(年月日)
+			cellStyleDateTime.setDataFormat(workbook.
+				getCreationHelper().
+				createDataFormat().
+				getFormat("yyyy/m/d hh:mm:ss")
+			);//格式化时戳(年月日时分秒)
+
+			int rowNumber = 1;
+			for (Lover mofo : loverService.accountsCreatedOfCertainPeriod(since, until)) {
+				Row row = sheet.createRow(rowNumber);
+
+				//主键
+				row.createCell(
+					0,
+					CellType.STRING
+				).setCellValue(
+					mofo.getId().toString()
+				);
+
+				//国码
+				row.createCell(
+					1,
+					CellType.STRING
+				).setCellValue(
+					mofo.getCountry().getCallingCode()
+				);
+
+				//帐号(手机号)
+				String login = mofo.getLogin();
+				if (Objects.nonNull(login)) {
+					row.createCell(
+						2,
+						CellType.STRING
+					).setCellValue(
+						login
+					);
+				}
+
+				//贵宾有效期
+				Date vip = mofo.getVip();
+				if (Objects.nonNull(vip)) {
+					Cell cell = row.createCell(
+						3,
+						CellType.STRING
+					);
+					cell.setCellStyle(cellStyleDateTime);
+					cell.setCellValue(
+						Servant.TAIWAN_SIMPLE_DATE_FORMAT.
+							format(vip)
+					);
+				}
+
+				//昵称
+				String nickname = mofo.getNickname();
+				if (Objects.nonNull(nickname)) {
+					Cell cell = row.createCell(
+						4,
+						CellType.STRING
+					);
+					cell.setCellValue(
+						nickname
+					);
+				}
+
+				//生日
+				Date birthday = mofo.getBirthday();
+				if (Objects.nonNull(birthday)) {
+					Cell cell = row.createCell(
+						5,
+						CellType.STRING
+					);
+					cell.setCellStyle(cellStyleDate);
+					cell.setCellValue(
+						Servant.SIMPLE_DATE_FORMAT_yyyyMMdd.
+							format(mofo.getBirthday())
+					);
+				}
+
+				//性别
+				row.createCell(
+					6,
+					CellType.STRING
+				).setCellValue(
+					mofo.getGender() ? "男" : "女"
+				);
+
+				//砍号
+				String delete = mofo.getDelete();
+				if (Objects.nonNull(delete)) {
+					row.createCell(
+						7,
+						CellType.STRING
+					).setCellValue(
+						"砍號"
+					);
+				}
+
+				//通过安心认证
+				Boolean relief = mofo.getRelief();
+				if (Objects.nonNull(relief)) {
+					row.createCell(
+						8,
+						CellType.STRING
+					).setCellValue(
+						relief ? "通過" : "未認證"
+					);
+				}
+
+				//註冊时间
+				Date registered = mofo.getRegistered();
+				if (Objects.nonNull(registered)) {
+					Cell cell = row.createCell(
+						9,
+						CellType.STRING
+					);
+					cell.setCellStyle(cellStyleDate);
+					cell.setCellValue(
+						Servant.SIMPLE_DATE_FORMAT_yyyyMMdd.
+							format(mofo.getRegistered())
+					);
+				}
+
+				//推荐人
+				Lover referrer = mofo.getReferrer();
+				if (Objects.nonNull(referrer)) {
+					row.createCell(
+						10,
+						CellType.STRING
+					).setCellValue(
+						referrer.getId().toString()
+					);
+				}
+
+				//가짜 계좌
+				row.createCell(
+					11,
+					CellType.STRING
+				).setCellValue(
+					mofo.isFake() ? "異常" : "一般"
+				);
+
+				++rowNumber;
+			}//for
+
+			try (OutputStream outputStream = response.getOutputStream()) {
+				response.setHeader("Content-Type", "application/vnd.ms-excel");
+				response.setHeader(
+					"Content-Disposition",
+					String.format(
+						"attachment; filename=\"meMBERS@%s-%s.xls\"",
+						Servant.SIMPLE_DATE_FORMAT_yyyyMMdd.format(since),
+						Servant.SIMPLE_DATE_FORMAT_yyyyMMdd.format(until)
 					)
 				);
 				workbook.write(outputStream);
@@ -720,9 +912,6 @@ public class DashboardController {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(Locale.TAIWAN);
 		}
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
-		);
 
 		return loverService.
 			getReferralCodeAndDescendants(lover, p, s).
@@ -746,9 +935,6 @@ public class DashboardController {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(Locale.TAIWAN);
 		}
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
-		);
 
 		Page<Lover> loverPage = loverRepository.findAll(
 			Specifications.findByGenderAndNicknameLikeOrLoginAccount(
@@ -757,7 +943,7 @@ public class DashboardController {
 			),
 			PageRequest.of(pageSearch - 1, 10)
 		);
-		List<Member> memberList = new ArrayList<Member>();
+		List<Member> memberList = new ArrayList<>();
 
 		for (Lover lover : loverPage.getContent()) {
 			Date vip = lover.getVip();
@@ -909,10 +1095,6 @@ public class DashboardController {
 			return servant.mustBeAuthenticated(Locale.TAIWAN);
 		}
 
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
-		);
-
 		JSONObject jsonObject;
 		try {
 			jsonObject = dashboardService.updatePrivilege(role, lover);
@@ -944,10 +1126,6 @@ public class DashboardController {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(Locale.TAIWAN);
 		}
-
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
-		);
 
 		JSONObject jsonObject;
 		try {

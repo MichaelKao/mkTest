@@ -168,6 +168,11 @@ public class Servant {
 	public static final String SCHEME_HTTPS = "https";
 
 	/**
+	 * yyyy-MM-dd 的 SimpleDateFormat
+	 */
+	public static final SimpleDateFormat SIMPLE_DATE_FORMAT_yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
+
+	/**
 	 * 静态资源网域
 	 */
 	public static final String STATIC_HOST = System.getenv("STATIC_HOST");
