@@ -21,43 +21,64 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 @Repository
 public interface LoverRepository extends JpaRepository<Lover, Integer>, JpaSpecificationExecutor<Lover> {
 
-        public long countByCountryAndLogin(Country country, String login);
+	public long countByCountryAndLogin(Country country, String login);
 
-        public long countByReferralCode(String referralCode);
+	public long countByReferralCode(String referralCode);
 
-        @Query("SELECT l FROM Lover l WHERE l.gender = :gender AND l.delete IS NULL")
-        public List<Lover> findByGender(Boolean gender);
+	/**
+	 * @param fake 가짜 계좌
+	 * @return 用户号数量
+	 */
+	public long countByFake(boolean fake);
 
-        /**
-         * @param identifier 识别码
-         * @return 情人
-         */
-        public Optional<Lover> findByIdentifier(UUID identifier);
+	/**
+	 * @param fake 가짜 계좌
+	 * @param gender 性别
+	 * @return 用户号数量
+	 */
+	public long countByFakeAndGender(boolean fake, boolean gender);
 
-        public Lover findByReferralCode(String referralCode);
+	/**
+	 * @param fake 가짜 계좌
+	 * @param gender 性别
+	 * @param pageable 可分页
+	 * @return 用户号
+	 */
+	public Page<Lover> findByFakeAndGender(boolean fake, boolean gender, Pageable pageable);
 
-        /**
-         * 找下线用户。
-         *
-         * @param referrer 上线用户
-         * @return 下线用户号们
-         */
-        public List<Lover> findByReferrerOrderByRegisteredDesc(Lover referrer);
+	@Query("SELECT l FROM Lover l WHERE l.gender = :gender AND l.delete IS NULL")
+	public List<Lover> findByGender(Boolean gender);
 
-        /**
-         * 某段时间区间内注册的用户号。
-         *
-         * @param since 开始时戳
-         * @param until 结束时戳
-         * @return 用户号们
-         */
-        public List<Lover> findByRegisteredBetweenOrderByRegisteredDesc(Date since, Date until);
+	/**
+	 * @param identifier 识别码
+	 * @return 情人
+	 */
+	public Optional<Lover> findByIdentifier(UUID identifier);
 
-        public long countByGenderAndRegisteredBetweenAndFakeOrderByRegisteredDesc(Boolean gender, Date since, Date until, boolean fake);
+	public Lover findByReferralCode(String referralCode);
 
-        public List<Lover> findByRelief(Boolean relief);
+	/**
+	 * 找下线用户。
+	 *
+	 * @param referrer 上线用户
+	 * @return 下线用户号们
+	 */
+	public List<Lover> findByReferrerOrderByRegisteredDesc(Lover referrer);
 
-        public Lover findOneByIdentifier(UUID identifier);
+	/**
+	 * 某段时间区间内注册的用户号。
+	 *
+	 * @param since 开始时戳
+	 * @param until 结束时戳
+	 * @return 用户号们
+	 */
+	public List<Lover> findByRegisteredBetweenOrderByRegisteredDesc(Date since, Date until);
 
-        public Page<Lover> findAllByGenderOrderByIdDesc(Boolean gender, Pageable pageable);
+	public long countByGenderAndRegisteredBetweenAndFakeOrderByRegisteredDesc(Boolean gender, Date since, Date until, boolean fake);
+
+	public List<Lover> findByRelief(Boolean relief);
+
+	public Lover findOneByIdentifier(UUID identifier);
+
+	public Page<Lover> findAllByGenderOrderByIdDesc(Boolean gender, Pageable pageable);
 }
