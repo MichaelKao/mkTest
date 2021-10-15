@@ -30,7 +30,7 @@
                 <BODY>
                         <xsl:call-template name="navbar"/>
                         <xsl:call-template name="bootstrapToast"/>
-                        <DIV class="container py-8 px-3">
+                        <DIV class="container pt-7 pt-md-8 px-3">
                                 <DIV class="mx-sm-5 mx-lg-12 mb-3 text-center">
                                         <H4>
                                                 <I class="fad fa-search fontSize22 text-dark me-2"></I>
