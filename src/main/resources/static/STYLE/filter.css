@@ -1,0 +1,28 @@
+SECTION.searchArea {
+        border: 4px solid rgb(214, 51, 132);
+        border-radius: 20px;
+        padding: 8px;
+}
+
+.slider.slider-horizontal {
+        width: 100%;
+}
+
+#slider-div > div {
+        margin-top: 8px;
+}
+
+.slider-handle {
+        background-image: -webkit-gradient(linear, 0 0, 0 100%, from(rgb(214, 51, 116)), to(rgb(214, 51, 132)));
+}
+
+.sliderLabel {
+        position: absolute;
+        bottom: -19px;
+        font-size: 14px;
+        width: 52px;
+}
+
+.slider-selection {
+        background-image: linear-gradient(to bottom, #D6338B88, #D6338B88);
+}
