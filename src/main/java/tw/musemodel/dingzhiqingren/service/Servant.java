@@ -443,6 +443,16 @@ public class Servant {
 	}
 
 	/**
+	 * 随机整数。
+	 *
+	 * @param max 最大整数
+	 * @return 在最大范围内的随机整数
+	 */
+	public static final int randomInteger(int max) {
+		return (int) (Math.random() * (max < java.lang.Integer.MAX_VALUE ? max + 1 : max));
+	}
+
+	/**
 	 * 重定向到编辑个人资料页面。
 	 *
 	 * @return org.​springframework.​web.​servlet.ModelAndView

@@ -650,6 +650,44 @@ public class LoverService {
 		return loverRepository.saveAndFlush(mofo);
 	}
 
+	@Transactional(readOnly = true)
+	public Collection<Lover> fetchRandomly(int count) {
+		List<Lover> lovers = new ArrayList<>();
+
+		for (int i = 0; i < count; ++i) {
+			lovers.addAll(
+				loverRepository.findAll(
+					PageRequest.of(
+						(int) (Math.random() * loverRepository.countByFake(false)),
+						1
+					)
+				).getContent()
+			);
+		}
+
+		return lovers;
+	}
+
+	@Transactional(readOnly = true)
+	public Collection<Lover> fetchRandomly(int count, boolean gender) {
+		List<Lover> lovers = new ArrayList<>();
+
+		for (int i = 0; i < count; ++i) {
+			lovers.addAll(
+				loverRepository.findByFakeAndGender(
+					false,
+					gender,
+					PageRequest.of(
+						(int) (Math.random() * loverRepository.countByFakeAndGender(false, gender)),
+						1
+					)
+				).getContent()
+			);
+		}
+
+		return lovers;
+	}
+
 	/**
 	 * 期待某种友谊的家伙们。
 	 *

@@ -3,6 +3,9 @@ package tw.musemodel.dingzhiqingren.controller;
 import com.jhlabs.image.OilFilter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -16,6 +19,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import tw.musemodel.dingzhiqingren.entity.History;
+import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
+import tw.musemodel.dingzhiqingren.service.HistoryService;
+import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 
 /**
@@ -30,7 +38,13 @@ public class ProofOfConcept {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProofOfConcept.class);
 
 	@Autowired
+	private LoverService loverService;
+
+	@Autowired
 	private Servant servant;
+
+	@Autowired
+	private HistoryRepository historyRepository;
 
 	@GetMapping(path = "/isDevelopment", produces = MediaType.TEXT_PLAIN_VALUE)
 	@ResponseBody
@@ -73,5 +87,29 @@ public class ProofOfConcept {
 			"JPG",
 			response.getOutputStream()
 		);
+	}
+
+	@GetMapping(path = "/seen.asp", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	Collection<History> seen(@RequestParam(defaultValue = "3", name = "init") int initiative, @RequestParam(defaultValue = "3", name = "pass") int passive) throws InterruptedException {
+		Collection<History> histories = new ArrayList<>();
+
+		for (Lover mofo : loverService.fetchRandomly(initiative)) {
+			boolean gender = !mofo.getGender();
+			for (Lover sucker : loverService.fetchRandomly(passive, gender)) {
+				histories.add(historyRepository.saveAndFlush(
+					new History(
+						mofo,
+						sucker,
+						HistoryService.BEHAVIOR_PEEK,
+						new Date(
+							System.currentTimeMillis() - Servant.randomInteger(999)
+						)
+					)
+				));
+			}
+		}
+
+		return histories;
 	}
 }
