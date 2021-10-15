@@ -9,11 +9,11 @@ body{
 }
 
 .floatBtn {
-        margin: -80px;
         position: absolute;
         left: 0;
         right: 0;
         z-index: 999;
+        bottom: 100px;
 }
 
 .maxWidth80 {
@@ -119,6 +119,7 @@ body{
         grid-template-columns: auto 7vh;
         padding: 10px 6px;
         border-top: 1px solid #ccc;
+        position: relative;
 }
 
 .textareaContainer {
@@ -192,10 +193,16 @@ body{
         right: -20px;
 }
 
-.maleAlert {
+.userAlert {
         background: #D63384CC;
-        width: 280px;
-        border: 2px solid #FFFFFFEE;
-        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+        width: 300px;
+        border: 3px solid #FFFFFFEE;
+        box-shadow: 3px 6px 5px 0 rgba(0,0,0,0.28);
         z-index: 999;
+}
+
+@media (max-width: 300px) {
+        .userAlert {
+                width: 280px;
+        }
 }

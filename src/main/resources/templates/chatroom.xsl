@@ -80,15 +80,35 @@
                                                         <DIV class="mt-3 text-center">
                                                                 <I class="fad fa-badge-dollar text-success mb-1" style="font-size: 50px;"></I>
                                                                 <H5 class="modal-title">
-                                                                        <xsl:if test="@male">ME 點</xsl:if>
-                                                                        <xsl:if test="@female">要求 ME 點</xsl:if>
+                                                                        <xsl:if test="@male">透過ME點邀約</xsl:if>
+                                                                        <xsl:if test="@female">透過ME點確認邀約</xsl:if>
                                                                 </H5>
                                                         </DIV>
-                                                        <DIV class="form-group mx-auto col-10 text-center">
+                                                        <DIV class="form-group mx-auto col-11 text-center">
                                                                 <xsl:if test="@male">
-                                                                        <LABEL class="text-xs" for="fare">使用平台支付不必擔心私下給甜心爽約，可檢舉查證屬實退回</LABEL>
+                                                                        <DIV class="my-2 text-primary text-sm">
+                                                                                <DIV>安心防詐騙</DIV>
+                                                                                <DIV>可於48小時內向客服檢舉退回</DIV>
+                                                                        </DIV>
+                                                                        <DIV class="my-2 text-primary text-sm">
+                                                                                <DIV>
+                                                                                        <I class="fad fa-taxi fontSize22 me-1"></I>
+                                                                                        <SPAN>率先支付約會車馬費，成功率提高80%</SPAN>
+                                                                                </DIV>
+                                                                                <DIV>
+                                                                                        <I class="fad fa-gift fontSize22 me-1"></I>
+                                                                                        <SPAN>透過ME點做為禮物發送，好感度增加90%</SPAN>
+                                                                                </DIV>
+                                                                        </DIV>
                                                                 </xsl:if>
-                                                                <INPUT class="form-control" id="fare" inputmode="numeric" min="1" name="howMany" required="" type="number"/>
+                                                                <xsl:if test="@female">
+                                                                        <DIV class="my-2 text-primary text-sm">
+                                                                                <DIV>。防止爽約與詐騙情形</DIV>
+                                                                                <DIV>。一鍵退回方便取消約會</DIV>
+                                                                                <DIV>。避免約會當日金錢糾紛</DIV>
+                                                                        </DIV>
+                                                                </xsl:if>
+                                                                <INPUT class="form-control" id="fare" inputmode="numeric" min="1" name="howMany" placeholder="ME點" required="" type="number"/>
                                                         </DIV>
                                                         <DIV class="text-center">
                                                                 <BUTTON class="btn btn-outline-primary confirmFare mx-1 px-3 py-2" type="button">確認</BUTTON>
@@ -307,7 +327,7 @@
                                                                                 <LI class="nav-item">
                                                                                         <A class="nav-link nav-link-icon d-flex align-items-center" href="/upgrade.asp">
                                                                                                 <I class="fad fa-crown fontSize22 me-1"></I>
-                                                                                                <SPAN class="d-lg-none">升級 VIP</SPAN>
+                                                                                                <SPAN class="d-lg-none">meKING 升級</SPAN>
                                                                                         </A>
                                                                                 </LI>
                                                                         </xsl:if>
@@ -511,15 +531,65 @@
                                                 </DIV>
                                                 <DIV class="messages">
                                                         <xsl:if test="@male">
-                                                                <DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 p-2 maleAlert">
+                                                                <DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 pt-0 ps-2 pe-1 pb-2 userAlert">
                                                                         <DIV class="d-flex">
-                                                                                <BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 p-0 me-2 maleAlertClose" data-bs-dismiss="modal" type="button">
-                                                                                        <I class="fal fa-times"></I>
+                                                                                <BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 p-0 me-2 userAlertClose" type="button">
+                                                                                        <I class="fal fa-times fontSize25"></I>
                                                                                 </BUTTON>
                                                                         </DIV>
-                                                                        <DIV class="text-white text-center text-sm">
-                                                                                <DIV>非好友12小時內僅能傳送三句話</DIV>
-                                                                                <DIV>想辦法用甜言蜜語打動甜心吧！</DIV>
+                                                                        <DIV class="text-white">
+                                                                                <DIV class="text-center text-sm text-bold mb-1">
+                                                                                        <DIV>開始與meQUEEN聊天</DIV>
+                                                                                        <DIV>!!防止詐騙與假帳號!!</DIV>
+                                                                                </DIV>
+                                                                                <DIV class="text-sm d-flex flex-column">
+                                                                                        <DIV class="mb-1">
+                                                                                                <I class="fas fa-portrait fontSize22 col-1"></I>
+                                                                                                <SPAN>有大頭照訊息回覆率提高70%</SPAN>
+                                                                                        </DIV>
+                                                                                        <DIV class="mb-1">
+                                                                                                <I class="fas fa-comment-smile fontSize22 col-1"></I>
+                                                                                                <SPAN>充分了解認識再進一步洽談約會</SPAN>
+                                                                                        </DIV>
+                                                                                        <DIV class="mb-1">
+                                                                                                <I class="fas fa-badge-dollar fontSize22 col-1"></I>
+                                                                                                <SPAN>約會先用ME點交易，女生爽約可檢舉退回</SPAN>
+                                                                                        </DIV>
+                                                                                </DIV>
+                                                                                <DIV class="text-white text-center text-xs text-bold mt-4">
+                                                                                        <DIV>非好友12小時內僅能傳送三句話</DIV>
+                                                                                        <DIV>想辦法用甜言蜜語打動甜心吧！</DIV>
+                                                                                </DIV>
+                                                                        </DIV>
+                                                                </DIV>
+                                                        </xsl:if>
+                                                        <xsl:if test="@female">
+                                                                <DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 pt-0 p-2 userAlert">
+                                                                        <DIV class="d-flex">
+                                                                                <BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 p-0 me-2 userAlertClose" type="button">
+                                                                                        <I class="fal fa-times fontSize25"></I>
+                                                                                </BUTTON>
+                                                                        </DIV>
+                                                                        <DIV class="text-white">
+                                                                                <DIV class="text-center text-sm text-bold mb-1">
+                                                                                        <DIV>開始與meKING聊天</DIV>
+                                                                                        <DIV>!!防止騷擾詐騙渣男安心使用!!</DIV>
+                                                                                </DIV>
+
+                                                                                <DIV class="text-sm d-flex flex-column ps-1">
+                                                                                        <DIV class="mb-1">
+                                                                                                <I class="fas fa-comment-smile fontSize22 col-1"></I>
+                                                                                                <SPAN class="ms-1">充分了解認識再進一步洽談約會</SPAN>
+                                                                                        </DIV>
+                                                                                        <DIV class="mb-1">
+                                                                                                <I class="fas fa-smile-plus fontSize22 col-1"></I>
+                                                                                                <SPAN class="ms-1">只透過好友邀請功能加入通訊軟體</SPAN>
+                                                                                        </DIV>
+                                                                                        <DIV class="mb-1">
+                                                                                                <I class="fas fa-badge-dollar fontSize22 col-1"></I>
+                                                                                                <SPAN class="ms-1">約會先用ME點交易，確認收到再赴約</SPAN>
+                                                                                        </DIV>
+                                                                                </DIV>
                                                                         </DIV>
                                                                 </DIV>
                                                         </xsl:if>
@@ -535,9 +605,9 @@
                                                                                                         <DIV class="text-primary">
                                                                                                                 <DIV>
                                                                                                                         <I class="fad fa-user-plus"></I>
-                                                                                                                        <SPAN>確認後對方將取得您的通訊軟體</SPAN>
+                                                                                                                        <SPAN>接受後可於聊天室暢聊</SPAN>
                                                                                                                 </DIV>
-                                                                                                                <DIV>拒絕後對方12小時後可再次提出邀請</DIV>
+                                                                                                                <DIV>同時提供綁定的通訊軟體</DIV>
                                                                                                         </DIV>
                                                                                                         <BUTTON class="btn btn-outline-primary btn-round px-2 py-1 m-0 me-1 accept" type="button">接受</BUTTON>
                                                                                                         <BUTTON class="btn btn-outline-dark btn-round px-2 py-1 m-0 border-radius-xl refuse" type="button">拒絕</BUTTON>

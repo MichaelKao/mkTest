@@ -62,7 +62,7 @@ $(document).ready(function () {
                                                         case 'JI_WO_LAI':
                                                                 icon.className += 'fad fa-user-plus';
                                                                 contentDiv.appendChild(icon);
-                                                                self === msg.sender ? contentDiv.append('您已發出要求通訊軟體') : contentDiv.append('收到對方要求通訊軟體');
+                                                                self === msg.sender ? contentDiv.append('您已發出要求通訊軟體') : contentDiv.append('收到加入好友邀請');
                                                                 break;
                                                         case 'JI_NI_LAI':
                                                                 icon.className += 'fas fa-smile';
@@ -415,7 +415,7 @@ $(document).ready(function () {
                                         case 'JI_WO_LAI':
                                                 icon.className += 'fad fa-user-plus';
                                                 contentDiv.appendChild(icon);
-                                                self === jsonObj.sender ? contentDiv.append('您已發出要求通訊軟體') : contentDiv.append('收到對方要求通訊軟體');
+                                                self === jsonObj.sender ? contentDiv.append('您已發出要求通訊軟體') : contentDiv.append('收到加入好友邀請');
                                                 if (isMale === 'false') {
                                                         var floatDiv = document.createElement('DIV');
                                                         $(floatDiv).attr({
@@ -436,10 +436,10 @@ $(document).ready(function () {
                                                         $(firstLineI).attr('class', 'fad fa-user-plus');
                                                         $(firstLineDiv).append(firstLineI);
                                                         var firstLineSpan = document.createElement('SPAN');
-                                                        $(firstLineSpan).append('確認後對方將取得您的通訊軟體');
+                                                        $(firstLineSpan).append('接受後可於聊天室暢聊');
                                                         $(firstLineDiv).append(firstLineSpan);
                                                         var secondLineDiv = document.createElement('DIV');
-                                                        $(secondLineDiv).append('拒絕後對方12小時後可再次提出邀請');
+                                                        $(secondLineDiv).append('同時提供綁定的通訊軟體');
                                                         $(msgDiv).append(secondLineDiv);
                                                         var acceptBtn = document.createElement('BUTTON');
                                                         $(acceptBtn).attr({

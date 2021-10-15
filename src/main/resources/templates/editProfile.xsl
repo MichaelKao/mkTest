@@ -281,6 +281,7 @@
                                                         <I class="fad fa-file-user text-lg"></I>
                                                         <SPAN class="ms-1">關於我</SPAN>
                                                 </LABEL>
+                                                <SPAN class="ms-1 text-xs text-primary">(修改預設內容，邀約成功率提高60%！)</SPAN>
                                                 <TEXTAREA class="form-control" id="aboutMe" name="aboutMe" rows="6">
                                                         <xsl:value-of select="aboutMe"/>
                                                 </TEXTAREA>
@@ -290,6 +291,7 @@
                                                         <I class="fad fa-fire-alt text-lg"></I>
                                                         <SPAN class="ms-1">理想對象</SPAN>
                                                 </LABEL>
+                                                <SPAN class="ms-1 text-xs text-primary">(修改預設內容，邀約成功率提高60%！)</SPAN>
                                                 <TEXTAREA class="form-control" id="idealConditions" name="idealConditions" rows="6">
                                                         <xsl:value-of select="idealConditions"/>
                                                 </TEXTAREA>
