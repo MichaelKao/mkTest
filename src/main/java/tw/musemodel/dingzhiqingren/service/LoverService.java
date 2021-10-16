@@ -651,6 +651,50 @@ public class LoverService {
 	}
 
 	@Transactional(readOnly = true)
+	public Collection<Lover> fetchRandomEligibles(int count) {
+		Set<Lover> suckers = new HashSet<>();
+
+		long total = loverRepository.count(
+			LoverSpecification.latestActiveAndLegit()
+		);
+		for (int i = 0; i < count; ++i) {
+			suckers.addAll(
+				loverRepository.findAll(
+					LoverSpecification.latestActiveAndLegit(),
+					PageRequest.of(
+						(int) (Math.random() * total),
+						1
+					)
+				).getContent()
+			);
+		}
+
+		return suckers;
+	}
+
+	@Transactional(readOnly = true)
+	public Collection<Lover> fetchRandomEligibles(int count, boolean gender) {
+		List<Lover> lovers = new ArrayList<>();
+
+		long total = loverRepository.count(
+			LoverSpecification.latestActiveAndLegit()
+		);
+		for (int i = 0; i < count; ++i) {
+			lovers.addAll(
+				loverRepository.findAll(
+					LoverSpecification.latestActiveAndLegit(gender),
+					PageRequest.of(
+						(int) (Math.random() * total),
+						1
+					)
+				).getContent()
+			);
+		}
+
+		return lovers;
+	}
+
+	@Transactional(readOnly = true)
 	public Collection<Lover> fetchRandomly(int count) {
 		List<Lover> lovers = new ArrayList<>();
 

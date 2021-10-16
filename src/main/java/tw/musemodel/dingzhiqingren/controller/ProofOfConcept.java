@@ -25,6 +25,7 @@ import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
+import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
 /**
  * 控制器：概念验证
@@ -94,7 +95,22 @@ public class ProofOfConcept {
 	Collection<History> seen(@RequestParam(defaultValue = "3", name = "init") int initiative, @RequestParam(defaultValue = "3", name = "pass") int passive) throws InterruptedException {
 		Collection<History> histories = new ArrayList<>();
 
-		for (Lover mofo : loverService.fetchRandomly(initiative)) {
+//		for (Lover mofo : loverService.fetchRandomly(initiative)) {
+//			boolean gender = !mofo.getGender();
+//			for (Lover sucker : loverService.fetchRandomly(passive, gender)) {
+//				histories.add(historyRepository.saveAndFlush(
+//					new History(
+//						mofo,
+//						sucker,
+//						HistoryService.BEHAVIOR_PEEK,
+//						new Date(
+//							System.currentTimeMillis() - Servant.randomInteger(999)
+//						)
+//					)
+//				));
+//			}
+//		}
+		for (Lover mofo : loverService.fetchRandomEligibles(initiative)) {
 			boolean gender = !mofo.getGender();
 			for (Lover sucker : loverService.fetchRandomly(passive, gender)) {
 				histories.add(historyRepository.saveAndFlush(
