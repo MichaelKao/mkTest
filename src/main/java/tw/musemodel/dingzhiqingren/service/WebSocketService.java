@@ -367,7 +367,7 @@ public class WebSocketService {
                                                 );
                                         }
                                         if (Objects.equals(history.getBehavior(), BEHAVIOR_GIMME_YOUR_LINE_INVITATION)) {
-                                                content = "收到對方要求通訊軟體";
+                                                content = "收到加入好友邀請";
                                         }
                                         if (Objects.equals(history.getBehavior(), BEHAVIOR_LAI_KOU_DIAN)) {
                                                 content = "對方已開啟了您的通訊軟體QRcode";
@@ -714,7 +714,7 @@ public class WebSocketService {
                                                 );
                                         }
                                         if (Objects.equals(history.getBehavior(), BEHAVIOR_GIMME_YOUR_LINE_INVITATION)) {
-                                                content = "收到對方要求通訊軟體";
+                                                content = "收到加入好友邀請";
                                         }
                                         if (Objects.equals(history.getBehavior(), BEHAVIOR_LAI_KOU_DIAN)) {
                                                 content = "對方已開啟了您的通訊軟體QRcode";

@@ -255,6 +255,12 @@
                                         </A>
                                 </xsl:if>
                         </DIV>
+                        <xsl:if test="/document/@me">
+                                <div class="text-sm text-primary text-bold text-center">
+                                        <I class="fas fa-lightbulb-on me-1"></I>
+                                        <SPAN>真人照片邀約成功率提高90%</SPAN>
+                                </div>
+                        </xsl:if>
                         <DIV class="d-flex">
                                 <xsl:if test="not(/document/@me) and not(/document/@blocking) and not(/document/@blockedBy)">
                                         <DIV class="d-flex justify-content-center justify-content-md-start" id="icon">
@@ -569,6 +575,12 @@
                                 </xsl:if>
                         </DIV>
                         <HR class="text-primary"/>
+                        <xsl:if test="/document/@me">
+                                <DIV class="text-sm text-primary text-bold mb-3">
+                                        <I class="fas fa-lightbulb-on me-1"></I>
+                                        <SPAN>修改預設內容，邀約成功率提高60%！</SPAN>
+                                </DIV>
+                        </xsl:if>
                         <DIV class="mb-2 d-flex">
                                 <I class="fad fa-file-user fontSize22 col-1"></I>
                                 <DIV class="aboutMe ms-4">

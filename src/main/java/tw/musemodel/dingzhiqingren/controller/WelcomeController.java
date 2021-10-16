@@ -76,6 +76,8 @@ import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.model.ResetPassword;
 import tw.musemodel.dingzhiqingren.model.SignUp;
+import tw.musemodel.dingzhiqingren.repository.AllowanceRepository;
+import tw.musemodel.dingzhiqingren.repository.AnnualIncomeRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
@@ -145,6 +147,37 @@ public class WelcomeController {
 	@Autowired
 	private TrialCodeRepository trialCodeRepository;
 
+	<<<<<<< HEAD
+	/**
+	 * 首页
+	 *
+	 * @param authentication 认证
+	 * @return 网页
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/") ModelAndView
+
+	index(Authentication authentication, Locale locale,
+		@CookieValue(defaultValue = "", name = "vipPage") String vipPage, @CookieValue(defaultValue = "", name = "reliefPage") String reliefPage,
+		@CookieValue(defaultValue = "", name = "activePage") String activePage, @CookieValue(defaultValue = "", name = "registerPage") String registerPage
+	) throws SAXException, IOException, ParserConfigurationException {
+		Document document = Servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.home",
+			null,
+			locale
+		));
+
+		 == == ==
+			= @Autowired
+	private AnnualIncomeRepository annualIncomeRepository;
+
+	@Autowired
+	private AllowanceRepository allowanceRepository;
+
 	/**
 	 * 首页
 	 *
@@ -166,10 +199,9 @@ public class WelcomeController {
 			null,
 			locale
 		));
-
-		/*
+		 >>> >>> > 53fb21019b8960ade18289f1b465b981002e8c93 /*
 		 未登入状态下
-		 */
+			 */
 		if (!servant.isNull(authentication)) {
 			Lover me = loverService.loadByUsername(
 				authentication.getName()
@@ -3855,28 +3887,147 @@ public class WelcomeController {
 		return modelAndView;
 	}
 
-	@GetMapping(path = "/seen.json", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	Collection<Lover> seenJson(@RequestParam(defaultValue = "3", name = "init") int initiative, @RequestParam(defaultValue = "3", name = "pass") int passive) {
-		return loverService.fetchRandomEligibles(3);
-//		Collection<History> histories = new ArrayList<>();
-//
-//		for (Lover mofo : loverService.fetchRandomly(initiative)) {
-//			boolean gender = !mofo.getGender();
-//			for (Lover sucker : loverService.fetchRandomly(passive, gender)) {
-//				histories.add(historyRepository.saveAndFlush(
-//					new History(
-//						mofo,
-//						sucker,
-//						HistoryService.BEHAVIOR_PEEK,
-//						new Date(
-//							System.currentTimeMillis() - Servant.randomInteger(999)
-//						)
-//					)
-//				));
-//			}
-//		}
-//
-//		return histories;
+	@GetMapping(path = "/filter.asp")
+	@Secured({Servant.ROLE_ADVENTURER})
+	ModelAndView filter(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+		if (!loverService.isEligible(me)) {
+			//补齐个人资料
+			return Servant.redirectToProfile();
+		}
+
+		Document document = Servant.parseDocument();
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
+		);
+
+		documentElement.setAttribute(
+			"title",
+			messageSource.getMessage(
+				"title.filter",
+				null,
+				locale
+			)
+		);//网页标题
+
+		for (Lover.BodyType bodyType : Lover.BodyType.values()) {
+			Element bodyTypeElement = document.createElement("bodyType");
+			bodyTypeElement.setTextContent(
+				messageSource.getMessage(
+					bodyType.toString(),
+					null,
+					locale
+				)
+			);
+			bodyTypeElement.setAttribute(
+				"bodyTypeEnum", bodyType.toString()
+			);
+			documentElement.appendChild(bodyTypeElement);
+		}
+
+		for (Lover.Education education : Lover.Education.values()) {
+			Element educationElement = document.createElement("education");
+			educationElement.setTextContent(
+				messageSource.getMessage(
+					education.toString(),
+					null,
+					locale
+				)
+			);
+			educationElement.setAttribute(
+				"educationEnum", education.toString()
+			);
+			documentElement.appendChild(educationElement);
+		}
+
+		for (Lover.Marriage marriage : Lover.Marriage.values()) {
+			Element marriageElement = document.createElement("marriage");
+			marriageElement.setTextContent(
+				messageSource.getMessage(
+					marriage.toString(),
+					null,
+					locale
+				)
+			);
+			marriageElement.setAttribute(
+				"marriageEnum", marriage.toString()
+			);
+			documentElement.appendChild(marriageElement);
+		}
+
+		for (Lover.Smoking smoking : Lover.Smoking.values()) {
+			Element smokingElement = document.createElement("smoking");
+			smokingElement.setTextContent(
+				messageSource.getMessage(
+					smoking.toString(),
+					null,
+					locale
+				)
+			);
+			smokingElement.setAttribute(
+				"smokingEnum", smoking.toString()
+			);
+			documentElement.appendChild(smokingElement);
+		}
+
+		for (Lover.Drinking drinking : Lover.Drinking.values()) {
+			Element drinkingElement = document.createElement("drinking");
+			drinkingElement.setTextContent(
+				messageSource.getMessage(
+					drinking.toString(),
+					null,
+					locale
+				)
+			);
+			drinkingElement.setAttribute(
+				"drinkingEnum", drinking.toString()
+			);
+			documentElement.appendChild(drinkingElement);
+		}
+
+		if (!me.getGender()) {
+			annualIncomeRepository.findAllByOrderByIdAsc().stream().map(annualIncome -> {
+				Element annualIncomeElement = document.createElement("annualIncome");
+				annualIncomeElement.setTextContent(
+					messageSource.getMessage(
+						annualIncome.getName(),
+						null,
+						locale
+					)
+				);
+				annualIncomeElement.setAttribute(
+					"annualIncomeID", annualIncome.getId().toString()
+				);
+				return annualIncomeElement;
+			}).forEachOrdered(annualIncomeElement -> {
+				documentElement.appendChild(annualIncomeElement);
+			});
+		}
+
+		if (me.getGender()) {
+			allowanceRepository.findAllByOrderByIdAsc().stream().map(allowance -> {
+				Element allowanceElement = document.createElement("allowance");
+				allowanceElement.setTextContent(
+					messageSource.getMessage(
+						allowance.getName(),
+						null,
+						locale
+					)
+				);
+				allowanceElement.setAttribute(
+					"allowanceID", allowance.getId().toString()
+				);
+				return allowanceElement;
+			}).forEachOrdered(allowanceElement -> {
+				documentElement.appendChild(allowanceElement);
+			});
+		}
+
+		ModelAndView modelAndView = new ModelAndView("filter");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
 	}
 }

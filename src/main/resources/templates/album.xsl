@@ -37,7 +37,10 @@
                                 <ARTICLE class="py-3">
                                         <DIV class="mb-3">
                                                 <DIV class="h4 text-primary titleBorder">主要照片</DIV>
-                                                <SPAN class="text-sm">為開放照片，作為 meKING/meQUEEN 認識您的第一印象</SPAN>
+                                                <DIV class="text-sm">
+                                                        <DIV>為開放照片，作為 meKING/meQUEEN 認識您的第一印象</DIV>
+                                                        <DIV class="text-primary text-bold">真人照片邀約成功率提高90%！</DIV>
+                                                </DIV>
                                         </DIV>
                                         <DIV class="position-relative">
                                                 <LABEL class="uploadProfileImage">
@@ -50,7 +53,10 @@
                                 <ARTICLE class="py-3">
                                         <DIV class="mb-3">
                                                 <DIV class="h4 text-primary titleBorder">其他照片</DIV>
-                                                <SPAN class="text-sm">查看其他照片需要經過您的同意才會開放，請安心上傳</SPAN>
+                                                <DIV class="text-sm">
+                                                        <DIV>為私密照片專區，查看需要經過您的同意</DIV>
+                                                        <DIV class="text-primary text-bold">上傳更多您的照片，約會成功率提高70%！</DIV>
+                                                </DIV>
                                         </DIV>
                                         <DIV class="d-flex flex-wrap pictures">
                                                 <xsl:for-each select="picture">
