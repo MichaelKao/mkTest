@@ -147,32 +147,7 @@ public class WelcomeController {
 	@Autowired
 	private TrialCodeRepository trialCodeRepository;
 
-	<<<<<<< HEAD
-	/**
-	 * 首页
-	 *
-	 * @param authentication 认证
-	 * @return 网页
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 */
-	@GetMapping(path = "/") ModelAndView
-
-	index(Authentication authentication, Locale locale,
-		@CookieValue(defaultValue = "", name = "vipPage") String vipPage, @CookieValue(defaultValue = "", name = "reliefPage") String reliefPage,
-		@CookieValue(defaultValue = "", name = "activePage") String activePage, @CookieValue(defaultValue = "", name = "registerPage") String registerPage
-	) throws SAXException, IOException, ParserConfigurationException {
-		Document document = Servant.parseDocument();
-		Element documentElement = document.getDocumentElement();
-		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.home",
-			null,
-			locale
-		));
-
-		 == == ==
-			= @Autowired
+	@Autowired
 	private AnnualIncomeRepository annualIncomeRepository;
 
 	@Autowired
@@ -199,9 +174,10 @@ public class WelcomeController {
 			null,
 			locale
 		));
-		 >>> >>> > 53fb21019b8960ade18289f1b465b981002e8c93 /*
+
+		/*
 		 未登入状态下
-			 */
+		 */
 		if (!servant.isNull(authentication)) {
 			Lover me = loverService.loadByUsername(
 				authentication.getName()
