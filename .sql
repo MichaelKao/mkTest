@@ -996,3 +996,27 @@ CREATE TABLE"logging_event_exception"(
 COMMENT ON COLUMN"logging_event_exception"."event_id"IS'The database id of the logging event';
 COMMENT ON COLUMN"logging_event_exception"."i"IS'The index of the line in the full stack trace';
 COMMENT ON COLUMN"logging_event_exception"."trace_line"IS'The corresponding line';
+
+/**
+ * logback-access
+ */
+CREATE TABLE IF NOT EXISTS"access_event"(
+	"event_id"serial8 PRIMARY KEY,
+	"occurred"timestamptz NOT NULL DEFAULT"now"(),
+	"epoch"int8 NOT NULL,
+	"request_uri"varchar,
+	"request_url"varchar,
+	"remote_host"varchar,
+	"remote_user"varchar,
+	"remote_addr"varchar,
+	"protocol"varchar,
+	"method"varchar,
+	"server_name"varchar,
+	"post_content"text
+);
+CREATE TABLE IF NOT EXISTS"access_event_header"(
+	"event_id"int8 REFERENCES"access_event"("event_id")ON DELETE NO ACTION ON UPDATE NO ACTION,
+	"header_key"varchar NOT NULL,
+	"header_value"varchar,
+	PRIMARY KEY("event_id","header_key")
+);

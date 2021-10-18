@@ -1,4 +1,4 @@
-package tw.musemodel.dingzhiqingren.entity;
+package tw.musemodel.dingzhiqingren.entity.embedded;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -17,44 +17,41 @@ import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 
 /**
- * The logging_event_property is used to store the keys and values contained in
- * the MDC or the Context.
- *
  * @author p@musemodel.tw
  */
 @Data
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
-@Table(name = "logging_event_property", catalog = "youngme", schema = "public")
+@Table(name = "logging_event_exception", catalog = "youngme", schema = "public")
 @JsonIdentityInfo(
 	generator = ObjectIdGenerators.PropertyGenerator.class,
 	property = "id"
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlRootElement
-public class LoggingEventProperty implements Serializable {
+public class LoggingEventException implements Serializable {
 
-	private static final long serialVersionUID = 5519728631078496134L;
+	private static final long serialVersionUID = 5553350548247080515L;
 
 	@EmbeddedId
-	protected LoggingEventPropertyPK loggingEventPropertyPK;
+	protected LoggingEventExceptionPK loggingEventExceptionPK;
 
-	@Column(name = "mapped_value")
-	private String mappedValue;
+	@Column
+	private String traceLine;
 
 	@JoinColumn(name = "event_id", referencedColumnName = "event_id", nullable = false, insertable = false, updatable = false)
 	@ManyToOne(optional = false)
 	private LoggingEvent loggingEvent;
 
-	public LoggingEventProperty() {
+	public LoggingEventException() {
 	}
 
-	public LoggingEventProperty(LoggingEventPropertyPK loggingEventPropertyPK) {
-		this.loggingEventPropertyPK = loggingEventPropertyPK;
+	public LoggingEventException(LoggingEventExceptionPK loggingEventExceptionPK) {
+		this.loggingEventExceptionPK = loggingEventExceptionPK;
 	}
 
-	public LoggingEventProperty(long eventId, String mappedKey) {
-		this.loggingEventPropertyPK = new LoggingEventPropertyPK(eventId, mappedKey);
+	public LoggingEventException(long eventId, short i) {
+		this.loggingEventExceptionPK = new LoggingEventExceptionPK(eventId, i);
 	}
 
 	@Override
@@ -62,7 +59,7 @@ public class LoggingEventProperty implements Serializable {
 		try {
 			return new JsonMapper().writeValueAsString(this);
 		} catch (JsonProcessingException ignore) {
-			return Objects.isNull(loggingEventPropertyPK) ? "null" : loggingEventPropertyPK.toString();
+			return Objects.isNull(loggingEventExceptionPK) ? "null" : loggingEventExceptionPK.toString();
 		}
 	}
 }

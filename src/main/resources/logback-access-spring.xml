@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="true">
-	<include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-
 	<springProperty
 		scope="context"
 		name="datasourceDefaultAutoCommit"
@@ -54,14 +52,7 @@
 		source="spring.datasource.username"
 	/>
 
-	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<pattern>${CONSOLE_LOG_PATTERN}</pattern>
-			<charset>utf8</charset>
-		</encoder>
-	</appender>
-
-	<appender name="DATABASE" class="ch.qos.logback.classic.db.DBAppender">
+	<appender name="DATABASE" class="tw.musemodel.dingzhiqingren.DBAppenderExtended">
 		<connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
 			<dataSource class="${datasourceType}">
 				<param name="defaultAutoCommit" value="${datasourceDefaultAutoCommit}"/>
@@ -76,10 +67,8 @@
 				<param name="username" value="${datasourceUsername}"/>
 			</dataSource>
 		</connectionSource>
+		<insertHeaders>true</insertHeaders>
 	</appender>
 
-	<root level="INFO">
-		<appender-ref ref="CONSOLE"/>
-		<appender-ref ref="DATABASE"/>
-	</root>
+	<appender-ref ref="DATABASE"/>
 </configuration>

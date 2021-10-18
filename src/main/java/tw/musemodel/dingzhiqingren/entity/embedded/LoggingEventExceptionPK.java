@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package tw.musemodel.dingzhiqingren.entity;
+package tw.musemodel.dingzhiqingren.entity.embedded;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -27,9 +22,9 @@ import lombok.Data;
 	property = "id"
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LoggingEventPropertyPK implements Serializable {
+public class LoggingEventExceptionPK implements Serializable {
 
-	private static final long serialVersionUID = -7901437460781189284L;
+	private static final long serialVersionUID = -8754558311876918284L;
 
 	@Basic(optional = false)
 	@Column(name = "event_id", nullable = false)
@@ -37,16 +32,16 @@ public class LoggingEventPropertyPK implements Serializable {
 	private long eventId;
 
 	@Basic(optional = false)
-	@Column(name = "mapped_key", nullable = false)
+	@Column(nullable = false)
 	@NotNull
-	private String mappedKey;
+	private short i;
 
-	public LoggingEventPropertyPK() {
+	public LoggingEventExceptionPK() {
 	}
 
-	public LoggingEventPropertyPK(long eventId, String mappedKey) {
+	public LoggingEventExceptionPK(long eventId, short i) {
 		this.eventId = eventId;
-		this.mappedKey = mappedKey;
+		this.i = i;
 	}
 
 	@Override
