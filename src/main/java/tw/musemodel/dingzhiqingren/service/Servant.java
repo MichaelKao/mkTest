@@ -445,6 +445,15 @@ public class Servant {
 	/**
 	 * 随机整数。
 	 *
+	 * @return 在 32,767 内的随机整数
+	 */
+	public static final int randomInteger() {
+		return randomInteger(Short.MAX_VALUE);
+	}
+
+	/**
+	 * 随机整数。
+	 *
 	 * @param max 最大整数
 	 * @return 在最大范围内的随机整数
 	 */

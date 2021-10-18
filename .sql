@@ -934,3 +934,65 @@ ALTER TYPE"xing_wei"
 ADD VALUE'AN_XIN_SHI_BAI_2';--照片中證件不可辨識。
 ALTER TYPE"xing_wei"
 ADD VALUE'AN_XIN_SHI_BAI_3';--照片中本人不可辨識。
+
+/*
+pg_dump \
+--file "/Users/postgres/Downloads/youngme-prod.backup" \
+--host "pd12rtmmx54w5zj.cejgjn7nctjp.ap-southeast-1.rds.amazonaws.com" \
+--port "5432" \
+--username "raremedia" \
+--no-password \
+--verbose \
+--format=c \
+--blobs "youngme"
+ */
+
+/**
+ * logback
+ */
+CREATE TABLE"logging_event"(
+	"event_id"serial8 PRIMARY KEY,
+	"timestmp"int8 NOT NULL,
+	"formatted_message"text NOT NULL,
+	"logger_name"varchar NOT NULL,
+	"level_string"varchar NOT NULL,
+	"thread_name"varchar,
+	"arg0"varchar,
+	"arg1"varchar,
+	"arg2"varchar,
+	"arg3"varchar,
+	"reference_flag"int2,
+	"caller_filename"varchar NOT NULL,
+	"caller_class"varchar NOT NULL,
+	"caller_method"varchar NOT NULL,
+	"caller_line"varchar NOT NULL,
+	"occurred"timestamptz NOT NULL DEFAULT"now"()
+);
+COMMENT ON COLUMN"logging_event"."event_id"IS'The database id of the logging event';
+COMMENT ON COLUMN"logging_event"."timestmp"IS'The timestamp that was valid at the logging event''s creation';
+COMMENT ON COLUMN"logging_event"."formatted_message"IS'The message that has been added to the logging event, after formatting with org.slf4j.impl.MessageFormatter, in case objects were passed along with the message.';
+COMMENT ON COLUMN"logging_event"."logger_name"IS'The name of the logger used to issue the logging request';
+COMMENT ON COLUMN"logging_event"."level_string"IS'The level of the logging event';
+COMMENT ON COLUMN"logging_event"."reference_flag"IS'This field is used by logback to identify logging events that have an exception or MDCproperty values associated';
+COMMENT ON COLUMN"logging_event"."caller_filename"IS'The name of the file where the logging request was issued';
+COMMENT ON COLUMN"logging_event"."caller_class"IS'The class where the logging request was issued';
+COMMENT ON COLUMN"logging_event"."caller_method"IS'The name of the method where the logging request was issued';
+COMMENT ON COLUMN"logging_event"."caller_line"IS'The line number where the logging request was issued';
+CREATE TABLE"logging_event_property"(
+	"event_id"int8 NOT NULL REFERENCES"logging_event"("event_id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"mapped_key"varchar NOT NULL,
+	"mapped_value"text,
+	PRIMARY KEY("event_id","mapped_key")
+);
+COMMENT ON COLUMN"logging_event_property"."event_id"IS'The database id of the logging event';
+COMMENT ON COLUMN"logging_event_property"."mapped_key"IS'The key of the MDC property';
+COMMENT ON COLUMN"logging_event_property"."mapped_value"IS'The value of the MDC property';
+CREATE TABLE"logging_event_exception"(
+	"event_id"int8 NOT NULL REFERENCES"logging_event"("event_id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"i"int2 NOT NULL,
+	"trace_line"varchar NOT NULL,
+	PRIMARY KEY("event_id","i")
+);
+COMMENT ON COLUMN"logging_event_exception"."event_id"IS'The database id of the logging event';
+COMMENT ON COLUMN"logging_event_exception"."i"IS'The index of the line in the full stack trace';
+COMMENT ON COLUMN"logging_event_exception"."trace_line"IS'The corresponding line';
