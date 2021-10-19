@@ -1,5 +1,5 @@
 SECTION.searchArea {
-        border-left: 3px solid rgb(214, 51, 132);
+        border-bottom: 3px solid rgb(214, 51, 132);
         padding: 8px;
         background: rgba(214, 51, 132, 0.05);
 }
@@ -9,26 +9,38 @@ SECTION.searchArea {
 }
 
 .slider.slider-horizontal .slider-track {
-        height: 5px;
+        height: 10px;
 }
 
 #slider-div > div {
-        margin-top: 8px;
+        margin-top: 15px;
 }
 
 .slider-handle {
         background-image: -webkit-gradient(linear, 0 0, 0 100%, from(rgb(214, 51, 116)), to(rgb(214, 51, 132)));
-        width: 14px;
-        height: 14px;
+        width: 20px;
+        height: 20px;
 }
 
 .sliderLabel {
         position: absolute;
-        bottom: -19px;
+        top: -19px;
         font-size: 14px;
-        width: 52px;
 }
 
 .slider-selection {
         background-image: linear-gradient(to bottom, #D6338B88, #D6338B88);
+}
+
+@media (max-width: 321px) {
+        IMG {
+                width: 148px;
+        }
+}
+
+@media (min-width: 1080px) {
+        SECTION.searchArea, .filterResult {
+                width: 900px;
+                margin: 0 auto !important;
+        }
 }

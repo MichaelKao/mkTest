@@ -31,18 +31,10 @@
                         <xsl:call-template name="navbar"/>
                         <xsl:call-template name="bootstrapToast"/>
                         <DIV class="container pt-7 pt-md-8 px-3">
-                                <DIV class="mx-sm-5 mx-lg-12 mb-3 text-center">
-                                        <H4>
-                                                <I class="fad fa-search fontSize22 text-dark me-2"></I>
-                                                <SPAN class="text-primary">
-                                                        <xsl:value-of select="@title"/>
-                                                </SPAN>
-                                        </H4>
-                                </DIV>
                                 <SECTION class="searchArea shadow open">
                                         <DIV class="row">
                                                 <DIV class="col-6 px-2">
-                                                        <DIV class="mb-4">
+                                                        <DIV class="mb-3">
                                                                 <LABEL for="nickname">
                                                                         <I class="fad fa-mask text-lg"></I>
                                                                 </LABEL>
@@ -50,10 +42,10 @@
                                                         </DIV>
                                                 </DIV>
                                                 <DIV class="col-6">
-                                                        <DIV class="mb-4">
+                                                        <DIV class="mb-3">
                                                                 <DIV>
                                                                         <I class="fad fa-birthday-cake text-lg me-1"></I>
-                                                                        <SPAN>年齡</SPAN>
+                                                                        <SPAN>年齡(歲)</SPAN>
                                                                 </DIV>
                                                                 <DIV id="slider-outer-div">
                                                                         <DIV id="slider-div">
@@ -69,10 +61,10 @@
                                         </DIV>
                                         <DIV class="row">
                                                 <DIV class="col-6">
-                                                        <DIV class="mb-4">
+                                                        <DIV class="mb-3">
                                                                 <DIV>
                                                                         <I class="fad fa-ruler-vertical text-lg me-1"></I>
-                                                                        <SPAN>身高</SPAN>
+                                                                        <SPAN>身高(公分)</SPAN>
                                                                 </DIV>
                                                                 <DIV id="slider-outer-div">
                                                                         <DIV id="slider-div">
@@ -86,10 +78,10 @@
                                                         </DIV>
                                                 </DIV>
                                                 <DIV class="col-6">
-                                                        <DIV class="mb-4">
+                                                        <DIV class="mb-3">
                                                                 <DIV>
                                                                         <I class="fad fa-weight text-lg me-1"></I>
-                                                                        <SPAN>體重</SPAN>
+                                                                        <SPAN>體重(公斤)</SPAN>
                                                                 </DIV>
                                                                 <DIV id="slider-outer-div">
                                                                         <DIV id="slider-div">
@@ -180,7 +172,7 @@
                                                                                 <SPAN>收入</SPAN>
                                                                         </DIV>
                                                                         <SELECT class="form-control" id="annualIncome" name="annualIncome">
-                                                                                <OPTION value="">全部</OPTION>
+                                                                                <OPTION value="0">全部</OPTION>
                                                                                 <xsl:for-each select="annualIncome">
                                                                                         <OPTION value="{@annualIncomeID}">
                                                                                                 <xsl:value-of select="."/>
@@ -194,7 +186,7 @@
                                                                                 <SPAN>零用</SPAN>
                                                                         </DIV>
                                                                         <SELECT class="form-control" id="allowance" name="allowance">
-                                                                                <OPTION value="">全部</OPTION>
+                                                                                <OPTION value="0">全部</OPTION>
                                                                                 <xsl:for-each select="allowance">
                                                                                         <OPTION value="{@allowanceID}">
                                                                                                 <xsl:value-of select="."/>
@@ -221,12 +213,60 @@
                                                         </DIV>
                                                 </DIV>
                                         </DIV>
-                                </SECTION>
-                                <DIV class="text-lg text-primary text-bold d-flex justify-content-center">
-                                        <DIV class="toggleSearchArea cursor-pointer">
-                                                <I class="fad fa-chevron-double-up me-1"></I>
-                                                <SPAN>隱藏搜尋區塊</SPAN>
+                                        <DIV class="row">
+                                                <DIV class="col-6">
+                                                        <DIV class="mb-4">
+                                                                <DIV>
+                                                                        <I class="fad fa-map-marker-alt text-lg me-1"></I>
+                                                                        <SPAN>約會地區</SPAN>
+                                                                </DIV>
+                                                                <SELECT class="form-control" id="location" name="location">
+                                                                        <OPTION value="0">全部</OPTION>
+                                                                        <xsl:for-each select="location">
+                                                                                <OPTION value="{@locationID}">
+                                                                                        <xsl:value-of select="."/>
+                                                                                </OPTION>
+                                                                        </xsl:for-each>
+                                                                </SELECT>
+                                                        </DIV>
+                                                </DIV>
+                                                <DIV class="col-6">
+                                                        <DIV class="mb-4">
+                                                                <DIV>
+                                                                        <I class="fad fa-book-heart text-lg me-1"></I>
+                                                                        <SPAN>約會模式</SPAN>
+                                                                </DIV>
+                                                                <SELECT class="form-control" id="service" name="service">
+                                                                        <OPTION value="0">全部</OPTION>
+                                                                        <xsl:for-each select="service">
+                                                                                <OPTION value="{@serviceID}">
+                                                                                        <xsl:value-of select="."/>
+                                                                                </OPTION>
+                                                                        </xsl:for-each>
+                                                                </SELECT>
+                                                        </DIV>
+                                                </DIV>
                                         </DIV>
+                                        <DIV class="text-center">
+                                                <BUTTON class="btn btn-primary btn-round w-50 filterBtn" type="button">
+                                                        <I class="fad fa-search me-2"></I>
+                                                        <SPAN>馬上搜尋</SPAN>
+                                                </BUTTON>
+                                        </DIV>
+                                </SECTION>
+                                <DIV class="text-lg text-primary text-bold d-flex justify-content-center mt-1">
+                                        <DIV class="toggleSearchArea cursor-pointer open">
+                                                <I class="fad fa-chevron-double-up me-1 openCloseBtn"></I>
+                                                <SPAN>隱藏搜尋區塊</SPAN>
+                                                <I class="fad fa-search ms-1"></I>
+                                        </DIV>
+                                </DIV>
+                        </DIV>
+                        <DIV class="container px-0 mt-4">
+                                <H4 class="text-center">搜尋結果</H4>
+                                <DIV class="d-flex flex-wrap justify-content-center mx-0 filterResult"></DIV>
+                                <DIV class="d-flex mt-3 justify-content-center">
+                                        <DIV id="pageBtnWrap"></DIV>
                                 </DIV>
                         </DIV>
                         <xsl:call-template name="footer"/>

@@ -160,6 +160,12 @@
                                                                         </A>
                                                                 </LI>
                                                                 <LI class="nav-item">
+                                                                        <A class="nav-link nav-link-icon d-flex align-items-center" href="/filter.asp">
+                                                                                <I class="fad fa-search fontSize22 width30whenMobile"></I>
+                                                                                <SPAN class="d-lg-none">搜尋養蜜</SPAN>
+                                                                        </A>
+                                                                </LI>
+                                                                <LI class="nav-item">
                                                                         <A class="nav-link nav-link-icon d-flex align-items-center" href="/favorite.asp">
                                                                                 <I class="fad fa-box-heart fontSize22 width30whenMobile"></I>
                                                                                 <SPAN class="d-lg-none">我的收藏</SPAN>
