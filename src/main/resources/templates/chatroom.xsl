@@ -549,15 +549,15 @@
                                                                                         <DIV>!!防止詐騙與假帳號!!</DIV>
                                                                                 </DIV>
                                                                                 <DIV class="text-sm d-flex flex-column">
-                                                                                        <DIV class="mb-1">
+                                                                                        <DIV class="mb-1 d-flex">
                                                                                                 <I class="fas fa-portrait fontSize22 col-1"></I>
-                                                                                                <SPAN>有大頭照訊息回覆率提高70%</SPAN>
+                                                                                                <SPAN>有大頭照的訊息，meQUEEN回覆率提高70%</SPAN>
                                                                                         </DIV>
                                                                                         <DIV class="mb-1">
                                                                                                 <I class="fas fa-comment-smile fontSize22 col-1"></I>
                                                                                                 <SPAN>充分了解認識再進一步洽談約會</SPAN>
                                                                                         </DIV>
-                                                                                        <DIV class="mb-1">
+                                                                                        <DIV class="mb-1 d-flex">
                                                                                                 <I class="fas fa-badge-dollar fontSize22 col-1"></I>
                                                                                                 <SPAN>約會先用ME點交易，女生爽約可檢舉退回</SPAN>
                                                                                         </DIV>
