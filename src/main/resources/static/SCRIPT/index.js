@@ -6,6 +6,12 @@ $(document).ready(function () {
         }
 
         let $mobileRefreshBtn = $('BUTTON#mobileRefreshBtn');
+        if (isIOS() && $('INPUT[name="signIn"]').val() === 'true' && window.navigator.standalone === false) {
+                $('DIV.iosAddToDesktop').css('display', 'block');
+        }
+        if (isAndroid() && $('INPUT[name="signIn"]').val() === 'true' && !window.matchMedia('(display-mode: standalone)').matches) {
+                $('DIV.androidAddToDesktop').css('display', 'block');
+        }
         if (isMobile() && $('INPUT[name="signIn"]').val() === 'true') {
                 var currentPageType = getCookie('currentPageType');
                 if ($('INPUT[name="gender"]').val() === 'male') {
@@ -35,6 +41,12 @@ $(document).ready(function () {
                         }
                 }
         }
+
+        $('BUTTON.addDeskColse').click(function () {
+                $('DIV.addToDeskTop').each(function () {
+                        $(this).css('display', 'none')
+                });
+        });
 
         $('A.mobileModeA').click(function () {
                 let a = this;
@@ -146,7 +158,7 @@ $(document).ready(function () {
 
                         let IMG = document.createElement('IMG');
                         $(IMG).attr({
-                                'class': 'border-radius-md',
+                                'class': 'border-radius-md width148whileMobile',
                                 'src': item.profileImage,
                                 'width': '152'
                         });
@@ -320,6 +332,30 @@ $(document).ready(function () {
                         mobileFlag = true;
                 }
 
+                return mobileFlag;
+        }
+
+        function isIOS() {
+                var mobileAgents = ["iPhone", "iPad", "iPod"];
+                var mobileFlag = false;
+                for (var v = 0; v < mobileAgents.length; v++) {
+                        if (navigator.userAgent.indexOf(mobileAgents[v]) > 0) {
+                                mobileFlag = true;
+                                break;
+                        }
+                }
+                return mobileFlag;
+        }
+
+        function isAndroid() {
+                var mobileAgents = ["Android", "SymbianOS", "Windows Phone"];
+                var mobileFlag = false;
+                for (var v = 0; v < mobileAgents.length; v++) {
+                        if (navigator.userAgent.indexOf(mobileAgents[v]) > 0) {
+                                mobileFlag = true;
+                                break;
+                        }
+                }
                 return mobileFlag;
         }
 

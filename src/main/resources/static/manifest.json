@@ -1,22 +1,22 @@
 {
-	"name": "Young Me",
-	"short_name": "Young Me",
-	"start_url": "/",
-	"scope": "/",
-	"display": "standalone",
-	"background_color": "#fff",
-	"theme_color": "#fff",
-	"orientation": "portrait-primary",
-	"icons": [
-		{
-			"src": "/ICON/android-chrome-192x192.png",
-			"type": "image/png",
-			"sizes": "192x192"
-		},
-		{
-			"src": "/ICON/android-chrome-512x512.png",
-			"type": "image/png",
-			"sizes": "512x512"
-		}
-	]
+        "name": "Young Me",
+        "short_name": "Young Me 養蜜",
+        "start_url": "/",
+        "scope": "/",
+        "display": "standalone",
+        "background_color": "#fff",
+        "theme_color": "#fff",
+        "orientation": "portrait-primary",
+        "icons": [
+                {
+                        "src": "/ICON/android-chrome-192x192.png",
+                        "type": "image/png",
+                        "sizes": "192x192"
+                },
+                {
+                        "src": "/ICON/android-chrome-512x512.png",
+                        "type": "image/png",
+                        "sizes": "512x512"
+                }
+        ]
 }

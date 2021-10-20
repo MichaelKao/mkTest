@@ -114,7 +114,7 @@ $(document).ready(function () {
 
                         let IMG = document.createElement('IMG');
                         $(IMG).attr({
-                                'class': 'border-radius-md',
+                                'class': 'border-radius-md width148whileMobile',
                                 'src': item.profileImage,
                                 'width': '152'
                         });

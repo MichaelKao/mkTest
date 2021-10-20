@@ -305,6 +305,66 @@
                                 </DIV>
                         </xsl:if>
                         <xsl:if test="@signIn">
+                                <DIV class="iosAddToDesktop addToDeskTop position-fixed border-radius-xl py-3 px-2" style="display: none;">
+                                        <DIV class="text-xs text-center d-flex flex-column justify-content-center align-items-center mx-auto">
+                                                <DIV class="text-dark text-bold">簡單步驟實現 app 體驗</DIV>
+                                                <DIV class="d-flex align-items-center mt-3 text-dark">
+                                                        <DIV>
+                                                                <DIV>
+                                                                        <IMG alt="iosShare" src="/IMAGE/iosShare.png" width="35"/>
+                                                                </DIV>
+                                                                <DIV class="pt-2">點擊</DIV>
+                                                        </DIV>
+                                                        <I class="fas fa-chevron-right px-3"></I>
+                                                        <DIV>
+                                                                <DIV class="text-center">
+                                                                        <I class="fal fa-plus-square fontSize35 text-dark"></I>
+                                                                </DIV>
+                                                                <DIV class="pt-2">加入主畫面</DIV>
+                                                        </DIV>
+                                                        <I class="fas fa-chevron-right px-3"></I>
+                                                        <DIV>
+                                                                <DIV>
+                                                                        <IMG alt="icon" class="border-radius-md" src="/ICON/logo.png" width="38"/>
+                                                                </DIV>
+                                                                <DIV class="pt-2">新增 Young Me</DIV>
+                                                        </DIV>
+                                                </DIV>
+                                                <BUTTON class="addDeskColse btn btn-link text-dark m-0 p-0" type="button">
+                                                        <I class="fal fa-times fontSize22"></I>
+                                                </BUTTON>
+                                        </DIV>
+                                </DIV>
+                                <DIV class="androidAddToDesktop addToDeskTop position-fixed border-radius-xl py-3 px-2" style="display: none;">
+                                        <DIV class="text-xs text-center d-flex flex-column justify-content-center align-items-center mx-auto">
+                                                <DIV class="text-dark text-bold">簡單步驟實現 app 體驗</DIV>
+                                                <DIV class="d-flex align-items-center mt-3 text-dark">
+                                                        <DIV>
+                                                                <DIV>
+                                                                        <I class="far fa-ellipsis-v fontSize35 text-dark"></I>
+                                                                </DIV>
+                                                                <DIV class="pt-2">點擊右上方</DIV>
+                                                        </DIV>
+                                                        <I class="fas fa-chevron-right px-3"></I>
+                                                        <DIV>
+                                                                <DIV>
+                                                                        <IMG alt="icon" src="/IMAGE/chromeAdd.png" width="38"/>
+                                                                </DIV>
+                                                                <DIV class="pt-2">加到主畫面</DIV>
+                                                        </DIV>
+                                                        <I class="fas fa-chevron-right px-3"></I>
+                                                        <DIV>
+                                                                <DIV>
+                                                                        <IMG alt="icon" class="border-radius-md" src="/ICON/logo.png" width="38"/>
+                                                                </DIV>
+                                                                <DIV class="pt-2">新增 Young Me</DIV>
+                                                        </DIV>
+                                                </DIV>
+                                                <BUTTON class="addDeskColse btn btn-link text-dark m-0 p-0" type="button">
+                                                        <I class="fal fa-times fontSize22"></I>
+                                                </BUTTON>
+                                        </DIV>
+                                </DIV>
                                 <INPUT name="signIn" type="hidden" value="true"/>
                                 <DIV class="container px-0 px-md-3 pt-7">
                                         <INPUT name="gender" type="hidden">
@@ -365,7 +425,7 @@
                                 <DIV class="d-flex flex-wrap justify-content-center mx-2 vip">
                                         <xsl:for-each select="vip/section">
                                                 <A class="position-relative m-1" href="/profile/{identifier}/">
-                                                        <IMG class="border-radius-md" src="{profileImage}" width="152"/>
+                                                        <IMG class="border-radius-md width148whileMobile" src="{profileImage}" width="152"/>
                                                         <DIV class="position-absolute right-0 text-center" style="width: 32px; top: 5px;">
                                                                 <xsl:if test="@vvip">
                                                                         <I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>
@@ -442,7 +502,7 @@
                                 <DIV class="d-flex flex-wrap justify-content-center mx-2 relief">
                                         <xsl:for-each select="relief/section">
                                                 <A class="position-relative m-1" href="/profile/{identifier}/">
-                                                        <IMG class="border-radius-md" src="{profileImage}" width="152"/>
+                                                        <IMG class="border-radius-md width148whileMobile" src="{profileImage}" width="152"/>
                                                         <DIV class="position-absolute right-0 text-center" style="width: 32px; top: 5px;">
                                                                 <xsl:if test="@vvip">
                                                                         <I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>
@@ -519,7 +579,7 @@
                                 <DIV class="d-flex flex-wrap justify-content-center mx-2 active">
                                         <xsl:for-each select="active/section">
                                                 <A class="position-relative m-1" href="/profile/{identifier}/">
-                                                        <IMG class="border-radius-md" src="{profileImage}" width="152"/>
+                                                        <IMG class="border-radius-md width148whileMobile" src="{profileImage}" width="152"/>
                                                         <DIV class="position-absolute right-0 text-center" style="width: 32px; top: 5px;">
                                                                 <xsl:if test="@vvip">
                                                                         <I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>
@@ -596,7 +656,7 @@
                                 <DIV class="d-flex flex-wrap justify-content-center mx-2 register">
                                         <xsl:for-each select="register/section">
                                                 <A class="position-relative m-1" href="/profile/{identifier}/">
-                                                        <IMG class="border-radius-md" src="{profileImage}" width="152"/>
+                                                        <IMG class="border-radius-md width148whileMobile" src="{profileImage}" width="152"/>
                                                         <DIV class="position-absolute right-0 text-center" style="width: 32px; top: 5px;">
                                                                 <xsl:if test="@vvip">
                                                                         <I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>

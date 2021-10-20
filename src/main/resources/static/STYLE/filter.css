@@ -32,12 +32,6 @@ SECTION.searchArea {
         background-image: linear-gradient(to bottom, #D6338B88, #D6338B88);
 }
 
-@media (max-width: 321px) {
-        IMG {
-                width: 148px;
-        }
-}
-
 @media (min-width: 1080px) {
         SECTION.searchArea, .filterResult {
                 width: 900px;
