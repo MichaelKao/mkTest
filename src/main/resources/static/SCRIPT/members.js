@@ -244,6 +244,32 @@ $(document).ready(function () {
                                 $(vipDiv).attr('class', 'col-3');
                                 $(eachMainDiv).append(vipDiv);
 
+                                let upgradeVipIDiv = document.createElement('DIV');
+                                $(vipDiv).append(upgradeVipIDiv);
+
+                                let upgradeVipBtn = document.createElement('BUTTON');
+                                $(upgradeVipBtn).attr({
+                                        'class': 'btn btn-link m-0 px-0 py-1 upgradeVipBtn',
+                                        'data-bs-target': '#upgradeModal',
+                                        'data-bs-toggle': 'modal',
+                                        'data-id': member.id,
+                                        'type': 'button'
+                                });
+                                $(upgradeVipIDiv).append(upgradeVipBtn);
+
+                                $('BUTTON.upgradeVipBtn').click(function () {
+                                        var btn = this;
+                                        lover = $(btn).data('id');
+                                });
+
+                                let upgradeVipBtnI = document.createElement('I');
+                                $(upgradeVipBtnI).attr('class', 'fal fa-crown fontSize22');
+                                $(upgradeVipBtn).append(upgradeVipBtnI);
+
+                                let upgradeVipWrapDiv = document.createElement('DIV');
+                                $(upgradeVipWrapDiv).attr('class', 'upgradeVipWrap');
+                                $(vipDiv).append(upgradeVipWrapDiv);
+
                                 var vipWrapSpan = document.createElement('SPAN');
                                 var vipI = document.createElement('I');
                                 $(vipI).attr('class', 'fad fa-crown me-1');
@@ -253,22 +279,22 @@ $(document).ready(function () {
                                 var vipDateDiv = document.createElement('DIV');
 
                                 if (member.isVIP === true) {
-                                        $(vipDiv).append(vipWrapSpan);
-                                        $(vipDiv).append(vipDateDiv);
+                                        $(upgradeVipWrapDiv).append(vipWrapSpan);
+                                        $(upgradeVipWrapDiv).append(vipDateDiv);
                                         $(vipSpan).append('1688');
                                         $(vipDateDiv).append(member.vipExpiration);
                                 }
 
                                 if (member.isVVIP === true) {
-                                        $(vipDiv).append(vipWrapSpan);
-                                        $(vipDiv).append(vipDateDiv);
+                                        $(upgradeVipWrapDiv).append(vipWrapSpan);
+                                        $(upgradeVipWrapDiv).append(vipDateDiv);
                                         $(vipSpan).append('1288');
                                         $(vipDateDiv).append(member.vipExpiration);
                                 }
 
                                 if (member.isTrial === true) {
-                                        $(vipDiv).append(vipWrapSpan);
-                                        $(vipDiv).append(vipDateDiv);
+                                        $(upgradeVipWrapDiv).append(vipWrapSpan);
+                                        $(upgradeVipWrapDiv).append(vipDateDiv);
                                         $(vipSpan).append('單日');
                                         $(vipDateDiv).append(member.vipExpiration);
                                 }
@@ -721,7 +747,6 @@ $(document).ready(function () {
                                         pageSearch: page
                                 },
                                 function (data) {
-                                        console.log(data.totalPages)
                                         createPagination(pagination, data.totalPages, page);
                                         search(data);
                                 },

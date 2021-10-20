@@ -5,7 +5,20 @@ $(document).ready(function () {
                 showModal();
         }
 
+        var isAndroid = /android/i.test(navigator.userAgent);
+        var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+        var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
         let $mobileRefreshBtn = $('BUTTON#mobileRefreshBtn');
+        if (isIOS && $('INPUT[name="signIn"]').val() === 'true'
+                && window.navigator.standalone === false
+                && isSafari) {
+                $('DIV.iosAddToDesktop').css('display', 'block');
+        }
+        if (isAndroid && $('INPUT[name="signIn"]').val() === 'true'
+                && !window.matchMedia('(display-mode: standalone)').matches) {
+                $('DIV.androidAddToDesktop').css('display', 'block');
+        }
         if (isMobile() && $('INPUT[name="signIn"]').val() === 'true') {
                 var currentPageType = getCookie('currentPageType');
                 if ($('INPUT[name="gender"]').val() === 'male') {
@@ -35,6 +48,12 @@ $(document).ready(function () {
                         }
                 }
         }
+
+        $('BUTTON.addDeskColse').click(function () {
+                $('DIV.addToDeskTop').each(function () {
+                        $(this).css('display', 'none')
+                });
+        });
 
         $('A.mobileModeA').click(function () {
                 let a = this;
@@ -146,7 +165,7 @@ $(document).ready(function () {
 
                         let IMG = document.createElement('IMG');
                         $(IMG).attr({
-                                'class': 'border-radius-md',
+                                'class': 'border-radius-md width148whileMobile',
                                 'src': item.profileImage,
                                 'width': '152'
                         });
