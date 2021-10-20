@@ -5,11 +5,18 @@ $(document).ready(function () {
                 showModal();
         }
 
+        var isAndroid = /android/i.test(navigator.userAgent);
+        var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+        var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
         let $mobileRefreshBtn = $('BUTTON#mobileRefreshBtn');
-        if (isIOS() && $('INPUT[name="signIn"]').val() === 'true' && window.navigator.standalone === false) {
+        if (isIOS && $('INPUT[name="signIn"]').val() === 'true'
+                && window.navigator.standalone === false
+                && isSafari) {
                 $('DIV.iosAddToDesktop').css('display', 'block');
         }
-        if (isAndroid() && $('INPUT[name="signIn"]').val() === 'true' && !window.matchMedia('(display-mode: standalone)').matches) {
+        if (isAndroid && $('INPUT[name="signIn"]').val() === 'true'
+                && !window.matchMedia('(display-mode: standalone)').matches) {
                 $('DIV.androidAddToDesktop').css('display', 'block');
         }
         if (isMobile() && $('INPUT[name="signIn"]').val() === 'true') {
@@ -332,30 +339,6 @@ $(document).ready(function () {
                         mobileFlag = true;
                 }
 
-                return mobileFlag;
-        }
-
-        function isIOS() {
-                var mobileAgents = ["iPhone", "iPad", "iPod"];
-                var mobileFlag = false;
-                for (var v = 0; v < mobileAgents.length; v++) {
-                        if (navigator.userAgent.indexOf(mobileAgents[v]) > 0) {
-                                mobileFlag = true;
-                                break;
-                        }
-                }
-                return mobileFlag;
-        }
-
-        function isAndroid() {
-                var mobileAgents = ["Android", "SymbianOS", "Windows Phone"];
-                var mobileFlag = false;
-                for (var v = 0; v < mobileAgents.length; v++) {
-                        if (navigator.userAgent.indexOf(mobileAgents[v]) > 0) {
-                                mobileFlag = true;
-                                break;
-                        }
-                }
                 return mobileFlag;
         }
 
