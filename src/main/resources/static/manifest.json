@@ -1,6 +1,6 @@
 {
         "name": "Young Me",
-        "short_name": "Young Me 養蜜",
+        "short_name": "Young Me",
         "start_url": "/",
         "scope": "/",
         "display": "standalone",

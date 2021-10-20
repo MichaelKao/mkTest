@@ -80,7 +80,7 @@
                                                                 <A class="text-primary text-gradient font-weight-bold" href="/resetPassword/">忘記密碼?</A>
                                                         </P>
                                                         <DIV class="text-center">
-                                                                <BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0" type="submit">
+                                                                <BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0" onclick="lsRememberMe()" type="submit">
                                                                         <xsl:value-of select="@i18n-submit"/>
                                                                 </BUTTON>
                                                         </DIV>
