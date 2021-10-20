@@ -253,6 +253,7 @@
         <xsl:template name="headMetaTags">
                 <META content="IE=edge" http-equiv="X-UA-Compatible"/>
                 <META content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+                <META name="theme-color" content="#D63384"/>
         </xsl:template>
 
         <xsl:template name="bootstrapToast">
