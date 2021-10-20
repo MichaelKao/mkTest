@@ -64,7 +64,7 @@ public class ForumThreadComment implements Serializable {
 	/**
 	 * 评论者
 	 */
-	@JoinColumn(name = "zuo_zhe", nullable = false, referencedColumnName = "id")
+	@JoinColumn(name = "ping_lun_zhe", nullable = false, referencedColumnName = "id")
 	@ManyToOne
 	private Lover commenter;
 

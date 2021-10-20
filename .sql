@@ -1020,3 +1020,85 @@ CREATE TABLE IF NOT EXISTS"access_event_header"(
 	"header_value"varchar,
 	PRIMARY KEY("event_id","header_key")
 );
+
+/**
+ * 论坛绪
+ */
+CREATE TABLE"lun_tan"(
+	"id"serial8 PRIMARY KEY,
+	"shi_bie_ma"uuid NOT NULL UNIQUE,
+	"shi_chuo"timestamptz NOT NULL DEFAULT"now"(),
+	"xing_bie"bool NOT NULL,
+	"zuo_zhe"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"biao_ti"varchar NOT NULL,
+	"nei_rong"text
+);
+COMMENT ON TABLE"lun_tan"IS'论坛绪';
+COMMENT ON COLUMN"lun_tan"."id"IS'主键';
+COMMENT ON COLUMN"lun_tan"."shi_bie_ma"IS'识别码';
+COMMENT ON COLUMN"lun_tan"."shi_chuo"IS'时戳';
+COMMENT ON COLUMN"lun_tan"."xing_bie"IS'性别';
+COMMENT ON COLUMN"lun_tan"."zuo_zhe"IS'作者';
+COMMENT ON COLUMN"lun_tan"."biao_ti"IS'标题';
+COMMENT ON COLUMN"lun_tan"."nei_rong"IS'内容';
+
+/**
+ * 论坛绪插图
+ *
+ * S3 路徑：/forum/{论坛绪 id}/{论坛绪插图 id}.jpg
+ */
+CREATE TABLE"lun_tan_cha_tu"(
+	"id"serial8 PRIMARY KEY,
+	"shi_bie_ma"uuid NOT NULL UNIQUE,
+	"lun_tan"int8 NOT NULL
+);
+COMMENT ON TABLE"lun_tan_cha_tu"IS'论坛绪插图';
+COMMENT ON COLUMN"lun_tan_cha_tu"."id"IS'主键';
+COMMENT ON COLUMN"lun_tan_cha_tu"."shi_bie_ma"IS'识别码';
+COMMENT ON COLUMN"lun_tan_cha_tu"."lun_tan"IS'论坛绪';
+
+/**
+ * 论坛绪留言
+ */
+CREATE TABLE"lun_tan_liu_yan"(
+	"id"serial8 PRIMARY KEY,
+	"shi_bie_ma"uuid NOT NULL UNIQUE,
+	"shi_chuo"timestamptz NOT NULL DEFAULT"now"(),
+	"lun_tan"int8 NOT NULL,
+	"ping_lun_zhe"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"nei_rong"text NOT NULL
+);
+COMMENT ON TABLE"lun_tan_liu_yan"IS'论坛绪留言';
+COMMENT ON COLUMN"lun_tan_liu_yan"."id"IS'主键';
+COMMENT ON COLUMN"lun_tan_liu_yan"."shi_bie_ma"IS'识别码';
+COMMENT ON COLUMN"lun_tan_liu_yan"."shi_chuo"IS'时戳';
+COMMENT ON COLUMN"lun_tan_liu_yan"."lun_tan"IS'论坛绪';
+COMMENT ON COLUMN"lun_tan_liu_yan"."ping_lun_zhe"IS'评论者';
+COMMENT ON COLUMN"lun_tan_liu_yan"."nei_rong"IS'内容';
+
+/**
+ * 论坛绪关键字词
+ *
+ * 用户无法自订，由平台方透过后台维护！
+ */
+CREATE TABLE"lun_tan_guan_jian_zi_ci"(
+	"id"serial2 PRIMARY KEY,
+	"zi_ci"varchar NOT NULL UNIQUE
+);
+COMMENT ON TABLE"lun_tan_guan_jian_zi_ci"IS'论坛绪关键字词';
+COMMENT ON COLUMN"lun_tan_guan_jian_zi_ci"."id"IS'主键';
+COMMENT ON COLUMN"lun_tan_guan_jian_zi_ci"."zi_ci"IS'字词';
+
+/**
+ * 论坛绪标签
+ */
+CREATE TABLE"lun_tan_biao_qian"(
+	"id"serial8 PRIMARY KEY,
+	"guan_jian_zi_ci"int2 NOT NULL REFERENCES"lun_tan_guan_jian_zi_ci"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"lun_tan"int8 NOT NULL REFERENCES"lun_tan"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	UNIQUE("guan_jian_zi_ci","lun_tan")
+);
+COMMENT ON TABLE"lun_tan_biao_qian"IS'论坛绪标签';
+COMMENT ON COLUMN"lun_tan_biao_qian"."id"IS'主键';
+COMMENT ON COLUMN"lun_tan_biao_qian"."guan_jian_zi_ci"IS'关键字词';
+COMMENT ON COLUMN"lun_tan_biao_qian"."lun_tan"IS'论坛绪';
