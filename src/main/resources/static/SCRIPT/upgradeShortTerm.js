@@ -61,8 +61,10 @@ $(document).ready(function () {
                                                 console.log(data);
                                                 if (data.ThreeDInfo.ThreeDURL) {
                                                         location.replace(data.ThreeDInfo.ThreeDURL);
-                                                } else {
-                                                        alert(data);
+						} else if (data.CVSInfo.PaymentURL) {
+							location.replace(data.CVSInfo.PaymentURL);
+						} else {
+							alert(`{"RtnCode":${data.RtnCode},"RtnMsg":"${data.RtnMsg}"}`);
                                                         $('DIV.loadingWrap').css('display', 'none');
                                                 }
                                         },
