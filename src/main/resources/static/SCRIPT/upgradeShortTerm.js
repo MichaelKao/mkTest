@@ -71,7 +71,7 @@ $(document).ready(function () {
 						$('DIV.loadingWrap').css('display', 'none');
                                         },
                                         'json'
-                                        );
+				);
                         });
                 } catch (error) {
                         alert(error);
