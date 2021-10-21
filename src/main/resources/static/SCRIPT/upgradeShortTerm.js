@@ -67,8 +67,8 @@ $(document).ready(function () {
 							alert(`繳費銀行代碼：${data.ATMInfo.BankCode}\n繳費虛擬帳號：${data.ATMInfo.vAccount}\n繳費期限：${data.ATMInfo.ExpireDate}`);
 						} else {
 							alert(`{"RtnCode":${data.RtnCode},"RtnMsg":"${data.RtnMsg}"}`);
-                                                        $('DIV.loadingWrap').css('display', 'none');
                                                 }
+						$('DIV.loadingWrap').css('display', 'none');
                                         },
                                         'json'
                                         );
