@@ -92,6 +92,8 @@ public class Inpay2Service {
 
         private final static String INPAY2_MERCHANT_ID = System.getenv("INPAY2_MERCHANT_ID");
 
+        private final static String INPAY2_CHOOSE_PAYMENT_LIST = System.getenv("INPAY2_CHOOSE_PAYMENT_LIST");
+
         private final static String INPAY2_TRANSFORMATION = "AES/CBC/PKCS5Padding";
 
         /**
@@ -707,8 +709,7 @@ public class Inpay2Service {
                         (short) 0,//不记忆卡号
                         (short) 2//付款选择清单
                 );
-//                tokenRequestData.setChoosePaymentList("1");//欲使用的付款方式：信用卡一次付清
-                tokenRequestData.setChoosePaymentList("1,3,4");//欲使用的付款方式：信用卡一次付清、ATM、超商代码
+                tokenRequestData.setChoosePaymentList(INPAY2_CHOOSE_PAYMENT_LIST);//欲使用的付款方式：信用卡一次付清、ATM、超商代码
 
                 /*
 		 订单资讯
@@ -888,8 +889,7 @@ public class Inpay2Service {
                         (short) 0,//不记忆卡号
                         (short) 2//付款选择清单
                 );
-//                tokenRequestData.setChoosePaymentList("1");//欲使用的付款方式：信用卡一次付清、ATM、超商代码
-                tokenRequestData.setChoosePaymentList("1,3,4");//欲使用的付款方式：信用卡一次付清、ATM、超商代码
+                tokenRequestData.setChoosePaymentList(INPAY2_CHOOSE_PAYMENT_LIST);//欲使用的付款方式：信用卡一次付清、ATM、超商代码
 
                 /*
 		 订单资讯

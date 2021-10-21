@@ -25,6 +25,9 @@
                         </TITLE>
                         <xsl:call-template name="headLinkTags"/>
                         <LINK crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.css" integrity="sha512-Aix44jXZerxlqPbbSLJ03lEsUch9H/CmnNfWxShD6vJBbboR+rPdDXmKN+/QjISWT80D4wMjtM4Kx7+xkLVywQ==" referrerpolicy="no-referrer" rel="stylesheet"/>
+                        <LINK href="https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css" rel="stylesheet"/>
+                        <LINK href="https://mreq.github.io/slick-lightbox/dist/slick-lightbox.css" rel="stylesheet"/>
+                        <LINK href="https://mreq.github.io/slick-lightbox/gh-pages/bower_components/slick-carousel/slick/slick-theme.css" rel="stylesheet"/>
                         <LINK href="/STYLE/album.css" rel="stylesheet"/>
                         <LINK href="/STYLE/forum.css" rel="stylesheet"/>
                 </HEAD>
@@ -137,7 +140,43 @@
                                                                 </div>
                                                         </div>
                                                         <div class="content">
-                                                                <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/about.jpg"/>
+                                                                <div class="portfolio-slides">
+                                                                        <div class="single">
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/man.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/man.jpg"/>
+                                                                                </a>
+                                                                        </div>
+                                                                        <div class="single">
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg"/>
+                                                                                </a>
+                                                                        </div>
+                                                                        <div class="single">
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/about.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/about.jpg"/>
+                                                                                </a>
+                                                                        </div>
+                                                                        <div class="single">
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/indexBg.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/indexBg.jpg"/>
+                                                                                </a>
+                                                                        </div>
+                                                                        <div class="single">
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg"/>
+                                                                                </a>
+                                                                        </div>
+                                                                        <div class="single">
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg"/>
+                                                                                </a>
+                                                                        </div>
+                                                                        <div class="single">
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/about.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/about.jpg"/>
+                                                                                </a>
+                                                                        </div>
+                                                                </div>
                                                         </div>
                                                         <div class="postFooter">
                                                                 <div class="d-flex">
@@ -153,6 +192,9 @@
                         </div>
                         <xsl:call-template name="bodyScriptTags"/>
                         <SCRIPT crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.js" integrity="sha512-E4KfIuQAc9ZX6zW1IUJROqxrBqJXPuEcDKP6XesMdu2OV4LW7pj8+gkkyx2y646xEV7yxocPbaTtk2LQIJewXw==" referrerpolicy="no-referrer"/>
+                        <SCRIPT src="https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"/>
+                        <SCRIPT src="https://mreq.github.io/slick-lightbox/dist/slick-lightbox.js"/>
+                        <SCRIPT src="/SCRIPT/forum.js"/>
                         <xsl:if test="@signIn">
                                 <SCRIPT src="/SCRIPT/websocket.js"/>
                         </xsl:if>
