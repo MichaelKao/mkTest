@@ -305,66 +305,6 @@
                                 </DIV>
                         </xsl:if>
                         <xsl:if test="@signIn">
-                                <DIV class="iosAddToDesktop addToDeskTop position-fixed border-radius-xl py-3 px-2" style="display: none;">
-                                        <DIV class="text-xs text-center d-flex flex-column justify-content-center align-items-center mx-auto">
-                                                <DIV class="text-dark text-bold">簡單步驟實現 app 體驗</DIV>
-                                                <DIV class="d-flex align-items-center mt-3 text-dark">
-                                                        <DIV>
-                                                                <DIV>
-                                                                        <IMG alt="iosShare" src="/IMAGE/iosShare.png" width="35"/>
-                                                                </DIV>
-                                                                <DIV class="pt-2">點擊</DIV>
-                                                        </DIV>
-                                                        <I class="fas fa-chevron-right px-3"></I>
-                                                        <DIV>
-                                                                <DIV class="text-center">
-                                                                        <I class="fal fa-plus-square fontSize35 text-dark"></I>
-                                                                </DIV>
-                                                                <DIV class="pt-2">加入主畫面</DIV>
-                                                        </DIV>
-                                                        <I class="fas fa-chevron-right px-3"></I>
-                                                        <DIV>
-                                                                <DIV>
-                                                                        <IMG alt="icon" class="border-radius-md" src="/ICON/logo.png" width="38"/>
-                                                                </DIV>
-                                                                <DIV class="pt-2">新增 Young Me</DIV>
-                                                        </DIV>
-                                                </DIV>
-                                                <BUTTON class="addDeskColse btn btn-link text-dark m-0 p-0" type="button">
-                                                        <I class="fal fa-times fontSize22"></I>
-                                                </BUTTON>
-                                        </DIV>
-                                </DIV>
-                                <DIV class="androidAddToDesktop addToDeskTop position-fixed border-radius-xl py-3 px-2" style="display: none;">
-                                        <DIV class="text-xs text-center d-flex flex-column justify-content-center align-items-center mx-auto">
-                                                <DIV class="text-dark text-bold">簡單步驟實現 app 體驗</DIV>
-                                                <DIV class="d-flex align-items-center mt-3 text-dark">
-                                                        <DIV>
-                                                                <DIV>
-                                                                        <I class="far fa-ellipsis-v fontSize35 text-dark"></I>
-                                                                </DIV>
-                                                                <DIV class="pt-2">點擊右上方</DIV>
-                                                        </DIV>
-                                                        <I class="fas fa-chevron-right px-3"></I>
-                                                        <DIV>
-                                                                <DIV>
-                                                                        <IMG alt="icon" src="/IMAGE/chromeAdd.png" width="38"/>
-                                                                </DIV>
-                                                                <DIV class="pt-2">加到主畫面</DIV>
-                                                        </DIV>
-                                                        <I class="fas fa-chevron-right px-3"></I>
-                                                        <DIV>
-                                                                <DIV>
-                                                                        <IMG alt="icon" class="border-radius-md" src="/ICON/logo.png" width="38"/>
-                                                                </DIV>
-                                                                <DIV class="pt-2">新增 Young Me</DIV>
-                                                        </DIV>
-                                                </DIV>
-                                                <BUTTON class="addDeskColse btn btn-link text-dark m-0 p-0" type="button">
-                                                        <I class="fal fa-times fontSize22"></I>
-                                                </BUTTON>
-                                        </DIV>
-                                </DIV>
                                 <INPUT name="signIn" type="hidden" value="true"/>
                                 <DIV class="container px-0 px-md-3 pt-7">
                                         <INPUT name="gender" type="hidden">

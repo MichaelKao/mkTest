@@ -3990,4 +3990,35 @@ public class WelcomeController {
                 }
                 return jsonObject.toString();
         }
+
+        @GetMapping(path = "/forum.asp")
+        @Secured({Servant.ROLE_ADVENTURER})
+        ModelAndView forum(Authentication authentication, Locale locale) throws SAXException, ParserConfigurationException, IOException {
+                Lover me = loverService.loadByUsername(
+                        authentication.getName()
+                );
+                if (!loverService.isEligible(me)) {
+                        //补齐个人资料
+                        return Servant.redirectToProfile();
+                }
+
+                Document document = Servant.parseDocument();
+                Element documentElement = servant.documentElement(
+                        document,
+                        authentication
+                );
+
+                documentElement.setAttribute(
+                        "title",
+                        messageSource.getMessage(
+                                "title.forum",
+                                null,
+                                locale
+                        )
+                );//网页标题
+
+                ModelAndView modelAndView = new ModelAndView("forum");
+                modelAndView.getModelMap().addAttribute(document);
+                return modelAndView;
+        }
 }
