@@ -2,6 +2,7 @@ package tw.musemodel.dingzhiqingren.service;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -26,8 +27,13 @@ import java.util.Objects;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -213,6 +219,11 @@ public class Servant {
 	public static final Charset UTF_8 = StandardCharsets.UTF_8;
 
 	/**
+	 * XML 映射器
+	 */
+	public static final XmlMapper XML_MAPPER = new XmlMapper();
+
+	/**
 	 * 服务器时区
 	 */
 	public static final ZoneId ZONE_ID = ZoneId.of(System.getenv("ZONE_ID"));
@@ -382,15 +393,47 @@ public class Servant {
 	}
 
 	/**
+	 * 使用当前配置的参数创建 javax.xml.parsers.DocumentBuilder 的新实例
+	 *
+	 * @return DocumentBuilde 的新实例
+	 */
+	public static DocumentBuilder newDocumentBuilder() {
+		DocumentBuilder documentBuilder = null;
+
+		try {
+			documentBuilder = DocumentBuilderFactory.newDefaultInstance().newDocumentBuilder();
+		} catch (ParserConfigurationException parserConfigurationException) {
+			LOGGER.debug("无法创建满足请求的配置的 DocumentBuilder");
+		}
+
+		return documentBuilder;
+	}
+
+	/**
+	 * 创建一个新的 Transformer，用于将 Source 复制到 Result。
+	 *
+	 * @return 可用于在单个线程中执行转换的 Transformer 对象
+	 */
+	public static Transformer newTransformer() {
+		Transformer transformer = null;
+
+		try {
+			transformer = TransformerFactory.newDefaultInstance().newTransformer();
+		} catch (TransformerConfigurationException transformerConfigurationException) {
+			LOGGER.debug("无法创建 Transformer 实例");
+		}
+
+		return transformer;
+	}
+
+	/**
 	 * 解析为 DOM Document。
 	 *
 	 * @author p@musemodel.tw
 	 * @return org.w3.dom.Docment
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws ParserConfigurationException
+	 * @throws java.io.IOException
 	 */
-	public static Document parseDocument() throws SAXException, IOException, ParserConfigurationException {
+	public static Document parseDocument() throws IOException {
 		Document document = parseDocument(EMPTY_DOCUMENT_URI);
 		Element documentElement = document.getDocumentElement();
 
@@ -432,14 +475,43 @@ public class Servant {
 	 * 解析为 DOM Document。
 	 *
 	 * @author p@musemodel.tw
+	 * @param value
+	 * @return org.w3.dom.Docment
+	 */
+	public static Document parseDocument(Object value) {
+		Document document = null;
+
+		try {
+			document = newDocumentBuilder().parse(
+				IOUtils.toInputStream(
+					XML_MAPPER.writeValueAsString(value),
+					UTF_8
+				)
+			);
+		} catch (SAXException | IOException exception) {
+			LOGGER.debug(exception.getLocalizedMessage());
+		}
+
+		return document;
+	}
+
+	/**
+	 * 解析为 DOM Document。
+	 *
+	 * @author p@musemodel.tw
 	 * @param uri 来源
 	 * @return org.w3.dom.Docment
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws ParserConfigurationException
 	 */
-	public static Document parseDocument(String uri) throws SAXException, IOException, ParserConfigurationException {
-		return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(uri);
+	public static Document parseDocument(String uri) {
+		Document document = null;
+
+		try {
+			document = newDocumentBuilder().parse(uri);
+		} catch (SAXException | IOException exception) {
+			LOGGER.debug(exception.getLocalizedMessage());
+		}
+
+		return document;
 	}
 
 	/**

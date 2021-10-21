@@ -17,7 +17,7 @@ import tw.musemodel.dingzhiqingren.entity.ForumThread;
 @Repository
 public interface ForumThreadRepository extends JpaRepository<ForumThread, Long>, JpaSpecificationExecutor<ForumThread> {
 
-	public Page<ForumThread> findByIdIn(List<Long> ids, Pageable pageable);
+	public Page<ForumThread> findByIdIn(List<Long> id, Pageable pageable);
 
 	/**
 	 * @param identifier 识别码

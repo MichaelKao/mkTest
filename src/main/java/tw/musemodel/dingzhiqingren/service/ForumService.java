@@ -3,6 +3,8 @@ package tw.musemodel.dingzhiqingren.service;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,19 +47,32 @@ public class ForumService {
 	private ForumThreadRepository forumThreadRepository;
 
 	public Page<ForumThread> getAll(boolean gender, int page, int size) {
+		List<Long> threadIds = jdbcTemplate.query(
+			(Connection connection) -> {
+				PreparedStatement preparedStatement = connection.prepareStatement(
+					READ_THREADS_ACTIVELY
+				);
+				preparedStatement.setBoolean(1, gender);
+				return preparedStatement;
+			},
+			(ResultSet resultSet, int rowNum) -> {
+				return resultSet.getLong(1);
+			}
+		);
+
+		List<ForumThread> forumThreads = new ArrayList<>();
+		for (Long id : threadIds) {
+			forumThreads.add(
+				forumThreadRepository.findById(id).get()
+			);
+		}
+		LOGGER.debug(
+			"論壇\n\n{}\n",
+			forumThreads
+		);
+
 		return forumThreadRepository.findByIdIn(
-			jdbcTemplate.query(
-				(Connection connection) -> {
-					PreparedStatement preparedStatement = connection.prepareStatement(
-						READ_THREADS_ACTIVELY
-					);
-					preparedStatement.setBoolean(1, gender);
-					return preparedStatement;
-				},
-				(ResultSet resultSet, int rowNum) -> {
-					return resultSet.getLong(1);
-				}
-			),
+			threadIds,
 			PageRequest.of(page, size)
 		);
 	}
