@@ -55,13 +55,99 @@
                                                                 </div>
                                                         </div>
                                                         <div class="content">
-                                                                "The greatest glory in living lies not in never falling, but in rising every time we fall." -Nelson Mandela.
+                                                                <div class="carousel">
+                                                                        <div class="single">
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/relief.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/relief.jpg" loading="lazy"/>
+                                                                                </a>
+                                                                        </div>
+                                                                        <div class="single">
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/indexBg.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/indexBg.jpg" loading="lazy"/>
+                                                                                </a>
+                                                                        </div>
+                                                                        <div class="single">
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/man.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/man.jpg" loading="lazy"/>
+                                                                                </a>
+                                                                        </div>
+                                                                        <div class="single">
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/indexBg.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/indexBg.jpg" loading="lazy"/>
+                                                                                </a>
+                                                                        </div>
+                                                                        <div class="single">
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/relief.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/relief.jpg" loading="lazy"/>
+                                                                                </a>
+                                                                        </div>
+                                                                        <div class="single">
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/man.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/man.jpg"/>
+                                                                                </a>
+                                                                        </div>
+                                                                </div>
+                                                                <DIV class="articleBox">
+                                                                        <DIV class="article">
+                                                                                <p>工作忙碌加上生活圈封閉，其實被催婚很煩之外，假日休息都不知道約誰。</p>
+                                                                                <p>加上又不太敢直接搭訕女生，怕尷尬也覺得身分年紀有差。</p>
+                                                                                <p>嘗試一般交友軟體上的女生，又只看臉，不然就是詐騙投資客。</p>
+                                                                                <p>在養蜜上，透過送喜歡的女孩ME點當作禮物，受到的回饋都很好，也有破冰的效果。</p>
+                                                                                <p>出租約會的形式也讓邀約不會很奇怪，互動聊過後提出約會，並附上金額，也可以照顧到喜歡的女孩，後續也有繼續聯絡變成飯友。</p>
+                                                                        </DIV>
+                                                                </DIV>
+                                                                <div class="date text-xs text-right">2021/10/21 16:24</div>
                                                         </div>
                                                         <div class="postFooter">
                                                                 <div class="d-flex">
-                                                                        <div class="comments text-white me-auto cursor-pointer">
+                                                                        <div class="seeComment text-white me-auto cursor-pointer">
                                                                                 <i class="fas fa-comment me-2"></i>
-                                                                                <span>15</span>
+                                                                                <span>2</span>
+                                                                        </div>
+                                                                </div>
+                                                                <div class="comments mt-3" style="display: none;">
+                                                                        <div class="comment d-flex mb-2">
+                                                                                <div class="flex-shrink-0">
+                                                                                        <div class="avatar rounded-circle">
+                                                                                                <img class="avatar-img" src="https://d35hi420xc5ji7.cloudfront.net/pictures/77e5baa1-7f01-4ae6-bfc1-d3d2478b5476" alt=""/>
+                                                                                        </div>
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-2 ms-sm-3">
+                                                                                        <div class="comment-meta d-flex align-items-baseline text-white">
+                                                                                                <div class="me-2 text-bold">小羽</div>
+                                                                                                <span class="text-xs">2021/10/21</span>
+                                                                                        </div>
+                                                                                        <div class="comment-body text-dark text-sm">
+                                                                                                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non minima ipsum at amet doloremque qui magni, placeat deserunt pariatur itaque laudantium impedit aliquam eligendi repellendus excepturi quibusdam nobis esse accusantium.
+                                                                                        </div>
+                                                                                </div>
+                                                                        </div>
+                                                                        <div class="comment d-flex mb-2">
+                                                                                <div class="flex-shrink-0">
+                                                                                        <div class="avatar rounded-circle">
+                                                                                                <img class="avatar-img" src="https://d35hi420xc5ji7.cloudfront.net/profileImage/b421cf3b-8010-4156-8c79-72a756369b81" alt=""/>
+                                                                                        </div>
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-2 ms-sm-3">
+                                                                                        <div class="comment-meta d-flex align-items-baseline text-white">
+                                                                                                <div class="me-2 text-bold">Yumi</div>
+                                                                                                <span class="text-xs">2021/10/22</span>
+                                                                                        </div>
+                                                                                        <div class="comment-body text-dark text-sm">
+                                                                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto laborum in corrupti dolorum, quas delectus nobis porro accusantium molestias sequi.
+                                                                                        </div>
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+                                                                <div class="comment-form d-flex align-items-center mt-3">
+                                                                        <div class="avatar rounded-circle">
+                                                                                <img class="avatar-img" src="https://d35hi420xc5ji7.cloudfront.net/profileImage/591a8223-0a84-4e31-a03a-f7a5fa96e22b" alt=""/>
+                                                                        </div>
+                                                                        <div class="w-100 ms-2">
+                                                                                <form class="position-relative">
+                                                                                        <textarea class="form-control text-white" rows="1" placeholder="新增留言..."></textarea>
+                                                                                        <div class="commentBtn text-sm text-bold text-light cursor-pointer">提交</div>
+                                                                                </form>
                                                                         </div>
                                                                 </div>
                                                         </div>
@@ -82,7 +168,16 @@
                                                                 </div>
                                                         </div>
                                                         <div class="content">
-                                                                "The greatest glory in living lies not in never falling, but in rising every time we fall." -Nelson Mandela.
+                                                                <DIV class="articleBox">
+                                                                        <DIV class="article">
+                                                                                <p>工作忙碌加上生活圈封閉，其實被催婚很煩之外，假日休息都不知道約誰。</p>
+                                                                                <p>加上又不太敢直接搭訕女生，怕尷尬也覺得身分年紀有差。</p>
+                                                                                <p>嘗試一般交友軟體上的女生，又只看臉，不然就是詐騙投資客。</p>
+                                                                                <p>在養蜜上，透過送喜歡的女孩ME點當作禮物，受到的回饋都很好，也有破冰的效果。</p>
+                                                                                <p>出租約會的形式也讓邀約不會很奇怪，互動聊過後提出約會，並附上金額，也可以照顧到喜歡的女孩，後續也有繼續聯絡變成飯友。</p>
+                                                                        </DIV>
+                                                                </DIV>
+                                                                <div class="date text-xs text-right">2021/10/21 16:24</div>
                                                         </div>
                                                         <div class="postFooter">
                                                                 <div class="d-flex">
@@ -111,7 +206,13 @@
                                                                 </div>
                                                         </div>
                                                         <div class="content">
-                                                                "The greatest glory in living lies not in never falling, but in rising every time we fall." -Nelson Mandela.
+                                                                <DIV class="articleBox">
+                                                                        <DIV class="article">
+                                                                                <p>工作忙碌加上生活圈封閉，其實被催婚很煩之外，假日休息都不知道約誰。</p>
+                                                                                <p>加上又不太敢直接搭訕女生，怕尷尬也覺得身分年紀有差。</p>
+                                                                        </DIV>
+                                                                </DIV>
+                                                                <div class="date text-xs text-right">2021/10/21 16:24</div>
                                                         </div>
                                                         <div class="postFooter">
                                                                 <div class="d-flex">
@@ -140,43 +241,42 @@
                                                                 </div>
                                                         </div>
                                                         <div class="content">
-                                                                <div class="portfolio-slides">
+                                                                <div class="carousel">
+                                                                        <div class="single">
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/about.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/about.jpg" loading="lazy"/>
+                                                                                </a>
+                                                                        </div>
+                                                                        <div class="single">
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg" loading="lazy"/>
+                                                                                </a>
+                                                                        </div>
                                                                         <div class="single">
                                                                                 <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/man.jpg">
-                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/man.jpg"/>
-                                                                                </a>
-                                                                        </div>
-                                                                        <div class="single">
-                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg">
-                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg"/>
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/man.jpg" loading="lazy"/>
                                                                                 </a>
                                                                         </div>
                                                                         <div class="single">
                                                                                 <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/about.jpg">
-                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/about.jpg"/>
-                                                                                </a>
-                                                                        </div>
-                                                                        <div class="single">
-                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/indexBg.jpg">
-                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/indexBg.jpg"/>
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/about.jpg" loading="lazy"/>
                                                                                 </a>
                                                                         </div>
                                                                         <div class="single">
                                                                                 <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg">
-                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg"/>
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg" loading="lazy"/>
                                                                                 </a>
                                                                         </div>
                                                                         <div class="single">
-                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg">
-                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/woman.jpg"/>
-                                                                                </a>
-                                                                        </div>
-                                                                        <div class="single">
-                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/about.jpg">
-                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/about.jpg"/>
+                                                                                <a href="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/man.jpg">
+                                                                                        <img src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/man.jpg" loading="lazy"/>
                                                                                 </a>
                                                                         </div>
                                                                 </div>
+                                                                <DIV class="articleBox">
+                                                                        <DIV class="article"></DIV>
+                                                                </DIV>
+                                                                <div class="date text-xs text-right">2021/10/21 16:24</div>
                                                         </div>
                                                         <div class="postFooter">
                                                                 <div class="d-flex">

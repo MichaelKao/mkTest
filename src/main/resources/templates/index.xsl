@@ -306,7 +306,7 @@
                         </xsl:if>
                         <xsl:if test="@signIn">
                                 <INPUT name="signIn" type="hidden" value="true"/>
-                                <DIV class="container px-0 px-md-3 pt-7">
+                                <DIV class="container px-0 px-md-3 pt-7 pt-md-8">
                                         <INPUT name="gender" type="hidden">
                                                 <xsl:if test="@male">
                                                         <xsl:attribute name="value">male</xsl:attribute>
@@ -315,6 +315,18 @@
                                                         <xsl:attribute name="value">female</xsl:attribute>
                                                 </xsl:if>
                                         </INPUT>
+                                        <DIV class="text-center mb-3">
+                                                <A class="tutorial text-bold" href="">
+                                                        <xsl:if test="@male">
+                                                                <xsl:attribute name="href">https://medium.com/@me.KING</xsl:attribute>
+                                                        </xsl:if>
+                                                        <xsl:if test="@female">
+                                                                <xsl:attribute name="href">https://medium.com/@meQUEEN</xsl:attribute>
+                                                        </xsl:if>
+                                                        <SPAN class="text-lg">養蜜超詳細教學點擊觀看</SPAN>
+                                                        <I class="fad fa-comment-exclamation fontSize30 bottom-1 ms-1"></I>
+                                                </A>
+                                        </DIV>
                                         <xsl:apply-templates select="area"/>
                                 </DIV>
                         </xsl:if>
@@ -656,7 +668,7 @@
                                 </DIV>
                         </DIV>
                 </SECTION>
-                <SECTION class="fixed-bottom d-block d-md-none bg-white shadow m-2 bottom13rem text-lg">
+                <SECTION class="fixed-bottom d-block d-md-none bg-white shadow m-2 bottom12rem text-lg">
                         <UL class="navbar-nav flex-row mobileMode">
                                 <xsl:if test="vip">
                                         <LI class="nav-item col-3 text-center">
