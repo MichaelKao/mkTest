@@ -50,10 +50,10 @@ $(document).ready(function () {
 				let payToken = paymentInfo.PayToken;
 				$(form.payToken).val(
 					payToken
-					);
+				);
 				$(form.paymentType).val(
 					paymentInfo.PaymentType
-					);
+				);
 				$('DIV.loadingWrap').css('display', 'block');
 				$.post(
 					`/inpay2/createPayment/${payToken}.json`,
@@ -61,10 +61,14 @@ $(document).ready(function () {
 						console.log(data);
 						if (data.ThreeDInfo.ThreeDURL) {
 							location.replace(data.ThreeDInfo.ThreeDURL);
+						} else if (data.CVSInfo.PaymentURL) {
+							location.replace(data.CVSInfo.PaymentURL);
+						} else if (data.ATMInfo.BankCode && data.ATMInfo.vAccount && data.ATMInfo.ExpireDate) {
+							alert(`交易金額：${data.OrderInfo.TradeAmt}\n繳費銀行代碼：${data.ATMInfo.BankCode}\n繳費虛擬帳號：${data.ATMInfo.vAccount}\n繳費期限：${data.ATMInfo.ExpireDate}`);
 						} else {
-							alert('呃!?');
-							$('DIV.loadingWrap').css('display', 'none');
+							alert(`{"RtnCode":${data.RtnCode},"RtnMsg":"${data.RtnMsg}"}`);
 						}
+						$('DIV.loadingWrap').css('display', 'none');
 					},
 					'json'
 				);

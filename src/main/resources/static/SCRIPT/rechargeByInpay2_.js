@@ -58,11 +58,16 @@ $(document).ready(function () {
 					`/inpay2/createPayment/${payToken}.json`,
 					function (data) {
 						console.log(data);
-						if (data.ThreeDInfo.ThreeDURL) {
-							location.replace(data.ThreeDInfo.ThreeDURL);
+                                                if (data.ThreeDInfo.ThreeDURL) {
+                                                        location.replace(data.ThreeDInfo.ThreeDURL);
+						} else if (data.CVSInfo.PaymentURL) {
+							location.replace(data.CVSInfo.PaymentURL);
+						} else if (data.ATMInfo.BankCode && data.ATMInfo.vAccount && data.ATMInfo.ExpireDate) {
+							alert(`繳費銀行代碼：${data.ATMInfo.BankCode}\n繳費虛擬帳號：${data.ATMInfo.vAccount}\n繳費期限：${data.ATMInfo.ExpireDate}`);
 						} else {
-							alert('呃!?');
-						}
+							alert(`{"RtnCode":${data.RtnCode},"RtnMsg":"${data.RtnMsg}"}`);
+                                                }
+						$('DIV.loadingWrap').css('display', 'none');
 					},
 					'json'
 				);
