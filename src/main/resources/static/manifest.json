@@ -1,7 +1,7 @@
 {
         "name": "Young Me",
         "short_name": "Young Me",
-        "start_url": "/",
+        "start_url": "/signIn.asp",
         "scope": "/",
         "display": "standalone",
         "background_color": "#fff",

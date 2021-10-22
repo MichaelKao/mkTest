@@ -23,14 +23,76 @@
                         <TITLE>
                                 <xsl:value-of select="@title"/>
                         </TITLE>
+                        <LINK href="/manifest.json" rel="manifest"/>
                         <xsl:call-template name="headLinkTags"/>
+                        <LINK href="/STYLE/signIn.css" rel="stylesheet"/>
                 </HEAD>
                 <BODY>
                         <xsl:call-template name="navbar"/>
                         <xsl:call-template name="bootstrapToast"/>
                         <DIV class="page-header section-height-100">
-                                <DIV class="container pt-7">
+                                <DIV class="container">
                                         <xsl:apply-templates select="form"/>
+                                </DIV>
+                        </DIV>
+                        <DIV class="iosAddToDesktop addToDeskTop position-fixed border-radius-xl py-3 px-2" style="display: none;">
+                                <DIV class="text-xs text-center d-flex flex-column justify-content-center align-items-center mx-auto">
+                                        <DIV class="text-dark text-bold">簡單步驟實現 app 體驗</DIV>
+                                        <DIV class="d-flex align-items-center mt-3 text-dark">
+                                                <DIV>
+                                                        <DIV>
+                                                                <IMG alt="iosShare" src="/IMAGE/iosShare.png" width="35"/>
+                                                        </DIV>
+                                                        <DIV class="pt-2">點擊</DIV>
+                                                </DIV>
+                                                <I class="fas fa-chevron-right px-3"></I>
+                                                <DIV>
+                                                        <DIV class="text-center">
+                                                                <I class="fal fa-plus-square fontSize35 text-dark"></I>
+                                                        </DIV>
+                                                        <DIV class="pt-2">加入主畫面</DIV>
+                                                </DIV>
+                                                <I class="fas fa-chevron-right px-3"></I>
+                                                <DIV>
+                                                        <DIV>
+                                                                <IMG alt="icon" class="border-radius-md" src="/ICON/logo.png" width="38"/>
+                                                        </DIV>
+                                                        <DIV class="pt-2">新增 Young Me</DIV>
+                                                </DIV>
+                                        </DIV>
+                                        <BUTTON class="addDeskColse btn btn-link text-dark m-0 p-0" type="button">
+                                                <I class="fal fa-times fontSize22"></I>
+                                        </BUTTON>
+                                </DIV>
+                        </DIV>
+                        <DIV class="androidAddToDesktop addToDeskTop position-fixed border-radius-xl py-3 px-2" style="display: none;">
+                                <DIV class="text-xs text-center d-flex flex-column justify-content-center align-items-center mx-auto">
+                                        <DIV class="text-dark text-bold">簡單步驟實現 app 體驗</DIV>
+                                        <DIV class="d-flex align-items-center mt-3 text-dark">
+                                                <DIV>
+                                                        <DIV>
+                                                                <I class="far fa-ellipsis-v fontSize35 text-dark"></I>
+                                                        </DIV>
+                                                        <DIV class="pt-2">點擊右上方</DIV>
+                                                </DIV>
+                                                <I class="fas fa-chevron-right px-3"></I>
+                                                <DIV>
+                                                        <DIV>
+                                                                <IMG alt="icon" src="/IMAGE/chromeAdd.png" width="38"/>
+                                                        </DIV>
+                                                        <DIV class="pt-2">加到主畫面</DIV>
+                                                </DIV>
+                                                <I class="fas fa-chevron-right px-3"></I>
+                                                <DIV>
+                                                        <DIV>
+                                                                <IMG alt="icon" class="border-radius-md" src="/ICON/logo.png" width="38"/>
+                                                        </DIV>
+                                                        <DIV class="pt-2">新增 Young Me</DIV>
+                                                </DIV>
+                                        </DIV>
+                                        <BUTTON class="addDeskColse btn btn-link text-dark m-0 p-0" type="button">
+                                                <I class="fal fa-times fontSize22"></I>
+                                        </BUTTON>
                                 </DIV>
                         </DIV>
                         <xsl:call-template name="bodyScriptTags"/>
@@ -80,7 +142,7 @@
                                                                 <A class="text-primary text-gradient font-weight-bold" href="/resetPassword/">忘記密碼?</A>
                                                         </P>
                                                         <DIV class="text-center">
-                                                                <BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0" onclick="lsRememberMe()" type="submit">
+                                                                <BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0" type="submit">
                                                                         <xsl:value-of select="@i18n-submit"/>
                                                                 </BUTTON>
                                                         </DIV>
