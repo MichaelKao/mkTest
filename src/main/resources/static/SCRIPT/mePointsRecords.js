@@ -2,7 +2,7 @@ $(document).ready(function () {
         $('BUTTON.returnFareBtn').click(function () {
                 var btn = this;
                 var id = $(btn).data('id');
-                console.log(id)
+                console.log(id);
 
                 $.post(
                         '/dashboard/returnFare.json',
@@ -10,7 +10,7 @@ $(document).ready(function () {
                                 history: id
                         },
                         function (data) {
-                                console.log(data.reason)
+                                console.log(data.reason);
                                 if (data.response) {
                                         $('.toast-body').html(data.reason);
                                         $('.toast').toast('show');
@@ -20,7 +20,7 @@ $(document).ready(function () {
                                 }
                         },
                         'json'
-                        );
+		);
                 return false;
         });
 });
