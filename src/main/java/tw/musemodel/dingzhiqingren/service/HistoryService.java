@@ -336,7 +336,7 @@ public class HistoryService {
 					preparedStatement.setInt(1, id);
 					preparedStatement.setInt(2, id);
 					return preparedStatement;
-				} catch (IOException ex) {
+				} catch (IOException ignore) {
 					return null;
 				}
 			},

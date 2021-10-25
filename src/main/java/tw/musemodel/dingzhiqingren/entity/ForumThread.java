@@ -77,14 +77,6 @@ public class ForumThread implements Serializable {
 	private Date created;
 
 	/**
-	 * 性别
-	 */
-	@Basic(optional = false)
-	@Column(name = "xing_bie", nullable = false)
-	@NotNull
-	private boolean gender;
-
-	/**
 	 * 作者
 	 */
 	@JoinColumn(name = "zuo_zhe", nullable = false, referencedColumnName = "id")
@@ -103,7 +95,7 @@ public class ForumThread implements Serializable {
 	 * 内容
 	 */
 	@Column(name = "nei_rong")
-	private String content;
+	private String markdown;
 
 	/**
 	 * 论坛绪插图
@@ -130,13 +122,27 @@ public class ForumThread implements Serializable {
 	 * 默认构造器
 	 */
 	public ForumThread() {
+		identifier = UUID.randomUUID();
+		created = new Date(System.currentTimeMillis());
 	}
 
 	/**
 	 * @param id 主键
 	 */
 	protected ForumThread(Long id) {
+		this();
 		this.id = id;
+	}
+
+	/**
+	 * @param author 作者
+	 * @param title 标题
+	 * @param content 内容
+	 */
+	public ForumThread(Lover author, String title, String content) {
+		this.author = author;
+		this.title = title;
+		this.markdown = content;
 	}
 
 	@Override

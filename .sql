@@ -1028,7 +1028,6 @@ CREATE TABLE"lun_tan"(
 	"id"serial8 PRIMARY KEY,
 	"shi_bie_ma"uuid NOT NULL UNIQUE,
 	"shi_chuo"timestamptz NOT NULL DEFAULT"now"(),
-	"xing_bie"bool NOT NULL,
 	"zuo_zhe"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
 	"biao_ti"varchar NOT NULL,
 	"nei_rong"text
@@ -1037,7 +1036,6 @@ COMMENT ON TABLE"lun_tan"IS'论坛绪';
 COMMENT ON COLUMN"lun_tan"."id"IS'主键';
 COMMENT ON COLUMN"lun_tan"."shi_bie_ma"IS'识别码';
 COMMENT ON COLUMN"lun_tan"."shi_chuo"IS'时戳';
-COMMENT ON COLUMN"lun_tan"."xing_bie"IS'性别';
 COMMENT ON COLUMN"lun_tan"."zuo_zhe"IS'作者';
 COMMENT ON COLUMN"lun_tan"."biao_ti"IS'标题';
 COMMENT ON COLUMN"lun_tan"."nei_rong"IS'内容';
@@ -1102,3 +1100,13 @@ COMMENT ON TABLE"lun_tan_biao_qian"IS'论坛绪标签';
 COMMENT ON COLUMN"lun_tan_biao_qian"."id"IS'主键';
 COMMENT ON COLUMN"lun_tan_biao_qian"."guan_jian_zi_ci"IS'关键字词';
 COMMENT ON COLUMN"lun_tan_biao_qian"."lun_tan"IS'论坛绪';
+
+/*
+SELECT"lun_tan"."id"
+FROM"lun_tan"
+LEFT JOIN"qing_ren"ON"qing_ren"."id"="lun_tan"."zuo_zhe"
+LEFT JOIN"lun_tan_liu_yan"ON"lun_tan_liu_yan"."lun_tan"="lun_tan"."id"
+WHERE"qing_ren"."xing_bie"=?
+GROUP BY"lun_tan"."id"
+ORDER BY"min"("lun_tan_liu_yan"."shi_chuo");
+ */

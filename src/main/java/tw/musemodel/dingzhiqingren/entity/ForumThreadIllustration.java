@@ -75,6 +75,15 @@ public class ForumThreadIllustration implements Serializable {
 	}
 
 	/**
+	 * @param identifier 识别码
+	 * @param forumThread 论坛绪
+	 */
+	public ForumThreadIllustration(UUID identifier, ForumThread forumThread) {
+		this.identifier = identifier;
+		this.forumThread = forumThread;
+	}
+
+	/**
 	 * @param forumThread 论坛绪
 	 */
 	public ForumThreadIllustration(ForumThread forumThread) {
