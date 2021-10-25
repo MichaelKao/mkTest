@@ -585,8 +585,41 @@
         }
 }
 
-.bottom13rem {
-        bottom: 1.3rem;
+
+.tutorial {
+        animation: Color 4s linear infinite;
+        -webkit-animation: Color 4s ease-in-out infinite;
+        text-shadow: 5px 5px #00000022;
+}
+
+@keyframes Color{
+        0%{
+                color: #450920;
+        }
+
+        20%{
+                color: #A53862;
+        }
+
+        40%{
+                color: #DA4167;
+        }
+
+        60%{
+                color: #DA627D;
+        }
+
+        80%{
+                color: #FFA5AB;
+        }
+
+        100%{
+                color: #F9DBBD;
+        }
+}
+
+.bottom12rem {
+        bottom: 1.2rem;
 }
 
 ARTICLE {

@@ -17,6 +17,10 @@ INPUT, TEXTAREA {
         font-size: initial;
 }
 
+.toast {
+        width: 250px;
+}
+
 .announcement, .inbox {
         padding: 0 5px;
         vertical-align: sub;

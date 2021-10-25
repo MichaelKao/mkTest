@@ -139,10 +139,10 @@
                                                                 </DIV>
                                                         </DIV>
                                                         <P class="text-center text-sm mb-0 mt-1">
-                                                                <A class="text-primary text-gradient font-weight-bold" href="/resetPassword/">忘記密碼?</A>
+                                                                <A class="text-primary font-weight-bold" href="/resetPassword/">忘記密碼?</A>
                                                         </P>
                                                         <DIV class="text-center">
-                                                                <BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0" type="submit">
+                                                                <BUTTON class="btn btn-primary w-100 mt-4 mb-0" type="submit">
                                                                         <xsl:value-of select="@i18n-submit"/>
                                                                 </BUTTON>
                                                         </DIV>
@@ -151,7 +151,7 @@
                                         <DIV class="card-footer text-center pt-0 px-lg-2 px-1">
                                                 <P class="text-sm mx-auto">
                                                         <SPAN class="me-1">還沒有帳號嗎?</SPAN>
-                                                        <A href="/signUp.asp" class="text-primary text-gradient font-weight-bold">免費註冊</A>
+                                                        <A href="/signUp.asp" class="text-primary font-weight-bold">免費註冊</A>
                                                 </P>
                                         </DIV>
                                 </DIV>

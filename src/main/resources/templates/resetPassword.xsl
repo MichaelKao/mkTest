@@ -24,6 +24,7 @@
                                 <xsl:value-of select="@title"/>
                         </TITLE>
                         <xsl:call-template name="headLinkTags"/>
+                        <STYLE>.form-control{border:none;}</STYLE>
                 </HEAD>
                 <BODY>
                         <xsl:call-template name="navbar"/>
@@ -64,11 +65,11 @@
                                                                         <I class="fad fa-phone-square-alt text-lg"></I>
                                                                 </DIV>
                                                                 <DIV class="col-11">
-                                                                        <INPUT class="form-control form-control-lg" name="login" inputmode="numeric" placeholder="手機號碼" required="" type="text" value=""/>
+                                                                        <INPUT class="form-control" name="login" inputmode="numeric" placeholder="手機號碼" required="" type="text" value=""/>
                                                                 </DIV>
                                                         </DIV>
                                                         <DIV class="text-center">
-                                                                <BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mb-0" type="submit">
+                                                                <BUTTON class="btn btn-primary w-100 mb-0" type="submit">
                                                                         <xsl:value-of select="@i18n-submit"/>
                                                                 </BUTTON>
                                                         </DIV>

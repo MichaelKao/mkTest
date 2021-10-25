@@ -14,14 +14,14 @@
         box-shadow: 1px 1px 5px #dfdfdf;
 }
 
-.post .header {
+.header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 15px;
 }
 
-.post .header .left {
+.header .left {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -30,6 +30,12 @@
 .avatar {
         width: 50px;
         height: 50px;
+        border-radius: 25px;
+}
+
+.addPost .avatar {
+        width: 40px;
+        height: 40px;
         border-radius: 25px;
 }
 
@@ -50,6 +56,79 @@
         padding: 15px;
         border-radius: 0 0 15px 15px;
         background-image: linear-gradient(to right, #b8cbb8 0%, #b8cbb8 0%, #b465da 0%, #cf6cc9 33%, #ee609c 66%, #ee609c 100%);;
+}
+
+.more {
+        border-bottom: 1px solid;
+}
+
+p {
+        margin-bottom: 0 !important;
+}
+
+.article {
+        overflow: hidden;
+        margin-bottom: 8px;
+}
+
+::placeholder {
+        color: white !important;
+}
+
+TEXTAREA.commentTextarea {
+        background: transparent;
+        resize: none;
+        border: 1px solid white;
+        border-radius: 25px;
+        overflow: hidden;
+        height: 50px;
+        padding-right: 45px;
+}
+
+TEXTAREA.commentTextarea:focus {
+        background: transparent;
+}
+
+TEXTAREA.addPostTextarea {
+        background: transparent;
+        resize: none;
+        border: none;
+        padding: 0;
+}
+
+TEXTAREA.addPostTextarea:focus {
+        background: transparent;
+        box-shadow: none;
+}
+
+TEXTAREA.addPostTextarea::-webkit-scrollbar {
+        display: none;
+}
+
+.commentBtn {
+        position: absolute;
+        right: 11px;
+        top: 14px;
+        color: #FFFFFF;
+}
+
+.commentMeta {
+        color: #FFFFFFC1;
+}
+
+.btn-link:disabled {
+        color: #FFFFFF99 !important;
+}
+
+// 圖片牆
+
+.carousel{
+        width:90%;
+        margin:0px auto;
+}
+
+.slick-slide{
+        margin:8px;
 }
 
 .single img {
