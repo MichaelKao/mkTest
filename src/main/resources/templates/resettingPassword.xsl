@@ -24,6 +24,7 @@
                                 <xsl:value-of select="@title"/>
                         </TITLE>
                         <xsl:call-template name="headLinkTags"/>
+                        <STYLE>.form-control{border:none;}</STYLE>
                 </HEAD>
                 <BODY>
                         <xsl:call-template name="navbar"/>
@@ -66,7 +67,7 @@
                                                                 </DIV>
                                                         </DIV>
                                                         <DIV class="text-center">
-                                                                <BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0" type="submit">
+                                                                <BUTTON class="btn btn-primary w-100 mt-4 mb-0" type="submit">
                                                                         <xsl:value-of select="@i18n-submit"/>
                                                                 </BUTTON>
                                                         </DIV>
@@ -75,7 +76,7 @@
                                         <DIV class="card-footer text-center pt-0 px-lg-2 px-1">
                                                 <P class="text-sm mx-auto">
                                                         <SPAN class="me-1">無激活碼?</SPAN>
-                                                        <A href="/resetPassword/" class="text-primary text-gradient font-weight-bold">重寄激活碼</A>
+                                                        <A href="/resetPassword/" class="text-primary font-weight-bold">重寄激活碼</A>
                                                 </P>
                                         </DIV>
                                 </DIV>

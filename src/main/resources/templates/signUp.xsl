@@ -29,7 +29,7 @@
                 <BODY>
                         <xsl:call-template name="navbar"/>
                         <xsl:call-template name="bootstrapToast"/>
-                        <DIV class="container pt-7">
+                        <DIV class="container pt-7 pb-4">
                                 <xsl:apply-templates select="form"/>
                         </DIV>
                         <xsl:call-template name="bodyScriptTags"/>
@@ -39,34 +39,34 @@
         </xsl:template>
 
         <xsl:template match="form">
-                <DIV class="row mt-2">
+                <DIV class="row">
                         <DIV class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-auto px-0">
                                 <DIV class="card card-plain">
                                         <DIV class="p-1 p-sm-2 text-left">
-                                                <H5 class="text-center font-weight-bolder">開啟養蜜旅程</H5>
+                                                <DIV class="text-center font-weight-bolder text-primary text-lg">開啟養蜜旅程</DIV>
                                         </DIV>
                                         <DIV class="card-body p-1 p-sm-2">
                                                 <FORM action="/signUp.asp" method="post">
-                                                        <DIV class="row align-items-center mb-2">
+                                                        <DIV class="row align-items-center mb-3">
                                                                 <DIV class="col-1 d-flex justify-content-start">
                                                                         <I class="fad fa-globe-americas text-lg"></I>
                                                                 </DIV>
                                                                 <DIV class="col-11">
-                                                                        <SELECT class="form-control form-control-lg" name="country" required="">
+                                                                        <SELECT class="form-control" name="country" required="">
                                                                                 <xsl:apply-templates select="countries/*"/>
                                                                         </SELECT>
                                                                 </DIV>
                                                         </DIV>
-                                                        <DIV class="row align-items-center mb-3">
+                                                        <DIV class="row align-items-center mb-4">
                                                                 <DIV class="col-1 d-flex justify-content-start">
                                                                         <I class="fad fa-phone-square-alt text-lg"></I>
                                                                 </DIV>
                                                                 <DIV class="col-11">
-                                                                        <INPUT class="form-control form-control-lg" inputmode="numeric" name="login" placeholder="手機號碼" required="" type="text" value=""/>
+                                                                        <INPUT class="form-control loginInput" inputmode="numeric" placeholder="手機號碼, 例: 0912345678" required="" type="text" value=""/>
+                                                                        <INPUT class="d-none" name="login" required="" type="hidden" value=""/>
                                                                 </DIV>
                                                         </DIV>
-                                                        <HR class="horizontal dark my-3"/>
-                                                        <DIV class="row align-items-center mb-3">
+                                                        <DIV class="row align-items-center mb-4">
                                                                 <DIV class="col-1 d-flex justify-content-start">
                                                                         <I class="fad fa-birthday-cake text-lg"></I>
                                                                 </DIV>
@@ -92,8 +92,7 @@
                                                                         </DIV>
                                                                 </DIV>
                                                         </DIV>
-                                                        <HR class="horizontal dark my-3"/>
-                                                        <DIV class="row align-items-center mb-3">
+                                                        <DIV class="row align-items-center mb-4">
                                                                 <DIV class="col-1 d-flex justify-content-start">
                                                                         <I class="fad fa-venus-mars text-lg"></I>
                                                                 </DIV>
@@ -120,37 +119,38 @@
                                                                         </DIV>
                                                                 </DIV>
                                                         </DIV>
-                                                        <HR class="horizontal dark my-3"/>
                                                         <DIV class="row align-items-center mb-3">
                                                                 <DIV class="col-1 d-flex justify-content-start">
                                                                         <I class="fad fa-users-crown text-lg"></I>
                                                                 </DIV>
                                                                 <DIV class="col-11">
-                                                                        <INPUT class="form-control form-control-lg" name="referralCode" placeholder="邀請碼" type="text" value=""/>
+                                                                        <INPUT class="form-control" name="referralCode" placeholder="邀請碼(選填)" type="text" value=""/>
                                                                 </DIV>
                                                         </DIV>
                                                         <DIV class="text-center">
-                                                                <BUTTON class="btn btn-lg bg-gradient-primary btn-lg w-100 mb-0" type="submit">
+                                                                <BUTTON class="btn btn-primary w-100 mb-0" type="submit">
                                                                         <xsl:value-of select="@i18n-submit"/>
                                                                 </BUTTON>
                                                         </DIV>
                                                 </FORM>
                                         </DIV>
                                         <DIV class="card-footer text-center pt-0 px-lg-2 px-1">
-                                                <DIV class="text-sm mx-auto">
+                                                <DIV class="text-xs">
                                                         <SPAN>註冊即表示您已閱讀並同意</SPAN>
-                                                        <A href="/privacy.asp" class="text-primary text-gradient font-weight-bold">隱私權政策</A>
-                                                        <SPAN>與</SPAN>
-                                                        <A href="/terms.asp" class="text-primary text-gradient font-weight-bold">服務條款</A>
-                                                        <SPAN>，並表示已滿18歲。</SPAN>
+                                                        <DIV>
+                                                                <A href="/privacy.asp" class="text-primary font-weight-bold">隱私權政策</A>
+                                                                <SPAN>與</SPAN>
+                                                                <A href="/terms.asp" class="text-primary font-weight-bold">服務條款</A>
+                                                        </DIV>
+                                                        <SPAN>並表示已滿18歲。</SPAN>
                                                 </DIV>
-                                                <DIV class="text-sm mx-auto">
+                                                <DIV class="mt-2 text-sm">
                                                         <SPAN class="me-1">已是會員?</SPAN>
-                                                        <A href="/signIn.asp" class="text-primary text-gradient font-weight-bold">按此登入</A>
+                                                        <A href="/signIn.asp" class="text-primary font-weight-bold">按此登入</A>
                                                 </DIV>
-                                                <DIV class="text-sm mx-auto">
+                                                <DIV class="text-sm">
                                                         <SPAN class="me-1">已有註冊手機?</SPAN>
-                                                        <A href="/reactivate.asp" class="text-primary text-gradient font-weight-bold">按此重新激活</A>
+                                                        <A href="/reactivate.asp" class="text-primary font-weight-bold">按此重新激活</A>
                                                 </DIV>
                                         </DIV>
                                 </DIV>

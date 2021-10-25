@@ -31,17 +31,19 @@
                 <BODY>
                         <xsl:call-template name="navbar"/>
                         <xsl:call-template name="bootstrapToast"/>
-                        <DIV class="container py-7 px-3">
+                        <DIV class="container pt-7 pt-md-8 pb-3 px-3">
                                 <DIV class="modal fade" id="qrcodeModal">
                                         <DIV class="modal-dialog modal-dialog-centered">
                                                 <DIV class="modal-content">
-                                                        <DIV class="modal-header">
-                                                                <H5 class="modal-title">教學</H5>
-                                                                <BUTTON aria-label="Close" class="btn-close bg-dark" data-bs-dismiss="modal" type="button"></BUTTON>
-                                                        </DIV>
                                                         <DIV class="modal-body">
-                                                                <BUTTON class="btn btn-light collapsed me-2" data-bs-target="#line" data-bs-toggle="collapse" type="button">LINE</BUTTON>
-                                                                <BUTTON class="btn btn-light" data-bs-target="#wechat" data-bs-toggle="collapse" type="button">微信WeChat</BUTTON>
+                                                                <DIV class="d-flex mb-3">
+                                                                        <H5 class="modal-title">教學</H5>
+                                                                        <BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+                                                                                <I class="fal fa-times"></I>
+                                                                        </BUTTON>
+                                                                </DIV>
+                                                                <BUTTON class="btn btn-light btn-round collapsed me-2" data-bs-target="#line" data-bs-toggle="collapse" type="button">LINE</BUTTON>
+                                                                <BUTTON class="btn btn-light btn-round" data-bs-target="#wechat" data-bs-toggle="collapse" type="button">微信WeChat</BUTTON>
                                                                 <DIV class="accordion" id="accordionRental">
                                                                         <DIV class="accordion-item mb-3">
                                                                                 <DIV class="accordion-collapse collapse" data-bs-parent="#accordionRental" id="line">
@@ -54,12 +56,9 @@
                                                                                 </DIV>
                                                                         </DIV>
                                                                 </DIV>
-
-                                                        </DIV>
-                                                        <DIV class="modal-footer">
-                                                                <BUTTON class="btn btn-secondary" data-bs-dismiss="modal" type="button">
-                                                                        <xsl:value-of select="@i18n-cancel"/>
-                                                                </BUTTON>
+                                                                <DIV class="text-center">
+                                                                        <BUTTON class="btn btn-outline-dark btn-round" data-bs-dismiss="modal" type="button">取消</BUTTON>
+                                                                </DIV>
                                                         </DIV>
                                                 </DIV>
                                         </DIV>
@@ -94,12 +93,12 @@
                                                 </DIV>
                                         </DIV>
                                 </DIV>
-                                <DIV class="card mx-auto mt-3">
+                                <DIV class="card mx-auto pt-3">
                                         <DIV class="text-center">
-                                                <H4 class="text-primary">
+                                                <H4 class="text-primary m-0">
                                                         <xsl:value-of select="@title"/>
                                                 </H4>
-                                                <P>完成資料填寫，開始尋找你的養蜜</P>
+                                                <P class="text-sm text-dark">完成資料填寫，開始尋找你的養蜜</P>
                                                 <HR class="horizontal dark"/>
                                         </DIV>
                                         <xsl:apply-templates select="lover"/>
@@ -319,9 +318,9 @@
                                                 <DIV class="uploadQrcode ">
                                                         <LABEL>
                                                                 <INPUT accept="image/*" class="sr-only" name="image" type="file"/>
-                                                                <A class="btn bg-gradient-primary px-4 py-1 me-1 mb-0">點擊上傳</A>
+                                                                <A class="btn btn-primary px-4 py-1 me-1 mb-0">點擊上傳</A>
                                                         </LABEL>
-                                                        <BUTTON class="btn bg-gradient-info px-4 py-1 ms-1 mb-0" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">使用教學</BUTTON>
+                                                        <BUTTON class="btn btn-info px-4 py-1 ms-1 mb-0" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">使用教學</BUTTON>
                                                 </DIV>
                                                 <DIV class="mt-1">
                                                         <INPUT class="form-control" name="inviteMeAsLineFriend" readonly="" required="" style="display: none;" type="text" value="">

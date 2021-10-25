@@ -14,14 +14,14 @@
         box-shadow: 1px 1px 5px #dfdfdf;
 }
 
-.post .header {
+.header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 15px;
 }
 
-.post .header .left {
+.header .left {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -30,6 +30,12 @@
 .avatar {
         width: 50px;
         height: 50px;
+        border-radius: 25px;
+}
+
+.addPost .avatar {
+        width: 40px;
+        height: 40px;
         border-radius: 25px;
 }
 
@@ -69,7 +75,7 @@ p {
         color: white !important;
 }
 
-TEXTAREA.form-control {
+TEXTAREA.commentTextarea {
         background: transparent;
         resize: none;
         border: 1px solid white;
@@ -79,15 +85,39 @@ TEXTAREA.form-control {
         padding-right: 45px;
 }
 
-TEXTAREA.form-control:focus {
+TEXTAREA.commentTextarea:focus {
         background: transparent;
+}
+
+TEXTAREA.addPostTextarea {
+        background: transparent;
+        resize: none;
+        border: none;
+        padding: 0;
+}
+
+TEXTAREA.addPostTextarea:focus {
+        background: transparent;
+        box-shadow: none;
+}
+
+TEXTAREA.addPostTextarea::-webkit-scrollbar {
+        display: none;
 }
 
 .commentBtn {
         position: absolute;
         right: 11px;
         top: 14px;
-        color: #FFFFFF99;
+        color: #FFFFFF;
+}
+
+.commentMeta {
+        color: #FFFFFFC1;
+}
+
+.btn-link:disabled {
+        color: #FFFFFF99 !important;
 }
 
 // 圖片牆

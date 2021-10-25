@@ -2432,7 +2432,7 @@ public class LoverService {
                                 toJSONObject();
                 }
 
-                if (Objects.isNull(model.getOccupation())) {
+                if (model.getOccupation().isBlank()) {
                         return new JavaScriptObjectNotation().
                                 withReason("請填寫職業").
                                 withResponse(false).
