@@ -1,5 +1,34 @@
+.addPostFloatBtn {
+        border-radius: 15px;
+        bottom: 157px;
+        width: 45px;
+        height: 45px;
+        right: 11px;
+        box-shadow: 2px 2px 3px #999 !important;
+        z-index: 9999;
+}
+
 .wrap::-webkit-scrollbar {
         display: none;
+}
+
+INPUT[type="radio"] {
+        display: none;
+}
+
+LABEL.tag {
+        border: 1px solid #FFFFFF;
+        padding: 3px 7px;
+        border-radius: 10px;
+        color: #FFFFFF;
+        margin: 0 0 0 5px;
+        cursor: pointer;
+}
+
+:checked + LABEL.tag {
+        background: #FFFFFF;
+        border: 1px solid #FFFFFF;
+        color: #252F40;
 }
 
 .posts {
@@ -89,20 +118,30 @@ TEXTAREA.commentTextarea:focus {
         background: transparent;
 }
 
-TEXTAREA.addPostTextarea {
+.addPostTextarea {
         background: transparent;
         resize: none;
         border: none;
         padding: 0;
 }
 
-TEXTAREA.addPostTextarea:focus {
+INPUT.addPostTextarea {
+        border-bottom: 1px solid white;
+        border-radius: 0;
+}
+
+.addPostTextarea:focus {
         background: transparent;
         box-shadow: none;
 }
 
-TEXTAREA.addPostTextarea::-webkit-scrollbar {
+.addPostTextarea::-webkit-scrollbar {
         display: none;
+}
+
+.addIcon {
+        top: 10px;
+        left: 23px;
 }
 
 .commentBtn {
@@ -120,7 +159,7 @@ TEXTAREA.addPostTextarea::-webkit-scrollbar {
         color: #FFFFFF99 !important;
 }
 
-// 圖片牆
+/*加入主畫面*/
 
 .carousel{
         width:90%;
@@ -133,4 +172,74 @@ TEXTAREA.addPostTextarea::-webkit-scrollbar {
 
 .single img {
         object-fit: cover;
+}
+
+.imgContainer .delBtn {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        cursor: pointer;
+        margin: 0;
+        padding: 0;
+}
+
+.imgContainer IMG {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        cursor: pointer;
+}
+
+.lightBox {
+        width: 100%;
+        height: 100vh;
+        overflow: auto;
+        background: rgba(0,0,0,0.5);
+        position: fixed;
+        top: 0px;
+        left: 0;
+        z-index: 100000;
+}
+
+IMG.lightBoxImg {
+        margin: auto;
+        width: 500px;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        margin-left: -250px;
+        margin-top: -250px;
+}
+
+.lightBoxClose{
+        font-size: 50px;
+        position: absolute;
+        top: 20px;
+        right: 40px;
+        color: white;
+        cursor: pointer;
+}
+
+@media (max-width: 576px) {
+        .imgContainer IMG {
+                width: 100px;
+                height: 100px;
+        }
+        IMG.lightBoxImg {
+                width: 380px;
+                margin-left: -190px;
+                margin-top: -190px;
+        }
+}
+
+@media (max-width: 400px) {
+        .imgContainer IMG {
+                width: 80px;
+                height: 80px;
+        }
+        IMG.lightBoxImg {
+                width: 300px;
+                margin-left: -150px;
+                margin-top: -150px;
+        }
 }

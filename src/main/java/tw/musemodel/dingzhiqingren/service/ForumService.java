@@ -24,8 +24,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 import tw.musemodel.dingzhiqingren.entity.ForumThread;
+import tw.musemodel.dingzhiqingren.entity.ForumThreadHashTag;
 import tw.musemodel.dingzhiqingren.entity.ForumThreadIllustration;
+import tw.musemodel.dingzhiqingren.entity.ForumThreadTag;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.repository.ForumThreadHashTagRepository;
 import tw.musemodel.dingzhiqingren.repository.ForumThreadIllustrationRepository;
 import tw.musemodel.dingzhiqingren.repository.ForumThreadRepository;
 
@@ -37,142 +40,154 @@ import tw.musemodel.dingzhiqingren.repository.ForumThreadRepository;
 @Service
 public class ForumService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ForumService.class);
+        private static final Logger LOGGER = LoggerFactory.getLogger(ForumService.class);
 
-	private static final String DIRECTORY = "forum";
+        private static final String DIRECTORY = "forum";
 
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
+        @Autowired
+        private JdbcTemplate jdbcTemplate;
 
-	@Autowired
-	private ForumThreadIllustrationRepository forumThreadIllustrationRepository;
+        @Autowired
+        private ForumThreadIllustrationRepository forumThreadIllustrationRepository;
 
-	@Autowired
-	private ForumThreadRepository forumThreadRepository;
+        @Autowired
+        private ForumThreadRepository forumThreadRepository;
 
-	@Value("classpath:sql/男女论坛.sql")
-	private Resource forumThreadsResource;
+        @Autowired
+        private ForumThreadHashTagRepository forumThreadHashTagRepository;
 
-	/**
-	 * 创建论坛绪及插图。
-	 *
-	 * @param author 作者
-	 * @param title 标题
-	 * @param markdown 内容
-	 * @param multipartFiles 插图
-	 * @return 论坛绪
-	 */
-	public ForumThread createThreadWithIllustrations(Lover author, String title, String markdown, Collection<MultipartFile> multipartFiles) {
-		ForumThread forumThread = forumThreadRepository.saveAndFlush(
-			new ForumThread(
-				author,
-				title.trim(),
-				markdown.trim()
-			)
-		);
-		final String threadIdentifier = forumThread.getIdentifier().toString();
+        @Value("classpath:sql/男女论坛.sql")
+        private Resource forumThreadsResource;
 
-		for (MultipartFile multipartFile : multipartFiles) {
-			UUID identifier = UUID.randomUUID();
-			File file = new File(
-				Servant.TEMPORARY_DIRECTORY,
-				identifier.toString()
-			);
+        /**
+         * 创建论坛绪及插图。
+         *
+         * @param author 作者
+         * @param title 标题
+         * @param markdown 内容
+         * @param multipartFiles 插图
+         * @return 论坛绪
+         */
+        public ForumThread createThreadWithIllustrations(Lover author, String title, String markdown, ForumThreadTag[] hashTags, Collection<MultipartFile> multipartFiles) {
+                ForumThread forumThread = forumThreadRepository.saveAndFlush(
+                        new ForumThread(
+                                author,
+                                title.trim(),
+                                markdown.trim()
+                        )
+                );
+                final String threadIdentifier = forumThread.getIdentifier().toString();
 
-			try {
-				multipartFile.transferTo(file);
+                for (ForumThreadTag forumThreadTag : hashTags) {
+                        forumThreadHashTagRepository.saveAndFlush(
+                                new ForumThreadHashTag(
+                                        forumThreadTag,
+                                        forumThread
+                                )
+                        );
+                }
 
-				PutObjectRequest putObjectRequest = new PutObjectRequest(
-					AmazonWebServices.BUCKET_NAME,
-					String.format(
-						"%s/%s/%s",
-						DIRECTORY,
-						threadIdentifier,
-						identifier.toString()
-					),
-					file
-				);
-				ObjectMetadata objectMetadata = new ObjectMetadata();
-				objectMetadata.setContentType(
-					multipartFile.getContentType()
-				);
-				putObjectRequest.setMetadata(objectMetadata);
-				AmazonWebServices.AMAZON_S3.putObject(
-					putObjectRequest
-				);
+                for (MultipartFile multipartFile : multipartFiles) {
+                        UUID identifier = UUID.randomUUID();
+                        File file = new File(
+                                Servant.TEMPORARY_DIRECTORY,
+                                identifier.toString()
+                        );
 
-				forumThreadIllustrationRepository.saveAndFlush(
-					new ForumThreadIllustration(
-						identifier,
-						forumThread
-					)
-				);
-			} catch (IOException | IllegalStateException exception) {
-				LOGGER.info(
-					"创建论坛绪插图时发生异常❗️",
-					exception
-				);
-			}
+                        try {
+                                multipartFile.transferTo(file);
 
-			file.delete();
-		}
+                                PutObjectRequest putObjectRequest = new PutObjectRequest(
+                                        AmazonWebServices.BUCKET_NAME,
+                                        String.format(
+                                                "%s/%s/%s",
+                                                DIRECTORY,
+                                                threadIdentifier,
+                                                identifier.toString()
+                                        ),
+                                        file
+                                );
+                                ObjectMetadata objectMetadata = new ObjectMetadata();
+                                objectMetadata.setContentType(
+                                        multipartFile.getContentType()
+                                );
+                                putObjectRequest.setMetadata(objectMetadata);
+                                AmazonWebServices.AMAZON_S3.putObject(
+                                        putObjectRequest
+                                );
 
-		return forumThread;
-	}
+                                forumThreadIllustrationRepository.saveAndFlush(
+                                        new ForumThreadIllustration(
+                                                identifier,
+                                                forumThread
+                                        )
+                                );
+                        } catch (IOException | IllegalStateException exception) {
+                                LOGGER.info(
+                                        "创建论坛绪插图时发生异常❗️",
+                                        exception
+                                );
+                        }
 
-	/**
-	 * 浏览(索引)并分页论坛绪。
-	 *
-	 * @param gender 性别
-	 * @param page 第几页
-	 * @param size 每页几笔
-	 * @return 分页响应
-	 */
-	@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-	public Page<ForumThread> readAllThreads(boolean gender, int page, int size) {
-		List<Long> threadIds = jdbcTemplate.query(
-			(Connection connection) -> {
-				PreparedStatement preparedStatement;
-				try {
-					preparedStatement = connection.prepareStatement(
-						FileCopyUtils.copyToString(
-							new InputStreamReader(
-								forumThreadsResource.getInputStream(),
-								Servant.UTF_8
-							)
-						)
-					);
-					preparedStatement.setBoolean(1, gender);
-					return preparedStatement;
-				} catch (IOException ignore) {
-					return null;
-				}
-			},
-			(ResultSet resultSet, int rowNum) -> {
-				return resultSet.getLong(1);
-			}
-		);
+                        file.delete();
+                }
 
-		List<ForumThread> forumThreads = new ArrayList<>();
-		for (Long id : threadIds) {
-			forumThreads.add(
-				forumThreadRepository.findById(id).get()
-			);
-		}
+                return forumThread;
+        }
 
-		return forumThreadRepository.findByIdIn(
-			threadIds,
-			PageRequest.of(page, size)
-		);
-	}
+        /**
+         * 浏览(索引)并分页论坛绪。
+         *
+         * @param gender 性别
+         * @param page 第几页
+         * @param size 每页几笔
+         * @return 分页响应
+         */
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+        public Page<ForumThread> readAllThreads(boolean gender, int page, int size) {
+                List<Long> threadIds = jdbcTemplate.query(
+                        (Connection connection) -> {
+                                PreparedStatement preparedStatement;
+                                try {
+                                        preparedStatement = connection.prepareStatement(
+                                                FileCopyUtils.copyToString(
+                                                        new InputStreamReader(
+                                                                forumThreadsResource.getInputStream(),
+                                                                Servant.UTF_8
+                                                        )
+                                                )
+                                        );
+                                        preparedStatement.setBoolean(1, gender);
+                                        return preparedStatement;
+                                } catch (IOException ignore) {
+                                        return null;
+                                }
+                        },
+                        (ResultSet resultSet, int rowNum) -> {
+                                return resultSet.getLong(1);
+                        }
+                );
 
-	/**
-	 * 读取某则论坛绪。
-	 *
-	 * @param identifier 识别码
-	 * @return 论坛绪
-	 */
-	public ForumThread readOneThread(UUID identifier) {
-		return forumThreadRepository.findOneByIdentifier(identifier);
-	}
+                List<ForumThread> forumThreads = new ArrayList<>();
+                for (Long id : threadIds) {
+                        forumThreads.add(
+                                forumThreadRepository.findById(id).get()
+                        );
+                }
+
+                return forumThreadRepository.findByIdIn(
+                        threadIds,
+                        PageRequest.of(page, size)
+                );
+        }
+
+        /**
+         * 读取某则论坛绪。
+         *
+         * @param identifier 识别码
+         * @return 论坛绪
+         */
+        public ForumThread readOneThread(UUID identifier) {
+                return forumThreadRepository.findOneByIdentifier(identifier);
+        }
 }

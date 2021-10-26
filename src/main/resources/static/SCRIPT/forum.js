@@ -1,4 +1,163 @@
 $(document).ready(function () {
+
+
+        imgUpload({
+                inputId: 'file', //input框id
+                imgBox: 'imgBox' //圖片容器id
+        });
+
+        var imgSrc = []; //圖片路徑
+        var imgFile = []; //文件流
+        var imgName = []; //圖片名字
+
+        $(postBtn).on('click', function () {
+                newPost(imgFile);
+        });
+
+        //選擇圖片
+        function imgUpload(obj) {
+                var oInput = '#' + obj.inputId;
+                var imgBox = '#' + obj.imgBox;
+                $(oInput).on('change', function () {
+                        var fileImg = $(oInput)[0];
+                        var fileList = fileImg.files;
+                        for (var i = 0; i < fileList.length; i++) {
+                                var imgSrcI = getObjectURL(fileList[i]);
+                                imgName.push(fileList[i].name);
+                                imgSrc.push(imgSrcI);
+                                imgFile.push(fileList[i]);
+                        }
+                        addNewContent(imgBox);
+                });
+        }
+
+        //圖片展示
+        function addNewContent(obj) {
+                $(imgBox).html('');
+                for (var a = 0; a < imgSrc.length; a++) {
+                        var imgContainer = document.createElement('DIV');
+                        $(imgContainer).attr('class', 'imgContainer m-1 position-relative');
+                        $(obj).append(imgContainer);
+                        var delBtn = document.createElement('BUTTON');
+                        $(delBtn).attr({
+                                'class': 'btn btn-link delBtn',
+                                'data-index': a,
+                                'type': 'button'
+                        });
+                        $(imgContainer).append(delBtn);
+
+                        $(delBtn).click(function () {
+                                var del = this;
+                                removeImg(del, $(del).data('index'));
+                        });
+
+                        var delIcon = document.createElement('I');
+                        $(delIcon).attr('class', 'fas fa-times-circle text-primary fontSize25');
+                        $(delBtn).append(delIcon);
+                        var img = document.createElement('IMG');
+                        $(img).attr({
+                                'alt': imgName[a],
+                                'class': 'border-radius-md imageShadow',
+                                'src': imgSrc[a],
+                                'title': imgName[a]
+                        });
+                        $(imgContainer).append(img);
+
+                        $(img).click(function () {
+                                imgDisplay(this);
+                        });
+                }
+        }
+
+        //删除
+        function removeImg(obj, index) {
+                imgSrc.splice(index, 1);
+                imgFile.splice(index, 1);
+                imgName.splice(index, 1);
+                var boxId = '#' + $(obj).parent('.imgContainer').parent().attr('id');
+                addNewContent(boxId);
+        }
+
+        $('INPUT[name="forumTag"]').on('change', function () {
+
+                console.log(forumTag);
+        });
+
+        //上傳(將文件流數組傳到後台)
+        function newPost(files) {
+                var hashTags = [];
+                $('INPUT[name="hashTag"]:checked').each(function () {
+                        hashTags.push($(this).val());
+                });
+                var formData = new FormData();
+                formData.append('title', $('INPUT[name="title"]').val());
+                formData.append('markdown', $('TEXTAREA[name="markdown"]').val());
+                formData.append('hashTags', hashTags);
+                for (var i = 0; i < files.length; i++) {
+                        formData.append('illustrations', files[i]);
+                }
+                if (files) {
+                        $.ajax({
+                                method: 'post',
+                                url: '/forum/add.asp',
+                                data: formData,
+                                dataType: 'json',
+                                cache: false,
+                                processData: false,
+                                contentType: false,
+                                traditional: true,
+                                success: function (data) {
+                                        console.log(data);
+                                        location.reload();
+                                },
+                                error: function (err) {
+                                        console.log(err);
+                                }
+                        });
+                }
+        }
+
+        //圖片燈箱
+        function imgDisplay(obj) {
+                var src = $(obj).attr('src');
+
+                var lightBox = document.createElement('DIV');
+                $(lightBox).attr('class', 'lightBox');
+                $('BODY').append(lightBox);
+                var lightBoxImg = document.createElement('IMG');
+                $(lightBoxImg).attr({
+                        'class': 'lightBoxImg',
+                        'src': src
+                });
+                $(lightBox).append(lightBoxImg);
+                var lightBoxClose = document.createElement('DIV');
+                $(lightBoxClose).attr('class', 'lightBoxClose');
+                $(lightBoxClose).append('×');
+                $(lightBox).append(lightBoxClose);
+
+                $(lightBoxClose).click(function () {
+                        closePicture(this);
+                });
+        }
+
+        //關閉
+        function closePicture(obj) {
+                $(obj).parent('DIV').remove();
+        }
+
+        //圖片預覽路徑
+        function getObjectURL(file) {
+                var url = null;
+                if (window.createObjectURL != undefined) { // basic
+                        url = window.createObjectURL(file);
+                } else if (window.URL != undefined) { // mozilla(firefox)
+                        url = window.URL.createObjectURL(file);
+                } else if (window.webkitURL != undefined) { // webkit or chrome
+                        url = window.webkitURL.createObjectURL(file);
+                }
+                return url;
+        }
+
         $('.carousel').each(function () {
                 $(this).slick({
                         dots: false,

@@ -57,8 +57,11 @@
                                                                 <DIV class="col-1 d-flex justify-content-start">
                                                                         <I class="fas fa-key text-lg"></I>
                                                                 </DIV>
-                                                                <DIV class="col-11">
+                                                                <DIV class="col-11 position-relative">
                                                                         <INPUT class="form-control" id="shadow" name="shadow" placeholder="{shadow/@i18n}" required="" type="password"/>
+                                                                        <SPAN class="text-secondary togglePwd text-sm position-absolute cursor-pointer" style="right: 20px; top: 10px;">
+                                                                                <I class="fad fa-eye"></I>
+                                                                        </SPAN>
                                                                 </DIV>
                                                         </DIV>
                                                         <DIV class="text-center">
