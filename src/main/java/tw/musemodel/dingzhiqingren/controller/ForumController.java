@@ -82,38 +82,7 @@ public class ForumController {
                         s
                 );
 
-                ForumThreadsDocument forumThreadsDocument = new ForumThreadsDocument();
-                forumThreadsDocument.setElementsOfCurrentPage(
-                        pagination.getNumberOfElements()
-                );
-                forumThreadsDocument.setFirst(
-                        pagination.isFirst()
-                );
-                forumThreadsDocument.setLast(
-                        pagination.isLast()
-                );
-                forumThreadsDocument.setNext(
-                        pagination.hasNext()
-                );
-                forumThreadsDocument.setNumberOfCurrentPage(
-                        pagination.getNumber()
-                );
-                forumThreadsDocument.setPrevious(
-                        pagination.hasPrevious()
-                );
-                forumThreadsDocument.setSizeOfPage(
-                        pagination.getSize()
-                );
-                forumThreadsDocument.setForumThreads(
-                        pagination.getContent()
-                );
-                forumThreadsDocument.setForumThreadTags(
-                        forumThreadTagRepository.findAll()
-                );
-
-                Document document = Servant.parseDocument(
-                        forumThreadsDocument
-                );
+                Document document = forumService.forumToDocument(me, pagination);
                 Element documentElement = servant.documentElement(
                         document,
                         authentication

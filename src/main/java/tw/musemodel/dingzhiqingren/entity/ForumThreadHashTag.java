@@ -59,6 +59,12 @@ public class ForumThreadHashTag implements Serializable {
         private ForumThread forumThread;
 
         /**
+         * 預設建構子
+         */
+        public ForumThreadHashTag() {
+        }
+
+        /**
          * @param identifier 识别码
          * @param forumThread 论坛绪
          */

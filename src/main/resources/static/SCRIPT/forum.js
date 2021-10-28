@@ -262,6 +262,7 @@ $(document).ready(function () {
                 var value = $textarea.val();
                 var $comments = $(btn).closest('DIV.postFooter').find('DIV.comments');
                 var $commentCount = $(btn).closest('DIV.postFooter').find('SPAN.commentCount');
+                var profileImage = $(btn).closest('DIV').siblings('DIV.avatar').find('IMG').attr('src');
 
                 var div = document.createElement('DIV');
                 $(div).attr('class', 'comment d-flex mb-2');
@@ -277,12 +278,12 @@ $(document).ready(function () {
                 $(avatarImg).attr({
                         'alt': 'avatarImg',
                         'class': 'avatar-img',
-                        'src': 'https://d35hi420xc5ji7.cloudfront.net/profileImage/591a8223-0a84-4e31-a03a-f7a5fa96e22b'
+                        'src': profileImage
                 });
                 $(avatar).append(avatarImg);
 
                 var flexComment = document.createElement('DIV');
-                $(flexComment).attr('class', 'flex-shrink-flex-grow-1 ms-2 ms-sm-30');
+                $(flexComment).attr('class', 'flex-grow-1 ms-2 ms-sm-3');
                 $(div).append(flexComment);
                 var commentMeta = document.createElement('DIV');
                 $(commentMeta).attr('class', 'commentMeta d-flex align-items-baseline');

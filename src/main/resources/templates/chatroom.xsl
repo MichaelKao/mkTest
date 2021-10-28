@@ -680,7 +680,7 @@
                                                                                         </xsl:when>
                                                                                 </xsl:choose>
                                                                         </xsl:if>
-                                                                        <xsl:if test="not(@notAbleToSendMsgs)">
+                                                                        <xsl:if test="@able">
                                                                                 <DIV class="textareaContainer">
                                                                                         <TEXTAREA id="chatInput" placeholder="說點什麼吧..." type="text"></TEXTAREA>
                                                                                 </DIV>
@@ -688,15 +688,26 @@
                                                                                         <I class="fa fa-paper-plane"></I>
                                                                                 </BUTTON>
                                                                         </xsl:if>
-                                                                        <xsl:if test="@notAbleToSendMsgs">
-                                                                                <SPAN>12小時內僅能發送3句話給甜心</SPAN>
+                                                                        <xsl:if test="@moreThan3Sentences">
+                                                                                <DIV class="height60">
+                                                                                        <SPAN>12小時內僅能發送3句話給 meQUEEN</SPAN>
+                                                                                </DIV>
+                                                                        </xsl:if>
+                                                                        <xsl:if test="@moreThan3Female">
+                                                                                <DIV class="height60">
+                                                                                        <SPAN>升級 VIP 後可以跟更多 meQUEEN 聊天!</SPAN>
+                                                                                </DIV>
                                                                         </xsl:if>
                                                                 </xsl:when>
                                                                 <xsl:when test="@blockedBy">
-                                                                        <SPAN>此用戶已不存在</SPAN>
+                                                                        <DIV class="height60">
+                                                                                <SPAN>此用戶已不存在</SPAN>
+                                                                        </DIV>
                                                                 </xsl:when>
                                                                 <xsl:when test="@blocking">
-                                                                        <SPAN>您已封鎖對方</SPAN>
+                                                                        <DIV class="height60">
+                                                                                <SPAN>您已封鎖對方</SPAN>
+                                                                        </DIV>
                                                                 </xsl:when>
                                                         </xsl:choose>
                                                         <DIV class="customerBtnWrap">

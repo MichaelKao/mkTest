@@ -109,6 +109,15 @@ public class Activity implements Comparable<Activity> {
         }
 
         /**
+         * 判斷男士已私訊的甜心
+         *
+         * @param passive
+         */
+        public Activity(Lover passive) {
+                this.passive = passive;
+        }
+
+        /**
          * 群發 GroupBy
          *
          * @param initiative

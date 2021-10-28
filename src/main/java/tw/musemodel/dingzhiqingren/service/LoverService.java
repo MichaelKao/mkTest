@@ -3651,8 +3651,7 @@ public class LoverService {
         }
 
         @SuppressWarnings("null")
-        public boolean within12hrsFromLastGroupGreeting(Lover female
-        ) {
+        public boolean within12hrsFromLastGroupGreeting(Lover female) {
                 Date gpDate = null;
                 Date nowDate = null;
                 History history = historyRepository.findTop1ByInitiativeAndBehaviorOrderByIdDesc(
@@ -4260,5 +4259,26 @@ public class LoverService {
                                                 page.hasPrevious() ? page.previousOrFirstPageable().getPageNumber() : null
                                         )
                         );
+        }
+
+        public boolean maleAbleToSendMsgsWithinOneDay(Lover male) {
+                List<Lover> list = maleHasSentFemaleListWithinOneDay(male);
+                return (isVIP(male) || isVVIP(male) || isTrial(male)) || list.size() < 3;
+        }
+
+        public List<Lover> maleHasSentFemaleListWithinOneDay(Lover male) {
+                Calendar calendar = new GregorianCalendar();
+                calendar.setTimeZone(TimeZone.getTimeZone(
+                        Servant.ASIA_TAIPEI_ZONE_ID
+                ));
+                calendar.setTime(new Date());
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH) + 1;
+                int date = calendar.get(Calendar.DATE);
+
+                Date earliestDate = servant.earliestDate(year, month, date);
+                Date latestDate = servant.latestDate(year, month, date);
+
+                return historyRepository.findDistinctPassive(male, BEHAVIOR_CHAT_MORE, earliestDate, latestDate);
         }
 }

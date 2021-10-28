@@ -132,7 +132,8 @@
                                                                                         <I class="fad fa-shield-check fontSize25"></I>
                                                                                         <SPAN class="text-primary text-bold">通過安心認證，增加邀約成功率</SPAN>
                                                                                 </DIV>
-                                                                                <DIV class="text-dark text-sm my-2">需上傳清晰的手持證件自拍照片</DIV>
+                                                                                <DIV class="text-dark text-sm text-bold mt-2">上傳一張您與證件的自拍吧!</DIV>
+                                                                                <DIV class="text-dark text-sm text-bold mb-2">證件與本人需可清楚辨識</DIV>
                                                                                 <DIV class="text-dark text-sm my-2">由真人審核，需等待3-5天</DIV>
                                                                                 <LABEL class="cursor-pointer">
                                                                                         <INPUT accept="image/*" class="sr-only" name="image" type="file"/>

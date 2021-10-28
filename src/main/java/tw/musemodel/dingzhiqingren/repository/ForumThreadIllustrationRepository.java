@@ -1,7 +1,9 @@
 package tw.musemodel.dingzhiqingren.repository;
 
+import java.util.Collection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import tw.musemodel.dingzhiqingren.entity.ForumThread;
 import tw.musemodel.dingzhiqingren.entity.ForumThreadIllustration;
 
 /**
@@ -11,4 +13,6 @@ import tw.musemodel.dingzhiqingren.entity.ForumThreadIllustration;
  */
 @Repository
 public interface ForumThreadIllustrationRepository extends JpaRepository<ForumThreadIllustration, Long> {
+
+        public Collection<ForumThreadIllustration> findByForumThread(ForumThread forumThread);
 }
