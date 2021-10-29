@@ -14,5 +14,7 @@ import tw.musemodel.dingzhiqingren.entity.ForumThreadComment;
 @Repository
 public interface ForumThreadCommentRepository extends JpaRepository<ForumThreadComment, Long> {
 
-        public Collection<ForumThreadComment> findByForumThread(ForumThread forumThread);
+        public Collection<ForumThreadComment> findByForumThreadOrderByCreatedDesc(ForumThread forumThread);
+
+        public int countByForumThread(ForumThread forumThread);
 }

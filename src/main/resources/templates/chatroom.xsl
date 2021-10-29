@@ -304,6 +304,12 @@
                                                                                 </A>
                                                                         </LI>
                                                                         <LI class="nav-item">
+                                                                                <A class="nav-link nav-link-icon d-flex align-items-center" href="/forum/">
+                                                                                        <I class="fad fa-comment-alt-lines fontSize22 width30whenMobile"></I>
+                                                                                        <SPAN class="d-lg-none">討論區</SPAN>
+                                                                                </A>
+                                                                        </LI>
+                                                                        <LI class="nav-item">
                                                                                 <A class="nav-link nav-link-icon d-flex align-items-center" href="/favorite.asp">
                                                                                         <I class="fad fa-box-heart fontSize22 me-1"></I>
                                                                                         <SPAN class="d-lg-none">我的收藏</SPAN>
@@ -688,12 +694,12 @@
                                                                                         <I class="fa fa-paper-plane"></I>
                                                                                 </BUTTON>
                                                                         </xsl:if>
-                                                                        <xsl:if test="@moreThan3Sentences">
+                                                                        <xsl:if test="@exceedSentencesLimit">
                                                                                 <DIV class="height60">
                                                                                         <SPAN>12小時內僅能發送3句話給 meQUEEN</SPAN>
                                                                                 </DIV>
                                                                         </xsl:if>
-                                                                        <xsl:if test="@moreThan3Female">
+                                                                        <xsl:if test="@exceedFemaleLimit">
                                                                                 <DIV class="height60">
                                                                                         <SPAN>升級 VIP 後可以跟更多 meQUEEN 聊天!</SPAN>
                                                                                 </DIV>

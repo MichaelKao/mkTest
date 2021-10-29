@@ -4261,9 +4261,10 @@ public class LoverService {
                         );
         }
 
+        // 免費會員男生每日可傳10位女生
         public boolean maleAbleToSendMsgsWithinOneDay(Lover male) {
                 List<Lover> list = maleHasSentFemaleListWithinOneDay(male);
-                return (isVIP(male) || isVVIP(male) || isTrial(male)) || list.size() < 3;
+                return (isVIP(male) || isVVIP(male) || isTrial(male)) || list.size() < 10;
         }
 
         public List<Lover> maleHasSentFemaleListWithinOneDay(Lover male) {

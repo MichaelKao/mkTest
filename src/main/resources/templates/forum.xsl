@@ -29,13 +29,14 @@
                         <LINK href="https://mreq.github.io/slick-lightbox/dist/slick-lightbox.css" rel="stylesheet"/>
                         <LINK href="https://mreq.github.io/slick-lightbox/gh-pages/bower_components/slick-carousel/slick/slick-theme.css" rel="stylesheet"/>
                         <LINK href="/STYLE/forum.css" rel="stylesheet"/>
+                        <LINK href="/STYLE/loading.css" rel="stylesheet"/>
                 </HEAD>
                 <BODY>
                         <xsl:call-template name="navbar"/>
                         <xsl:call-template name="bootstrapToast"/>
-                        <BUTTON class="btn btn-link m-0 p-0 addPostFloatBtn d-flex align-items-center justify-content-center position-fixed bg-primary fontSize25 text-white opacity-9" data-bs-target="#addPostModal" data-bs-toggle="modal" type="button">
+                        <!--                        <BUTTON class="btn btn-link m-0 p-0 addPostFloatBtn d-flex align-items-center justify-content-center position-fixed bg-primary fontSize25 text-white opacity-9" data-bs-target="#addPostModal" data-bs-toggle="modal" type="button">
                                 <I class="fas fa-edit ms-1"></I>
-                        </BUTTON>
+                        </BUTTON>-->
                         <DIV class="modal fade" id="addPostModal">
                                 <DIV class="modal-dialog modal-dialog-centered">
                                         <DIV class="modal-content">
@@ -110,11 +111,12 @@
                                         </DIV>
                                 </DIV>
                                 <DIV class="posts col-md-10 col-lg-8 col-xl-6 mx-auto">
+                                        <INPUT name="nextPage" type="hidden" value="1"/>
                                         <xsl:for-each select="forumThreads/forumThread">
                                                 <DIV class="post">
                                                         <DIV class="header">
                                                                 <DIV class="left">
-                                                                        <IMG class="avatar shadow me-2" src="{author/@profileImage}" />
+                                                                        <IMG alt="avatarImg" class="avatar shadow me-2" src="{author/@profileImage}" />
                                                                         <DIV class="username">
                                                                                 <DIV class="title text-dark">
                                                                                         <xsl:value-of select="title"/>
@@ -132,16 +134,28 @@
                                                                         </DIV>
                                                                 </DIV>
                                                         </DIV>
+                                                        <DIV class="hashtags">
+                                                                <xsl:for-each select="hashTag">
+                                                                        <DIV class="me-1 badge bg-dark m-0 px-2 py-1">
+                                                                                <SPAN>#</SPAN>
+                                                                                <SPAN>
+                                                                                        <xsl:value-of select="."/>
+                                                                                </SPAN>
+                                                                        </DIV>
+                                                                </xsl:for-each>
+                                                        </DIV>
                                                         <DIV class="content">
-                                                                <DIV class="carousel">
-                                                                        <xsl:for-each select="illustration">
-                                                                                <DIV class="single">
-                                                                                        <A href="{.}">
-                                                                                                <IMG alt="illustration" src="{.}" loading="lazy"/>
-                                                                                        </A>
-                                                                                </DIV>
-                                                                        </xsl:for-each>
-                                                                </DIV>
+                                                                <xsl:if test="illustrations">
+                                                                        <DIV class="carousel">
+                                                                                <xsl:for-each select="illustrations/illustration">
+                                                                                        <DIV class="single">
+                                                                                                <A href="{.}">
+                                                                                                        <IMG alt="illustration" data-lazy="{.}"/>
+                                                                                                </A>
+                                                                                        </DIV>
+                                                                                </xsl:for-each>
+                                                                        </DIV>
+                                                                </xsl:if>
                                                                 <DIV class="articleBox">
                                                                         <DIV class="article">
                                                                                 <xsl:value-of disable-output-escaping="yes" select="markdown"/>
@@ -155,46 +169,44 @@
                                                                 <DIV class="d-flex">
                                                                         <DIV class="seeComment text-white me-auto cursor-pointer">
                                                                                 <I class="fas fa-comment me-2"></I>
-                                                                                <SPAN class="commentCount">2</SPAN>
+                                                                                <SPAN class="commentCount">
+                                                                                        <xsl:value-of select="comments/@commentCount"/>
+                                                                                </SPAN>
                                                                         </DIV>
                                                                 </DIV>
                                                                 <DIV class="comments mt-3" style="display: none;">
-                                                                        <DIV class="comment d-flex mb-2">
-                                                                                <DIV class="flex-shrink-0">
-                                                                                        <DIV class="avatar rounded-circle">
-                                                                                                <IMG class="avatar-img" src="https://d35hi420xc5ji7.cloudfront.net/pictures/77e5baa1-7f01-4ae6-bfc1-d3d2478b5476" alt=""/>
+                                                                        <xsl:for-each select="comments/comment">
+                                                                                <DIV class="comment d-flex mb-2">
+                                                                                        <DIV class="flex-shrink-0">
+                                                                                                <DIV class="avatar rounded-circle">
+                                                                                                        <IMG alt="avatarImg" class="avatarImg" src="{commenter/@commenterProfileImage}"/>
+                                                                                                </DIV>
+                                                                                        </DIV>
+                                                                                        <DIV class="flex-grow-1 ms-2 ms-sm-3">
+                                                                                                <DIV class="commentMeta d-flex align-items-baseline">
+                                                                                                        <DIV class="me-1 text-bold">
+                                                                                                                <xsl:value-of select="commenter/@commenterNickname"/>
+                                                                                                        </DIV>
+                                                                                                        <I class="fas fa-shield-check me-1">
+                                                                                                                <xsl:if test="commenter/@commenterRelief = 'true'">
+                                                                                                                        <xsl:attribute name="class">fas fa-shield-check text-success me-1</xsl:attribute>
+                                                                                                                </xsl:if>
+                                                                                                        </I>
+                                                                                                        <SPAN class="text-xs">
+                                                                                                                <xsl:value-of select="@date"/>
+                                                                                                        </SPAN>
+                                                                                                </DIV>
+                                                                                                <DIV class="commentBody text-dark text-sm text-white">
+                                                                                                        <xsl:value-of disable-output-escaping="yes" select="."/>
+                                                                                                </DIV>
                                                                                         </DIV>
                                                                                 </DIV>
-                                                                                <DIV class="flex-grow-1 ms-2 ms-sm-3">
-                                                                                        <DIV class="commentMeta d-flex align-items-baseline">
-                                                                                                <DIV class="me-2 text-bold">小羽</DIV>
-                                                                                                <SPAN class="text-xs">2021/10/21</SPAN>
-                                                                                        </DIV>
-                                                                                        <DIV class="commentBody text-dark text-sm text-white">
-                                                                                                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non minima ipsum at amet doloremque qui magni, placeat deserunt pariatur itaque laudantium impedit aliquam eligendi repellendus excepturi quibusdam nobis esse accusantium.
-                                                                                        </DIV>
-                                                                                </DIV>
-                                                                        </DIV>
-                                                                        <DIV class="comment d-flex mb-2">
-                                                                                <DIV class="flex-shrink-0">
-                                                                                        <DIV class="avatar rounded-circle">
-                                                                                                <IMG class="avatar-img" src="https://d35hi420xc5ji7.cloudfront.net/profileImage/b421cf3b-8010-4156-8c79-72a756369b81" alt=""/>
-                                                                                        </DIV>
-                                                                                </DIV>
-                                                                                <DIV class="flex-grow-1 ms-2 ms-sm-3">
-                                                                                        <DIV class="commentMeta d-flex align-items-baseline text-sm">
-                                                                                                <DIV class="me-2 text-bold">Yumi</DIV>
-                                                                                                <SPAN class="text-xs">2021/10/22</SPAN>
-                                                                                        </DIV>
-                                                                                        <DIV class="commentBody text-dark text-sm text-white">
-                                                                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto laborum in corrupti dolorum, quas delectus nobis porro accusantium molestias sequi.
-                                                                                        </DIV>
-                                                                                </DIV>
-                                                                        </DIV>
+                                                                        </xsl:for-each>
                                                                 </DIV>
                                                                 <DIV class="d-flex align-items-center mt-3">
+                                                                        <INPUT name="forumIdentifier" type="hidden" value="{@identifier}"/>
                                                                         <DIV class="avatar rounded-circle">
-                                                                                <IMG alt="self-profileImage" class="avatar-img" src="{/document/self/@profileImage}"/>
+                                                                                <IMG alt="self-profileImage" class="avatarImg" src="{/document/self/@profileImage}"/>
                                                                         </DIV>
                                                                         <DIV class="w-100 ms-2 position-relative">
                                                                                 <TEXTAREA class="form-control text-white commentTextarea" rows="1" placeholder="新增留言..."></TEXTAREA>
@@ -204,6 +216,13 @@
                                                         </DIV>
                                                 </DIV>
                                         </xsl:for-each>
+                                </DIV>
+                        </DIV>
+                        <DIV class="loadingWrap" style="display: none;">
+                                <DIV class="loading">
+                                        <DIV class="round"></DIV>
+                                        <DIV class="round ms-1"></DIV>
+                                        <DIV class="round ms-1"></DIV>
                                 </DIV>
                         </DIV>
                         <xsl:call-template name="footer"/>

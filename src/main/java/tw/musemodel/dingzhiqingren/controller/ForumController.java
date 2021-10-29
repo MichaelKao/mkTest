@@ -2,6 +2,7 @@ package tw.musemodel.dingzhiqingren.controller;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -30,6 +30,7 @@ import org.w3c.dom.Element;
 import tw.musemodel.dingzhiqingren.entity.ForumThread;
 import tw.musemodel.dingzhiqingren.entity.ForumThreadTag;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.repository.ForumThreadRepository;
 import tw.musemodel.dingzhiqingren.repository.ForumThreadTagRepository;
 import tw.musemodel.dingzhiqingren.service.ForumService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
@@ -63,7 +64,21 @@ public class ForumController {
         @Autowired
         private ForumThreadTagRepository forumThreadTagRepository;
 
-        @GetMapping(path = "/", produces = MediaType.APPLICATION_XML_VALUE)
+        @Autowired
+        private ForumThreadRepository forumThreadRepository;
+
+        /**
+         * 論壇首頁
+         *
+         * @param p
+         * @param s
+         * @param authentication
+         * @param locale
+         * @return
+         * @throws TransformerException
+         * @throws IOException
+         */
+        @GetMapping(path = "/")
         @ResponseBody
         @Secured({Servant.ROLE_ADVENTURER})
         ModelAndView index(@RequestParam(defaultValue = "1") int p, @RequestParam(defaultValue = "10") int s, Authentication authentication, Locale locale) throws TransformerException, IOException {
@@ -76,13 +91,13 @@ public class ForumController {
                         return Servant.redirectToProfile();
                 }
 
-                Page<ForumThread> pagination = forumService.readAllThreads(
+                List<ForumThread> list = forumService.readAllThreads(
                         me.getGender(),
                         p < 1 ? 0 : p - 1,
                         s
                 );
 
-                Document document = forumService.forumToDocument(me, pagination);
+                Document document = forumService.forumToDocument(me, list);
                 Element documentElement = servant.documentElement(
                         document,
                         authentication
@@ -102,6 +117,27 @@ public class ForumController {
                 return modelAndView;
         }
 
+        @PostMapping(path = "/loadMore.json")
+        @ResponseBody
+        @Secured({Servant.ROLE_ADVENTURER})
+        String loadMore(@RequestParam int p, @RequestParam(defaultValue = "10") int s, Authentication authentication, Locale locale) throws TransformerException, IOException {
+
+                Lover me = loverService.loadByUsername(
+                        authentication.getName()
+                );
+
+                List<ForumThread> list = forumService.readAllThreads(
+                        me.getGender(),
+                        p,
+                        s
+                );
+
+                return forumService.loadMoreForumThread(
+                        me,
+                        list
+                ).toString();
+        }
+
         @GetMapping(path = "/xml", produces = MediaType.APPLICATION_XML_VALUE)
         @ResponseBody
         @Secured({Servant.ROLE_ADVENTURER})
@@ -110,37 +146,37 @@ public class ForumController {
                         authentication.getName()
                 );
 
-                Page<ForumThread> pagination = forumService.readAllThreads(
+                List<ForumThread> list = forumService.readAllThreads(
                         me.getGender(),
                         p < 1 ? 0 : p - 1,
                         s
                 );
 
                 ForumThreadsDocument forumThreadsDocument = new ForumThreadsDocument();
-                forumThreadsDocument.setElementsOfCurrentPage(
-                        pagination.getNumberOfElements()
-                );
-                forumThreadsDocument.setFirst(
-                        pagination.isFirst()
-                );
-                forumThreadsDocument.setLast(
-                        pagination.isLast()
-                );
-                forumThreadsDocument.setNext(
-                        pagination.hasNext()
-                );
-                forumThreadsDocument.setNumberOfCurrentPage(
-                        pagination.getNumber()
-                );
-                forumThreadsDocument.setPrevious(
-                        pagination.hasPrevious()
-                );
-                forumThreadsDocument.setSizeOfPage(
-                        pagination.getSize()
-                );
-                forumThreadsDocument.setForumThreads(
-                        pagination.getContent()
-                );
+//                forumThreadsDocument.setElementsOfCurrentPage(
+//                        pagination.getNumberOfElements()
+//                );
+//                forumThreadsDocument.setFirst(
+//                        pagination.isFirst()
+//                );
+//                forumThreadsDocument.setLast(
+//                        pagination.isLast()
+//                );
+//                forumThreadsDocument.setNext(
+//                        pagination.hasNext()
+//                );
+//                forumThreadsDocument.setNumberOfCurrentPage(
+//                        pagination.getNumber()
+//                );
+//                forumThreadsDocument.setPrevious(
+//                        pagination.hasPrevious()
+//                );
+//                forumThreadsDocument.setSizeOfPage(
+//                        pagination.getSize()
+//                );
+//                forumThreadsDocument.setForumThreads(
+//                        pagination.getContent()
+//                );
                 forumThreadsDocument.setForumThreadTags(
                         forumThreadTagRepository.findAll()
                 );
@@ -182,7 +218,7 @@ public class ForumController {
         @PostMapping(path = "/add.asp", produces = MediaType.APPLICATION_JSON_VALUE)
         @ResponseBody
         @Secured({Servant.ROLE_ADVENTURER})
-        ForumThread add(@RequestParam String title, @RequestParam String markdown, @RequestParam ForumThreadTag[] hashTags,
+        String add(@RequestParam String title, @RequestParam String markdown, @RequestParam ForumThreadTag[] hashTags,
                 @RequestParam(name = "illustrations", required = false) Collection<MultipartFile> multipartFiles, Authentication authentication) {
                 return forumService.createThreadWithIllustrations(
                         loverService.loadByUsername(
@@ -192,7 +228,7 @@ public class ForumController {
                         markdown,
                         hashTags,
                         multipartFiles
-                );
+                ).toString();
         }
 
         @GetMapping(path = "/{identifier:^[0-9a-z]{8}-([0-9a-z]{4}-){3}[0-9a-z]{12}$}.asp", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -200,5 +236,20 @@ public class ForumController {
         @Secured({Servant.ROLE_ADVENTURER})
         ForumThread getOne(@PathVariable UUID identifier) {
                 return forumService.readOneThread(identifier);
+        }
+
+        @PostMapping(path = "/comment.asp", produces = MediaType.APPLICATION_JSON_VALUE)
+        @ResponseBody
+        @Secured({Servant.ROLE_ADVENTURER})
+        String comment(@RequestParam String forumThread, @RequestParam String content, Authentication authentication) {
+                return forumService.comment(
+                        forumThreadRepository.findOneByIdentifier(
+                                UUID.fromString(forumThread)
+                        ),
+                        loverService.loadByUsername(
+                                authentication.getName()
+                        ),
+                        content
+                ).toString();
         }
 }

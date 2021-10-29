@@ -89,6 +89,7 @@ public class ForumThreadComment implements Serializable {
          */
         public ForumThreadComment() {
                 identifier = UUID.randomUUID();
+                created = new Date(System.currentTimeMillis());
         }
 
         /**
@@ -97,6 +98,7 @@ public class ForumThreadComment implements Serializable {
          * @param content 内容
          */
         public ForumThreadComment(ForumThread forumThread, Lover commenter, String content) {
+                this();
                 this.forumThread = forumThread;
                 this.commenter = commenter;
                 this.content = content;

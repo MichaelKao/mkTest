@@ -553,6 +553,12 @@ public class WebSocketService {
                         }
                 }
 
+                if (!gender) {
+                        documentElement.setAttribute(
+                                "able",
+                                null
+                        );
+                }
                 // 男生當天傳的女生清單
                 List<Lover> list = loverService.maleHasSentFemaleListWithinOneDay(male);
                 if ((loverService.isVIP(male) || loverService.isVVIP(male) || loverService.isTrial(male))) {
@@ -564,7 +570,7 @@ public class WebSocketService {
                                 );// 加了通訊軟體或12小時內少於三句話
                         } else {
                                 documentElement.setAttribute(
-                                        "moreThan3Sentences",
+                                        "exceedSentencesLimit",
                                         null
                                 );
                         }
@@ -582,19 +588,19 @@ public class WebSocketService {
                         }
                         if (!list.contains(female)) {
                                 documentElement.setAttribute(
-                                        "moreThan3Female",
+                                        "exceedFemaleLimit",
                                         null
                                 );//超過當天傳送訊息上限
                         }
                 } else if (gender && !lessThan3MsgsWithin12Hrs(male, female) && !loverService.maleAbleToSendMsgsWithinOneDay(me)) {
                         if (list.contains(female)) {
                                 documentElement.setAttribute(
-                                        "moreThan3Sentences",
+                                        "exceedSentencesLimit",
                                         null
                                 );//超過3句話限制
                         } else if (!list.contains(female)) {
                                 documentElement.setAttribute(
-                                        "moreThan3Female",
+                                        "exceedFemaleLimit",
                                         null
                                 );//超過當天傳送訊息上限
                         }
