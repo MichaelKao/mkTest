@@ -15,8 +15,6 @@ $(document).ready(function () {
         var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         var isNotStandalone = !window.matchMedia('(display-mode: standalone)').matches;
 
-        console.log(isNotStandalone)
-
         if (isIOS && isNotStandalone && isSafari) {
                 $('DIV.iosAddToDesktop').css('display', 'block');
         }
@@ -28,5 +26,19 @@ $(document).ready(function () {
                 $('DIV.addToDeskTop').each(function () {
                         $(this).css('display', 'none')
                 });
+        });
+
+        $("SPAN.togglePwd").click(function (e) {
+                e.preventDefault();
+                var span = this;
+                var $input = $(span).siblings('INPUT[name="password"]');
+                var $icon = $(span).find('I');
+                if ($input.attr('type') == 'password') {
+                        $input.attr("type", 'text');
+                        $icon.attr('class', 'fad fa-eye-slash');
+                } else {
+                        $input.attr('type', 'password');
+                        $icon.attr('class', 'fad fa-eye');
+                }
         });
 });

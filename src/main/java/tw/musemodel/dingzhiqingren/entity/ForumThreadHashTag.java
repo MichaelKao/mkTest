@@ -28,42 +28,57 @@ import lombok.Data;
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
 @Table(catalog = "youngme", schema = "public", name = "lun_tan_biao_qian", uniqueConstraints = {
-	@UniqueConstraint(columnNames = {"guan_jian_zi_ci", "lun_tan"})})
+        @UniqueConstraint(columnNames = {"guan_jian_zi_ci", "lun_tan"})})
 @JsonIdentityInfo(
-	generator = ObjectIdGenerators.PropertyGenerator.class,
-	property = "id"
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ForumThreadHashTag implements Serializable {
 
-	private static final long serialVersionUID = -8918268739628447596L;
+        private static final long serialVersionUID = -8918268739628447596L;
 
-	@Basic(optional = false)
-	@Column(nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Id
-	private Long id;
+        @Basic(optional = false)
+        @Column(nullable = false)
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Id
+        private Long id;
 
-	/**
-	 * 关键字词
-	 */
-	@JoinColumn(name = "guan_jian_zi_ci", referencedColumnName = "id", nullable = false)
-	@ManyToOne(optional = false)
-	private ForumThreadTag forumThreadTag;
+        /**
+         * 关键字词
+         */
+        @JoinColumn(name = "guan_jian_zi_ci", referencedColumnName = "id", nullable = false)
+        @ManyToOne(optional = false)
+        private ForumThreadTag forumThreadTag;
 
-	/**
-	 * 论坛绪
-	 */
-	@JoinColumn(name = "lun_tan", referencedColumnName = "id", nullable = false)
-	@ManyToOne(optional = false)
-	private ForumThread forumThread;
+        /**
+         * 论坛绪
+         */
+        @JoinColumn(name = "lun_tan", referencedColumnName = "id", nullable = false)
+        @ManyToOne(optional = false)
+        private ForumThread forumThread;
 
-	@Override
-	public String toString() {
-		try {
-			return new JsonMapper().writeValueAsString(this);
-		} catch (JsonProcessingException ignore) {
-			return Objects.isNull(id) ? "null" : id.toString();
-		}
-	}
+        /**
+         * 預設建構子
+         */
+        public ForumThreadHashTag() {
+        }
+
+        /**
+         * @param identifier 识别码
+         * @param forumThread 论坛绪
+         */
+        public ForumThreadHashTag(ForumThreadTag forumThreadTag, ForumThread forumThread) {
+                this.forumThreadTag = forumThreadTag;
+                this.forumThread = forumThread;
+        }
+
+        @Override
+        public String toString() {
+                try {
+                        return new JsonMapper().writeValueAsString(this);
+                } catch (JsonProcessingException ignore) {
+                        return Objects.isNull(id) ? "null" : id.toString();
+                }
+        }
 }

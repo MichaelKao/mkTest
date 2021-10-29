@@ -39,118 +39,119 @@ import lombok.Data;
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
 @Table(catalog = "youngme", schema = "public", name = "lun_tan", uniqueConstraints = {
-	@UniqueConstraint(columnNames = {"shi_bie_ma"})
+        @UniqueConstraint(columnNames = {"shi_bie_ma"})
 })
 @JsonIdentityInfo(
-	generator = ObjectIdGenerators.PropertyGenerator.class,
-	property = "id"
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ForumThread implements Serializable {
 
-	private static final long serialVersionUID = 7521465629770527419L;
+        private static final long serialVersionUID = 7521465629770527419L;
 
-	/**
-	 * 主键
-	 */
-	@Basic(optional = false)
-	@Column(nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Id
-	private Long id;
+        /**
+         * 主键
+         */
+        @Basic(optional = false)
+        @Column(nullable = false)
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Id
+        private Long id;
 
-	/**
-	 * 识别码
-	 */
-	@Basic(optional = false)
-	@Column(name = "shi_bie_ma", nullable = false)
-	@NotNull
-	private UUID identifier;
+        /**
+         * 识别码
+         */
+        @Basic(optional = false)
+        @Column(name = "shi_bie_ma", nullable = false)
+        @NotNull
+        private UUID identifier;
 
-	/**
-	 * 时戳
-	 */
-	@Basic(optional = false)
-	@Column(name = "shi_chuo", nullable = false)
-	@NotNull
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date created;
+        /**
+         * 时戳
+         */
+        @Basic(optional = false)
+        @Column(name = "shi_chuo", nullable = false)
+        @NotNull
+        @Temporal(TemporalType.TIMESTAMP)
+        private Date created;
 
-	/**
-	 * 作者
-	 */
-	@JoinColumn(name = "zuo_zhe", nullable = false, referencedColumnName = "id")
-	@ManyToOne
-	private Lover author;
+        /**
+         * 作者
+         */
+        @JoinColumn(name = "zuo_zhe", nullable = false, referencedColumnName = "id")
+        @ManyToOne
+        private Lover author;
 
-	/**
-	 * 标题
-	 */
-	@Basic(optional = false)
-	@Column(name = "biao_ti", nullable = false)
-	@NotNull
-	private String title;
+        /**
+         * 标题
+         */
+        @Basic(optional = false)
+        @Column(name = "biao_ti", nullable = false)
+        @NotNull
+        private String title;
 
-	/**
-	 * 内容
-	 */
-	@Column(name = "nei_rong")
-	private String markdown;
+        /**
+         * 内容
+         */
+        @Column(name = "nei_rong")
+        private String markdown;
 
-	/**
-	 * 论坛绪插图
-	 */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "forumThread")
-	@JsonBackReference
-	private Collection<ForumThreadIllustration> forumThreadIllustrations;
+        /**
+         * 论坛绪插图
+         */
+        @OneToMany(cascade = CascadeType.ALL, mappedBy = "forumThread")
+        @JsonBackReference
+        private Collection<ForumThreadIllustration> forumThreadIllustrations;
 
-	/**
-	 * 论坛绪留言
-	 */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "forumThread")
-	@JsonBackReference
-	private Collection<ForumThreadComment> forumThreadComments;
+        /**
+         * 论坛绪留言
+         */
+        @OneToMany(cascade = CascadeType.ALL, mappedBy = "forumThread")
+        @JsonBackReference
+        private Collection<ForumThreadComment> forumThreadComments;
 
-	/**
-	 * 论坛绪标签
-	 */
-	@OneToMany(mappedBy = "forumThread")
-	@JsonIgnore
-	private Set<ForumThreadHashTag> forumHashTags;
+        /**
+         * 论坛绪标签
+         */
+        @OneToMany(mappedBy = "forumThread")
+        @JsonIgnore
+        private Set<ForumThreadHashTag> forumHashTags;
 
-	/**
-	 * 默认构造器
-	 */
-	public ForumThread() {
-		identifier = UUID.randomUUID();
-		created = new Date(System.currentTimeMillis());
-	}
+        /**
+         * 默认构造器
+         */
+        public ForumThread() {
+                identifier = UUID.randomUUID();
+                created = new Date(System.currentTimeMillis());
+        }
 
-	/**
-	 * @param id 主键
-	 */
-	protected ForumThread(Long id) {
-		this();
-		this.id = id;
-	}
+        /**
+         * @param id 主键
+         */
+        protected ForumThread(Long id) {
+                this();
+                this.id = id;
+        }
 
-	/**
-	 * @param author 作者
-	 * @param title 标题
-	 * @param content 内容
-	 */
-	public ForumThread(Lover author, String title, String content) {
-		this.author = author;
-		this.title = title;
-		this.markdown = content;
-	}
+        /**
+         * @param author 作者
+         * @param title 标题
+         * @param content 内容
+         */
+        public ForumThread(Lover author, String title, String content) {
+                this();
+                this.author = author;
+                this.title = title;
+                this.markdown = content;
+        }
 
-	@Override
-	public String toString() {
-		try {
-			return new JsonMapper().writeValueAsString(this);
-		} catch (JsonProcessingException ignore) {
-			return Objects.isNull(id) ? "null" : id.toString();
-		}
-	}
+        @Override
+        public String toString() {
+                try {
+                        return new JsonMapper().writeValueAsString(this);
+                } catch (JsonProcessingException ignore) {
+                        return Objects.isNull(id) ? "null" : id.toString();
+                }
+        }
 }

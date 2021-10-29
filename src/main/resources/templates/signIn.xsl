@@ -134,8 +134,11 @@
                                                                 <DIV class="col-1">
                                                                         <I class="fas fa-key text-lg"></I>
                                                                 </DIV>
-                                                                <DIV class="col-11">
+                                                                <DIV class="col-11 position-relative">
                                                                         <INPUT class="form-control" name="password" placeholder="密碼" required="" type="password"/>
+                                                                        <SPAN class="text-secondary togglePwd text-sm cursor-pointer">
+                                                                                <I class="fad fa-eye"></I>
+                                                                        </SPAN>
                                                                 </DIV>
                                                         </DIV>
                                                         <P class="text-center text-sm mb-0 mt-1">

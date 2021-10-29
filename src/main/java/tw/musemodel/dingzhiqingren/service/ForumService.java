@@ -2,32 +2,54 @@ package tw.musemodel.dingzhiqingren.service;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import lombok.Data;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.w3c.dom.CDATASection;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import tw.musemodel.dingzhiqingren.entity.ForumThread;
+import tw.musemodel.dingzhiqingren.entity.ForumThreadComment;
+import tw.musemodel.dingzhiqingren.entity.ForumThreadHashTag;
 import tw.musemodel.dingzhiqingren.entity.ForumThreadIllustration;
+import tw.musemodel.dingzhiqingren.entity.ForumThreadTag;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
+import tw.musemodel.dingzhiqingren.repository.ForumThreadCommentRepository;
+import tw.musemodel.dingzhiqingren.repository.ForumThreadHashTagRepository;
 import tw.musemodel.dingzhiqingren.repository.ForumThreadIllustrationRepository;
 import tw.musemodel.dingzhiqingren.repository.ForumThreadRepository;
+import tw.musemodel.dingzhiqingren.repository.ForumThreadTagRepository;
 
 /**
  * 服务层：论坛
@@ -37,142 +59,566 @@ import tw.musemodel.dingzhiqingren.repository.ForumThreadRepository;
 @Service
 public class ForumService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ForumService.class);
+        private static final Logger LOGGER = LoggerFactory.getLogger(ForumService.class);
 
-	private static final String DIRECTORY = "forum";
+        private static final String DIRECTORY = "forum";
 
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
+        @Autowired
+        private JdbcTemplate jdbcTemplate;
 
-	@Autowired
-	private ForumThreadIllustrationRepository forumThreadIllustrationRepository;
+        @Autowired
+        private Servant servant;
 
-	@Autowired
-	private ForumThreadRepository forumThreadRepository;
+        @Autowired
+        private ForumThreadIllustrationRepository forumThreadIllustrationRepository;
 
-	@Value("classpath:sql/男女论坛.sql")
-	private Resource forumThreadsResource;
+        @Autowired
+        private ForumThreadCommentRepository forumThreadCommentRepository;
 
-	/**
-	 * 创建论坛绪及插图。
-	 *
-	 * @param author 作者
-	 * @param title 标题
-	 * @param markdown 内容
-	 * @param multipartFiles 插图
-	 * @return 论坛绪
-	 */
-	public ForumThread createThreadWithIllustrations(Lover author, String title, String markdown, Collection<MultipartFile> multipartFiles) {
-		ForumThread forumThread = forumThreadRepository.saveAndFlush(
-			new ForumThread(
-				author,
-				title.trim(),
-				markdown.trim()
-			)
-		);
-		final String threadIdentifier = forumThread.getIdentifier().toString();
+        @Autowired
+        private ForumThreadRepository forumThreadRepository;
 
-		for (MultipartFile multipartFile : multipartFiles) {
-			UUID identifier = UUID.randomUUID();
-			File file = new File(
-				Servant.TEMPORARY_DIRECTORY,
-				identifier.toString()
-			);
+        @Autowired
+        private ForumThreadTagRepository forumThreadTagRepository;
 
-			try {
-				multipartFile.transferTo(file);
+        @Autowired
+        private ForumThreadHashTagRepository forumThreadHashTagRepository;
 
-				PutObjectRequest putObjectRequest = new PutObjectRequest(
-					AmazonWebServices.BUCKET_NAME,
-					String.format(
-						"%s/%s/%s",
-						DIRECTORY,
-						threadIdentifier,
-						identifier.toString()
-					),
-					file
-				);
-				ObjectMetadata objectMetadata = new ObjectMetadata();
-				objectMetadata.setContentType(
-					multipartFile.getContentType()
-				);
-				putObjectRequest.setMetadata(objectMetadata);
-				AmazonWebServices.AMAZON_S3.putObject(
-					putObjectRequest
-				);
+        @Value("classpath:sql/男女论坛.sql")
+        private Resource forumThreadsResource;
 
-				forumThreadIllustrationRepository.saveAndFlush(
-					new ForumThreadIllustration(
-						identifier,
-						forumThread
-					)
-				);
-			} catch (IOException | IllegalStateException exception) {
-				LOGGER.info(
-					"创建论坛绪插图时发生异常❗️",
-					exception
-				);
-			}
+        @Data
+        private class Forum implements Comparable<Forum> {
 
-			file.delete();
-		}
+                private static final long serialVersionUID = -8397989167558711132L;
 
-		return forumThread;
-	}
+                private final Long id;
 
-	/**
-	 * 浏览(索引)并分页论坛绪。
-	 *
-	 * @param gender 性别
-	 * @param page 第几页
-	 * @param size 每页几笔
-	 * @return 分页响应
-	 */
-	@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-	public Page<ForumThread> readAllThreads(boolean gender, int page, int size) {
-		List<Long> threadIds = jdbcTemplate.query(
-			(Connection connection) -> {
-				PreparedStatement preparedStatement;
-				try {
-					preparedStatement = connection.prepareStatement(
-						FileCopyUtils.copyToString(
-							new InputStreamReader(
-								forumThreadsResource.getInputStream(),
-								Servant.UTF_8
-							)
-						)
-					);
-					preparedStatement.setBoolean(1, gender);
-					return preparedStatement;
-				} catch (IOException ignore) {
-					return null;
-				}
-			},
-			(ResultSet resultSet, int rowNum) -> {
-				return resultSet.getLong(1);
-			}
-		);
+                private final Date created;
 
-		List<ForumThread> forumThreads = new ArrayList<>();
-		for (Long id : threadIds) {
-			forumThreads.add(
-				forumThreadRepository.findById(id).get()
-			);
-		}
+                @Override
+                public int compareTo(Forum other) {
+                        return created.compareTo(other.created);
+                }
 
-		return forumThreadRepository.findByIdIn(
-			threadIds,
-			PageRequest.of(page, size)
-		);
-	}
+                @Override
+                public String toString() {
+                        try {
+                                return new JsonMapper().writeValueAsString(this);
+                        } catch (JsonProcessingException ignore) {
+                                return "null";
+                        }
+                }
+        }
 
-	/**
-	 * 读取某则论坛绪。
-	 *
-	 * @param identifier 识别码
-	 * @return 论坛绪
-	 */
-	public ForumThread readOneThread(UUID identifier) {
-		return forumThreadRepository.findOneByIdentifier(identifier);
-	}
+        /**
+         * 创建论坛绪及插图。
+         *
+         * @param author 作者
+         * @param title 标题
+         * @param markdown 内容
+         * @param multipartFiles 插图
+         * @return 论坛绪
+         */
+        public JSONObject createThreadWithIllustrations(Lover author, String title, String markdown, ForumThreadTag[] hashTags, Collection<MultipartFile> multipartFiles) {
+                if (title.isBlank()) {
+                        return new JavaScriptObjectNotation().
+                                withResponse(false).
+                                withReason("請填寫文章標題").toJSONObject();
+                }
+                if (markdown.isBlank()) {
+                        return new JavaScriptObjectNotation().
+                                withResponse(false).
+                                withReason("請填寫文章內容").toJSONObject();
+                }
+                if (hashTags.length == 0) {
+                        return new JavaScriptObjectNotation().
+                                withResponse(false).
+                                withReason("請選擇至少一種標籤").toJSONObject();
+                }
+                ForumThread forumThread = forumThreadRepository.saveAndFlush(
+                        new ForumThread(
+                                author,
+                                title.trim(),
+                                markdown.trim()
+                        )
+                );
+                final String threadIdentifier = forumThread.getIdentifier().toString();
+
+                for (ForumThreadTag forumThreadTag : hashTags) {
+                        forumThreadHashTagRepository.saveAndFlush(
+                                new ForumThreadHashTag(
+                                        forumThreadTag,
+                                        forumThread
+                                )
+                        );
+                }
+
+                if (Objects.nonNull(multipartFiles)) {
+                        for (MultipartFile multipartFile : multipartFiles) {
+                                UUID identifier = UUID.randomUUID();
+                                File file = new File(
+                                        Servant.TEMPORARY_DIRECTORY,
+                                        identifier.toString()
+                                );
+
+                                try {
+                                        multipartFile.transferTo(file);
+
+                                        PutObjectRequest putObjectRequest = new PutObjectRequest(
+                                                AmazonWebServices.BUCKET_NAME,
+                                                String.format(
+                                                        "%s/%s/%s",
+                                                        DIRECTORY,
+                                                        threadIdentifier,
+                                                        identifier.toString()
+                                                ),
+                                                file
+                                        );
+                                        ObjectMetadata objectMetadata = new ObjectMetadata();
+                                        objectMetadata.setContentType(
+                                                multipartFile.getContentType()
+                                        );
+                                        putObjectRequest.setMetadata(objectMetadata);
+                                        AmazonWebServices.AMAZON_S3.putObject(
+                                                putObjectRequest
+                                        );
+
+                                        forumThreadIllustrationRepository.saveAndFlush(
+                                                new ForumThreadIllustration(
+                                                        identifier,
+                                                        forumThread
+                                                )
+                                        );
+                                } catch (IOException | IllegalStateException exception) {
+                                        LOGGER.info(
+                                                "创建论坛绪插图时发生异常❗️",
+                                                exception
+                                        );
+                                }
+
+                                file.delete();
+                        }
+                }
+
+                return new JavaScriptObjectNotation().
+                        withResponse(true).
+                        withResult(forumThread.getId()).toJSONObject();
+        }
+
+        /**
+         * 浏览(索引)并分页论坛绪。
+         *
+         * @param gender 性别
+         * @param page 第几页
+         * @param size 每页几笔
+         * @return 分页响应
+         */
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+        public List<ForumThread> readAllThreads(boolean gender, int page, int size) {
+                List<Forum> forums = jdbcTemplate.query(
+                        (Connection connection) -> {
+                                PreparedStatement preparedStatement;
+                                try {
+                                        preparedStatement = connection.prepareStatement(
+                                                FileCopyUtils.copyToString(
+                                                        new InputStreamReader(
+                                                                forumThreadsResource.getInputStream(),
+                                                                Servant.UTF_8
+                                                        )
+                                                )
+                                        );
+                                        preparedStatement.setBoolean(1, gender);
+                                        return preparedStatement;
+                                } catch (IOException ignore) {
+                                        return null;
+                                }
+                        },
+                        (ResultSet resultSet, int rowNum) -> {
+                                return new Forum(
+                                        resultSet.getLong("id"),
+                                        resultSet.getDate("shi_chuo")
+                                );
+                        }
+                );
+
+                Collections.sort(forums, Comparator.reverseOrder());
+                Pageable paging = PageRequest.of(page, size);
+                int start = Math.min((int) paging.getOffset(), forums.size());
+                int end = Math.min((start + paging.getPageSize()), forums.size());
+                Page<Forum> forumPage = new PageImpl<>(forums.subList(start, end), paging, forums.size());
+
+                List<ForumThread> forumThreads = new ArrayList<>();
+                for (Forum forum : forumPage) {
+                        forumThreads.add(
+                                forumThreadRepository.findById(forum.getId()).get()
+                        );
+                }
+
+                return forumThreads;
+        }
+
+        /**
+         * 論壇 document
+         *
+         * @param self
+         * @param pagination
+         * @return
+         * @throws IOException
+         */
+        public Document forumToDocument(Lover self, List<ForumThread> list) throws IOException {
+
+                Document document = Servant.parseDocument();
+                Element documentElement = document.getDocumentElement();
+
+                // 本人
+                Element selfElement = document.createElement("self");
+                documentElement.appendChild(selfElement);
+                selfElement.setAttribute("nickname", self.getNickname());
+                selfElement.setAttribute("identifier", self.getIdentifier().toString());
+                selfElement.setAttribute(
+                        "profileImage",
+                        String.format(
+                                "https://%s/profileImage/%s",
+                                Servant.STATIC_HOST,
+                                self.getProfileImage()
+                        ));
+                selfElement.setAttribute(
+                        "relief",
+                        Objects.nonNull(self.getRelief()) ? self.getRelief().toString() : "false"
+                );
+
+                // 標籤關鍵詞
+                for (ForumThreadTag forumThreadTag : forumThreadTagRepository.findAll()) {
+                        Element forumThreadTagElement = document.createElement("forumThreadTag");
+                        forumThreadTagElement.setAttribute("id", forumThreadTag.getId().toString());
+                        forumThreadTagElement.setTextContent(forumThreadTag.getPhrase());
+                        documentElement.appendChild(forumThreadTagElement);
+                }
+
+                // 論壇文章
+                Element forumThreadsElement = document.createElement("forumThreads");
+                documentElement.appendChild(forumThreadsElement);
+                for (ForumThread forumThread : list) {
+                        Element forumThreadElement = document.createElement("forumThread");
+                        forumThreadsElement.appendChild(forumThreadElement);
+                        forumThreadElement.setAttribute(
+                                "identifier",
+                                forumThread.getIdentifier().toString()
+                        );
+
+                        Lover author = forumThread.getAuthor();
+                        Element authorElement = document.createElement("author");
+                        forumThreadElement.appendChild(authorElement);
+                        authorElement.setAttribute(
+                                "nickname",
+                                author.getNickname()
+                        );
+                        authorElement.setAttribute(
+                                "identifier",
+                                author.getIdentifier().toString()
+                        );
+                        authorElement.setAttribute(
+                                "profileImage",
+                                String.format(
+                                        "https://%s/profileImage/%s",
+                                        Servant.STATIC_HOST,
+                                        author.getProfileImage()
+                                ));
+                        authorElement.setAttribute(
+                                "relief",
+                                Objects.nonNull(author.getRelief()) ? author.getRelief().toString() : "false"
+                        );
+
+                        Element titleElement = document.createElement("title");
+                        forumThreadElement.appendChild(titleElement);
+                        titleElement.setTextContent(forumThread.getTitle());
+
+                        Element markdownElement = document.createElement("markdown");
+                        forumThreadElement.appendChild(markdownElement);
+                        String html = servant.markdownToHtml(forumThread.getMarkdown());
+                        CDATASection cDATASection = document.createCDATASection(html);
+                        markdownElement.appendChild(cDATASection);
+
+                        Element dateElement = document.createElement("date");
+                        dateElement.setTextContent(
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+                                        Servant.toTaipeiZonedDateTime(
+                                                forumThread.getCreated()
+                                        ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
+                                )
+                        );
+                        forumThreadElement.appendChild(dateElement);
+
+                        for (ForumThreadHashTag forumThreadHashTag : forumThreadHashTagRepository.findByForumThread(forumThread)) {
+                                Element hashTagElement = document.createElement("hashTag");
+                                hashTagElement.setTextContent(forumThreadHashTag.getForumThreadTag().getPhrase());
+                                forumThreadElement.appendChild(hashTagElement);
+                        }
+
+                        Collection<ForumThreadIllustration> forumThreadIllustrations = forumThreadIllustrationRepository.findByForumThread(forumThread);
+                        if (forumThreadIllustrations.size() > 0) {
+                                Element illustrationsElement = document.createElement("illustrations");
+                                forumThreadElement.appendChild(illustrationsElement);
+                                for (ForumThreadIllustration forumThreadIllustration : forumThreadIllustrations) {
+                                        Element illustrationElement = document.createElement("illustration");
+                                        illustrationElement.setTextContent(
+                                                String.format(
+                                                        "https://%s/forum/%s/%s",
+                                                        Servant.STATIC_HOST,
+                                                        forumThread.getIdentifier(),
+                                                        forumThreadIllustration.getIdentifier()
+                                                ));
+                                        illustrationsElement.appendChild(illustrationElement);
+                                }
+                        }
+                        // 留言
+                        int commentCount = forumThreadCommentRepository.countByForumThread(forumThread);
+                        Element commentsElement = document.createElement("comments");
+                        forumThreadElement.appendChild(commentsElement);
+                        commentsElement.setAttribute(
+                                "commentCount",
+                                Integer.toString(commentCount)
+                        );
+                        for (ForumThreadComment forumThreadComment : forumThreadCommentRepository.findByForumThreadOrderByCreatedDesc(forumThread)) {
+                                Element commentElement = document.createElement("comment");
+                                commentsElement.appendChild(commentElement);
+                                commentElement.setAttribute(
+                                        "identifier",
+                                        forumThreadComment.getIdentifier().toString()
+                                );
+                                // 留言內容
+                                String commenthtml = servant.markdownToHtml(forumThreadComment.getContent());
+                                CDATASection commentCDATASection = document.createCDATASection(commenthtml);
+                                commentElement.appendChild(commentCDATASection);
+                                commentElement.setAttribute(
+                                        "date",
+                                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+                                                Servant.toTaipeiZonedDateTime(
+                                                        forumThreadComment.getCreated()
+                                                ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
+                                        )
+                                );
+
+                                // 留言方
+                                Lover commenter = forumThreadComment.getCommenter();
+                                Element commenterElement = document.createElement("commenter");
+                                commentElement.appendChild(commenterElement);
+                                commenterElement.setAttribute(
+                                        "commenterNickname",
+                                        commenter.getNickname()
+                                );
+                                commenterElement.setAttribute(
+                                        "commenterProfileImage",
+                                        String.format(
+                                                "https://%s/profileImage/%s",
+                                                Servant.STATIC_HOST,
+                                                commenter.getProfileImage()
+                                        ));
+                                commenterElement.setAttribute(
+                                        "commenterRelief",
+                                        Objects.nonNull(commenter.getRelief()) ? commenter.getRelief().toString() : "false"
+                                );
+                        }
+                }
+
+                return document;
+        }
+
+        /**
+         * 論壇 load more
+         *
+         * @param self
+         * @param pagination
+         * @return
+         * @throws IOException
+         */
+        public JSONObject loadMoreForumThread(Lover self, List<ForumThread> list) throws IOException {
+
+                JSONObject json = new JSONObject();
+
+                json.put(
+                        "seenerProfileImage",
+                        String.format(
+                                "https://%s/profileImage/%s",
+                                Servant.STATIC_HOST,
+                                self.getProfileImage()
+                        )
+                );
+
+                // 論壇文章
+                JSONArray forumArray = new JSONArray();
+                for (ForumThread forumThread : list) {
+                        JSONObject forumJson = new JSONObject();
+                        forumJson.put(
+                                "identifier",
+                                forumThread.getIdentifier()
+                        );
+
+                        Lover author = forumThread.getAuthor();
+                        forumJson.
+                                put(
+                                        "identifier",
+                                        forumThread.getIdentifier()
+                                ).
+                                put(
+                                        "authorNickname",
+                                        author.getNickname()
+                                ).
+                                put(
+                                        "authorIdentifier",
+                                        author.getIdentifier()
+                                ).
+                                put(
+                                        "authorProfileImage",
+                                        String.format(
+                                                "https://%s/profileImage/%s",
+                                                Servant.STATIC_HOST,
+                                                author.getProfileImage()
+                                        )
+                                ).
+                                put(
+                                        "relief",
+                                        Objects.nonNull(author.getRelief()) ? author.getRelief().toString() : "false"
+                                );
+
+                        forumJson.
+                                put(
+                                        "title",
+                                        forumThread.getTitle()
+                                ).
+                                put(
+                                        "markdown",
+                                        servant.markdownToHtml(forumThread.getMarkdown())
+                                ).
+                                put(
+                                        "date",
+                                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+                                                Servant.toTaipeiZonedDateTime(
+                                                        forumThread.getCreated()
+                                                ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
+                                        )
+                                );
+
+                        List<String> hashTags = new ArrayList();
+                        for (ForumThreadHashTag forumThreadHashTag : forumThreadHashTagRepository.findByForumThread(forumThread)) {
+                                JSONArray tagArray = new JSONArray();
+                                hashTags.add(forumThreadHashTag.getForumThreadTag().getPhrase());
+                        }
+                        forumJson.put(
+                                "hashTags",
+                                hashTags
+                        );
+
+                        Collection<ForumThreadIllustration> forumThreadIllustrations = forumThreadIllustrationRepository.findByForumThread(forumThread);
+                        if (forumThreadIllustrations.size() > 0) {
+                                List<String> illustrations = new ArrayList();
+                                for (ForumThreadIllustration forumThreadIllustration : forumThreadIllustrations) {
+                                        illustrations.add(
+                                                String.format(
+                                                        "https://%s/forum/%s/%s",
+                                                        Servant.STATIC_HOST,
+                                                        forumThread.getIdentifier(),
+                                                        forumThreadIllustration.getIdentifier()
+                                                ));
+                                }
+                                forumJson.put(
+                                        "illustrations",
+                                        illustrations
+                                );
+                        }
+
+                        // 留言
+                        int commentCount = forumThreadCommentRepository.countByForumThread(forumThread);
+                        forumJson.put(
+                                "commentCount",
+                                commentCount
+                        );
+                        JSONArray commentArray = new JSONArray();
+                        for (ForumThreadComment forumThreadComment : forumThreadCommentRepository.findByForumThreadOrderByCreatedDesc(forumThread)) {
+                                JSONObject comment = new JSONObject();
+                                // 留言方
+                                Lover commenter = forumThreadComment.getCommenter();
+                                comment.
+                                        put(
+                                                "identifier",
+                                                forumThreadComment.getIdentifier()
+                                        ).
+                                        put(
+                                                "content",
+                                                servant.markdownToHtml(forumThreadComment.getContent())
+                                        ).
+                                        put(
+                                                "date",
+                                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+                                                        Servant.toTaipeiZonedDateTime(
+                                                                forumThreadComment.getCreated()
+                                                        ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
+                                                )
+                                        ).
+                                        put(
+                                                "nickname",
+                                                commenter.getNickname()
+                                        ).
+                                        put(
+                                                "profileImage",
+                                                String.format(
+                                                        "https://%s/profileImage/%s",
+                                                        Servant.STATIC_HOST,
+                                                        commenter.getProfileImage()
+                                                )
+                                        ).
+                                        put(
+                                                "relief",
+                                                Objects.nonNull(commenter.getRelief()) ? commenter.getRelief().toString() : "false"
+                                        );
+                                commentArray.put(comment);
+                        }
+                        forumJson.put("comment", commentArray);
+                        forumArray.put(forumJson);
+                }
+                json.put(
+                        "forumThread",
+                        forumArray
+                );
+                return json;
+        }
+
+        /**
+         * 读取某则论坛绪。
+         *
+         * @param identifier 识别码
+         * @return 论坛绪
+         */
+        public ForumThread readOneThread(UUID identifier) {
+                return forumThreadRepository.findOneByIdentifier(identifier);
+        }
+
+        /**
+         * 留言
+         *
+         * @param forumThread
+         * @param commenter
+         * @param content
+         * @return
+         */
+        public JSONObject comment(ForumThread forumThread, Lover commenter, String content) {
+                ForumThreadComment forumThreadComment
+                        = new ForumThreadComment(forumThread, commenter, content);
+                forumThreadCommentRepository.saveAndFlush(forumThreadComment);
+
+                return new JSONObject().put(
+                        "content",
+                        servant.markdownToHtml(forumThreadComment.getContent())
+                ).put(
+                        "created",
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+                                Servant.toTaipeiZonedDateTime(
+                                        forumThreadComment.getCreated()
+                                ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
+                        )).put(
+                        "relief",
+                        Objects.nonNull(commenter.getRelief()) ? commenter.getRelief().toString() : "false"
+                );
+        }
 }

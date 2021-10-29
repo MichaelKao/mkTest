@@ -596,25 +596,17 @@
         0%{
                 color: #450920;
         }
-
-        20%{
+        25%{
                 color: #A53862;
         }
-
-        40%{
+        50%{
                 color: #DA4167;
         }
-
-        60%{
+        75%{
                 color: #DA627D;
         }
-
-        80%{
-                color: #FFA5AB;
-        }
-
         100%{
-                color: #F9DBBD;
+                color: #FFA5AB;
         }
 }
 

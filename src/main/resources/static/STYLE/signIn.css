@@ -2,6 +2,12 @@
         border: none;
 }
 
+.togglePwd {
+        position: absolute;
+        right: 20px;
+        top: 10px;
+}
+
 /*加入主畫面*/
 .addToDeskTop {
         right: 26px;

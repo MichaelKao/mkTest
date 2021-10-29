@@ -17,11 +17,11 @@ import tw.musemodel.dingzhiqingren.entity.ForumThread;
 @Repository
 public interface ForumThreadRepository extends JpaRepository<ForumThread, Long>, JpaSpecificationExecutor<ForumThread> {
 
-	public Page<ForumThread> findByIdIn(List<Long> id, Pageable pageable);
+        public Page<ForumThread> findByIdIn(List<Long> id, Pageable pageable);
 
-	/**
-	 * @param identifier 识别码
-	 * @return 论坛绪
-	 */
-	public ForumThread findOneByIdentifier(UUID identifier);
+        /**
+         * @param identifier 识别码
+         * @return 论坛绪
+         */
+        public ForumThread findOneByIdentifier(UUID identifier);
 }

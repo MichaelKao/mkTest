@@ -10,3 +10,27 @@
         width: 25px;
         height: 25px;
 }
+
+.tutorial {
+        animation: Color 4s linear infinite;
+        -webkit-animation: Color 4s ease-in-out infinite;
+        text-shadow: 5px 5px #00000022;
+}
+
+@keyframes Color{
+        0%{
+                color: #450920;
+        }
+        25%{
+                color: #A53862;
+        }
+        50%{
+                color: #DA4167;
+        }
+        75%{
+                color: #DA627D;
+        }
+        100%{
+                color: #FFA5AB;
+        }
+}

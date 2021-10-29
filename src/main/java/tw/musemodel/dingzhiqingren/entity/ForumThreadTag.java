@@ -30,47 +30,54 @@ import lombok.Data;
 @Entity
 @SuppressWarnings("PersistenceUnitPresent")
 @Table(catalog = "youngme", schema = "public", name = "lun_tan_guan_jian_zi_ci", uniqueConstraints = {
-	@UniqueConstraint(columnNames = {"zi_ci"})
+        @UniqueConstraint(columnNames = {"zi_ci"})
 })
 @JsonIdentityInfo(
-	generator = ObjectIdGenerators.PropertyGenerator.class,
-	property = "id"
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ForumThreadTag implements Serializable {
 
-	private static final long serialVersionUID = 2866131732084090451L;
+        private static final long serialVersionUID = 2866131732084090451L;
 
-	/**
-	 * 主键
-	 */
-	@Basic(optional = false)
-	@Column(nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Id
-	private Short id;
+        /**
+         * 主键
+         */
+        @Basic(optional = false)
+        @Column(nullable = false)
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Id
+        private Short id;
 
-	/**
-	 * 字词
-	 */
-	@Basic(optional = false)
-	@Column(name = "zi_ci", nullable = false)
-	@NotNull
-	private String phrase;
+        /**
+         * 字词
+         */
+        @Basic(optional = false)
+        @Column(name = "zi_ci", nullable = false)
+        @NotNull
+        private String phrase;
 
-	/**
-	 * 论坛绪标签
-	 */
-	@OneToMany(mappedBy = "forumThreadTag")
-	@JsonIgnore
-	private Set<ForumThreadHashTag> forumHashTags;
+        /**
+         * 论坛绪标签
+         */
+        @OneToMany(mappedBy = "forumThreadTag")
+        @JsonIgnore
+        private Set<ForumThreadHashTag> forumHashTags;
 
-	@Override
-	public String toString() {
-		try {
-			return new JsonMapper().writeValueAsString(this);
-		} catch (JsonProcessingException ignore) {
-			return Objects.isNull(id) ? "null" : id.toString();
-		}
-	}
+        public ForumThreadTag() {
+        }
+
+        public ForumThreadTag(String phrase) {
+                this.phrase = phrase;
+        }
+
+        @Override
+        public String toString() {
+                try {
+                        return new JsonMapper().writeValueAsString(this);
+                } catch (JsonProcessingException ignore) {
+                        return Objects.isNull(id) ? "null" : id.toString();
+                }
+        }
 }

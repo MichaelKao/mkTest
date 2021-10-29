@@ -24,7 +24,7 @@
                                 <xsl:value-of select="@title"/>
                         </TITLE>
                         <xsl:call-template name="headLinkTags"/>
-                        <LINK href="/STYLE/ECPayPayment.css" rel="stylesheet"/>
+                        <LINK href="/STYLE/loading.css" rel="stylesheet"/>
                 </HEAD>
                 <BODY>
                         <xsl:call-template name="navbar"/>

@@ -62,8 +62,11 @@
                                                                 <DIV class="col-1">
                                                                         <I class="fas fa-key text-lg"/>
                                                                 </DIV>
-                                                                <DIV class="col-11">
+                                                                <DIV class="col-11 position-relative">
                                                                         <INPUT class="form-control" id="shadow" name="shadow" placeholder="輸入新密碼" required="" type="password"/>
+                                                                        <SPAN class="text-secondary togglePwd text-sm position-absolute cursor-pointer" style="right: 20px; top: 10px;">
+                                                                                <I class="fad fa-eye"></I>
+                                                                        </SPAN>
                                                                 </DIV>
                                                         </DIV>
                                                         <DIV class="text-center">
