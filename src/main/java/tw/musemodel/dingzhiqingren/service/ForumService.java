@@ -2,8 +2,6 @@ package tw.musemodel.dingzhiqingren.service;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,11 +13,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import lombok.Data;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -44,6 +40,7 @@ import tw.musemodel.dingzhiqingren.entity.ForumThreadHashTag;
 import tw.musemodel.dingzhiqingren.entity.ForumThreadIllustration;
 import tw.musemodel.dingzhiqingren.entity.ForumThreadTag;
 import tw.musemodel.dingzhiqingren.entity.Lover;
+import tw.musemodel.dingzhiqingren.model.Forum;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.ForumThreadCommentRepository;
 import tw.musemodel.dingzhiqingren.repository.ForumThreadHashTagRepository;
@@ -86,30 +83,6 @@ public class ForumService {
 
         @Value("classpath:sql/男女论坛.sql")
         private Resource forumThreadsResource;
-
-        @Data
-        private class Forum implements Comparable<Forum> {
-
-                private static final long serialVersionUID = -8397989167558711132L;
-
-                private final Long id;
-
-                private final Date created;
-
-                @Override
-                public int compareTo(Forum other) {
-                        return created.compareTo(other.created);
-                }
-
-                @Override
-                public String toString() {
-                        try {
-                                return new JsonMapper().writeValueAsString(this);
-                        } catch (JsonProcessingException ignore) {
-                                return "null";
-                        }
-                }
-        }
 
         /**
          * 创建论坛绪及插图。
