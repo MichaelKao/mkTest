@@ -26,6 +26,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.WebSocketServer;
+import tw.musemodel.dingzhiqingren.entity.ForumThreadTag;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.Lover;
@@ -40,6 +41,7 @@ import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord.WayOfWithdrawal;
 import tw.musemodel.dingzhiqingren.model.EachWithdrawal;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
+import tw.musemodel.dingzhiqingren.repository.ForumThreadTagRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.PrivilegeRepository;
@@ -98,6 +100,9 @@ public class DashboardService {
 
         @Autowired
         private LineMessagingService lineMessagingService;
+
+        @Autowired
+        private ForumThreadTagRepository forumThreadTagRepository;
 
         /**
          * 构建根元素。
@@ -469,6 +474,43 @@ public class DashboardService {
                         );
 
                         documentElement.appendChild(trialElement);
+                }
+
+                return document;
+        }
+
+        /**
+         * 新增文章標籤
+         *
+         * @param authentication
+         * @param locale
+         * @return
+         * @throws SAXException
+         * @throws IOException
+         * @throws ParserConfigurationException
+         */
+        @Transactional(readOnly = true)
+        public Document generateHashtags(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+                Document document = Servant.parseDocument();
+
+                Element documentElement = documentElement(
+                        document,
+                        authentication
+                );//根元素
+
+                for (ForumThreadTag forumThreadTag : forumThreadTagRepository.findAllByOrderById()) {
+                        Element hashtagElement = document.createElement("hashtag");
+
+                        hashtagElement.setAttribute(
+                                "id",
+                                forumThreadTag.getId().toString()
+                        );
+                        hashtagElement.setAttribute(
+                                "phrase",
+                                forumThreadTag.getPhrase()
+                        );
+
+                        documentElement.appendChild(hashtagElement);
                 }
 
                 return document;

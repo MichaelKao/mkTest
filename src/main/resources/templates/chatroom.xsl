@@ -305,7 +305,7 @@
                                                                         </LI>
                                                                         <LI class="nav-item">
                                                                                 <A class="nav-link nav-link-icon d-flex align-items-center" href="/forum/">
-                                                                                        <I class="fad fa-comment-alt-lines fontSize22 width30whenMobile"></I>
+                                                                                        <I class="fas fa-hashtag fontSize22 width30whenMobile"></I>
                                                                                         <SPAN class="d-lg-none">討論區</SPAN>
                                                                                 </A>
                                                                         </LI>

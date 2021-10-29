@@ -167,7 +167,7 @@
                                                                 </LI>
                                                                 <LI class="nav-item">
                                                                         <A class="nav-link nav-link-icon d-flex align-items-center" href="/forum/">
-                                                                                <I class="fad fa-comment-alt-lines fontSize22 width30whenMobile"></I>
+                                                                                <I class="fas fa-hashtag fontSize22 width30whenMobile"></I>
                                                                                 <SPAN class="d-lg-none">討論區</SPAN>
                                                                         </A>
                                                                 </LI>
@@ -382,6 +382,14 @@
                                                                 <I class="fal fa-meteor text-dark text-lg"></I>
                                                         </DIV>
                                                         <SPAN class="nav-link-text ms-1">產生體驗碼</SPAN>
+                                                </A>
+                                        </LI>
+                                        <LI class="nav-item">
+                                                <A class="nav-link" href="/dashboard/genHashtags.asp">
+                                                        <DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
+                                                                <I class="fal fa-hashtag text-dark text-lg"></I>
+                                                        </DIV>
+                                                        <SPAN class="nav-link-text ms-1">新增文章標籤</SPAN>
                                                 </A>
                                         </LI>
                                         <LI class="nav-item">

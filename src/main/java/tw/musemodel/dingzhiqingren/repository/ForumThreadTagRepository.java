@@ -1,5 +1,6 @@
 package tw.musemodel.dingzhiqingren.repository;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import tw.musemodel.dingzhiqingren.entity.ForumThreadTag;
@@ -11,4 +12,6 @@ import tw.musemodel.dingzhiqingren.entity.ForumThreadTag;
  */
 @Repository
 public interface ForumThreadTagRepository extends JpaRepository<ForumThreadTag, Short> {
+
+        public List<ForumThreadTag> findAllByOrderById();
 }

@@ -65,6 +65,13 @@ public class ForumThreadTag implements Serializable {
         @JsonIgnore
         private Set<ForumThreadHashTag> forumHashTags;
 
+        public ForumThreadTag() {
+        }
+
+        public ForumThreadTag(String phrase) {
+                this.phrase = phrase;
+        }
+
         @Override
         public String toString() {
                 try {
