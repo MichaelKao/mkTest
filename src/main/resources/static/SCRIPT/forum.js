@@ -497,7 +497,7 @@ $(document).ready(function () {
                         $(contentDiv).append(dateDiv);
 
                         var postFooterDiv = document.createElement('DIV');
-                        $(postFooterDiv).attr('class', 'postFooter');
+                        $(postFooterDiv).attr('class', 'postFooter primary-gradient');
                         $(postDiv).append(postFooterDiv);
                         var commentDiv = document.createElement('DIV');
                         $(commentDiv).attr('class', 'd-flex');
