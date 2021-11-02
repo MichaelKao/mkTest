@@ -688,7 +688,13 @@
                                                                         </xsl:if>
                                                                         <xsl:if test="@able">
                                                                                 <DIV class="textareaContainer">
-                                                                                        <TEXTAREA id="chatInput" placeholder="說點什麼吧..." type="text"></TEXTAREA>
+                                                                                        <TEXTAREA id="chatInput" placeholder="說點什麼吧..." type="text">
+                                                                                                <xsl:if test="@male">
+                                                                                                        <xsl:if test="not(@addLineBtn)">
+                                                                                                                <xsl:attribute name="placeholder">用3句話打動meQUEEN...</xsl:attribute>
+                                                                                                        </xsl:if>
+                                                                                                </xsl:if>
+                                                                                        </TEXTAREA>
                                                                                 </DIV>
                                                                                 <BUTTON class="btn btn-link m-0 p-0 fontSize25 sendMsgBtn" disabled="">
                                                                                         <I class="fa fa-paper-plane"></I>
@@ -696,12 +702,18 @@
                                                                         </xsl:if>
                                                                         <xsl:if test="@exceedSentencesLimit">
                                                                                 <DIV class="height60">
-                                                                                        <SPAN>12小時內僅能發送3句話給 meQUEEN</SPAN>
+                                                                                        <SPAN>12小時後繼續聊天!!</SPAN>
                                                                                 </DIV>
                                                                         </xsl:if>
                                                                         <xsl:if test="@exceedFemaleLimit">
                                                                                 <DIV class="height60">
-                                                                                        <SPAN>升級 VIP 後可以跟更多 meQUEEN 聊天!</SPAN>
+                                                                                        <SPAN>升級與更多meQUEEN聊天吧!!</SPAN>
+                                                                                        <DIV>
+                                                                                                <A class="btn btn-link m-0 p-0" href="/upgrade.asp">
+                                                                                                        <I class="fad fa-crown me-1"></I>
+                                                                                                        <SPAN>馬上升級</SPAN>
+                                                                                                </A>
+                                                                                        </DIV>
                                                                                 </DIV>
                                                                         </xsl:if>
                                                                 </xsl:when>

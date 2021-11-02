@@ -243,7 +243,7 @@ $(document).ready(function () {
                                         $(div).attr('class', 'height60');
                                         $('DIV.inputContainer').append(div);
                                         var span = document.createElement('SPAN');
-                                        $(span).html('12小時內僅能發送3句話給 meQueen');
+                                        $(span).html('12小時後繼續聊天!!');
                                         $(div).append(span);
                                 }
                                 var divWrap = document.createElement('DIV');
