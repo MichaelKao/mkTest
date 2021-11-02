@@ -73,6 +73,11 @@ public class Servant {
 
 	private static final String EMPTY_DOCUMENT_URI = "classpath:/skeleton/default.xml";
 
+	/**
+	 * tawk.io Property ID
+	 */
+	private static final String TAWK_PROPERTY_ID = System.getenv("TAWK_PROPERTY_ID");
+
 	@Autowired
 	private Environment environment;
 
@@ -467,6 +472,20 @@ public class Servant {
 			)
 		));
 		seoElement.appendChild(googleAnalyticsElement);
+
+		Element tawkElement = document.createElement("tawk");
+		tawkElement.setAttribute("id", TAWK_PROPERTY_ID);
+		tawkElement.appendChild(document.createCDATASection(
+			String.format(
+				new BufferedReader(new InputStreamReader(
+					new ClassPathResource("skeleton/tawk.js").
+						getInputStream(),
+					UTF_8
+				)).lines().collect(Collectors.joining("\n")),
+				MEASUREMENT_ID
+			)
+		));
+		seoElement.appendChild(tawkElement);
 
 		return document;
 	}
