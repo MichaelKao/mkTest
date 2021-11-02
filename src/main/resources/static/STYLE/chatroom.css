@@ -191,11 +191,9 @@ body{
 }
 
 .userAlert {
-        background: #D63384CC;
         width: 300px;
-        border: 3px solid #FFFFFFEE;
-        box-shadow: 3px 6px 5px 0 rgba(0,0,0,0.28);
         z-index: 999;
+        background-image: linear-gradient(to right, #b8cbb8dd 0%, #b8cbb8dd 0%, #b465dadd 0%, #cf6cc9dd 33%, #ee609cdd 66%, #ee609cdd 100%);
 }
 
 @media (max-width: 300px) {

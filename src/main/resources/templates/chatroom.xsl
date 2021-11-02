@@ -543,9 +543,9 @@
                                                 </DIV>
                                                 <DIV class="messages">
                                                         <xsl:if test="@male">
-                                                                <DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 pt-0 ps-2 pe-1 pb-2 userAlert">
+                                                                <DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 pt-0 ps-2 pe-1 pb-2 userAlert imageShadow">
                                                                         <DIV class="d-flex">
-                                                                                <BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 p-0 me-2 userAlertClose" type="button">
+                                                                                <BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 pt-1 p-0 me-2 userAlertClose" type="button">
                                                                                         <I class="fal fa-times fontSize25"></I>
                                                                                 </BUTTON>
                                                                         </DIV>
@@ -572,9 +572,9 @@
                                                                 </DIV>
                                                         </xsl:if>
                                                         <xsl:if test="@female">
-                                                                <DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 pt-0 p-2 userAlert">
+                                                                <DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 pt-0 ps-2 pe-1 pb-2 userAlert primary-gradient imageShadow">
                                                                         <DIV class="d-flex">
-                                                                                <BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 p-0 me-2 userAlertClose" type="button">
+                                                                                <BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 pt-1 p-0 me-2 userAlertClose" type="button">
                                                                                         <I class="fal fa-times fontSize25"></I>
                                                                                 </BUTTON>
                                                                         </DIV>
@@ -701,12 +701,12 @@
                                                                                 </BUTTON>
                                                                         </xsl:if>
                                                                         <xsl:if test="@exceedSentencesLimit">
-                                                                                <DIV class="height60">
+                                                                                <DIV class="height60 ps-3">
                                                                                         <SPAN>12小時後繼續聊天!!</SPAN>
                                                                                 </DIV>
                                                                         </xsl:if>
                                                                         <xsl:if test="@exceedFemaleLimit">
-                                                                                <DIV class="height60">
+                                                                                <DIV class="height60 ps-3">
                                                                                         <SPAN>升級與更多meQUEEN聊天吧!!</SPAN>
                                                                                         <DIV>
                                                                                                 <A class="btn btn-link m-0 p-0" href="/upgrade.asp">
@@ -718,12 +718,12 @@
                                                                         </xsl:if>
                                                                 </xsl:when>
                                                                 <xsl:when test="@blockedBy">
-                                                                        <DIV class="height60">
+                                                                        <DIV class="height60 ps-3">
                                                                                 <SPAN>此用戶已不存在</SPAN>
                                                                         </DIV>
                                                                 </xsl:when>
                                                                 <xsl:when test="@blocking">
-                                                                        <DIV class="height60">
+                                                                        <DIV class="height60 ps-3">
                                                                                 <SPAN>您已封鎖對方</SPAN>
                                                                         </DIV>
                                                                 </xsl:when>

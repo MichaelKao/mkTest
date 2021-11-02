@@ -240,7 +240,7 @@ $(document).ready(function () {
                                         $('.textareaContainer').remove();
                                         $('BUTTON.sendMsgBtn').remove();
                                         var div = document.createElement('DIV');
-                                        $(div).attr('class', 'height60');
+                                        $(div).attr('class', 'height60 ps-3');
                                         $('DIV.inputContainer').append(div);
                                         var span = document.createElement('SPAN');
                                         $(span).html('12小時後繼續聊天!!');
@@ -717,6 +717,7 @@ $(document).ready(function () {
         function sendMessage() {
                 var chatInput = document.getElementById("chatInput");
                 var message = chatInput.value.trim();
+                $('.sendMsgBtn').attr('disabled', 'true');
 
                 if (message === "") {
                         $('.toast-body').html('請輸入訊息');

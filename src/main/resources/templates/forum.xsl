@@ -63,7 +63,7 @@
                                                                                         </DIV>
                                                                                 </DIV>
                                                                         </DIV>
-                                                                        <DIV class="gradientBg p-2 border-radius-xl">
+                                                                        <DIV class="primary-gradient p-2 border-radius-xl">
                                                                                 <DIV class="d-flex flex-wrap" id="imgBox"></DIV>
                                                                                 <INPUT class="form-control addPostTextarea mb-2 py-2 text-lg text-white" name="title" placeholder="輸入標題"/>
                                                                                 <textarea class="form-control text-white addPostTextarea" name="markdown" rows="8" placeholder="輸入內容...."></textarea>
@@ -102,7 +102,7 @@
                         </DIV>
                         <DIV class="wrap px-3 pt-6 pt-md-7 pb-3">
                                 <DIV class="mt-4 mx-auto col-md-10 col-lg-8 col-xl-6">
-                                        <BUTTON class="gradientBg w-30 ms-auto border-radius-xl py-2 m-0 shadow btn btn-link d-flex align-items-center justify-content-center bg-primary text-white" data-bs-target="#addPostModal" data-bs-toggle="modal" type="button">
+                                        <BUTTON class="primary-gradient w-30 ms-auto border-radius-xl py-2 m-0 shadow btn btn-link d-flex align-items-center justify-content-center bg-primary text-white" data-bs-target="#addPostModal" data-bs-toggle="modal" type="button">
                                                 <SPAN class="text-white cursor-pointer position-relative">
                                                         <I class="fas fa-newspaper fontSize22"></I>
                                                         <I class="fas fa-plus position-absolute text-xs top-1" style="right: -8px;"></I>
@@ -175,7 +175,7 @@
                                                                         <xsl:value-of select="date"/>
                                                                 </DIV>
                                                         </DIV>
-                                                        <DIV class="postFooter">
+                                                        <DIV class="postFooter primary-gradient">
                                                                 <DIV class="d-flex">
                                                                         <DIV class="seeComment text-white me-auto cursor-pointer">
                                                                                 <I class="fas fa-comment me-2"></I>
