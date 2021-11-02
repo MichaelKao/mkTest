@@ -31,6 +31,18 @@ LABEL.tag {
         color: #252F40;
 }
 
+.sort {
+        width: 50%;
+        text-align: center;
+        color: #D63384;
+        font-weight: bold;
+        cursor: pointer;
+}
+
+.sort.active{
+        border-bottom: 2px solid;
+}
+
 .posts {
         display: flex;
         flex-direction: column;

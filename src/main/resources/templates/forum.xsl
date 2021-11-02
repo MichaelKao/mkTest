@@ -110,8 +110,13 @@
                                                 </DIV>
                                         </DIV>
                                 </DIV>
-                                <DIV class="posts col-md-10 col-lg-8 col-xl-6 mx-auto">
+                                <DIV class="d-flex justify-content-evenly mt-4">
+                                        <SPAN class="sort active" id="popular">熱門</SPAN>
+                                        <SPAN class="sort" id="newest">最新</SPAN>
                                         <INPUT name="nextPage" type="hidden" value="1"/>
+                                        <INPUT name="sort" type="hidden" value="popular"/>
+                                </DIV>
+                                <DIV class="posts col-md-10 col-lg-8 col-xl-6 mx-auto">
                                         <xsl:for-each select="forumThreads/forumThread">
                                                 <DIV class="post">
                                                         <DIV class="header">

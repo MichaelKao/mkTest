@@ -314,6 +314,7 @@ $(document).ready(function () {
                         if ($(window).scrollTop() + $(window).height() > $(document).height() - 300) {
                                 $(window).off('scroll', handler);
                                 var $nextPage = $('INPUT[name="nextPage"]');
+                                var sort = $('INPUT[name="sort"]').val();
                                 var p = $nextPage.val();
                                 var load = document.createElement('DIV');
                                 $(load).attr('class', 'loadMore');
@@ -322,10 +323,11 @@ $(document).ready(function () {
                                         $.post(
                                                 '/forum/loadMore.json',
                                                 {
-                                                        p: p
+                                                        p: p,
+                                                        sort: sort
+
                                                 },
                                                 function (data) {
-                                                        console.log(data);
                                                         $(load).remove();
                                                         if (data.forumThread.length !== 0) {
                                                                 $nextPage.val(parseInt(p) + 1);
@@ -677,4 +679,68 @@ $(document).ready(function () {
                         });
                 });
         }
+
+        $('SPAN.sort').click(function () {
+                var span = this;
+                var anotherSpan = $(span).siblings('SPAN.sort');
+                var sort = $(span).attr('id');
+                var $nextPage = $('INPUT[name="nextPage"]');
+                var $sort = $('INPUT[name="sort"]');
+                $.post(
+                        '/forum/loadMore.json',
+                        {
+                                p: 0,
+                                sort: sort
+                        },
+                        function (data) {
+                                anotherSpan.removeClass('active');
+                                if (!$(span).hasClass('active')) {
+                                        $(span).addClass('active');
+                                }
+                                $('.posts').empty();
+                                $nextPage.val(1);
+                                $sort.val(sort);
+                                appendData(data);
+                        },
+                        'json'
+                        );
+                $(window).scroll(function handler() {
+                        clearTimeout(timeout);
+                        timeout = setTimeout(function () {
+                                if ($(window).scrollTop() + $(window).height() > $(document).height() - 300) {
+                                        $(window).off('scroll', handler);
+                                        var $nextPage = $('INPUT[name="nextPage"]');
+                                        var p = $nextPage.val();
+                                        var load = document.createElement('DIV');
+                                        $(load).attr('class', 'loadMore');
+                                        $('.posts').append(load);
+                                        if (p > 0) {
+                                                $.post(
+                                                        '/forum/loadMore.json',
+                                                        {
+                                                                p: p,
+                                                                sort: sort
+                                                        },
+                                                        function (data) {
+                                                                $(load).remove();
+                                                                if (data.forumThread.length !== 0) {
+                                                                        $nextPage.val(parseInt(p) + 1);
+                                                                        appendData(data);
+                                                                        $(window).on('scroll', handler);
+                                                                } else if (data.forumThread.length == 0) {
+                                                                        $nextPage.val(-1);
+                                                                        var div = document.createElement('DIV');
+                                                                        $(div).attr('class', 'text-center text-xs mt-4');
+                                                                        $(div).append('沒有更多文章囉！');
+                                                                        $('.posts').append(div);
+                                                                        $(window).off('scroll', handler);
+                                                                }
+                                                        },
+                                                        'json'
+                                                        );
+                                        }
+                                }
+                        }, 50);
+                });
+        });
 });

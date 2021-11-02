@@ -1,9 +1,11 @@
 package tw.musemodel.dingzhiqingren.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.TransformerException;
@@ -81,7 +83,7 @@ public class ForumController {
         @GetMapping(path = "/")
         @ResponseBody
         @Secured({Servant.ROLE_ADVENTURER})
-        ModelAndView index(@RequestParam(defaultValue = "1") int p, @RequestParam(defaultValue = "10") int s, Authentication authentication, Locale locale) throws TransformerException, IOException {
+        ModelAndView index(@RequestParam(defaultValue = "1") int p, @RequestParam(defaultValue = "2") int s, Authentication authentication, Locale locale) throws TransformerException, IOException {
                 Lover me = loverService.loadByUsername(
                         authentication.getName()
                 );
@@ -91,7 +93,7 @@ public class ForumController {
                         return Servant.redirectToProfile();
                 }
 
-                List<ForumThread> list = forumService.readAllThreads(
+                List<ForumThread> list = forumService.readAllThreadsSortByPopular(
                         me.getGender(),
                         p < 1 ? 0 : p - 1,
                         s
@@ -120,17 +122,29 @@ public class ForumController {
         @PostMapping(path = "/loadMore.json")
         @ResponseBody
         @Secured({Servant.ROLE_ADVENTURER})
-        String loadMore(@RequestParam int p, @RequestParam(defaultValue = "10") int s, Authentication authentication, Locale locale) throws TransformerException, IOException {
+        String loadMore(@RequestParam int p, @RequestParam(defaultValue = "2") int s, @RequestParam String sort,
+                Authentication authentication, Locale locale) throws TransformerException, IOException {
 
                 Lover me = loverService.loadByUsername(
                         authentication.getName()
                 );
 
-                List<ForumThread> list = forumService.readAllThreads(
-                        me.getGender(),
-                        p,
-                        s
-                );
+                List<ForumThread> list = new ArrayList<>();
+                if (Objects.equals(sort, "popular")) {
+                        list = forumService.readAllThreadsSortByPopular(
+                                me.getGender(),
+                                p,
+                                s
+                        );
+                }
+
+                if (Objects.equals(sort, "newest")) {
+                        list = forumService.readAllThreadsSortByNewest(
+                                me.getGender(),
+                                p,
+                                s
+                        );
+                }
 
                 return forumService.loadMoreForumThread(
                         me,
@@ -146,7 +160,7 @@ public class ForumController {
                         authentication.getName()
                 );
 
-                List<ForumThread> list = forumService.readAllThreads(
+                List<ForumThread> list = forumService.readAllThreadsSortByPopular(
                         me.getGender(),
                         p < 1 ? 0 : p - 1,
                         s
