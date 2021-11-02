@@ -83,7 +83,7 @@ public class ForumController {
         @GetMapping(path = "/")
         @ResponseBody
         @Secured({Servant.ROLE_ADVENTURER})
-        ModelAndView index(@RequestParam(defaultValue = "1") int p, @RequestParam(defaultValue = "2") int s, Authentication authentication, Locale locale) throws TransformerException, IOException {
+        ModelAndView index(@RequestParam(defaultValue = "1") int p, @RequestParam(defaultValue = "10") int s, Authentication authentication, Locale locale) throws TransformerException, IOException {
                 Lover me = loverService.loadByUsername(
                         authentication.getName()
                 );
@@ -122,7 +122,7 @@ public class ForumController {
         @PostMapping(path = "/loadMore.json")
         @ResponseBody
         @Secured({Servant.ROLE_ADVENTURER})
-        String loadMore(@RequestParam int p, @RequestParam(defaultValue = "2") int s, @RequestParam String sort,
+        String loadMore(@RequestParam int p, @RequestParam(defaultValue = "10") int s, @RequestParam String sort,
                 Authentication authentication, Locale locale) throws TransformerException, IOException {
 
                 Lover me = loverService.loadByUsername(
