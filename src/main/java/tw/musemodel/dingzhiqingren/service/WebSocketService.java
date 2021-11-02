@@ -561,7 +561,7 @@ public class WebSocketService {
                 }
                 // 男生當天傳的女生清單
                 List<Lover> list = loverService.maleHasSentFemaleListWithinOneDay(male);
-                if ((loverService.isVIP(male) || loverService.isVVIP(male) || loverService.isTrial(male))) {
+                if (gender && ((loverService.isVIP(male) || loverService.isVVIP(male) || loverService.isTrial(male)))) {
                         if (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse()) && lineGiven.getResponse()
                                 || lessThan3MsgsWithin12Hrs(male, female)) {
                                 documentElement.setAttribute(
