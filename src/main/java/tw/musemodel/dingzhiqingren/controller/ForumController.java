@@ -138,8 +138,8 @@ public class ForumController {
                         );
                 }
 
-                if (Objects.equals(sort, "newest")) {
-                        list = forumService.readAllThreadsSortByNewest(
+                if (Objects.equals(sort, "latest")) {
+                        list = forumService.readAllThreadsSortByLatest(
                                 me.getGender(),
                                 p,
                                 s

@@ -1,6 +1,10 @@
 $(document).ready(function () {
         $(window).scrollTop(0);
 
+        $('BUTTON.scrollTopFloatBtn').click(function () {
+                $(window).scrollTop(0);
+        });
+
         imgUpload({
                 inputId: 'file', //input框id
                 imgBox: 'imgBox' //圖片容器id

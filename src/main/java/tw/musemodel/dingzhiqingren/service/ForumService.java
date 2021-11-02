@@ -86,7 +86,7 @@ public class ForumService {
         private Resource forumThreadsSortByPopularResource;
 
         @Value("classpath:sql/男女论坛_最新.sql")
-        private Resource forumThreadsSortByNewestResource;
+        private Resource forumThreadsSortByLatestResource;
 
         /**
          * 创建论坛绪及插图。
@@ -241,7 +241,7 @@ public class ForumService {
         }
 
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-        public List<ForumThread> readAllThreadsSortByNewest(boolean gender, int page, int size) {
+        public List<ForumThread> readAllThreadsSortByLatest(boolean gender, int page, int size) {
                 List<Long> forumIds = jdbcTemplate.query(
                         (Connection connection) -> {
                                 PreparedStatement preparedStatement;
@@ -249,7 +249,7 @@ public class ForumService {
                                         preparedStatement = connection.prepareStatement(
                                                 FileCopyUtils.copyToString(
                                                         new InputStreamReader(
-                                                                forumThreadsSortByNewestResource.getInputStream(),
+                                                                forumThreadsSortByLatestResource.getInputStream(),
                                                                 Servant.UTF_8
                                                         )
                                                 )
