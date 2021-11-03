@@ -251,6 +251,7 @@ $(document).ready(function () {
                 var value = $textarea.val();
                 var $comments = $(btn).closest('DIV.postFooter').find('DIV.comments');
                 var $commentCount = $(btn).closest('DIV.postFooter').find('SPAN.commentCount');
+                var nickname = $('SPAN.selfNickname').html();
                 var profileImage = $(btn).closest('DIV').siblings('DIV.avatar').find('IMG').attr('src');
                 var forumIdentifier = $(btn).closest('DIV').siblings('INPUT[name="forumIdentifier"]').val();
                 $.post(
@@ -284,7 +285,7 @@ $(document).ready(function () {
                                 $(flexComment).append(commentMeta);
                                 var name = document.createElement('DIV');
                                 $(name).attr('class', 'me-1 text-bold');
-                                $(name).append('艾瑪');
+                                $(name).append(nickname);
                                 $(commentMeta).append(name);
                                 var i = document.createElement('I');
                                 $(i).attr('class', 'fas fa-shield-check me-1');

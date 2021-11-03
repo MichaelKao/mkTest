@@ -422,6 +422,15 @@ public class DashboardController {
                 return modelAndView;
         }
 
+        /**
+         * 新增討論區文章 Hashtag
+         *
+         * @param authentication
+         * @return
+         * @throws SAXException
+         * @throws IOException
+         * @throws ParserConfigurationException
+         */
         @GetMapping(path = "/genHashtags.asp")
         @Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
         ModelAndView genHashtags(Authentication authentication) throws SAXException, IOException, ParserConfigurationException {
@@ -1338,6 +1347,14 @@ public class DashboardController {
                 return jsonObject.toString();
         }
 
+        /**
+         * 手動升級 VIP
+         *
+         * @param lover
+         * @param date
+         * @param authentication
+         * @return
+         */
         @PostMapping(path = "/upgradeVip.json")
         @ResponseBody
         String upgradeVip(@RequestParam Lover lover, @RequestParam Date date, Authentication authentication) {
@@ -1358,5 +1375,27 @@ public class DashboardController {
                                 toJSONObject().toString();
                 }
                 return jsonObject.toString();
+        }
+
+        @GetMapping(path = "/groupMsg.asp")
+        @Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+        ModelAndView groupMsg(Authentication authentication) throws SAXException, IOException, ParserConfigurationException {
+                Document document = dashboardService.mePointsRecords(
+                        authentication,
+                        Locale.TAIWAN//台湾化
+                );
+
+                document.getDocumentElement().setAttribute(
+                        "title",
+                        messageSource.getMessage(
+                                "title.groupMsg",
+                                null,
+                                Locale.TAIWAN//台湾化
+                        )
+                );
+
+                ModelAndView modelAndView = new ModelAndView("dashboard/groupMsg");
+                modelAndView.getModelMap().addAttribute(document);
+                return modelAndView;
         }
 }
