@@ -1,0 +1,41 @@
+.label{
+        width: 60px;
+        margin: 0 5px;
+        text-align: center;
+        line-height: 33px;
+}
+
+.label a {
+        display: block;
+        border: 1px solid #DDDDDD;
+        cursor: pointer;
+        font-size: 25px;
+        font-weight: bold;
+        border-radius: 20px;
+}
+
+.label a:hover,
+.label a:active,
+#submitTime:hover,
+#submitTime:active {
+        background-color: #d63384;
+        color: #FFFFFF !important;
+}
+
+.set{
+        text-align: center;
+        font-weight: bold;
+        border: transparent;
+        background: transparent;
+}
+
+#submitTime{
+        text-align:center;
+        line-height:33px;
+        border:1px solid #DDDDDD;
+        width:130px;
+        margin:auto;
+        border-radius:20px;
+        cursor:pointer;
+        font-weight:bold;
+}

@@ -25,7 +25,8 @@
                         </TITLE>
                         <xsl:call-template name="dashHeadLinkTags"/>
                         <LINK href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet"/>
-                        <LINK href="/STYLE/accountsOfTheDay.css" rel="stylesheet"/>
+                        <LINK href="/STYLE/datepicker.css" rel="stylesheet"/>
+                        <STYLE>.nav.nav-pills {background: #EDEDED;}</STYLE>
                 </HEAD>
                 <BODY class="g-sidenav-show bg-gray-100">
                         <xsl:call-template name="dashSideNavBar"/>
