@@ -52,7 +52,7 @@
                                                                                 <img alt="self-profileImage" class="avatar shadow me-2" src="{self/@profileImage}"/>
                                                                                 <DIV class="username">
                                                                                         <DIV class="name">
-                                                                                                <SPAN>
+                                                                                                <SPAN class="selfNickname">
                                                                                                         <xsl:value-of select="self/@nickname"/>
                                                                                                 </SPAN>
                                                                                                 <I class="fas fa-shield-check ms-1">

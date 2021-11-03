@@ -73,6 +73,7 @@ import tw.musemodel.dingzhiqingren.service.Servant;
 @RequestMapping("/dashboard")
 public class DashboardController {
 
+	<<<<<<< HEAD
 	private final static Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
 
 	@Autowired
@@ -1358,6 +1359,28 @@ public class DashboardController {
 				toJSONObject().toString();
 		}
 		return jsonObject.toString();
+	}
+
+	@GetMapping(path = "/groupMsg.asp")
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	ModelAndView groupMsg(Authentication authentication) throws SAXException, IOException, ParserConfigurationException {
+		Document document = dashboardService.mePointsRecords(
+			authentication,
+			Locale.TAIWAN//台湾化
+		);
+
+		document.getDocumentElement().setAttribute(
+			"title",
+			messageSource.getMessage(
+				"title.groupMsg",
+				null,
+				Locale.TAIWAN//台湾化
+			)
+		);
+
+		ModelAndView modelAndView = new ModelAndView("dashboard/groupMsg");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
 	}
 
 	/**
