@@ -174,6 +174,11 @@ public class Servant {
 	public static final String ROLE_ADVENTURER = "ROLE_YONGHU";
 
 	/**
+	 * 小编
+	 */
+	public static final String ROLE_MODERATOR = "ROLE_XIAOBIAN";
+
+	/**
 	 * 静态资源网域
 	 */
 	public static final String SCHEME_HTTPS = "https";

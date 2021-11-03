@@ -50,6 +50,19 @@ public interface LoverRepository extends JpaRepository<Lover, Integer>, JpaSpeci
 	public List<Lover> findByGender(Boolean gender);
 
 	/**
+	 * @param gender 性别
+	 * @return 用户号们
+	 */
+	public List<Lover> findByGenderAndFakeFalse(boolean gender);
+
+	/**
+	 * @param gender 性别
+	 * @param registered 註冊时间
+	 * @return 用户号们
+	 */
+	public List<Lover> findByGenderAndFakeFalseAndRegisteredAfter(boolean gender, Date registered);
+
+	/**
 	 * @param identifier 识别码
 	 * @return 情人
 	 */

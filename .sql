@@ -1123,3 +1123,6 @@ GROUP BY"lun_tan"."id"
 ORDER BY"shi_chuo"DESC
 -- https://stackoverflow.com/questions/17193313/
 */
+
+INSERT INTO"shen_fen"("jue_se")VALUES
+(E'ROLE_XIAOBIAN');-- 小编
