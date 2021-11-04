@@ -42,7 +42,7 @@
                                         <DIV class="modal-content">
                                                 <DIV class="modal-body p-2">
                                                         <DIV class="d-flex">
-                                                                <BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+                                                                <BUTTON class="btn btn-link ms-auto fontSize22 me-1 m-0 p-0" data-bs-dismiss="modal" type="button">
                                                                         <I class="fal fa-times"></I>
                                                                 </BUTTON>
                                                         </DIV>
@@ -69,7 +69,7 @@
                                                                                 <textarea class="form-control text-white addPostTextarea" name="markdown" rows="8" placeholder="輸入內容...."></textarea>
                                                                                 <DIV class="d-flex my-2">
                                                                                         <LABEL class="m-0">
-                                                                                                <INPUT accept="image/*" class="sr-only" id="file" multiple="" name="illustrations" type="file"/>
+                                                                                                <INPUT accept="image/*" class="sr-only" id="newPost" multiple="" name="illustrations" type="file"/>
                                                                                                 <SPAN class="addImages text-white cursor-pointer position-relative ms-1">
                                                                                                         <I class="fas fa-images fontSize22" aria-hidden="true"></I>
                                                                                                         <I class="fas fa-plus position-absolute text-xs addIcon" aria-hidden="true"></I>
@@ -79,8 +79,8 @@
                                                                                 <DIV class="d-flex flex-wrap mt-1 justify-content-start">
                                                                                         <xsl:for-each select="forumThreadTag">
                                                                                                 <DIV class="form-check p-0">
-                                                                                                        <INPUT class="form-check-input" id="service{@id}" name="hashTag" type="radio" value="{@id}"/>
-                                                                                                        <LABEL class="custom-control-label tag" for="service{@id}">
+                                                                                                        <INPUT class="form-check-input" id="hashTag{@id}" name="hashTag" type="radio" value="{@id}"/>
+                                                                                                        <LABEL class="custom-control-label tag" for="hashTag{@id}">
                                                                                                                 <SPAN>#</SPAN>
                                                                                                                 <SPAN>
                                                                                                                         <xsl:value-of select="."/>
@@ -94,6 +94,57 @@
                                                         </DIV>
                                                         <DIV class="text-center">
                                                                 <BUTTON class="btn btn-outline-primary btn-round mx-1 px-3 py-2 mb-1" id="postBtn" type="button">發佈</BUTTON>
+                                                                <BUTTON class="btn btn-outline-dark btn-round mx-1 px-3 py-2 m-1" data-bs-dismiss="modal" type="button">取消</BUTTON>
+                                                        </DIV>
+                                                </DIV>
+                                        </DIV>
+                                </DIV>
+                        </DIV>
+                        <DIV class="modal fade" id="editPostModal">
+                                <DIV class="modal-dialog modal-dialog-centered">
+                                        <DIV class="modal-content">
+                                                <DIV class="modal-body p-2">
+                                                        <DIV class="d-flex">
+                                                                <BUTTON class="btn btn-link ms-auto fontSize22 me-1 m-0 p-0" data-bs-dismiss="modal" type="button">
+                                                                        <I class="fal fa-times"></I>
+                                                                </BUTTON>
+                                                        </DIV>
+                                                        <DIV class="my-2 text-center">
+                                                                <DIV class="text-bold text-dark mb-2">
+                                                                        <I class="fad fa-edit fontSize22 me-2"></I>
+                                                                        <SPAN>編輯貼文</SPAN>
+                                                                </DIV>
+                                                                <DIV class="primary-gradient p-2 border-radius-xl">
+                                                                        <DIV class="d-flex flex-wrap" id="imgOriginalBox"></DIV>
+                                                                        <DIV class="d-flex flex-wrap" id="imgEditBox"></DIV>
+                                                                        <INPUT class="form-control addPostTextarea mb-2 py-2 text-lg text-white" name="title" placeholder="輸入標題"/>
+                                                                        <textarea class="form-control text-white addPostTextarea" name="markdown" rows="8" placeholder="輸入內容...."></textarea>
+                                                                        <DIV class="d-flex my-2">
+                                                                                <LABEL class="m-0">
+                                                                                        <INPUT accept="image/*" class="sr-only" id="editPost" multiple="" name="illustrations" type="file"/>
+                                                                                        <SPAN class="addImages text-white cursor-pointer position-relative ms-1">
+                                                                                                <I class="fas fa-images fontSize22" aria-hidden="true"></I>
+                                                                                                <I class="fas fa-plus position-absolute text-xs addIcon" aria-hidden="true"></I>
+                                                                                        </SPAN>
+                                                                                </LABEL>
+                                                                        </DIV>
+                                                                        <DIV class="d-flex flex-wrap mt-1 justify-content-start">
+                                                                                <xsl:for-each select="forumThreadTag">
+                                                                                        <DIV class="form-check p-0">
+                                                                                                <INPUT class="form-check-input" id="editHashTag{@id}" name="editHashTag" type="radio" value="{@id}"/>
+                                                                                                <LABEL class="custom-control-label tag" for="editHashTag{@id}">
+                                                                                                        <SPAN>#</SPAN>
+                                                                                                        <SPAN>
+                                                                                                                <xsl:value-of select="."/>
+                                                                                                        </SPAN>
+                                                                                                </LABEL>
+                                                                                        </DIV>
+                                                                                </xsl:for-each>
+                                                                        </DIV>
+                                                                </DIV>
+                                                        </DIV>
+                                                        <DIV class="text-center">
+                                                                <BUTTON class="btn btn-outline-primary btn-round mx-1 px-3 py-2 m-1" id="editBtn" type="button">完成編輯</BUTTON>
                                                                 <BUTTON class="btn btn-outline-dark btn-round mx-1 px-3 py-2 m-1" data-bs-dismiss="modal" type="button">取消</BUTTON>
                                                         </DIV>
                                                 </DIV>
@@ -117,6 +168,10 @@
                                         <SPAN class="sort" id="latest">
                                                 <I class="fad fa-newspaper me-1"></I>
                                                 <SPAN>最新</SPAN>
+                                        </SPAN>
+                                        <SPAN class="sort" id="mine">
+                                                <I class="fad fa-user me-1"></I>
+                                                <SPAN>個人</SPAN>
                                         </SPAN>
                                         <INPUT name="nextPage" type="hidden" value="1"/>
                                         <INPUT name="sort" type="hidden" value="popular"/>
@@ -143,6 +198,17 @@
                                                                                 </DIV>
                                                                         </DIV>
                                                                 </DIV>
+                                                                <xsl:if test="author/@identifier = /document/self/@identifier">
+                                                                        <A class="btn btn-link m-0 p-2" data-bs-toggle="dropdown">
+                                                                                <I class="fal fa-ellipsis-v fontSize30 cursor-pointer"></I>
+                                                                        </A>
+                                                                        <DIV class="dropdown-menu primary-gradient shadow">
+                                                                                <BUTTON class="dropdown-item text-white openEditModal" data-bs-target="#editPostModal" data-bs-toggle="modal">
+                                                                                        <I class="fad fa-edit fontSize22 cursor-pointer"></I>
+                                                                                        <SPAN class="ms-2">編輯貼文</SPAN>
+                                                                                </BUTTON>
+                                                                        </DIV>
+                                                                </xsl:if>
                                                         </DIV>
                                                         <DIV class="hashtags">
                                                                 <xsl:for-each select="hashTag">
@@ -186,7 +252,8 @@
                                                                 </DIV>
                                                                 <DIV class="comments mt-3" style="display: none;">
                                                                         <xsl:for-each select="comments/comment">
-                                                                                <DIV class="comment d-flex mb-2">
+                                                                                <DIV class="comment d-flex mb-4">
+                                                                                        <INPUT name="commentIdentifier" type="hidden" value="{@identifier}"/>
                                                                                         <DIV class="flex-shrink-0">
                                                                                                 <DIV class="avatar rounded-circle">
                                                                                                         <IMG alt="avatarImg" class="avatarImg" src="{commenter/@commenterProfileImage}"/>
@@ -209,6 +276,17 @@
                                                                                                 <DIV class="commentBody text-dark text-sm text-white">
                                                                                                         <xsl:value-of disable-output-escaping="yes" select="."/>
                                                                                                 </DIV>
+                                                                                                <xsl:if test="commenter/@commenterIdentifier = /document/self/@identifier">
+                                                                                                        <TEXTAREA class="form-control text-white commentTextarea w-80 d-none" rows="1" placeholder="新增留言..."></TEXTAREA>
+                                                                                                        <BUTTON class="btn btn-link m-0 p-0 text-xs ms-auto text-bold text-white opacity-8 editComment">
+                                                                                                                <SPAN>編輯內容</SPAN>
+                                                                                                                <I class="far fa-pen ms-1"></I>
+                                                                                                        </BUTTON>
+                                                                                                        <BUTTON class="btn btn-link m-0 p-0 text-xs ms-auto text-bold text-white opacity-8 finishEditComment d-none">
+                                                                                                                <SPAN>完成編輯</SPAN>
+                                                                                                                <I class="far fa-check ms-1"></I>
+                                                                                                        </BUTTON>
+                                                                                                </xsl:if>
                                                                                         </DIV>
                                                                                 </DIV>
                                                                         </xsl:for-each>

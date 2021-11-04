@@ -29,7 +29,7 @@ LABEL.tag {
         cursor: pointer;
 }
 
-:checked + LABEL.tag {
+INPUT[type="radio"]:checked + LABEL.tag {
         background: #FFFFFF;
         border: 1px solid #FFFFFF;
         color: #252F40;
@@ -126,10 +126,9 @@ TEXTAREA.commentTextarea {
         background: transparent;
         resize: none;
         border: 1px solid white;
-        border-radius: 25px;
-        overflow: hidden;
-        height: 50px;
-        padding-right: 45px;
+        border-radius: 30px;
+        height: 55px;
+        padding: 5px 45px 5px 20px;
 }
 
 TEXTAREA.commentTextarea:focus {
@@ -153,7 +152,7 @@ INPUT.addPostTextarea {
         box-shadow: none;
 }
 
-.addPostTextarea::-webkit-scrollbar {
+.addPostTextarea::-webkit-scrollbar, .commentTextarea::-webkit-scrollbar {
         display: none;
 }
 
@@ -287,4 +286,9 @@ IMG.lightBoxImg {
 
 @keyframes spin {
         100% { transform: rotate(-360deg) }
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+        background-color: #FFFFFF55;
+        font-weight: bold;
 }

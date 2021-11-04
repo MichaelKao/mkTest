@@ -1,19 +1,21 @@
 $(document).ready(function () {
         $(window).scrollTop(0);
-
         $('BUTTON.scrollTopFloatBtn').click(function () {
                 $(window).scrollTop(0);
         });
-
         imgUpload({
-                inputId: 'file', //input框id
+                inputId: 'newPost', //input框id
                 imgBox: 'imgBox' //圖片容器id
         });
+        imgUpload({
+                inputId: 'editPost', //input框id
+                imgBox: 'imgEditBox' //圖片容器id
+        });
         var imgSrc = []; //圖片路徑
-        var imgFile = []; //文件流
         var imgName = []; //圖片名字
+        var imgFile = []; //文件流
 
-        $(postBtn).on('click', function () {
+        $('#postBtn').on('click', function () {
                 newPost(imgFile);
         });
         //選擇圖片
@@ -35,7 +37,7 @@ $(document).ready(function () {
 
         //圖片展示
         function addNewContent(obj) {
-                $(imgBox).html('');
+                $(obj).html('');
                 for (var a = 0; a < imgSrc.length; a++) {
                         var imgContainer = document.createElement('DIV');
                         $(imgContainer).attr('class', 'imgContainer m-1 position-relative');
@@ -243,9 +245,8 @@ $(document).ready(function () {
                         $btn.attr('disabled', 'true');
                 }
         });
-        $('.commentBtn').click(function (e) {
-                e.preventDefault(e);
-                var btn = this;
+
+        function commentBtn(btn) {
                 $(btn).attr('disabled', 'true');
                 var $textarea = $(btn).siblings('TEXTAREA');
                 var value = $textarea.val();
@@ -262,11 +263,18 @@ $(document).ready(function () {
                         },
                         function (data) {
                                 var div = document.createElement('DIV');
-                                $(div).attr('class', 'comment d-flex mb-2');
+                                $(div).attr('class', 'comment d-flex mb-4');
                                 $comments.prepend(div);
                                 var flexAvatar = document.createElement('DIV');
                                 $(flexAvatar).attr('class', 'flex-shrink-0');
                                 $(div).append(flexAvatar);
+                                var commentIdentifier = document.createElement('INPUT');
+                                $(commentIdentifier).attr({
+                                        'name': 'commentIdentifier',
+                                        'type': 'hidden',
+                                        'value': data.identifier
+                                });
+                                $(div).append(commentIdentifier);
                                 var avatar = document.createElement('DIV');
                                 $(avatar).attr('class', 'avatar rounded-circle');
                                 $(flexAvatar).append(avatar);
@@ -307,14 +315,49 @@ $(document).ready(function () {
                                         $comments.toggleClass('open');
                                 }
                                 $commentCount.html(parseInt($commentCount.html()) + 1);
+
+                                var editTextarea = document.createElement('TEXTAREA');
+                                $(editTextarea).attr({
+                                        'class': 'form-control text-white commentTextarea w-80 d-none',
+                                        'row': '1',
+                                        'placeholder': '新增留言...'
+                                });
+                                $(flexComment).append(editTextarea);
+                                var editBtn = document.createElement('BUTTON');
+                                $(editBtn).attr('class', 'btn btn-link m-0 p-0 text-xs ms-auto text-bold text-white opacity-8 editComment');
+                                $(flexComment).append(editBtn);
+                                var editSpan = document.createElement('SPAN');
+                                $(editSpan).append('編輯內容');
+                                $(editBtn).append(editSpan);
+                                var editI = document.createElement('I');
+                                $(editI).attr('class', 'far fa-pen ms-1');
+                                $(editBtn).append(editI);
+                                var finishEditBtn = document.createElement('BUTTON');
+                                $(finishEditBtn).attr('class', 'btn btn-link m-0 p-0 text-xs ms-auto text-bold text-white opacity-8 finishEditComment d-none');
+                                $(flexComment).append(finishEditBtn);
+                                var finishEditSpan = document.createElement('SPAN');
+                                $(finishEditSpan).append('完成編輯');
+                                $(finishEditBtn).append(finishEditSpan);
+                                var finishEditI = document.createElement('I');
+                                $(finishEditI).attr('class', 'far fa-check ms-1');
+                                $(finishEditBtn).append(finishEditI);
+                                $(editBtn).click(function () {
+                                        editComment(editBtn);
+                                });
+                                $(finishEditBtn).click(function () {
+                                        finishEditComment(finishEditBtn);
+                                });
                         },
                         'json'
                         );
+        }
+        $('.commentBtn').click(function (e) {
+                e.preventDefault(e);
+                var btn = this;
+                commentBtn(btn);
         });
-
         var timeout;
         window.addEventListener('scroll', handler);
-
         function handler() {
                 clearTimeout(timeout);
                 timeout = setTimeout(function () {
@@ -361,14 +404,47 @@ $(document).ready(function () {
                         var postDiv = document.createElement('DIV');
                         $(postDiv).attr('class', 'post');
                         $('.posts').append(postDiv);
-
                         var headerDiv = document.createElement('DIV');
                         $(headerDiv).attr('class', 'header');
                         $(postDiv).append(headerDiv);
-
                         var leftDiv = document.createElement('DIV');
                         $(leftDiv).attr('class', 'left');
                         $(headerDiv).append(leftDiv);
+
+                        if (data.seenerIdentifier === forum.authorIdentifier) {
+                                var dropA = document.createElement('A');
+                                $(dropA).attr({
+                                        'class': 'btn btn-link m-0 p-2',
+                                        'data-bs-toggle': 'dropdown',
+
+                                });
+                                $(headerDiv).append(dropA);
+                                var dropI = document.createElement('I');
+                                $(dropI).attr('class', 'fal fa-ellipsis-v fontSize30 cursor-pointer');
+                                $(dropA).append(dropI);
+                                var dropDiv = document.createElement('DIV');
+                                $(dropDiv).attr('class', 'dropdown-menu primary-gradient shadow');
+                                $(headerDiv).append(dropDiv);
+                                var dropBtn = document.createElement('BUTTON');
+                                $(dropBtn).attr({
+                                        'class': 'dropdown-item text-white openEditModal',
+                                        'data-bs-target': '#editPostModal',
+                                        'data-bs-toggle': 'modal'
+
+                                });
+                                $(dropDiv).append(dropBtn)
+                                var dropBtnI = document.createElement('I');
+                                $(dropBtnI).attr('class', 'fad fa-edit fontSize22 cursor-pointer');
+                                $(dropBtn).append(dropBtnI);
+                                var dropBtnSpan = document.createElement('SPAN');
+                                $(dropBtnSpan).attr('class', 'ms-2');
+                                $(dropBtnSpan).append('編輯貼文');
+                                $(dropBtn).append(dropBtnSpan);
+                                $(dropBtn).click(function () {
+                                        openEditModal(dropBtn);
+                                });
+                        }
+
                         var avatarImg = document.createElement('IMG');
                         $(avatarImg).attr({
                                 'alt': 'avatarImg',
@@ -395,7 +471,6 @@ $(document).ready(function () {
                                 $(reliefI).addClass('text-success');
                         }
                         $(nameDiv).append(reliefI);
-
                         var hashTagsDiv = document.createElement('DIV');
                         $(hashTagsDiv).attr('class', 'hashtags');
                         $(postDiv).append(hashTagsDiv);
@@ -405,7 +480,6 @@ $(document).ready(function () {
                                 $(badgeDiv).append('#' + hashtag);
                                 $(hashTagsDiv).append(badgeDiv);
                         });
-
                         var contentDiv = document.createElement('DIV');
                         $(contentDiv).attr('class', 'content');
                         $(postDiv).append(contentDiv);
@@ -496,7 +570,6 @@ $(document).ready(function () {
                         $(dateDiv).attr('class', 'date text-xs text-right');
                         $(dateDiv).append(forum.date);
                         $(contentDiv).append(dateDiv);
-
                         var postFooterDiv = document.createElement('DIV');
                         $(postFooterDiv).attr('class', 'postFooter primary-gradient');
                         $(postDiv).append(postFooterDiv);
@@ -518,7 +591,6 @@ $(document).ready(function () {
                         $(commentSpan).attr('class', 'commentCount');
                         $(commentSpan).html(forum.commentCount);
                         $(seeCommentDiv).append(commentSpan);
-
                         var commentsDiv = document.createElement('DIV');
                         $(commentsDiv).attr({
                                 'class': 'comments mt-3',
@@ -527,8 +599,15 @@ $(document).ready(function () {
                         $(postFooterDiv).append(commentsDiv);
                         forum.comment.forEach(function (comment) {
                                 var commentDiv = document.createElement('DIV');
-                                $(commentDiv).attr('class', 'comment d-flex mb-2');
+                                $(commentDiv).attr('class', 'comment d-flex mb-4');
                                 $(commentsDiv).append(commentDiv);
+                                var commentIdentifier = document.createElement('INPUT');
+                                $(commentIdentifier).attr({
+                                        'name': 'commentIdentifier',
+                                        'type': 'hidden',
+                                        'value': comment.identifier
+                                });
+                                $(commentDiv).append(commentIdentifier);
                                 var avatarFlexDiv = document.createElement('DIV');
                                 $(avatarFlexDiv).attr('class', 'flex-shrink-0');
                                 $(commentDiv).append(avatarFlexDiv);
@@ -562,13 +641,45 @@ $(document).ready(function () {
                                 $(dateSpan).attr('class', 'text-xs');
                                 $(dateSpan).append(comment.date);
                                 $(commentMetaDiv).append(dateSpan);
-
                                 var commentBodyDiv = document.createElement('DIV');
                                 $(commentBodyDiv).attr('class', 'commentBody text-dark text-sm text-white');
                                 $(commentBodyDiv).append(comment.content);
                                 $(metaFlexDiv).append(commentBodyDiv);
-                        });
 
+                                if (comment.commenterIdentifier === data.seenerIdentifier) {
+                                        var editTextarea = document.createElement('TEXTAREA');
+                                        $(editTextarea).attr({
+                                                'class': 'form-control text-white commentTextarea w-80 d-none',
+                                                'row': '1',
+                                                'placeholder': '新增留言...'
+                                        });
+                                        $(metaFlexDiv).append(editTextarea);
+                                        var editBtn = document.createElement('BUTTON');
+                                        $(editBtn).attr('class', 'btn btn-link m-0 p-0 text-xs ms-auto text-bold text-white opacity-8 editComment');
+                                        $(metaFlexDiv).append(editBtn);
+                                        var editSpan = document.createElement('SPAN');
+                                        $(editSpan).append('編輯內容');
+                                        $(editBtn).append(editSpan);
+                                        var editI = document.createElement('I');
+                                        $(editI).attr('class', 'far fa-pen ms-1');
+                                        $(editBtn).append(editI);
+                                        var finishEditBtn = document.createElement('BUTTON');
+                                        $(finishEditBtn).attr('class', 'btn btn-link m-0 p-0 text-xs ms-auto text-bold text-white opacity-8 finishEditComment d-none');
+                                        $(metaFlexDiv).append(finishEditBtn);
+                                        var finishEditSpan = document.createElement('SPAN');
+                                        $(finishEditSpan).append('完成編輯');
+                                        $(finishEditBtn).append(finishEditSpan);
+                                        var finishEditI = document.createElement('I');
+                                        $(finishEditI).attr('class', 'far fa-check ms-1');
+                                        $(finishEditBtn).append(finishEditI);
+                                        $(editBtn).click(function () {
+                                                editComment(editBtn);
+                                        });
+                                        $(finishEditBtn).click(function () {
+                                                finishEditComment(finishEditBtn);
+                                        });
+                                }
+                        });
                         var commentArea = document.createElement('DIV');
                         $(commentArea).attr('class', 'd-flex align-items-center mt-3');
                         $(postFooterDiv).append(commentArea);
@@ -589,11 +700,9 @@ $(document).ready(function () {
                                 'src': data.seenerProfileImage
                         });
                         $(commentAvatar).append(commentAvatarImg);
-
                         var commentTextarea = document.createElement('DIV');
                         $(commentTextarea).attr('class', 'w-100 ms-2 position-relative');
                         $(commentArea).append(commentTextarea);
-
                         var textarea = document.createElement('TEXTAREA');
                         $(textarea).attr({
                                 'class': 'form-control text-white commentTextarea',
@@ -620,69 +729,7 @@ $(document).ready(function () {
                         $(button).click(function (e) {
                                 e.preventDefault(e);
                                 var btn = this;
-                                $(btn).attr('disabled', 'true');
-                                var $textarea = $(btn).siblings('TEXTAREA');
-                                var value = $textarea.val();
-                                var $comments = $(btn).closest('DIV.postFooter').find('DIV.comments');
-                                var $commentCount = $(btn).closest('DIV.postFooter').find('SPAN.commentCount');
-                                var profileImage = $(btn).closest('DIV').siblings('DIV.avatar').find('IMG').attr('src');
-                                var forumIdentifier = $(btn).closest('DIV').siblings('INPUT[name="forumIdentifier"]').val();
-                                $.post(
-                                        '/forum/comment.asp',
-                                        {
-                                                forumThread: forumIdentifier,
-                                                content: value
-                                        },
-                                        function (data) {
-                                                var div = document.createElement('DIV');
-                                                $(div).attr('class', 'comment d-flex mb-2');
-                                                $comments.prepend(div);
-                                                var flexAvatar = document.createElement('DIV');
-                                                $(flexAvatar).attr('class', 'flex-shrink-0');
-                                                $(div).append(flexAvatar);
-                                                var avatar = document.createElement('DIV');
-                                                $(avatar).attr('class', 'avatar rounded-circle');
-                                                $(flexAvatar).append(avatar);
-                                                var avatarImg = document.createElement('IMG');
-                                                $(avatarImg).attr({
-                                                        'alt': 'avatarImg',
-                                                        'class': 'avatarImg',
-                                                        'src': profileImage
-                                                });
-                                                $(avatar).append(avatarImg);
-                                                var flexComment = document.createElement('DIV');
-                                                $(flexComment).attr('class', 'flex-grow-1 ms-2 ms-sm-3');
-                                                $(div).append(flexComment);
-                                                var commentMeta = document.createElement('DIV');
-                                                $(commentMeta).attr('class', 'commentMeta d-flex align-items-baseline');
-                                                $(flexComment).append(commentMeta);
-                                                var name = document.createElement('DIV');
-                                                $(name).attr('class', 'me-1 text-bold');
-                                                $(name).append('艾瑪');
-                                                $(commentMeta).append(name);
-                                                var i = document.createElement('I');
-                                                $(i).attr('class', 'fas fa-shield-check me-1');
-                                                if (data.relief === 'true') {
-                                                        $(i).addClass('text-success');
-                                                }
-                                                $(commentMeta).append(i);
-                                                var date = document.createElement('SPAN');
-                                                $(date).attr('class', 'text-xs');
-                                                $(date).append(data.created);
-                                                $(commentMeta).append(date);
-                                                var commentBody = document.createElement('DIV');
-                                                $(commentBody).attr('class', 'commentBody text-dark text-sm text-white');
-                                                $(commentBody).append(data.content);
-                                                $(flexComment).append(commentBody);
-                                                $textarea.val('');
-                                                if (!($comments.hasClass('open'))) {
-                                                        $comments.fadeToggle();
-                                                        $comments.toggleClass('open');
-                                                }
-                                                $commentCount.html(parseInt($commentCount.html()) + 1);
-                                        },
-                                        'json'
-                                        );
+                                commentBtn(btn);
                         });
                 });
         }
@@ -713,5 +760,180 @@ $(document).ready(function () {
                         'json'
                         );
                 window.addEventListener('scroll', handler);
+        });
+
+        var forumIdentifier;
+        var delImgArray = [];
+
+        function openEditModal(editBtn) {
+                var $post = $(editBtn).closest('DIV.post');
+                var $editModal = $('#editPostModal');
+                var $imgOriginalBox = $('DIV#imgOriginalBox');
+                forumIdentifier = $post.find('INPUT[name="forumIdentifier"]').val();
+                $.get(
+                        '/forum/' + forumIdentifier + '.json',
+                        function (data) {
+                                $editModal.find('INPUT[name="title"]').val(data.title);
+                                $editModal.find('TEXTAREA[name="markdown"]').val(data.markdown);
+                                $('INPUT[name="editHashTag"]').each(function () {
+                                        var input = this;
+                                        var inputVal = $(input).val();
+                                        if (data.hashtags.includes(parseInt(inputVal))) {
+                                                $(input).prop('checked', true);
+                                        } else {
+                                                $(input).prop('checked', false);
+                                        }
+                                });
+                                data.illustrations.forEach(function (illu) {
+                                        var imgContainer = document.createElement('DIV');
+                                        $(imgContainer).attr('class', 'imgContainer m-1 position-relative');
+                                        $imgOriginalBox.append(imgContainer);
+                                        var delBtn = document.createElement('BUTTON');
+                                        $(delBtn).attr({
+                                                'class': 'btn btn-link delBtn',
+                                                'data-id': illu.id,
+                                                'type': 'button'
+                                        });
+                                        $(imgContainer).append(delBtn);
+                                        $(delBtn).click(function () {
+                                                delImgArray.push(illu.id);
+                                                $(imgContainer).remove();
+                                        });
+                                        var delIcon = document.createElement('I');
+                                        $(delIcon).attr('class', 'fas fa-times-circle text-primary fontSize25');
+                                        $(delBtn).append(delIcon);
+                                        var img = document.createElement('IMG');
+                                        $(img).attr({
+                                                'alt': 'postImgs',
+                                                'class': 'border-radius-md imageShadow',
+                                                'src': illu.path,
+                                        });
+                                        $(imgContainer).append(img);
+                                        $(img).click(function () {
+                                                imgDisplay(this);
+                                        });
+                                        var input = document.createElement('INPUT');
+                                        $(input).attr({
+                                                'name': 'imgId',
+                                                'type': 'hidden',
+                                                'value': illu.id
+                                        });
+                                        $(imgContainer).append(input);
+                                });
+                        },
+                        'json'
+                        );
+        }
+        $('BUTTON.openEditModal').click(function () {
+                var editBtn = this;
+                openEditModal(editBtn);
+        });
+
+
+        $('#editBtn').click(function () {
+                var btn = this;
+                var title = $(btn).closest('DIV#editPostModal').find('INPUT[name="title"]').val();
+                var markdown = $(btn).closest('DIV#editPostModal').find('TEXTAREA[name="markdown"]').val();
+                var hashTags = [];
+                $('INPUT[name="editHashTag"]:checked').each(function () {
+                        hashTags.push($(this).val());
+                });
+                var formData = new FormData();
+                formData.append('forumIdentifier', forumIdentifier);
+                formData.append('title', title);
+                formData.append('markdown', markdown);
+                formData.append('hashTags', hashTags);
+                formData.append('delIllustrations', delImgArray);
+                for (var i = 0; i < imgFile.length; i++) {
+                        formData.append('illustrations', imgFile[i]);
+                }
+                $('DIV.loadingWrap').css('display', 'block');
+                $.ajax({
+                        method: 'post',
+                        url: '/forum/editThread.asp',
+                        data: formData,
+                        dataType: 'json',
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                        traditional: true,
+                        success: function (data) {
+                                if (data.response) {
+                                        location.reload();
+                                }
+                                if (!data.response) {
+                                        $('.toast-body').html(data.reason);
+                                        $('.toast').toast('show');
+                                        $('DIV.loadingWrap').css('display', 'none');
+                                }
+                        },
+                        error: function (err) {
+                                console.log(err);
+                                $('DIV.loadingWrap').css('display', 'none');
+                        }
+                });
+        });
+        $('#editPostModal').on('hidden.bs.modal', function () {
+                var $editModal = $('#editPostModal');
+                $editModal.find('INPUT[name="title"]').val('');
+                $editModal.find('TEXTAREA[name="markdown"]').val('');
+                $('DIV#imgOriginalBox').empty();
+                $('DIV#imgEditBox').empty();
+                forumIdentifier = '';
+                delImgArray = [];
+                imgFile = [];
+                imgSrc = [];
+                imgName = [];
+        });
+        $('#addPostModal').on('hidden.bs.modal', function () {
+                $('DIV#imgBox').empty();
+                imgFile = [];
+                imgSrc = [];
+                imgName = [];
+        });
+
+
+        function editComment(btn) {
+                var commentIdentifier = $(btn).closest('DIV.comment').find('INPUT[name="commentIdentifier"]').val();
+                $.get(
+                        '/forum/comment/' + commentIdentifier + '.json',
+                        function (data) {
+                                $(btn).siblings('TEXTAREA').val(data.content);
+                        },
+                        'json'
+                        );
+                $(btn).toggleClass('d-none');
+                $(btn).siblings('DIV.commentBody').toggleClass('d-none');
+                $(btn).siblings('BUTTON.finishEditComment').toggleClass('d-none');
+                $(btn).siblings('TEXTAREA').toggleClass('d-none');
+        }
+
+        function finishEditComment(btn) {
+                var commentIdentifier = $(btn).closest('DIV.comment').find('INPUT[name="commentIdentifier"]').val();
+                $.post(
+                        '/forum/editComment.asp',
+                        {
+                                'forumCommentIdentifier': commentIdentifier,
+                                'content': $(btn).siblings('TEXTAREA').val()
+                        },
+                        function (data) {
+                                $(btn).siblings('DIV.commentBody').html(data.result);
+                                $(btn).toggleClass('d-none');
+                                $(btn).siblings('DIV.commentBody').toggleClass('d-none');
+                                $(btn).siblings('BUTTON.editComment').toggleClass('d-none');
+                                $(btn).siblings('TEXTAREA').toggleClass('d-none');
+                        },
+                        'json'
+                        );
+        }
+
+        $('.editComment').click(function () {
+                var btn = this;
+                editComment(btn);
+        });
+
+        $('.finishEditComment').click(function () {
+                var btn = this;
+                finishEditComment(btn);
         });
 });

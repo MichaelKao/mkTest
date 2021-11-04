@@ -2,9 +2,12 @@ package tw.musemodel.dingzhiqingren.service;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import lombok.Data;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -434,6 +438,10 @@ public class ForumService {
                                         "commenterRelief",
                                         Objects.nonNull(commenter.getRelief()) ? commenter.getRelief().toString() : "false"
                                 );
+                                commenterElement.setAttribute(
+                                        "commenterIdentifier",
+                                        commenter.getIdentifier().toString()
+                                );
                         }
                 }
 
@@ -459,6 +467,9 @@ public class ForumService {
                                 Servant.STATIC_HOST,
                                 self.getProfileImage()
                         )
+                ).put(
+                        "seenerIdentifier",
+                        self.getIdentifier()
                 );
 
                 // 論壇文章
@@ -576,6 +587,10 @@ public class ForumService {
                                                 commenter.getNickname()
                                         ).
                                         put(
+                                                "commenterIdentifier",
+                                                commenter.getIdentifier()
+                                        ).
+                                        put(
                                                 "profileImage",
                                                 String.format(
                                                         "https://%s/profileImage/%s",
@@ -609,6 +624,87 @@ public class ForumService {
                 return forumThreadRepository.findOneByIdentifier(identifier);
         }
 
+        @Data
+        private class Illustration implements Serializable {
+
+                private static final long serialVersionUID = -7679921167558711132L;
+
+                private final Long id;
+
+                private final String illustrationPath;
+
+                public Illustration(Long id, String illustrationPath) {
+                        this.id = id;
+                        this.illustrationPath = illustrationPath;
+                }
+
+                @Override
+                public String toString() {
+                        try {
+                                return new JsonMapper().writeValueAsString(this);
+                        } catch (JsonProcessingException ignore) {
+                                return "null";
+                        }
+                }
+        }
+
+        /**
+         * 读取某则论坛绪。
+         *
+         * @param identifier 识别码
+         * @return 论坛绪
+         */
+        public JSONObject readOneThreadInJson(UUID identifier) {
+                JSONObject json = new JSONObject();
+                ForumThread forumThread = forumThreadRepository.findOneByIdentifier(identifier);
+                List<Short> hashtags = new ArrayList<>();
+                for (ForumThreadHashTag forumThreadHashTag : forumThreadHashTagRepository.findByForumThread(forumThread)) {
+                        hashtags.add(forumThreadHashTag.getForumThreadTag().getId());
+                }
+                JSONArray illuArray = new JSONArray();
+                for (ForumThreadIllustration forumThreadIllustration : forumThreadIllustrationRepository.findByForumThread(forumThread)) {
+                        JSONObject illuJson = new JSONObject();
+                        illuJson.put(
+                                "id",
+                                forumThreadIllustration.getId()
+                        );
+                        illuJson.put(
+                                "path",
+                                String.format(
+                                        "https://%s/forum/%s/%s",
+                                        Servant.STATIC_HOST,
+                                        forumThread.getIdentifier(),
+                                        forumThreadIllustration.getIdentifier()
+                                )
+                        );
+                        illuArray.put(illuJson);
+                }
+
+                json.
+                        put(
+                                "identifier",
+                                identifier
+                        ).
+                        put(
+                                "markdown",
+                                forumThread.getMarkdown()
+                        ).
+                        put(
+                                "title",
+                                forumThread.getTitle()
+                        ).
+                        put(
+                                "hashtags",
+                                hashtags
+                        ).
+                        put(
+                                "illustrations",
+                                illuArray
+                        );
+
+                return json;
+        }
+
         /**
          * 留言
          *
@@ -631,9 +727,132 @@ public class ForumService {
                                 Servant.toTaipeiZonedDateTime(
                                         forumThreadComment.getCreated()
                                 ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
-                        )).put(
+                        )
+                ).put(
                         "relief",
                         Objects.nonNull(commenter.getRelief()) ? commenter.getRelief().toString() : "false"
+                ).put(
+                        "identifier",
+                        forumThreadComment.getIdentifier()
                 );
+        }
+
+        public JSONObject editComment(Lover commenter, ForumThreadComment forumThreadComment, String content) {
+                if (content.isBlank()) {
+                        return new JavaScriptObjectNotation().
+                                withResponse(false).
+                                withReason("請填留言內容").toJSONObject();
+                }
+                if (!Objects.equals(commenter, forumThreadComment.getCommenter())) {
+                        return new JavaScriptObjectNotation().
+                                withResponse(false).
+                                withReason("您不是留言的人唷~").toJSONObject();
+                }
+
+                forumThreadComment.setContent(content);
+                forumThreadCommentRepository.saveAndFlush(forumThreadComment);
+
+                return new JavaScriptObjectNotation().
+                        withResponse(true).
+                        withResult(
+                                servant.markdownToHtml(forumThreadComment.getContent())
+                        ).toJSONObject();
+        }
+
+        public JSONObject editThread(Lover author, ForumThread forumThread, String title, String markdown,
+                ForumThreadTag[] hashTags, ForumThreadIllustration[] delIllustrations, Collection<MultipartFile> multipartFiles) {
+                if (title.isBlank()) {
+                        return new JavaScriptObjectNotation().
+                                withResponse(false).
+                                withReason("請填寫文章標題").toJSONObject();
+                }
+                if (markdown.isBlank()) {
+                        return new JavaScriptObjectNotation().
+                                withResponse(false).
+                                withReason("請填寫文章內容").toJSONObject();
+                }
+                if (hashTags.length == 0) {
+                        return new JavaScriptObjectNotation().
+                                withResponse(false).
+                                withReason("請選擇至少一種標籤").toJSONObject();
+                }
+                if (!Objects.equals(author, forumThread.getAuthor())) {
+                        return new JavaScriptObjectNotation().
+                                withResponse(false).
+                                withReason("您不是作者唷~").toJSONObject();
+                }
+                final String threadIdentifier = forumThread.getIdentifier().toString();
+
+                List<ForumThreadHashTag> forumThreadHashTags = forumThreadHashTagRepository.findByForumThread(forumThread);
+                for (ForumThreadHashTag forumThreadHashTag : forumThreadHashTags) {
+                        forumThreadHashTagRepository.delete(forumThreadHashTag);
+                        forumThreadHashTagRepository.flush();
+                }
+                for (ForumThreadTag forumThreadTag : hashTags) {
+                        forumThreadHashTagRepository.saveAndFlush(
+                                new ForumThreadHashTag(
+                                        forumThreadTag,
+                                        forumThread
+                                )
+                        );
+                }
+                for (ForumThreadIllustration forumThreadIllustration : delIllustrations) {
+                        forumThreadIllustrationRepository.delete(forumThreadIllustration);
+                        forumThreadIllustrationRepository.flush();
+                }
+                if (Objects.nonNull(multipartFiles)) {
+                        for (MultipartFile multipartFile : multipartFiles) {
+                                UUID identifier = UUID.randomUUID();
+                                File file = new File(
+                                        Servant.TEMPORARY_DIRECTORY,
+                                        identifier.toString()
+                                );
+
+                                try {
+                                        multipartFile.transferTo(file);
+
+                                        PutObjectRequest putObjectRequest = new PutObjectRequest(
+                                                AmazonWebServices.BUCKET_NAME,
+                                                String.format(
+                                                        "%s/%s/%s",
+                                                        DIRECTORY,
+                                                        threadIdentifier,
+                                                        identifier.toString()
+                                                ),
+                                                file
+                                        );
+                                        ObjectMetadata objectMetadata = new ObjectMetadata();
+                                        objectMetadata.setContentType(
+                                                multipartFile.getContentType()
+                                        );
+                                        putObjectRequest.setMetadata(objectMetadata);
+                                        AmazonWebServices.AMAZON_S3.putObject(
+                                                putObjectRequest
+                                        );
+
+                                        forumThreadIllustrationRepository.saveAndFlush(
+                                                new ForumThreadIllustration(
+                                                        identifier,
+                                                        forumThread
+                                                )
+                                        );
+                                } catch (IOException | IllegalStateException exception) {
+                                        LOGGER.info(
+                                                "创建论坛绪插图时发生异常❗️",
+                                                exception
+                                        );
+                                }
+
+                                file.delete();
+                        }
+                }
+
+                forumThread.setTitle(title);
+                forumThread.setMarkdown(markdown);
+                forumThreadRepository.saveAndFlush(forumThread);
+
+                return new JavaScriptObjectNotation().
+                        withResponse(true).
+                        withResult(forumThread.getId()).toJSONObject();
         }
 }

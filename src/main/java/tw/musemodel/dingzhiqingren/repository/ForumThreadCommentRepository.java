@@ -1,6 +1,7 @@
 package tw.musemodel.dingzhiqingren.repository;
 
 import java.util.Collection;
+import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import tw.musemodel.dingzhiqingren.entity.ForumThread;
@@ -17,4 +18,6 @@ public interface ForumThreadCommentRepository extends JpaRepository<ForumThreadC
         public Collection<ForumThreadComment> findByForumThreadOrderByCreatedDesc(ForumThread forumThread);
 
         public int countByForumThread(ForumThread forumThread);
+
+        public ForumThreadComment findByIdentifier(UUID identifier);
 }
