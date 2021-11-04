@@ -1,5 +1,6 @@
 package tw.musemodel.dingzhiqingren.service;
 
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -52,6 +53,8 @@ import tw.musemodel.dingzhiqingren.repository.ForumThreadHashTagRepository;
 import tw.musemodel.dingzhiqingren.repository.ForumThreadIllustrationRepository;
 import tw.musemodel.dingzhiqingren.repository.ForumThreadRepository;
 import tw.musemodel.dingzhiqingren.repository.ForumThreadTagRepository;
+import static tw.musemodel.dingzhiqingren.service.AmazonWebServices.AMAZON_S3;
+import static tw.musemodel.dingzhiqingren.service.AmazonWebServices.BUCKET_NAME;
 
 /**
  * 服务层：论坛
@@ -799,6 +802,14 @@ public class ForumService {
                 for (ForumThreadIllustration forumThreadIllustration : delIllustrations) {
                         forumThreadIllustrationRepository.delete(forumThreadIllustration);
                         forumThreadIllustrationRepository.flush();
+                        AMAZON_S3.deleteObject(new DeleteObjectRequest(
+                                String.format(
+                                        "%s/forum/%s",
+                                        BUCKET_NAME,
+                                        threadIdentifier
+                                ),
+                                forumThreadIllustration.getIdentifier().toString()
+                        ));
                 }
                 if (Objects.nonNull(multipartFiles)) {
                         for (MultipartFile multipartFile : multipartFiles) {
