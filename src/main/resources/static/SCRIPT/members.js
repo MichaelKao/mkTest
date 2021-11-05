@@ -62,13 +62,6 @@ $(document).ready(function () {
         function descendants(data) {
 
                 data.result.descendants.forEach(function (item) {
-                        var d = new Date(item.timestamp.replace(" ", "T"));
-                        var year = d.getFullYear();
-                        var month = (d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : d.getMonth() + 1;
-                        var date = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
-                        var hour = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
-                        var minute = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
-
                         let div = document.createElement('DIV');
                         $(div).attr('class', 'd-flex align-items-center w-80 mx-auto');
                         $descendants.append(div);
@@ -85,7 +78,7 @@ $(document).ready(function () {
                         $(div).append(name);
                         let timestamp = document.createElement('SPAN');
                         $(timestamp).attr('class', 'ms-auto text-xs');
-                        $(timestamp).html(year + '-' + month + '-' + date + ' ' + hour + ':' + minute);
+                        $(timestamp).append(item.timestamp);
                         $(div).append(timestamp);
                 });
 

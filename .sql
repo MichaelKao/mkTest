@@ -1126,3 +1126,17 @@ ORDER BY"shi_chuo"DESC
 
 INSERT INTO"shen_fen"("jue_se")VALUES
 (E'ROLE_XIAOBIAN');-- 小编
+
+/**
+ * 已使用的網紅體驗碼
+ */
+CREATE TABLE"shi_yong_ti_yan_ma"(
+	"id"serial8 PRIMARY KEY,
+	"guan_jian_zi_ci"int2 NOT NULL REFERENCES"lun_tan_guan_jian_zi_ci"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"lun_tan"int8 NOT NULL REFERENCES"lun_tan"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	UNIQUE("guan_jian_zi_ci","lun_tan")
+);
+COMMENT ON TABLE"lun_tan_biao_qian"IS'论坛绪标签';
+COMMENT ON COLUMN"lun_tan_biao_qian"."id"IS'主键';
+COMMENT ON COLUMN"lun_tan_biao_qian"."guan_jian_zi_ci"IS'关键字词';
+COMMENT ON COLUMN"lun_tan_biao_qian"."lun_tan"IS'论坛绪';

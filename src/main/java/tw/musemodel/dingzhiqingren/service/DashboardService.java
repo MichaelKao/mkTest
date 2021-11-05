@@ -48,6 +48,7 @@ import tw.musemodel.dingzhiqingren.repository.PrivilegeRepository;
 import tw.musemodel.dingzhiqingren.repository.RoleRepository;
 import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRepository;
 import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
+import tw.musemodel.dingzhiqingren.repository.UsedTrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
@@ -103,6 +104,9 @@ public class DashboardService {
 
         @Autowired
         private ForumThreadTagRepository forumThreadTagRepository;
+
+        @Autowired
+        private UsedTrialCodeRepository usedTrialCodeRepository;
 
         /**
          * 构建根元素。
@@ -471,6 +475,10 @@ public class DashboardService {
                         trialElement.setAttribute(
                                 "code",
                                 trialCode.getCode()
+                        );
+                        trialElement.setAttribute(
+                                "count",
+                                Integer.toString(usedTrialCodeRepository.countByTrialCode(trialCode))
                         );
 
                         documentElement.appendChild(trialElement);

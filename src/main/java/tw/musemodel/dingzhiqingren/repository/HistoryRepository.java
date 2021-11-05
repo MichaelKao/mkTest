@@ -126,4 +126,6 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
                 + "AND h.occurred >= :occurred1 "
                 + "AND h.occurred <= :occurred2 ")
         public List<Lover> findDistinctPassive(Lover initiative, Behavior behavior, Date occurred1, Date occurred2);
+
+        public History findTop1ByInitiativeAndBehavior(Lover initiative, Behavior behavior);
 }
