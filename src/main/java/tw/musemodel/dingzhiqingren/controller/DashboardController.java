@@ -446,6 +446,26 @@ public class DashboardController {
                         toString();
         }
 
+        /**
+         * 會員取得升級 VIP 的歷史紀錄
+         *
+         * @param lover
+         * @param authentication
+         * @return
+         */
+        @PostMapping(path = "/vipHistory.json")
+        @ResponseBody
+        @Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE", "ROLE_XIAOBIAN"})
+        String vipHistory(@RequestParam Lover lover, Authentication authentication) {
+                if (servant.isNull(authentication)) {
+                        return servant.mustBeAuthenticated(Locale.TAIWAN);
+                }
+
+                return loverService.
+                        getVipHistory(lover).
+                        toString();
+        }
+
         @GetMapping(path = "/genHashtags.asp")
         @Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE", "ROLE_XIAOBIAN"})
         ModelAndView genHashtags(Authentication authentication) throws SAXException, IOException, ParserConfigurationException {

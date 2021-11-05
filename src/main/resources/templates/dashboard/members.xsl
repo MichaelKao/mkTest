@@ -112,6 +112,8 @@
                                                                                 <BUTTON class="btn btn-outline-primary mx-2 px-3 py-2 mb-0 upgradeVip" type="button" disabled="">確定</BUTTON>
                                                                                 <BUTTON class="btn btn-outline-dark mx-2 px-3 py-2 mb-0" data-bs-dismiss="modal" type="button">取消</BUTTON>
                                                                         </DIV>
+                                                                        <HR class="w-80 mx-auto"/>
+                                                                        <DIV class="users mb-4"></DIV>
                                                                 </DIV>
                                                         </DIV>
                                                 </DIV>

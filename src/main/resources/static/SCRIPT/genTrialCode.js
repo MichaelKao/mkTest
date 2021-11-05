@@ -62,7 +62,6 @@ $(document).ready(function () {
                                 trialCode: $(btn).closest('DIV.trial').find('INPUT[name="trialCodeID"]').val()
                         },
                         function (data) {
-                                console.log(data);
                                 data.list.forEach(function (item, index) {
                                         var div = document.createElement('DIV');
                                         $(div).attr('class', 'd-flex align-items-center w-90 mx-auto p-1');

@@ -4318,4 +4318,50 @@ public class LoverService {
                 }
                 return jSONObject.put("list", array);
         }
+
+        @Transactional(readOnly = true)
+        public JSONObject getVipHistory(Lover lover) {
+
+                List<History> histories
+                        = historyRepository.findByInitiativeAndBehaviorInOrderByOccurredDesc(
+                                lover,
+                                Arrays.asList(new History.Behavior[]{
+                                BEHAVIOR_MONTHLY_CHARGED,
+                                BEHAVIOR_TRIAL_CODE})
+                        );
+
+                JSONObject jSONObject = new JSONObject();
+                JSONArray array = new JSONArray();
+                for (History history : histories) {
+                        Date date = history.getOccurred();
+                        String vip = null;
+                        if (Objects.equals(history.getBehavior(), BEHAVIOR_TRIAL_CODE)) {
+                                try {
+                                        vip = usedTrialCodeRepository.findByLover(lover).getTrialCode().getCode();
+                                } catch (NullPointerException e) {
+                                        vip = "單日體驗";
+                                }
+                        } else if (Objects.equals(history.getLuJie().getItemName(), "長期貴賓")) {
+                                vip = "1288";
+                        } else {
+                                vip = "1688";
+                        }
+                        JSONObject json = new JSONObject();
+                        json.
+                                put(
+                                        "vip",
+                                        vip
+                                ).
+                                put(
+                                        "date",
+                                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+                                                Servant.toTaipeiZonedDateTime(
+                                                        date
+                                                ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
+                                        )
+                                );
+                        array.put(json);
+                }
+                return jSONObject.put("list", array);
+        }
 }

@@ -128,4 +128,6 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
         public List<Lover> findDistinctPassive(Lover initiative, Behavior behavior, Date occurred1, Date occurred2);
 
         public History findTop1ByInitiativeAndBehavior(Lover initiative, Behavior behavior);
+
+        public List<History> findByInitiativeAndBehaviorInOrderByOccurredDesc(Lover initiative, Collection<Behavior> behaviors);
 }
