@@ -288,7 +288,7 @@ $(document).ready(function () {
                                 if (member.isTrial === true) {
                                         $(upgradeVipWrapDiv).append(vipWrapSpan);
                                         $(upgradeVipWrapDiv).append(vipDateDiv);
-                                        $(vipSpan).append('單日');
+                                        $(vipSpan).append(member.trialCode);
                                         $(vipDateDiv).append(member.vipExpiration);
                                 }
 

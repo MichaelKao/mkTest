@@ -58,6 +58,7 @@ import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRepository;
 import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
+import tw.musemodel.dingzhiqingren.repository.UsedTrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 import tw.musemodel.dingzhiqingren.service.DashboardService;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
@@ -107,6 +108,9 @@ public class DashboardController {
 
         @Autowired
         private ForumThreadTagRepository forumThreadTagRepository;
+
+        @Autowired
+        private UsedTrialCodeRepository usedTrialCodeRepository;
 
         /**
          * 一天內註冊的用戶
@@ -422,6 +426,13 @@ public class DashboardController {
                 return modelAndView;
         }
 
+        /**
+         * (產生體驗碼頁面)顯示體驗碼使用紀錄
+         *
+         * @param trialCode
+         * @param authentication
+         * @return
+         */
         @PostMapping(path = "/trialCodeList.json")
         @ResponseBody
         @Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE", "ROLE_XIAOBIAN"})
@@ -1125,6 +1136,11 @@ public class DashboardController {
                         }
                         if (loverService.isTrial(lover)) {
                                 member.setIsTrial(true);
+                                member.setTrialCode(
+                                        usedTrialCodeRepository.findByLover(lover).
+                                                getTrialCode().
+                                                getCode()
+                                );
                         }
                         memberList.add(member);
                 }

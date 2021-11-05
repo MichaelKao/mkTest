@@ -3,6 +3,7 @@ package tw.musemodel.dingzhiqingren.repository;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.TrialCode;
 import tw.musemodel.dingzhiqingren.entity.UsedTrialCode;
 
@@ -17,4 +18,6 @@ public interface UsedTrialCodeRepository extends JpaRepository<UsedTrialCode, Sh
         public int countByTrialCode(TrialCode trialCode);
 
         public List<UsedTrialCode> findByTrialCode(TrialCode trialCode);
+
+        public UsedTrialCode findByLover(Lover lover);
 }

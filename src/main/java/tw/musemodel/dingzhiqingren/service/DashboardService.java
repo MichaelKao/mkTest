@@ -889,6 +889,12 @@ public class DashboardService {
                                                         )
                                         )
                                 );
+                                trialElement.setAttribute(
+                                        "trialCode",
+                                        usedTrialCodeRepository.findByLover(lover).
+                                                getTrialCode().
+                                                getCode()
+                                );
                                 userElement.appendChild(trialElement);
                         }
                 }
