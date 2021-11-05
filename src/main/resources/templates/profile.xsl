@@ -52,10 +52,23 @@
                                                                         </DIV>
                                                                         <DIV class="mt-3 text-center">
                                                                                 <I class="fad fa-badge-dollar text-success mb-1 fontSize50"></I>
-                                                                                <H5 class="modal-title">ME 點</H5>
+                                                                                <H5 class="modal-title">透過ME點邀約</H5>
                                                                         </DIV>
-                                                                        <DIV class="form-group text-center">
-                                                                                <LABEL class="text-xs" for="fare">使用平台支付不必擔心私下給甜心爽約，可檢舉查證屬實退回</LABEL>
+                                                                        <DIV class="form-group mx-auto col-11 text-center">
+                                                                                <DIV class="my-2 text-primary text-sm">
+                                                                                        <DIV>安心防詐騙</DIV>
+                                                                                        <DIV>可於48小時內向客服檢舉退回</DIV>
+                                                                                </DIV>
+                                                                                <DIV class="my-2 text-primary text-xs">
+                                                                                        <DIV>
+                                                                                                <I class="fad fa-taxi fontSize22 me-1"></I>
+                                                                                                <SPAN>率先支付約會車馬費，成功率提高80%</SPAN>
+                                                                                        </DIV>
+                                                                                        <DIV>
+                                                                                                <I class="fad fa-gift fontSize22 me-1"></I>
+                                                                                                <SPAN>透過ME點做為禮物發送，好感度增加90%</SPAN>
+                                                                                        </DIV>
+                                                                                </DIV>
                                                                                 <INPUT class="form-control" id="fare" inputmode="numeric" min="1" name="howMany" required="" type="number"/>
                                                                         </DIV>
                                                                         <DIV class="text-center">

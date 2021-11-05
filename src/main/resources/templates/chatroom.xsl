@@ -90,7 +90,7 @@
                                                                                 <DIV>安心防詐騙</DIV>
                                                                                 <DIV>可於48小時內向客服檢舉退回</DIV>
                                                                         </DIV>
-                                                                        <DIV class="my-2 text-primary text-sm">
+                                                                        <DIV class="my-2 text-primary text-xs">
                                                                                 <DIV>
                                                                                         <I class="fad fa-taxi fontSize22 me-1"></I>
                                                                                         <SPAN>率先支付約會車馬費，成功率提高80%</SPAN>
@@ -106,6 +106,12 @@
                                                                                 <DIV>。防止爽約與詐騙情形</DIV>
                                                                                 <DIV>。一鍵退回方便取消約會</DIV>
                                                                                 <DIV>。避免約會當日金錢糾紛</DIV>
+                                                                        </DIV>
+                                                                        <DIV class="my-2 text-warning text-xs">
+                                                                                <SPAN>
+                                                                                        <I class="far fa-wallet me-1"></I>
+                                                                                </SPAN>
+                                                                                <SPAN>換算台幣 1:1, 提領有一成金流手續費</SPAN>
                                                                         </DIV>
                                                                 </xsl:if>
                                                                 <INPUT class="form-control" id="fare" inputmode="numeric" min="1" name="howMany" placeholder="ME點" required="" type="number"/>
