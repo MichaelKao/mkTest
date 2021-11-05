@@ -1372,6 +1372,11 @@ public class DashboardController {
         ModelAndView broadcast(Authentication authentication) throws IOException {
                 Document document = Servant.parseDocument();
 
+                dashboardService.documentElement(
+                        document,
+                        authentication
+                );//根元素
+
                 document.getDocumentElement().setAttribute(
                         "title",
                         messageSource.getMessage(
@@ -1396,12 +1401,19 @@ public class DashboardController {
          */
         @PostMapping(path = "/broadcast.asp", produces = MediaType.APPLICATION_JSON_VALUE)
         @Secured({"ROLE_ALMIGHTY", "ROLE_XIAOBIAN"})
-        Collection<History> broadcast(
+        @ResponseBody
+        String broadcast(
                 @RequestParam Boolean gender,
                 @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") @RequestParam(required = false) Date date,
                 @RequestParam String content,
                 Authentication authentication
         ) {
+                if (content.isBlank()) {
+                        return new JavaScriptObjectNotation().
+                                withResponse(false).
+                                withReason("群發內容不能空白的吧~").
+                                toString();
+                }
                 return dashboardService.broadcast(
                         gender,
                         date,
@@ -1409,6 +1421,6 @@ public class DashboardController {
                         loverService.loadByUsername(
                                 authentication.getName()
                         )
-                );
+                ).toString();
         }
 }

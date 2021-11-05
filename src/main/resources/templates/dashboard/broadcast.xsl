@@ -36,7 +36,8 @@
                                 <DIV class="container-fluid py-4 px-3">
                                         <SECTION class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-6 mx-auto">
                                                 <DIV class="text-center text-primary text-bold">小編群發訊息</DIV>
-                                                <FORM action="/dashboard/" class="row justify-content-center" method="POST">
+                                                <FORM action="/dashboard/broadcast.asp" class="row justify-content-center" method="POST">
+                                                        <INPUT name="date" type="hidden" value=""/>
                                                         <DIV class="d-flex justify-content-around mt-4">
                                                                 <DIV class="form-check">
                                                                         <INPUT class="form-check-input" id="queen" name="gender" type="radio" value="false"/>
@@ -53,12 +54,20 @@
                                                                         </LABEL>
                                                                 </DIV>
                                                         </DIV>
+                                                        <DIV class="d-flex justify-content-around mt-4">
+                                                                <DIV class="form-check">
+                                                                        <INPUT class="form-check-input" id="specificDate" type="checkbox"/>
+                                                                        <LABEL class="custom-control-label" for="specificDate">
+                                                                                <SPAN>指定註冊日期後的用戶</SPAN>
+                                                                        </LABEL>
+                                                                </DIV>
+                                                        </DIV>
                                                         <DIV class="form-group">
                                                                 <DIV class="input-group date" id="registeredDate">
                                                                         <SPAN class="input-group-addon input-group-text">
                                                                                 <SPAN class="fal fa-calendar"></SPAN>
                                                                         </SPAN>
-                                                                        <INPUT class="form-control" inputmode="none" name="registeredDate" type="text"/>
+                                                                        <INPUT class="form-control" disabled="true" inputmode="none" name="registeredDate" type="text"/>
                                                                 </DIV>
                                                         </DIV>
                                                         <DIV class="form-group">
@@ -66,14 +75,14 @@
                                                                         <SPAN class="input-group-addon input-group-text">
                                                                                 <SPAN class="fal fa-clock"></SPAN>
                                                                         </SPAN>
-                                                                        <INPUT class="form-control" id="timePicker" inputmode="none" type="text"/>
+                                                                        <INPUT class="form-control" disabled="true" id="timePicker" inputmode="none" type="text"/>
                                                                 </DIV>
                                                         </DIV>
                                                         <DIV class="mt-3">
-                                                                <TEXTAREA class="form-control" name="markdown" placeholder="輸入群發內容...." rows="8" style="resize: none;"></TEXTAREA>
+                                                                <TEXTAREA class="form-control" name="content" placeholder="輸入群發內容...." rows="8" style="resize: none;"></TEXTAREA>
                                                         </DIV>
                                                         <DIV class="mt-2">
-                                                                <BUTTON class="btn btn-primary btn-round w-100 py-2" type="button">送出</BUTTON>
+                                                                <BUTTON class="btn btn-primary btn-round w-100 py-2" type="submit">送出</BUTTON>
                                                         </DIV>
                                                 </FORM>
                                         </SECTION>

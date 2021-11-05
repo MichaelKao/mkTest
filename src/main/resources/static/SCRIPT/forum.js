@@ -318,7 +318,7 @@ $(document).ready(function () {
 
                                 var editTextarea = document.createElement('TEXTAREA');
                                 $(editTextarea).attr({
-                                        'class': 'form-control text-white commentTextarea w-80 d-none',
+                                        'class': 'form-control text-white editCommentTextarea w-70 d-none',
                                         'row': '1',
                                         'placeholder': '新增留言...'
                                 });
@@ -649,7 +649,7 @@ $(document).ready(function () {
                                 if (comment.commenterIdentifier === data.seenerIdentifier) {
                                         var editTextarea = document.createElement('TEXTAREA');
                                         $(editTextarea).attr({
-                                                'class': 'form-control text-white commentTextarea w-80 d-none',
+                                                'class': 'form-control text-white editCommentTextarea w-70 d-none',
                                                 'row': '1',
                                                 'placeholder': '新增留言...'
                                         });
@@ -909,6 +909,7 @@ $(document).ready(function () {
         }
 
         function finishEditComment(btn) {
+                $('DIV.loadingWrap').css('display', 'block');
                 var commentIdentifier = $(btn).closest('DIV.comment').find('INPUT[name="commentIdentifier"]').val();
                 $.post(
                         '/forum/editComment.asp',
@@ -917,6 +918,7 @@ $(document).ready(function () {
                                 'content': $(btn).siblings('TEXTAREA').val()
                         },
                         function (data) {
+                                $('DIV.loadingWrap').css('display', 'none');
                                 $(btn).siblings('DIV.commentBody').html(data.result);
                                 $(btn).toggleClass('d-none');
                                 $(btn).siblings('DIV.commentBody').toggleClass('d-none');

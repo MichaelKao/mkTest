@@ -277,7 +277,7 @@
                                                                                                         <xsl:value-of disable-output-escaping="yes" select="."/>
                                                                                                 </DIV>
                                                                                                 <xsl:if test="commenter/@commenterIdentifier = /document/self/@identifier">
-                                                                                                        <TEXTAREA class="form-control text-white commentTextarea w-80 d-none" rows="1" placeholder="新增留言..."></TEXTAREA>
+                                                                                                        <TEXTAREA class="form-control text-white editCommentTextarea w-70 d-none" rows="1" placeholder="新增留言..."></TEXTAREA>
                                                                                                         <BUTTON class="btn btn-link m-0 p-0 text-xs ms-auto text-bold text-white opacity-8 editComment">
                                                                                                                 <SPAN>編輯內容</SPAN>
                                                                                                                 <I class="far fa-pen ms-1"></I>
