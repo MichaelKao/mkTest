@@ -383,6 +383,14 @@
                                                 </A>
                                         </LI>
                                         <LI class="nav-item">
+                                                <A class="nav-link" href="/dashboard/broadcast.asp">
+                                                        <DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
+                                                                <I class="fal fa-bullhorn text-dark text-lg"></I>
+                                                        </DIV>
+                                                        <SPAN class="nav-link-text ms-1">小編群發訊息</SPAN>
+                                                </A>
+                                        </LI>
+                                        <LI class="nav-item">
                                                 <A class="nav-link" href="/dashboard/genTrialCode.asp">
                                                         <DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
                                                                 <I class="fal fa-meteor text-dark text-lg"></I>
