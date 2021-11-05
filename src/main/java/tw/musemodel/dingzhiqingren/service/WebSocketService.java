@@ -383,8 +383,7 @@ public class WebSocketService {
 					if (Objects.equals(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND, behavior)) {
 						content = "對方拒絕給您通訊軟體";
 					}
-				}
-				if (!isMale) {
+				} else {
 					eitherMatchedOrVip = loverService.isVIP(initiative) || loverService.isVVIP(initiative);
 					unreads = historyRepository.
 						countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
