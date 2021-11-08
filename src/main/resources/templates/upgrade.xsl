@@ -185,7 +185,7 @@
                                                         </DIV>
                                                         <xsl:if test="@isEligibleToStopRecurring">
                                                                 <BUTTON class="btn btn-round btn-dark py-2 px-3 px-sm-4 m-0 stopRecurring my-2 mx-auto">解除定期定額</BUTTON>
-                                                                <DIV class="text-primary text-sm">解除將失去 VIP 功能</DIV>
+                                                                <DIV class="text-primary text-sm">解除將於扣款日起失去PRO功能</DIV>
                                                         </xsl:if>
                                                 </xsl:if>
                                         </DIV>

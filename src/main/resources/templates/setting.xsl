@@ -151,9 +151,9 @@
                                                                         </xsl:if>
                                                                         <xsl:for-each select="blocked">
                                                                                 <DIV class="d-flex align-items-center me-2">
-                                                                                        <DIV class="badge bg-light text-dark text-xs">
+                                                                                        <DIV class="badge bg-light text-dark text-xs py-0">
                                                                                                 <BUTTON class="btn btn-link m-0 p-0 unblock" id="{@identifier}">
-                                                                                                        <I class="fal fa-times-circle text-warning fontSize22 me-1"></I>
+                                                                                                        <I class="fal fa-times-circle text-warning fontSize22 me-1 py-1"></I>
                                                                                                 </BUTTON>
                                                                                                 <A href="/profile/{@identifier}/">
                                                                                                         <xsl:value-of select="@nickname"/>
