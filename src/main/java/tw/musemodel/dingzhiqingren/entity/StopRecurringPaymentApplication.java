@@ -30,72 +30,80 @@ import lombok.Data;
 @Table(name = "shen_qing_jie_chu_ding_qi_ding_e")
 public class StopRecurringPaymentApplication implements Serializable {
 
-	private static final long serialVersionUID = -5650062539323230592L;
+        private static final long serialVersionUID = -5650062539323230592L;
 
-	/**
-	 * 主键
-	 */
-	@Basic(optional = false)
-	@Column(nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Id
-	private Long id;
+        /**
+         * 主键
+         */
+        @Basic(optional = false)
+        @Column(nullable = false)
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Id
+        private Long id;
 
-	/**
-	 * 申请人
-	 */
-	@Basic(optional = false)
-	@JoinColumn(name = "shei_shen_qing", nullable = false, referencedColumnName = "id")
-	@ManyToOne(optional = false)
-	@NotNull
-	private Lover applicant;
+        /**
+         * 申请人
+         */
+        @Basic(optional = false)
+        @JoinColumn(name = "shei_shen_qing", nullable = false, referencedColumnName = "id")
+        @ManyToOne(optional = false)
+        @NotNull
+        private Lover applicant;
 
-	/**
-	 * 申请时戳
-	 */
-	@Basic(optional = false)
-	@Column(name = "shen_qing_shi", nullable = false)
-	@NotNull
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdAt;
+        /**
+         * 申请时戳
+         */
+        @Basic(optional = false)
+        @Column(name = "shen_qing_shi", nullable = false)
+        @NotNull
+        @Temporal(TemporalType.TIMESTAMP)
+        private Date createdAt;
 
-	/**
-	 * 处理人
-	 */
-	@JoinColumn(name = "shei_chu_li", referencedColumnName = "id")
-	@ManyToOne
-	private Lover handler;
+        /**
+         * 处理人
+         */
+        @JoinColumn(name = "shei_chu_li", referencedColumnName = "id")
+        @ManyToOne
+        private Lover handler;
 
-	/**
-	 * 处理时戳
-	 */
-	@Column(name = "chu_li_shi")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date handledAt;
+        /**
+         * 处理时戳
+         */
+        @Column(name = "chu_li_shi")
+        @Temporal(TemporalType.TIMESTAMP)
+        private Date handledAt;
 
-	/**
-	 * 默认构造器
-	 */
-	public StopRecurringPaymentApplication() {
-		createdAt = new Date(System.currentTimeMillis());
-	}
+        /**
+         * 歷程
+         */
+        @JoinColumn(name = "li_cheng", nullable = false, referencedColumnName = "id")
+        @ManyToOne
+        private History history;
 
-	/**
-	 * 构造器
-	 *
-	 * @param applicant 申请人
-	 */
-	public StopRecurringPaymentApplication(Lover applicant) {
-		this();
-		this.applicant = applicant;
-	}
+        /**
+         * 默认构造器
+         */
+        public StopRecurringPaymentApplication() {
+                createdAt = new Date(System.currentTimeMillis());
+        }
 
-	@Override
-	public String toString() {
-		try {
-			return new JsonMapper().writeValueAsString(this);
-		} catch (JsonProcessingException ignore) {
-			return Objects.isNull(id) ? "null" : id.toString();
-		}
-	}
+        /**
+         * 构造器
+         *
+         * @param applicant 申请人
+         */
+        public StopRecurringPaymentApplication(Lover applicant, History history) {
+                this();
+                this.applicant = applicant;
+                this.history = history;
+        }
+
+        @Override
+        public String toString() {
+                try {
+                        return new JsonMapper().writeValueAsString(this);
+                } catch (JsonProcessingException ignore) {
+                        return Objects.isNull(id) ? "null" : id.toString();
+                }
+        }
 }

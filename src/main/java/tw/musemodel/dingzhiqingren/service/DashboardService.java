@@ -356,6 +356,18 @@ public class DashboardService {
                         application.getHandledAt(),
                         application.getHandler()
                 );
+
+                History history = historyRepository.findTop1ByInitiativeAndBehaviorOrderByOccurredDesc(applicant, Behavior.YUE_FEI);
+                if (!Objects.equals(application.getHistory(), history)) {
+                        // 最後一筆的申請定期定額歷程，和最近的升級1288 VIP歷程不是同一筆
+                        return true;
+                }
+                if (Objects.nonNull(application.getHandledAt())
+                        && Objects.nonNull(application.getHandler())
+                        && Objects.equals(application.getHistory(), history)) {
+                        // 最後一筆的申請定期定額歷程，和最近的升級1288 VIP歷程是同一筆，表示不能再申請解除
+                        return false;
+                }
                 return Objects.nonNull(application.getHandledAt()) && Objects.nonNull(application.getHandler());
         }
 

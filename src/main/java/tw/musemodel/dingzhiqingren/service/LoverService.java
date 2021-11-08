@@ -4295,7 +4295,7 @@ public class LoverService {
                 JSONArray array = new JSONArray();
                 for (UsedTrialCode usedTrialCode : usedTrialCodes) {
                         Lover lover = usedTrialCode.getLover();
-                        Date date = historyRepository.findTop1ByInitiativeAndBehavior(lover, BEHAVIOR_TRIAL_CODE).getOccurred();
+                        Date date = historyRepository.findTop1ByInitiativeAndBehaviorOrderByOccurredDesc(lover, BEHAVIOR_TRIAL_CODE).getOccurred();
                         JSONObject json = new JSONObject();
                         json.
                                 put(

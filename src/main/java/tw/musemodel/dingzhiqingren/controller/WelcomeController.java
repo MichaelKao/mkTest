@@ -3506,7 +3506,9 @@ public class WelcomeController {
                                 toJSONObject().
                                 toString();
                 }
-                StopRecurringPaymentApplication stopRecurringPaymentApplication = new StopRecurringPaymentApplication(me);
+
+                History history = historyRepository.findTop1ByInitiativeAndBehaviorOrderByOccurredDesc(me, Behavior.YUE_FEI);
+                StopRecurringPaymentApplication stopRecurringPaymentApplication = new StopRecurringPaymentApplication(me, history);
                 stopRecurringPaymentApplicationRepository.saveAndFlush(stopRecurringPaymentApplication);
 
                 return new JavaScriptObjectNotation().
