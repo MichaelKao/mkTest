@@ -4364,4 +4364,36 @@ public class LoverService {
                 }
                 return jSONObject.put("list", array);
         }
+
+        public Document settingDocument(Document document, Lover lover) {
+                Element documentElement = document.getDocumentElement();
+
+                Collection<Blacklist> blacklists = blacklistRepository.findByBlockerAndBlockedNot(lover, lover);
+                for (Blacklist blacklist : blacklists) {
+                        Element blockedElement = document.createElement("blocked");
+                        blockedElement.setAttribute(
+                                "identifier",
+                                blacklist.getBlocked().getIdentifier().toString()
+                        );
+                        blockedElement.setAttribute(
+                                "nickname",
+                                blacklist.getBlocked().getNickname()
+                        );
+                        documentElement.appendChild(blockedElement);
+                }
+
+                return document;
+        }
+
+        public JSONObject unlock(Lover blocker, Lover blocked) {
+                Blacklist blacklist = blacklistRepository.
+                        findOneByBlockerAndBlocked(blocker, blocked).get();
+                blacklistRepository.delete(blacklist);
+                blacklistRepository.flush();
+
+                return new JavaScriptObjectNotation().
+                        withResponse(true).
+                        withResult(blacklist.getBlocked().getNickname()).
+                        toJSONObject();
+        }
 }
