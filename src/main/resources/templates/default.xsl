@@ -38,7 +38,7 @@
 					<A class="navbar-brand font-weight-bolder m-0" href="/">YOUNG ME 養蜜</A>
 					<DIV class="d-flex align-items-center">
 						<xsl:if test="@signIn">
-							<A class="d-lg-none pe-1" href="/activeLogs.asp">
+							<A class="d-lg-none pe-1" href="/activities.asp">
 								<I class="fad fa-bell fontSize22"></I>
 								<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
 									<xsl:if test="@announcement">
@@ -128,7 +128,7 @@
 								</xsl:if>
 								<xsl:if test="@signIn">
 									<LI class="nav-item d-none d-lg-block">
-										<A class="nav-link nav-link-icon" href="/activeLogs.asp">
+										<A class="nav-link nav-link-icon" href="/activities.asp">
 											<I class="fad fa-bell fontSize22"></I>
 											<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
 												<xsl:if test="@announcement">

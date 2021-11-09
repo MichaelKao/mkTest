@@ -271,8 +271,8 @@ public class WebSocketService {
 		boolean isMale = me.getGender();
 
 		List<History> conversations = historyService.latestConversations(me);
-		int matchedOrVipNotSeenCount = 0;//好友或贵宾的未读总数
-		int notMatchedOrNotVipNotSeenCount = 0;//非好友或非贵宾的未读总数
+		Integer friendlyOrVipUnreads = 0,//好友或贵宾的未读总数
+			unfriendlyOrNonVipUnreads = 0;//非好友或非贵宾的未读总数
 		for (History history : conversations) {
 			Element conversationElement = document.createElement("conversation");
 			documentElement.appendChild(conversationElement);
@@ -425,8 +425,8 @@ public class WebSocketService {
 				nickname
 			);
 
-			// 若是"聊聊"、"打招呼"、"群發"行為就直接 getGreeting()
 			if (Objects.equals(BEHAVIOR_CHAT_MORE, behavior) || Objects.equals(BEHAVIOR_GREETING, behavior) || Objects.equals(BEHAVIOR_GROUP_GREETING, behavior)) {
+				//"聊聊"、"打招呼"、"群发"等行为则捞招呼语
 				content = history.getGreeting();
 			}
 			conversationElement.setAttribute(
@@ -436,19 +436,20 @@ public class WebSocketService {
 			conversationElement.setAttribute(
 				"occurredTime",
 				calculateOccurredTime(history.getOccurred())
-			);
+			);//多久之前
 			conversationElement.setAttribute(
 				"isMatchedOrIsVip",
 				eitherMatchedOrVip.toString()
 			);
 
 			if (eitherMatchedOrVip) {
-				matchedOrVipNotSeenCount += unreads;
+				friendlyOrVipUnreads += unreads;
 			} else {
-				notMatchedOrNotVipNotSeenCount += unreads;
+				unfriendlyOrNonVipUnreads += unreads;
 			}
 
 			if (unreads > 0) {
+				//未读数
 				conversationElement.setAttribute(
 					"notSeenCount",
 					Integer.toString(unreads)
@@ -456,17 +457,19 @@ public class WebSocketService {
 			}
 		}//for
 
-		if (matchedOrVipNotSeenCount > 0) {
+		if (friendlyOrVipUnreads > 0) {
+			//好友或贵宾的未读总数
 			documentElement.setAttribute(
 				"matchedOrVipNotSeenCount",
-				Integer.toString(matchedOrVipNotSeenCount)
+				friendlyOrVipUnreads.toString()
 			);
 		}
 
-		if (notMatchedOrNotVipNotSeenCount > 0) {
+		if (unfriendlyOrNonVipUnreads > 0) {
+			//非好友或非贵宾的未读总数
 			documentElement.setAttribute(
 				"notMatchedOrNotVipNotSeenCount",
-				Integer.toString(notMatchedOrNotVipNotSeenCount)
+				unfriendlyOrNonVipUnreads.toString()
 			);
 		}
 

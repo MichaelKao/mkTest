@@ -90,7 +90,7 @@
 										<DIV class="col-2 d-flex">
 											<DIV class="ms-auto d-flex flex-column">
 												<SPAN class="text-xs mb-1">
-													<xsl:value-of select="@occurredTime"/>
+													<xsl:value-of select="@occurredTime"/><!--多久之前-->
 												</SPAN>
 												<xsl:if test="@notSeenCount">
 													<DIV class="d-flex justify-content-center">
@@ -128,7 +128,7 @@
 										<DIV class="col-2 d-flex">
 											<DIV class="ms-auto d-flex flex-column">
 												<SPAN class="text-xs mb-1">
-													<xsl:value-of select="@occurredTime"/>
+													<xsl:value-of select="@occurredTime"/><!--多久之前-->
 												</SPAN>
 												<xsl:if test="@notSeenCount">
 													<DIV class="d-flex justify-content-center">
