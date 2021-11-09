@@ -3,13 +3,11 @@ $(document).ready(function () {
 		let that = this;
 		$(this).val(
 			$(this).val().replace(/\D/gi, '')
-		);
-		/*
+			);
 		$('INPUT[name="username"]').val(
 			$('#country').val().replace(/\D/g, '') +
 			$(this).val().replace(/^0/g, '')
-		);
-		*/
+			);
 	});
 
 	var isAndroid = /android/i.test(navigator.userAgent);

@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Objects;
 import javax.xml.parsers.ParserConfigurationException;
 import lombok.Data;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1275,8 +1276,6 @@ public class HistoryService {
 		Document document = Servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 
-		Boolean isMale = mofo.getGender();//确认性别
-
 		//将通知已读
 		List<History> histories = new ArrayList<>();
 		for (History history : loverService.annoucementHistories(mofo)) {
@@ -1289,283 +1288,49 @@ public class HistoryService {
 			Behavior behavior = activity.getBehavior();
 			Lover initiative = activity.getInitiative(),
 				passive = activity.getPassive();
-			//这几个行为不须通知主动者
-			if (behavior == BEHAVIOR_RATE || behavior == BEHAVIOR_FOLLOW || behavior == BEHAVIOR_PEEK || behavior == BEHAVIOR_WITHDRAWAL_FAIL || behavior == BEHAVIOR_WITHDRAWAL_SUCCESS || behavior == BEHAVIOR_CERTIFICATION_FAIL || behavior == BEHAVIOR_CERTIFICATION_FAIL_1 || behavior == BEHAVIOR_CERTIFICATION_FAIL_2 || behavior == BEHAVIOR_CERTIFICATION_FAIL_3 || behavior == BEHAVIOR_CERTIFICATION_SUCCESS || behavior == BEHAVIOR_GROUP_GREETING) {
-				if (Objects.equals(mofo, initiative)) {
-					continue;
-				}
-			}
 
 			String initiativeIdentifier = initiative.getIdentifier().toString();
 			String initiativeProfileImage = initiative.getProfileImage();
 			String initiativeNickname = initiative.getNickname();
 			String passiveIdentifier = null;
 			String passiveProfileImage = null;
-			String passiveNickname = null;
 			if (Objects.nonNull(activity.getPassive())) {
 				passiveIdentifier = passive.getIdentifier().toString();
 				passiveProfileImage = passive.getProfileImage();
-				passiveNickname = passive.getNickname();
 			}
 			String identifier = null;
 			String profileImage = null;
 			String message = null;
-			boolean isBlacklisted = !loverService.getBlockers(initiative).contains(passive) && !loverService.getBlockeds(initiative).contains(passive);
 
 			Element historyElement = document.createElement("history");
 			documentElement.appendChild(historyElement);
-			if (behavior == BEHAVIOR_CHARGED) {
-				if (isMale) {
-					profileImage = initiativeProfileImage;
-					message = String.format(
-						"您儲值了 %d 愛心",
-						Math.abs(activity.getPoints())
-					);
-					identifier = initiativeIdentifier;
-				}
-			}
-			if (behavior == BEHAVIOR_MONTHLY_CHARGED) {
-				if (isMale) {
-					profileImage = initiativeProfileImage;
-					message = String.format(
-						"升級 VIP 費用扣款 $1688"
-					);
-					identifier = initiativeIdentifier;
-				}
-			}
-			if (behavior == BEHAVIOR_TRIAL_CODE) {
-				if (isMale) {
-					profileImage = initiativeProfileImage;
-					message = String.format(
-						"您已開啟單日 VIP 體驗"
-					);
-					identifier = initiativeIdentifier;
-				}
-			}
-			if (behavior == BEHAVIOR_GIMME_YOUR_LINE_INVITATION) {
-				if (isMale) {
-					profileImage = passiveProfileImage;
-					identifier = passiveIdentifier;
-					message = String.format(
-						"您已向%s要求通訊軟體",
-						passiveNickname
-					);
-				} else {
-					profileImage = initiativeProfileImage;
-					identifier = initiativeIdentifier;
-					message = String.format(
-						"%s向您要求通訊軟體",
-						initiativeNickname
-					);
-					if (Objects.isNull(activity.getReply()) && isBlacklisted) {
-						historyElement.setAttribute(
-							"decideButton",
-							null
-						);
-					}
-				}
-			}
-			if (behavior == BEHAVIOR_INVITE_ME_AS_LINE_FRIEND) {
-				if (isMale) {
-					profileImage = initiativeProfileImage;
-					identifier = initiativeIdentifier;
-					message = String.format(
-						"%s同意給您通訊軟體",
-						initiativeNickname
-					);
-					LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(initiative, passive);
-					if (Objects.nonNull(lineGiven) && lineGiven.getResponse() && isBlacklisted) {
-						historyElement.setAttribute(
-							"addLineButton",
-							null
-						);
-						Long count = historyRepository.countByInitiativeAndPassiveAndBehavior(passive, initiative, BEHAVIOR_LAI_KOU_DIAN);
-						if ((loverService.isVIP(passive) || loverService.isVVIP(passive)) && (count < 1 && !withinRequiredLimit(passive))) {
-							historyElement.setAttribute(
-								"remindDeduct",
-								null
-							);
-						}
-					}
-					if (Objects.isNull(historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(passive, initiative, BEHAVIOR_RATE)) && isBlacklisted) {
-						historyElement.setAttribute(
-							"rateButton",
-							null
-						);
-					}
-				} else {
-					profileImage = passiveProfileImage;
-					identifier = passiveIdentifier;
-					message = String.format(
-						"您已同意給 %s 通訊軟體",
-						passiveNickname
-					);
-					if (Objects.isNull(historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(initiative, passive, BEHAVIOR_RATE)) && isBlacklisted) {
-						historyElement.setAttribute(
-							"rateButton",
-							null
-						);
-					}
-				}
-			}
-			if (behavior == BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND) {
-				if (isMale) {
-					profileImage = initiativeProfileImage;
-					identifier = initiativeIdentifier;
-					message = String.format(
-						"%s拒絕給您通訊軟體",
-						initiativeNickname
-					);
-				} else {
-					profileImage = passiveProfileImage;
-					identifier = passiveIdentifier;
-					message = String.format(
-						"您已拒絕給 %s 通訊軟體",
-						passiveNickname
-					);
-				}
-			}
+
 			if (behavior == BEHAVIOR_PICTURES_VIEWABLE) {
-				if (Objects.equals(initiative, mofo)) {
-					profileImage = passiveProfileImage;
-					identifier = passiveIdentifier;
-					message = String.format(
-						"您向%s要求生活照授權",
-						passiveNickname
+				profileImage = initiativeProfileImage;
+				identifier = initiativeIdentifier;
+				message = String.format(
+					"%s向您要求生活照授權",
+					initiativeNickname
+				);
+				History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
+					initiative,
+					passive,
+					BEHAVIOR_PICTURES_VIEWABLE
+				);
+				if (Objects.nonNull(history) && !history.getShowAllPictures()) {
+					historyElement.setAttribute(
+						"pixAuthBtn",
+						null
 					);
-				}
-				if (Objects.equals(passive, mofo)) {
-					profileImage = initiativeProfileImage;
-					identifier = initiativeIdentifier;
-					message = String.format(
-						"%s向您要求生活照授權",
-						initiativeNickname
-					);
-					History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
-						initiative,
-						passive,
-						BEHAVIOR_PICTURES_VIEWABLE
-					);
-					if (Objects.nonNull(history) && !history.getShowAllPictures()) {
-						historyElement.setAttribute(
-							"pixAuthBtn",
-							null
-						);
-					}
 				}
 			}
 			if (behavior == BEHAVIOR_ACCEPT_PICTURES_VIEWABLE) {
-				if (Objects.equals(initiative, mofo)) {
-					profileImage = passiveProfileImage;
-					identifier = passiveIdentifier;
-					message = String.format(
-						"您已同意給%s看您的生活照",
-						passiveNickname
-					);
-				}
-				if (Objects.equals(passive, mofo)) {
-					profileImage = initiativeProfileImage;
-					identifier = initiativeIdentifier;
-					message = String.format(
-						"%s同意給您看生活照",
-						initiativeNickname
-					);
-				}
-			}
-			if (behavior == BEHAVIOR_LAI_KOU_DIAN) {
-				if (isMale) {
-					profileImage = passiveProfileImage;
-					message = String.format(
-						"您加入%s的通訊軟體",
-						passiveNickname,
-						Math.abs(activity.getPoints())
-					);
-					identifier = passiveIdentifier;
-				} else {
-					profileImage = initiativeProfileImage;
-					identifier = initiativeIdentifier;
-					message = String.format(
-						"%s加了您的通訊軟體",
-						initiativeNickname
-					);
-				}
-			}
-			if (behavior == BEHAVIOR_FARE) {
-				if (isMale) {
-					profileImage = passiveProfileImage;
-					identifier = passiveIdentifier;
-					message = String.format(
-						"您給了%s %d ME 點",
-						passiveNickname,
-						Math.abs(activity.getPoints())
-					);
-				} else {
-					profileImage = initiativeProfileImage;
-					identifier = initiativeIdentifier;
-					message = String.format(
-						"您收到了來自%s的 %d ME 點",
-						initiativeNickname,
-						Math.abs(activity.getPoints())
-					);
-					if (ableToReturnFare(historyRepository.findById(activity.getId()).orElseThrow())) {
-						historyElement.setAttribute(
-							"returnFareId",
-							activity.getId().toString()
-						);
-						historyElement.setAttribute(
-							"ableToReturn",
-							null
-						);
-					}
-				}
-			}
-			if (behavior == BEHAVIOR_ASK_FOR_FARE) {
-				if (isMale) {
-					profileImage = initiativeProfileImage;
-					identifier = initiativeIdentifier;
-					message = String.format(
-						"%s向您要求 %d ME 點",
-						initiativeNickname,
-						Math.abs(activity.getPoints())
-					);
-					if (Objects.isNull(activity.getReply())) {
-						historyElement.setAttribute(
-							"replyFareReqBtn",
-							null
-						);
-						historyElement.setAttribute(
-							"historyId",
-							activity.getId().toString()
-						);
-					}
-				} else {
-					profileImage = passiveProfileImage;
-					identifier = passiveIdentifier;
-					message = String.format(
-						"您向%s要求 %d ME 點",
-						passiveNickname,
-						Math.abs(activity.getPoints())
-					);
-				}
-			}
-			if (behavior == BEHAVIOR_RETURN_FARE) {
-				if (isMale) {
-					profileImage = initiativeProfileImage;
-					identifier = initiativeIdentifier;
-					message = String.format(
-						"%s退回您給的 %d ME 點",
-						initiativeNickname,
-						Math.abs(activity.getPoints())
-					);
-				} else {
-					profileImage = passiveProfileImage;
-					identifier = passiveIdentifier;
-					message = String.format(
-						"您已退回%s給您的 %d ME 點",
-						passiveNickname,
-						Math.abs(activity.getPoints())
-					);
-				}
+				profileImage = initiativeProfileImage;
+				identifier = initiativeIdentifier;
+				message = String.format(
+					"%s同意給您看生活照",
+					initiativeNickname
+				);
 			}
 			if (behavior == BEHAVIOR_RATE) {
 				profileImage = initiativeProfileImage;
@@ -1575,7 +1340,6 @@ public class HistoryService {
 					initiativeNickname
 				);
 			}
-
 			// 人數較多後拿掉***********
 			if (behavior == BEHAVIOR_FOLLOW) {
 				profileImage = initiativeProfileImage;
@@ -1592,22 +1356,6 @@ public class HistoryService {
 				message = String.format(
 					"%s已看過您",
 					initiativeNickname
-				);
-			}
-
-			if (behavior == BEHAVIOR_WITHDRAWAL_SUCCESS) {
-				profileImage = passiveProfileImage;
-				identifier = passiveIdentifier;
-				message = String.format(
-					"您提領的 %s  ME 點已成功匯款!",
-					activity.getGreeting()
-				);
-			}
-			if (behavior == BEHAVIOR_WITHDRAWAL_FAIL) {
-				profileImage = passiveProfileImage;
-				identifier = passiveIdentifier;
-				message = String.format(
-					"您欲提領的 ME 點失敗，請重新提領。"
 				);
 			}
 			if (behavior == BEHAVIOR_CERTIFICATION_SUCCESS) {
@@ -1674,6 +1422,143 @@ public class HistoryService {
 			);
 		}
 		return document;
+	}
+
+	public JSONArray loadMoreActivities(Lover mofo, int p, int s) throws IOException {
+		JSONArray array = new JSONArray();
+		for (Activity activity : activities(mofo, PageRequest.of(p < 0 ? 0 : p, s))) {
+			JSONObject activityJson = new JSONObject();
+
+			Behavior behavior = activity.getBehavior();
+			Lover initiative = activity.getInitiative(),
+				passive = activity.getPassive();
+
+			String initiativeIdentifier = initiative.getIdentifier().toString();
+			String initiativeProfileImage = initiative.getProfileImage();
+			String initiativeNickname = initiative.getNickname();
+			String passiveIdentifier = null;
+			String passiveProfileImage = null;
+			if (Objects.nonNull(activity.getPassive())) {
+				passiveIdentifier = passive.getIdentifier().toString();
+				passiveProfileImage = passive.getProfileImage();
+			}
+			String identifier = null;
+			String profileImage = null;
+			String message = null;
+
+			if (behavior == BEHAVIOR_PICTURES_VIEWABLE) {
+				profileImage = initiativeProfileImage;
+				identifier = initiativeIdentifier;
+				message = String.format(
+					"%s向您要求生活照授權",
+					initiativeNickname
+				);
+				History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
+					initiative,
+					passive,
+					BEHAVIOR_PICTURES_VIEWABLE
+				);
+				if (Objects.nonNull(history) && !history.getShowAllPictures()) {
+					activityJson.put(
+						"pixAuthBtn",
+						true
+					);
+				}
+			}
+			if (behavior == BEHAVIOR_ACCEPT_PICTURES_VIEWABLE) {
+				profileImage = initiativeProfileImage;
+				identifier = initiativeIdentifier;
+				message = String.format(
+					"%s同意給您看生活照",
+					initiativeNickname
+				);
+			}
+			if (behavior == BEHAVIOR_RATE) {
+				profileImage = initiativeProfileImage;
+				identifier = initiativeIdentifier;
+				message = String.format(
+					"%s給予您評價",
+					initiativeNickname
+				);
+			}
+			// 人數較多後拿掉***********
+			if (behavior == BEHAVIOR_FOLLOW) {
+				profileImage = initiativeProfileImage;
+				identifier = initiativeIdentifier;
+				message = String.format(
+					"%s已收藏您",
+					initiativeNickname
+				);
+			}
+			// 人數較多後拿掉***********
+			if (behavior == BEHAVIOR_PEEK) {
+				profileImage = initiativeProfileImage;
+				identifier = initiativeIdentifier;
+				message = String.format(
+					"%s已看過您",
+					initiativeNickname
+				);
+			}
+			if (behavior == BEHAVIOR_CERTIFICATION_SUCCESS) {
+				profileImage = passiveProfileImage;
+				message = String.format(
+					"您已通過安心認證審核!"
+				);
+				identifier = passiveIdentifier;
+			}
+			if (behavior == BEHAVIOR_CERTIFICATION_FAIL) {
+				profileImage = passiveProfileImage;
+				message = String.format(
+					"您申請的安心認證不通過，請重新上傳正確手持證件照!"
+				);
+				identifier = passiveIdentifier;
+			}
+			if (behavior == BEHAVIOR_CERTIFICATION_FAIL_1) {
+				profileImage = passiveProfileImage;
+				message = String.format(
+					"您申請的安心認證不通過，本人和證件清晰需可辨識合照。請重新上傳正確手持證件照!"
+				);
+				identifier = passiveIdentifier;
+			}
+			if (behavior == BEHAVIOR_CERTIFICATION_FAIL_2) {
+				profileImage = passiveProfileImage;
+				message = String.format(
+					"您申請的安心認證不通過，照片中證件不可辨識，請重新上傳正確手持證件照!"
+				);
+				identifier = passiveIdentifier;
+			}
+			if (behavior == BEHAVIOR_CERTIFICATION_FAIL_3) {
+				profileImage = passiveProfileImage;
+				message = String.format(
+					"您申請的安心認證不通過，照片中本人不可辨識，請重新上傳正確手持證件照!"
+				);
+				identifier = passiveIdentifier;
+			}
+			// 歷程時間
+			activityJson.
+				put(
+					"time",
+					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(
+						Servant.toTaipeiZonedDateTime(
+							activity.getOccurred()
+						).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
+					)).
+				put("profileImage", String.format(
+					"https://%s/profileImage/%s",
+					Servant.STATIC_HOST,
+					profileImage
+				)).
+				put(
+					"message",
+					message
+				).
+				put(
+					"identifier",
+					identifier
+				);
+			array.put(activityJson);
+		}
+		return array;
 	}
 
 	/**

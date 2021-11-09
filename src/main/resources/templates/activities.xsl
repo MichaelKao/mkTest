@@ -24,7 +24,7 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
-			<LINK href="/STYLE/rateStar.css" rel="stylesheet"/>
+			<LINK href="/STYLE/loading.css" rel="stylesheet"/>
 			<STYLE>body {background-color: #F3F3F3;}</STYLE>
 		</HEAD>
 		<BODY>
@@ -102,11 +102,11 @@
 						</DIV>
 					</DIV>
 				</DIV>
-				<DIV class="d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center mt-3">
+				<DIV class="d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center mt-3 activities">
+					<INPUT name="nextPage" type="hidden" value="1"/>
 					<xsl:for-each select="history">
 						<DIV class="col-12 col-lg-8 card card-frame mb-2">
 							<DIV class="card-body d-flex align-items-center justify-content-start py-2">
-								<INPUT name="whom" type="hidden" value="{@identifier}"/>
 								<DIV>
 									<A href="/profile/{@identifier}/">
 										<IMG alt="profile_photo" class="border-radius-md" src="{@profileImage}" width="55"/>
@@ -122,46 +122,10 @@
 										</DIV>
 
 									</DIV>
-									<xsl:if test="@decideButton">
-										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
-											<BUTTON class="btn btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 accept" type="button">接受</BUTTON>
-											<BUTTON class="btn btn-outline-dark px-2 py-1 p-md-2 m-0 me-1 refuse" type="button">拒絕</BUTTON>
-										</DIV>
-									</xsl:if>
-									<xsl:if test="/document/@female and @rateButton">
-										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
-											<BUTTON class="btn btn-outline-dark px-2 py-1 p-md-2 m-0 me-1 rate" type="button">評價</BUTTON>
-										</DIV>
-									</xsl:if>
-									<xsl:if test="@addLineButton">
-										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
-											<BUTTON class="btn btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 openLine" type="button">
-												<SPAN>加入好友</SPAN>
-												<xsl:if test="@remindDeduct">
-													<DIV class="text-xxs">需 100 愛心</DIV>
-												</xsl:if>
-											</BUTTON>
-											<xsl:if test="@rateButton">
-												<BUTTON class="btn btn-outline-dark px-2 py-1 p-md-2 m-0 me-1 rate" type="button">評價</BUTTON>
-											</xsl:if>
-										</DIV>
-									</xsl:if>
 									<xsl:if test="@pixAuthBtn">
 										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
+											<INPUT name="whom" type="hidden" value="{@identifier}"/>
 											<BUTTON class="btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 acceptPixAuth" type="button">同意</BUTTON>
-										</DIV>
-									</xsl:if>
-									<xsl:if test="@ableToReturn">
-										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
-											<INPUT name="returnFareId" type="hidden" value="{@returnFareId}"/>
-											<BUTTON class="btn btn-sm btn-outline-dark px-2 py-1 p-md-2 m-0 me-1 returnFare" type="button">退回</BUTTON>
-										</DIV>
-									</xsl:if>
-									<xsl:if test="@replyFareReqBtn">
-										<DIV class="ms-0 ms-md-auto d-flex align-items-center my-1">
-											<BUTTON class="btn btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 acceptFare resBtn" type="button">給出</BUTTON>
-											<BUTTON class="btn btn-outline-dark px-2 py-1 p-md-2 m-0 me-1 refuseFare resBtn" type="button">下次</BUTTON>
-											<INPUT name="historyId" type="hidden" value="{@historyId}"/>
 										</DIV>
 									</xsl:if>
 								</DIV>

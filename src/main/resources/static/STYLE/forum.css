@@ -277,28 +277,6 @@ IMG.lightBoxImg {
         }
 }
 
-.loadMore {
-        width: 5px;
-        height: 5px;
-        margin: 20px auto 0;
-        border-radius: 50%;
-        box-shadow:
-                0 -15px rgba(214, 51, 132, 1),
-                11.25px -11.25px rgba(214, 51, 132, 0.875),
-                15px 0 rgba(214, 51, 132, 0.75),
-                11.25px 11.25px rgba(214, 51, 132, 0.625),
-                0 15px rgba(214, 51, 132, 0.5),
-                -11.25px 11.25px rgba(214, 51, 132, 0.375),
-                -15px 0 rgba(214, 51, 132, 0.25),
-                -11.25px -11.25px rgba(214, 51, 132, 0.125)
-                ;
-        animation: spin 1.4s linear infinite;
-}
-
-@keyframes spin {
-        100% { transform: rotate(-360deg) }
-}
-
 .dropdown-item:hover, .dropdown-item:focus {
         background-color: #FFFFFF55;
         font-weight: bold;

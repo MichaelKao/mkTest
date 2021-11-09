@@ -1,178 +1,136 @@
 $(document).ready(function () {
+	$(window).scrollTop(0);
 
-	var whom;
+	var scrollCount = 0;
+	var scrollCountLimit = 10;
 
-	$('BUTTON.accept').dblclick(function (e) {
-		e.preventDefault();
-	});
-	$('BUTTON.accept').click(function (event) {
-		event.preventDefault();
-		$(this).attr('disabled', true);
-		$(this).siblings('BUTTON.refuse').attr('disabled', true);
-		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
+	var timeout;
+	window.addEventListener('scroll', handler);
+	function handler() {
+		clearTimeout(timeout);
+		timeout = setTimeout(function () {
+			if ($(window).scrollTop() + $(window).height() > $(document).height() - 300) {
+				scrollCount += 1;
+				var $nextPage = $('INPUT[name="nextPage"]');
+				if (scrollCount >= scrollCountLimit) {
 
-		$.post(
-			"/stalked.json",
-			{
-				whom: whom
-			},
-			function (data) {
-				if (data.response) {
-					$('.toast-body').html(data.reason);
-					$('.toast').toast('show');
-					$('.toast').on('hidden.bs.toast', function () {
-						window.location.reload();
-					});
-				} else {
-					$('.toast-body').html(data.reason);
-					$('.toast').toast('show');
-					if (data.redirect) {
-						$('.toast').on('hidden.bs.toast', function () {
-							location.href = data.redirect;
-						});
-					}
+					$nextPage.val(-1);
+					var div = document.createElement('DIV');
+					$(div).attr('class', 'text-center text-xs mt-4');
+					$(div).append('沒有通知囉！');
+					$('.activities').append(div);
+					window.removeEventListener('scroll', handler);
+					return;
 				}
-			},
-			'json'
-			);
-		return false;
-	});
-	$('BUTTON.refuse').dblclick(function (e) {
-		e.preventDefault();
-	});
-	$('BUTTON.refuse').click(function (event) {
-		event.preventDefault();
-		$(this).attr('disabled', true);
-		$(this).siblings('BUTTON.accept').attr('disabled', true);
-		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
-
-		$.post(
-			"/notStalked.json",
-			{
-				whom: whom
-			},
-			function (data) {
-				if (data.response) {
-					$('.toast-body').html(data.reason);
-					$('.toast').toast('show');
-					$('.toast').on('hidden.bs.toast', function () {
-						window.location.reload();
-					});
-				} else {
-					$('.toast-body').html(data.reason);
-					$('.toast').toast('show');
+				window.removeEventListener('scroll', handler);
+				var p = $nextPage.val();
+				var load = document.createElement('DIV');
+				$(load).attr('class', 'loadMore');
+				$('.activities').append(load);
+				if (p > 0) {
+					$.post(
+						'/loadMoreActivities.json',
+						{
+							p: p
+						},
+						function (data) {
+							$(load).remove();
+							if (data.length !== 0) {
+								$nextPage.val(parseInt(p) + 1);
+								appendData(data);
+								window.addEventListener('scroll', handler);
+							} else if (data.length == 0) {
+								$nextPage.val(-1);
+								var div = document.createElement('DIV');
+								$(div).attr('class', 'text-center text-xs mt-4');
+								$(div).append('沒有通知囉！');
+								$('.activities').append(div);
+								window.removeEventListener('scroll', handler);
+							}
+						},
+						'json'
+						);
 				}
-			},
-			'json'
-			);
-		return false;
-	});
+			}
+		}, 50);
+	}
 
-	var $modal = $('#modal');
-	var $rateModal = $('#rateModal');
-	var commentBtn;
+	function appendData(data) {
+		data.forEach(function (activity) {
+			var cardDiv = document.createElement('DIV');
+			$(cardDiv).attr('class', 'col-12 col-lg-8 card card-frame mb-2');
+			$('.activities').append(cardDiv);
+			var cardBodyDiv = document.createElement('DIV');
+			$(cardBodyDiv).attr('class', 'card-body d-flex align-items-center justify-content-start py-2');
+			$(cardDiv).append(cardBodyDiv);
+			var profileDiv = document.createElement('DIV');
+			$(cardBodyDiv).append(profileDiv);
+			var profileA = document.createElement('A');
+			$(profileA).attr('href', activity.identifier);
+			$(profileDiv).append(profileA);
+			var profileImg = document.createElement('IMG');
+			$(profileImg).attr({
+				'alt': 'profile_photo',
+				'src': activity.profileImage,
+				'width': '55'
+			});
+			$(profileA).append(profileImg);
+			var msgMainDiv = document.createElement('DIV');
+			$(msgMainDiv).attr('class', 'ms-4 w-100 d-flex flex-column flex-md-row');
+			$(cardBodyDiv).append(msgMainDiv);
+			var div = document.createElement('DIV');
+			$(msgMainDiv).append(div);
+			var timeSpan = document.createElement('SPAN');
+			$(timeSpan).attr('class', 'text-xs font-weight-bold my-2');
+			$(timeSpan).append(activity.time);
+			$(div).append(timeSpan);
+			var msgDiv = document.createElement('DIV');
+			$(msgDiv).attr('class', 'text-dark text-xs text-bold');
+			$(msgDiv).append(activity.message);
+			$(div).append(msgDiv);
 
-	$('.requestLine').click(function () {
-		$modal.modal('show');
-		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
-	});
-	$('.rate').click(function () {
-		$rateModal.modal('show');
-		commentBtn = $(this);
-		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
-	});
+			if (activity.pixAuthBtn) {
+				var pixAuthBtnDiv = document.createElement('DIV');
+				$(pixAuthBtnDiv).attr('class', 'ms-0 ms-md-auto d-flex align-items-center my-1');
+				$(msgMainDiv).append(pixAuthBtnDiv);
+				var input = document.createElement('INPUT');
+				$(input).attr({
+					'name': 'whom',
+					'type': 'hidden',
+					'value': activity.identifier
+				});
+				$(pixAuthBtnDiv).append(input);
+				var pixAuthBtn = document.createElement('BUTTON');
+				$(pixAuthBtn).attr({
+					'class': 'btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 acceptPixAuth',
+					'type': 'button'
+				});
+				$(pixAuthBtn).append('同意');
+				$(pixAuthBtnDiv).append(pixAuthBtn);
+				$(pixAuthBtn).dblclick(function (e) {
+					e.preventDefault();
+				});
+				$(pixAuthBtn).click(function (event) {
+					event.preventDefault();
+					let btn = this;
+					pixAuth(btn);
+				});
+			}
+		});
+	}
 
-	$('BUTTON.requestLineBtn').click(function (event) {
-		event.preventDefault();
-		$.post(
-			'/stalking.json',
-			{
-				whom: whom,
-				what: $('TEXTAREA[name="what"]').val()
-			},
-			function (data) {
-				if (data.response) {
-					$('.toast-body').html(data.reason);
-					$('.toast').toast('show');
-					$modal.modal('hide');
-				} else {
-					$('.toast-body').html(data.reason);
-					$('.toast').toast('show');
-				}
-			},
-			'json'
-			);
-		return false;
-	});
-
-	$('BUTTON.commentBtn').click(function (event) {
-		event.preventDefault();
-		var btn = this;
-		$(btn).attr('disabled', true);
-		var rate = $('INPUT[name="rating"]:checked').val();
-		if (rate === undefined) {
-			rate = null;
-		}
-		$.post(
-			'/rate.json',
-			{
-				whom: whom,
-				rate: rate,
-				comment: $('TEXTAREA[name="comment"]').val()
-			},
-			function (data) {
-				if (data.response) {
-					$('.toast-body').html(data.reason);
-					$('.toast').toast('show');
-					$rateModal.modal('hide');
-					commentBtn.css('display', 'none');
-				} else {
-					$('.toast-body').html(data.reason);
-					$('.toast').toast('show');
-					$(btn).attr('disabled', false);
-				}
-			},
-			'json'
-			);
-		return false;
-	});
-
-	$('BUTTON.openLine').dblclick(function (e) {
-		e.preventDefault();
-	});
-	$('BUTTON.openLine').click(function () {
-		$(this).attr('disabled', true);
-		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
-		$.post(
-			'/maleOpenLine.json',
-			{
-				whom: whom
-			},
-			function (data) {
-				if (data.response && data.result === 'isLine') {
-					location.href = data.redirect;
-				} else if (data.response && data.result === 'isWeChat') {
-					var src = 'https://' + location.hostname + data.redirect;
-					$('IMG.weChatQRcode').attr('src', src);
-					$('A.weChatQRcode').attr('href', src);
-					$('#weChatModel').modal('show');
-				} else {
-					$('.toast-body').html(data.reason);
-					$('.toast').toast('show');
-				}
-			},
-			'json'
-			);
-		return false;
-	});
 	$('BUTTON.acceptPixAuth').dblclick(function (e) {
 		e.preventDefault();
 	});
 	$('BUTTON.acceptPixAuth').click(function (event) {
 		event.preventDefault();
 		let btn = this;
+		pixAuth(btn);
+	});
+
+	function pixAuth(btn) {
 		$(btn).attr('disabled', true);
-		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
+		var whom = $(btn).siblings('INPUT[name="whom"]').val();
 
 		$.post(
 			"/acceptPixAuth.json",
@@ -195,76 +153,5 @@ $(document).ready(function () {
 			'json'
 			);
 		return false;
-	});
-
-	var result;
-	$('BUTTON.acceptFare').click(function () {
-		result = true;
-		$(this).attr('disabled', true);
-		$(this).siblings($('BUTTON.refuseFare')).attr('disabled', true);
-	});
-	$('BUTTON.acceptFare').dblclick(function (e) {
-		e.preventDefault();
-	});
-	$('BUTTON.refuseFare').click(function () {
-		result = false;
-		$(this).attr('disabled', true);
-		$(this).siblings($('BUTTON.acceptFare')).attr('disabled', true);
-	});
-	$('BUTTON.refuseFare').dblclick(function (e) {
-		e.preventDefault();
-	});
-
-	$('BUTTON.resBtn').click(function () {
-		event.preventDefault();
-		let btn = this;
-		whom = $(this).closest('DIV.card-body').find('INPUT[name="whom"]').val();
-		$.post(
-			'/resFare.json',
-			{
-				historyId: $(btn).siblings('INPUT[name="historyId"]').val(),
-				result: result,
-				whom: whom
-			},
-			function (data) {
-				if (data.response) {
-					$(btn).closest('DIV').remove();
-					$('.toast-body').html(data.reason);
-					$('.toast').toast('show');
-				} else {
-					$('.toast-body').html(data.reason);
-					$('.toast').toast('show');
-				}
-			},
-			'json'
-			);
-		return false;
-	});
-
-	$('BUTTON.returnFare').dblclick(function (e) {
-		e.preventDefault();
-	});
-	$('BUTTON.returnFare').click(function (e) {
-		e.preventDefault();
-		var btn = this;
-		$(btn).attr('disabled', true);
-		$.post(
-			'/returnFare.json',
-			{
-				history: $(btn).siblings('INPUT[name="returnFareId"]').val()
-			},
-			function (data) {
-				if (data.response) {
-					$('.toast-body').html(data.reason);
-					$('.toast').toast('show');
-					window.location.reload();
-				} else {
-					$('.toast-body').html(data.reason);
-					$('.toast').toast('show');
-				}
-			},
-			'json'
-			);
-		return false;
-	});
+	}
 });

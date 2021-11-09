@@ -52,134 +52,134 @@ import tw.musemodel.dingzhiqingren.view.ForumThreadsDocument;
 @RequestMapping("/forum")
 public class ForumController {
 
-        private static final Logger LOGGER = LoggerFactory.getLogger(ForumController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ForumController.class);
 
-        @Autowired
-        private ForumService forumService;
+	@Autowired
+	private ForumService forumService;
 
-        @Autowired
-        private LoverService loverService;
+	@Autowired
+	private LoverService loverService;
 
-        @Autowired
-        private Servant servant;
+	@Autowired
+	private Servant servant;
 
-        @Autowired
-        private MessageSource messageSource;
+	@Autowired
+	private MessageSource messageSource;
 
-        @Autowired
-        private ForumThreadTagRepository forumThreadTagRepository;
+	@Autowired
+	private ForumThreadTagRepository forumThreadTagRepository;
 
-        @Autowired
-        private ForumThreadRepository forumThreadRepository;
+	@Autowired
+	private ForumThreadRepository forumThreadRepository;
 
-        @Autowired
-        private ForumThreadCommentRepository forumThreadCommentRepository;
+	@Autowired
+	private ForumThreadCommentRepository forumThreadCommentRepository;
 
-        /**
-         * 論壇首頁
-         *
-         * @param p
-         * @param s
-         * @param authentication
-         * @param locale
-         * @return
-         * @throws TransformerException
-         * @throws IOException
-         */
-        @GetMapping(path = "/")
-        @ResponseBody
-        @Secured({Servant.ROLE_ADVENTURER})
-        ModelAndView index(@RequestParam(defaultValue = "1") int p, @RequestParam(defaultValue = "8") int s, Authentication authentication, Locale locale) throws TransformerException, IOException {
-                Lover me = loverService.loadByUsername(
-                        authentication.getName()
-                );
+	/**
+	 * 論壇首頁
+	 *
+	 * @param p
+	 * @param s
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws TransformerException
+	 * @throws IOException
+	 */
+	@GetMapping(path = "/")
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	ModelAndView index(@RequestParam(defaultValue = "1") int p, @RequestParam(defaultValue = "8") int s, Authentication authentication, Locale locale) throws TransformerException, IOException {
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
 
-                if (!loverService.isEligible(me)) {
-                        //补齐个人资料
-                        return Servant.redirectToProfile();
-                }
+		if (!loverService.isEligible(me)) {
+			//补齐个人资料
+			return Servant.redirectToProfile();
+		}
 
-                List<ForumThread> list = forumService.readAllThreadsSortByPopular(
-                        me.getGender(),
-                        p < 1 ? 0 : p - 1,
-                        s
-                );
+		List<ForumThread> list = forumService.readAllThreadsSortByPopular(
+			me.getGender(),
+			p < 1 ? 0 : p - 1,
+			s
+		);
 
-                Document document = forumService.forumToDocument(me, list);
-                Element documentElement = servant.documentElement(
-                        document,
-                        authentication
-                );
+		Document document = forumService.forumToDocument(me, list);
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
+		);
 
-                documentElement.setAttribute(
-                        "title",
-                        messageSource.getMessage(
-                                "title.forum",
-                                null,
-                                locale
-                        )
-                );//网页标题
+		documentElement.setAttribute(
+			"title",
+			messageSource.getMessage(
+				"title.forum",
+				null,
+				locale
+			)
+		);//网页标题
 
-                ModelAndView modelAndView = new ModelAndView("forum");
-                modelAndView.getModelMap().addAttribute(document);
-                return modelAndView;
-        }
+		ModelAndView modelAndView = new ModelAndView("forum");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
 
-        @PostMapping(path = "/loadMore.json")
-        @ResponseBody
-        @Secured({Servant.ROLE_ADVENTURER})
-        String loadMore(@RequestParam int p, @RequestParam(defaultValue = "8") int s, @RequestParam String sort,
-                Authentication authentication, Locale locale) throws TransformerException, IOException {
+	@PostMapping(path = "/loadMore.json")
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	String loadMore(@RequestParam int p, @RequestParam(defaultValue = "8") int s, @RequestParam String sort,
+		Authentication authentication, Locale locale) throws TransformerException, IOException {
 
-                Lover me = loverService.loadByUsername(
-                        authentication.getName()
-                );
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
 
-                List<ForumThread> list = new ArrayList<>();
-                if (Objects.equals(sort, "popular")) {
-                        list = forumService.readAllThreadsSortByPopular(
-                                me.getGender(),
-                                p,
-                                s
-                        );
-                }
+		List<ForumThread> list = new ArrayList<>();
+		if (Objects.equals(sort, "popular")) {
+			list = forumService.readAllThreadsSortByPopular(
+				me.getGender(),
+				p,
+				s
+			);
+		}
 
-                if (Objects.equals(sort, "latest")) {
-                        list = forumService.readAllThreadsSortByLatest(
-                                me.getGender(),
-                                p,
-                                s
-                        );
-                }
+		if (Objects.equals(sort, "latest")) {
+			list = forumService.readAllThreadsSortByLatest(
+				me.getGender(),
+				p,
+				s
+			);
+		}
 
-                if (Objects.equals(sort, "mine")) {
-                        list = forumThreadRepository.findByAuthorOrderByCreatedDesc(
-                                me,
-                                PageRequest.of(p, s)
-                        ).getContent();
-                }
+		if (Objects.equals(sort, "mine")) {
+			list = forumThreadRepository.findByAuthorOrderByCreatedDesc(
+				me,
+				PageRequest.of(p, s)
+			).getContent();
+		}
 
-                return forumService.loadMoreForumThread(
-                        me,
-                        list
-                ).toString();
-        }
+		return forumService.loadMoreForumThread(
+			me,
+			list
+		).toString();
+	}
 
-        @GetMapping(path = "/xml", produces = MediaType.APPLICATION_XML_VALUE)
-        @ResponseBody
-        @Secured({Servant.ROLE_ADVENTURER})
-        void index(@RequestParam(defaultValue = "1") int p, @RequestParam(defaultValue = "8") int s, HttpServletResponse response, Authentication authentication) throws TransformerException, IOException {
-                Lover me = loverService.loadByUsername(
-                        authentication.getName()
-                );
+	@GetMapping(path = "/xml", produces = MediaType.APPLICATION_XML_VALUE)
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	void index(@RequestParam(defaultValue = "1") int p, @RequestParam(defaultValue = "8") int s, HttpServletResponse response, Authentication authentication) throws TransformerException, IOException {
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
 
-                List<ForumThread> list = forumService.readAllThreadsSortByPopular(
-                        me.getGender(),
-                        p < 1 ? 0 : p - 1,
-                        s
-                );
+		List<ForumThread> list = forumService.readAllThreadsSortByPopular(
+			me.getGender(),
+			p < 1 ? 0 : p - 1,
+			s
+		);
 
-                ForumThreadsDocument forumThreadsDocument = new ForumThreadsDocument();
+		ForumThreadsDocument forumThreadsDocument = new ForumThreadsDocument();
 //                forumThreadsDocument.setElementsOfCurrentPage(
 //                        pagination.getNumberOfElements()
 //                );
@@ -204,131 +204,131 @@ public class ForumController {
 //                forumThreadsDocument.setForumThreads(
 //                        pagination.getContent()
 //                );
-                forumThreadsDocument.setForumThreadTags(
-                        forumThreadTagRepository.findAll()
-                );
+		forumThreadsDocument.setForumThreadTags(
+			forumThreadTagRepository.findAll()
+		);
 
-                Servant.newTransformer().transform(
-                        new DOMSource(Servant.parseDocument(
-                                forumThreadsDocument
-                        )),
-                        new StreamResult(response.getOutputStream())
-                );
-        }
+		Servant.newTransformer().transform(
+			new DOMSource(Servant.parseDocument(
+				forumThreadsDocument
+			)),
+			new StreamResult(response.getOutputStream())
+		);
+	}
 
-        @GetMapping(path = "/add.asp", produces = MediaType.APPLICATION_XML_VALUE)
-        @ResponseBody
-        @Secured({Servant.ROLE_ADVENTURER})
-        void add(HttpServletResponse response, Authentication authentication) throws TransformerException, IOException {
-                ForumThreadDocument forumThreadDocument = new ForumThreadDocument();
-                forumThreadDocument.setForumThread(
-                        new ForumThread()
-                );
+	@GetMapping(path = "/add.asp", produces = MediaType.APPLICATION_XML_VALUE)
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	void add(HttpServletResponse response, Authentication authentication) throws TransformerException, IOException {
+		ForumThreadDocument forumThreadDocument = new ForumThreadDocument();
+		forumThreadDocument.setForumThread(
+			new ForumThread()
+		);
 
-                Servant.newTransformer().transform(
-                        new DOMSource(Servant.parseDocument(
-                                forumThreadDocument
-                        )),
-                        new StreamResult(response.getOutputStream())
-                );
-        }
+		Servant.newTransformer().transform(
+			new DOMSource(Servant.parseDocument(
+				forumThreadDocument
+			)),
+			new StreamResult(response.getOutputStream())
+		);
+	}
 
-        /**
-         * 发布讨论。
-         *
-         * @param title 标题
-         * @param markdown 内容
-         * @param multipartFiles 插图
-         * @param authentication 认证
-         * @return 杰森格式对象
-         */
-        @PostMapping(path = "/add.asp", produces = MediaType.APPLICATION_JSON_VALUE)
-        @ResponseBody
-        @Secured({Servant.ROLE_ADVENTURER})
-        String add(@RequestParam String title, @RequestParam String markdown, @RequestParam ForumThreadTag[] hashTags,
-                @RequestParam(name = "illustrations", required = false) Collection<MultipartFile> multipartFiles, Authentication authentication) {
-                return forumService.createThreadWithIllustrations(
-                        loverService.loadByUsername(
-                                authentication.getName()
-                        ),
-                        title,
-                        markdown,
-                        hashTags,
-                        multipartFiles
-                ).toString();
-        }
+	/**
+	 * 发布讨论。
+	 *
+	 * @param title 标题
+	 * @param markdown 内容
+	 * @param multipartFiles 插图
+	 * @param authentication 认证
+	 * @return 杰森格式对象
+	 */
+	@PostMapping(path = "/add.asp", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	String add(@RequestParam String title, @RequestParam String markdown, @RequestParam ForumThreadTag[] hashTags,
+		@RequestParam(name = "illustrations", required = false) Collection<MultipartFile> multipartFiles, Authentication authentication) {
+		return forumService.createThreadWithIllustrations(
+			loverService.loadByUsername(
+				authentication.getName()
+			),
+			title,
+			markdown,
+			hashTags,
+			multipartFiles
+		).toString();
+	}
 
-        @GetMapping(path = "/{identifier:^[0-9a-z]{8}-([0-9a-z]{4}-){3}[0-9a-z]{12}$}.asp", produces = MediaType.APPLICATION_JSON_VALUE)
-        @ResponseBody
-        @Secured({Servant.ROLE_ADVENTURER})
-        ForumThread getOne(@PathVariable UUID identifier) {
-                return forumService.readOneThread(identifier);
-        }
+	@GetMapping(path = "/{identifier:^[0-9a-z]{8}-([0-9a-z]{4}-){3}[0-9a-z]{12}$}.asp", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	ForumThread getOne(@PathVariable UUID identifier) {
+		return forumService.readOneThread(identifier);
+	}
 
-        @GetMapping(path = "/{identifier}.json", produces = MediaType.APPLICATION_JSON_VALUE)
-        @ResponseBody
-        @Secured({Servant.ROLE_ADVENTURER})
-        String getOneThread(@PathVariable UUID identifier) {
-                return forumService.readOneThreadInJson(identifier).toString();
-        }
+	@GetMapping(path = "/{identifier}.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	String getOneThread(@PathVariable UUID identifier) {
+		return forumService.readOneThreadInJson(identifier).toString();
+	}
 
-        @PostMapping(path = "/comment.asp", produces = MediaType.APPLICATION_JSON_VALUE)
-        @ResponseBody
-        @Secured({Servant.ROLE_ADVENTURER})
-        String comment(@RequestParam String forumThread, @RequestParam String content, Authentication authentication) {
-                return forumService.comment(
-                        forumThreadRepository.findOneByIdentifier(
-                                UUID.fromString(forumThread)
-                        ),
-                        loverService.loadByUsername(
-                                authentication.getName()
-                        ),
-                        content
-                ).toString();
-        }
+	@PostMapping(path = "/comment.asp", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	String comment(@RequestParam String forumThread, @RequestParam String content, Authentication authentication) {
+		return forumService.comment(
+			forumThreadRepository.findOneByIdentifier(
+				UUID.fromString(forumThread)
+			),
+			loverService.loadByUsername(
+				authentication.getName()
+			),
+			content
+		).toString();
+	}
 
-        @GetMapping(path = "/comment/{identifier}.json", produces = MediaType.APPLICATION_JSON_VALUE)
-        @ResponseBody
-        @Secured({Servant.ROLE_ADVENTURER})
-        String getOneComment(@PathVariable UUID identifier) {
-                return forumThreadCommentRepository.findByIdentifier(identifier).toString();
-        }
+	@GetMapping(path = "/comment/{identifier}.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	String getOneComment(@PathVariable UUID identifier) {
+		return forumThreadCommentRepository.findByIdentifier(identifier).toString();
+	}
 
-        @PostMapping(path = "/editComment.asp", produces = MediaType.APPLICATION_JSON_VALUE)
-        @ResponseBody
-        @Secured({Servant.ROLE_ADVENTURER})
-        String editComment(@RequestParam UUID forumCommentIdentifier, @RequestParam String content, Authentication authentication) {
+	@PostMapping(path = "/editComment.asp", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	String editComment(@RequestParam UUID forumCommentIdentifier, @RequestParam String content, Authentication authentication) {
 
-                return forumService.editComment(
-                        loverService.loadByUsername(
-                                authentication.getName()
-                        ),
-                        forumThreadCommentRepository.findByIdentifier(
-                                forumCommentIdentifier
-                        ),
-                        content
-                ).toString();
-        }
+		return forumService.editComment(
+			loverService.loadByUsername(
+				authentication.getName()
+			),
+			forumThreadCommentRepository.findByIdentifier(
+				forumCommentIdentifier
+			),
+			content
+		).toString();
+	}
 
-        @PostMapping(path = "/editThread.asp", produces = MediaType.APPLICATION_JSON_VALUE)
-        @ResponseBody
-        @Secured({Servant.ROLE_ADVENTURER})
-        String editThread(@RequestParam UUID forumIdentifier, @RequestParam String title,
-                @RequestParam String markdown, @RequestParam ForumThreadTag[] hashTags, @RequestParam ForumThreadIllustration[] delIllustrations,
-                @RequestParam(name = "illustrations", required = false) Collection<MultipartFile> multipartFiles, Authentication authentication) {
+	@PostMapping(path = "/editThread.asp", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	String editThread(@RequestParam UUID forumIdentifier, @RequestParam String title,
+		@RequestParam String markdown, @RequestParam ForumThreadTag[] hashTags, @RequestParam ForumThreadIllustration[] delIllustrations,
+		@RequestParam(name = "illustrations", required = false) Collection<MultipartFile> multipartFiles, Authentication authentication) {
 
-                return forumService.editThread(
-                        loverService.loadByUsername(
-                                authentication.getName()
-                        ),
-                        forumThreadRepository.findOneByIdentifier(
-                                forumIdentifier
-                        ),
-                        title,
-                        markdown,
-                        hashTags,
-                        delIllustrations,
-                        multipartFiles
-                ).toString();
-        }
+		return forumService.editThread(
+			loverService.loadByUsername(
+				authentication.getName()
+			),
+			forumThreadRepository.findOneByIdentifier(
+				forumIdentifier
+			),
+			title,
+			markdown,
+			hashTags,
+			delIllustrations,
+			multipartFiles
+		).toString();
+	}
 }

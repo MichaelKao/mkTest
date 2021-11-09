@@ -182,7 +182,7 @@
 						<A class="navbar-brand font-weight-bolder m-0" href="/">YOUNG ME 養蜜</A>
 						<DIV class="d-flex align-items-center">
 							<xsl:if test="@signIn">
-								<A class="d-lg-none pe-1" href="/activeLogs.asp">
+								<A class="d-lg-none pe-1" href="/activities.asp">
 									<I class="fad fa-bell fontSize22" style="z-index: -1;"></I>
 									<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
 										<xsl:if test="@announcement">

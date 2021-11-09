@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -4027,5 +4028,21 @@ public class WelcomeController {
 				toJSONObject().toString();
 		}
 		return jsonObject.toString();
+	}
+
+	@PostMapping(path = "/loadMoreActivities.json")
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	String loadMoreActivities(@RequestParam int p, Authentication authentication, Locale locale) throws TransformerException, IOException {
+
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		return historyService.loadMoreActivities(
+			me,
+			p,
+			10
+		).toString();
 	}
 }
