@@ -25,7 +25,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -100,6 +99,7 @@ import tw.musemodel.dingzhiqingren.entity.PrivilegeKey;
 import tw.musemodel.dingzhiqingren.entity.ResetShadow;
 import tw.musemodel.dingzhiqingren.entity.Role;
 import tw.musemodel.dingzhiqingren.entity.TrialCode;
+import tw.musemodel.dingzhiqingren.entity.UsedTrialCode;
 import tw.musemodel.dingzhiqingren.entity.User;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalInfo;
 import tw.musemodel.dingzhiqingren.entity.WithdrawalRecord;
@@ -136,6 +136,7 @@ import tw.musemodel.dingzhiqingren.repository.PrivilegeRepository;
 import tw.musemodel.dingzhiqingren.repository.ResetShadowRepository;
 import tw.musemodel.dingzhiqingren.repository.RoleRepository;
 import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
+import tw.musemodel.dingzhiqingren.repository.UsedTrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalInfoRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
@@ -261,6 +262,9 @@ public class LoverService {
         @Autowired
         private CompanionshipRepository companionshipRepository;
 
+        @Autowired
+        private UsedTrialCodeRepository usedTrialCodeRepository;
+
         @Value("classpath:sql/我拉黑了谁.sql")
         private Resource thoseIBlockResource;
 
@@ -327,21 +331,14 @@ public class LoverService {
                 for (Lover mofo : loverRepository.findByReferrerOrderByRegisteredDesc(me)) {
                         Date deadline = mofo.getVip();
 
-                        // 轉換成台北時區
-                        TimeZone TaipeitimeZone = TimeZone.getTimeZone("Asia/Taipei");
-                        DateFormat TaipeiDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        TaipeiDateFormat.setTimeZone(TaipeitimeZone);
-
                         Descendant descendant = new Descendant(
                                 mofo.getIdentifier(),
                                 mofo.getNickname(),
-                                DATE_TIME_FORMATTER.format(
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
                                         Servant.toTaipeiZonedDateTime(
                                                 mofo.getRegistered()
-                                        ).withZoneSameInstant(
-                                                Servant.ASIA_TAIPEI_ZONE_ID
-                                        )
-                                ).replaceAll("\\+\\d{2}$", "")
+                                        ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
+                                )
                         );
                         descendant.setVip(
                                 Objects.nonNull(deadline) && deadline.after(new Date(System.currentTimeMillis()))
@@ -1657,6 +1654,12 @@ public class LoverService {
                         trialCode
                 );
                 history = historyRepository.saveAndFlush(history);
+
+                UsedTrialCode usedTrialCode = new UsedTrialCode(
+                        mofo,
+                        trialCode
+                );
+                usedTrialCode = usedTrialCodeRepository.saveAndFlush(usedTrialCode);
 
                 mofo.setVip(new Date(
                         history.getOccurred().getTime() + Servant.MILLISECONDS_IN_A_DAY
@@ -4281,5 +4284,116 @@ public class LoverService {
                 Date latestDate = servant.latestDate(year, month, date);
 
                 return historyRepository.findDistinctPassive(male, BEHAVIOR_CHAT_MORE, earliestDate, latestDate);
+        }
+
+        @Transactional(readOnly = true)
+        public JSONObject getTrialCodeUsedList(TrialCode trialCode) {
+                List<UsedTrialCode> usedTrialCodes
+                        = usedTrialCodeRepository.findByTrialCode(trialCode);
+
+                JSONObject jSONObject = new JSONObject();
+                JSONArray array = new JSONArray();
+                for (UsedTrialCode usedTrialCode : usedTrialCodes) {
+                        Lover lover = usedTrialCode.getLover();
+                        Date date = historyRepository.findTop1ByInitiativeAndBehaviorOrderByOccurredDesc(lover, BEHAVIOR_TRIAL_CODE).getOccurred();
+                        JSONObject json = new JSONObject();
+                        json.
+                                put(
+                                        "nickname",
+                                        lover.getNickname()
+                                ).
+                                put(
+                                        "identifier",
+                                        lover.getIdentifier()
+                                ).
+                                put(
+                                        "date",
+                                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+                                                Servant.toTaipeiZonedDateTime(
+                                                        date
+                                                ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
+                                        )
+                                );
+                        array.put(json);
+                }
+                return jSONObject.put("list", array);
+        }
+
+        @Transactional(readOnly = true)
+        public JSONObject getVipHistory(Lover lover) {
+
+                List<History> histories
+                        = historyRepository.findByInitiativeAndBehaviorInOrderByOccurredDesc(
+                                lover,
+                                Arrays.asList(new History.Behavior[]{
+                                BEHAVIOR_MONTHLY_CHARGED,
+                                BEHAVIOR_TRIAL_CODE})
+                        );
+
+                JSONObject jSONObject = new JSONObject();
+                JSONArray array = new JSONArray();
+                for (History history : histories) {
+                        Date date = history.getOccurred();
+                        String vip = null;
+                        if (Objects.equals(history.getBehavior(), BEHAVIOR_TRIAL_CODE)) {
+                                try {
+                                        vip = usedTrialCodeRepository.findByLover(lover).getTrialCode().getCode();
+                                } catch (NullPointerException e) {
+                                        vip = "單日體驗";
+                                }
+                        } else if (Objects.equals(history.getLuJie().getItemName(), "長期貴賓")) {
+                                vip = "1288";
+                        } else {
+                                vip = "1688";
+                        }
+                        JSONObject json = new JSONObject();
+                        json.
+                                put(
+                                        "vip",
+                                        vip
+                                ).
+                                put(
+                                        "date",
+                                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+                                                Servant.toTaipeiZonedDateTime(
+                                                        date
+                                                ).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
+                                        )
+                                );
+                        array.put(json);
+                }
+                return jSONObject.put("list", array);
+        }
+
+        public Document settingDocument(Document document, Lover lover) {
+                Element documentElement = document.getDocumentElement();
+
+                Collection<Blacklist> blacklists = blacklistRepository.findByBlockerAndBlockedNot(lover, lover);
+                for (Blacklist blacklist : blacklists) {
+                        Element blockedElement = document.createElement("blocked");
+                        blockedElement.setAttribute(
+                                "identifier",
+                                blacklist.getBlocked().getIdentifier().toString()
+                        );
+                        blockedElement.setAttribute(
+                                "nickname",
+                                blacklist.getBlocked().getNickname()
+                        );
+                        documentElement.appendChild(blockedElement);
+                }
+
+                return document;
+        }
+
+        public JSONObject unlock(Lover blocker, Lover blocked) {
+                Blacklist blacklist = blacklistRepository.
+                        findOneByBlockerAndBlocked(blocker, blocked).get();
+                blacklistRepository.delete(blacklist);
+                blacklistRepository.flush();
+
+                return new JavaScriptObjectNotation().
+                        withResponse(true).
+                        withResult(blacklist.getBlocked().getNickname()).
+                        toJSONObject();
         }
 }

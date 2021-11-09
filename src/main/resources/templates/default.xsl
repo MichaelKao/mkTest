@@ -39,7 +39,7 @@
 					<DIV class="d-flex align-items-center">
 						<xsl:if test="@signIn">
 							<A class="d-lg-none pe-1" href="/activities.asp">
-								<I class="fad fa-bell fontSize22"></I>
+								<I class="fad fa-bell fontSize22" style="z-index: -1;"/>
 								<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
 									<xsl:if test="@announcement">
 										<xsl:attribute name="style">display: inline;</xsl:attribute>
@@ -47,8 +47,8 @@
 									</xsl:if>
 								</SPAN>
 							</A>
-							<A class="d-lg-none px-2" href="/inbox.asp">
-								<I class="fad fa-comment-smile fontSize22"></I>
+							<A class="d-lg-none px-1" href="/inbox.asp">
+								<I class="fad fa-comments fontSize22" style="z-index: -1;"/>
 								<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 inbox" style="display: none;">
 									<xsl:if test="@inbox">
 										<xsl:attribute name="style">display: inline;</xsl:attribute>
@@ -69,155 +69,194 @@
 						<UL class="navbar-nav navbar-nav-hover">
 							<xsl:if test="@signIn">
 								<LI class="nav-item dropdown dropdown-hover">
-									<A class="nav-link cursor-pointer text-primary" id="dropdownMenuPages" data-bs-toggle="dropdown">
-										<SPAN class="me-1">
-											<I class="fad fa-user-cog fontSize22"></I>
-										</SPAN>
-										<I class="fas fa-chevron-down"></I>
+									<A class="nav-link cursor-pointer text-primary p-2 p-lg-0 me-2" id="dropdownMenuPages" data-bs-toggle="dropdown">
+										<DIV class="d-flex align-items-center">
+											<SPAN class="me-1">
+												<I class="fad fa-user-cog fontSize22"/>
+											</SPAN>
+											<I class="fas fa-sort-down"/>
+										</DIV>
+										<DIV class="text-xs text-bold d-none d-lg-block">設定</DIV>
 									</A>
 									<DIV class="dropdown-menu dropdown-menu-animation p-3 border-radius-lg mt-0 mt-lg-3">
 										<DIV class="d-none d-lg-block">
 											<A class="dropdown-item border-radius-md" href="/profile/">
-												<I class="fad fa-user-edit fontSize22 width30"></I>
+												<I class="fad fa-user-edit fontSize22 width30"/>
 												<SPAN class="ms-1">個人檔案</SPAN>
 											</A>
 											<A class="dropdown-item border-radius-md" href="/referralCode.asp">
-												<I class="fad fa-users-crown fontSize22 width30"></I>
+												<I class="fad fa-users-crown fontSize22 width30"/>
 												<SPAN class="ms-1">好友邀請碼</SPAN>
 											</A>
 											<xsl:if test="@female">
 												<A class="dropdown-item border-radius-md" href="/groupGreeting.asp">
-													<I class="fad fa-comments-alt fontSize22 width30"></I>
+													<I class="fad fa-hand-heart fontSize22 width30"/>
 													<SPAN class="ms-1">群發打招呼</SPAN>
 												</A>
 											</xsl:if>
 											<A class="dropdown-item border-radius-md" href="/setting.asp">
-												<I class="fad fa-cog fontSize22 width30"></I>
+												<I class="fad fa-cog fontSize22 width30"/>
 												<SPAN class="ms-1">進階設定</SPAN>
 											</A>
 										</DIV>
 										<DIV class="d-lg-none">
 											<A class="dropdown-item border-radius-md" href="/profile/">
-												<I class="fad fa-user-edit fontSize22 width30"></I>
+												<I class="fad fa-user-edit fontSize22 width30"/>
 												<SPAN class="ms-1">個人檔案</SPAN>
 											</A>
 											<A class="dropdown-item border-radius-md" href="/referralCode.asp">
-												<I class="fad fa-users-crown fontSize22 width30"></I>
+												<I class="fad fa-users-crown fontSize22 width30"/>
 												<SPAN class="ms-1">好友邀請碼</SPAN>
 											</A>
 											<xsl:if test="@female">
 												<A class="dropdown-item border-radius-md" href="/groupGreeting.asp">
-													<I class="fad fa-comments-alt fontSize22 width30"></I>
+													<I class="fad fa-hand-heart fontSize22 width30"/>
 													<SPAN class="ms-1">群發打招呼</SPAN>
 												</A>
 											</xsl:if>
 											<A class="dropdown-item border-radius-md" href="/setting.asp">
-												<I class="fad fa-cog fontSize22 width30"></I>
+												<I class="fad fa-cog fontSize22 width30"/>
 												<SPAN class="ms-1">進階設定</SPAN>
 											</A>
 										</DIV>
 									</DIV>
 								</LI>
 								<xsl:if test="@almighty or @finance">
-									<LI class="nav-item">
-										<A class="nav-link nav-link-icon d-flex align-items-center text-primary" href="/dashboard/members.asp">
-											<I class="fad fa-id-card-alt fontSize22 width30whenMobile"></I>
-											<SPAN class="d-lg-none">YoungMe 後台</SPAN>
+									<LI class="nav-item d-flex align-items-end">
+										<A class="nav-link nav-link-icon text-primary p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/dashboard/members.asp">
+											<DIV class="d-flex align-items-center">
+												<I class="fad fa-id-card-alt fontSize22 width30whenMobile"/>
+												<SPAN class="d-lg-none">YoungMe 後台</SPAN>
+											</DIV>
+											<DIV class="d-none d-lg-block text-xs text-bold">後台</DIV>
 										</A>
 									</LI>
 								</xsl:if>
 								<xsl:if test="@signIn">
-									<LI class="nav-item d-none d-lg-block">
-										<A class="nav-link nav-link-icon" href="/activities.asp">
-											<I class="fad fa-bell fontSize22"></I>
-											<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
-												<xsl:if test="@announcement">
-													<xsl:attribute name="style">display: inline;</xsl:attribute>
-													<xsl:value-of select="@announcement"/>
-												</xsl:if>
-											</SPAN>
+									<LI class="nav-item d-none d-lg-flex align-items-end">
+										<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/activities.asp">
+											<DIV>
+												<I class="fad fa-bell fontSize22" style="z-index: -1;"/>
+												<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
+													<xsl:if test="@announcement">
+														<xsl:attribute name="style">display: inline;</xsl:attribute>
+														<xsl:value-of select="@announcement"/>
+													</xsl:if>
+												</SPAN>
+											</DIV>
+											<DIV class="d-none d-lg-block text-xs text-bold">通知</DIV>
 										</A>
 									</LI>
-									<LI class="nav-item d-none d-lg-block">
-										<A class="nav-link nav-link-icon" href="/inbox.asp">
-											<I class="fad fa-comment-smile fontSize22"></I>
-											<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 inbox" style="display: none;">
-												<xsl:if test="@inbox">
-													<xsl:attribute name="style">display: inline;</xsl:attribute>
-													<xsl:value-of select="@inbox"/>
-												</xsl:if>
-											</SPAN>
+									<LI class="nav-item d-none d-lg-flex align-items-end">
+										<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/inbox.asp">
+											<DIV>
+												<I class="fad fa-comments fontSize22" style="z-index: -1;"/>
+												<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 inbox" style="display: none;">
+													<xsl:if test="@inbox">
+														<xsl:attribute name="style">display: inline;</xsl:attribute>
+														<xsl:value-of select="@inbox"/>
+													</xsl:if>
+												</SPAN>
+											</DIV>
+											<DIV class="d-none d-lg-block text-xs text-bold">訊息</DIV>
 										</A>
 									</LI>
 								</xsl:if>
-								<LI class="nav-item">
-									<A class="nav-link nav-link-icon d-flex align-items-center" href="/">
-										<I class="fad fa-home-heart fontSize22 width30whenMobile"></I>
-										<SPAN class="d-lg-none">
-											<xsl:if test="@male">所有甜心</xsl:if>
-											<xsl:if test="@female">所有男仕</xsl:if>
-										</SPAN>
+								<LI class="nav-item d-flex align-items-end">
+									<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/">
+										<DIV class="d-flex align-items-center">
+											<I class="fad fa-home-heart fontSize22 width30whenMobile"/>
+											<SPAN class="d-lg-none">所有養蜜</SPAN>
+										</DIV>
+										<DIV class="d-none d-lg-block text-xs text-bold">養蜜</DIV>
 									</A>
 								</LI>
-								<LI class="nav-item">
-									<A class="nav-link nav-link-icon d-flex align-items-center" href="/filter.asp">
-										<I class="fad fa-search fontSize22 width30whenMobile"></I>
-										<SPAN class="d-lg-none">搜尋養蜜</SPAN>
+								<LI class="nav-item d-flex align-items-end">
+									<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/filter.asp">
+										<DIV class="d-flex align-items-center">
+											<I class="fad fa-search fontSize22 width30whenMobile"/>
+											<SPAN class="d-lg-none">搜尋養蜜</SPAN>
+										</DIV>
+										<DIV class="d-none d-lg-block text-xs text-bold">搜尋</DIV>
 									</A>
 								</LI>
-								<LI class="nav-item">
-									<A class="nav-link nav-link-icon d-flex align-items-center" href="/forum/">
-										<I class="fas fa-hashtag fontSize22 width30whenMobile"></I>
-										<SPAN class="d-lg-none">討論區</SPAN>
+								<LI class="nav-item d-flex align-items-end">
+									<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/forum/">
+										<DIV class="d-flex align-items-center">
+											<I class="fas fa-comment-alt-edit fontSize22 width30whenMobile"/>
+											<SPAN class="d-lg-none">討論區</SPAN>
+										</DIV>
+										<DIV class="d-none d-lg-block text-xs text-bold">討論</DIV>
 									</A>
 								</LI>
-								<LI class="nav-item">
-									<A class="nav-link nav-link-icon d-flex align-items-center" href="/favorite.asp">
-										<I class="fad fa-box-heart fontSize22 width30whenMobile"></I>
-										<SPAN class="d-lg-none">我的收藏</SPAN>
+								<LI class="nav-item d-flex align-items-end">
+									<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/favorite.asp">
+										<DIV class="d-flex align-items-center">
+											<I class="fad fa-box-heart fontSize22 width30whenMobile"/>
+											<SPAN class="d-lg-none">我的收藏</SPAN>
+										</DIV>
+										<DIV class="d-none d-lg-block text-xs text-bold">收藏</DIV>
 									</A>
 								</LI>
-								<LI class="nav-item">
-									<A class="nav-link nav-link-icon d-flex align-items-center" href="/looksMe.asp">
-										<I class="fad fa-shoe-prints fontSize22 width30whenMobile"></I>
-										<SPAN class="d-lg-none">誰看過我</SPAN>
+								<LI class="nav-item d-flex align-items-end">
+									<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/looksMe.asp">
+										<DIV class="d-flex align-items-center">
+											<I class="fad fa-shoe-prints fontSize22 width30whenMobile"/>
+											<SPAN class="d-lg-none">誰看過我</SPAN>
+										</DIV>
+										<DIV class="d-none d-lg-block text-xs text-bold">足跡</DIV>
 									</A>
 								</LI>
 								<xsl:if test="@female">
-									<LI class="nav-item">
-										<A class="nav-link nav-link-icon d-flex align-items-center" href="/withdrawal.asp">
-											<I class="fad fa-badge-dollar fontSize22 width30whenMobile"></I>
-											<SPAN class="d-lg-none">提領 ME 點</SPAN>
+									<LI class="nav-item d-flex align-items-end">
+										<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/withdrawal.asp">
+											<DIV class="d-flex align-items-center">
+												<I class="fad fa-badge-dollar fontSize22 width30whenMobile"/>
+												<SPAN class="d-lg-none">提領ME點</SPAN>
+											</DIV>
+											<DIV class="d-none d-lg-block text-xs text-bold">帳戶</DIV>
 										</A>
 									</LI>
 								</xsl:if>
 								<xsl:if test="@male">
-									<LI class="nav-item">
-										<A class="nav-link nav-link-icon d-flex align-items-center" href="/recharge.asp">
-											<I class="fad fa-badge-dollar fontSize22 width30whenMobile"></I>
-											<SPAN class="d-lg-none">購買ME點</SPAN>
+									<LI class="nav-item d-flex align-items-end">
+										<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/recharge.asp">
+											<DIV class="d-flex align-items-center">
+												<I class="fad fa-badge-dollar fontSize22 width30whenMobile"/>
+												<SPAN class="d-lg-none">購買ME點</SPAN>
+											</DIV>
+											<DIV class="d-none d-lg-block text-xs text-bold">儲值</DIV>
 										</A>
 									</LI>
-									<LI class="nav-item">
-										<A class="nav-link nav-link-icon d-flex align-items-center" href="/upgrade.asp">
-											<I class="fad fa-crown fontSize22 width30whenMobile"></I>
-											<SPAN class="d-lg-none">meKING 升級</SPAN>
+									<LI class="nav-item d-flex align-items-end">
+										<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/upgrade.asp">
+											<DIV class="d-flex align-items-center">
+												<I class="fad fa-crown fontSize22 width30whenMobile"/>
+												<SPAN class="d-lg-none">meKING 升級</SPAN>
+											</DIV>
+											<DIV class="d-none d-lg-block text-xs text-bold">升級</DIV>
 										</A>
 									</LI>
 								</xsl:if>
 							</xsl:if>
-							<LI class="nav-item">
+							<LI class="nav-item d-flex align-items-end">
 								<xsl:choose>
 									<xsl:when test="@signIn">
-										<A class="nav-link nav-link-icon d-flex align-items-center" href="/signOut.asp">
-											<I class="fad fa-sign-out fontSize22 width30whenMobile"></I>
-											<SPAN class="d-lg-none">登出</SPAN>
+										<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/signOut.asp">
+											<DIV class="d-flex align-items-center">
+												<I class="fad fa-sign-out fontSize22 width30whenMobile"/>
+												<SPAN class="d-lg-none">登出</SPAN>
+											</DIV>
+											<DIV class="d-none d-lg-block text-xs text-bold">登出</DIV>
 										</A>
 									</xsl:when>
 									<xsl:otherwise>
-										<A class="nav-link nav-link-icon d-flex align-items-center" href="/signIn.asp">
-											<I class="fad fa-sign-in fontSize22 width30whenMobile"></I>
-											<SPAN class="d-lg-none">登入</SPAN>
+										<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/signIn.asp">
+											<DIV class="d-flex align-items-center">
+												<I class="fad fa-sign-in fontSize22 width30whenMobile"/>
+												<SPAN class="d-lg-none">登入</SPAN>
+											</DIV>
+											<DIV class="d-none d-lg-block text-xs text-bold">登入</DIV>
 										</A>
 									</xsl:otherwise>
 								</xsl:choose>
@@ -264,7 +303,7 @@
 
 	<xsl:template name="bootstrapToast">
 		<DIV class="position-fixed top-5 end-0 p-3" style="z-index: 10000">
-			<DIV class="toast fade hide bg-primary opacity-9" data-bs-delay="1800" >
+			<DIV class="toast fade hide bg-primary opacity-9" data-bs-delay="1800">
 				<BUTTON class="btn-close ms-2 mt-1" type="button" data-bs-dismiss="toast"/>
 				<DIV class="toast-body text-light"/>
 			</DIV>
@@ -341,10 +380,10 @@
 	<xsl:template name="dashSideNavBar">
 		<ASIDE class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-white" id="sidenav-main">
 			<DIV class="sidenav-header">
-				<I class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" id="iconSidenav"></I>
+				<I class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" id="iconSidenav"/>
 				<DIV class="navbar-brand m-0">
-					<I class="fal fa-id-card-alt text-lg"></I>
-					<SPAN class="ms-1 font-weight-bold">養蜜YoungMe後台</SPAN>
+					<I class="fal fa-id-card-alt text-lg"/>
+					<SPAN class="ms-1 font-weight-bold">養蜜 YoungMe 後台</SPAN>
 				</DIV>
 			</DIV>
 			<HR class="horizontal dark mt-0"/>
@@ -353,7 +392,7 @@
 					<LI class="nav-item">
 						<A class="nav-link" href="/dashboard/members.asp">
 							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
-								<I class="fal fa-users-cog text-dark text-lg"></I>
+								<I class="fal fa-users-cog text-dark text-lg"/>
 							</DIV>
 							<SPAN class="nav-link-text ms-1">會員管理</SPAN>
 						</A>
@@ -361,7 +400,7 @@
 					<LI class="nav-item">
 						<A class="nav-link" href="/dashboard/certification.asp">
 							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
-								<I class="fal fa-shield-check text-dark text-lg"></I>
+								<I class="fal fa-shield-check text-dark text-lg"/>
 							</DIV>
 							<SPAN class="nav-link-text ms-1">安心認證審核</SPAN>
 						</A>
@@ -369,7 +408,7 @@
 					<LI class="nav-item">
 						<A class="nav-link" href="/dashboard/withdrawal.asp">
 							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
-								<I class="fal fa-badge-dollar text-dark text-lg"></I>
+								<I class="fal fa-badge-dollar text-dark text-lg"/>
 							</DIV>
 							<SPAN class="nav-link-text ms-1">甜心提領紀錄</SPAN>
 						</A>
@@ -377,15 +416,23 @@
 					<LI class="nav-item">
 						<A class="nav-link" href="/dashboard/mePointsRecordsForMale.asp">
 							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
-								<I class="fal fa-badge-dollar text-dark text-lg"></I>
+								<I class="fal fa-badge-dollar text-dark text-lg"/>
 							</DIV>
 							<SPAN class="nav-link-text ms-1">男仕ME點紀錄</SPAN>
 						</A>
 					</LI>
 					<LI class="nav-item">
+						<A class="nav-link" href="/dashboard/broadcast.asp">
+							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
+								<I class="fal fa-bullhorn text-dark text-lg"/>
+							</DIV>
+							<SPAN class="nav-link-text ms-1">小編群發訊息</SPAN>
+						</A>
+					</LI>
+					<LI class="nav-item">
 						<A class="nav-link" href="/dashboard/genTrialCode.asp">
 							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
-								<I class="fal fa-meteor text-dark text-lg"></I>
+								<I class="fal fa-meteor text-dark text-lg"/>
 							</DIV>
 							<SPAN class="nav-link-text ms-1">產生體驗碼</SPAN>
 						</A>
@@ -393,7 +440,7 @@
 					<LI class="nav-item">
 						<A class="nav-link" href="/dashboard/genHashtags.asp">
 							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
-								<I class="fal fa-hashtag text-dark text-lg"></I>
+								<I class="fal fa-comment-alt-edit text-dark text-lg"/>
 							</DIV>
 							<SPAN class="nav-link-text ms-1">新增文章標籤</SPAN>
 						</A>
@@ -401,7 +448,7 @@
 					<LI class="nav-item">
 						<A class="nav-link" href="/dashboard/stopRecurring.asp">
 							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
-								<I class="fal fa-credit-card text-dark text-lg"></I>
+								<I class="fal fa-credit-card text-dark text-lg"/>
 							</DIV>
 							<SPAN class="nav-link-text ms-1">解除定期定額</SPAN>
 						</A>
@@ -412,7 +459,7 @@
 					<LI class="nav-item">
 						<A class="nav-link" href="/dashboard/{@year}/{@month}/{@date}/newAccounts.asp">
 							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
-								<I class="fal fa-users text-lg text-dark"></I>
+								<I class="fal fa-users text-lg text-dark"/>
 							</DIV>
 							<SPAN class="nav-link-text ms-1">每日新進會員</SPAN>
 						</A>
@@ -420,7 +467,7 @@
 					<LI class="nav-item">
 						<A class="nav-link" href="/dashboard/log/chat.xls">
 							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
-								<I class="fal fa-comments text-lg text-dark"></I>
+								<I class="fal fa-comments text-lg text-dark"/>
 							</DIV>
 							<SPAN class="nav-link-text ms-1">聊天訊息報表</SPAN>
 						</A>
@@ -434,16 +481,20 @@
 		<!-- Navbar -->
 		<NAV class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
 			<DIV class="container-fluid py-1 px-2 px-sm-4">
-				<H6 class="font-weight-bolder mb-0">養蜜 YoungMe 後台</H6>
+				<H6 class="font-weight-bolder mb-0">養蜜後台</H6>
 				<DIV class="collapse navbar-collapse" id="navbar">
 					<UL class="navbar-nav justify-content-end ms-auto">
 						<LI class="nav-item d-flex align-items-center">
 							<A class="btn btn-outline-primary btn-round px-2 py-1 mb-0" href="/">
-								<I class="fal fa-home-heart text-lg"/>
-								<SPAN class="ms-1">前台</SPAN>
+								<SPAN>前台</SPAN>
 							</A>
 						</LI>
-						<LI class="nav-item d-xl-none ps-2 d-flex align-items-center">
+						<LI class="nav-item">
+							<A class="nav-link nav-link-icon d-flex align-items-center px-2" href="/signOut.asp">
+								<I class="fad fa-sign-out fontSize22"/>
+							</A>
+						</LI>
+						<LI class="nav-item d-xl-none d-flex align-items-center">
 							<A href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
 								<DIV class="sidenav-toggler-inner">
 									<I class="sidenav-toggler-line"/>
@@ -458,5 +509,4 @@
 		</NAV>
 		<!-- End Navbar -->
 	</xsl:template>
-
 </xsl:stylesheet>

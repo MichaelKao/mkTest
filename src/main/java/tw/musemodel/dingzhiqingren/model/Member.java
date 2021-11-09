@@ -62,6 +62,11 @@ public class Member implements Serializable {
          */
         private boolean isTrial;
 
+        /**
+         * 體驗碼
+         */
+        private String trialCode;
+
         public Member() {
                 isVIP = Boolean.FALSE;
                 isVVIP = Boolean.FALSE;
@@ -119,5 +124,13 @@ public class Member implements Serializable {
 
         public void setIsTrial(boolean isTrial) {
                 this.isTrial = isTrial;
+        }
+
+        public String getTrialCode() {
+                return trialCode;
+        }
+
+        public void setTrialCode(String trialCode) {
+                this.trialCode = trialCode;
         }
 }

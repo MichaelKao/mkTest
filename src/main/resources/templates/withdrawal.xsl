@@ -149,10 +149,16 @@
                                                 <DIV class="text-sm opacity-8 p-0 col-md-8 mx-auto">
                                                         <DIV class="card p-3">
                                                                 <H6 class="text-center text-bold text-primary">目前可提領的總費用：<xsl:value-of select="@totalPoints"/></H6>
-                                                                <DIV class="text-bold text-xs text-center my-1">
+                                                                <DIV class="text-xs text-center">
                                                                         <SPAN>僅能提領</SPAN>
                                                                         <xsl:value-of select="@before7days"/>
                                                                         <SPAN>前(7天以前)的紀錄</SPAN>
+                                                                </DIV>
+                                                                <DIV class="my-1 text-warning text-xs text-center">
+                                                                        <SPAN>
+                                                                                <I class="far fa-wallet me-1"></I>
+                                                                        </SPAN>
+                                                                        <SPAN>換算台幣 1:1, 提領有一成金流手續費</SPAN>
                                                                 </DIV>
                                                                 <TABLE class="table align-items-center mb-0">
                                                                         <THEAD>
@@ -164,6 +170,21 @@
                                                                                 </TR>
                                                                         </THEAD>
                                                                         <TBODY>
+                                                                                <TR style="background: #f3f3f3;">
+                                                                                        <TD class="text-center">
+                                                                                                <SPAN class="font-weight-bold text-xs">範例 </SPAN>
+                                                                                                <SPAN class="text-xs font-weight-bold">2021-05-25</SPAN>
+                                                                                        </TD>
+                                                                                        <TD class="text-sm text-center">
+                                                                                                <SPAN class="text-secondary text-xs font-weight-bold">養蜜</SPAN>
+                                                                                        </TD>
+                                                                                        <TD class="text-sm text-center">
+                                                                                                <SPAN class="text-secondary text-xs font-weight-bold">1000</SPAN>
+                                                                                        </TD>
+                                                                                        <TD class="text-sm text-center">
+                                                                                                <SPAN class="text-secondary text-xs font-weight-bold">900</SPAN>
+                                                                                        </TD>
+                                                                                </TR>
                                                                                 <xsl:for-each select="record">
                                                                                         <TR>
                                                                                                 <TD class="text-sm text-center">

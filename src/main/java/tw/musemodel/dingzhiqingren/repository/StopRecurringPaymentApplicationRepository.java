@@ -14,13 +14,13 @@ import tw.musemodel.dingzhiqingren.entity.StopRecurringPaymentApplication;
 @Repository
 public interface StopRecurringPaymentApplicationRepository extends JpaRepository<StopRecurringPaymentApplication, Long> {
 
-	/**
-	 * @param applicant 申请人
-	 * @return 该用户号解除定期定额的申请
-	 */
-	public Collection<StopRecurringPaymentApplication> findByApplicantOrderByCreatedAtDesc(Lover applicant);
+        /**
+         * @param applicant 申请人
+         * @return 该用户号解除定期定额的申请
+         */
+        public Collection<StopRecurringPaymentApplication> findByApplicantOrderByCreatedAtDesc(Lover applicant);
 
-	public Collection<StopRecurringPaymentApplication> findAllByHandlerNullOrderByCreatedAtDesc();
+        public Collection<StopRecurringPaymentApplication> findAllByHandlerNullOrderByCreatedAtDesc();
 
-	public Collection<StopRecurringPaymentApplication> findAllByHandlerNotNullOrderByCreatedAtDesc();
+        public Collection<StopRecurringPaymentApplication> findAllByHandlerNotNullOrderByCreatedAtDesc();
 }

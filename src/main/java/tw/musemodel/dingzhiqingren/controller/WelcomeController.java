@@ -3366,6 +3366,8 @@ public class WelcomeController {
 			)
 		);//网页标题
 
+		document = loverService.settingDocument(document, me);
+
 		ModelAndView modelAndView = new ModelAndView("setting");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
@@ -3511,7 +3513,9 @@ public class WelcomeController {
 				toJSONObject().
 				toString();
 		}
-		StopRecurringPaymentApplication stopRecurringPaymentApplication = new StopRecurringPaymentApplication(me);
+
+		History history = historyRepository.findTop1ByInitiativeAndBehaviorOrderByOccurredDesc(me, Behavior.YUE_FEI);
+		StopRecurringPaymentApplication stopRecurringPaymentApplication = new StopRecurringPaymentApplication(me, history);
 		stopRecurringPaymentApplicationRepository.saveAndFlush(stopRecurringPaymentApplication);
 
 		return new JavaScriptObjectNotation().
@@ -3991,6 +3995,31 @@ public class WelcomeController {
 				companionshipRepository.findById(companionship).orElse(null),
 				locale
 			);
+		} catch (Exception exception) {
+			return new JavaScriptObjectNotation().
+				withReason(exception.getMessage()).
+				withResponse(false).
+				toJSONObject().toString();
+		}
+		return jsonObject.toString();
+	}
+
+	@PostMapping(path = "/unblock.json")
+	@ResponseBody
+	String unblock(@RequestParam UUID blockedIdentifier, Authentication authentication, Locale locale) {
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+		Lover blocked = loverService.loadByIdentifier(
+			blockedIdentifier
+		);
+
+		JSONObject jsonObject;
+		try {
+			jsonObject = loverService.unlock(me, blocked);
 		} catch (Exception exception) {
 			return new JavaScriptObjectNotation().
 				withReason(exception.getMessage()).

@@ -131,7 +131,16 @@ TEXTAREA.commentTextarea {
         padding: 5px 45px 5px 20px;
 }
 
-TEXTAREA.commentTextarea:focus {
+TEXTAREA.editCommentTextarea {
+        background: transparent;
+        resize: none;
+        border: 1px solid white;
+        height: 55px;
+        padding: 5px 5px 5px 10px;
+}
+
+TEXTAREA.commentTextarea:focus,
+TEXTAREA.editCommentTextarea:focus {
         background: transparent;
 }
 
@@ -152,7 +161,9 @@ INPUT.addPostTextarea {
         box-shadow: none;
 }
 
-.addPostTextarea::-webkit-scrollbar, .commentTextarea::-webkit-scrollbar {
+.addPostTextarea::-webkit-scrollbar,
+.commentTextarea::-webkit-scrollbar,
+.editCommentTextarea::-webkit-scrollbar {
         display: none;
 }
 

@@ -16,22 +16,31 @@ import tw.musemodel.dingzhiqingren.entity.embedded.BlacklistKey;
 @Repository
 public interface BlacklistRepository extends JpaRepository<Blacklist, BlacklistKey> {
 
-	/**
-	 * @param blocker 某咪郎
-	 * @return 某咪郎拉黑了谁
-	 */
-	public Collection<Blacklist> findByBlocker(Lover blocker);
+        /**
+         * @param blocker 某咪郎
+         * @return 某咪郎拉黑了谁
+         */
+        public Collection<Blacklist> findByBlocker(Lover blocker);
 
-	/**
-	 * @param blocked 某咪郎
-	 * @return 谁拉黑了某咪郎
-	 */
-	public Collection<Blacklist> findByBlocked(Lover blocked);
+        /**
+         * @param blocked 某咪郎
+         * @return 谁拉黑了某咪郎
+         */
+        public Collection<Blacklist> findByBlocked(Lover blocked);
 
-	/**
-	 * @param blocker 某咪郎
-	 * @param blocked 被拉黑的另几咧郎
-	 * @return 拉黑
-	 */
-	public Optional<Blacklist> findOneByBlockerAndBlocked(Lover blocker, Lover blocked);
+        /**
+         * @param blocker 某咪郎
+         * @param blocked 被拉黑的另几咧郎
+         * @return 拉黑
+         */
+        public Optional<Blacklist> findOneByBlockerAndBlocked(Lover blocker, Lover blocked);
+
+        /**
+         * 找出封鎖名單，但不包括自己
+         *
+         * @param blocker
+         * @param blocked
+         * @return
+         */
+        public Collection<Blacklist> findByBlockerAndBlockedNot(Lover blocker, Lover blocked);
 }

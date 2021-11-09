@@ -1,12 +1,20 @@
 .editDisabled input {
-	border: 0;
-	background: white;
-	height: auto;
-	transition: all 0.2s ease-in-out;
+        border: 0;
+        background: white;
+        height: auto;
+        transition: all 0.2s ease-in-out;
 }
 
 INPUT.editInput {
-	display: inline;
-	width: 73%;
-	padding: 0.2rem;
+        display: inline;
+        width: 73%;
+        padding: 0.2rem;
+}
+
+BUTTON.trialCodeList {
+        width: 40px;
+}
+
+.oddList {
+        background: #E9ECEF;
 }

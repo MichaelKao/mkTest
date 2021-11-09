@@ -62,13 +62,6 @@ $(document).ready(function () {
         function descendants(data) {
 
                 data.result.descendants.forEach(function (item) {
-                        var d = new Date(item.timestamp.replace(" ", "T"));
-                        var year = d.getFullYear();
-                        var month = (d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : d.getMonth() + 1;
-                        var date = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
-                        var hour = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
-                        var minute = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
-
                         let div = document.createElement('DIV');
                         $(div).attr('class', 'd-flex align-items-center w-80 mx-auto');
                         $descendants.append(div);
@@ -85,7 +78,7 @@ $(document).ready(function () {
                         $(div).append(name);
                         let timestamp = document.createElement('SPAN');
                         $(timestamp).attr('class', 'ms-auto text-xs');
-                        $(timestamp).html(year + '-' + month + '-' + date + ' ' + hour + ':' + minute);
+                        $(timestamp).append(item.timestamp);
                         $(div).append(timestamp);
                 });
 
@@ -257,9 +250,41 @@ $(document).ready(function () {
                                 });
                                 $(upgradeVipIDiv).append(upgradeVipBtn);
 
-                                $('BUTTON.upgradeVipBtn').click(function () {
+                                $(upgradeVipBtn).click(function () {
                                         var btn = this;
                                         lover = $(btn).data('id');
+                                        var $users = $('DIV.users');
+                                        $users.empty();
+                                        $.post(
+                                                '/dashboard/vipHistory.json',
+                                                {
+                                                        lover: lover
+                                                },
+                                                function (data) {
+                                                        data.list.forEach(function (item, index) {
+                                                                var div = document.createElement('DIV');
+                                                                $(div).attr('class', 'd-flex align-items-center w-90 mx-auto p-1');
+                                                                if (index % 2 == 0) {
+                                                                        $(div).addClass('oddList');
+                                                                }
+                                                                $users.append(div);
+                                                                var span = document.createElement('SPAN');
+                                                                $(span).attr('class', 'text-sm');
+                                                                $(div).append(span);
+                                                                var i = document.createElement('I');
+                                                                $(i).attr('class', 'far fa-crown me-1');
+                                                                $(span).append(i);
+                                                                var vipSpan = document.createElement('SPAN');
+                                                                $(vipSpan).append(item.vip);
+                                                                $(span).append(vipSpan);
+                                                                var dateSpan = document.createElement('SPAN');
+                                                                $(dateSpan).attr('class', 'ms-auto text-xs text-dark');
+                                                                $(dateSpan).append(item.date);
+                                                                $(div).append(dateSpan);
+                                                        });
+                                                },
+                                                'json'
+                                                );
                                 });
 
                                 let upgradeVipBtnI = document.createElement('I');
@@ -295,7 +320,7 @@ $(document).ready(function () {
                                 if (member.isTrial === true) {
                                         $(upgradeVipWrapDiv).append(vipWrapSpan);
                                         $(upgradeVipWrapDiv).append(vipDateDiv);
-                                        $(vipSpan).append('單日');
+                                        $(vipSpan).append(member.trialCode);
                                         $(vipDateDiv).append(member.vipExpiration);
                                 }
 
@@ -781,6 +806,38 @@ $(document).ready(function () {
         $('BUTTON.upgradeVipBtn').click(function () {
                 var btn = this;
                 lover = $(btn).data('id');
+                var $users = $('DIV.users');
+                $users.empty();
+                $.post(
+                        '/dashboard/vipHistory.json',
+                        {
+                                lover: lover
+                        },
+                        function (data) {
+                                data.list.forEach(function (item, index) {
+                                        var div = document.createElement('DIV');
+                                        $(div).attr('class', 'd-flex align-items-center w-90 mx-auto p-1');
+                                        if (index % 2 == 0) {
+                                                $(div).addClass('oddList');
+                                        }
+                                        $users.append(div);
+                                        var span = document.createElement('SPAN');
+                                        $(span).attr('class', 'text-sm');
+                                        $(div).append(span);
+                                        var i = document.createElement('I');
+                                        $(i).attr('class', 'far fa-crown me-1');
+                                        $(span).append(i);
+                                        var vipSpan = document.createElement('SPAN');
+                                        $(vipSpan).append(item.vip);
+                                        $(span).append(vipSpan);
+                                        var dateSpan = document.createElement('SPAN');
+                                        $(dateSpan).attr('class', 'ms-auto text-xs text-dark');
+                                        $(dateSpan).append(item.date);
+                                        $(div).append(dateSpan);
+                                });
+                        },
+                        'json'
+                        );
         });
 
         $('BUTTON.upgradeVip').click(function () {

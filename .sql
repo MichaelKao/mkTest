@@ -1126,3 +1126,24 @@ ORDER BY"shi_chuo"DESC
 
 INSERT INTO"shen_fen"("jue_se")VALUES
 (E'ROLE_XIAOBIAN');-- 小编
+
+/**
+ * 使用的網紅體驗碼
+ */
+CREATE TABLE"shi_yong_ti_yan_ma"(
+	"id"serial8 PRIMARY KEY,
+	"qing_ren"int2 NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	"ti_yan_ma"int8 NOT NULL REFERENCES"ti_yan_ma"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
+	UNIQUE("qing_ren","ti_yan_ma")
+);
+COMMENT ON TABLE"shi_yong_ti_yan_ma"IS'用戶使用的網紅體驗碼';
+COMMENT ON COLUMN"shi_yong_ti_yan_ma"."id"IS'主键';
+COMMENT ON COLUMN"shi_yong_ti_yan_ma"."qing_ren"IS'情人';
+COMMENT ON COLUMN"shi_yong_ti_yan_ma"."ti_yan_ma"IS'體驗碼';
+
+/*
+ * 添加關聯的歷程欄位到申請解除定期定額
+ */
+ALTER TABLE"shen_qing_jie_chu_ding_qi_ding_e"
+ADD COLUMN"li_cheng"int REFERENCES"li_cheng"("id")ON DELETE RESTRICT ON UPDATE CASCADE;
+COMMENT ON COLUMN"shen_qing_jie_chu_ding_qi_ding_e"."li_cheng"IS'月費歷程';

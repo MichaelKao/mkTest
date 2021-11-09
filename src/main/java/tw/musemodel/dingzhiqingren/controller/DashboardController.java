@@ -58,6 +58,7 @@ import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRepository;
 import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
+import tw.musemodel.dingzhiqingren.repository.UsedTrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 import tw.musemodel.dingzhiqingren.service.DashboardService;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
@@ -107,6 +108,9 @@ public class DashboardController {
 
         @Autowired
         private ForumThreadTagRepository forumThreadTagRepository;
+
+        @Autowired
+        private UsedTrialCodeRepository usedTrialCodeRepository;
 
         /**
          * 一天內註冊的用戶
@@ -420,6 +424,46 @@ public class DashboardController {
                 ModelAndView modelAndView = new ModelAndView("dashboard/genTrialCode");
                 modelAndView.getModelMap().addAttribute(document);
                 return modelAndView;
+        }
+
+        /**
+         * (產生體驗碼頁面)顯示體驗碼使用紀錄
+         *
+         * @param trialCode
+         * @param authentication
+         * @return
+         */
+        @PostMapping(path = "/trialCodeList.json")
+        @ResponseBody
+        @Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE", "ROLE_XIAOBIAN"})
+        String trialCodeList(@RequestParam TrialCode trialCode, Authentication authentication) {
+                if (servant.isNull(authentication)) {
+                        return servant.mustBeAuthenticated(Locale.TAIWAN);
+                }
+
+                return loverService.
+                        getTrialCodeUsedList(trialCode).
+                        toString();
+        }
+
+        /**
+         * 會員取得升級 VIP 的歷史紀錄
+         *
+         * @param lover
+         * @param authentication
+         * @return
+         */
+        @PostMapping(path = "/vipHistory.json")
+        @ResponseBody
+        @Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE", "ROLE_XIAOBIAN"})
+        String vipHistory(@RequestParam Lover lover, Authentication authentication) {
+                if (servant.isNull(authentication)) {
+                        return servant.mustBeAuthenticated(Locale.TAIWAN);
+                }
+
+                return loverService.
+                        getVipHistory(lover).
+                        toString();
         }
 
         @GetMapping(path = "/genHashtags.asp")
@@ -1112,6 +1156,11 @@ public class DashboardController {
                         }
                         if (loverService.isTrial(lover)) {
                                 member.setIsTrial(true);
+                                member.setTrialCode(
+                                        usedTrialCodeRepository.findByLover(lover).
+                                                getTrialCode().
+                                                getCode()
+                                );
                         }
                         memberList.add(member);
                 }
@@ -1372,6 +1421,11 @@ public class DashboardController {
         ModelAndView broadcast(Authentication authentication) throws IOException {
                 Document document = Servant.parseDocument();
 
+                dashboardService.documentElement(
+                        document,
+                        authentication
+                );//根元素
+
                 document.getDocumentElement().setAttribute(
                         "title",
                         messageSource.getMessage(
@@ -1396,12 +1450,19 @@ public class DashboardController {
          */
         @PostMapping(path = "/broadcast.asp", produces = MediaType.APPLICATION_JSON_VALUE)
         @Secured({"ROLE_ALMIGHTY", "ROLE_XIAOBIAN"})
-        Collection<History> broadcast(
+        @ResponseBody
+        String broadcast(
                 @RequestParam Boolean gender,
                 @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") @RequestParam(required = false) Date date,
                 @RequestParam String content,
                 Authentication authentication
         ) {
+                if (content.isBlank()) {
+                        return new JavaScriptObjectNotation().
+                                withResponse(false).
+                                withReason("群發內容不能空白的吧~").
+                                toString();
+                }
                 return dashboardService.broadcast(
                         gender,
                         date,
@@ -1409,6 +1470,6 @@ public class DashboardController {
                         loverService.loadByUsername(
                                 authentication.getName()
                         )
-                );
+                ).toString();
         }
 }

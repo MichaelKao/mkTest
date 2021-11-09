@@ -26,6 +26,7 @@
                         <xsl:call-template name="dashHeadLinkTags"/>
                         <LINK href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet"/>
                         <LINK href="/STYLE/members.css" rel="stylesheet"/>
+                        <LINK href="/STYLE/datepicker.css" rel="stylesheet"/>
                         <LINK href="/STYLE/accountsOfTheDay.css" rel="stylesheet"/>
                         <STYLE>.nav.nav-pills {background: #EDEDED;}</STYLE>
                 </HEAD>
@@ -99,6 +100,7 @@
                                                                         </DIV>
                                                                         <DIV class="my-4 text-center">
                                                                                 <DIV class="text-dark text-bold myReferralCode">升級 VIP</DIV>
+                                                                                <DIV class="text-dark text-xs">選擇到期日</DIV>
                                                                                 <HR class="w-80 mx-auto"/>
                                                                                 <DIV class="d-flex justify-content-center">
                                                                                         <DIV class="date" id="expDate">
@@ -107,9 +109,11 @@
                                                                                 </DIV>
                                                                         </DIV>
                                                                         <DIV class="text-center">
-                                                                                <BUTTON class="btn btn-outline-dark mx-2 px-3 py-2 upgradeVip" type="button" disabled="">確定</BUTTON>
-                                                                                <BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+                                                                                <BUTTON class="btn btn-outline-primary mx-2 px-3 py-2 mb-0 upgradeVip" type="button" disabled="">確定</BUTTON>
+                                                                                <BUTTON class="btn btn-outline-dark mx-2 px-3 py-2 mb-0" data-bs-dismiss="modal" type="button">取消</BUTTON>
                                                                         </DIV>
+                                                                        <HR class="w-80 mx-auto"/>
+                                                                        <DIV class="users mb-4"></DIV>
                                                                 </DIV>
                                                         </DIV>
                                                 </DIV>
@@ -200,7 +204,9 @@
                                                                                                                 <xsl:when test="trial">
                                                                                                                         <SPAN>
                                                                                                                                 <I class="fad fa-crown me-1"></I>
-                                                                                                                                <SAPN>單日</SAPN>
+                                                                                                                                <SAPN>
+                                                                                                                                        <xsl:value-of select="trial/@trialCode"/>
+                                                                                                                                </SAPN>
                                                                                                                         </SPAN>
                                                                                                                         <DIV>
                                                                                                                                 <xsl:value-of select="trial"/>
