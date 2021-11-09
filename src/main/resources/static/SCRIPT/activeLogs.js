@@ -58,7 +58,7 @@ $(document).ready(function () {
 	function appendData(data) {
 		data.forEach(function (activity) {
 			var cardDiv = document.createElement('DIV');
-			$(cardDiv).attr('class', 'col-12 col-lg-8 card card-frame mb-2');
+			$(cardDiv).attr('class', 'card card-frame mb-2');
 			$('.activities').append(cardDiv);
 			var cardBodyDiv = document.createElement('DIV');
 			$(cardBodyDiv).attr('class', 'card-body d-flex align-items-center justify-content-start py-2');

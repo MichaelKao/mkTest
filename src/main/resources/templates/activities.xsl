@@ -102,10 +102,10 @@
 						</DIV>
 					</DIV>
 				</DIV>
-				<DIV class="d-flex flex-column flex-md-row flex-wrap justify-content-center align-items-center mt-3 activities">
+				<DIV class="col-12 col-lg-8 mx-auto activities">
 					<INPUT name="nextPage" type="hidden" value="1"/>
 					<xsl:for-each select="history">
-						<DIV class="col-12 col-lg-8 card card-frame mb-2">
+						<DIV class="card card-frame mb-2">
 							<DIV class="card-body d-flex align-items-center justify-content-start py-2">
 								<DIV>
 									<A href="/profile/{@identifier}/">
