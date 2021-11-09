@@ -211,3 +211,9 @@ body{
                 padding-top: 47.7px;
         }
 }
+
+@media (min-width: 992px){
+        .list {
+                padding-top: 51px;
+        }
+}
