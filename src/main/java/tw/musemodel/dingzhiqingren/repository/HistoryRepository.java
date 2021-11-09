@@ -124,6 +124,8 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
 
 	public List<History> findByInitiativeAndBehaviorAndOccurred(Lover initiative, Behavior behavior, Date occurred);
 
+	public List<History> findByBehaviorOrderByOccurredDesc(Behavior behavior);
+
 	@Query("SELECT DISTINCT h.passive "
 		+ "FROM History h "
 		+ "WHERE h.initiative = :initiative "
