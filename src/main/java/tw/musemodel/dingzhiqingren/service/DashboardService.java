@@ -411,7 +411,7 @@ public class DashboardService {
 			documentElement.appendChild(loverElement);
 		}
 
-		List<Behavior> behaviors = new ArrayList<Behavior>();
+		List<Behavior> behaviors = new ArrayList<>();
 		behaviors.add(BEHAVIOR_CERTIFICATION_SUCCESS);
 		behaviors.add(BEHAVIOR_CERTIFICATION_FAIL);
 		behaviors.add(BEHAVIOR_CERTIFICATION_FAIL_1);
@@ -786,7 +786,7 @@ public class DashboardService {
 
 	@Transactional(readOnly = true)
 	public Document members(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		Document document = servant.parseDocument();
+		Document document = Servant.parseDocument();
 
 		Element documentElement = documentElement(
 			document,
@@ -847,7 +847,7 @@ public class DashboardService {
 			Element registeredElement = document.createElement("registered");
 			registeredElement.setTextContent(
 				LoverService.DATE_FORMATTER.format(
-					servant.
+					Servant.
 						toTaipeiZonedDateTime(
 							lover.getRegistered()
 						).
@@ -862,7 +862,7 @@ public class DashboardService {
 				Element vipElement = document.createElement("vip");
 				vipElement.setTextContent(
 					LoverService.DATE_FORMATTER.format(
-						servant.
+						Servant.
 							toTaipeiZonedDateTime(
 								vipExpiration
 							).
@@ -877,7 +877,7 @@ public class DashboardService {
 				Element vvipElement = document.createElement("vvip");
 				vvipElement.setTextContent(
 					LoverService.DATE_FORMATTER.format(
-						servant.
+						Servant.
 							toTaipeiZonedDateTime(
 								vipExpiration
 							).
@@ -892,7 +892,7 @@ public class DashboardService {
 				Element trialElement = document.createElement("trial");
 				trialElement.setTextContent(
 					LoverService.DATE_FORMATTER.format(
-						servant.
+						Servant.
 							toTaipeiZonedDateTime(
 								vipExpiration
 							).
@@ -940,7 +940,7 @@ public class DashboardService {
 			Element registeredElement = document.createElement("registered");
 			registeredElement.setTextContent(
 				LoverService.DATE_FORMATTER.format(
-					servant.
+					Servant.
 						toTaipeiZonedDateTime(
 							lover.getRegistered()
 						).
