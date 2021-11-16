@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -270,7 +271,8 @@ public class WebSocketService {
 
 		boolean isMale = me.getGender();
 
-		List<History> conversations = historyService.latestConversations(me);
+		//List<History> conversations = historyService.latestConversations(me);
+		List<History> conversations = historyService.latestPageableConversations(me, PageRequest.of(0, 10));
 		Integer friendlyOrVipUnreads = 0,//好友或贵宾的未读总数
 			unfriendlyOrNonVipUnreads = 0;//非好友或非贵宾的未读总数
 		for (History history : conversations) {
@@ -640,6 +642,217 @@ public class WebSocketService {
 					null
 				);//超過當天傳送訊息上限
 			}
+		}
+
+		return document;
+	}
+
+	public Document inbox(Lover me, Document document) {
+		Element documentElement = document.getDocumentElement();
+
+		boolean isMale = me.getGender();
+
+		List<History> conversations = historyService.latestConversations(me);
+		Integer friendlyOrVipUnreads = 0,//好友或贵宾的未读总数
+			unfriendlyOrNonVipUnreads = 0;//非好友或非贵宾的未读总数
+		for (History history : conversations) {
+			Element conversationElement = document.createElement("conversation");
+			documentElement.appendChild(conversationElement);
+
+			Short points = history.getPoints();
+			Behavior behavior = history.getBehavior();
+			Lover initiative = history.getInitiative(),
+				passive = history.getPassive();
+
+			UUID identifier = null;
+			String profileImage = null;
+			String nickname = null;
+			String content = null;
+			Boolean eitherMatchedOrVip = null;
+			int unreads = 0;//某个人的未读讯息数
+			final Collection<Behavior> BEHAVIORS_OF_MALE = Arrays.
+				asList(
+					new History.Behavior[]{
+						BEHAVIOR_CHAT_MORE,
+						BEHAVIOR_FARE,
+						BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
+						BEHAVIOR_LAI_KOU_DIAN
+					}
+				);
+			final Collection<Behavior> BEHAVIORS_OF_FEMALE = Arrays.
+				asList(
+					new History.Behavior[]{
+						BEHAVIOR_GREETING,
+						BEHAVIOR_GROUP_GREETING,
+						BEHAVIOR_ASK_FOR_FARE,
+						BEHAVIOR_INVITE_ME_AS_LINE_FRIEND,
+						BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND
+					}
+				);
+			if (Objects.equals(me, initiative)) {
+				if (isMale) {
+					//双方是否有加过通信软件
+					eitherMatchedOrVip = loverService.areMatched(
+						passive,
+						me
+					);
+
+					//未读信息数量
+					unreads = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+						passive,
+						me,
+						BEHAVIORS_OF_FEMALE
+					);
+
+					if (Objects.equals(BEHAVIOR_FARE, behavior)) {
+						content = String.format(
+							"您已給 💗 %d ME 點",
+							Math.abs(points)
+						);
+					}
+					if (Objects.equals(BEHAVIOR_GIMME_YOUR_LINE_INVITATION, behavior)) {
+						content = "您已發出要求通訊軟體";
+					}
+					if (Objects.equals(BEHAVIOR_LAI_KOU_DIAN, behavior)) {
+						content = "您開啟了對方的通訊軟體QRcode";
+					}
+				} else {
+					eitherMatchedOrVip = loverService.isVIP(passive) || loverService.isVVIP(passive);
+					unreads = historyRepository.
+						countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+							passive,
+							me,
+							BEHAVIORS_OF_MALE
+						);
+					if (Objects.equals(BEHAVIOR_ASK_FOR_FARE, behavior)) {
+						content = String.format(
+							"您已和對方要求 💗 %d ME 點",
+							Math.abs(points)
+						);
+					}
+					if (Objects.equals(BEHAVIOR_INVITE_ME_AS_LINE_FRIEND, behavior)) {
+						content = "您已接受給對方通訊軟體";
+					}
+					if (Objects.equals(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND, behavior)) {
+						content = "您已拒絕給對方通訊軟體";
+					}
+				}
+				identifier = passive.getIdentifier();
+				profileImage = String.format(
+					"https://%s/profileImage/%s",
+					Servant.STATIC_HOST,
+					passive.getProfileImage()
+				);
+				nickname = passive.getNickname();
+			} else {
+				if (isMale) {
+					eitherMatchedOrVip = loverService.areMatched(initiative, me);
+					unreads = historyRepository.
+						countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+							initiative,
+							me,
+							BEHAVIORS_OF_FEMALE
+						);
+					if (Objects.equals(BEHAVIOR_ASK_FOR_FARE, behavior)) {
+						content = String.format(
+							"對方和您要求 💗 %d ME 點",
+							Math.abs(points)
+						);
+					}
+					if (Objects.equals(BEHAVIOR_INVITE_ME_AS_LINE_FRIEND, behavior)) {
+						content = "對方同意給您通訊軟體";
+					}
+					if (Objects.equals(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND, behavior)) {
+						content = "對方拒絕給您通訊軟體";
+					}
+				} else {
+					eitherMatchedOrVip = loverService.isVIP(initiative) || loverService.isVVIP(initiative);
+					unreads = historyRepository.
+						countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+							initiative,
+							me,
+							BEHAVIORS_OF_MALE
+						);
+					if (Objects.equals(BEHAVIOR_FARE, behavior)) {
+						content = String.format(
+							"對方給了您 💗 %d ME 點",
+							Math.abs(points)
+						);
+					}
+					if (Objects.equals(BEHAVIOR_GIMME_YOUR_LINE_INVITATION, behavior)) {
+						content = "收到加入好友邀請";
+					}
+					if (Objects.equals(BEHAVIOR_LAI_KOU_DIAN, behavior)) {
+						content = "對方已開啟了您的通訊軟體QRcode";
+					}
+				}
+				identifier = initiative.getIdentifier();
+				profileImage = String.format(
+					"https://%s/profileImage/%s",
+					Servant.STATIC_HOST,
+					initiative.getProfileImage()
+				);
+				nickname = initiative.getNickname();
+			}//if;else
+			conversationElement.setAttribute(
+				"identifier",
+				identifier.toString()
+			);
+			conversationElement.setAttribute(
+				"profileImage",
+				profileImage
+			);
+			conversationElement.setAttribute(
+				"nickname",
+				nickname
+			);
+
+			if (Objects.equals(BEHAVIOR_CHAT_MORE, behavior) || Objects.equals(BEHAVIOR_GREETING, behavior) || Objects.equals(BEHAVIOR_GROUP_GREETING, behavior)) {
+				//"聊聊"、"打招呼"、"群发"等行为则捞招呼语
+				content = history.getGreeting();
+			}
+			conversationElement.setAttribute(
+				"content",
+				content
+			);
+			conversationElement.setAttribute(
+				"occurredTime",
+				calculateOccurredTime(history.getOccurred())
+			);//多久之前
+			conversationElement.setAttribute(
+				"isMatchedOrIsVip",
+				eitherMatchedOrVip.toString()
+			);
+
+			if (eitherMatchedOrVip) {
+				friendlyOrVipUnreads += unreads;
+			} else {
+				unfriendlyOrNonVipUnreads += unreads;
+			}
+
+			if (unreads > 0) {
+				//未读数
+				conversationElement.setAttribute(
+					"notSeenCount",
+					Integer.toString(unreads)
+				);
+			}
+		}//for
+
+		if (friendlyOrVipUnreads > 0) {
+			//好友或贵宾的未读总数
+			documentElement.setAttribute(
+				"matchedOrVipNotSeenCount",
+				friendlyOrVipUnreads.toString()
+			);
+		}
+
+		if (unfriendlyOrNonVipUnreads > 0) {
+			//非好友或非贵宾的未读总数
+			documentElement.setAttribute(
+				"notMatchedOrNotVipNotSeenCount",
+				unfriendlyOrNonVipUnreads.toString()
+			);
 		}
 
 		return document;

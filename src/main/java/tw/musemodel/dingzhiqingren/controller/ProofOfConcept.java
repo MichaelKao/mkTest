@@ -127,4 +127,37 @@ public class ProofOfConcept {
 			PageRequest.of(0, 10)
 		);
 	}
+
+	@GetMapping(path = "/inbox/{lover:\\d+}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	List<History> inbox(@PathVariable Lover lover) {
+		return historyService.latestConversations(
+			lover
+		);
+	}
+
+	@GetMapping(path = "/inbox2/{lover:\\d+}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	List<History> latestPageableConversations(@PathVariable Lover lover, @RequestParam(defaultValue = "1") int p, @RequestParam(defaultValue = "10") int s) {
+		return historyService.latestPageableConversations(
+			lover,
+			PageRequest.of(
+				p < 1 ? 0 : p - 1,
+				s
+			)
+		);
+	}
+
+	@GetMapping(path = "/chat/{me:\\d+}/{someone:\\d+}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	List<History> latestPageableConversations(@PathVariable Lover me, @PathVariable Lover someone, @RequestParam(defaultValue = "1") int p, @RequestParam(defaultValue = "10") int s) {
+		return historyService.latestPageableConversations(
+			me,
+			someone,
+			PageRequest.of(
+				p < 1 ? 0 : p - 1,
+				s
+			)
+		);
+	}
 }

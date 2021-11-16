@@ -31,6 +31,8 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
 
 	public List<History> findByPassiveAndBehaviorOrderByOccurredDesc(Lover passive, Behavior behavior);
 
+	public History findTop1ByInitiativeAndPassiveOrderByOccurredDesc(Lover initiative, Lover passive);
+
 	public Page<History> findByPassiveAndBehaviorOrderByOccurredDesc(Lover passive, Behavior behavior, Pageable pageable);
 
 	/**

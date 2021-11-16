@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -107,8 +108,18 @@ public class HistoryService {
 	@Value("classpath:sql/通知.sql")
 	private Resource activitiesResource;
 
+	@Value("classpath:sql/与其他用户近期的对话.sql")
+	private Resource latestPageableConversations;
+
+	@Value("classpath:sql/两用户之间的对话.sql")
+	private Resource latestPageableConversationsWithSomeone;
+
+	@Deprecated
 	@Value("classpath:sql/与其它用户近期的对话.sql")
 	private Resource latestConversationsResource;
+
+	@Value("classpath:sql/与某咪郎最近的对话.sql")
+	private Resource latestConversationResource;
 
 	@Data
 	private class Dialogist implements Serializable {
@@ -118,6 +129,30 @@ public class HistoryService {
 		private final int initiative;
 
 		private final int passive;
+
+		@Override
+		public String toString() {
+			try {
+				return new JsonMapper().writeValueAsString(this);
+			} catch (JsonProcessingException ignore) {
+				return "null";
+			}
+		}
+	}
+
+	/**
+	 * 对话
+	 */
+	@Data
+	private class Dialogue implements Serializable {
+
+		private static final long serialVersionUID = 7377929167558711132L;
+
+		private final Integer initiative;
+
+		private final Integer passive;
+
+		private final Date occurred;
 
 		@Override
 		public String toString() {
@@ -357,14 +392,47 @@ public class HistoryService {
 	}
 
 	/**
-	 * 与其它用户近期的对话。
+	 * 两用户之间最近的一次对话
 	 *
-	 * @param me 用户号
-	 * @return
+	 * @param initiative 主动方
+	 * @param passive 被动方
+	 * @return 历程
 	 */
 	@Transactional(readOnly = true)
-	public List<History> latestConversations(final Lover me) {
-		int id = me.getId();
+	public History latestConversation(final int initiative, final int passive) {
+		try {
+			return historyRepository.findById(
+				jdbcTemplate.queryForObject(
+					FileCopyUtils.copyToString(
+						new InputStreamReader(
+							latestConversationResource.getInputStream(),
+							Servant.UTF_8
+						)
+					),
+					Long.class,
+					new Object[]{
+						initiative,
+						passive,
+						passive,
+						initiative
+					}
+				)
+			).get();
+		} catch (IOException ignore) {
+			return null;
+		}
+	}
+
+	/**
+	 * 与其它用户近期的对话。
+	 *
+	 * @deprecated
+	 * @param mofo 用户号
+	 * @return 对话
+	 */
+	@Transactional(readOnly = true)
+	public List<History> latestConversations(Lover mofo) {
+		int id = mofo.getId();
 		List<Dialogist> candidates = jdbcTemplate.query(
 			(Connection connection) -> {
 				StringBuilder stringBuilder = new StringBuilder();
@@ -435,6 +503,156 @@ public class HistoryService {
 				BEHAVIORS_OF_CONVERSATIONS
 			));
 		});
+		return histories;
+	}
+
+	/**
+	 * 与其他用户近期的对话。
+	 *
+	 * @param mofo 用户号
+	 * @param pageable 可分页
+	 * @return 对话
+	 */
+	@Transactional(readOnly = true)
+	public List<History> latestPageableConversations(final Lover mofo, final Pageable pageable) {
+		/*
+		 与不同用户的最近对话
+		 */
+		int id = mofo.getId();
+		List<Dialogue> dialogues = jdbcTemplate.query(
+			(Connection connection) -> {
+				PreparedStatement preparedStatement;
+				try {
+					preparedStatement = connection.prepareStatement(
+						FileCopyUtils.copyToString(
+							new InputStreamReader(
+								latestPageableConversations.getInputStream(),
+								Servant.UTF_8
+							)
+						)
+					);
+					preparedStatement.setInt(1, id);
+					preparedStatement.setInt(2, id);
+					return preparedStatement;
+				} catch (IOException ignore) {
+					return null;
+				}
+			},
+			(ResultSet resultSet, int rowNum) -> {
+				return new Dialogue(
+					resultSet.getInt(1),
+					resultSet.getInt(2),
+					resultSet.getDate(3)
+				);
+			}
+		);
+
+		/*
+		分页
+		 */
+		final int pageNumber = pageable.getPageNumber(),
+			pageSize = pageable.getPageSize(),
+			numberOfElements = dialogues.size(),
+			numberOfElementsUpToPage = pageSize * (pageNumber + 1);
+		Page<Dialogue> page;
+		try {
+			page = new PageImpl<>(
+				dialogues.subList(
+					pageSize * pageNumber,
+					numberOfElementsUpToPage > numberOfElements ? numberOfElements : numberOfElementsUpToPage
+				),
+				pageable,
+				numberOfElements
+			);
+		} catch (IllegalArgumentException illegalArgumentException) {
+			return null;
+		}
+
+		/*
+		 捞出该分页的历程
+		 */
+		List<History> histories = new ArrayList<>();
+		for (Dialogue dialogue : page.getContent()) {
+			histories.add(
+				latestConversation(
+					dialogue.getInitiative(),
+					dialogue.getPassive()
+				)
+			);
+		}
+		return histories;
+	}
+
+	/**
+	 * 两用户之间的对话
+	 *
+	 * @param mofo 用户号
+	 * @param mufu 另一用户号
+	 * @param pageable 可分页
+	 * @return 对话
+	 */
+	@Transactional(readOnly = true)
+	public List<History> latestPageableConversations(final Lover mofo, final Lover mufu, final Pageable pageable) {
+		/*
+		 与不同用户的最近对话
+		 */
+		int id = mofo.getId(), anotherId = mufu.getId();
+		List<Long> ids = jdbcTemplate.query(
+			(Connection connection) -> {
+				PreparedStatement preparedStatement;
+				try {
+					preparedStatement = connection.prepareStatement(
+						FileCopyUtils.copyToString(
+							new InputStreamReader(
+								latestPageableConversationsWithSomeone.getInputStream(),
+								Servant.UTF_8
+							)
+						)
+					);
+					preparedStatement.setInt(1, id);
+					preparedStatement.setInt(2, anotherId);
+					preparedStatement.setInt(3, anotherId);
+					preparedStatement.setInt(4, id);
+					return preparedStatement;
+				} catch (IOException ignore) {
+					return null;
+				}
+			},
+			(ResultSet resultSet, int rowNum) -> {
+				return resultSet.getLong(1);
+			}
+		);
+
+		/*
+		分页
+		 */
+		final int pageNumber = pageable.getPageNumber(),
+			pageSize = pageable.getPageSize(),
+			numberOfElements = ids.size(),
+			numberOfElementsUpToPage = pageSize * (pageNumber + 1);
+		Page<Long> page;
+		try {
+			page = new PageImpl<>(
+				ids.subList(
+					pageSize * pageNumber,
+					numberOfElementsUpToPage > numberOfElements ? numberOfElements : numberOfElementsUpToPage
+				),
+				pageable,
+				numberOfElements
+			);
+		} catch (IllegalArgumentException illegalArgumentException) {
+			return null;
+		}
+
+		/*
+		 捞出该分页的历程
+		 */
+		List<History> histories = new ArrayList<>();
+		for (Long historyId : page.getContent()) {
+			histories.add(
+				historyRepository.findById(historyId).get()
+			);
+		}
 		return histories;
 	}
 
