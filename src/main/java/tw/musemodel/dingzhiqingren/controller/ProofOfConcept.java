@@ -3,19 +3,26 @@ package tw.musemodel.dingzhiqingren.controller;
 import com.jhlabs.image.OilFilter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +32,12 @@ import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
+import tw.musemodel.dingzhiqingren.repository.LoverRepository;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
+import tw.musemodel.dingzhiqingren.service.LineMessagingService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
+import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
 /**
  * 控制器：概念验证
@@ -41,6 +51,15 @@ public class ProofOfConcept {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProofOfConcept.class);
 
 	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@Value("classpath:sql/男仕贵宾会员.sql")
+	private Resource vvipOnTheWall;
+
+	@Autowired
+	private HistoryService historyService;
+
+	@Autowired
 	private LoverService loverService;
 
 	@Autowired
@@ -48,6 +67,9 @@ public class ProofOfConcept {
 
 	@Autowired
 	private HistoryRepository historyRepository;
+
+	@Autowired
+	private LoverRepository loverRepository;
 
 	@GetMapping(path = "/isDevelopment", produces = MediaType.TEXT_PLAIN_VALUE)
 	@ResponseBody
@@ -116,9 +138,6 @@ public class ProofOfConcept {
 		return histories;
 	}
 
-	@Autowired
-	private HistoryService historyService;
-
 	@GetMapping(path = "/activities/{lover:\\d+}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	List<Activity> activities(Lover lover) {
@@ -157,6 +176,68 @@ public class ProofOfConcept {
 			PageRequest.of(
 				p < 1 ? 0 : p - 1,
 				s
+			)
+		);
+	}
+
+	@GetMapping(path = "/vvip/{lover:\\d+}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	void vvip(
+		@PathVariable Lover lover,
+		@RequestParam(defaultValue = "1") int p,
+		@RequestParam(defaultValue = "10") int s,
+		@RequestParam(defaultValue = "10") int times
+	) throws IOException {
+		int total = 0;
+
+		for (int i = 0; i < times; i++) {
+			long since = System.currentTimeMillis();
+			loverRepository.findAll(
+				LoverSpecification.vipOnTheWall(
+					lover,
+					new HashSet<>(
+						loverService.getExceptions(lover)
+					)
+				),
+				PageRequest.of(
+					p < 1 ? 0 : p - 1,
+					s
+				)
+			);
+			total += System.currentTimeMillis() - since;
+		}
+		int byLibrary = total / times;
+
+		total = 0;
+		for (int i = 0; i < times; i++) {
+			long since = System.currentTimeMillis();
+			loverRepository.findByIdIn(
+				jdbcTemplate.query(
+					FileCopyUtils.copyToString(new InputStreamReader(
+						vvipOnTheWall.getInputStream(),
+						Servant.UTF_8
+					)),
+					(ps) -> {
+						ps.setInt(1, lover.getId());
+						ps.setInt(2, lover.getId());
+					},
+					(resultSet, rowNum) -> resultSet.getInt("id")
+				),
+				PageRequest.of(
+					p < 1 ? 0 : p - 1,
+					s
+				)
+			);
+			total += System.currentTimeMillis() - since;
+		}
+		int byHand = total / times;
+
+		LineMessagingService.notifyDev(
+			Arrays.asList(new String[]{LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST}),
+			String.format(
+				"%n懶人：平均 %d 毫秒%n手動：平均 %d 毫秒",
+				byLibrary,
+				byHand
 			)
 		);
 	}

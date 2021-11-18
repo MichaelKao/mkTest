@@ -194,7 +194,7 @@ public class WelcomeController {
 		));
 
 		/*
-		 未登入状态下
+		 登入状态下
 		 */
 		if (!servant.isNull(authentication)) {
 			Lover me = loverService.loadByUsername(
@@ -263,7 +263,7 @@ public class WelcomeController {
 					null
 				);
 			}//有无连动 LINE Notify
-		}//if(未登入状态下)
+		}//if(登入状态下)
 
 		ModelAndView modelAndView = new ModelAndView("index");
 		modelAndView.getModelMap().addAttribute(document);

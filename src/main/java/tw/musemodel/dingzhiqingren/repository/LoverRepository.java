@@ -1,5 +1,6 @@
 package tw.musemodel.dingzhiqingren.repository;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -61,6 +62,13 @@ public interface LoverRepository extends JpaRepository<Lover, Integer>, JpaSpeci
 	 * @return 用户号们
 	 */
 	public List<Lover> findByGenderAndFakeFalseAndRegisteredAfter(boolean gender, Date registered);
+
+	/**
+	 * @param id 主键们
+	 * @param pageable 可分页
+	 * @return
+	 */
+	public Page<Lover> findByIdIn(Collection<Integer> id, Pageable pageable);
 
 	/**
 	 * @param identifier 识别码
