@@ -3166,62 +3166,53 @@ public class LoverService {
 	 * @param locale
 	 * @return
 	 */
-	public Document indexDocument(Document document, Lover lover, String vipPage, String reliefPage, String activePage, String registerPage, Locale locale) {
+	public Document indexDocument(Document document, Lover lover, int vipPage, int reliefPage, int activePage, int registerPage, Locale locale) {
 		Element documentElement = document.getDocumentElement();
 
 		Element areaElement = document.createElement("area");
 		documentElement.appendChild(areaElement);
-		long since = System.currentTimeMillis();
 
-		int vipPageNum = !vipPage.isBlank() ? Integer.parseInt(vipPage) : 0;
 		if (!lover.getGender()) {
 			areaElement.appendChild(createElement(
 				document.createElement("vip"),
 				lover,
 				vipOnTheWall(
 					lover,
-					vipPageNum,
+					vipPage < 0 ? 0 : vipPage,
 					PAGE_SIZE_ON_THE_WALL
 				),
 				locale
 			));//甜心才会显示的贵宾会员列表区块
 		}
-		LOGGER.debug(
-			"男仕贵宾会员：{} 毫秒",
-			System.currentTimeMillis() - since
-		);
 
-		int reliefPageNum = !reliefPage.isBlank() ? Integer.parseInt(reliefPage) : 0;
 		areaElement.appendChild(createElement(
 			document.createElement("relief"),
 			lover,
 			relievingOnTheWall(
 				lover,
-				reliefPageNum,
+				reliefPage < 0 ? 0 : reliefPage,
 				PAGE_SIZE_ON_THE_WALL
 			),
 			locale
 		));//安心认证列表区块
 
-		int activePageNum = !activePage.isBlank() ? Integer.parseInt(activePage) : 0;
 		areaElement.appendChild(createElement(
 			document.createElement("active"),
 			lover,
 			latestActiveOnTheWall(
 				lover,
-				activePageNum,
+				activePage < 0 ? 0 : activePage,
 				PAGE_SIZE_ON_THE_WALL
 			),
 			locale
 		));//最近活跃列表区块
 
-		int registerPageNum = !registerPage.isBlank() ? Integer.parseInt(registerPage) : 0;
 		areaElement.appendChild(createElement(
 			document.createElement("register"),
 			lover,
 			latestRegisteredOnTheWall(
 				lover,
-				registerPageNum,
+				registerPage < 0 ? 0 : registerPage,
 				PAGE_SIZE_ON_THE_WALL
 			),
 			locale

@@ -178,10 +178,10 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/")
 	ModelAndView index(
-		@CookieValue(defaultValue = "", name = "vipPage") String vipPage,
-		@CookieValue(defaultValue = "", name = "reliefPage") String reliefPage,
-		@CookieValue(defaultValue = "", name = "activePage") String activePage,
-		@CookieValue(defaultValue = "", name = "registerPage") String registerPage,
+		@CookieValue(defaultValue = "0", name = "vipPage") int vipPage,
+		@CookieValue(defaultValue = "0", name = "reliefPage") int reliefPage,
+		@CookieValue(defaultValue = "0", name = "activePage") int activePage,
+		@CookieValue(defaultValue = "0", name = "registerPage") int registerPage,
 		Authentication authentication,
 		Locale locale
 	) throws IOException {
