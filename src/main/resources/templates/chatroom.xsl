@@ -26,6 +26,7 @@
 			<xsl:call-template name="headLinkTags"/>
 			<LINK href="/STYLE/chatroom.css" rel="stylesheet"/>
 			<LINK href="/STYLE/rateStar.css" rel="stylesheet"/>
+			<LINK href="/STYLE/loading.css" rel="stylesheet"/>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="bootstrapToast"/>
@@ -278,7 +279,7 @@
 									</xsl:if>
 									<xsl:if test="@signIn">
 										<LI class="nav-item d-none d-lg-flex align-items-end">
-											<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/activeLogs.asp">
+											<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/activities.asp">
 												<DIV>
 													<I class="fad fa-bell fontSize22"></I>
 													<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
@@ -411,138 +412,59 @@
 				</NAV>
 			</DIV>
 			<DIV class="d-flex chatContainer container px-0">
-				<DIV class="d-none d-lg-block col-lg-3 chatList">
+				<DIV class="d-none d-lg-block col-lg-3 chatList" id="chatList">
 					<DIV class="list shadow">
-						<DIV class="tabs">
-							<UL class="nav nav-tabs flex-row">
-								<LI class="nav-item col-6 text-center">
-									<A class="nav-link cursor-pointer" data-bs-toggle="tab" href="#first">
-										<xsl:if test="@male">
-											<I class="fad fa-users"></I>
-											<SPAN class="ms-1">好友</SPAN>
-										</xsl:if>
-										<xsl:if test="@female">
-											<I class="fad fa-crown"></I>
-											<SPAN class="ms-1">VIP</SPAN>
-										</xsl:if>
-										<xsl:if test="@matchedOrVipNotSeenCount">
-											<SPAN class="text-xs border-radius-md px-1 ms-1 firstNotSeen notSeen">
-												<xsl:value-of select="@matchedOrVipNotSeenCount"/>
-											</SPAN>
-										</xsl:if>
-									</A>
-								</LI>
-								<LI class="nav-item col-6 text-center">
-									<A class="nav-link cursor-pointer" data-bs-toggle="tab" href="#second">
-										<xsl:if test="@male">
-											<I class="fad fa-users-slash"></I>
-											<SPAN class="ms-1">非好友</SPAN>
-										</xsl:if>
-										<xsl:if test="@female">
-											<SPAN class="ms-1">一般</SPAN>
-										</xsl:if>
-										<xsl:if test="@notMatchedOrNotVipNotSeenCount">
-											<SPAN class="text-xs border-radius-md px-1 ms-1 secondNotSeen notSeen">
-												<xsl:value-of select="@notMatchedOrNotVipNotSeenCount"/>
-											</SPAN>
-										</xsl:if>
-									</A>
-								</LI>
-							</UL>
-						</DIV>
-						<DIV class="tab-content">
-							<DIV class="row justify-content-center mx-0 tab-pane" id="first">
-								<xsl:for-each select="conversation">
-									<xsl:if test="@isMatchedOrIsVip = 'true'">
-										<DIV class="card my-2 px-2 mx-auto conversationWrap position-relative shadow">
-											<xsl:if test="/document/@friendIdentifier = @identifier">
-												<xsl:attribute name="class">card my-2 px-2 mx-auto conversationWrap position-relative shadow active</xsl:attribute>
+						<H3 class="text-dark ms-2">聊天</H3>
+						<DIV class="justify-content-center mx-0 pb-6" id="listContent">
+							<INPUT name="nextPage" type="hidden" value="1"/>
+							<xsl:for-each select="conversation">
+								<DIV class="conversationWrap position-relative cursor-pointer" id="{@identifier}">
+									<xsl:if test="/document/@friendIdentifier = @identifier">
+										<xsl:attribute name="class">conversationWrap position-relative cursor-pointer active</xsl:attribute>
+									</xsl:if>
+									<DIV class="d-flex justify-content-between align-items-center p-2">
+										<DIV class="position-relative">
+											<xsl:if test="@isMatchedOrIsVip = 'true'">
+												<xsl:if test="/document/@female">
+													<I class="fad fa-crown text-yellow text-shadow position-absolute" style="right: -5px;bottom: 1px;"></I>
+												</xsl:if>
+												<xsl:if test="/document/@male">
+													<I class="fad fa-users text-primary text-shadow position-absolute" style="right: -5px;bottom: 1px;"></I>
+												</xsl:if>
 											</xsl:if>
-											<A class="inboxLink" href="/chatroom/{@identifier}/"></A>
-											<DIV class="d-flex justify-content-between align-items-center py-2">
-												<DIV>
-													<IMG alt="大頭貼" class="rounded-circle" src="{@profileImage}" width="50px"/>
-												</DIV>
-												<DIV class="me-auto" style="overflow: hidden;">
-													<DIV class="d-flex flex-column align-items-start ms-2">
-														<A class=" font-weight-bold text-dark text-sm mb-1">
-															<xsl:value-of select="@nickname"/>
-														</A>
-														<P class="text-sm mb-0 content">
-															<xsl:if test="/document/@friendIdentifier = @identifier">
-																<xsl:attribute name="class">text-sm mb-0 content currentContent</xsl:attribute>
-															</xsl:if>
-															<xsl:value-of select="@content"/>
-														</P>
-													</DIV>
-												</DIV>
-												<DIV class="col-2 d-flex">
-													<DIV class="ms-auto d-flex flex-column">
-														<SPAN class="text-xs mb-1">
-															<xsl:value-of select="@occurredTime"/>
-														</SPAN>
-														<xsl:if test="@notSeenCount">
-															<DIV class="d-flex justify-content-center">
-																<SPAN class="text-xs text-light bg-primary border-radius-md px-1">
-																	<xsl:value-of select="@notSeenCount"/>
-																</SPAN>
-															</DIV>
-														</xsl:if>
-													</DIV>
-												</DIV>
+											<IMG alt="大頭照" src="{@profileImage}" class="rounded-circle shadow" width="60px"/>
+										</DIV>
+										<DIV class="me-auto" style="overflow: hidden;">
+											<DIV class="d-flex flex-column align-items-start ms-3">
+												<A class="font-weight-bold text-dark text-sm mb-1 name">
+													<xsl:value-of select="@nickname"/>
+												</A>
+												<P class="text-sm mb-0 content">
+													<xsl:value-of select="@content"/>
+												</P>
 											</DIV>
 										</DIV>
-									</xsl:if>
-								</xsl:for-each>
-							</DIV>
-							<DIV class="row justify-content-center mx-0 tab-pane" id="second">
-								<xsl:for-each select="conversation">
-									<xsl:if test="@isMatchedOrIsVip = 'false'">
-										<DIV class="card my-2 px-2 mx-auto conversationWrap position-relative shadow">
-											<xsl:if test="/document/@friendIdentifier = @identifier">
-												<xsl:attribute name="class">card my-2 px-2 mx-auto conversationWrap position-relative shadow active</xsl:attribute>
-											</xsl:if>
-											<A class="inboxLink" href="/chatroom/{@identifier}/"></A>
-											<DIV class="d-flex justify-content-between align-items-center py-2">
-												<DIV>
-													<IMG alt="大頭貼" class="rounded-circle" src="{@profileImage}" width="50px"/>
-												</DIV>
-												<DIV class="me-auto" style="overflow: hidden;">
-													<DIV class="d-flex flex-column align-items-start ms-2">
-														<A class=" font-weight-bold text-dark text-sm mb-1">
-															<xsl:value-of select="@nickname"/>
-														</A>
-														<P class="text-sm mb-0 content">
-															<xsl:if test="/document/@friendIdentifier = @identifier">
-																<xsl:attribute name="class">text-sm mb-0 content currentContent</xsl:attribute>
-															</xsl:if>
-															<xsl:value-of select="@content"/>
-														</P>
-													</DIV>
-												</DIV>
-												<DIV class="col-2 d-flex">
-													<DIV class="ms-auto d-flex flex-column">
-														<SPAN class="text-xs mb-1">
-															<xsl:value-of select="@occurredTime"/>
+										<DIV class="col-3 d-flex">
+											<DIV class="ms-auto d-flex flex-column">
+												<SPAN class="text-xs mb-1">
+													<xsl:value-of select="@occurredTime"/><!--多久之前-->
+												</SPAN>
+												<xsl:if test="@notSeenCount">
+													<DIV class="d-flex justify-content-center">
+														<SPAN class="text-xs text-light bg-primary border-radius-md px-1">
+															<xsl:value-of select="@notSeenCount"/>
 														</SPAN>
-														<xsl:if test="@notSeenCount">
-															<DIV class="d-flex justify-content-center">
-																<SPAN class="text-xs text-light bg-primary border-radius-md px-1">
-																	<xsl:value-of select="@notSeenCount"/>
-																</SPAN>
-															</DIV>
-														</xsl:if>
 													</DIV>
-												</DIV>
+												</xsl:if>
 											</DIV>
 										</DIV>
-									</xsl:if>
-								</xsl:for-each>
-							</DIV>
+									</DIV>
+								</DIV>
+							</xsl:for-each>
 						</DIV>
-						<DIV class="hideSideBar d-lg-none position-absolute top-0 bottom-0 bg-dark opacity-7 text-white fontSize35 text-center cursor-pointer">
-							<I class="fal fa-angle-left"></I>
-						</DIV>
+					</DIV>
+					<DIV class="hideSideBar d-lg-none position-absolute top-0 bottom-0 bg-dark opacity-7 text-white fontSize35 text-center cursor-pointer">
+						<I class="fal fa-angle-left"></I>
 					</DIV>
 				</DIV>
 				<DIV class="showSideBar d-lg-none position-absolute top-0 bottom-0 left-0 bg-dark opacity-7 text-white fontSize35 text-center cursor-pointer">
@@ -552,9 +474,9 @@
 					<DIV class="list">
 						<DIV class="d-flex align-items-center bg-dark py-1 px-2 chatHeader">
 							<DIV>
-								<A href="/profile/{@friendIdentifier}/">
-									<IMG alt="profileImage" class="rounded-circle" src="{@friendProfileImage}" width="35"/>
-									<SPAN class="ms-2 text-white">
+								<A href="/profile/{@friendIdentifier}/" id="friendLink">
+									<IMG alt="profileImage" class="rounded-circle" id="friendImg" src="{@friendProfileImage}" width="35"/>
+									<SPAN class="ms-2 text-white" id="friendName">
 										<xsl:value-of select="@friendNickname"/>
 									</SPAN>
 								</A>
@@ -586,151 +508,79 @@
 								</DIV>
 							</xsl:if>
 						</DIV>
-						<DIV class="messages">
-							<xsl:if test="@male">
-								<DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 pt-0 ps-2 pe-1 pb-2 userAlert imageShadow">
-									<DIV class="d-flex">
-										<BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 pt-1 p-0 me-2 userAlertClose" type="button">
-											<I class="fal fa-times fontSize25"></I>
-										</BUTTON>
+						<xsl:if test="@male">
+							<DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 pt-0 ps-2 pe-1 pb-2 mt-6 userAlert imageShadow">
+								<DIV class="d-flex">
+									<BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 pt-1 p-0 me-2 userAlertClose" type="button">
+										<I class="fal fa-times fontSize25"></I>
+									</BUTTON>
+								</DIV>
+								<DIV class="text-white">
+									<DIV class="text-center text-sm text-bold mb-1">
+										<DIV>開始與meQUEEN聊天</DIV>
+										<DIV>!!防止詐騙與假帳號!!</DIV>
 									</DIV>
-									<DIV class="text-white">
-										<DIV class="text-center text-sm text-bold mb-1">
-											<DIV>開始與meQUEEN聊天</DIV>
-											<DIV>!!防止詐騙與假帳號!!</DIV>
+									<DIV class="text-sm d-flex flex-column">
+										<DIV class="mb-1 d-flex">
+											<I class="fas fa-portrait fontSize22 col-1"></I>
+											<SPAN>有大頭照的訊息，meQUEEN回覆率提高70%</SPAN>
 										</DIV>
-										<DIV class="text-sm d-flex flex-column">
-											<DIV class="mb-1 d-flex">
-												<I class="fas fa-portrait fontSize22 col-1"></I>
-												<SPAN>有大頭照的訊息，meQUEEN回覆率提高70%</SPAN>
-											</DIV>
-											<DIV class="mb-1">
-												<I class="fas fa-comment fontSize22 col-1"></I>
-												<SPAN>充分了解認識再進一步洽談約會</SPAN>
-											</DIV>
-											<DIV class="mb-1 d-flex">
-												<I class="fas fa-badge-dollar fontSize22 col-1"></I>
-												<SPAN>約會先用ME點交易，女生爽約可檢舉退回</SPAN>
-											</DIV>
+										<DIV class="mb-1">
+											<I class="fas fa-comment fontSize22 col-1"></I>
+											<SPAN>充分了解認識再進一步洽談約會</SPAN>
+										</DIV>
+										<DIV class="mb-1 d-flex">
+											<I class="fas fa-badge-dollar fontSize22 col-1"></I>
+											<SPAN>約會先用ME點交易，女生爽約可檢舉退回</SPAN>
 										</DIV>
 									</DIV>
 								</DIV>
-							</xsl:if>
-							<xsl:if test="@female">
-								<DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 pt-0 ps-2 pe-1 pb-2 userAlert primary-gradient imageShadow">
-									<DIV class="d-flex">
-										<BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 pt-1 p-0 me-2 userAlertClose" type="button">
-											<I class="fal fa-times fontSize25"></I>
-										</BUTTON>
+							</DIV>
+						</xsl:if>
+						<xsl:if test="@female">
+							<DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 pt-0 ps-2 pe-1 pb-2 mt-6 userAlert primary-gradient imageShadow">
+								<DIV class="d-flex">
+									<BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 pt-1 p-0 me-2 userAlertClose" type="button">
+										<I class="fal fa-times fontSize25"></I>
+									</BUTTON>
+								</DIV>
+								<DIV class="text-white">
+									<DIV class="text-center text-sm text-bold mb-1">
+										<DIV>開始與meKING聊天</DIV>
+										<DIV>!!防止騷擾詐騙渣男安心使用!!</DIV>
 									</DIV>
-									<DIV class="text-white">
-										<DIV class="text-center text-sm text-bold mb-1">
-											<DIV>開始與meKING聊天</DIV>
-											<DIV>!!防止騷擾詐騙渣男安心使用!!</DIV>
-										</DIV>
 
-										<DIV class="text-sm d-flex flex-column ps-1">
-											<DIV class="mb-1">
-												<I class="fas fa-comment fontSize22 col-1"></I>
-												<SPAN class="ms-1">充分了解認識再進一步洽談約會</SPAN>
-											</DIV>
-											<DIV class="mb-1">
-												<I class="fas fa-smile-plus fontSize22 col-1"></I>
-												<SPAN class="ms-1">只透過好友邀請功能加入通訊軟體</SPAN>
-											</DIV>
-											<DIV class="mb-1">
-												<I class="fas fa-badge-dollar fontSize22 col-1"></I>
-												<SPAN class="ms-1">約會先用ME點交易，確認收到再赴約</SPAN>
-											</DIV>
+									<DIV class="text-sm d-flex flex-column ps-1">
+										<DIV class="mb-1">
+											<I class="fas fa-comment fontSize22 col-1"></I>
+											<SPAN class="ms-1">充分了解認識再進一步洽談約會</SPAN>
+										</DIV>
+										<DIV class="mb-1">
+											<I class="fas fa-smile-plus fontSize22 col-1"></I>
+											<SPAN class="ms-1">只透過好友邀請功能加入通訊軟體</SPAN>
+										</DIV>
+										<DIV class="mb-1">
+											<I class="fas fa-badge-dollar fontSize22 col-1"></I>
+											<SPAN class="ms-1">約會先用ME點交易，確認收到再赴約</SPAN>
 										</DIV>
 									</DIV>
 								</DIV>
-							</xsl:if>
+							</DIV>
+						</xsl:if>
+						<DIV class="messages position-relative" id="messages">
 							<DIV id="messagesArea"></DIV>
+							<INPUT name="nextMsgsPage" type="hidden" value="1" />
+							<DIV class="loadingWrap position-absolute" id="loadingChat" style="display: none; background: #E7E7EA;">
+								<DIV class="loading position-absolute">
+									<DIV class="round"></DIV>
+									<DIV class="round ms-1"></DIV>
+									<DIV class="round ms-1"></DIV>
+								</DIV>
+							</DIV>
 						</DIV>
 						<DIV class="inputContainer">
 							<xsl:choose>
 								<xsl:when test="not(@blocking) and not(@blockedBy)">
-									<xsl:if test="@female">
-										<xsl:if test="@decideBtn">
-											<DIV class="d-flex justify-content-center femaleBtn floatBtn">
-												<DIV class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
-													<DIV class="text-primary">
-														<DIV>
-															<I class="fad fa-user-plus"></I>
-															<SPAN>接受後可於聊天室暢聊</SPAN>
-														</DIV>
-														<DIV>同時提供綁定的通訊軟體</DIV>
-													</DIV>
-													<BUTTON class="btn btn-outline-primary btn-round px-2 py-1 m-0 me-1 accept" type="button">接受</BUTTON>
-													<BUTTON class="btn btn-outline-dark btn-round px-2 py-1 m-0 border-radius-xl refuse" type="button">拒絕</BUTTON>
-												</DIV>
-											</DIV>
-										</xsl:if>
-										<xsl:if test="@rateBtn">
-											<DIV class="d-flex justify-content-center femaleBtn floatBtn">
-												<DIV class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
-													<DIV class="text-primary">
-														<DIV>
-															<I class="fad fa-star-half"></I>
-															<SPAN>已成為好友</SPAN>
-														</DIV>
-													</DIV>
-													<BUTTON class="btn btn-sm btn-primary btn-round px-2 py-1 m-0 rate" data-bs-target="#rateModal" data-bs-toggle="modal" type="button">好友評價</BUTTON>
-												</DIV>
-											</DIV>
-										</xsl:if>
-									</xsl:if>
-									<xsl:if test="@male">
-										<xsl:choose>
-											<xsl:when test="@reqSocialMediaBtn">
-												<DIV class="d-flex justify-content-center maleBtn floatBtn">
-													<DIV class="border border-primary border-radius-xl text-primary text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
-														<DIV>
-															<I class="far fa-user-plus ms-1"></I>
-															<SPAN>加入好友</SPAN>
-														</DIV>
-														<DIV>解鎖聊天室限制同時獲得私人通訊軟體</DIV>
-														<BUTTON type="button" id="giveMeLine" class="btn btn-primary btn-round px-2 py-1 m-0">送出邀請</BUTTON>
-													</DIV>
-												</DIV>
-											</xsl:when>
-											<xsl:when test="@waitingForRes">
-												<DIV class="d-flex justify-content-center maleBtn floatBtn">
-													<DIV class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
-														<DIV class="text-primary">
-															<DIV>
-																<I class="fad fa-user-plus"></I>
-																<SPAN>您已送出好友邀請，</SPAN>
-															</DIV>
-															<DIV>請等待對方回應。</DIV>
-														</DIV>
-													</DIV>
-												</DIV>
-											</xsl:when>
-											<xsl:when test="@addLineBtn">
-												<DIV class="d-flex justify-content-center maleBtn floatBtn">
-													<DIV class="border border-primary border-radius-xl text-xs px-3 py-1 bg-light shadow wordBreak text-center floatWrap">
-														<DIV class="text-primary">
-															<DIV>
-																<I class="fad fa-star-half"></I>
-																<SPAN>已接受您的好友邀請</SPAN>
-															</DIV>
-														</DIV>
-														<BUTTON class="btn btn-sm btn-primary btn-round px-2 py-1 m-0 openSocialMedia" type="button">
-															<SPAN>加通訊軟體</SPAN>
-															<xsl:if test="@remindDeduct">
-																<DIV class="text-xxs">需 100 愛心</DIV>
-															</xsl:if>
-														</BUTTON>
-														<xsl:if test="@rateBtn">
-															<BUTTON class="btn btn-sm btn-dark btn-round px-2 py-1 m-0 ms-1 rate" data-bs-target="#rateModal" data-bs-toggle="modal" type="button">好友評價</BUTTON>
-														</xsl:if>
-													</DIV>
-												</DIV>
-											</xsl:when>
-										</xsl:choose>
-									</xsl:if>
 									<xsl:if test="@able">
 										<DIV class="textareaContainer">
 											<TEXTAREA id="chatInput" placeholder="說點什麼吧..." type="text">

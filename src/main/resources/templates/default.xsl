@@ -33,7 +33,7 @@
 		<xsl:call-template name="customerFloatBtn"/>
 		<DIV class="container position-sticky z-index-sticky top-0">
 			<INPUT name="identifier" type="hidden" value="{@identifier}"/>
-			<NAV class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-1 py-md-3 start-0 end-0 mx-3">
+			<NAV class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-1 py-md-3 start-0 end-0 mx-2">
 				<DIV class="container-fluid">
 					<A class="navbar-brand font-weight-bolder m-0" href="/">YOUNG ME 養蜜</A>
 					<DIV class="d-flex align-items-center">

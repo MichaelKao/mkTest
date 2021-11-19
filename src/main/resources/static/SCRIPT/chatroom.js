@@ -26,17 +26,30 @@ $(document).ready(function () {
 	}
 
 	// 手機版時可以拉出聊天列表
-	$('DIV.showSideBar').click(function () {
+	$('DIV.showSideBar').click(function (e) {
+		e.stopPropagation();
 		$('DIV.chatList').addClass('showFromTheSide');
 		$(this).addClass('d-none');
+		$('BODY').append('<DIV class="bgBlack"></DIV>');
 	});
+
+	$(document).click(function (e) {
+		if (!$(e.target).is('#chatList')) {
+			$('DIV.chatList').removeClass('showFromTheSide');
+			$('DIV.showSideBar').removeClass('d-none');
+			$('.bgBlack').remove();
+		}
+	});
+
 	$('DIV.hideSideBar').click(function () {
 		$('DIV.chatList').removeClass('showFromTheSide');
 		$('DIV.showSideBar').removeClass('d-none');
+		$('.bgBlack').remove();
 	});
 	$(window).resize(function () {
 		$('DIV.chatList').removeClass('showFromTheSide');
 		$('DIV.showSideBar').removeClass('d-none');
+		$('.bgBlack').remove();
 	});
 
 	// 關掉用戶通知

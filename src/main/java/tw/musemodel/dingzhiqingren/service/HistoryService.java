@@ -363,11 +363,6 @@ public class HistoryService {
 				history.getSeen(),
 				history.getReply()
 			);
-
-			if (Objects.equals(history.getBehavior(), BEHAVIOR_PICTURES_VIEWABLE)) {
-				history.setShowAllPictures(history.getShowAllPictures());
-			}
-
 			activities.add(activity);
 		}
 
@@ -730,7 +725,7 @@ public class HistoryService {
 		webSocketServer.sendNotification(
 			passive.getIdentifier().toString(),
 			String.format(
-				"%s給了妳 ME 點 %d!",
+				"inbox%s給了妳 ME 點 %d!",
 				initiative.getNickname(),
 				points
 			));
@@ -784,7 +779,7 @@ public class HistoryService {
 		webSocketServer.sendNotification(
 			passive.getIdentifier().toString(),
 			String.format(
-				"%s和你要求 ME 點 %d!",
+				"inbox%s和你要求 ME 點 %d!",
 				initiative.getNickname(),
 				points
 			));
@@ -947,7 +942,7 @@ public class HistoryService {
 		webSocketServer.sendNotification(
 			passive.getIdentifier().toString(),
 			String.format(
-				"%s和妳要求通訊軟體",
+				"inbox%s和妳要求通訊軟體",
 				initiative.getNickname()
 			));
 
@@ -1011,7 +1006,7 @@ public class HistoryService {
 		webSocketServer.sendNotification(
 			passive.getIdentifier().toString(),
 			String.format(
-				"%s向你打招呼：「%s」",
+				"inbox%s向你打招呼：「%s」",
 				initiative.getNickname(),
 				greetingMessage
 			));
@@ -1075,7 +1070,7 @@ public class HistoryService {
 		webSocketServer.sendNotification(
 			passive.getIdentifier().toString(),
 			String.format(
-				"%s已答應給你通訊軟體!",
+				"inbox%s已答應給你通訊軟體!",
 				initiative.getNickname()
 			));
 		if (loverService.hasLineNotify(passive)) {
@@ -1341,7 +1336,7 @@ public class HistoryService {
 		webSocketServer.sendNotification(
 			passive.getIdentifier().toString(),
 			String.format(
-				"%s已拒絕給你通訊軟體!",
+				"inbox%s已拒絕給你通訊軟體!",
 				initiative.getNickname()
 			));
 		if (loverService.hasLineNotify(passive)) {
@@ -1523,33 +1518,6 @@ public class HistoryService {
 			Element historyElement = document.createElement("history");
 			documentElement.appendChild(historyElement);
 
-			if (behavior == BEHAVIOR_PICTURES_VIEWABLE) {
-				profileImage = initiativeProfileImage;
-				identifier = initiativeIdentifier;
-				message = String.format(
-					"%s向您要求生活照授權",
-					initiativeNickname
-				);
-				History history = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
-					initiative,
-					passive,
-					BEHAVIOR_PICTURES_VIEWABLE
-				);
-				if (Objects.nonNull(history) && !history.getShowAllPictures()) {
-					historyElement.setAttribute(
-						"pixAuthBtn",
-						null
-					);
-				}
-			}
-			if (behavior == BEHAVIOR_ACCEPT_PICTURES_VIEWABLE) {
-				profileImage = initiativeProfileImage;
-				identifier = initiativeIdentifier;
-				message = String.format(
-					"%s同意給您看生活照",
-					initiativeNickname
-				);
-			}
 			if (behavior == BEHAVIOR_RATE) {
 				profileImage = initiativeProfileImage;
 				identifier = initiativeIdentifier;
@@ -1816,7 +1784,7 @@ public class HistoryService {
 		webSocketServer.sendNotification(
 			passive.getIdentifier().toString(),
 			String.format(
-				"%s和您要求生活照授權!",
+				"inbox%s和您要求生活照授權!",
 				initiative.getNickname()
 			));
 		if (loverService.hasLineNotify(passive)) {
@@ -1855,7 +1823,7 @@ public class HistoryService {
 		webSocketServer.sendNotification(
 			requester.getIdentifier().toString(),
 			String.format(
-				"%s同意給您看生活照!",
+				"inbox%s同意給您看生活照!",
 				acceptant.getNickname()
 			));
 		if (loverService.hasLineNotify(requester)) {
@@ -1917,7 +1885,7 @@ public class HistoryService {
 		webSocketServer.sendNotification(
 			male.getIdentifier().toString(),
 			String.format(
-				"%s退回您給的看 ME 點！",
+				"inbox%s退回您給的 ME 點！",
 				female.getNickname()
 			));
 		if (loverService.hasLineNotify(male)) {
@@ -1937,5 +1905,69 @@ public class HistoryService {
 			)).
 			withResponse(true).
 			toJSONObject();
+	}
+
+	public List<String> friendStatus(Lover me, Lover friend) {
+		List<String> friendStatus = new ArrayList<>();
+
+		// 若是小編則不會有好友
+		if (loverService.isCustomerService(me) || loverService.isCustomerService(friend)) {
+			return friendStatus;
+		}
+
+		Lover male = null;
+		Lover female = null;
+		boolean gender = me.getGender();
+		if (gender) {
+			male = me;
+			female = friend;
+		} else {
+			female = me;
+			male = friend;
+		}
+
+		if (loverService.getBlockers(me).contains(friend)
+			|| loverService.getBlockeds(me).contains(friend)) {
+			return friendStatus;
+		}
+		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
+		// '給我賴'的行為甜心還沒回應
+		if (Objects.nonNull(lineGiven) && Objects.isNull(lineGiven.getResponse())) {
+			// 甜心的接受拒絕按鈕
+			if (!gender) {
+				friendStatus.add("decideBtn");
+			}
+			// 男士等待甜心回應
+			if (gender) {
+				friendStatus.add("waitingForRes");
+			}
+		}
+		// 男士要求通訊軟體的按鈕
+		// 離上一次拒絕不到12小時
+		History refuseHistory = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(female, male, BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
+		if (gender && (Objects.isNull(lineGiven) || (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse())
+			&& Objects.nonNull(refuseHistory) && !within12hrsFromLastRefused(refuseHistory) && !lineGiven.getResponse()))) {
+			friendStatus.add("reqSocialMediaBtn");
+		}
+
+		if (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse()) && lineGiven.getResponse()) {
+			if (gender) {
+				friendStatus.add("maleAddLineBtn");
+			}
+			Long count = historyRepository.countByInitiativeAndPassiveAndBehavior(male, female, BEHAVIOR_LAI_KOU_DIAN);
+			if ((loverService.isVIP(male) || loverService.isVVIP(male)) && (count < 1 && !withinRequiredLimit(male))) {
+				friendStatus.add("remindDeduct");
+			}
+			if (gender && Objects.isNull(
+				historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(male, female, BEHAVIOR_RATE))) {
+				friendStatus.add("maleRateBtn");
+			}
+			if (!gender && Objects.isNull(
+				historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(female, male, BEHAVIOR_RATE))) {
+				friendStatus.add("femaleRateBtn");
+			}
+		}
+
+		return friendStatus;
 	}
 }

@@ -3,6 +3,7 @@ package tw.musemodel.dingzhiqingren.controller;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -64,6 +65,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import tw.musemodel.dingzhiqingren.entity.Companionship;
+import tw.musemodel.dingzhiqingren.entity.ForumThread;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
 import tw.musemodel.dingzhiqingren.entity.LineGiven;
@@ -3488,6 +3490,23 @@ public class WelcomeController {
 		return modelAndView;
 	}
 
+	@PostMapping(path = "/loadMoreInboxList.json")
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	String loadMoreInboxList(@RequestParam int p, Authentication authentication, Locale locale) throws TransformerException, IOException {
+
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		List<ForumThread> list = new ArrayList<>();
+
+		return webSocketService.loadMoreInboxList(
+			me,
+			p
+		).toString();
+	}
+
 	/**
 	 * 解除定期定額長期貴賓
 	 *
@@ -3781,39 +3800,6 @@ public class WelcomeController {
 	}
 
 	/**
-	 * 聊天列表即時更新訊息
-	 *
-	 * @param authentication
-	 * @param locale 语言环境
-	 * @return
-	 */
-	@PostMapping(path = "/updateInbox.json")
-	@ResponseBody
-	String updateInbox(Authentication authentication, Locale locale) {
-		if (servant.isNull(authentication)) {
-			return servant.mustBeAuthenticated(locale);
-		}
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
-		);
-
-		JSONObject jSONObject;
-		try {
-			jSONObject = webSocketService.updateInbox(me);
-		} catch (Exception exception) {
-			return new JavaScriptObjectNotation().
-				withReason(exception.getMessage()).
-				withResponse(false).
-				toJSONObject().toString();
-		}
-
-		return new JavaScriptObjectNotation().
-			withResult(jSONObject).
-			withResponse(true).
-			toJSONObject().toString();
-	}
-
-	/**
 	 * 退回車馬費
 	 *
 	 * @param history
@@ -4044,5 +4030,84 @@ public class WelcomeController {
 			p,
 			10
 		).toString();
+	}
+
+	/**
+	 * 聊天室載入更多對話
+	 *
+	 * @param friend
+	 * @param p
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws TransformerException
+	 * @throws IOException
+	 */
+	@PostMapping(path = "/loadMoreMsgs.json")
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	String loadMoreMsgs(@RequestParam UUID friend, @RequestParam int p, Authentication authentication, Locale locale) throws TransformerException, IOException {
+
+		return new Gson().toJson(webSocketService.wholeHistoryMsgs(
+			loverService.loadByUsername(
+				authentication.getName()
+			),
+			loverService.loadByIdentifier(
+				friend
+			),
+			p
+		));
+	}
+
+	/**
+	 * 傳送訊息後更新左邊訊息欄
+	 *
+	 * @param friend
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@PostMapping(path = "/updateInbox.json")
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	String updateInbox(@RequestParam UUID friend, Authentication authentication, Locale locale) {
+		return webSocketService.updateInbox(
+			loverService.loadByUsername(
+				authentication.getName()
+			),
+			loverService.loadByIdentifier(
+				friend
+			)
+		).toString();
+	}
+
+	/**
+	 * AJAX 產生右邊對話框後將訊息轉為已讀
+	 *
+	 * @param friend
+	 * @param authentication
+	 * @param locale
+	 */
+	@PostMapping(path = "/openChatRoom.json")
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	void openChatRoom(@RequestParam UUID friend, Authentication authentication, Locale locale) {
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+		Lover chatPartner = loverService.loadByIdentifier(
+			friend
+		);
+		// 將訊息改成已讀
+		List<History> unreadMessages = historyRepository.
+			findByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+				chatPartner,
+				me,
+				loverService.behaviorOfConversation()
+			);
+		for (History history : unreadMessages) {
+			history.setSeen(new Date(System.currentTimeMillis()));
+			historyRepository.saveAndFlush(history);
+		}
 	}
 }

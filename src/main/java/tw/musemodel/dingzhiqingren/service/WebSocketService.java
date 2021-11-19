@@ -2,9 +2,7 @@ package tw.musemodel.dingzhiqingren.service;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -55,213 +53,49 @@ public class WebSocketService {
 	@Autowired
 	private Servant servant;
 
-	public List<Activity> wholeHistoryMsgs(Lover male, Lover female) {
-		List<History> maleTalkHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
-			male,
-			female,
-			HistoryService.BEHAVIOR_CHAT_MORE
-		);
-		List<History> gimmeHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
-			male,
-			female,
-			HistoryService.BEHAVIOR_GIMME_YOUR_LINE_INVITATION
-		);
-		List<History> alreadyBeingFriendHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
-			male,
-			female,
-			HistoryService.BEHAVIOR_LAI_KOU_DIAN
-		);
-		List<History> fareHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
-			male,
-			female,
-			HistoryService.BEHAVIOR_FARE
-		);
-		List<History> femaleTalkHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
-			female,
-			male,
-			HistoryService.BEHAVIOR_GREETING
-		);
-		List<History> femaleGroupGreetingHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
-			female,
-			male,
-			HistoryService.BEHAVIOR_GROUP_GREETING
-		);
-		List<History> inviteAsFriendHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
-			female,
-			male,
-			HistoryService.BEHAVIOR_INVITE_ME_AS_LINE_FRIEND
-		);
-		List<History> refuseAsFriendHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
-			female,
-			male,
-			HistoryService.BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND
-		);
-		List<History> requestFareHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
-			female,
-			male,
-			HistoryService.BEHAVIOR_ASK_FOR_FARE
-		);
-		List<History> returnFareHistoryMsgs = historyRepository.findByInitiativeAndPassiveAndBehaviorOrderByOccurredDesc(
-			female,
-			male,
-			HistoryService.BEHAVIOR_RETURN_FARE
-		);
+	public List<Activity> wholeHistoryMsgs(Lover self, Lover friend, int page) {
+		List<History> latestPageableConversations
+			= historyService.latestPageableConversations(self, friend, PageRequest.of(page, 20));
 		List<Activity> wholeHistoryMsgs = new ArrayList<>();
-		for (History history : maleTalkHistoryMsgs) {
-			Activity activity = new Activity(
-				male.getIdentifier().toString(),
-				history.getBehavior(),
-				history.getOccurred(),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
-					Servant.toTaipeiZonedDateTime(
-						history.getOccurred()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
-				),
-				servant.markdownToHtml(history.getGreeting()),
-				history.getSeen()
-			);
-			wholeHistoryMsgs.add(activity);
-		}
-		for (History history : gimmeHistoryMsgs) {
-			Activity activity = new Activity(
-				male.getIdentifier().toString(),
-				history.getBehavior(),
-				history.getOccurred(),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
-					Servant.toTaipeiZonedDateTime(
-						history.getOccurred()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
-				),
-				history.getSeen()
-			);
-			wholeHistoryMsgs.add(activity);
-		}
-		for (History history : alreadyBeingFriendHistoryMsgs) {
-			Activity activity = new Activity(
-				male.getIdentifier().toString(),
-				history.getBehavior(),
-				history.getOccurred(),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
-					Servant.toTaipeiZonedDateTime(
-						history.getOccurred()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
-				),
-				history.getSeen()
-			);
-			wholeHistoryMsgs.add(activity);
-		}
-		for (History history : fareHistoryMsgs) {
-			Activity activity = new Activity(
-				male.getIdentifier().toString(),
-				history.getBehavior(),
-				history.getOccurred(),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
-					Servant.toTaipeiZonedDateTime(
-						history.getOccurred()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
-				),
-				history.getSeen()
-			);
-			if (historyService.ableToReturnFare(history)) {
-				activity.setAbleToReturnFare(Boolean.TRUE);
-			} else {
-				activity.setAbleToReturnFare(Boolean.FALSE);
+		if (Objects.nonNull(latestPageableConversations)) {
+			for (History history : latestPageableConversations) {
+				Activity activity = new Activity(
+					history.getInitiative().getIdentifier().toString(),
+					history.getBehavior(),
+					history.getOccurred(),
+					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+						Servant.toTaipeiZonedDateTime(
+							history.getOccurred()
+						).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
+					)
+				);
+				if (Objects.nonNull(history.getGreeting())) {
+					activity.setGreeting(servant.markdownToHtml(history.getGreeting()));
+				}
+				if (Objects.nonNull(history.getSeen())) {
+					activity.setSeen(history.getSeen());
+				}
+				if (Objects.nonNull(history.getReply())) {
+					activity.setReply(history.getReply());
+				}
+				if (Objects.nonNull(history.getPoints())) {
+					activity.setPoints((short) Math.abs(history.getPoints()));
+				}
+				if (historyService.ableToReturnFare(history)) {
+					activity.setAbleToReturnFare(Boolean.TRUE);
+				} else {
+					activity.setAbleToReturnFare(Boolean.FALSE);
+				}
+				if (Objects.equals(history.getBehavior(), BEHAVIOR_PICTURES_VIEWABLE)) {
+					activity.setShowAllPictures(!history.getShowAllPictures());
+				} else {
+					activity.setShowAllPictures(Boolean.FALSE);
+				}
+				activity.setId(history.getId());
+				wholeHistoryMsgs.add(activity);
 			}
-			activity.setPoints((short) Math.abs(history.getPoints()));
-			activity.setId(history.getId());
-			wholeHistoryMsgs.add(activity);
+			Collections.sort(wholeHistoryMsgs);
 		}
-		for (History history : femaleTalkHistoryMsgs) {
-			Activity activity = new Activity(
-				female.getIdentifier().toString(),
-				history.getBehavior(),
-				history.getOccurred(),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
-					Servant.toTaipeiZonedDateTime(
-						history.getOccurred()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
-				),
-				servant.markdownToHtml(history.getGreeting()),
-				history.getSeen()
-			);
-			wholeHistoryMsgs.add(activity);
-		}
-		for (History history : femaleGroupGreetingHistoryMsgs) {
-			Activity activity = new Activity(
-				female.getIdentifier().toString(),
-				history.getBehavior(),
-				history.getOccurred(),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
-					Servant.toTaipeiZonedDateTime(
-						history.getOccurred()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
-				),
-				servant.markdownToHtml(history.getGreeting()),
-				history.getSeen()
-			);
-			wholeHistoryMsgs.add(activity);
-		}
-		for (History history : inviteAsFriendHistoryMsgs) {
-			Activity activity = new Activity(
-				female.getIdentifier().toString(),
-				history.getBehavior(),
-				history.getOccurred(),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
-					Servant.toTaipeiZonedDateTime(
-						history.getOccurred()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
-				),
-				history.getSeen()
-			);
-			wholeHistoryMsgs.add(activity);
-		}
-		for (History history : refuseAsFriendHistoryMsgs) {
-			Activity activity = new Activity(
-				female.getIdentifier().toString(),
-				history.getBehavior(),
-				history.getOccurred(),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
-					Servant.toTaipeiZonedDateTime(
-						history.getOccurred()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
-				),
-				history.getSeen()
-			);
-			wholeHistoryMsgs.add(activity);
-		}
-		for (History history : requestFareHistoryMsgs) {
-			Activity activity = new Activity(
-				female.getIdentifier().toString(),
-				history.getBehavior(),
-				history.getOccurred(),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
-					Servant.toTaipeiZonedDateTime(
-						history.getOccurred()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
-				),
-				history.getSeen()
-			);
-			activity.setPoints(history.getPoints());
-			activity.setId(history.getId());
-			activity.setReply(history.getReply());
-			wholeHistoryMsgs.add(activity);
-		}
-		for (History history : returnFareHistoryMsgs) {
-			Activity activity = new Activity(
-				female.getIdentifier().toString(),
-				history.getBehavior(),
-				history.getOccurred(),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
-					Servant.toTaipeiZonedDateTime(
-						history.getOccurred()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
-				),
-				history.getSeen()
-			);
-			activity.setPoints(history.getPoints());
-			wholeHistoryMsgs.add(activity);
-		}
-		Collections.sort(wholeHistoryMsgs);
 		return wholeHistoryMsgs;
 	}
 
@@ -271,10 +105,7 @@ public class WebSocketService {
 
 		boolean isMale = me.getGender();
 
-		//List<History> conversations = historyService.latestConversations(me);
-		List<History> conversations = historyService.latestPageableConversations(me, PageRequest.of(0, 10));
-		Integer friendlyOrVipUnreads = 0,//好友或贵宾的未读总数
-			unfriendlyOrNonVipUnreads = 0;//非好友或非贵宾的未读总数
+		List<History> conversations = historyService.latestPageableConversations(me, PageRequest.of(0, 12));
 		for (History history : conversations) {
 			Element conversationElement = document.createElement("conversation");
 			documentElement.appendChild(conversationElement);
@@ -290,25 +121,6 @@ public class WebSocketService {
 			String content = null;
 			Boolean eitherMatchedOrVip = null;
 			int unreads = 0;//某个人的未读讯息数
-			final Collection<Behavior> BEHAVIORS_OF_MALE = Arrays.
-				asList(
-					new History.Behavior[]{
-						BEHAVIOR_CHAT_MORE,
-						BEHAVIOR_FARE,
-						BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
-						BEHAVIOR_LAI_KOU_DIAN
-					}
-				);
-			final Collection<Behavior> BEHAVIORS_OF_FEMALE = Arrays.
-				asList(
-					new History.Behavior[]{
-						BEHAVIOR_GREETING,
-						BEHAVIOR_GROUP_GREETING,
-						BEHAVIOR_ASK_FOR_FARE,
-						BEHAVIOR_INVITE_ME_AS_LINE_FRIEND,
-						BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND
-					}
-				);
 			if (Objects.equals(me, initiative)) {
 				if (isMale) {
 					//双方是否有加过通信软件
@@ -316,14 +128,12 @@ public class WebSocketService {
 						passive,
 						me
 					);
-
 					//未读信息数量
 					unreads = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
 						passive,
 						me,
-						BEHAVIORS_OF_FEMALE
+						loverService.behaviorOfConversation()
 					);
-
 					if (Objects.equals(BEHAVIOR_FARE, behavior)) {
 						content = String.format(
 							"您已給 💗 %d ME 點",
@@ -342,11 +152,17 @@ public class WebSocketService {
 						countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
 							passive,
 							me,
-							BEHAVIORS_OF_MALE
+							loverService.behaviorOfConversation()
 						);
 					if (Objects.equals(BEHAVIOR_ASK_FOR_FARE, behavior)) {
 						content = String.format(
 							"您已和對方要求 💗 %d ME 點",
+							Math.abs(points)
+						);
+					}
+					if (Objects.equals(BEHAVIOR_RETURN_FARE, behavior)) {
+						content = String.format(
+							"您已退回對方給您的 💗 %d ME 點",
 							Math.abs(points)
 						);
 					}
@@ -356,6 +172,22 @@ public class WebSocketService {
 					if (Objects.equals(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND, behavior)) {
 						content = "您已拒絕給對方通訊軟體";
 					}
+				}
+				if (Objects.equals(BEHAVIOR_PICTURES_VIEWABLE, behavior)) {
+					//"生活照授權"
+					content = "向對方要求生活照授權";
+				}
+				if (Objects.equals(BEHAVIOR_ACCEPT_PICTURES_VIEWABLE, behavior)) {
+					//"生活照允許"
+					content = "同意給對方看生活照";
+				}
+				if (Objects.equals(BEHAVIOR_REFUSE_PICTURES_VIEWABLE, behavior)) {
+					//"生活照不允許"
+					content = "不同意給對方看生活照";
+				}
+				if (Objects.equals(BEHAVIOR_RATE, behavior)) {
+					//"評價"
+					content = "您給對方評價";
 				}
 				identifier = passive.getIdentifier();
 				profileImage = String.format(
@@ -371,11 +203,17 @@ public class WebSocketService {
 						countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
 							initiative,
 							me,
-							BEHAVIORS_OF_FEMALE
+							loverService.behaviorOfConversation()
 						);
 					if (Objects.equals(BEHAVIOR_ASK_FOR_FARE, behavior)) {
 						content = String.format(
 							"對方和您要求 💗 %d ME 點",
+							Math.abs(points)
+						);
+					}
+					if (Objects.equals(BEHAVIOR_RETURN_FARE, behavior)) {
+						content = String.format(
+							"對方退回您給的 💗 %d ME 點",
 							Math.abs(points)
 						);
 					}
@@ -391,7 +229,7 @@ public class WebSocketService {
 						countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
 							initiative,
 							me,
-							BEHAVIORS_OF_MALE
+							loverService.behaviorOfConversation()
 						);
 					if (Objects.equals(BEHAVIOR_FARE, behavior)) {
 						content = String.format(
@@ -405,6 +243,22 @@ public class WebSocketService {
 					if (Objects.equals(BEHAVIOR_LAI_KOU_DIAN, behavior)) {
 						content = "對方已開啟了您的通訊軟體QRcode";
 					}
+				}
+				if (Objects.equals(BEHAVIOR_PICTURES_VIEWABLE, behavior)) {
+					//"生活照授權"
+					content = "對方向您要求生活照授權";
+				}
+				if (Objects.equals(BEHAVIOR_ACCEPT_PICTURES_VIEWABLE, behavior)) {
+					//"生活照允許"
+					content = "對方同意給您看生活照";
+				}
+				if (Objects.equals(BEHAVIOR_REFUSE_PICTURES_VIEWABLE, behavior)) {
+					//"生活照不允許"
+					content = "對方不同意給您看生活照";
+				}
+				if (Objects.equals(BEHAVIOR_RATE, behavior)) {
+					//"評價"
+					content = "對方給您評價";
 				}
 				identifier = initiative.getIdentifier();
 				profileImage = String.format(
@@ -444,12 +298,6 @@ public class WebSocketService {
 				eitherMatchedOrVip.toString()
 			);
 
-			if (eitherMatchedOrVip) {
-				friendlyOrVipUnreads += unreads;
-			} else {
-				unfriendlyOrNonVipUnreads += unreads;
-			}
-
 			if (unreads > 0) {
 				//未读数
 				conversationElement.setAttribute(
@@ -459,23 +307,215 @@ public class WebSocketService {
 			}
 		}//for
 
-		if (friendlyOrVipUnreads > 0) {
-			//好友或贵宾的未读总数
-			documentElement.setAttribute(
-				"matchedOrVipNotSeenCount",
-				friendlyOrVipUnreads.toString()
-			);
-		}
-
-		if (unfriendlyOrNonVipUnreads > 0) {
-			//非好友或非贵宾的未读总数
-			documentElement.setAttribute(
-				"notMatchedOrNotVipNotSeenCount",
-				unfriendlyOrNonVipUnreads.toString()
-			);
-		}
-
 		return document;
+	}
+
+	public JSONArray loadMoreInboxList(Lover me, int page) {
+		boolean isMale = me.getGender();
+
+		List<History> conversations = historyService.latestPageableConversations(me, PageRequest.of(page, 12));
+		JSONArray array = new JSONArray();
+		if (Objects.nonNull(conversations)) {
+			for (History history : conversations) {
+				JSONObject j = new JSONObject();
+
+				Short points = history.getPoints();
+				Behavior behavior = history.getBehavior();
+				Lover initiative = history.getInitiative(),
+					passive = history.getPassive();
+
+				UUID identifier = null;
+				String profileImage = null;
+				String nickname = null;
+				String content = null;
+				Boolean eitherMatchedOrVip = null;
+				int unreads = 0;//某个人的未读讯息数
+				if (Objects.equals(me, initiative)) {
+					if (isMale) {
+						//双方是否有加过通信软件
+						eitherMatchedOrVip = loverService.areMatched(
+							passive,
+							me
+						);
+
+						//未读信息数量
+						unreads = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+							passive,
+							me,
+							loverService.behaviorOfConversation()
+						);
+
+						if (Objects.equals(BEHAVIOR_FARE, behavior)) {
+							content = String.format(
+								"您已給 💗 %d ME 點",
+								Math.abs(points)
+							);
+						}
+						if (Objects.equals(BEHAVIOR_GIMME_YOUR_LINE_INVITATION, behavior)) {
+							content = "您已發出要求通訊軟體";
+						}
+						if (Objects.equals(BEHAVIOR_LAI_KOU_DIAN, behavior)) {
+							content = "您開啟了對方的通訊軟體QRcode";
+						}
+					} else {
+						eitherMatchedOrVip = loverService.isVIP(passive) || loverService.isVVIP(passive);
+						unreads = historyRepository.
+							countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+								passive,
+								me,
+								loverService.behaviorOfConversation()
+							);
+						if (Objects.equals(BEHAVIOR_ASK_FOR_FARE, behavior)) {
+							content = String.format(
+								"您已和對方要求 💗 %d ME 點",
+								Math.abs(points)
+							);
+						}
+						if (Objects.equals(BEHAVIOR_RETURN_FARE, behavior)) {
+							content = String.format(
+								"您已退回對方給您的 💗 %d ME 點",
+								Math.abs(points)
+							);
+						}
+						if (Objects.equals(BEHAVIOR_INVITE_ME_AS_LINE_FRIEND, behavior)) {
+							content = "您已接受給對方通訊軟體";
+						}
+						if (Objects.equals(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND, behavior)) {
+							content = "您已拒絕給對方通訊軟體";
+						}
+					}
+					if (Objects.equals(BEHAVIOR_PICTURES_VIEWABLE, behavior)) {
+						//"生活照授權"
+						content = "向對方要求生活照授權";
+					}
+					if (Objects.equals(BEHAVIOR_ACCEPT_PICTURES_VIEWABLE, behavior)) {
+						//"生活照允許"
+						content = "同意給對方看生活照";
+					}
+					if (Objects.equals(BEHAVIOR_REFUSE_PICTURES_VIEWABLE, behavior)) {
+						//"生活照不允許"
+						content = "不同意給對方看生活照";
+					}
+					if (Objects.equals(BEHAVIOR_RATE, behavior)) {
+						//"評價"
+						content = "您給對方評價";
+					}
+					identifier = passive.getIdentifier();
+					profileImage = String.format(
+						"https://%s/profileImage/%s",
+						Servant.STATIC_HOST,
+						passive.getProfileImage()
+					);
+					nickname = passive.getNickname();
+				} else {
+					if (isMale) {
+						eitherMatchedOrVip = loverService.areMatched(initiative, me);
+						unreads = historyRepository.
+							countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+								initiative,
+								me,
+								loverService.behaviorOfConversation()
+							);
+						if (Objects.equals(BEHAVIOR_ASK_FOR_FARE, behavior)) {
+							content = String.format(
+								"對方和您要求 💗 %d ME 點",
+								Math.abs(points)
+							);
+						}
+						if (Objects.equals(BEHAVIOR_RETURN_FARE, behavior)) {
+							content = String.format(
+								"對方退回您給的 💗 %d ME 點",
+								Math.abs(points)
+							);
+						}
+						if (Objects.equals(BEHAVIOR_INVITE_ME_AS_LINE_FRIEND, behavior)) {
+							content = "對方同意給您通訊軟體";
+						}
+						if (Objects.equals(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND, behavior)) {
+							content = "對方拒絕給您通訊軟體";
+						}
+					} else {
+						eitherMatchedOrVip = loverService.isVIP(initiative) || loverService.isVVIP(initiative);
+						unreads = historyRepository.
+							countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+								initiative,
+								me,
+								loverService.behaviorOfConversation()
+							);
+						if (Objects.equals(BEHAVIOR_FARE, behavior)) {
+							content = String.format(
+								"對方給了您 💗 %d ME 點",
+								Math.abs(points)
+							);
+						}
+						if (Objects.equals(BEHAVIOR_GIMME_YOUR_LINE_INVITATION, behavior)) {
+							content = "收到加入好友邀請";
+						}
+						if (Objects.equals(BEHAVIOR_LAI_KOU_DIAN, behavior)) {
+							content = "對方已開啟了您的通訊軟體QRcode";
+						}
+					}
+					if (Objects.equals(BEHAVIOR_PICTURES_VIEWABLE, behavior)) {
+						//"生活照授權"
+						content = "對方向您要求生活照授權";
+					}
+					if (Objects.equals(BEHAVIOR_ACCEPT_PICTURES_VIEWABLE, behavior)) {
+						//"生活照允許"
+						content = "對方同意給您看生活照";
+					}
+					if (Objects.equals(BEHAVIOR_REFUSE_PICTURES_VIEWABLE, behavior)) {
+						//"生活照不允許"
+						content = "對方不同意給您看生活照";
+					}
+					if (Objects.equals(BEHAVIOR_RATE, behavior)) {
+						//"評價"
+						content = "對方給您評價";
+					}
+					identifier = initiative.getIdentifier();
+					profileImage = String.format(
+						"https://%s/profileImage/%s",
+						Servant.STATIC_HOST,
+						initiative.getProfileImage()
+					);
+					nickname = initiative.getNickname();
+				}//if;else
+				j.put(
+					"identifier",
+					identifier.toString()
+				).put(
+					"profileImage",
+					profileImage
+				).put(
+					"nickname",
+					nickname
+				);
+
+				if (Objects.equals(BEHAVIOR_CHAT_MORE, behavior) || Objects.equals(BEHAVIOR_GREETING, behavior) || Objects.equals(BEHAVIOR_GROUP_GREETING, behavior)) {
+					//"聊聊"、"打招呼"、"群发"等行为则捞招呼语
+					content = history.getGreeting();
+				}
+				j.put(
+					"content",
+					content
+				).put(
+					"occurredTime",
+					calculateOccurredTime(history.getOccurred())
+				).put(
+					"isMatchedOrIsVip",
+					eitherMatchedOrVip.toString()
+				);
+
+				if (unreads > 0) {
+					//未读数
+					j.put(
+						"notSeenCount",
+						Integer.toString(unreads)
+					);
+				}
+				array.put(j);
+			}//for
+		}
+		return array;
 	}
 
 	@SuppressWarnings("UnusedAssignment")
@@ -492,7 +532,7 @@ public class WebSocketService {
 			findByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
 				chatPartner,
 				me,
-				loverService.behaviorOfConversation(me)
+				loverService.behaviorOfConversation()
 			);
 		for (History history : unreadMessages) {
 			history.setSeen(new Date(System.currentTimeMillis()));
@@ -534,63 +574,18 @@ public class WebSocketService {
 			male = chatPartner;
 		}
 
+		/**
+		 * 已是好友
+		 */
 		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
-		// '給我賴'的行為甜心還沒回應
-		if (Objects.nonNull(lineGiven) && Objects.isNull(lineGiven.getResponse())) {
-			// 甜心的接受拒絕按鈕
-			if (!gender) {
-				documentElement.setAttribute(
-					"decideBtn",
-					null
-				);
-			}
-			// 男士等待甜心回應
-			if (gender) {
-				documentElement.setAttribute(
-					"waitingForRes",
-					null
-				);
-			}
-		}
-		// 男士要求通訊軟體的按鈕
-		// 離上一次拒絕不到12小時
-		History refuseHistory = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(female, male, BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
-		if (Objects.isNull(lineGiven) || (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse())
-			&& Objects.nonNull(refuseHistory) && !historyService.within12hrsFromLastRefused(refuseHistory) && !lineGiven.getResponse())) {
-			documentElement.setAttribute(
-				"reqSocialMediaBtn",
-				null
-			);
-		}
-
 		if (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse()) && lineGiven.getResponse()) {
 			documentElement.setAttribute(
 				"addLineBtn",
 				null
 			);
-			Long count = historyRepository.countByInitiativeAndPassiveAndBehavior(male, female, BEHAVIOR_LAI_KOU_DIAN);
-			if ((loverService.isVIP(male) || loverService.isVVIP(male)) && (count < 1 && !historyService.withinRequiredLimit(male))) {
-				documentElement.setAttribute(
-					"remindDeduct",
-					null
-				);
-			}
-			if (gender && Objects.isNull(
-				historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(male, female, BEHAVIOR_RATE))) {
-				documentElement.setAttribute(
-					"rateBtn",
-					null
-				);
-			}
-			if (!gender && Objects.isNull(
-				historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(female, male, BEHAVIOR_RATE))) {
-				documentElement.setAttribute(
-					"rateBtn",
-					null
-				);
-			}
 		}
 
+		// 女生可無限傳訊息
 		if (!gender) {
 			documentElement.setAttribute(
 				"able",
@@ -647,217 +642,6 @@ public class WebSocketService {
 		return document;
 	}
 
-	public Document inbox(Lover me, Document document) {
-		Element documentElement = document.getDocumentElement();
-
-		boolean isMale = me.getGender();
-
-		List<History> conversations = historyService.latestConversations(me);
-		Integer friendlyOrVipUnreads = 0,//好友或贵宾的未读总数
-			unfriendlyOrNonVipUnreads = 0;//非好友或非贵宾的未读总数
-		for (History history : conversations) {
-			Element conversationElement = document.createElement("conversation");
-			documentElement.appendChild(conversationElement);
-
-			Short points = history.getPoints();
-			Behavior behavior = history.getBehavior();
-			Lover initiative = history.getInitiative(),
-				passive = history.getPassive();
-
-			UUID identifier = null;
-			String profileImage = null;
-			String nickname = null;
-			String content = null;
-			Boolean eitherMatchedOrVip = null;
-			int unreads = 0;//某个人的未读讯息数
-			final Collection<Behavior> BEHAVIORS_OF_MALE = Arrays.
-				asList(
-					new History.Behavior[]{
-						BEHAVIOR_CHAT_MORE,
-						BEHAVIOR_FARE,
-						BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
-						BEHAVIOR_LAI_KOU_DIAN
-					}
-				);
-			final Collection<Behavior> BEHAVIORS_OF_FEMALE = Arrays.
-				asList(
-					new History.Behavior[]{
-						BEHAVIOR_GREETING,
-						BEHAVIOR_GROUP_GREETING,
-						BEHAVIOR_ASK_FOR_FARE,
-						BEHAVIOR_INVITE_ME_AS_LINE_FRIEND,
-						BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND
-					}
-				);
-			if (Objects.equals(me, initiative)) {
-				if (isMale) {
-					//双方是否有加过通信软件
-					eitherMatchedOrVip = loverService.areMatched(
-						passive,
-						me
-					);
-
-					//未读信息数量
-					unreads = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
-						passive,
-						me,
-						BEHAVIORS_OF_FEMALE
-					);
-
-					if (Objects.equals(BEHAVIOR_FARE, behavior)) {
-						content = String.format(
-							"您已給 💗 %d ME 點",
-							Math.abs(points)
-						);
-					}
-					if (Objects.equals(BEHAVIOR_GIMME_YOUR_LINE_INVITATION, behavior)) {
-						content = "您已發出要求通訊軟體";
-					}
-					if (Objects.equals(BEHAVIOR_LAI_KOU_DIAN, behavior)) {
-						content = "您開啟了對方的通訊軟體QRcode";
-					}
-				} else {
-					eitherMatchedOrVip = loverService.isVIP(passive) || loverService.isVVIP(passive);
-					unreads = historyRepository.
-						countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
-							passive,
-							me,
-							BEHAVIORS_OF_MALE
-						);
-					if (Objects.equals(BEHAVIOR_ASK_FOR_FARE, behavior)) {
-						content = String.format(
-							"您已和對方要求 💗 %d ME 點",
-							Math.abs(points)
-						);
-					}
-					if (Objects.equals(BEHAVIOR_INVITE_ME_AS_LINE_FRIEND, behavior)) {
-						content = "您已接受給對方通訊軟體";
-					}
-					if (Objects.equals(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND, behavior)) {
-						content = "您已拒絕給對方通訊軟體";
-					}
-				}
-				identifier = passive.getIdentifier();
-				profileImage = String.format(
-					"https://%s/profileImage/%s",
-					Servant.STATIC_HOST,
-					passive.getProfileImage()
-				);
-				nickname = passive.getNickname();
-			} else {
-				if (isMale) {
-					eitherMatchedOrVip = loverService.areMatched(initiative, me);
-					unreads = historyRepository.
-						countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
-							initiative,
-							me,
-							BEHAVIORS_OF_FEMALE
-						);
-					if (Objects.equals(BEHAVIOR_ASK_FOR_FARE, behavior)) {
-						content = String.format(
-							"對方和您要求 💗 %d ME 點",
-							Math.abs(points)
-						);
-					}
-					if (Objects.equals(BEHAVIOR_INVITE_ME_AS_LINE_FRIEND, behavior)) {
-						content = "對方同意給您通訊軟體";
-					}
-					if (Objects.equals(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND, behavior)) {
-						content = "對方拒絕給您通訊軟體";
-					}
-				} else {
-					eitherMatchedOrVip = loverService.isVIP(initiative) || loverService.isVVIP(initiative);
-					unreads = historyRepository.
-						countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
-							initiative,
-							me,
-							BEHAVIORS_OF_MALE
-						);
-					if (Objects.equals(BEHAVIOR_FARE, behavior)) {
-						content = String.format(
-							"對方給了您 💗 %d ME 點",
-							Math.abs(points)
-						);
-					}
-					if (Objects.equals(BEHAVIOR_GIMME_YOUR_LINE_INVITATION, behavior)) {
-						content = "收到加入好友邀請";
-					}
-					if (Objects.equals(BEHAVIOR_LAI_KOU_DIAN, behavior)) {
-						content = "對方已開啟了您的通訊軟體QRcode";
-					}
-				}
-				identifier = initiative.getIdentifier();
-				profileImage = String.format(
-					"https://%s/profileImage/%s",
-					Servant.STATIC_HOST,
-					initiative.getProfileImage()
-				);
-				nickname = initiative.getNickname();
-			}//if;else
-			conversationElement.setAttribute(
-				"identifier",
-				identifier.toString()
-			);
-			conversationElement.setAttribute(
-				"profileImage",
-				profileImage
-			);
-			conversationElement.setAttribute(
-				"nickname",
-				nickname
-			);
-
-			if (Objects.equals(BEHAVIOR_CHAT_MORE, behavior) || Objects.equals(BEHAVIOR_GREETING, behavior) || Objects.equals(BEHAVIOR_GROUP_GREETING, behavior)) {
-				//"聊聊"、"打招呼"、"群发"等行为则捞招呼语
-				content = history.getGreeting();
-			}
-			conversationElement.setAttribute(
-				"content",
-				content
-			);
-			conversationElement.setAttribute(
-				"occurredTime",
-				calculateOccurredTime(history.getOccurred())
-			);//多久之前
-			conversationElement.setAttribute(
-				"isMatchedOrIsVip",
-				eitherMatchedOrVip.toString()
-			);
-
-			if (eitherMatchedOrVip) {
-				friendlyOrVipUnreads += unreads;
-			} else {
-				unfriendlyOrNonVipUnreads += unreads;
-			}
-
-			if (unreads > 0) {
-				//未读数
-				conversationElement.setAttribute(
-					"notSeenCount",
-					Integer.toString(unreads)
-				);
-			}
-		}//for
-
-		if (friendlyOrVipUnreads > 0) {
-			//好友或贵宾的未读总数
-			documentElement.setAttribute(
-				"matchedOrVipNotSeenCount",
-				friendlyOrVipUnreads.toString()
-			);
-		}
-
-		if (unfriendlyOrNonVipUnreads > 0) {
-			//非好友或非贵宾的未读总数
-			documentElement.setAttribute(
-				"notMatchedOrNotVipNotSeenCount",
-				unfriendlyOrNonVipUnreads.toString()
-			);
-		}
-
-		return document;
-	}
-
 	public boolean lessThan3MsgsWithin12Hrs(Lover male, Lover female) {
 		int msgsCount = msgsCountWithin12Hrs(male, female);
 		return msgsCount < 3;
@@ -903,159 +687,205 @@ public class WebSocketService {
 	}
 
 	@SuppressWarnings({"UnusedAssignment", "null"})
-	public JSONObject updateInbox(Lover lover) {
-		JSONArray jsonArrayForList = new JSONArray();
-		boolean isMale = lover.getGender();
-		List<History> conversation = historyService.latestConversations(lover);
-
-		// 好友或VIP的未讀總數
-		int matchedOrVipNotSeenCount = 0;
-		// 非好友或非VIP的未讀總數
-		int notMatchedOrNotVipNotSeenCount = 0;
-		for (History history : conversation) {
-			JSONObject json = new JSONObject();
-
-			String identifier = null;
-			String profileImage = null;
-			String nickname = null;
-			String content = null;
-			Boolean isMatchedOrIsVip = null;
-			// 某個人的未讀訊息數
-			int notSeenCount = 0;
-			Collection<Behavior> BEHAVIORS_OF_MALE = Arrays.asList(new History.Behavior[]{
-				BEHAVIOR_CHAT_MORE,
-				BEHAVIOR_FARE,
-				BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
-				BEHAVIOR_LAI_KOU_DIAN
-			});
-			Collection<Behavior> BEHAVIORS_OF_FEMALE = Arrays.asList(new History.Behavior[]{
-				BEHAVIOR_GREETING,
-				BEHAVIOR_GROUP_GREETING,
-				BEHAVIOR_ASK_FOR_FARE,
-				BEHAVIOR_INVITE_ME_AS_LINE_FRIEND,
-				BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND
-			});
-			if (Objects.equals(lover, history.getInitiative())) {
-				if (isMale) {
-					// 雙方是否有加過通訊軟體
-					isMatchedOrIsVip = loverService.areMatched(history.getPassive(), lover);
-					// 未讀訊息數量
-					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), lover, BEHAVIORS_OF_FEMALE);
-					if (Objects.equals(history.getBehavior(), BEHAVIOR_FARE)) {
-						content = String.format(
-							"您已給 💗 %d ME 點",
-							Math.abs(history.getPoints())
-						);
-					}
-					if (Objects.equals(history.getBehavior(), BEHAVIOR_GIMME_YOUR_LINE_INVITATION)) {
-						content = "您已發出要求通訊軟體";
-					}
-					if (Objects.equals(history.getBehavior(), BEHAVIOR_LAI_KOU_DIAN)) {
-						content = "您開啟了對方的通訊軟體QRcode";
-					}
-				}
-				if (!isMale) {
-					isMatchedOrIsVip = loverService.isVIP(history.getPassive()) || loverService.isVVIP(history.getPassive());
-					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getPassive(), lover, BEHAVIORS_OF_MALE);
-					if (Objects.equals(history.getBehavior(), BEHAVIOR_ASK_FOR_FARE)) {
-						content = String.format(
-							"您已和對方要求 💗 %d ME 點",
-							Math.abs(history.getPoints())
-						);
-					}
-					if (Objects.equals(history.getBehavior(), BEHAVIOR_INVITE_ME_AS_LINE_FRIEND)) {
-						content = "您已接受給對方通訊軟體";
-					}
-					if (Objects.equals(history.getBehavior(), BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND)) {
-						content = "您已拒絕給對方通訊軟體";
-					}
-				}
-				identifier = history.getPassive().getIdentifier().toString();
-				profileImage = String.format(
-					"https://%s/profileImage/%s",
-					Servant.STATIC_HOST,
-					history.getPassive().getProfileImage()
-				);
-				nickname = history.getPassive().getNickname();
-			} else {
-				if (isMale) {
-					isMatchedOrIsVip = loverService.areMatched(history.getInitiative(), lover);
-					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), lover, BEHAVIORS_OF_FEMALE);
-					if (Objects.equals(history.getBehavior(), BEHAVIOR_ASK_FOR_FARE)) {
-						content = String.format(
-							"對方和您要求 💗 %d ME 點",
-							Math.abs(history.getPoints())
-						);
-					}
-					if (Objects.equals(history.getBehavior(), BEHAVIOR_INVITE_ME_AS_LINE_FRIEND)) {
-						content = "對方同意給您通訊軟體";
-					}
-					if (Objects.equals(history.getBehavior(), BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND)) {
-						content = "對方拒絕給您通訊軟體";
-					}
-				}
-				if (!isMale) {
-					isMatchedOrIsVip = loverService.isVIP(history.getInitiative()) || loverService.isVVIP(history.getInitiative());
-					notSeenCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(history.getInitiative(), lover, BEHAVIORS_OF_MALE);
-					if (Objects.equals(history.getBehavior(), BEHAVIOR_FARE)) {
-						content = String.format(
-							"對方給了您 💗 %d ME 點",
-							Math.abs(history.getPoints())
-						);
-					}
-					if (Objects.equals(history.getBehavior(), BEHAVIOR_GIMME_YOUR_LINE_INVITATION)) {
-						content = "收到加入好友邀請";
-					}
-					if (Objects.equals(history.getBehavior(), BEHAVIOR_LAI_KOU_DIAN)) {
-						content = "對方已開啟了您的通訊軟體QRcode";
-					}
-				}
-				identifier = history.getInitiative().getIdentifier().toString();
-				profileImage = String.format(
-					"https://%s/profileImage/%s",
-					Servant.STATIC_HOST,
-					history.getInitiative().getProfileImage()
-				);
-				nickname = history.getInitiative().getNickname();
-			}
-			json.put("identifier", identifier);
-			json.put("profileImage", profileImage);
-			json.put("nickname", nickname);
-			// 若是"聊聊"、"打招呼"、"群發"行為就直接 getGreeting()
-			if (Objects.equals(history.getBehavior(), BEHAVIOR_CHAT_MORE) || Objects.equals(history.getBehavior(), BEHAVIOR_GREETING)
-				|| Objects.equals(history.getBehavior(), BEHAVIOR_GROUP_GREETING)) {
-				content = history.getGreeting();
-			}
-			json.put("content", content);
-			json.put("occurredTime", calculateOccurredTime(history.getOccurred()));
-			json.put("isMatchedOrIsVip", isMatchedOrIsVip.toString());
-			if (isMatchedOrIsVip) {
-				matchedOrVipNotSeenCount += notSeenCount;
-			} else {
-				notMatchedOrNotVipNotSeenCount += notSeenCount;
-			}
-			if (notSeenCount > 0) {
-				json.put("notSeenCount", Integer.toString(notSeenCount));
-			}
-			jsonArrayForList.put(json);
-
-		}
-		JSONObject jSONObject = new JSONObject();
-		jSONObject.put(
-			"chatList",
-			jsonArrayForList
+	public JSONObject updateInbox(Lover me, Lover freind) {
+		boolean isMale = me.getGender();
+		History history = historyService.lastConversation(
+			me,
+			freind
 		);
-		if (matchedOrVipNotSeenCount > 0) {
-			jSONObject.put(
-				"matchedOrVipNotSeenCount",
-				Integer.toString(matchedOrVipNotSeenCount)
-			);
-		}
+		JSONObject jSONObject = new JSONObject();
 
-		if (notMatchedOrNotVipNotSeenCount > 0) {
+		Short points = history.getPoints();
+		Behavior behavior = history.getBehavior();
+		Lover initiative = history.getInitiative(),
+			passive = history.getPassive();
+
+		UUID identifier = null;
+		String profileImage = null;
+		String nickname = null;
+		String content = null;
+		Boolean eitherMatchedOrVip = null;
+		int unreads = 0;//某个人的未读讯息数
+		if (Objects.equals(me, initiative)) {
+			if (isMale) {
+				//双方是否有加过通信软件
+				eitherMatchedOrVip = loverService.areMatched(
+					passive,
+					me
+				);
+
+				//未读信息数量
+				unreads = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+					passive,
+					me,
+					loverService.behaviorOfConversation()
+				);
+
+				if (Objects.equals(BEHAVIOR_FARE, behavior)) {
+					content = String.format(
+						"您已給 💗 %d ME 點",
+						Math.abs(points)
+					);
+				}
+				if (Objects.equals(BEHAVIOR_GIMME_YOUR_LINE_INVITATION, behavior)) {
+					content = "您已發出要求通訊軟體";
+				}
+				if (Objects.equals(BEHAVIOR_LAI_KOU_DIAN, behavior)) {
+					content = "您開啟了對方的通訊軟體QRcode";
+				}
+			} else {
+				eitherMatchedOrVip = loverService.isVIP(passive) || loverService.isVVIP(passive);
+				unreads = historyRepository.
+					countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+						passive,
+						me,
+						loverService.behaviorOfConversation()
+					);
+				if (Objects.equals(BEHAVIOR_ASK_FOR_FARE, behavior)) {
+					content = String.format(
+						"您已和對方要求 💗 %d ME 點",
+						Math.abs(points)
+					);
+				}
+				if (Objects.equals(BEHAVIOR_RETURN_FARE, behavior)) {
+					content = String.format(
+						"您已退回對方給您的 💗 %d ME 點",
+						Math.abs(points)
+					);
+				}
+				if (Objects.equals(BEHAVIOR_INVITE_ME_AS_LINE_FRIEND, behavior)) {
+					content = "您已接受給對方通訊軟體";
+				}
+				if (Objects.equals(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND, behavior)) {
+					content = "您已拒絕給對方通訊軟體";
+				}
+			}
+			if (Objects.equals(BEHAVIOR_PICTURES_VIEWABLE, behavior)) {
+				//"生活照授權"
+				content = "向對方要求生活照授權";
+			}
+			if (Objects.equals(BEHAVIOR_ACCEPT_PICTURES_VIEWABLE, behavior)) {
+				//"生活照允許"
+				content = "同意給對方看生活照";
+			}
+			if (Objects.equals(BEHAVIOR_REFUSE_PICTURES_VIEWABLE, behavior)) {
+				//"生活照不允許"
+				content = "不同意給對方看生活照";
+			}
+			if (Objects.equals(BEHAVIOR_RATE, behavior)) {
+				//"評價"
+				content = "您給對方評價";
+			}
+			identifier = passive.getIdentifier();
+			profileImage = String.format(
+				"https://%s/profileImage/%s",
+				Servant.STATIC_HOST,
+				passive.getProfileImage()
+			);
+			nickname = passive.getNickname();
+		} else {
+			if (isMale) {
+				eitherMatchedOrVip = loverService.areMatched(initiative, me);
+				unreads = historyRepository.
+					countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+						initiative,
+						me,
+						loverService.behaviorOfConversation()
+					);
+				if (Objects.equals(BEHAVIOR_ASK_FOR_FARE, behavior)) {
+					content = String.format(
+						"對方和您要求 💗 %d ME 點",
+						Math.abs(points)
+					);
+				}
+				if (Objects.equals(BEHAVIOR_RETURN_FARE, behavior)) {
+					content = String.format(
+						"對方退回您給的 💗 %d ME 點",
+						Math.abs(points)
+					);
+				}
+				if (Objects.equals(BEHAVIOR_INVITE_ME_AS_LINE_FRIEND, behavior)) {
+					content = "對方同意給您通訊軟體";
+				}
+				if (Objects.equals(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND, behavior)) {
+					content = "對方拒絕給您通訊軟體";
+				}
+			} else {
+				eitherMatchedOrVip = loverService.isVIP(initiative) || loverService.isVVIP(initiative);
+				unreads = historyRepository.
+					countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
+						initiative,
+						me,
+						loverService.behaviorOfConversation()
+					);
+				if (Objects.equals(BEHAVIOR_FARE, behavior)) {
+					content = String.format(
+						"對方給了您 💗 %d ME 點",
+						Math.abs(points)
+					);
+				}
+				if (Objects.equals(BEHAVIOR_GIMME_YOUR_LINE_INVITATION, behavior)) {
+					content = "收到加入好友邀請";
+				}
+				if (Objects.equals(BEHAVIOR_LAI_KOU_DIAN, behavior)) {
+					content = "對方已開啟了您的通訊軟體QRcode";
+				}
+			}
+			if (Objects.equals(BEHAVIOR_PICTURES_VIEWABLE, behavior)) {
+				//"生活照授權"
+				content = "對方向您要求生活照授權";
+			}
+			if (Objects.equals(BEHAVIOR_ACCEPT_PICTURES_VIEWABLE, behavior)) {
+				//"生活照允許"
+				content = "對方同意給您看生活照";
+			}
+			if (Objects.equals(BEHAVIOR_REFUSE_PICTURES_VIEWABLE, behavior)) {
+				//"生活照不允許"
+				content = "對方不同意給您看生活照";
+			}
+			if (Objects.equals(BEHAVIOR_RATE, behavior)) {
+				//"評價"
+				content = "對方給您評價";
+			}
+			identifier = initiative.getIdentifier();
+			profileImage = String.format(
+				"https://%s/profileImage/%s",
+				Servant.STATIC_HOST,
+				initiative.getProfileImage()
+			);
+			nickname = initiative.getNickname();
+		}//if;else
+		jSONObject.put(
+			"identifier",
+			identifier.toString()
+		).put(
+			"profileImage",
+			profileImage
+		).put(
+			"nickname",
+			nickname
+		);
+
+		if (Objects.equals(BEHAVIOR_CHAT_MORE, behavior) || Objects.equals(BEHAVIOR_GREETING, behavior) || Objects.equals(BEHAVIOR_GROUP_GREETING, behavior)) {
+			//"聊聊"、"打招呼"、"群发"等行为则捞招呼语
+			content = history.getGreeting();
+		}
+		jSONObject.put(
+			"content",
+			content
+		).put(
+			"occurredTime",
+			calculateOccurredTime(history.getOccurred())
+		).put(
+			"isMatchedOrIsVip",
+			eitherMatchedOrVip.toString()
+		);
+
+		if (unreads > 0) {
+			//未读数
 			jSONObject.put(
-				"notMatchedOrNotVipNotSeenCount",
-				Integer.toString(notMatchedOrNotVipNotSeenCount)
+				"notSeenCount",
+				Integer.toString(unreads)
 			);
 		}
 		return jSONObject;

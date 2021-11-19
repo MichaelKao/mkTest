@@ -3039,9 +3039,6 @@ public class LoverService {
 		List<Behavior> behaviors = new ArrayList<>();
 		behaviors.add(BEHAVIOR_CERTIFICATION_SUCCESS);
 		behaviors.add(BEHAVIOR_CERTIFICATION_FAIL);
-		// 聊天室做完後拿掉**************
-		behaviors.add(BEHAVIOR_PICTURES_VIEWABLE);
-		behaviors.add(BEHAVIOR_ACCEPT_PICTURES_VIEWABLE);
 		behaviors.add(BEHAVIOR_RATE);
 		behaviors.add(BEHAVIOR_FOLLOW);
 		behaviors.add(BEHAVIOR_PEEK);
@@ -3830,35 +3827,11 @@ public class LoverService {
 	 * @return
 	 */
 	public int unreadMessages(Lover mofo) {
-		int unreadCount = 0;
-		List<History> conversations = historyService.latestConversations(mofo);
-		Collection<Behavior> behaviors = behaviorOfConversation(mofo);
-
-		for (History history : conversations) {
-			boolean isInitiative = Objects.equals(
+		int unreadCount = historyRepository.
+			countByPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
 				mofo,
-				history.getInitiative()
-			), isPassive = Objects.equals(
-				mofo,
-				history.getPassive()
+				behaviorOfConversation()
 			);
-			long unreadPassiveMessagesCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
-				history.getInitiative(),
-				mofo,
-				behaviors
-			), unreadInitiativeMessagesCount = historyRepository.countByInitiativeAndPassiveAndBehaviorInAndSeenNullOrderByOccurredDesc(
-				history.getInitiative(),
-				mofo,
-				behaviors
-			);
-
-			if (isInitiative && unreadPassiveMessagesCount > 0) {
-				unreadCount += unreadPassiveMessagesCount;
-			}
-			if (isPassive && unreadInitiativeMessagesCount > 0) {
-				unreadCount += unreadInitiativeMessagesCount;
-			}
-		}
 		return unreadCount;
 	}
 
@@ -3868,23 +3841,20 @@ public class LoverService {
 	 * @param lover
 	 * @return
 	 */
-	public Collection<Behavior> behaviorOfConversation(Lover lover) {
-		if (lover.getGender()) {
-			return Arrays.asList(new History.Behavior[]{
-				BEHAVIOR_GREETING,
-				BEHAVIOR_GROUP_GREETING,
-				BEHAVIOR_ASK_FOR_FARE,
-				BEHAVIOR_INVITE_ME_AS_LINE_FRIEND,
-				BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND
-			});
-		} else {
-			return Arrays.asList(new History.Behavior[]{
-				BEHAVIOR_CHAT_MORE,
-				BEHAVIOR_FARE,
-				BEHAVIOR_GIMME_YOUR_LINE_INVITATION,
-				BEHAVIOR_LAI_KOU_DIAN
-			});
-		}
+	public List<Behavior> behaviorOfConversation() {
+		List<Behavior> behaviors = new ArrayList<>();
+		behaviors.add(BEHAVIOR_GREETING);
+		behaviors.add(BEHAVIOR_GROUP_GREETING);
+		behaviors.add(BEHAVIOR_CHAT_MORE);
+		behaviors.add(BEHAVIOR_FARE);
+		behaviors.add(BEHAVIOR_ASK_FOR_FARE);
+		behaviors.add(BEHAVIOR_RETURN_FARE);
+		behaviors.add(BEHAVIOR_INVITE_ME_AS_LINE_FRIEND);
+		behaviors.add(BEHAVIOR_REFUSE_TO_BE_LINE_FRIEND);
+		behaviors.add(BEHAVIOR_GIMME_YOUR_LINE_INVITATION);
+		behaviors.add(BEHAVIOR_PICTURES_VIEWABLE);
+		behaviors.add(BEHAVIOR_ACCEPT_PICTURES_VIEWABLE);
+		return behaviors;
 	}
 
 	/**
@@ -4385,5 +4355,19 @@ public class LoverService {
 			withResponse(true).
 			withResult(blacklist.getBlocked().getNickname()).
 			toJSONObject();
+	}
+
+	/**
+	 * 是否為小編
+	 *
+	 * @param lover
+	 * @return
+	 */
+	public Boolean isCustomerService(Lover lover) {
+		int count = privilegeRepository.countByLoverAndRole(
+			lover,
+			roleRepository.findOneByTextualRepresentation("ROLE_XIAOBIAN")
+		);
+		return count > 0 ? Boolean.TRUE : Boolean.FALSE;
 	}
 }
