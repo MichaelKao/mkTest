@@ -1221,7 +1221,7 @@ public class HistoryService {
 		}
 
 		Long mePoints = historyRepository.sumByInitiativeHearts(lover);
-		if (Objects.nonNull(mePoints)) {
+		if (Objects.isNull(mePoints)) {
 			mePoints = 0L;
 		}
 
