@@ -180,10 +180,10 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/")
 	ModelAndView index(
-		@CookieValue(defaultValue = "", name = "vipPage") String vipPage,
-		@CookieValue(defaultValue = "", name = "reliefPage") String reliefPage,
-		@CookieValue(defaultValue = "", name = "activePage") String activePage,
-		@CookieValue(defaultValue = "", name = "registerPage") String registerPage,
+		@CookieValue(defaultValue = "0", name = "vipPage") int vipPage,
+		@CookieValue(defaultValue = "0", name = "reliefPage") int reliefPage,
+		@CookieValue(defaultValue = "0", name = "activePage") int activePage,
+		@CookieValue(defaultValue = "0", name = "registerPage") int registerPage,
 		Authentication authentication,
 		Locale locale
 	) throws IOException {
@@ -196,7 +196,7 @@ public class WelcomeController {
 		));
 
 		/*
-		 未登入状态下
+		 登入状态下
 		 */
 		if (!servant.isNull(authentication)) {
 			Lover me = loverService.loadByUsername(
@@ -265,7 +265,7 @@ public class WelcomeController {
 					null
 				);
 			}//有无连动 LINE Notify
-		}//if(未登入状态下)
+		}//if(登入状态下)
 
 		ModelAndView modelAndView = new ModelAndView("index");
 		modelAndView.getModelMap().addAttribute(document);

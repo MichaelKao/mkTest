@@ -274,6 +274,9 @@ public class LoverService {
 	@Value("classpath:sql/甜心可群發的對象.sql")
 	private Resource groupGreetingList;
 
+	@Value("classpath:sql/男仕贵宾会员.sql")
+	private Resource vvipOnTheWall;
+
 	@Autowired
 	private TrialCodeRepository trialCodeRepository;
 
@@ -3160,57 +3163,53 @@ public class LoverService {
 	 * @param locale
 	 * @return
 	 */
-	public Document indexDocument(Document document, Lover lover, String vipPage, String reliefPage, String activePage, String registerPage, Locale locale) {
+	public Document indexDocument(Document document, Lover lover, int vipPage, int reliefPage, int activePage, int registerPage, Locale locale) {
 		Element documentElement = document.getDocumentElement();
 
 		Element areaElement = document.createElement("area");
 		documentElement.appendChild(areaElement);
 
-		int vipPageNum = !vipPage.isBlank() ? Integer.parseInt(vipPage) : 0;
 		if (!lover.getGender()) {
 			areaElement.appendChild(createElement(
 				document.createElement("vip"),
 				lover,
 				vipOnTheWall(
 					lover,
-					vipPageNum,
+					vipPage < 0 ? 0 : vipPage,
 					PAGE_SIZE_ON_THE_WALL
 				),
 				locale
 			));//甜心才会显示的贵宾会员列表区块
 		}
 
-		int reliefPageNum = !reliefPage.isBlank() ? Integer.parseInt(reliefPage) : 0;
 		areaElement.appendChild(createElement(
 			document.createElement("relief"),
 			lover,
 			relievingOnTheWall(
 				lover,
-				reliefPageNum,
+				reliefPage < 0 ? 0 : reliefPage,
 				PAGE_SIZE_ON_THE_WALL
 			),
 			locale
 		));//安心认证列表区块
 
-		int activePageNum = !activePage.isBlank() ? Integer.parseInt(activePage) : 0;
 		areaElement.appendChild(createElement(
 			document.createElement("active"),
 			lover,
 			latestActiveOnTheWall(
 				lover,
-				activePageNum,
+				activePage < 0 ? 0 : activePage,
 				PAGE_SIZE_ON_THE_WALL
 			),
 			locale
 		));//最近活跃列表区块
 
-		int registerPageNum = !registerPage.isBlank() ? Integer.parseInt(registerPage) : 0;
 		areaElement.appendChild(createElement(
 			document.createElement("register"),
 			lover,
 			latestRegisteredOnTheWall(
 				lover,
-				registerPageNum,
+				registerPage < 0 ? 0 : registerPage,
 				PAGE_SIZE_ON_THE_WALL
 			),
 			locale
@@ -3435,20 +3434,40 @@ public class LoverService {
 	}
 
 	/**
-	 * @param someone 用户号
+	 * @param mofo 用户号
 	 * @param p 第几页
 	 * @param s 每页几笔
-	 * @return 貴賓男士们
+	 * @return 貴賓们(男士)
 	 */
 	@Transactional(readOnly = true)
-	public Page<Lover> vipOnTheWall(Lover someone, int p, int s) {
+	public Page<Lover> vipOnTheWall(Lover mofo, int p, int s) {
 		return loverRepository.findAll(
 			LoverSpecification.vipOnTheWall(
-				someone,
-				new HashSet<>(getExceptions(someone))
+				mofo,
+				new HashSet<>(getExceptions(mofo))
 			),
 			PageRequest.of(p, s)
 		);
+		//try {
+		//	List<Integer> ids = jdbcTemplate.query(
+		//		FileCopyUtils.copyToString(new InputStreamReader(
+		//			vvipOnTheWall.getInputStream(),
+		//			Servant.UTF_8
+		//		)),
+		//		(ps) -> {
+		//			ps.setInt(1, mofo.getId());
+		//			ps.setInt(2, mofo.getId());
+		//		},
+		//		(resultSet, rowNum) -> resultSet.getInt("id")
+		//	);
+		//
+		//	return loverRepository.findByIdIn(
+		//		ids,
+		//		PageRequest.of(p, s)
+		//	);
+		//} catch (IOException ignore) {
+		//	return Page.empty();
+		//}
 	}
 
 	@Data
