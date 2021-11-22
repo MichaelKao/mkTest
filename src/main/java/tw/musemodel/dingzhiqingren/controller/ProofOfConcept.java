@@ -56,6 +56,9 @@ public class ProofOfConcept {
 	@Value("classpath:sql/男仕贵宾会员.sql")
 	private Resource vvipOnTheWall;
 
+	@Value("classpath:sql/安心认证.sql")
+	private Resource reliefOnTheWall;
+
 	@Autowired
 	private HistoryService historyService;
 
@@ -180,6 +183,69 @@ public class ProofOfConcept {
 		);
 	}
 
+	@GetMapping(path = "/relief/{lover:\\d+}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	void relief(
+		@PathVariable Lover lover,
+		@RequestParam(defaultValue = "1") int p,
+		@RequestParam(defaultValue = "10") int s,
+		@RequestParam(defaultValue = "10") int times
+	) throws IOException {
+		int total = 0;
+
+		for (int i = 0; i < times; i++) {
+			long since = System.currentTimeMillis();
+			loverRepository.findAll(
+				LoverSpecification.relievingOnTheWall(
+					lover,
+					new HashSet<>(
+						loverService.getExceptions(lover)
+					)
+				),
+				PageRequest.of(
+					p < 1 ? 0 : p - 1,
+					s
+				)
+			);
+			total += System.currentTimeMillis() - since;
+		}
+		int byLibrary = total / times;
+
+		total = 0;
+		for (int i = 0; i < times; i++) {
+			long since = System.currentTimeMillis();
+			loverRepository.findByIdIn(
+				jdbcTemplate.query(
+					FileCopyUtils.copyToString(new InputStreamReader(
+						reliefOnTheWall.getInputStream(),
+						Servant.UTF_8
+					)),
+					(ps) -> {
+						ps.setInt(1, lover.getId());
+						ps.setInt(2, lover.getId());
+					},
+					(resultSet, rowNum) -> resultSet.getInt("id")
+				),
+				PageRequest.of(
+					p < 1 ? 0 : p - 1,
+					s
+				)
+			);
+			total += System.currentTimeMillis() - since;
+		}
+		int byHand = total / times;
+
+		LineMessagingService.notifyDev(
+			Arrays.asList(new String[]{LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST}),
+			String.format(
+				"重复 %d 次安心%n懒人：平均 %d 毫秒%n手动：平均 %d 毫秒",
+				times,
+				byLibrary,
+				byHand
+			)
+		);
+	}
+
 	@GetMapping(path = "/vvip/{lover:\\d+}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	void vvip(
@@ -235,7 +301,8 @@ public class ProofOfConcept {
 		LineMessagingService.notifyDev(
 			Arrays.asList(new String[]{LineMessagingService.LINE_NOTIFY_ACCESS_TOKEN_FIRST}),
 			String.format(
-				"%n懶人：平均 %d 毫秒%n手動：平均 %d 毫秒",
+				"重复 %d 次贵宾男士%n懒人：平均 %d 毫秒%n人工：平均 %d 毫秒",
+				times,
 				byLibrary,
 				byHand
 			)
