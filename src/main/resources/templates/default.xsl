@@ -368,6 +368,7 @@
 		<SCRIPT crossorigin="anonymous" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"/>
 		<SCRIPT crossorigin="anonymous" integrity="sha512-yUNtg0k40IvRQNR20bJ4oH6QeQ/mgs9Lsa6V+3qxTj58u2r+JiAYOhOW0o+ijuMmqCtCEg7LZRA+T4t84/ayVA==" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.0/perfect-scrollbar.min.js"/>
 		<SCRIPT src="https://kit.fontawesome.com/5ed1767edc.js"/>
+		<SCRIPT src="/SCRIPT/default.js"/>
 		<SCRIPT src="/SCRIPT/soft-ui-dashboard.min.js"/>
 	</xsl:template>
 
@@ -471,6 +472,17 @@
 							</DIV>
 							<SPAN class="nav-link-text ms-1">聊天訊息報表</SPAN>
 						</A>
+					</LI>
+					<LI class="nav-item mt-2">
+						<SPAN class="ps-4 ms-2 text-xs font-weight-bolder text-primary">複製連結</SPAN>
+					</LI>
+					<LI class="nav-item">
+						<DIV class="nav-link cursor-pointer" id="copyMemberLink">
+							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
+								<I class="fal fa-copy text-lg text-dark"></I>
+							</DIV>
+							<DIV class="m-0 p-0 nav-link-text ms-1">會員資料</DIV>
+						</DIV>
 					</LI>
 				</UL>
 			</DIV>

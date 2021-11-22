@@ -27,6 +27,7 @@
 			<STYLE>.nav.nav-pills {background: #EDEDED;}</STYLE>
 		</HEAD>
 		<BODY class="g-sidenav-show bg-gray-100">
+			<xsl:call-template name="bootstrapToast"/>
 			<xsl:call-template name="dashSideNavBar"/>
 			<MAIN class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg ">
 				<xsl:call-template name="dashTopNavBar"/>
