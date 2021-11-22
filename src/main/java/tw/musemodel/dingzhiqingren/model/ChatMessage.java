@@ -5,129 +5,156 @@ package tw.musemodel.dingzhiqingren.model;
  */
 public class ChatMessage {
 
-        private String type;
+	private String type;
 
-        private String sender;
+	private String sender;
 
-        private String receiver;
+	private String receiver;
 
-        private String message;
+	private String message;
 
-        private String historyMsgs;
+	private String historyMsgs;
 
-        private String behavior;
+	private String behavior;
 
-        /**
-         * 要求車馬費的歷程 ID
-         */
-        private String id;
+	/**
+	 * 要求車馬費的歷程 ID
+	 */
+	private String id;
 
-        private String points;
+	private String points;
 
-        /**
-         * 12小時內發送訊息的次數
-         */
-        private int msgCount;
+	/**
+	 * 12小時內發送訊息的次數
+	 */
+	private int msgCount;
 
-        /**
-         * 是否可以退回車馬費
-         */
-        private Boolean ableToReturnFare;
+	/**
+	 * 是否可以退回車馬費
+	 */
+	private Boolean ableToReturnFare;
 
-        public ChatMessage() {
-        }
+	/**
+	 * 聊天訊息分頁
+	 */
+	private int page;
 
-        public ChatMessage(String type, String sender, String receiver, String message) {
-                super();
-                this.type = type;
-                this.sender = sender;
-                this.receiver = receiver;
-                this.message = message;
-        }
+	/**
+	 * 雙方好友狀態
+	 */
+	private String friendStatus;
 
-        public ChatMessage(String type, String historyMsgs) {
-                super();
-                this.type = type;
-                this.historyMsgs = historyMsgs;
-        }
+	public ChatMessage() {
+	}
 
-        public String getType() {
-                return type;
-        }
+	public ChatMessage(String type, String sender, String receiver, String message) {
+		super();
+		this.type = type;
+		this.sender = sender;
+		this.receiver = receiver;
+		this.message = message;
+	}
 
-        public void setType(String type) {
-                this.type = type;
-        }
+	public ChatMessage(String type, String historyMsgs, String friendStatus) {
+		super();
+		this.type = type;
+		this.historyMsgs = historyMsgs;
+		this.friendStatus = friendStatus;
+	}
 
-        public String getSender() {
-                return sender;
-        }
+	public String getType() {
+		return type;
+	}
 
-        public void setSender(String sender) {
-                this.sender = sender;
-        }
+	public void setType(String type) {
+		this.type = type;
+	}
 
-        public String getReceiver() {
-                return receiver;
-        }
+	public String getSender() {
+		return sender;
+	}
 
-        public void setReceiver(String receiver) {
-                this.receiver = receiver;
-        }
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
 
-        public String getMessage() {
-                return message;
-        }
+	public String getReceiver() {
+		return receiver;
+	}
 
-        public void setMessage(String message) {
-                this.message = message;
-        }
+	public void setReceiver(String receiver) {
+		this.receiver = receiver;
+	}
 
-        public String getHistoryMsgs() {
-                return historyMsgs;
-        }
+	public String getMessage() {
+		return message;
+	}
 
-        public void setHistoryMsgs(String historyMsgs) {
-                this.historyMsgs = historyMsgs;
-        }
+	public void setMessage(String message) {
+		this.message = message;
+	}
 
-        public int getMsgCount() {
-                return msgCount;
-        }
+	public String getHistoryMsgs() {
+		return historyMsgs;
+	}
 
-        public void setMsgCount(int msgCount) {
-                this.msgCount = msgCount;
-        }
+	public void setHistoryMsgs(String historyMsgs) {
+		this.historyMsgs = historyMsgs;
+	}
 
-        public String getBehavior() {
-                return behavior;
-        }
+	public int getMsgCount() {
+		return msgCount;
+	}
 
-        public void setBehavior(String behavior) {
-                this.behavior = behavior;
-        }
+	public void setMsgCount(int msgCount) {
+		this.msgCount = msgCount;
+	}
 
-        public String getPoints() {
-                return points;
-        }
+	public String getBehavior() {
+		return behavior;
+	}
 
-        public void setPoints(String points) {
-                this.points = points;
-        }
+	public void setBehavior(String behavior) {
+		this.behavior = behavior;
+	}
 
-        public String getId() {
-                return id;
-        }
+	public String getPoints() {
+		return points;
+	}
 
-        public void setId(String id) {
-                this.id = id;
-        }
+	public void setPoints(String points) {
+		this.points = points;
+	}
 
-        public Boolean getAbleToReturnFare() {
-                return ableToReturnFare;
-        }
+	public String getId() {
+		return id;
+	}
 
-        public void setAbleToReturnFare(Boolean ableToReturnFare) {
-                this.ableToReturnFare = ableToReturnFare;
-        }
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public Boolean getAbleToReturnFare() {
+		return ableToReturnFare;
+	}
+
+	public void setAbleToReturnFare(Boolean ableToReturnFare) {
+		this.ableToReturnFare = ableToReturnFare;
+	}
+
+	public int getPage() {
+		return page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	public String getFriendStatus() {
+		return friendStatus;
+	}
+
+	public void setFriendStatus(String friendStatus) {
+		this.friendStatus = friendStatus;
+	}
 }

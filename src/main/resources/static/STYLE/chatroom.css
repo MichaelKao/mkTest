@@ -8,7 +8,22 @@ body{
         left: 0;
         right: 0;
         z-index: 999;
-        bottom: 100px;
+        bottom: 98px;
+}
+
+.floatWrap {
+	background: #E9ECEFAA;
+}
+
+.bgBlack {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1040;
+	width: 100vw;
+	height: 100vh;
+	background-color: #000;
+	opacity: 0.5;
 }
 
 .maxWidth80 {
@@ -23,17 +38,8 @@ body{
         margin-bottom: 0;
 }
 
-.inboxLink {
-        position: absolute;
-        top: 0;
-        right: 0;
-        left: 0;
-        bottom: 0;
-        z-index: 1;
-}
-
 .conversationWrap {
-        border: 1px solid #D6338444;
+	border-bottom: 1px solid #252f4055;
 }
 
 .conversationWrap.active {
@@ -56,7 +62,7 @@ body{
         border-radius: 40px;
 }
 
-.tab-content {
+#listContent {
         overflow-x: hidden;
 }
 
@@ -91,7 +97,6 @@ body{
 .list{
         padding-top: 45px;
         background-color: #ebecf0;
-        border-radius: 3px;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
@@ -171,7 +176,7 @@ body{
 .showFromTheSide {
         display: block !important;
         position: absolute;
-        z-index: 1000;
+        z-index: 1045;
         height: 100%;
         width: 75%;
         transition: all 0.8s;
@@ -206,10 +211,13 @@ body{
         height: 60px;
 }
 
-@media (max-width: 991.9px){
+@media (max-width: 991.9px) {
         .list {
                 padding-top: 47.7px;
         }
+	.chatList>.list {
+		padding-top: 8px;
+	}
 }
 
 @media (min-width: 992px){

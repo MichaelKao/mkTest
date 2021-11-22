@@ -1147,7 +1147,7 @@ public class DashboardService {
 		webSocketServer.sendNotification(
 			male.getIdentifier().toString(),
 			String.format(
-				"%s退回您給的 ME 點!",
+				"inbox%s退回您給的 ME 點!",
 				female.getNickname()
 			));
 		if (loverService.hasLineNotify(male)) {

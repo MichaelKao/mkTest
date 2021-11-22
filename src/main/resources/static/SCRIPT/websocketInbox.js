@@ -52,11 +52,11 @@ $(document).ready(function () {
 					second.empty();
 					data.result.chatList.forEach(function (item) {
 						var conversationDiv = document.createElement('DIV');
-						$(conversationDiv).attr('class', 'card col-12 col-md-7 my-1 mx-auto conversationWrap position-relative shadow');
+						$(conversationDiv).attr('class', 'conversationWrap position-relative');
 						if (friend === item.identifier) {
-							$(conversationDiv).attr('class', 'card my-2 px-2 mx-auto conversationWrap position-relative shadow active');
+							$(conversationDiv).attr('class', 'conversationWrap position-relative active');
 						} else if (typeof (friend) !== 'undefined') {
-							$(conversationDiv).attr('class', 'card my-2 px-2 mx-auto conversationWrap position-relative shadow');
+							$(conversationDiv).attr('class', 'conversationWrap position-relative');
 						}
 						if (item.isMatchedOrIsVip === 'true') {
 							first.append(conversationDiv);
@@ -77,7 +77,7 @@ $(document).ready(function () {
 						var img = document.createElement('IMG');
 						$(img).attr({
 							'alt': '大頭照',
-							'class': 'rounded-circle',
+							'class': 'rounded-circle shadow',
 							'src': item.profileImage,
 							'width': '60px'
 						});
@@ -128,29 +128,6 @@ $(document).ready(function () {
 							$(notSeenDiv).append(notSeenCountSpan);
 						}
 					});
-
-					if (data.result.matchedOrVipNotSeenCount) {
-						var firstNotSeen = $('SPAN.firstNotSeen');
-						if (firstNotSeen.length < 1) {
-							var firstNotSeenSpan = document.createElement('SPAN');
-							$(firstNotSeenSpan).attr('class', 'text-xs border-radius-md px-1 ms-1 firstNotSeen notSeen');
-							$(firstNotSeenSpan).append(data.result.matchedOrVipNotSeenCount);
-							$('A[href="#first"]').append(firstNotSeenSpan);
-						} else {
-							firstNotSeen.html(data.result.matchedOrVipNotSeenCount);
-						}
-					}
-					if (data.result.notMatchedOrNotVipNotSeenCount) {
-						var secondNotSeen = $('SPAN.secondNotSeen');
-						if (secondNotSeen.length < 1) {
-							var secondNotSeenSpan = document.createElement('SPAN');
-							$(secondNotSeenSpan).attr('class', 'text-xs border-radius-md px-1 ms-1 secondNotSeen notSeen');
-							$(secondNotSeenSpan).append(data.result.notMatchedOrNotVipNotSeenCount);
-							$('A[href="#second"]').append(secondNotSeenSpan);
-						} else {
-							secondNotSeen.html(data.result.notMatchedOrNotVipNotSeenCount);
-						}
-					}
 				},
 				'json'
 				);

@@ -87,35 +87,15 @@ public class Activity implements Comparable<Activity> {
 	 *
 	 * @param sender
 	 * @param behavior
+	 * @param seen
 	 * @param occurred
 	 * @param occurredStr
-	 * @param greeting
-	 * @param seen
 	 */
-	public Activity(String sender, Behavior behavior, Date occurred, String occurredStr, String greeting, Date seen) {
+	public Activity(String sender, Behavior behavior, Date occurred, String occurredStr) {
 		this.sender = sender;
 		this.behavior = behavior;
 		this.occurred = occurred;
 		this.occurredStr = occurredStr;
-		this.greeting = greeting;
-		this.seen = seen;
-	}
-
-	/**
-	 * 聊天歷史紀錄
-	 *
-	 * @param sender
-	 * @param behavior
-	 * @param occurred
-	 * @param seen
-	 * @param occurredStr
-	 */
-	public Activity(String sender, Behavior behavior, Date occurred, String occurredStr, Date seen) {
-		this.sender = sender;
-		this.behavior = behavior;
-		this.occurred = occurred;
-		this.occurredStr = occurredStr;
-		this.seen = seen;
 	}
 
 	/**
