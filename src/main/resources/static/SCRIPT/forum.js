@@ -275,15 +275,12 @@ $(document).ready(function () {
 					'value': data.identifier
 				});
 				$(div).append(commentIdentifier);
-				var avatar = document.createElement('DIV');
-				$(avatar).attr('class', 'avatar rounded-circle');
-				$(flexAvatar).append(avatar);
 				var blurImg = document.createElement('DIV');
 				$(blurImg).attr({
-					'class': 'blurImg me-2',
+					'class': 'blurImg m-1',
 					'style': 'background-image: url("' + profileImage + '");'
 				});
-				$(avatar).append(blurImg);
+				$(flexAvatar).append(blurImg);
 				var flexComment = document.createElement('DIV');
 				$(flexComment).attr('class', 'flex-grow-1 ms-2 ms-sm-3');
 				$(div).append(flexComment);
@@ -587,15 +584,12 @@ $(document).ready(function () {
 				var avatarFlexDiv = document.createElement('DIV');
 				$(avatarFlexDiv).attr('class', 'flex-shrink-0');
 				$(commentDiv).append(avatarFlexDiv);
-				var avatarDiv = document.createElement('DIV');
-				$(avatarDiv).attr('class', 'avatar rounded-circle');
-				$(avatarFlexDiv).append(avatarDiv);
 				var blurImg = document.createElement('DIV');
 				$(blurImg).attr({
-					'class': 'blurImg me-2',
+					'class': 'blurImg m-1',
 					'style': 'background-image: url("' + comment.profileImage + '");'
 				});
-				$(avatarDiv).append(blurImg);
+				$(avatarFlexDiv).append(blurImg);
 				var metaFlexDiv = document.createElement('DIV');
 				$(metaFlexDiv).attr('class', 'flex-grow-1 ms-2 ms-sm-3');
 				$(commentDiv).append(metaFlexDiv);

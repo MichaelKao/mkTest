@@ -247,7 +247,7 @@
 										<DIV class="comment d-flex mb-4">
 											<INPUT name="commentIdentifier" type="hidden" value="{@identifier}"/>
 											<DIV class="flex-shrink-0">
-												<DIV class="blurImg">
+												<DIV class="blurImg m-1">
 													<INPUT type="hidden" value="{commenter/@commenterProfileImage}"/>
 												</DIV>
 											</DIV>
