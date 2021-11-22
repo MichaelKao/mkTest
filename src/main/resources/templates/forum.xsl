@@ -181,23 +181,12 @@
 						<DIV class="post">
 							<DIV class="header">
 								<DIV class="left">
-									<DIV class="fenSiPic">
-										<INPUT type="hidden" value="{fenSiPic}"/>
+									<DIV class="blurImg me-2">
+										<INPUT type="hidden" value="{author/@profileImage}"/>
 									</DIV>
-									<IMG alt="avatarImg" class="avatar shadow me-2" src="{author/@profileImage}" />
 									<DIV class="username">
 										<DIV class="title text-dark">
 											<xsl:value-of select="title"/>
-										</DIV>
-										<DIV class="name text-xs">
-											<SPAN>
-												<xsl:value-of select="author/@nickname"/>
-											</SPAN>
-											<I class="fas fa-shield-check ms-1">
-												<xsl:if test="author/@relief = 'true'">
-													<xsl:attribute name="class">fas fa-shield-check text-success ms-1</xsl:attribute>
-												</xsl:if>
-											</I>
 										</DIV>
 									</DIV>
 								</DIV>
@@ -258,20 +247,12 @@
 										<DIV class="comment d-flex mb-4">
 											<INPUT name="commentIdentifier" type="hidden" value="{@identifier}"/>
 											<DIV class="flex-shrink-0">
-												<DIV class="avatar rounded-circle">
-													<IMG alt="avatarImg" class="avatarImg" src="{commenter/@commenterProfileImage}"/>
+												<DIV class="blurImg">
+													<INPUT type="hidden" value="{commenter/@commenterProfileImage}"/>
 												</DIV>
 											</DIV>
 											<DIV class="flex-grow-1 ms-2 ms-sm-3">
 												<DIV class="commentMeta d-flex align-items-baseline">
-													<DIV class="me-1 text-bold">
-														<xsl:value-of select="commenter/@commenterNickname"/>
-													</DIV>
-													<I class="fas fa-shield-check me-1">
-														<xsl:if test="commenter/@commenterRelief = 'true'">
-															<xsl:attribute name="class">fas fa-shield-check text-success me-1</xsl:attribute>
-														</xsl:if>
-													</I>
 													<SPAN class="text-xs">
 														<xsl:value-of select="@date"/>
 													</SPAN>
