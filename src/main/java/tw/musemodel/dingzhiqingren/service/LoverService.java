@@ -274,6 +274,9 @@ public class LoverService {
 	@Value("classpath:sql/甜心可群發的對象.sql")
 	private Resource groupGreetingList;
 
+	@Value("classpath:sql/安心认证.sql")
+	private Resource relievingOnTheWall;
+
 	@Value("classpath:sql/男仕贵宾会员.sql")
 	private Resource vvipOnTheWall;
 
@@ -3405,20 +3408,40 @@ public class LoverService {
 	/**
 	 * 未封号的情人们，以活跃降幂排序；用于首页的安心认证列表区块。
 	 *
-	 * @param someone 用户号
+	 * @param mofo 用户号
 	 * @param p 第几页
 	 * @param s 每页几笔
 	 * @return 通过安心认证的甜心们
 	 */
 	@Transactional(readOnly = true)
-	public Page<Lover> relievingOnTheWall(Lover someone, int p, int s) {
-		return loverRepository.findAll(
-			LoverSpecification.relievingOnTheWall(
-				someone,
-				new HashSet<>(getExceptions(someone))
-			),
-			PageRequest.of(p, s)
-		);
+	public Page<Lover> relievingOnTheWall(Lover mofo, int p, int s) {
+		//return loverRepository.findAll(
+		//	LoverSpecification.relievingOnTheWall(
+		//		mofo,
+		//		new HashSet<>(getExceptions(mofo))
+		//	),
+		//	PageRequest.of(p, s)
+		//);
+		try {
+			List<Integer> ids = jdbcTemplate.query(
+				FileCopyUtils.copyToString(new InputStreamReader(
+					relievingOnTheWall.getInputStream(),
+					Servant.UTF_8
+				)),
+				(ps) -> {
+					ps.setInt(1, mofo.getId());
+					ps.setInt(2, mofo.getId());
+				},
+				(resultSet, rowNum) -> resultSet.getInt("id")
+			);
+
+			return loverRepository.findByIdIn(
+				ids,
+				PageRequest.of(p, s)
+			);
+		} catch (IOException ignore) {
+			return Page.empty();
+		}
 	}
 
 	/**
