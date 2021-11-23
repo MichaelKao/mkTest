@@ -19,7 +19,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1603,7 +1602,7 @@ public class WelcomeController {
 				documentElement.appendChild(peekerElement);
 				peekerElement.setAttribute(
 					"date",
-					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+					servant.DATE_TIME_FORMATTER_yyyyMMddHHmm.format(
 						Servant.toTaipeiZonedDateTime(
 							history.getOccurred()
 						).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)

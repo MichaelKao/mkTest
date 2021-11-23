@@ -119,13 +119,15 @@ public class History implements java.io.Serializable {
 	 * @param initiative 用户(应限男性)
 	 * @param occurred 时戳
 	 * @param luJie 绿界
+	 * @param startEpoch greeting 欄位存該方案開始日的epoch
 	 */
-	public History(Lover initiative, Date occurred, LuJie luJie) {
+	public History(Lover initiative, Date occurred, LuJie luJie, String startEpoch) {
 		this.initiative = initiative;
 		this.behavior = Behavior.YUE_FEI;
 		this.occurred = occurred;
 		points = 0;
 		this.luJie = luJie;
+		this.greeting = startEpoch;
 	}
 
 	/**
@@ -212,12 +214,15 @@ public class History implements java.io.Serializable {
 	 *
 	 * @param initiative 主动方
 	 * @param behavior 行为
+	 * @param trialCode 單日體驗碼
+	 * @param startEpoch 開始日期Epoch
 	 */
-	public History(Lover initiative, Behavior behavior, TrialCode trialCode) {
+	public History(Lover initiative, Behavior behavior, TrialCode trialCode, String startEpoch) {
 		this();
 		this.initiative = initiative;
 		this.behavior = behavior;
 		this.trialCode = trialCode;
+		this.greeting = startEpoch;
 	}
 
 	@Override

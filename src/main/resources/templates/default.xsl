@@ -399,6 +399,14 @@
 						</A>
 					</LI>
 					<LI class="nav-item">
+						<A class="nav-link" href="/dashboard/vip.asp">
+							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
+								<I class="fal fa-crown text-dark text-lg"></I>
+							</DIV>
+							<SPAN class="nav-link-text ms-1">男仕VIP紀錄</SPAN>
+						</A>
+					</LI>
+					<LI class="nav-item">
 						<A class="nav-link" href="/dashboard/certification.asp">
 							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
 								<I class="fal fa-shield-check text-dark text-lg"/>

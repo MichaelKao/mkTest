@@ -1,6 +1,5 @@
 package tw.musemodel.dingzhiqingren.service;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -62,7 +61,7 @@ public class WebSocketService {
 					history.getInitiative().getIdentifier().toString(),
 					history.getBehavior(),
 					history.getOccurred(),
-					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+					servant.DATE_TIME_FORMATTER_yyyyMMddHHmm.format(
 						Servant.toTaipeiZonedDateTime(
 							history.getOccurred()
 						).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)

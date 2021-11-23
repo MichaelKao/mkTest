@@ -1,7 +1,7 @@
 package tw.musemodel.dingzhiqingren.service;
 
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 import javax.xml.parsers.ParserConfigurationException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -432,7 +434,7 @@ public class DashboardService {
 
 			recordElement.setAttribute(
 				"date",
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+				servant.DATE_TIME_FORMATTER_yyyyMMddHHmm.format(
 					Servant.toTaipeiZonedDateTime(
 						history.getOccurred()
 					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
@@ -1207,5 +1209,120 @@ public class DashboardService {
 		}
 
 		return historyRepository.saveAllAndFlush(histories);
+	}
+
+	/**
+	 * VIP 升級紀錄
+	 *
+	 * @param vipType
+	 * @param lover
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public JSONArray searchVip(String vipType, Lover lover, Authentication authentication, Locale locale) {
+		JSONArray array = new JSONArray();
+
+		List<Behavior> vipBehavior = new ArrayList<>();
+		List<History> histories = new ArrayList<>();
+		if (Objects.equals(vipType, "all")) {
+			vipBehavior.add(BEHAVIOR_MONTHLY_CHARGED);
+			vipBehavior.add(BEHAVIOR_TRIAL_CODE);
+		} else if (Objects.equals(vipType, "trial")) {
+			vipBehavior.add(BEHAVIOR_TRIAL_CODE);
+		} else {
+			vipBehavior.add(BEHAVIOR_MONTHLY_CHARGED);
+		}
+
+		if (Objects.nonNull(lover)) {
+			histories = historyRepository.findByInitiativeAndBehaviorInOrderByOccurredDesc(lover, vipBehavior);
+		} else {
+			histories = historyRepository.findByBehaviorInOrderByOccurredDesc(vipBehavior);
+		}
+
+		for (History history : histories) {
+			if (Objects.equals(vipType, "1688") && Objects.equals(history.getLuJie().getItemName(), "長期貴賓")) {
+				continue;
+			}
+			if (Objects.equals(vipType, "1288") && Objects.equals(history.getLuJie().getItemName(), "短期貴賓")) {
+				continue;
+			}
+			JSONObject json = new JSONObject();
+			Lover male = history.getInitiative();
+
+			json.
+				put(
+					"maleIdentifier",
+					male.getIdentifier().toString()
+				).
+				put(
+					"nickname",
+					male.getNickname()
+				).
+				put(
+					"login",
+					male.getLogin()
+				).
+				put(
+					"paidDate",
+					Servant.DATE_TIME_FORMATTER_yyyyMMddHHmm.format(
+						Servant.toTaipeiZonedDateTime(
+							history.getOccurred()
+						).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
+					)
+				);
+
+			Long epoch = 0L;
+			Date endDate = null;
+			if (Objects.nonNull(history.getGreeting())) {
+				epoch = Long.parseLong(history.getGreeting());
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				sdf.setTimeZone(TimeZone.getTimeZone(Servant.ASIA_TAIPEI_ZONE_ID));
+
+				json.put(
+					"startDate",
+					sdf.format(new Date(epoch))
+				);
+			}
+
+			String type = null;
+			if (Objects.equals(history.getBehavior(), BEHAVIOR_TRIAL_CODE)) {
+				try {
+					type = usedTrialCodeRepository.findByLover(male).getTrialCode().getCode();
+				} catch (NullPointerException e) {
+					type = "單日體驗";
+				}
+				endDate = new Date(
+					epoch + Servant.MILLISECONDS_IN_A_DAY
+				);//結束日加 1 天
+			} else if (Objects.equals(history.getLuJie().getItemName(), "長期貴賓")) {
+				type = "1288";
+				endDate = new Date(
+					epoch + Servant.MILLISECONDS_OF_30_DAYS
+				);//結束日加 30 天
+			} else {
+				type = "1688";
+				endDate = new Date(
+					epoch + Servant.MILLISECONDS_OF_30_DAYS
+				);//結束日加 30 天
+			}
+			json.put(
+				"type",
+				type
+			);
+			if (Objects.nonNull(history.getGreeting())) {
+				json.put(
+					"endDate",
+					Servant.DATE_TIME_FORMATTER_yyyyMMddHHmm.format(
+						Servant.toTaipeiZonedDateTime(
+							endDate
+						).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
+					));
+			}
+			array.put(json);
+		}
+
+		return array;
 	}
 }

@@ -114,6 +114,11 @@ public class Servant {
 	public static final DateTimeFormatter DATE_TIME_FORMATTER_yyyyMMdd = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	/**
+	 * yyyy-MM-dd HH:mm的 DateTimeFormatter
+	 */
+	public static final DateTimeFormatter DATE_TIME_FORMATTER_yyyyMMddHHmm = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+	/**
 	 * Facebook 像素 ID
 	 */
 	public static final String FACEBOOK_PIXEL_ID = System.getenv("FACEBOOK_PIXEL_ID");

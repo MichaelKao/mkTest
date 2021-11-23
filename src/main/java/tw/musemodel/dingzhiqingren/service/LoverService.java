@@ -340,7 +340,7 @@ public class LoverService {
 			Descendant descendant = new Descendant(
 				mofo.getIdentifier(),
 				mofo.getNickname(),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+				servant.DATE_TIME_FORMATTER_yyyyMMddHHmm.format(
 					Servant.toTaipeiZonedDateTime(
 						mofo.getRegistered()
 					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
@@ -1653,11 +1653,12 @@ public class LoverService {
 		if (Objects.nonNull(mofo.getVip())) {
 			throw new RuntimeException("trial.disqualified");
 		}
-
+		long currentTimeMillis = System.currentTimeMillis();
 		History history = new History(
 			mofo,
 			HistoryService.BEHAVIOR_TRIAL_CODE,
-			trialCode
+			trialCode,
+			Long.toString(currentTimeMillis)
 		);
 		history = historyRepository.saveAndFlush(history);
 
@@ -4310,7 +4311,7 @@ public class LoverService {
 				).
 				put(
 					"date",
-					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+					servant.DATE_TIME_FORMATTER_yyyyMMddHHmm.format(
 						Servant.toTaipeiZonedDateTime(
 							date
 						).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
@@ -4356,7 +4357,7 @@ public class LoverService {
 				).
 				put(
 					"date",
-					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(
+					servant.DATE_TIME_FORMATTER_yyyyMMddHHmm.format(
 						Servant.toTaipeiZonedDateTime(
 							date
 						).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
