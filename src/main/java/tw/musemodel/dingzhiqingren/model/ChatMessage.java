@@ -44,6 +44,11 @@ public class ChatMessage {
 	 */
 	private String friendStatus;
 
+	/**
+	 * 雙方聊天狀態
+	 */
+	private String chatStatus;
+
 	public ChatMessage() {
 	}
 
@@ -156,5 +161,13 @@ public class ChatMessage {
 
 	public void setFriendStatus(String friendStatus) {
 		this.friendStatus = friendStatus;
+	}
+
+	public String getChatStatus() {
+		return chatStatus;
+	}
+
+	public void setChatStatus(String chatStatus) {
+		this.chatStatus = chatStatus;
 	}
 }

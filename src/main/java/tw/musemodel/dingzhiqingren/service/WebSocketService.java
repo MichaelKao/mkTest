@@ -19,7 +19,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import tw.musemodel.dingzhiqingren.entity.History;
 import tw.musemodel.dingzhiqingren.entity.History.Behavior;
-import tw.musemodel.dingzhiqingren.entity.LineGiven;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
@@ -562,82 +561,6 @@ public class WebSocketService {
 			"friendGender",
 			chatPartner.getGender().toString()
 		);
-
-		Lover male = null;
-		Lover female = null;
-		boolean gender = me.getGender();
-		if (gender) {
-			male = me;
-			female = chatPartner;
-		} else {
-			female = me;
-			male = chatPartner;
-		}
-
-		/**
-		 * 已是好友
-		 */
-		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
-		if (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse()) && lineGiven.getResponse()) {
-			documentElement.setAttribute(
-				"addLineBtn",
-				null
-			);
-		}
-
-		// 女生可無限傳訊息
-		if (!gender) {
-			documentElement.setAttribute(
-				"able",
-				null
-			);
-		}
-		// 男生當天傳的女生清單
-		List<Lover> list = loverService.maleHasSentFemaleListWithinOneDay(male);
-		if (gender && ((loverService.isVIP(male) || loverService.isVVIP(male) || loverService.isTrial(male)))) {
-			if (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse()) && lineGiven.getResponse()
-				|| lessThan3MsgsWithin12Hrs(male, female)) {
-				documentElement.setAttribute(
-					"able",
-					null
-				);// 加了通訊軟體或12小時內少於三句話
-			} else {
-				documentElement.setAttribute(
-					"exceedSentencesLimit",
-					null
-				);
-			}
-		} else if (gender && lessThan3MsgsWithin12Hrs(male, female) && loverService.maleAbleToSendMsgsWithinOneDay(me)) {
-			documentElement.setAttribute(
-				"able",
-				null
-			);
-		} else if (gender && lessThan3MsgsWithin12Hrs(male, female) && !loverService.maleAbleToSendMsgsWithinOneDay(me)) {
-			if (list.contains(female) && lessThan3MsgsWithin12Hrs(male, female)) {
-				documentElement.setAttribute(
-					"able",
-					null
-				);//超過當天傳送訊息上限
-			}
-			if (!list.contains(female)) {
-				documentElement.setAttribute(
-					"exceedFemaleLimit",
-					null
-				);//超過當天傳送訊息上限
-			}
-		} else if (gender && !lessThan3MsgsWithin12Hrs(male, female) && !loverService.maleAbleToSendMsgsWithinOneDay(me)) {
-			if (list.contains(female)) {
-				documentElement.setAttribute(
-					"exceedSentencesLimit",
-					null
-				);//超過3句話限制
-			} else if (!list.contains(female)) {
-				documentElement.setAttribute(
-					"exceedFemaleLimit",
-					null
-				);//超過當天傳送訊息上限
-			}
-		}
 
 		return document;
 	}

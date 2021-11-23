@@ -579,50 +579,7 @@
 							</DIV>
 						</DIV>
 						<DIV class="inputContainer">
-							<xsl:choose>
-								<xsl:when test="not(@blocking) and not(@blockedBy)">
-									<xsl:if test="@able">
-										<DIV class="textareaContainer">
-											<TEXTAREA id="chatInput" placeholder="說點什麼吧..." type="text">
-												<xsl:if test="@male">
-													<xsl:if test="not(@addLineBtn)">
-														<xsl:attribute name="placeholder">用3句話打動meQUEEN...</xsl:attribute>
-													</xsl:if>
-												</xsl:if>
-											</TEXTAREA>
-										</DIV>
-										<BUTTON class="btn btn-link m-0 p-0 fontSize25 sendMsgBtn" disabled="">
-											<I class="fa fa-paper-plane"></I>
-										</BUTTON>
-									</xsl:if>
-									<xsl:if test="@exceedSentencesLimit">
-										<DIV class="height60 ps-3">
-											<SPAN>12小時後繼續聊天!!</SPAN>
-										</DIV>
-									</xsl:if>
-									<xsl:if test="@exceedFemaleLimit">
-										<DIV class="height60 ps-3">
-											<SPAN>升級與更多meQUEEN聊天吧!!</SPAN>
-											<DIV>
-												<A class="btn btn-link m-0 p-0" href="/upgrade.asp">
-													<I class="fad fa-crown me-1"></I>
-													<SPAN>馬上升級</SPAN>
-												</A>
-											</DIV>
-										</DIV>
-									</xsl:if>
-								</xsl:when>
-								<xsl:when test="@blockedBy">
-									<DIV class="height60 ps-3">
-										<SPAN>此用戶已不存在</SPAN>
-									</DIV>
-								</xsl:when>
-								<xsl:when test="@blocking">
-									<DIV class="height60 ps-3">
-										<SPAN>您已封鎖對方</SPAN>
-									</DIV>
-								</xsl:when>
-							</xsl:choose>
+							<DIV class="textareaBox"></DIV>
 							<DIV class="customerBtnWrap">
 								<A class="customerBtn d-flex align-items-center justify-content-center bg-dark fontSize22 opacity-8 text-white" href="https://line.me/R/ti/p/%40017zadfy">
 									<I class="fad fa-user-headset"></I>

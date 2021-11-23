@@ -105,6 +105,9 @@ public class HistoryService {
 	@Autowired
 	private LoverRepository loverRepository;
 
+	@Autowired
+	private WebSocketService webSocketService;
+
 	@Value("classpath:sql/通知.sql")
 	private Resource activitiesResource;
 
@@ -1969,5 +1972,75 @@ public class HistoryService {
 		}
 
 		return friendStatus;
+	}
+
+	public String chatStatus(Lover me, Lover friend) {
+
+		String chatStatus = null;
+		// 若是小編則可傳訊息
+		if (loverService.isCustomerService(me) || loverService.isCustomerService(friend)) {
+			chatStatus = "able";
+			return chatStatus;
+		}
+
+		Lover male = null;
+		Lover female = null;
+		boolean gender = me.getGender();
+		if (gender) {
+			male = me;
+			female = friend;
+		} else {
+			female = me;
+			male = friend;
+		}
+
+		LOGGER.debug("測試loverService.getBlockers(me){}", loverService.getBlockers(me));
+		LOGGER.debug("測試loverService.getBlockeds(me){}", loverService.getBlockeds(me));
+		if (loverService.getBlockers(me).contains(friend)) {
+			chatStatus = "blocking";
+			return chatStatus;
+		}
+
+		if (loverService.getBlockeds(me).contains(friend)) {
+			chatStatus = "blocked";
+			return chatStatus;
+		}
+
+		// 女生可無限傳訊息
+		if (!gender) {
+			chatStatus = "able";
+		}
+		// 男生當天傳的女生清單
+		if (gender) {
+			// 是否是好友
+			LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
+			List<Lover> list = loverService.maleHasSentFemaleListWithinOneDay(male);
+			if ((loverService.isVIP(male) || loverService.isVVIP(male) || loverService.isTrial(male))) {
+				if (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse()) && lineGiven.getResponse()
+					|| webSocketService.lessThan3MsgsWithin12Hrs(male, female)) {
+					chatStatus = "able";//加了通訊軟體或12小時內少於三句話
+				} else {
+					chatStatus = "exceedSentencesLimit";
+				}
+			} else if (webSocketService.lessThan3MsgsWithin12Hrs(male, female) && loverService.maleAbleToSendMsgsWithinOneDay(male)) {
+				chatStatus = "able";
+			} else if (webSocketService.lessThan3MsgsWithin12Hrs(male, female) && !loverService.maleAbleToSendMsgsWithinOneDay(male)) {
+				if (list.contains(female) && webSocketService.lessThan3MsgsWithin12Hrs(male, female)) {
+					chatStatus = "able";//當天傳送過這位女生並未超過3句話
+				}
+				if (!list.contains(female)) {
+					chatStatus = "exceedFemaleLimit";//超過可聊天的女生限制
+				}
+			} else if (!webSocketService.lessThan3MsgsWithin12Hrs(male, female) && loverService.maleAbleToSendMsgsWithinOneDay(male)) {
+				chatStatus = "exceedSentencesLimit";
+			} else if (!webSocketService.lessThan3MsgsWithin12Hrs(male, female) && !loverService.maleAbleToSendMsgsWithinOneDay(male)) {
+				if (list.contains(female)) {
+					chatStatus = "exceedSentencesLimit";//超過3句話限制
+				} else if (!list.contains(female)) {
+					chatStatus = "exceedFemaleLimit";//超過可聊天的女生限制
+				}
+			}
+		}
+		return chatStatus;
 	}
 }

@@ -56,13 +56,4 @@ $(document).ready(function () {
 	$('BUTTON.userAlertClose').click(function () {
 		$('DIV.userAlert').fadeOut(500);
 	});
-
-	// 輸入訊息後按鈕才能送出
-	$('TEXTAREA').on('keyup', function () {
-		var value = $(this).val().trim();
-		$('.sendMsgBtn').removeAttr('disabled', 'false');
-		if (value.length == 0) {
-			$('.sendMsgBtn').attr('disabled', 'true');
-		}
-	});
 });

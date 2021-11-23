@@ -37,9 +37,11 @@ $(document).ready(function () {
 			if ('history' === jsonObj.type) {
 				messagesArea.innerHTML = '';
 				$('.floatBtn').remove();
+				$('.textareaBox').empty();
 				// 這行的jsonObj.message是從DB撈出跟對方的歷史訊息，再parse成JSON格式處理
 				var messages = JSON.parse(jsonObj.historyMsgs);
 				var friendStatus = JSON.parse(jsonObj.friendStatus);
+				var chatStatus = JSON.parse(jsonObj.chatStatus);
 				appendHistoryData(messages, $('#messagesArea'));
 
 				var floatDiv = document.createElement('DIV');
@@ -84,7 +86,7 @@ $(document).ready(function () {
 									if (data.response) {
 										$('.toast-body').html(data.reason);
 										$('.toast').toast('show');
-										$('DIV.femaleBtn').empty();
+										$('DIV.floatBtn').empty();
 										var jsonObj = {
 											'type': 'button',
 											'sender': self,
@@ -123,7 +125,7 @@ $(document).ready(function () {
 									if (data.response) {
 										$('.toast-body').html(data.reason);
 										$('.toast').toast('show');
-										$('DIV.femaleBtn').empty();
+										$('DIV.floatBtn').empty();
 										var jsonObj = {
 											'type': 'button',
 											'sender': self,
@@ -182,12 +184,12 @@ $(document).ready(function () {
 									if (data.response) {
 										$('.toast-body').html(data.reason);
 										$('.toast').toast('show');
-										$('DIV.maleBtn').empty();
+										$('DIV.floatBtn').empty();
 										var borderDiv = document.createElement('DIV');
 										$(borderDiv).attr({
 											'class': 'border border-primary border-radius-xl text-xs px-3 py-1 shadow wordBreak text-center floatWrap'
 										});
-										$('DIV.maleBtn').append(borderDiv);
+										$('DIV.floatBtn').append(borderDiv);
 										var msgDiv = document.createElement('DIV');
 										$(msgDiv).attr('class', 'text-primary');
 										$(borderDiv).append(msgDiv);
@@ -291,14 +293,98 @@ $(document).ready(function () {
 						$(floatWrap).append(rateBtn);
 					}
 				});
+				console.log(chatStatus)
+				if (chatStatus === 'able') {
+					var sendContainer = document.createElement('DIV');
+					$(sendContainer).attr('class', 'sendContainer');
+					$('.textareaBox').append(sendContainer);
+					var div = document.createElement('DIV');
+					$(div).attr('class', 'textareaContainer');
+					$(sendContainer).append(div);
+					var textarea = document.createElement('TEXTAREA');
+					$(textarea).attr('id', 'chatInput');
+					if (isMale === 'true' && !friendStatus.some(item => item === 'maleAddLineBtn')) {
+						$(textarea).attr('placeholder', '用3句話打動meQUEEN...')
+					} else {
+						$(textarea).attr('placeholder', '說點什麼吧...')
+					}
+					$(div).append(textarea);
+					var sendBtn = document.createElement('BUTTON');
+					$(sendBtn).attr({
+						'class': 'btn btn-link m-0 p-0 fontSize25 sendMsgBtn',
+						'disabled': 'true'
+					});
+					(sendContainer).append(sendBtn);
+					var i = document.createElement('I');
+					$(i).attr('class', 'fa fa-paper-plane');
+					$(sendBtn).append(i);
+					$(sendBtn).click(function () {
+						sendMessage();
+					});
+					// 輸入訊息後按鈕才能送出
+					$(textarea).on('keyup', function () {
+						var value = $(this).val().trim();
+						$(sendBtn).removeAttr('disabled', 'false');
+						if (value.length == 0) {
+							$(sendBtn).attr('disabled', 'true');
+						}
+					});
+					$(textarea).on('keydown', function (e) {
+						if (e.keyCode === 13 && e.altKey) {
+							sendMessage();
+							return false;
+						}
+					});
+				} else if (chatStatus === 'blocking') {
+					var div = document.createElement('DIV');
+					$(div).attr('class', 'ps-3 py-2');
+					$('.textareaBox').append(div);
+					var span = document.createElement('SPAN');
+					$(span).append('您已封鎖對方');
+					$(div).append(span);
+				} else if (chatStatus === 'blocked') {
+					var div = document.createElement('DIV');
+					$(div).attr('class', 'ps-3 py-2');
+					$('.textareaBox').append(div);
+					var span = document.createElement('SPAN');
+					$(span).append('此用戶已不存在');
+					$(div).append(span);
+				} else if (chatStatus === 'exceedSentencesLimit') {
+					var div = document.createElement('DIV');
+					$(div).attr('class', 'ps-3 py-2');
+					$('.textareaBox').append(div);
+					var span = document.createElement('SPAN');
+					$(span).append('12小時後繼續聊天!!');
+					$(div).append(span);
+				} else if (chatStatus === 'exceedFemaleLimit') {
+					var div = document.createElement('DIV');
+					$(div).attr('class', 'ps-3 py-2');
+					$('.textareaBox').append(div);
+					var span = document.createElement('SPAN');
+					$(span).append('升級與更多meQUEEN聊天吧!!');
+					$(div).append(span);
+					var div1 = document.createElement('DIV');
+					$(div).append(div1);
+					var a = document.createElement('A');
+					$(a).attr({
+						'class': 'btn btn-link m-0 p-0',
+						'href': '/upgrade.asp'
+					});
+					$(div1).append(a);
+					var i = document.createElement('I');
+					$(i).attr('class', 'fad fa-crown me-1');
+					$(a).append(i);
+					var s = document.createElement('SPAN');
+					$(s).append('馬上升級');
+					$(a).append(s);
+				}
 				scrollToEnd();
 			} else if ('chat' === jsonObj.type) {
 				if (parseInt(jsonObj.msgCount) === 3 && isMale === 'true') {
-					$('.textareaContainer').remove();
-					$('BUTTON.sendMsgBtn').remove();
+					$('.textareaBox').empty();
 					var div = document.createElement('DIV');
-					$(div).attr('class', 'height60 ps-3');
-					$('DIV.inputContainer').append(div);
+					$(div).attr('class', 'ps-3 py-2');
+					$('.textareaBox').append(div);
 					var span = document.createElement('SPAN');
 					$(span).html('12小時後繼續聊天!!');
 					$(div).append(span);
@@ -478,7 +564,7 @@ $(document).ready(function () {
 						if (isMale === 'false') {
 							var floatDiv = document.createElement('DIV');
 							$(floatDiv).attr({
-								'class': 'd-flex justify-content-center femaleBtn floatBtn'
+								'class': 'd-flex justify-content-center floatBtn'
 							});
 							$('DIV.inputContainer').append(floatDiv);
 							var borderDiv = document.createElement('DIV');
@@ -531,7 +617,7 @@ $(document).ready(function () {
 										if (data.response) {
 											$('.toast-body').html(data.reason);
 											$('.toast').toast('show');
-											$('DIV.femaleBtn').empty();
+											$('DIV.floatBtn').empty();
 											var jsonObj = {
 												'type': 'button',
 												'sender': self,
@@ -570,7 +656,7 @@ $(document).ready(function () {
 										if (data.response) {
 											$('.toast-body').html(data.reason);
 											$('.toast').toast('show');
-											$('DIV.femaleBtn').empty();
+											$('DIV.floatBtn').empty();
 											var jsonObj = {
 												'type': 'button',
 												'sender': self,
@@ -776,9 +862,6 @@ $(document).ready(function () {
 		websocket.close();
 	});
 
-	$('.sendMsgBtn').click(function () {
-		sendMessage();
-	});
 
 	function sendMessage() {
 		var chatInput = document.getElementById("chatInput");
@@ -818,15 +901,6 @@ $(document).ready(function () {
 		$('.messages').scrollTop(scrollHeight);
 		$('DIV#loadingChat').css('display', 'none');
 	}
-
-	var $textarea = $('#chatInput');
-	$textarea
-		.on('keydown', function (e) {
-			if (e.keyCode === 13 && e.altKey) {
-				sendMessage();
-				return false;
-			}
-		});
 
 	// 送出評價
 	$('BUTTON.commentBtn').click(function (event) {
@@ -1353,6 +1427,7 @@ $(document).ready(function () {
 	function openChatRoom(conversation) {
 		friend = $(conversation).attr('id');
 		$('.floatBtn').remove();
+		$('.textareaBox').empty();
 		$('DIV#loadingChat').css('display', 'block');
 		$('.conversationWrap').each(function () {
 			$(this).removeClass('active');
