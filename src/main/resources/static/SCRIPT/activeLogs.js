@@ -66,11 +66,12 @@ $(document).ready(function () {
 			var profileDiv = document.createElement('DIV');
 			$(cardBodyDiv).append(profileDiv);
 			var profileA = document.createElement('A');
-			$(profileA).attr('href', activity.identifier);
+			$(profileA).attr('href', '/profile/' + activity.identifier + '/');
 			$(profileDiv).append(profileA);
 			var profileImg = document.createElement('IMG');
 			$(profileImg).attr({
 				'alt': 'profile_photo',
+				'class': 'border-radius-md',
 				'src': activity.profileImage,
 				'width': '55'
 			});
@@ -88,34 +89,6 @@ $(document).ready(function () {
 			$(msgDiv).attr('class', 'text-dark text-xs text-bold');
 			$(msgDiv).append(activity.message);
 			$(div).append(msgDiv);
-
-			if (activity.pixAuthBtn) {
-				var pixAuthBtnDiv = document.createElement('DIV');
-				$(pixAuthBtnDiv).attr('class', 'ms-0 ms-md-auto d-flex align-items-center my-1');
-				$(msgMainDiv).append(pixAuthBtnDiv);
-				var input = document.createElement('INPUT');
-				$(input).attr({
-					'name': 'whom',
-					'type': 'hidden',
-					'value': activity.identifier
-				});
-				$(pixAuthBtnDiv).append(input);
-				var pixAuthBtn = document.createElement('BUTTON');
-				$(pixAuthBtn).attr({
-					'class': 'btn btn-sm btn-outline-primary px-2 py-1 p-md-2 m-0 me-1 acceptPixAuth',
-					'type': 'button'
-				});
-				$(pixAuthBtn).append('同意');
-				$(pixAuthBtnDiv).append(pixAuthBtn);
-				$(pixAuthBtn).dblclick(function (e) {
-					e.preventDefault();
-				});
-				$(pixAuthBtn).click(function (event) {
-					event.preventDefault();
-					let btn = this;
-					pixAuth(btn);
-				});
-			}
 		});
 	}
 });
