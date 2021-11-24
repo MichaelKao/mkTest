@@ -16,7 +16,7 @@ AND"chou_yan"IS NOT NULL
 AND"yin_jiu"IS NOT NULL
 AND"li_xiang_dui_xiang"IS NOT NULL
 AND"xiang_chu_guan_xi"IS NOT NULL
-AND"xing_bie"=FALSE
+AND"xing_bie"=?
 AND"id"NOT IN(
 	SELECT"bei_dong_fang"AS"id"FROM"feng_suo"WHERE"zhu_dong_fang"=?UNION SELECT"zhu_dong_fang"AS"id"FROM"feng_suo"WHERE"bei_dong_fang"=?
 )

@@ -3430,8 +3430,9 @@ public class LoverService {
 					Servant.UTF_8
 				)),
 				(ps) -> {
-					ps.setInt(1, mofo.getId());
+					ps.setBoolean(1, !mofo.getGender());
 					ps.setInt(2, mofo.getId());
+					ps.setInt(3, mofo.getId());
 				},
 				(resultSet, rowNum) -> resultSet.getInt("id")
 			);
