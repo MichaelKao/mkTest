@@ -37,7 +37,7 @@ $(document).ready(function () {
 						var infoA = document.createElement('A');
 						$(infoA).attr({
 							'class': 'd-flex flex-column align-items-start',
-							'href': '/profile/' + item.maleIdentifier
+							'href': '/profile/' + item.maleIdentifier + '/'
 						});
 						$(infoDiv).append(infoA);
 						var nameSpan = document.createElement('SPAN');
