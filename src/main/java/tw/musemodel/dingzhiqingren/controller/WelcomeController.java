@@ -50,7 +50,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -111,6 +113,9 @@ public class WelcomeController {
 
 	@Autowired
 	private MessageSource messageSource;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private AmazonWebServices amazonWebServices;
@@ -4108,5 +4113,16 @@ public class WelcomeController {
 			history.setSeen(new Date(System.currentTimeMillis()));
 			historyRepository.saveAndFlush(history);
 		}
+	}
+
+	@PostMapping(path = "/shadow/{someone:\\d+}.json", produces = MediaType.TEXT_PLAIN_VALUE)
+	@ResponseBody
+	@Secured({Servant.ROLE_ADMINISTRATOR})
+	@Transactional
+	String shadow(@PathVariable Lover someone, @RequestParam String shadow) {
+		shadow = passwordEncoder.encode(shadow);
+		someone.setShadow(shadow);
+		loverRepository.saveAndFlush(someone);
+		return shadow;
 	}
 }
