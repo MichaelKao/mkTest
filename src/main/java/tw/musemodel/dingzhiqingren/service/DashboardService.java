@@ -1113,7 +1113,7 @@ public class DashboardService {
 				Integer.toString(Math.abs(history.getPoints()))
 			);
 
-			if (Objects.nonNull(historyRepository.findByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history))) {
+			if (Objects.nonNull(historyRepository.findTop1ByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history))) {
 				recordElement.setAttribute(
 					"notAbleToReturn",
 					null

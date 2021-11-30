@@ -120,7 +120,7 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
 
 	public int countByInitiativeAndBehaviorOrderByOccurredDesc(Lover initiative, Behavior behavior);
 
-	public History findByBehaviorAndHistory(Behavior behavior, History history);
+	public History findTop1ByBehaviorAndHistory(Behavior behavior, History history);
 
 	@Query("SELECT new tw.musemodel.dingzhiqingren.model.Activity(h.initiative, h.behavior, h.occurred) "
 		+ "FROM History h WHERE h.initiative = :initiative AND h.behavior = :behavior AND h.occurred >= :occurred "

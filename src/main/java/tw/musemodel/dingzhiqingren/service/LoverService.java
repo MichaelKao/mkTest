@@ -2611,7 +2611,7 @@ public class LoverService {
 		// 目前可提領的紀錄
 		historyRepository.findAll(Specifications.withdrawal(lover)).forEach(history -> {
 			// 已經退回的不列出
-			if (Objects.nonNull(historyRepository.findByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history))) {
+			if (Objects.nonNull(historyRepository.findTop1ByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history))) {
 				return;
 			}
 			Element recordElement = document.createElement("record");
@@ -2659,7 +2659,7 @@ public class LoverService {
 
 		historyRepository.findAll(Specifications.notAbleTowithdrawal(lover)).forEach(history -> {
 			// 已經退回的不列出
-			if (Objects.nonNull(historyRepository.findByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history))) {
+			if (Objects.nonNull(historyRepository.findTop1ByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history))) {
 				return;
 			}
 			Element notAbleToWithdrawalElement = document.createElement("notAbleToWithdrawal");
@@ -2834,7 +2834,7 @@ public class LoverService {
 		Date current = new Date(System.currentTimeMillis());
 		for (History history : historyRepository.findAll(Specifications.withdrawal(honey))) {
 			// 已經退回的不列出
-			if (Objects.nonNull(historyRepository.findByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history))) {
+			if (Objects.nonNull(historyRepository.findTop1ByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history))) {
 				continue;
 			}
 			Short points = Objects.equals(history.getBehavior(), BEHAVIOR_FARE) ? history.getPoints() : (short) (history.getPoints() / 2);
@@ -2889,7 +2889,7 @@ public class LoverService {
 		Long fareSum = 0L;
 		for (History history : fareList) {
 			// 已經退回的不列出
-			if (Objects.nonNull(historyRepository.findByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history))) {
+			if (Objects.nonNull(historyRepository.findTop1ByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history))) {
 				continue;
 			}
 			fareSum += Math.abs(history.getPoints());

@@ -1859,7 +1859,7 @@ public class HistoryService {
 		// 還沒有被退回過('退回車馬費'的歷程是空的)
 		return Objects.equals(history.getBehavior(), BEHAVIOR_FARE)
 			&& cal.getTime().before(history.getOccurred())
-			&& Objects.isNull(historyRepository.findByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history));
+			&& Objects.isNull(historyRepository.findTop1ByBehaviorAndHistory(BEHAVIOR_RETURN_FARE, history));
 	}
 
 	/**
