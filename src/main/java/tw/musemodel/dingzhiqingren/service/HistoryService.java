@@ -737,7 +737,7 @@ public class HistoryService {
 			lineMessagingService.notify(
 				passive,
 				String.format(
-					"有一位男仕給妳 ME 點！馬上查看 https://%s/activeLogs.asp",
+					"有一位男仕給妳 ME 點！馬上查看 https://%s/activities.asp",
 					Servant.LOCALHOST
 				));
 		}
@@ -791,7 +791,7 @@ public class HistoryService {
 			lineMessagingService.notify(
 				passive,
 				String.format(
-					"有一位甜心和你要求 ME 點！馬上查看 https://%s/activeLogs.asp",
+					"有一位甜心和你要求 ME 點！馬上查看 https://%s/activities.asp",
 					Servant.LOCALHOST
 				));
 		}
@@ -954,7 +954,7 @@ public class HistoryService {
 			lineMessagingService.notify(
 				passive,
 				String.format(
-					"您收到一位男仕的通訊軟體要求！馬上查看 https://%s/activeLogs.asp",
+					"您收到一位男仕的通訊軟體要求！馬上查看 https://%s/activities.asp",
 					Servant.LOCALHOST
 				));
 		}
@@ -1018,7 +1018,7 @@ public class HistoryService {
 			lineMessagingService.notify(
 				passive,
 				String.format(
-					"有位甜心向你打招呼！馬上查看 https://%s/activeLogs.asp",
+					"有位甜心向你打招呼！馬上查看 https://%s/activities.asp",
 					Servant.LOCALHOST
 				));
 		}
@@ -1081,7 +1081,7 @@ public class HistoryService {
 			lineMessagingService.notify(
 				passive,
 				String.format(
-					"有位甜心答應給你通訊軟體！馬上查看 https://%s/activeLogs.asp",
+					"有位甜心答應給你通訊軟體！馬上查看 https://%s/activities.asp",
 					Servant.LOCALHOST
 				));
 		}
@@ -1347,7 +1347,7 @@ public class HistoryService {
 			lineMessagingService.notify(
 				passive,
 				String.format(
-					"有位甜心拒絕給你通訊軟體..馬上查看 https://%s/activeLogs.asp",
+					"有位甜心拒絕給你通訊軟體..馬上查看 https://%s/activities.asp",
 					Servant.LOCALHOST
 				));
 		}
@@ -1795,7 +1795,7 @@ public class HistoryService {
 			lineMessagingService.notify(
 				passive,
 				String.format(
-					"有養蜜和您要求生活照授權..馬上查看 https://%s/activeLogs.asp",
+					"有養蜜和您要求生活照授權..馬上查看 https://%s/activities.asp",
 					Servant.LOCALHOST
 				));
 		}
@@ -1834,7 +1834,7 @@ public class HistoryService {
 			lineMessagingService.notify(
 				requester,
 				String.format(
-					"有養蜜同意給您看生活照..馬上查看 https://%s/activeLogs.asp",
+					"有養蜜同意給您看生活照..馬上查看 https://%s/activities.asp",
 					Servant.LOCALHOST
 				));
 		}
@@ -1896,7 +1896,7 @@ public class HistoryService {
 			lineMessagingService.notify(
 				male,
 				String.format(
-					"有養蜜退回您給的 ME 點..馬上查看 https://%s/activeLogs.asp",
+					"有養蜜退回您給的 ME 點..馬上查看 https://%s/activities.asp",
 					Servant.LOCALHOST
 				));
 		}

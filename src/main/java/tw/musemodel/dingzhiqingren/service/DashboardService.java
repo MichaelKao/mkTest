@@ -1157,7 +1157,7 @@ public class DashboardService {
 			lineMessagingService.notify(
 				male,
 				String.format(
-					"有養蜜退回您給的 ME 點..馬上查看 https://%s/activeLogs.asp",
+					"有養蜜退回您給的 ME 點..馬上查看 https://%s/activities.asp",
 					Servant.LOCALHOST
 				)
 			);
