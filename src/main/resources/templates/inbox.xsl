@@ -74,7 +74,7 @@
 										</SPAN>
 										<xsl:if test="@notSeenCount">
 											<DIV class="d-flex justify-content-center">
-												<SPAN class="text-xs text-light bg-primary border-radius-md px-1">
+												<SPAN class="text-xs text-light bg-danger border-radius-md px-1">
 													<xsl:value-of select="@notSeenCount"/>
 												</SPAN>
 											</DIV>

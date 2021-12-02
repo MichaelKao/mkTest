@@ -180,12 +180,14 @@
 			<DIV class="fixed-top container chatNavbar">
 				<NAV class="navbar navbar-expand-lg top-0 position-absolute p-0 start-0 end-0">
 					<DIV class="fixed-top container mx-auto bg-light">
-						<A class="navbar-brand font-weight-bolder m-0" href="/">YOUNG ME 養蜜</A>
+						<A class="navbar-brand font-weight-bolder m-0 p-0" href="/">
+							<IMG src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/icon.svg"/>
+						</A>
 						<DIV class="d-flex align-items-center">
 							<xsl:if test="@signIn">
 								<A class="d-lg-none pe-1" href="/activities.asp">
-									<I class="fad fa-bell fontSize22" style="z-index: -1;"></I>
-									<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
+									<I class="fad fa-bell fontSize22 text-dark" style="z-index: -1;"></I>
+									<SPAN class="text-xs text-light bg-danger border-radius-md ms-n2 announcement" style="display: none;">
 										<xsl:if test="@announcement">
 											<xsl:attribute name="style">display: inline;</xsl:attribute>
 											<xsl:value-of select="@announcement"/>
@@ -193,8 +195,8 @@
 									</SPAN>
 								</A>
 								<A class="d-lg-none px-1" href="/inbox.asp">
-									<I class="fad fa-comments fontSize22" style="z-index: -1;"></I>
-									<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 inbox" style="display: none;">
+									<I class="fad fa-comments fontSize22 text-dark" style="z-index: -1;"></I>
+									<SPAN class="text-xs text-light bg-danger border-radius-md ms-n2 inbox" style="display: none;">
 										<xsl:if test="@inbox">
 											<xsl:attribute name="style">display: inline;</xsl:attribute>
 											<xsl:value-of select="@inbox"/>
@@ -282,7 +284,7 @@
 											<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/activities.asp">
 												<DIV>
 													<I class="fad fa-bell fontSize22"></I>
-													<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
+													<SPAN class="text-xs text-light bg-danger border-radius-md ms-n2 announcement" style="display: none;">
 														<xsl:if test="@announcement">
 															<xsl:attribute name="style">display: inline;</xsl:attribute>
 															<xsl:value-of select="@announcement"/>
@@ -296,7 +298,7 @@
 											<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/inbox.asp">
 												<DIV>
 													<I class="fad fa-comments fontSize22"></I>
-													<SPAN class="text-xs text-light bg-warning border-radius-md ms-n1 inbox" style="display: none;">
+													<SPAN class="text-xs text-light bg-danger border-radius-md ms-n1 inbox" style="display: none;">
 														<xsl:if test="@inbox">
 															<xsl:attribute name="style">display: inline;</xsl:attribute>
 															<xsl:value-of select="@inbox"/>
@@ -325,7 +327,7 @@
 											<DIV class="d-none d-lg-block text-xs text-bold">搜尋</DIV>
 										</A>
 									</LI>
-									<LI class="nav-item d-flex align-items-end">
+									<!--									<LI class="nav-item d-flex align-items-end">
 										<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/forum/">
 											<DIV class="d-flex align-items-center">
 												<I class="fas fa-comment-alt-edit fontSize22 width30whenMobile"></I>
@@ -333,7 +335,7 @@
 											</DIV>
 											<DIV class="d-none d-lg-block text-xs text-bold">討論</DIV>
 										</A>
-									</LI>
+									</LI>-->
 									<LI class="nav-item d-flex align-items-end">
 										<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/favorite.asp">
 											<DIV class="d-flex align-items-center">
@@ -451,7 +453,7 @@
 												</SPAN>
 												<xsl:if test="@notSeenCount">
 													<DIV class="d-flex justify-content-center">
-														<SPAN class="text-xs text-light bg-primary border-radius-md px-1">
+														<SPAN class="text-xs text-light bg-danger border-radius-md px-1">
 															<xsl:value-of select="@notSeenCount"/>
 														</SPAN>
 													</DIV>
@@ -509,7 +511,7 @@
 							</xsl:if>
 						</DIV>
 						<xsl:if test="@male">
-							<DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 pt-0 ps-2 pe-1 pb-2 mt-6 userAlert imageShadow">
+							<DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 pt-0 ps-2 pe-1 pb-2 mt-6 userAlert primary-gradient imageShadow">
 								<DIV class="d-flex">
 									<BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 pt-1 p-0 me-2 userAlertClose" type="button">
 										<I class="fal fa-times fontSize25"></I>
@@ -570,7 +572,7 @@
 						<DIV class="messages position-relative" id="messages">
 							<DIV id="messagesArea"></DIV>
 							<INPUT name="nextMsgsPage" type="hidden" value="1" />
-							<DIV class="loadingWrap position-absolute" id="loadingChat" style="display: none; background: #E7E7EA;">
+							<DIV class="loadingWrap position-absolute" id="loadingChat" style="display: none; background: #E5E7E9;">
 								<DIV class="loading position-absolute">
 									<DIV class="round"></DIV>
 									<DIV class="round ms-1"></DIV>

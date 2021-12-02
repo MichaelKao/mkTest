@@ -77,7 +77,7 @@
 						<DIV>若您對自己在本網站中的隱私權有任何問題，請與我們聯絡：service@youngme.vip。</DIV>
 					</DIV>
 					<DIV class="text-center">
-						<A href="/signUp.asp" class="btn btn-lg bg-gradient-primary btn-lg w-80" type="button">開始註冊</A>
+						<A href="/signUp.asp" class="btn btn-lg primary-gradient text-white w-80" type="button">開始註冊</A>
 					</DIV>
 				</DIV>
 			</DIV>

@@ -41,7 +41,7 @@
 						<DIV class="mb-2">7. 用戶內容不得為非法，不得侵犯任何第三方的合法權利。您不得向網站提交任何曾經或曾經遭受任何威脅或實際法律訴訟或其他類似投訴的用戶內容。</DIV>
 					</DIV>
 					<DIV class="text-center">
-						<A href="/signUp.asp" class="btn btn-lg bg-gradient-primary btn-lg w-80" type="button">開始註冊</A>
+						<A href="/signUp.asp" class="btn btn-lg primary-gradient text-white w-80" type="button">開始註冊</A>
 					</DIV>
 				</DIV>
 			</DIV>

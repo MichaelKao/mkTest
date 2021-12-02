@@ -3,13 +3,13 @@ INPUT[type="checkbox"] {
 }
 
 LABEL.tag {
-	border: 1px solid #D63384;
+	border: 1px solid #C36554;
 	padding: 5px 10px;
 	border-radius: 10px;
-	color: #D63384;
+	color: #C36554;
 }
 
 :checked + LABEL.tag {
-	background: #D63384;
+	background: #C36554;
 	color: white;
 }

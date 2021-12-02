@@ -49,7 +49,7 @@
 							<SPAN class="text-white text-sm">提高 meQUEEN 主動找您的機會</SPAN>
 						</DIV>
 						<DIV>
-							<SPAN class="text-dark text-bolder">PRO</SPAN>
+							<SPAN class="text-primary text-bolder">PRO</SPAN>
 							<SPAN class="text-white text-sm">only</SPAN>
 						</DIV>
 					</DIV>
@@ -65,7 +65,7 @@
 							<SPAN class="text-white text-sm">讓 meQUEEN 更容易注意到您</SPAN>
 						</DIV>
 						<DIV>
-							<SPAN class="text-dark text-bolder">PRO</SPAN>
+							<SPAN class="text-primary text-bolder">PRO</SPAN>
 							<SPAN class="text-white text-sm">only</SPAN>
 						</DIV>
 					</DIV>
@@ -80,9 +80,9 @@
 							<SPAN class="text-white text-sm">和 meQUEEN 聊天次數無限制</SPAN>
 						</DIV>
 						<DIV>
-							<SPAN class="text-dark text-bolder">PRO</SPAN>
+							<SPAN class="text-primary text-bolder">PRO</SPAN>
 							<SPAN class="text-white text-bolder mx-1">·</SPAN>
-							<SPAN class="text-dark">
+							<SPAN class="text-primary">
 								<I class="fas fa-plus"></I>
 							</SPAN>
 						</DIV>
@@ -99,9 +99,9 @@
 							<SPAN class="text-white text-sm">同時得到對方的通訊軟體聯繫方式</SPAN>
 						</DIV>
 						<DIV>
-							<SPAN class="text-dark text-bolder">PRO</SPAN>
+							<SPAN class="text-primary text-bolder">PRO</SPAN>
 							<SPAN class="text-white text-bolder mx-1">·</SPAN>
-							<SPAN class="text-dark">
+							<SPAN class="text-primary">
 								<I class="fas fa-plus"></I>
 							</SPAN>
 						</DIV>
@@ -117,9 +117,9 @@
 							<SPAN class="text-white text-sm">可看見 meQUEEN 文字評價</SPAN>
 						</DIV>
 						<DIV>
-							<SPAN class="text-dark text-bolder">PRO</SPAN>
+							<SPAN class="text-primary text-bolder">PRO</SPAN>
 							<SPAN class="text-white text-bolder mx-1">·</SPAN>
-							<SPAN class="text-dark">
+							<SPAN class="text-primary">
 								<I class="fas fa-plus"></I>
 							</SPAN>
 						</DIV>
@@ -136,9 +136,9 @@
 							<SPAN class="text-white text-sm">邀請接受後可查看更多</SPAN>
 						</DIV>
 						<DIV>
-							<SPAN class="text-dark text-bolder">PRO</SPAN>
+							<SPAN class="text-primary text-bolder">PRO</SPAN>
 							<SPAN class="text-white text-bolder mx-1">·</SPAN>
-							<SPAN class="text-dark">
+							<SPAN class="text-primary">
 								<I class="fas fa-plus"></I>
 							</SPAN>
 						</DIV>
@@ -147,7 +147,7 @@
 				<xsl:if test="@vvip or @vip or @trial">
 					<DIV class="card text-center border-radius-xl mx-auto col-12 col-md-10 col-xl-8 p-1 mb-3">
 						<xsl:if test="@trial">
-							<DIV class="text-primary text-bold">目前為單日體驗 VIP</DIV>
+							<DIV class="text-dark text-bold">目前為單日體驗 VIP</DIV>
 							<DIV class="text-dark text-bold text-xs">
 								<SPAN class="me-1">到期時間</SPAN>
 								<SPAN>
@@ -157,8 +157,8 @@
 						</xsl:if>
 						<xsl:if test="@vip">
 							<DIV>
-								<SPAN class="text-primary text-bold">目前為 meKING</SPAN>
-								<SPAN class="fontSize22 ms-1">
+								<SPAN class="text-dark text-bold">目前為 meKING</SPAN>
+								<SPAN class="fontSize22 text-primary ms-1">
 									<I class="fas fa-plus"></I>
 								</SPAN>
 							</DIV>
@@ -170,9 +170,9 @@
 							</DIV>
 						</xsl:if>
 						<xsl:if test="@vvip">
-							<DIV class="text-primary text-bold">
+							<DIV class="text-dark text-bold">
 								<SPAN>目前為 meKING</SPAN>
-								<SPAN class="text-bolder fontSize22 ms-1">PRO</SPAN>
+								<SPAN class="text-bolder fontSize22 text-primary ms-1">PRO</SPAN>
 							</DIV>
 							<DIV class="text-dark text-xs">
 								<xsl:if test="@isEligibleToStopRecurring">
@@ -207,17 +207,17 @@
 					<DIV class="col-6 col-md-5 col-xl-4 mb-3 pe-1 ps-0">
 						<DIV class="p-2 card h-100">
 							<DIV class="text-center border-radius-xl py-2">
-								<SPAN class="text-primary text-lg font-weight-bold my-2">meKING</SPAN>
-								<SPAN class="fontSize22 ms-1">
+								<SPAN class="text-dark text-lg font-weight-bold my-2">meKING</SPAN>
+								<SPAN class="fontSize22 text-primary ms-1">
 									<I class="fas fa-plus"></I>
 								</SPAN>
-								<DIV class="text-lg text-bold text-center my-1">
+								<DIV class="text-lg text-bold text-dark text-center my-1">
 									<DIV class="text-sm">
 										<DIV class="fontSize35">1</DIV>
 										<DIV>個月</DIV>
 									</DIV>
 								</DIV>
-								<DIV class="text-lg text-bold text-center my-1">
+								<DIV class="text-lg text-bold text-dark text-center my-1">
 									<DIV class="text-lg">$1688/月</DIV>
 									<DIV class="text-xs">單次付款</DIV>
 									<DIV class="text-xs">不可取消</DIV>
@@ -231,15 +231,15 @@
 					<DIV class="col-6 col-md-5 col-xl-4 mb-3 ps-1 pe-0" style="">
 						<DIV class="p-2 card h-100">
 							<DIV class="text-center border-radius-xl py-2">
-								<SPAN class="text-primary text-lg font-weight-bold my-2">meKING</SPAN>
-								<SPAN class="text-bolder fontSize22 ms-1">PRO</SPAN>
-								<DIV class="text-lg text-bold text-center my-1">
+								<SPAN class="text-dark text-lg font-weight-bold my-2">meKING</SPAN>
+								<SPAN class="text-bolder text-primary fontSize22 ms-1">PRO</SPAN>
+								<DIV class="text-lg text-bold text-dark text-center my-1">
 									<DIV class="text-sm">
 										<DIV class="fontSize35">12</DIV>
 										<DIV>個月</DIV>
 									</DIV>
 								</DIV>
-								<DIV class="text-lg text-bold text-center my-1">
+								<DIV class="text-lg text-bold text-dark text-center my-1">
 									<DIV class="text-lg">$1288/月</DIV>
 									<DIV class="text-xs">定期定額扣款12次</DIV>
 									<DIV class="text-xs">可於期限內取消</DIV>
@@ -252,9 +252,9 @@
 					</DIV>
 					<DIV class=""></DIV>
 				</DIV>
-				<DIV class="text-center card border-radius-xl text-xs mx-auto col-12 col-md-10 col-xl-8 p-1">
-					<DIV class="text-primary">本筆款項將在信用卡帳單</DIV>
-					<DIV class="text-primary">僅會顯示為 「遊戲點數購買」</DIV>
+				<DIV class="text-center text-dark card border-radius-xl text-xs mx-auto col-12 col-md-10 col-xl-8 p-1">
+					<DIV>本筆款項將在信用卡帳單</DIV>
+					<DIV>僅會顯示為 「遊戲點數購買」</DIV>
 				</DIV>
 				<xsl:call-template name="footer"/>
 			</DIV>

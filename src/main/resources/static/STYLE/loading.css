@@ -1,9 +1,9 @@
 .round {
-        display: inline-block;
-        width: 15px;
-        height: 15px;
-        border-radius: 15px;
-        background-color: #D63384;
+	display: inline-block;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background-color: #DC9386;
 }
 
 .loading .round:nth-last-child(1) {
@@ -22,7 +22,7 @@
         bottom: 0;
         width: 100%;
         height: 100%;
-        background-color: #CCCCCCAA;
+        background-color: #00000066;
         z-index: 99999;
 }
 
@@ -50,21 +50,20 @@
 }
 
 .loadMore {
-        width: 5px;
-        height: 5px;
-        margin: 20px auto 0;
-        border-radius: 50%;
-        box-shadow:
-                0 -15px rgba(214, 51, 132, 1),
-                11.25px -11.25px rgba(214, 51, 132, 0.875),
-                15px 0 rgba(214, 51, 132, 0.75),
-                11.25px 11.25px rgba(214, 51, 132, 0.625),
-                0 15px rgba(214, 51, 132, 0.5),
-                -11.25px 11.25px rgba(214, 51, 132, 0.375),
-                -15px 0 rgba(214, 51, 132, 0.25),
-                -11.25px -11.25px rgba(214, 51, 132, 0.125)
-                ;
-        animation: spin 1.4s linear infinite;
+	width: 4px;
+	height: 4px;
+	margin: 25px auto 0;
+	border-radius: 50%;
+	box-shadow:
+		0 -12px rgb(178 30 53),
+		8.25px -8.25px rgb(178 30 53 / 88%),
+		12px 0 rgb(178 30 53 / 75%),
+		8.25px 8.25px rgb(178 30 53 / 63%),
+		0 12px rgb(178 30 53 / 50%),
+		-8.25px 8.25px rgb(178 30 53 / 38%),
+		-12px 0 rgb(178 30 53 / 25%),
+		-8.25px -8.25px rgb(178 30 53 / 13%);
+	animation: spin 1.5s linear infinite;
 }
 
 @keyframes spin {

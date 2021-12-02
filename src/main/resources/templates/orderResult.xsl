@@ -31,7 +31,7 @@
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container pt-9 pb-5 pt-md-10 pb-mb-5">
 				<DIV class="card col-12 col-md-7 mx-auto">
-					<DIV class="bg-gradient-primary border-radius-lg py-3 w-85 mt-n5 mx-auto text-center">
+					<DIV class="primary-gradient border-radius-lg py-3 w-85 mt-n5 mx-auto text-center">
 						<DIV class="text-light mb-0 h1 resultIcon">
 							<xsl:choose>
 								<xsl:when test="@fail">
@@ -51,19 +51,19 @@
 							<INPUT name="orderResult" type="hidden" value="true"/>
 							<DIV class="d-flex mb-2">
 								<DIV>交易時間：</DIV>
-								<DIV class="text-primary text-gradient">
+								<DIV class="text-danger">
 									<xsl:value-of select="@date"/>
 								</DIV>
 							</DIV>
 							<DIV class="d-flex mb-2">
 								<DIV>支付金額：</DIV>
-								<DIV class="text-primary text-gradient totalAmount">
+								<DIV class="text-danger totalAmount">
 									<xsl:value-of select="@amount"/>
 								</DIV>
 							</DIV>
 							<DIV class="d-flex mb-2">
 								<DIV>付款項目：</DIV>
-								<DIV class="text-primary text-gradient">
+								<DIV class="text-danger">
 									<xsl:value-of select="@result"/>
 								</DIV>
 							</DIV>
@@ -72,7 +72,7 @@
 							<INPUT name="orderResult" type="hidden" value="false"/>
 							<DIV class="d-flex mb-2">
 								<DIV>失敗原因：</DIV>
-								<DIV class="text-primary text-gradient">
+								<DIV class="text-danger">
 									<xsl:value-of select="@reason"/>
 								</DIV>
 							</DIV>

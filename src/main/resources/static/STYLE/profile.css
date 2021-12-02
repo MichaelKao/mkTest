@@ -1,12 +1,3 @@
-@media screen and (max-width: 767px) {
-        #icon {
-                position: fixed;
-                right: 20px;
-                bottom: 20px;
-                z-index: 1000;
-        }
-}
-
 .result IMG {
         max-width: 100%;
 }
@@ -16,12 +7,12 @@ BUTTON.fav {
 }
 
 BUTTON.fav DIV {
-        color: #D63384;
+        color: #DC9386;
 }
 
 BUTTON.fav.liked i {
         animation: heart-grow .7s;
-        color: #D63384;
+        color: #DC9386;
 }
 
 @keyframes heart-grow {
@@ -84,8 +75,13 @@ DIV.star {
         color: #FF8C00;
 }
 
+.profileImage {
+	border: 3px solid #ffffffee;
+	border-radius: 10px;
+}
+
 .carousel-indicators [data-bs-target] {
-        background-color: #D63384EE;
+        background-color: #16435EEE;
         opacity: 0.4;
 }
 
@@ -95,5 +91,22 @@ DIV.star {
 
 .carouselControlBtn {
         font-size: 32px;
-        color: #D63384;
+        color: #16435E;
 }
+
+@media screen and (max-width: 767px) {
+	#icon {
+		position: fixed;
+		bottom: 15px;
+		z-index: 1000;
+		background: #164353F1;
+		padding: 7px 25px;
+		border-radius: 50px;
+		left: 0;
+		right: 0;
+		width: max-content;
+		margin: 0 auto;
+		box-shadow: 3px 6px 5px 0 rgba(0, 0, 0, 0.28);
+	}
+}
+

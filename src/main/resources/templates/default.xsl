@@ -35,12 +35,14 @@
 			<INPUT name="identifier" type="hidden" value="{@identifier}"/>
 			<NAV class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-1 py-md-3 start-0 end-0 mx-2">
 				<DIV class="container-fluid">
-					<A class="navbar-brand font-weight-bolder m-0" href="/">YOUNG ME 養蜜</A>
+					<A class="navbar-brand font-weight-bolder m-0" href="/">
+						<IMG src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/icon.svg"/>
+					</A>
 					<DIV class="d-flex align-items-center">
 						<xsl:if test="@signIn">
 							<A class="d-lg-none pe-1" href="/activities.asp">
-								<I class="fad fa-bell fontSize22" style="z-index: -1;"/>
-								<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
+								<I class="fad fa-bell fontSize22 text-dark" style="z-index: -1;"/>
+								<SPAN class="text-xs text-light bg-danger border-radius-md ms-n2 announcement" style="display: none;">
 									<xsl:if test="@announcement">
 										<xsl:attribute name="style">display: inline;</xsl:attribute>
 										<xsl:value-of select="@announcement"/>
@@ -48,8 +50,8 @@
 								</SPAN>
 							</A>
 							<A class="d-lg-none px-1" href="/inbox.asp">
-								<I class="fad fa-comments fontSize22" style="z-index: -1;"/>
-								<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 inbox" style="display: none;">
+								<I class="fad fa-comments fontSize22 text-dark" style="z-index: -1;"/>
+								<SPAN class="text-xs text-light bg-danger border-radius-md ms-n2 inbox" style="display: none;">
 									<xsl:if test="@inbox">
 										<xsl:attribute name="style">display: inline;</xsl:attribute>
 										<xsl:value-of select="@inbox"/>
@@ -137,7 +139,7 @@
 										<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/activities.asp">
 											<DIV>
 												<I class="fad fa-bell fontSize22" style="z-index: -1;"/>
-												<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 announcement" style="display: none;">
+												<SPAN class="text-xs text-light bg-danger border-radius-md ms-n2 announcement" style="display: none;">
 													<xsl:if test="@announcement">
 														<xsl:attribute name="style">display: inline;</xsl:attribute>
 														<xsl:value-of select="@announcement"/>
@@ -151,7 +153,7 @@
 										<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/inbox.asp">
 											<DIV>
 												<I class="fad fa-comments fontSize22" style="z-index: -1;"/>
-												<SPAN class="text-xs text-light bg-warning border-radius-md ms-n2 inbox" style="display: none;">
+												<SPAN class="text-xs text-light bg-danger border-radius-md ms-n2 inbox" style="display: none;">
 													<xsl:if test="@inbox">
 														<xsl:attribute name="style">display: inline;</xsl:attribute>
 														<xsl:value-of select="@inbox"/>
@@ -180,7 +182,7 @@
 										<DIV class="d-none d-lg-block text-xs text-bold">搜尋</DIV>
 									</A>
 								</LI>
-								<LI class="nav-item d-flex align-items-end">
+								<!--								<LI class="nav-item d-flex align-items-end">
 									<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/forum/">
 										<DIV class="d-flex align-items-center">
 											<I class="fas fa-comment-alt-edit fontSize22 width30whenMobile"/>
@@ -188,7 +190,7 @@
 										</DIV>
 										<DIV class="d-none d-lg-block text-xs text-bold">討論</DIV>
 									</A>
-								</LI>
+								</LI>-->
 								<LI class="nav-item d-flex align-items-end">
 									<A class="nav-link nav-link-icon p-2 p-lg-0 me-3 d-flex flex-column align-items-center" href="/favorite.asp">
 										<DIV class="d-flex align-items-center">
@@ -298,7 +300,7 @@
 	<xsl:template name="headMetaTags">
 		<META content="IE=edge" http-equiv="X-UA-Compatible"/>
 		<META content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
-		<META name="theme-color" content="#D63384"/>
+		<META name="theme-color" content="#164353"/>
 	</xsl:template>
 
 	<xsl:template name="bootstrapToast">
@@ -312,7 +314,7 @@
 
 	<!--浮动式客服按钮-->
 	<xsl:template name="customerFloatBtn">
-		<A class="customerFloatBtn d-flex align-items-center justify-content-center position-fixed bg-dark fontSize25 text-white opacity-9" href="https://line.me/R/ti/p/%40017zadfy">
+		<A class="customerFloatBtn d-flex align-items-center justify-content-center position-fixed bg-primary fontSize25 text-white opacity-9 shadow" href="https://line.me/R/ti/p/%40017zadfy">
 			<I class="fad fa-user-headset"/>
 		</A>
 	</xsl:template>

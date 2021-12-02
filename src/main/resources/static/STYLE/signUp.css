@@ -42,24 +42,24 @@ LABEL IMG {
 }
 
 :checked + LABEL.male {
-        border-color: #16B5D9E1;
+        border-color: #247490EE;
         border-radius: 20px;
 }
 
 :checked + LABEL.male:before {
         content: "✓";
-        background-color: #16B5D9FF;
+        background-color: #247490;
         transform: scale(1);
 }
 
 :checked + LABEL.female {
-        border-color: #D6338488;
+        border-color: #DC5C59AA;
         border-radius: 20px;
 }
 
 :checked + LABEL.female:before {
         content: "✓";
-        background-color: #D63384EE;
+        background-color: #DC5C59EE;
         transform: scale(1);
 }
 

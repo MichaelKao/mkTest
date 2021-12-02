@@ -34,7 +34,7 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<BUTTON class="btn btn-link m-0 p-0 scrollTopFloatBtn d-flex align-items-center justify-content-center position-fixed bg-primary fontSize25 text-white opacity-9" type="button">
+			<BUTTON class="btn btn-link m-0 p-0 scrollTopFloatBtn d-flex align-items-center justify-content-center position-fixed bg-primary fontSize25 text-white opacity-9 shadow" type="button">
 				<I class="fas fa-chevron-up"></I>
 			</BUTTON>
 			<DIV class="modal fade" id="addPostModal">

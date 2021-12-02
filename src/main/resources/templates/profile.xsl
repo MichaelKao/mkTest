@@ -206,7 +206,7 @@
 	</xsl:template>
 	<xsl:template match="lover">
 		<INPUT name="whom" type="hidden" value="{@identifier}"/>
-		<DIV class="col-md-6 col-lg-5">
+		<DIV class="col-md-6 col-lg-5 mb-2 px-0 px-md-2">
 			<DIV class="carousel slide" data-bs-ride="carousel" id="carousel">
 				<DIV class="carousel-indicators">
 					<BUTTON aria-current="true" type="button" data-bs-target="#carousel" data-bs-slide-to="0" class="active"></BUTTON>
@@ -215,8 +215,8 @@
 					</xsl:for-each>
 				</DIV>
 				<DIV class="carousel-inner">
-					<DIV class="carousel-item active">
-						<IMG class="d-block w-100" src="{profileImage}" alt="大頭照"/>
+					<DIV class="carousel-item active profileImage">
+						<IMG class="d-block w-100 border-radius-md" src="{profileImage}" alt="大頭照"/>
 					</DIV>
 					<xsl:for-each select="picture">
 						<DIV class="carousel-item">
@@ -270,66 +270,66 @@
 				</xsl:if>
 			</DIV>
 			<xsl:if test="/document/@me">
-				<div class="text-sm text-primary text-bold text-center">
-					<I class="fas fa-lightbulb-on me-1"></I>
+				<div class="text-sm text-danger text-bold text-center">
+					<I class="far fa-lightbulb-on me-1"></I>
 					<SPAN>真人照片邀約成功率提高90%</SPAN>
 				</div>
 			</xsl:if>
 			<DIV class="d-flex">
 				<xsl:if test="not(/document/@me) and not(/document/@blocking) and not(/document/@blockedBy)">
-					<DIV class="d-flex justify-content-center justify-content-md-start" id="icon">
+					<DIV class="d-flex mt-md-2 justify-content-center justify-content-md-start" id="icon">
 						<DIV>
 							<BUTTON onclick="fbq('track', 'Collect');" type="button">
 								<xsl:choose>
 									<xsl:when test="/document/follow">
-										<xsl:attribute name="class">btn btn-link fav liked mt-2 mb-0 p-0</xsl:attribute>
+										<xsl:attribute name="class">btn btn-link fav liked mb-0 p-0</xsl:attribute>
 									</xsl:when>
 									<xsl:otherwise>
-										<xsl:attribute name="class">btn btn-link fav mt-2 mb-0 p-0</xsl:attribute>
+										<xsl:attribute name="class">btn btn-link fav mb-0 p-0</xsl:attribute>
 									</xsl:otherwise>
 								</xsl:choose>
-								<I class="fad fa-heart-circle fontSize35"></I>
+								<I class="fad fa-heart-circle fontSize30"></I>
 								<DIV>收藏</DIV>
 							</BUTTON>
 						</DIV>
 						<DIV>
-							<A class="btn btn-link ms-4 mt-2 mb-0 p-0" href="/chatroom/{@identifier}/" onclick="fbq('track', 'StartChat');">
-								<I class="fad fa-comments fa-beat fontSize35"></I>
+							<A class="btn btn-link ms-4 mb-0 p-0" href="/chatroom/{@identifier}/" onclick="fbq('track', 'StartChat');">
+								<I class="fas fa-comments fa-beat fontSize30"></I>
 								<DIV>聊天</DIV>
 							</A>
 						</DIV>
 						<xsl:if test="/document/@male">
 							<DIV>
-								<BUTTON class="btn btn-link ms-4 gift mt-2 mb-0 p-0" data-bs-target="#giftModal" data-bs-toggle="modal" onclick="fbq('track', 'SendAGift');" type="button">
-									<I class="fad fa-badge-dollar fontSize35"></I>
+								<BUTTON class="btn btn-link ms-4 gift mb-0 p-0" data-bs-target="#giftModal" data-bs-toggle="modal" onclick="fbq('track', 'SendAGift');" type="button">
+									<I class="fas fa-badge-dollar fontSize30"></I>
 									<DIV>邀約</DIV>
 								</BUTTON>
 							</DIV>
 						</xsl:if>
 						<!--						<DIV>
-							<BUTTON class="btn btn-link ms-4 mt-2 mb-0 p-0">
-								<I class="fad fa-lightbulb-exclamation fontSize35"></I>
+							<BUTTON class="btn btn-link ms-4 mb-0 p-0">
+								<I class="fas fa-lightbulb-exclamation fontSize30"></I>
 								<DIV>檢舉</DIV>
 							</BUTTON>
 						</DIV>-->
 						<DIV>
-							<BUTTON class="btn btn-link ms-3 me-1 mt-2 mb-0 p-0" data-bs-target="#blockModal" data-bs-toggle="modal">
-								<I class="fad fa-user-slash fontSize35"></I>
+							<BUTTON class="btn btn-link ms-3 me-1 mb-0 p-0" data-bs-target="#blockModal" data-bs-toggle="modal">
+								<I class="fas fa-user-slash fontSize30"></I>
 								<DIV>封鎖</DIV>
 							</BUTTON>
 						</DIV>
 					</DIV>
 				</xsl:if>
 				<xsl:if test="/document/@me">
-					<DIV class="ms-auto">
+					<DIV class="ms-auto mt-1">
 						<xsl:if test="not(@relief)">
-							<BUTTON class="btn btn-link m-2 p-0 reliefBtn" data-bs-target="#cropModal" data-bs-toggle="modal">
-								<I class="fad fa-shield-check fontSize35"></I>
+							<BUTTON class="btn btn-link mx-2 my-0 p-0 text-dark reliefBtn" data-bs-target="#cropModal" data-bs-toggle="modal">
+								<I class="fad fa-shield-check fontSize30"></I>
 								<DIV>安心認證</DIV>
 							</BUTTON>
 						</xsl:if>
-						<A class="btn btn-link m-2 p-0" href="/me.asp">
-							<I class="fad fa-pen fontSize35"></I>
+						<A class="btn btn-link mx-2 my-0 p-0 text-dark" href="/me.asp">
+							<I class="fad fa-pen fontSize30"></I>
 							<DIV>編輯檔案</DIV>
 						</A>
 					</DIV>
@@ -436,8 +436,8 @@
 				</DIV>
 			</xsl:if>
 		</DIV>
-		<DIV class="col-md-6 col-lg-5">
-			<SECTION class="mb-3">
+		<DIV class="col-md-6 col-lg-5 p-0">
+			<SECTION class="mb-2 p-3 card">
 				<DIV class="d-flex align-items-baseline my-1">
 					<DIV class="me-2">
 						<xsl:if test="gender/@gender = 'male'">
@@ -447,7 +447,7 @@
 							<I class="fad fa-chess-queen-alt fontSize35 text-primary"></I>
 						</xsl:if>
 					</DIV>
-					<H3 class="text-primary me-2 m-0">
+					<H3 class="text-dark me-2 m-0">
 						<xsl:value-of select="nickname"/>
 					</H3>
 					<DIV class="text-dark text-bold mx-1">
@@ -486,11 +486,11 @@
 					</SAPN>
 				</DIV>
 			</SECTION>
-			<SECTION>
-				<DIV class="mt-2">
+			<SECTION class="mb-2 p-3 card">
+				<DIV>
 					<I class="fad fa-map-marker-alt fontSize22 me-2"></I>
 					<xsl:for-each select="location">
-						<A class="me-1 btn btn-dark m-0 px-2 py-1" href="/search.json?location={@id}">
+						<A class="me-1 btn btn-pink m-0 px-2 py-1" href="/search.json?location={@id}">
 							<SPAN>#</SPAN>
 							<SPAN>
 								<xsl:value-of select="."/>
@@ -501,7 +501,7 @@
 				<DIV class="mt-2">
 					<I class="fad fa-book-heart fontSize22 me-2"></I>
 					<xsl:for-each select="service">
-						<A class="me-1 btn btn-outline-dark m-0 p-1" href="/search.json?companionship={@id}">
+						<A class="me-1 btn btn-outline-pink m-0 p-1" href="/search.json?companionship={@id}">
 							<SPAN>#</SPAN>
 							<SPAN>
 								<xsl:value-of select="."/>
@@ -510,7 +510,7 @@
 					</xsl:for-each>
 				</DIV>
 			</SECTION>
-			<DIV class="mt-3">
+			<SECTION class="mb-2 p-3 card">
 				<DIV class="mb-2">
 					<I class="fad fa-ruler-vertical fontSize22 col-1"></I>
 					<SPAN class="ms-4">
@@ -587,26 +587,27 @@
 						</SPAN>
 					</DIV>
 				</xsl:if>
-			</DIV>
-			<HR class="text-primary"/>
-			<xsl:if test="/document/@me">
-				<DIV class="text-sm text-primary text-bold mb-3">
-					<I class="fas fa-lightbulb-on me-1"></I>
-					<SPAN>修改預設內容，邀約成功率提高60%！</SPAN>
+			</SECTION>
+			<SECTION class="p-3 card">
+				<xsl:if test="/document/@me">
+					<DIV class="text-sm text-danger text-bold mb-3">
+						<I class="far fa-lightbulb-on me-1"></I>
+						<SPAN>修改預設內容，邀約成功率提高60%！</SPAN>
+					</DIV>
+				</xsl:if>
+				<DIV class="d-flex">
+					<I class="fad fa-file-user fontSize22 col-1"></I>
+					<DIV class="aboutMe ms-4">
+						<xsl:value-of disable-output-escaping="yes" select="aboutMe"/>
+					</DIV>
 				</DIV>
-			</xsl:if>
-			<DIV class="mb-2 d-flex">
-				<I class="fad fa-file-user fontSize22 col-1"></I>
-				<DIV class="aboutMe ms-4">
-					<xsl:value-of disable-output-escaping="yes" select="aboutMe"/>
+				<DIV class="d-flex">
+					<I class="fad fa-fire-alt fontSize22 col-1"></I>
+					<DIV class="idealConditions ms-4">
+						<xsl:value-of disable-output-escaping="yes" select="idealConditions"/>
+					</DIV>
 				</DIV>
-			</DIV>
-			<DIV class="mb-2 d-flex">
-				<I class="fad fa-fire-alt fontSize22 col-1"></I>
-				<DIV class="idealConditions ms-4">
-					<xsl:value-of disable-output-escaping="yes" select="idealConditions"/>
-				</DIV>
-			</DIV>
+			</SECTION>
 			<DIV class="lessThan768"></DIV>
 		</DIV>
 	</xsl:template>

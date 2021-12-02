@@ -1090,7 +1090,7 @@ $(document).ready(function () {
 					$(notSeenDiv).attr('class', 'd-flex justify-content-center');
 					$(timeAndSeenSubDiv).append(notSeenDiv);
 					var notSeenCountSpan = document.createElement('SPAN');
-					$(notSeenCountSpan).attr('class', 'text-xs text-light bg-primary border-radius-md px-1');
+					$(notSeenCountSpan).attr('class', 'text-xs text-light bg-danger border-radius-md px-1');
 					$(notSeenCountSpan).append(data.notSeenCount);
 					$(notSeenDiv).append(notSeenCountSpan);
 				}
@@ -1525,7 +1525,7 @@ $(document).ready(function () {
 				$(notSeenDiv).attr('class', 'd-flex justify-content-center');
 				$(timeAndSeenSubDiv).append(notSeenDiv);
 				var notSeenCountSpan = document.createElement('SPAN');
-				$(notSeenCountSpan).attr('class', 'text-xs text-light bg-primary border-radius-md px-1');
+				$(notSeenCountSpan).attr('class', 'text-xs text-light bg-danger border-radius-md px-1');
 				$(notSeenCountSpan).append(item.notSeenCount);
 				$(notSeenDiv).append(notSeenCountSpan);
 			}

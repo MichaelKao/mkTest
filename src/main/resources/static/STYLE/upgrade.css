@@ -2,7 +2,7 @@
         width: 100%;
         height: 120px;
         margin-right: 10px;
-        background: #D63384;
+        background: #164353;
         border-radius: 10px;
 }
 
@@ -19,18 +19,9 @@
 
 @keyframes Color{
         0%{
-                color: #450920;
-        }
-        25%{
-                color: #A53862;
-        }
-        50%{
-                color: #DA4167;
-        }
-        75%{
-                color: #DA627D;
+                color: #164353;
         }
         100%{
-                color: #FFA5AB;
+                color: #CE796B;
         }
 }
