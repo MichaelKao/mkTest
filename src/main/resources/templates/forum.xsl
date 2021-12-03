@@ -182,7 +182,9 @@
 							<DIV class="header">
 								<DIV class="left">
 									<DIV class="blurImg me-2">
-										<INPUT type="hidden" value="{author/@profileImage}"/>
+										<xsl:attribute name="style">
+											<xsl:value-of select="concat('background-image: url(', author/@profileImage , ');')"/>
+										</xsl:attribute>
 									</DIV>
 									<DIV class="username">
 										<DIV class="title text-dark">

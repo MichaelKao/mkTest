@@ -1362,6 +1362,48 @@ public class WelcomeController {
 	}
 
 	/**
+	 * 完成填寫個人檔案(註冊最後步驟)
+	 *
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/fillinProfile.asp")
+	@Secured({Servant.ROLE_ADVENTURER})
+	ModelAndView fillinProfile(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Document document = loverService.writeDocument(me, locale);
+		Element documentElement = servant.documentElement(
+			document,
+			authentication
+		);
+
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.fillinProfile",
+			null,
+			locale
+		));//网页标题
+
+		if (loverService.isVVIP(me)) {
+			//长期贵宾
+			documentElement.setAttribute(
+				"vip",
+				null
+			);
+		}
+
+		ModelAndView modelAndView = new ModelAndView("fillinProfile");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
 	 * 编辑个人资料。
 	 *
 	 * @param authentication 认证

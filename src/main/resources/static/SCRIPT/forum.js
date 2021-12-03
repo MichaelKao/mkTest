@@ -897,9 +897,4 @@ $(document).ready(function () {
 		var btn = this;
 		finishEditComment(btn);
 	});
-
-	$('.blurImg').each(function () {
-		let pic = $(this).find('INPUT').val();
-		$(this).css('background-image', 'url(' + pic + ')');
-	});
 });

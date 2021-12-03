@@ -594,7 +594,7 @@ public class LoverService {
 				null,
 				locale
 			)).
-			withRedirect("/me.asp").
+			withRedirect("/fillinProfile.asp").
 			withResponse(true).
 			toJSONObject();
 	}

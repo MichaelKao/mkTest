@@ -314,7 +314,7 @@
 
 	<!--浮动式客服按钮-->
 	<xsl:template name="customerFloatBtn">
-		<A class="customerFloatBtn d-flex align-items-center justify-content-center position-fixed bg-primary fontSize25 text-white opacity-9 shadow" href="https://line.me/R/ti/p/%40017zadfy">
+		<A class="customerFloatBtn d-flex align-items-center justify-content-center position-fixed bg-dark fontSize25 text-white opacity-9 shadow" href="https://line.me/R/ti/p/%40017zadfy">
 			<I class="fad fa-user-headset"/>
 		</A>
 	</xsl:template>

@@ -93,15 +93,38 @@
 						</DIV>
 					</DIV>
 				</DIV>
-				<DIV class="card mx-auto pt-3">
+				<DIV class="text-center mb-3">
+					<DIV>
+						<IMG class="logo" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/bigLOGO.svg" width="125	"/>
+					</DIV>
+					<DIV class="text-dark my-2">最後1步  填寫資料</DIV>
+					<SVG viewBox="0 0 228 20" height="20" width="228" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+						<g id="iPhone_12_12_Pro_1" data-name="iPhone 12, 12 Pro – 1" clip-path="url(#clip-iPhone_12_12_Pro_1)">
+							<rect id="Rectangle_1" data-name="Rectangle 1" width="228" height="18" rx="9" transform="translate(0 0)" fill="#154354"></rect>
+							<g id="Ellipse_1" data-name="Ellipse 1" transform="translate(0 0)" fill="#fff" stroke="#62636e" stroke-width="3">
+								<circle cx="9" cy="9" r="9" stroke="none"></circle>
+								<circle cx="9" cy="9" r="7.5" fill="none"></circle>
+							</g>
+							<g id="Ellipse_2" data-name="Ellipse 2" transform="translate(70 0)" fill="#fff" stroke="#62636e" stroke-width="3">
+								<circle cx="9" cy="9" r="9" stroke="none"></circle>
+								<circle cx="9" cy="9" r="7.5" fill="none"></circle>
+							</g>
+							<g id="Ellipse_3" data-name="Ellipse 3" transform="translate(140 0)" fill="#fff" stroke="#62636e" stroke-width="3">
+								<circle cx="9" cy="9" r="9" stroke="none"></circle>
+								<circle cx="9" cy="9" r="7.5" fill="none"></circle>
+							</g>
+							<g id="Ellipse_4" data-name="Ellipse 4" transform="translate(210 0)" fill="#468ca6" stroke="#62636e" stroke-width="3">
+								<circle cx="9" cy="9" r="9" stroke="none"></circle>
+								<circle cx="9" cy="9" r="7.5" fill="none"></circle>
+							</g>
+						</g>
+					</SVG>
 					<DIV class="text-center">
-						<H4 class="text-primary m-0">
-							<xsl:value-of select="@title"/>
-						</H4>
 						<DIV class="text-sm text-dark">完整填寫資料</DIV>
 						<DIV class="text-sm text-dark">開始您的約會</DIV>
-						<HR class="horizontal dark"/>
 					</DIV>
+				</DIV>
+				<DIV class="card mx-auto pt-3">
 					<xsl:apply-templates select="lover"/>
 				</DIV>
 				<xsl:call-template name="footer"/>
@@ -376,9 +399,7 @@
 					</DIV>
 				</DIV>
 				<DIV class="mx-auto mt-2 col-6 col-lg-4">
-					<BUTTON class="btn btn-round btn-dark mb-0 w-100" type="submit">
-						<xsl:value-of select="@i18n-submit"/>
-					</BUTTON>
+					<BUTTON class="btn btn-round btn-dark mb-0 w-100" type="submit">完成註冊!</BUTTON>
 				</DIV>
 			</DIV>
 		</FORM>
