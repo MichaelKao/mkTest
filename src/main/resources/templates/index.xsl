@@ -186,6 +186,10 @@
 												</DIV>
 												<DIV class="text-white text-sm mt-1">放上個人照片</DIV>
 												<DIV class="text-white text-sm mt-1">meQUEEN認識意願提高100%</DIV>
+												<A class="btn btn-light mt-2 px-2 py-1 m-0" href="/profile/">
+													<I class="fad fa-user-edit fontSize22 width30"></I>
+													<SPAN class="ms-1">個人檔案</SPAN>
+												</A>
 											</DIV>
 											<OL class="flickity-page-dots">
 												<LI class="dot is-selected"></LI>
@@ -256,6 +260,10 @@
 												</DIV>
 												<DIV class="text-white text-sm mt-1">放上個人照片</DIV>
 												<DIV class="text-white text-sm mt-1">meKING認識意願提高100%</DIV>
+												<A class="btn btn-light mt-2 px-2 py-1 m-0" href="/profile/">
+													<I class="fad fa-user-edit fontSize22 width30"></I>
+													<SPAN class="ms-1">個人檔案</SPAN>
+												</A>
 											</DIV>
 											<OL class="flickity-page-dots">
 												<LI class="dot is-selected"></LI>
