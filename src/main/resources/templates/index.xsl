@@ -101,33 +101,33 @@
 						</DIV>
 					</DIV>
 				</SECTION>
-				<section class="mt-2 py-4 py-md-6 container meQUEEN">
-					<div class="ladies px-2 ms-sm-1 py-1 ms-md-2 ms-lg-6 ms-xl-8 p-xl-5">
-						<h2>OUR LADIES</h2>
-						<div>
-							<a class="meBtn btn btn-primary shadow px-3 py-2" href="/signUp.asp">meQUEEN</a>
-						</div>
-						<div class="text-bold intro">
-							<div>時間比金錢還貴的您</div>
-							<div>是否止步於交友軟體耗時配對?</div>
-							<div>來到養蜜, 簡單三步驟開始約會</div>
-						</div>
-					</div>
-					<div class="row mt-2 mt-md-5 justify-content-around">
-						<div class="col-4 stepBox shadow">
-							<div>1. 註冊</div>
-							<div>精選照片</div>
-						</div>
-						<div class="col-4 stepBox shadow">
-							<div>2. 聊聊</div>
-							<div>確認邀約</div>
-						</div>
-						<div class="col-4 stepBox shadow">
-							<div>3. 約會</div>
-							<div>紳士請客</div>
-						</div>
-					</div>
-				</section>
+				<SECTION class="mt-2 py-4 py-md-6 container meQUEEN">
+					<DIV class="ladies px-2 ms-sm-1 py-1 ms-md-2 ms-lg-6 ms-xl-8 p-xl-5">
+						<H2>OUR LADIES</H2>
+						<DIV>
+							<A class="meBtn btn btn-primary shadow px-3 py-2" href="/signUp.asp">meQUEEN</A>
+						</DIV>
+						<DIV class="text-bold intro">
+							<DIV>想被照顧與疼愛</DIV>
+							<DIV>不想再浪費青春</DIV>
+							<DIV>與紳士展開奢華約會吧</DIV>
+						</DIV>
+					</DIV>
+					<DIV class="row mt-2 mt-md-5 justify-content-around">
+						<DIV class="col-4 stepBox shadow">
+							<DIV>1. 註冊</DIV>
+							<DIV>精選照片</DIV>
+						</DIV>
+						<DIV class="col-4 stepBox shadow">
+							<DIV>2. 聊聊</DIV>
+							<DIV>確認邀約</DIV>
+						</DIV>
+						<DIV class="col-4 stepBox shadow">
+							<DIV>3. 約會</DIV>
+							<DIV>紳士請客</DIV>
+						</DIV>
+					</DIV>
+				</SECTION>
 			</xsl:if>
 			<xsl:if test="not(@lineNotify) and @signIn">
 				<DIV class="modal fade" id="lineNotifyModal" tabindex="-1">
@@ -163,104 +163,108 @@
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
 							<DIV class="modal-body p-0">
-								<DIV class="d-flex">
+								<DIV class="closeGuidance">
 									<BUTTON class="btn btn-link text-white ms-auto fontSize30 m-0 me-2 p-0" data-bs-dismiss="modal" type="button">
 										<I class="fal fa-times"></I>
 									</BUTTON>
 								</DIV>
 								<DIV class="carousel mx-auto">
 									<xsl:if test="@male">
-										<DIV class="carousel-cell imageShadow">
-											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
-												<H3 class="text-white text-bold">WELCOME!</H3>
-												<DIV class="guideTitle text-bold text-primary">歡迎來到養蜜</DIV>
-												<DIV class="text-white mt-1">提升效率快速約會</DIV>
+										<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
+											<DIV class="d-flex flex-column justify-content-center align-items-center mb-3">
+												<H2 class="text-white text-bold">WELCOME!</H2>
+												<DIV class="guideTitle text-bold text-primary h4 mb-0">歡迎來到養蜜</DIV>
+												<DIV class="text-white h6 mt-1 mb-0 text-light">提升效率快速約會</DIV>
 											</DIV>
 											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
-												<DIV class="text-white text-bold text-lg">1. 不用配對，直接聊天</DIV>
-												<DIV class="text-white text-sm mt-1">互動前先新增一張好看的照片吧</DIV>
+												<H3 class="text-white text-bold text-lg mb-0">1. 不用配對，直接聊天</H3>
+												<DIV class="text-white text-sm text-light">互動前先新增一張好看的照片吧</DIV>
 											</DIV>
 											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
 												<DIV>
 													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/kingTop1.jpg" width="150px"/>
 												</DIV>
-												<DIV class="text-white text-sm mt-1">放上個人照片</DIV>
-												<DIV class="text-white text-sm mt-1">meQUEEN認識意願提高100%</DIV>
-												<A class="btn btn-light mt-2 px-2 py-1 m-0" href="/profile/">
+												<DIV class="text-white mt-1">放上個人照片</DIV>
+												<DIV class="text-white">meQUEEN認識意願提高100%</DIV>
+												<A class="btn btn-light mt-2 px-2 py-1 m-0" href="/album.asp">
 													<I class="fad fa-user-edit fontSize22 width30"></I>
-													<SPAN class="ms-1">個人檔案</SPAN>
+													<SPAN class="ms-1 text-sm">個人檔案</SPAN>
 												</A>
 											</DIV>
 											<OL class="flickity-page-dots">
 												<LI class="dot is-selected"></LI>
 												<LI class="dot"></LI>
-												<LI class="dot"></LI>
+												<!--<LI class="dot"></LI>-->
 											</OL>
 										</DIV>
-										<DIV class="carousel-cell imageShadow">
-											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
-												<H3 class="text-white text-bold">TIPS</H3>
-												<DIV class="guideTitle text-bold text-primary">安心認證</DIV>
-												<DIV class="text-white mt-1">提升效率快速約會</DIV>
+										<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
+											<DIV class="d-flex flex-column justify-content-center align-items-center mb-3">
+												<H2 class="text-white text-bold">TIPS</H2>
+												<DIV class="guideTitle text-bold text-primary h4 mb-0">安心認證</DIV>
+												<DIV class="text-white h6 mt-1 mb-0 text-light">提升效率快速約會</DIV>
 											</DIV>
 											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
-												<DIV class="text-white text-bold text-lg">2. 約會安心保證</DIV>
-												<DIV class="text-white text-sm mt-1">官方真人審核</DIV>
-												<DIV class="text-white text-sm">增加meQUEEN信任度</DIV>
+												<H3 class="text-white text-bold text-lg mb-0">2. 約會安心保證</H3>
+												<DIV class="text-white text-sm text-light">官方真人審核</DIV>
+												<DIV class="text-white text-sm text-light">增加meQUEEN信任度</DIV>
 											</DIV>
 											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
 												<DIV>
 													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/kingTop2.jpg" width="150px"/>
 												</DIV>
-												<DIV class="text-white text-sm mt-1">獨立專區讓meQUEEN看到您</DIV>
+												<DIV class="text-white mt-1">獨立專區讓meQUEEN看到您</DIV>
+												<A class="btn btn-light mt-2 px-2 py-1 m-0" href="/profile/">
+													<I class="fad fa-shield-check fontSize22 width30"></I>
+													<SPAN class="ms-1 text-sm">進行安心認證</SPAN>
+												</A>
 											</DIV>
 											<OL class="flickity-page-dots">
 												<LI class="dot"></LI>
 												<LI class="dot is-selected"></LI>
-												<LI class="dot"></LI>
+												<!--<LI class="dot"></LI>-->
 											</OL>
 										</DIV>
-										<DIV class="carousel-cell imageShadow">
-											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
-												<H3 class="text-white text-bold">TIPS</H3>
-												<DIV class="guideTitle text-bold text-primary">討論區</DIV>
-												<DIV class="text-white mt-1">提升效率快速約會</DIV>
+										<!--										<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
+											<DIV class="d-flex flex-column justify-content-center align-items-center mb-3">
+												<H2 class="text-white text-bold">TIPS</H2>
+												<DIV class="guideTitle text-bold text-primary h4 mb-0">討論區</DIV>
+												<DIV class="text-white h6 mt-1 mb-0 text-light">提升效率快速約會</DIV>
 											</DIV>
 											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
-												<DIV class="text-white text-bold text-lg">3. 使用心得分享</DIV>
-												<DIV class="text-white text-sm mt-1">站內用戶使用心得</DIV>
+												<H3 class="text-white text-bold text-lg mb-0">3. 使用心得分享</H3>
+												<DIV class="text-white text-sm text-light">站內用戶使用心得</DIV>
 											</DIV>
 											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
 												<DIV>
 													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/kingTop3.jpg" width="150px"/>
 												</DIV>
-												<DIV class="text-white text-sm mt-1">如何成為情場高手看這裡</DIV>
+												<DIV class="text-white mt-1">如何成為情場高手看這裡</DIV>
 											</DIV>
 											<OL class="flickity-page-dots">
 												<LI class="dot"></LI>
 												<LI class="dot"></LI>
 												<LI class="dot is-selected"></LI>
 											</OL>
-										</DIV>
+										</DIV>-->
 									</xsl:if>
 									<xsl:if test="@female">
-										<DIV class="carousel-cell imageShadow">
-											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
-												<H3 class="text-white text-bold">WELCOME!</H3>
-												<DIV class="guideTitle text-bold text-primary">歡迎來到養蜜</DIV>
-												<DIV class="text-white mt-1">提升效率快速約會</DIV>
+										<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
+											<DIV class="d-flex flex-column justify-content-center align-items-center mb-3">
+												<H2 class="text-white text-bold">WELCOME!</H2>
+												<DIV class="guideTitle text-bold text-primary h4 mb-0">歡迎來到養蜜</DIV>
+												<DIV class="text-white h6 mt-1 mb-0 text-light">提升效率快速約會</DIV>
 											</DIV>
 											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
-												<DIV class="text-white text-bold text-lg">1. 不用配對，直接聊天</DIV>
-												<DIV class="text-white text-sm mt-1">互動前先新增一張好看的照片吧</DIV>
+												<H3 class="text-white text-bold text-lg mb-0">1. 不用配對，直接聊天</H3>
+												<DIV class="text-white text-sm text-light">互動前先新增一張好看的照片吧</DIV>
 											</DIV>
 											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
 												<DIV>
 													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/queenTop1.jpg" width="150px"/>
 												</DIV>
-												<DIV class="text-white text-sm mt-1">放上個人照片</DIV>
-												<DIV class="text-white text-sm mt-1">meKING認識意願提高100%</DIV>
-												<A class="btn btn-light mt-2 px-2 py-1 m-0" href="/profile/">
+												<DIV class="text-white mt-1">放上個人照片</DIV>
+												<DIV class="text-white">meKING認識意願提高100%</DIV>
+												<A class="btn btn-light mt-2 px-2 py-1 m-0" href="/album.asp">
 													<I class="fad fa-user-edit fontSize22 width30"></I>
 													<SPAN class="ms-1">個人檔案</SPAN>
 												</A>
@@ -268,54 +272,58 @@
 											<OL class="flickity-page-dots">
 												<LI class="dot is-selected"></LI>
 												<LI class="dot"></LI>
-												<LI class="dot"></LI>
+												<!--<LI class="dot"></LI>-->
 											</OL>
 										</DIV>
-										<DIV class="carousel-cell imageShadow">
-											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
-												<H3 class="text-white text-bold">TIPS</H3>
-												<DIV class="guideTitle text-bold text-primary">安心認證</DIV>
-												<DIV class="text-white mt-1">提升效率快速約會</DIV>
+										<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
+											<DIV class="d-flex flex-column justify-content-center align-items-center mb-3">
+												<H2 class="text-white text-bold">TIPS</H2>
+												<DIV class="guideTitle text-bold text-primary h4 mb-0">安心認證</DIV>
+												<DIV class="text-white h6 mt-1 mb-0 text-light">提升效率快速約會</DIV>
 											</DIV>
 											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
-												<DIV class="text-white text-bold text-lg">2. 約會安心保證</DIV>
-												<DIV class="text-white text-sm mt-1">官方真人審核</DIV>
-												<DIV class="text-white text-sm">增加個人帳戶信任度</DIV>
+												<H3 class="text-white text-bold text-lg mb-0">2. 約會安心保證</H3>
+												<DIV class="text-white text-sm text-light">官方真人審核</DIV>
+												<DIV class="text-white text-sm text-light">增加個人帳戶信任度</DIV>
 											</DIV>
 											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
 												<DIV>
 													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/queenTop2.jpg" width="150px"/>
 												</DIV>
-												<DIV class="text-white text-sm mt-1">獨立專區讓meKING看到您</DIV>
+												<DIV class="text-white mt-1">獨立專區讓meKING看到您</DIV>
+												<A class="btn btn-light mt-2 px-2 py-1 m-0" href="/profile/">
+													<I class="fad fa-shield-check fontSize22 width30"></I>
+													<SPAN class="ms-1 text-sm">進行安心認證</SPAN>
+												</A>
 											</DIV>
 											<OL class="flickity-page-dots">
 												<LI class="dot"></LI>
 												<LI class="dot is-selected"></LI>
-												<LI class="dot"></LI>
+												<!--<LI class="dot"></LI>-->
 											</OL>
 										</DIV>
-										<DIV class="carousel-cell imageShadow">
-											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
-												<H3 class="text-white text-bold">TIPS</H3>
-												<DIV class="guideTitle text-bold text-primary">討論區</DIV>
-												<DIV class="text-white mt-1">提升效率快速約會</DIV>
+										<!--										<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
+											<DIV class="d-flex flex-column justify-content-center align-items-center mb-3">
+												<H2 class="text-white text-bold">TIPS</H2>
+												<DIV class="guideTitle text-bold text-primary h4 mb-0">討論區</DIV>
+												<DIV class="text-white h6 mt-1 mb-0 text-light">提升效率快速約會</DIV>
 											</DIV>
 											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
-												<DIV class="text-white text-bold text-lg">3. 使用心得分享</DIV>
-												<DIV class="text-white text-sm mt-1">站內用戶使用心得</DIV>
+												<H3 class="text-white text-bold text-lg mb-0">3. 使用心得分享</H3>
+												<DIV class="text-white text-sm text-light">站內用戶使用心得</DIV>
 											</DIV>
 											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
 												<DIV>
 													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/queenTop3.jpg" width="150px"/>
 												</DIV>
-												<DIV class="text-white text-sm mt-1">如何與優質男士展開約會</DIV>
+												<DIV class="text-white mt-1">如何與優質男士展開約會</DIV>
 											</DIV>
 											<OL class="flickity-page-dots">
 												<LI class="dot"></LI>
 												<LI class="dot"></LI>
 												<LI class="dot is-selected"></LI>
 											</OL>
-										</DIV>
+										</DIV>-->
 									</xsl:if>
 								</DIV>
 							</DIV>

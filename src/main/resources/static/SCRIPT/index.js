@@ -49,13 +49,11 @@ $(document).ready(function () {
 	$('A.mobileModeA').click(function () {
 		let a = this;
 		loverMobilePage(a);
-		console.log('123')
 	});
 
 	function loverMobilePage(a) {
 		let type = $(a).data('type');
 		$mobileRefreshBtn.data('type', type);
-		console.log($mobileRefreshBtn.data('type'))
 		let p = 0;
 		if (getCookie(type + 'Page') !== '') {
 			p = getCookie(type + 'Page');
@@ -121,7 +119,6 @@ $(document).ready(function () {
 		let wrap;
 		var pageBtnWrap;
 		let type = $(button).data('type');
-		console.log('mobiletype', type);
 		if ($(button).attr('id') === 'mobileRefreshBtn') {
 			wrap = $('DIV.mobileMode');
 			pageBtnWrap = $('DIV#mobilePageBtn');

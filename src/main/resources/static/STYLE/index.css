@@ -157,8 +157,7 @@ HEADER {
 
 .carousel-cell {
 	width: 100%;
-	height: 550px;
-	margin-right: 11px;
+	height: 525px;
 	border-radius: 30px;
 	background: #164353;
 }
@@ -186,7 +185,6 @@ a.guidance:hover {
 .guideTitle {
 	border: 1px solid #fff;
 	padding: 4px 8px;
-	font-size: 1.4rem;
 }
 
 .flickity-page-dots {
@@ -201,6 +199,13 @@ a.guidance:hover {
 
 #guide .modal-dialog {
 	width: 305px;
+	margin: 0 auto;
+}
+
+.closeGuidance {
+	z-index: 9;
+	right: 11px;
+	position: absolute;
 }
 
 @media (max-width: 991.9px) {
@@ -276,5 +281,11 @@ a.guidance:hover {
 @media (max-width: 321px) {
 	.ladies {
 		width: 75%;
+	}
+}
+
+@media (max-width: 319px) {
+	#guide .modal-dialog {
+		width: 100vw;
 	}
 }
