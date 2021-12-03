@@ -338,39 +338,44 @@
 			<xsl:if test="rate">
 				<DIV class="moreThan768 mt-3">
 					<DIV class="rateBox">
-						<xsl:for-each select="rate">
-							<DIV class="card flex-row px-3 py-2 mb-2 align-items-center">
-								<DIV class="col-3 col-sm-2">
-									<IMG class="border-radius-sm" src="{@profileImage}" width="50"/>
+						<DIV class="card">
+							<xsl:for-each select="rate">
+								<DIV class="d-flex flex-row px-3 py-2 align-items-center">
+									<xsl:if test="position() mod 2 = 0">
+										<xsl:attribute name="style">background: #F3F3F3AA;</xsl:attribute>
+									</xsl:if>
+									<DIV class="col-3 col-sm-2">
+										<IMG class="border-radius-sm" src="{@profileImage}" width="50"/>
+									</DIV>
+									<DIV class="ms-2">
+										<xsl:choose>
+											<xsl:when test="(/document/@female) or (/document/@vip) or (/document/@vvip) or (/document/@me)">
+												<DIV class="text-xs">
+													<xsl:value-of select="@nickname"/>
+												</DIV>
+												<DIV class="star text-lg" data-star="{@rate}">
+													<xsl:if test="/document/@identifier = @identifier">
+														<xsl:attribute name="class">star text-lg selfStar</xsl:attribute>
+													</xsl:if>
+												</DIV>
+												<DIV class="text-sm">
+													<xsl:if test="/document/@identifier = @identifier">
+														<xsl:attribute name="class">text-sm selfComment</xsl:attribute>
+													</xsl:if>
+													<xsl:value-of select="@comment"/>
+												</DIV>
+											</xsl:when>
+											<xsl:otherwise>
+												<A href="/upgrade.asp">升級 VIP 查看</A>
+											</xsl:otherwise>
+										</xsl:choose>
+									</DIV>
+									<xsl:if test="/document/@identifier = @identifier">
+										<I class="fad fa-edit fontSize22 col-1 position-absolute top-1 right-1 cursor-pointer" data-bs-target="#rateModal" data-bs-toggle="modal"></I>
+									</xsl:if>
 								</DIV>
-								<DIV class="ms-2">
-									<xsl:choose>
-										<xsl:when test="(/document/@female) or (/document/@vip) or (/document/@vvip) or (/document/@me)">
-											<DIV class="text-xs">
-												<xsl:value-of select="@nickname"/>
-											</DIV>
-											<DIV class="star text-lg" data-star="{@rate}">
-												<xsl:if test="/document/@identifier = @identifier">
-													<xsl:attribute name="class">star text-lg selfStar</xsl:attribute>
-												</xsl:if>
-											</DIV>
-											<DIV class="text-sm">
-												<xsl:if test="/document/@identifier = @identifier">
-													<xsl:attribute name="class">text-sm selfComment</xsl:attribute>
-												</xsl:if>
-												<xsl:value-of select="@comment"/>
-											</DIV>
-										</xsl:when>
-										<xsl:otherwise>
-											<A href="/upgrade.asp">升級 VIP 查看</A>
-										</xsl:otherwise>
-									</xsl:choose>
-								</DIV>
-								<xsl:if test="/document/@identifier = @identifier">
-									<I class="fad fa-edit fontSize22 col-1 position-absolute top-1 right-1 cursor-pointer" data-bs-target="#rateModal" data-bs-toggle="modal"></I>
-								</xsl:if>
-							</DIV>
-						</xsl:for-each>
+							</xsl:for-each>
+						</DIV>
 					</DIV>
 					<DIV class="modal fade" id="rateModal">
 						<DIV class="modal-dialog modal-dialog-centered">
@@ -608,7 +613,7 @@
 					</DIV>
 				</DIV>
 			</SECTION>
-			<DIV class="lessThan768"></DIV>
+			<DIV class="lessThan768 mt-2"></DIV>
 		</DIV>
 	</xsl:template>
 </xsl:stylesheet>
