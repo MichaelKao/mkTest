@@ -230,3 +230,47 @@ HEADER {
 		width: 75%;
 	}
 }
+
+.carousel-cell {
+	width: 260px;
+	height: 470px;
+	margin-right: 11px;
+	border-radius: 30px;
+	background: #164353;
+}
+
+.guidance {
+	position: fixed;
+	color: #FFF;
+	width: 45px;
+	height: 45px;
+	bottom: 130px;
+	right: 8px;
+	border-radius: 50px;
+	z-index: 9999;
+	cursor: pointer;
+}
+
+a.guidance:hover {
+	color: #FFF;
+}
+
+#guide .modal-content {
+	background: transparent;
+}
+
+.guideTitle {
+	border: 1px solid #fff;
+	padding: 4px 8px;
+	font-size: 1.4rem;
+}
+
+.flickity-page-dots {
+	bottom: 10px;
+}
+
+.flickity-page-dots .dot {
+	background: #FFF;
+	width: 8px;
+	height: 8px;
+}

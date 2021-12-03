@@ -10,10 +10,9 @@ $(document).ready(function () {
 	}
 
 	// 登入後 Line Notify 提醒
-	if ($('INPUT[name="signIn"]').val() === 'true') {
+	if ($('INPUT[name="signIn"]').val() === 'true' && $('INPUT[name="guidance"]').val() === 'true') {
 		showModal();
 	}
-
 
 	let $mobileRefreshBtn = $('BUTTON#mobileRefreshBtn');
 
@@ -366,8 +365,14 @@ $(document).ready(function () {
 		}
 	}
 
-	// 首頁的輪播
-	$('.carousel').flickity({
-		'autoPlay': 2500
+	if ($('INPUT[name="guidance"]').val() === 'false') {
+		$('#guide').modal('show');
+	}
+	$('#guide').on('shown.bs.modal', function (event) {
+		$('.carousel').flickity({
+			'autoPlay': 2500,
+			'prevNextButtons': false,
+			'pageDots': false
+		});
 	});
 });

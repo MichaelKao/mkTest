@@ -96,7 +96,7 @@ $(document).ready(function () {
 			$('DIV.loadingWrap').css('display', 'block');
 			$.ajax({
 				method: 'post',
-				url: '/forum/add.asp',
+				url: '/forumZone/add.asp',
 				data: formData,
 				dataType: 'json',
 				cache: false,
@@ -256,7 +256,7 @@ $(document).ready(function () {
 		var profileImage = $(btn).closest('DIV').siblings('DIV.avatar').find('IMG').attr('src');
 		var forumIdentifier = $(btn).closest('DIV').siblings('INPUT[name="forumIdentifier"]').val();
 		$.post(
-			'/forum/comment.asp',
+			'/forumZone/comment.asp',
 			{
 				forumThread: forumIdentifier,
 				content: value
@@ -357,7 +357,7 @@ $(document).ready(function () {
 				$('.posts').append(load);
 				if (p > 0) {
 					$.post(
-						'/forum/loadMore.json',
+						'/forumZone/loadMore.json',
 						{
 							p: p,
 							sort: sort
@@ -701,7 +701,7 @@ $(document).ready(function () {
 		var $nextPage = $('INPUT[name="nextPage"]');
 		var $sort = $('INPUT[name="sort"]');
 		$.post(
-			'/forum/loadMore.json',
+			'/forumZone/loadMore.json',
 			{
 				p: 0,
 				sort: sort
@@ -730,7 +730,7 @@ $(document).ready(function () {
 		var $imgOriginalBox = $('DIV#imgOriginalBox');
 		forumIdentifier = $post.find('INPUT[name="forumIdentifier"]').val();
 		$.get(
-			'/forum/' + forumIdentifier + '.json',
+			'/forumZone/' + forumIdentifier + '.json',
 			function (data) {
 				$editModal.find('INPUT[name="title"]').val(data.title);
 				$editModal.find('TEXTAREA[name="markdown"]').val(data.markdown);
@@ -809,7 +809,7 @@ $(document).ready(function () {
 		$('DIV.loadingWrap').css('display', 'block');
 		$.ajax({
 			method: 'post',
-			url: '/forum/editThread.asp',
+			url: '/forumZone/editThread.asp',
 			data: formData,
 			dataType: 'json',
 			cache: false,
@@ -855,7 +855,7 @@ $(document).ready(function () {
 	function editComment(btn) {
 		var commentIdentifier = $(btn).closest('DIV.comment').find('INPUT[name="commentIdentifier"]').val();
 		$.get(
-			'/forum/comment/' + commentIdentifier + '.json',
+			'/forumZone/comment/' + commentIdentifier + '.json',
 			function (data) {
 				$(btn).siblings('TEXTAREA').val(data.content);
 			},
@@ -871,7 +871,7 @@ $(document).ready(function () {
 		$('DIV.loadingWrap').css('display', 'block');
 		var commentIdentifier = $(btn).closest('DIV.comment').find('INPUT[name="commentIdentifier"]').val();
 		$.post(
-			'/forum/editComment.asp',
+			'/forumZone/editComment.asp',
 			{
 				'forumCommentIdentifier': commentIdentifier,
 				'content': $(btn).siblings('TEXTAREA').val()

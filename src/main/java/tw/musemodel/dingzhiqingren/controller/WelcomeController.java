@@ -87,6 +87,7 @@ import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LocationRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
+import tw.musemodel.dingzhiqingren.repository.OneOffRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
 import tw.musemodel.dingzhiqingren.repository.PlanRepository;
 import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRepository;
@@ -167,6 +168,9 @@ public class WelcomeController {
 
 	@Autowired
 	private CompanionshipRepository companionshipRepository;
+
+	@Autowired
+	private OneOffRepository oneOffRepository;
 
 	/**
 	 * 首页
@@ -269,6 +273,12 @@ public class WelcomeController {
 					null
 				);
 			}//有无连动 LINE Notify
+
+			documentElement.setAttribute(
+				"guidance",
+				Boolean.toString(loverService.oneTimeGuidance(me))
+			);
+
 		}//if(登入状态下)
 
 		ModelAndView modelAndView = new ModelAndView("index");
@@ -290,7 +300,10 @@ public class WelcomeController {
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
 	@SuppressWarnings({"UnusedAssignment", "null"})
-	String seeMoreLover(@RequestParam int p, @RequestParam String type, HttpServletResponse response, Authentication authentication, Locale locale) {
+	String seeMoreLover(@RequestParam int p,
+		@RequestParam String type, HttpServletResponse response,
+		Authentication authentication, Locale locale
+	) {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);//本人
@@ -452,7 +465,8 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/activate.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String activate(@RequestParam String string, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	String activate(@RequestParam String string, Authentication authentication,
+		Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
@@ -500,7 +514,8 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/activated.asp")
-	ModelAndView activated(@RequestParam UUID id, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView activated(@RequestParam UUID id, Authentication authentication,
+		Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			LOGGER.debug("登入状态下无法初始化密码");
 			return new ModelAndView("redirect:/");
@@ -560,7 +575,9 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/activated.asp", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String activated(Activated activated, Authentication authentication, HttpServletRequest request, Locale locale) {
+	String activated(Activated activated, Authentication authentication,
+		HttpServletRequest request, Locale locale
+	) {
 		if (!servant.isNull(authentication)) {
 			LOGGER.debug("登入状态下禁止初始化密码");
 			return new JavaScriptObjectNotation().
@@ -596,7 +613,9 @@ public class WelcomeController {
 	@PostMapping(path = "/password.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String changePassword(@RequestParam String password, Authentication authentication, Locale locale) {
+	String changePassword(@RequestParam String password, Authentication authentication,
+		Locale locale
+	) {
 		Lover me = loverService.loadByUsername(authentication.getName());
 		if (password.isBlank() || password.isEmpty()) {
 			return new JavaScriptObjectNotation().
@@ -697,7 +716,9 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/reactivate.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String reactivate(@RequestParam String username, HttpServletRequest request, Authentication authentication, Locale locale) {
+	String reactivate(@RequestParam String username, HttpServletRequest request,
+		Authentication authentication, Locale locale
+	) {
 		if (!servant.isNull(authentication)) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
@@ -758,7 +779,8 @@ public class WelcomeController {
 	 * @return 网页
 	 */
 	@GetMapping(path = "/resetPassword/")
-	ModelAndView resetPassword(HttpServletRequest request, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView resetPassword(HttpServletRequest request, Authentication authentication,
+		Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			LOGGER.debug("已登入故重设密码页面重导至首页");
 			return Servant.redirectToRoot();
@@ -835,7 +857,9 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/resetPassword/", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String resetPassword(ResetPassword resetPassword, Authentication authentication, Locale locale) {
+	String resetPassword(ResetPassword resetPassword, Authentication authentication,
+		Locale locale
+	) {
 		if (!servant.isNull(authentication)) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
@@ -869,7 +893,8 @@ public class WelcomeController {
 	 * @return 网页
 	 */
 	@GetMapping(path = "/resetPassword/{hexadecimalId:^[0-7][0-9a-f]{7}$}/", produces = MediaType.TEXT_PLAIN_VALUE)
-	ModelAndView resetPassword(@PathVariable String hexadecimalId, HttpServletRequest request, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView resetPassword(@PathVariable String hexadecimalId, HttpServletRequest request,
+		Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			LOGGER.debug("已登入故激活页面重导至首页");
 			return Servant.redirectToRoot();
@@ -918,7 +943,11 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/resetPassword/{hexadecimalId:^[0-7][0-9a-f]{7}$}/", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String resettingPassword(@PathVariable String hexadecimalId, @RequestParam String string, @RequestParam String shadow, Authentication authentication, Locale locale) {
+	String resettingPassword(@PathVariable String hexadecimalId,
+		@RequestParam String string,
+		@RequestParam String shadow, Authentication authentication,
+		Locale locale
+	) {
 		if (!servant.isNull(authentication)) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
@@ -1032,7 +1061,8 @@ public class WelcomeController {
 	 * @return 重定向
 	 */
 	@GetMapping(path = "/signOut.asp")
-	ModelAndView signOut(HttpSession session) {
+	ModelAndView signOut(HttpSession session
+	) {
 		session.invalidate();
 		return Servant.redirectToRoot();
 	}
@@ -1133,7 +1163,8 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/signUp.asp")
 	@ResponseBody
-	String signUp(SignUp signUp, HttpServletRequest request, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	String signUp(SignUp signUp, HttpServletRequest request,
+		Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		if (!servant.isNull(authentication)) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
@@ -1252,7 +1283,8 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/profile/{identifier}/")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView profile(@PathVariable UUID identifier, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView profile(@PathVariable UUID identifier, Authentication authentication,
+		Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -1458,7 +1490,9 @@ public class WelcomeController {
 	@PostMapping(path = "/me.asp")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String editProfile(Lover model, Authentication authentication, Locale locale) {
+	String editProfile(Lover model, Authentication authentication,
+		Locale locale
+	) {
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -1525,7 +1559,9 @@ public class WelcomeController {
 	@PostMapping(path = "/favorite.json")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String favorite(@RequestParam UUID identifier, Authentication authentication, Locale locale) {
+	String favorite(@RequestParam UUID identifier, Authentication authentication,
+		Locale locale
+	) {
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -1568,7 +1604,9 @@ public class WelcomeController {
 	@PostMapping(path = "/block.json")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String block(@RequestParam UUID identifier, Authentication authentication, Locale locale) {
+	String block(@RequestParam UUID identifier, Authentication authentication,
+		Locale locale
+	) {
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -1830,7 +1868,8 @@ public class WelcomeController {
 	@PostMapping(path = "/uploadProfileImage")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String uploadProfileImage(@RequestParam("file") MultipartFile multipartFile, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	String uploadProfileImage(@RequestParam("file") MultipartFile multipartFile, Authentication authentication,
+		Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -1890,7 +1929,8 @@ public class WelcomeController {
 	@PostMapping(path = "/uploadPicture")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String uploadPicture(@RequestParam("file") MultipartFile multipartFile, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	String uploadPicture(@RequestParam("file") MultipartFile multipartFile, Authentication authentication,
+		Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -1951,7 +1991,9 @@ public class WelcomeController {
 	@PostMapping(value = "/deletePicture")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String deletePicture(@RequestParam UUID identifier, Authentication authentication, Locale locale) {
+	String deletePicture(@RequestParam UUID identifier, Authentication authentication,
+		Locale locale
+	) {
 		pictureRepository.deleteById(
 			pictureRepository.findOneByIdentifier(identifier).getId()
 		);
@@ -2035,7 +2077,8 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/recharge/{plan:\\d}.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView recharge(@PathVariable Plan plan, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView recharge(@PathVariable Plan plan, Authentication authentication,
+		Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -2085,7 +2128,8 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/activities.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView activities(@RequestParam(defaultValue = "1") int p, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView activities(@RequestParam(defaultValue = "1") int p, Authentication authentication,
+		Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -2285,7 +2329,8 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/upgrade/{vipType}.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView upgradeLongTerm(@PathVariable int vipType, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView upgradeLongTerm(@PathVariable int vipType, Authentication authentication,
+		Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -2368,7 +2413,10 @@ public class WelcomeController {
 	@PostMapping(path = "/fare.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String fare(@RequestParam("whom") UUID femaleUUID, @RequestParam(name = "howMany") short points, Authentication authentication, Locale locale) {
+	String fare(@RequestParam("whom") UUID femaleUUID,
+		@RequestParam(name = "howMany") short points, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -2412,7 +2460,11 @@ public class WelcomeController {
 	@PostMapping(path = "/resFare.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String resFare(@RequestParam("whom") UUID femaleUUID, @RequestParam Long historyId, @RequestParam Boolean result, Authentication authentication, Locale locale) {
+	String resFare(@RequestParam("whom") UUID femaleUUID,
+		@RequestParam Long historyId,
+		@RequestParam Boolean result, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -2472,7 +2524,10 @@ public class WelcomeController {
 	@PostMapping(path = "/reqFare.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String reqFare(@RequestParam("whom") UUID maleUUID, @RequestParam(name = "howMany") short points, Authentication authentication, Locale locale) {
+	String reqFare(@RequestParam("whom") UUID maleUUID,
+		@RequestParam(name = "howMany") short points, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -2515,7 +2570,9 @@ public class WelcomeController {
 	@PostMapping(path = "/stalking.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String gimmeYourLineInvitation(@RequestParam("whom") UUID femaleUUID, Authentication authentication, Locale locale) {
+	String gimmeYourLineInvitation(@RequestParam("whom") UUID femaleUUID, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -2557,7 +2614,10 @@ public class WelcomeController {
 	@PostMapping(path = "/greet.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String greet(@RequestParam("whom") UUID maleUUID, @RequestParam(name = "what", required = false) String greetingMessage, Authentication authentication, Locale locale) {
+	String greet(@RequestParam("whom") UUID maleUUID,
+		@RequestParam(name = "what", required = false) String greetingMessage, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -2599,7 +2659,9 @@ public class WelcomeController {
 	@PostMapping(path = "/stalked.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String inviteMeAsLineFriend(@RequestParam("whom") UUID maleUUID, Authentication authentication, Locale locale) {
+	String inviteMeAsLineFriend(@RequestParam("whom") UUID maleUUID, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -2643,7 +2705,9 @@ public class WelcomeController {
 	@PostMapping(path = "/notStalked.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String refuseToBeLineFriend(@RequestParam("whom") UUID maleUUID, Authentication authentication, Locale locale) {
+	String refuseToBeLineFriend(@RequestParam("whom") UUID maleUUID, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -2684,7 +2748,9 @@ public class WelcomeController {
 	@PostMapping(path = "/peek.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String peek(@RequestParam("whom") UUID masochismUUID, Authentication authentication, Locale locale) {
+	String peek(@RequestParam("whom") UUID masochismUUID, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -2849,7 +2915,12 @@ public class WelcomeController {
 	@PostMapping(path = "/wireTransfer.json")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String wireTransfer(@RequestParam String wireTransferBankCode, @RequestParam String wireTransferBranchCode, @RequestParam String wireTransferAccountName, @RequestParam String wireTransferAccountNumber, Authentication authentication, Locale locale) {
+	String wireTransfer(@RequestParam String wireTransferBankCode,
+		@RequestParam String wireTransferBranchCode,
+		@RequestParam String wireTransferAccountName,
+		@RequestParam String wireTransferAccountNumber, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -2890,7 +2961,8 @@ public class WelcomeController {
 	@PostMapping(path = "/deleteAccount")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String deleteAccount(Authentication authentication) {
+	String deleteAccount(Authentication authentication
+	) {
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -2921,7 +2993,11 @@ public class WelcomeController {
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
 	@SuppressWarnings("UseSpecificCatch")
-	String rate(@RequestParam String rate, @RequestParam String comment, @RequestParam UUID whom, Authentication authentication, Locale locale) {
+	String rate(@RequestParam String rate,
+		@RequestParam String comment,
+		@RequestParam UUID whom, Authentication authentication,
+		Locale locale
+	) {
 		if (rate.isBlank() || rate.isEmpty()) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
@@ -2973,7 +3049,9 @@ public class WelcomeController {
 	@PostMapping(path = "/location.json")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String loaction(@RequestParam Location location, Authentication authentication, Locale locale) {
+	String loaction(@RequestParam Location location, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -3009,7 +3087,9 @@ public class WelcomeController {
 	@PostMapping(path = "/service.json")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String loaction(@RequestParam Companionship service, Authentication authentication, Locale locale) {
+	String loaction(@RequestParam Companionship service, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -3048,7 +3128,8 @@ public class WelcomeController {
 	@PostMapping(path = "/uploadIdentity")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String uploadIdentity(@RequestParam("file") MultipartFile multipartFile, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	String uploadIdentity(@RequestParam("file") MultipartFile multipartFile, Authentication authentication,
+		Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -3086,7 +3167,8 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/isLine.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String isLine(@RequestParam(name = "file") MultipartFile multipartFile, Authentication authentication, Locale locale) throws URISyntaxException {
+	String isLine(@RequestParam(name = "file") MultipartFile multipartFile, Authentication authentication,
+		Locale locale) throws URISyntaxException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -3132,7 +3214,9 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/maleOpenLine.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String openLine(@RequestParam("whom") UUID femaleUUID, Authentication authentication, Locale locale) {
+	String openLine(@RequestParam("whom") UUID femaleUUID, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -3176,7 +3260,9 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/search.json")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView search(@RequestParam(required = false) Location location, @RequestParam(required = false) Companionship companionship, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView search(@RequestParam(required = false) Location location,
+		@RequestParam(required = false) Companionship companionship, Authentication authentication,
+		Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -3261,7 +3347,9 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/{girlIdentifier}.png", produces = MediaType.IMAGE_PNG_VALUE)
 	@Secured({Servant.ROLE_ADVENTURER})
-	void erWeiMa(@PathVariable final UUID girlIdentifier, HttpServletResponse response, Authentication authentication) throws IOException, WriterException {
+	void erWeiMa(@PathVariable
+		final UUID girlIdentifier, HttpServletResponse response,
+		Authentication authentication) throws IOException, WriterException {
 		if (servant.isNull(authentication)) {
 			return;
 		}
@@ -3355,7 +3443,9 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/groupGreeting.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String groupGreeting(@RequestParam(required = false) String greetingMessage, Authentication authentication, Locale locale) {
+	String groupGreeting(@RequestParam(required = false) String greetingMessage, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -3434,7 +3524,8 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/chatroom/{identifier}/")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView chatRoom(@PathVariable UUID identifier, Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView chatRoom(@PathVariable UUID identifier, Authentication authentication,
+		Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -3539,7 +3630,8 @@ public class WelcomeController {
 	@PostMapping(path = "/loadMoreInboxList.json")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String loadMoreInboxList(@RequestParam int p, Authentication authentication, Locale locale) throws TransformerException, IOException {
+	String loadMoreInboxList(@RequestParam int p, Authentication authentication,
+		Locale locale) throws TransformerException, IOException {
 
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -3563,7 +3655,8 @@ public class WelcomeController {
 	@PostMapping(path = "/stopRecurring.json")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String stopRecurring(Authentication authentication, Locale locale) {
+	String stopRecurring(Authentication authentication, Locale locale
+	) {
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -3608,7 +3701,8 @@ public class WelcomeController {
 	@GetMapping(path = "/lockedPic/{picIdentifier}.png", produces = MediaType.IMAGE_PNG_VALUE)
 	@Secured({"ROLE_YONGHU"})
 	@SuppressWarnings("UnusedAssignment")
-	void pictures(@PathVariable String picIdentifier, Authentication authentication, HttpServletResponse response) throws IOException, WriterException {
+	void pictures(@PathVariable String picIdentifier, Authentication authentication,
+		HttpServletResponse response) throws IOException, WriterException {
 		File tmp = null;
 		try {
 			S3Object o = AmazonWebServices.AMAZON_S3.getObject(
@@ -3665,7 +3759,9 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/picturesAuth.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String picturesAuth(@RequestParam("whom") UUID uuid, Authentication authentication, Locale locale) {
+	String picturesAuth(@RequestParam("whom") UUID uuid, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -3704,7 +3800,9 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/acceptPixAuth.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	String acceptPixAuth(@RequestParam("whom") UUID uuid, Authentication authentication, Locale locale) {
+	String acceptPixAuth(@RequestParam("whom") UUID uuid, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -3746,7 +3844,10 @@ public class WelcomeController {
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
 	@SuppressWarnings("null")
-	String moreRate(@RequestParam int p, @RequestParam UUID whom, Authentication authentication, Locale locale) {
+	String moreRate(@RequestParam int p,
+		@RequestParam UUID whom, Authentication authentication,
+		Locale locale
+	) {
 		// 誰
 		Lover lover = loverService.loadByIdentifier(whom);
 
@@ -3781,7 +3882,12 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/descendants.json")
 	@ResponseBody
-	String descendants(@RequestParam(defaultValue = "0") final int p, @RequestParam(defaultValue = "5") final int s, Authentication authentication, Locale locale) {
+	String descendants(@RequestParam(defaultValue = "0")
+		final int p,
+		@RequestParam(defaultValue = "5")
+		final int s, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -3805,7 +3911,9 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/trial.json")
 	@ResponseBody
-	String trial(@RequestParam String code, Authentication authentication, Locale locale) {
+	String trial(@RequestParam String code, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -3855,7 +3963,9 @@ public class WelcomeController {
 	 */
 	@PostMapping(path = "/returnFare.json")
 	@ResponseBody
-	String returnFare(@RequestParam History history, Authentication authentication, Locale locale) {
+	String returnFare(@RequestParam History history, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -3987,15 +4097,26 @@ public class WelcomeController {
 	@PostMapping(path = "/filter.json")
 	@Secured({Servant.ROLE_ADVENTURER})
 	@ResponseBody
-	String filter(@RequestParam int p, @RequestParam(required = false) String nickname,
-		@RequestParam Integer maximumAge, @RequestParam Integer minimumAge,
-		@RequestParam Short maximumHeight, @RequestParam Short minimumHeight,
-		@RequestParam Short maximumWeight, @RequestParam Short minimumWeight,
-		@RequestParam(required = false) Lover.BodyType bodyType, @RequestParam(required = false) Lover.Education education,
-		@RequestParam(required = false) Lover.Marriage marriage, @RequestParam(required = false) Lover.Smoking smoking,
-		@RequestParam(required = false) Lover.Drinking drinking, @RequestParam Short annualIncome,
-		@RequestParam Short allowance, @RequestParam Short location, @RequestParam("service") Short companionship,
-		Authentication authentication, Locale locale) {
+	String filter(@RequestParam int p,
+		@RequestParam(required = false) String nickname,
+		@RequestParam Integer maximumAge,
+		@RequestParam Integer minimumAge,
+		@RequestParam Short maximumHeight,
+		@RequestParam Short minimumHeight,
+		@RequestParam Short maximumWeight,
+		@RequestParam Short minimumWeight,
+		@RequestParam(required = false) Lover.BodyType bodyType,
+		@RequestParam(required = false) Lover.Education education,
+		@RequestParam(required = false) Lover.Marriage marriage,
+		@RequestParam(required = false) Lover.Smoking smoking,
+		@RequestParam(required = false) Lover.Drinking drinking,
+		@RequestParam Short annualIncome,
+		@RequestParam Short allowance,
+		@RequestParam Short location,
+		@RequestParam("service") Short companionship,
+		Authentication authentication,
+		Locale locale
+	) {
 
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
@@ -4039,7 +4160,9 @@ public class WelcomeController {
 
 	@PostMapping(path = "/unblock.json")
 	@ResponseBody
-	String unblock(@RequestParam UUID blockedIdentifier, Authentication authentication, Locale locale) {
+	String unblock(@RequestParam UUID blockedIdentifier, Authentication authentication,
+		Locale locale
+	) {
 		if (servant.isNull(authentication)) {
 			return servant.mustBeAuthenticated(locale);
 		}
@@ -4065,7 +4188,8 @@ public class WelcomeController {
 	@PostMapping(path = "/loadMoreActivities.json")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String loadMoreActivities(@RequestParam int p, Authentication authentication, Locale locale) throws TransformerException, IOException {
+	String loadMoreActivities(@RequestParam int p, Authentication authentication,
+		Locale locale) throws TransformerException, IOException {
 
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -4092,7 +4216,9 @@ public class WelcomeController {
 	@PostMapping(path = "/loadMoreMsgs.json")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String loadMoreMsgs(@RequestParam UUID friend, @RequestParam int p, Authentication authentication, Locale locale) throws TransformerException, IOException {
+	String loadMoreMsgs(@RequestParam UUID friend,
+		@RequestParam int p, Authentication authentication,
+		Locale locale) throws TransformerException, IOException {
 
 		return new Gson().toJson(webSocketService.wholeHistoryMsgs(
 			loverService.loadByUsername(
@@ -4116,7 +4242,9 @@ public class WelcomeController {
 	@PostMapping(path = "/updateInbox.json")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String updateInbox(@RequestParam UUID friend, Authentication authentication, Locale locale) {
+	String updateInbox(@RequestParam UUID friend, Authentication authentication,
+		Locale locale
+	) {
 		return webSocketService.updateInbox(
 			loverService.loadByUsername(
 				authentication.getName()
@@ -4137,7 +4265,9 @@ public class WelcomeController {
 	@PostMapping(path = "/openChatRoom.json")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	void openChatRoom(@RequestParam UUID friend, Authentication authentication, Locale locale) {
+	void openChatRoom(@RequestParam UUID friend, Authentication authentication,
+		Locale locale
+	) {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -4161,7 +4291,9 @@ public class WelcomeController {
 	@ResponseBody
 	@Secured({Servant.ROLE_ADMINISTRATOR})
 	@Transactional
-	String shadow(@PathVariable Lover someone, @RequestParam String shadow) {
+	String shadow(@PathVariable Lover someone,
+		@RequestParam String shadow
+	) {
 		shadow = passwordEncoder.encode(shadow);
 		someone.setShadow(shadow);
 		loverRepository.saveAndFlush(someone);

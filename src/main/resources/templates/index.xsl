@@ -155,6 +155,165 @@
 			</xsl:if>
 			<xsl:if test="@signIn">
 				<INPUT name="signIn" type="hidden" value="true"/>
+				<INPUT name="guidance" type="hidden" value="{@guidance}"/>
+				<A class="guidance d-flex align-items-center justify-content-center bg-danger fontSize25 opacity-9 shadow" data-bs-target="#guide" data-bs-toggle="modal">
+					<I class="fad fa-question"></I>
+				</A>
+				<DIV class="modal fade" id="guide" tabindex="-1">
+					<DIV class="modal-dialog modal-dialog-centered">
+						<DIV class="modal-content">
+							<DIV class="modal-body p-0">
+								<DIV class="d-flex">
+									<BUTTON class="btn btn-link text-white ms-auto fontSize30 m-0 me-2 p-0" data-bs-dismiss="modal" type="button">
+										<I class="fal fa-times"></I>
+									</BUTTON>
+								</DIV>
+								<DIV class="carousel mx-auto">
+									<xsl:if test="@male">
+										<DIV class="carousel-cell imageShadow">
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<H3 class="text-white text-bold">WELCOME!</H3>
+												<DIV class="guideTitle text-bold text-primary">歡迎來到養蜜</DIV>
+												<DIV class="text-white mt-1">提升效率快速約會</DIV>
+											</DIV>
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<DIV class="text-white text-bold text-lg">1. 不用配對，直接聊天</DIV>
+												<DIV class="text-white text-sm mt-1">互動前先新增一張好看的照片吧</DIV>
+											</DIV>
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<DIV>
+													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/kingTop1.jpg" width="150px"/>
+												</DIV>
+												<DIV class="text-white text-sm mt-1">放上個人照片</DIV>
+												<DIV class="text-white text-sm mt-1">meQUEEN認識意願提高100%</DIV>
+											</DIV>
+											<OL class="flickity-page-dots">
+												<LI class="dot is-selected"></LI>
+												<LI class="dot"></LI>
+												<LI class="dot"></LI>
+											</OL>
+										</DIV>
+										<DIV class="carousel-cell imageShadow">
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<H3 class="text-white text-bold">TIPS</H3>
+												<DIV class="guideTitle text-bold text-primary">安心認證</DIV>
+												<DIV class="text-white mt-1">提升效率快速約會</DIV>
+											</DIV>
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<DIV class="text-white text-bold text-lg">2. 約會安心保證</DIV>
+												<DIV class="text-white text-sm mt-1">官方真人審核</DIV>
+												<DIV class="text-white text-sm">增加meQUEEN信任度</DIV>
+											</DIV>
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<DIV>
+													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/kingTop2.jpg" width="150px"/>
+												</DIV>
+												<DIV class="text-white text-sm mt-1">獨立專區讓meQUEEN看到您</DIV>
+											</DIV>
+											<OL class="flickity-page-dots">
+												<LI class="dot"></LI>
+												<LI class="dot is-selected"></LI>
+												<LI class="dot"></LI>
+											</OL>
+										</DIV>
+										<DIV class="carousel-cell imageShadow">
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<H3 class="text-white text-bold">TIPS</H3>
+												<DIV class="guideTitle text-bold text-primary">討論區</DIV>
+												<DIV class="text-white mt-1">提升效率快速約會</DIV>
+											</DIV>
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<DIV class="text-white text-bold text-lg">3. 使用心得分享</DIV>
+												<DIV class="text-white text-sm mt-1">站內用戶使用心得</DIV>
+											</DIV>
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<DIV>
+													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/kingTop3.jpg" width="150px"/>
+												</DIV>
+												<DIV class="text-white text-sm mt-1">如何成為情場高手看這裡</DIV>
+											</DIV>
+											<OL class="flickity-page-dots">
+												<LI class="dot"></LI>
+												<LI class="dot"></LI>
+												<LI class="dot is-selected"></LI>
+											</OL>
+										</DIV>
+									</xsl:if>
+									<xsl:if test="@female">
+										<DIV class="carousel-cell imageShadow">
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<H3 class="text-white text-bold">WELCOME!</H3>
+												<DIV class="guideTitle text-bold text-primary">歡迎來到養蜜</DIV>
+												<DIV class="text-white mt-1">提升效率快速約會</DIV>
+											</DIV>
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<DIV class="text-white text-bold text-lg">1. 不用配對，直接聊天</DIV>
+												<DIV class="text-white text-sm mt-1">互動前先新增一張好看的照片吧</DIV>
+											</DIV>
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<DIV>
+													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/queenTop1.jpg" width="150px"/>
+												</DIV>
+												<DIV class="text-white text-sm mt-1">放上個人照片</DIV>
+												<DIV class="text-white text-sm mt-1">meKING認識意願提高100%</DIV>
+											</DIV>
+											<OL class="flickity-page-dots">
+												<LI class="dot is-selected"></LI>
+												<LI class="dot"></LI>
+												<LI class="dot"></LI>
+											</OL>
+										</DIV>
+										<DIV class="carousel-cell imageShadow">
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<H3 class="text-white text-bold">TIPS</H3>
+												<DIV class="guideTitle text-bold text-primary">安心認證</DIV>
+												<DIV class="text-white mt-1">提升效率快速約會</DIV>
+											</DIV>
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<DIV class="text-white text-bold text-lg">2. 約會安心保證</DIV>
+												<DIV class="text-white text-sm mt-1">官方真人審核</DIV>
+												<DIV class="text-white text-sm">增加個人帳戶信任度</DIV>
+											</DIV>
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<DIV>
+													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/queenTop2.jpg" width="150px"/>
+												</DIV>
+												<DIV class="text-white text-sm mt-1">獨立專區讓meKING看到您</DIV>
+											</DIV>
+											<OL class="flickity-page-dots">
+												<LI class="dot"></LI>
+												<LI class="dot is-selected"></LI>
+												<LI class="dot"></LI>
+											</OL>
+										</DIV>
+										<DIV class="carousel-cell imageShadow">
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<H3 class="text-white text-bold">TIPS</H3>
+												<DIV class="guideTitle text-bold text-primary">討論區</DIV>
+												<DIV class="text-white mt-1">提升效率快速約會</DIV>
+											</DIV>
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<DIV class="text-white text-bold text-lg">3. 使用心得分享</DIV>
+												<DIV class="text-white text-sm mt-1">站內用戶使用心得</DIV>
+											</DIV>
+											<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+												<DIV>
+													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/queenTop3.jpg" width="150px"/>
+												</DIV>
+												<DIV class="text-white text-sm mt-1">如何與優質男士展開約會</DIV>
+											</DIV>
+											<OL class="flickity-page-dots">
+												<LI class="dot"></LI>
+												<LI class="dot"></LI>
+												<LI class="dot is-selected"></LI>
+											</OL>
+										</DIV>
+									</xsl:if>
+								</DIV>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
 				<DIV class="container px-0 px-md-3 pt-7 pt-md-8">
 					<INPUT name="gender" type="hidden">
 						<xsl:if test="@male">

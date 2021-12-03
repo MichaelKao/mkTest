@@ -93,6 +93,7 @@ import tw.musemodel.dingzhiqingren.entity.LineGiven;
 import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Lover.MaleSpecies;
+import tw.musemodel.dingzhiqingren.entity.OneOff;
 import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.Privilege;
 import tw.musemodel.dingzhiqingren.entity.PrivilegeKey;
@@ -131,6 +132,7 @@ import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
 import tw.musemodel.dingzhiqingren.repository.LocationRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
+import tw.musemodel.dingzhiqingren.repository.OneOffRepository;
 import tw.musemodel.dingzhiqingren.repository.PictureRepository;
 import tw.musemodel.dingzhiqingren.repository.PrivilegeRepository;
 import tw.musemodel.dingzhiqingren.repository.ResetShadowRepository;
@@ -264,6 +266,9 @@ public class LoverService {
 
 	@Autowired
 	private UsedTrialCodeRepository usedTrialCodeRepository;
+
+	@Autowired
+	private OneOffRepository oneOffRepository;
 
 	@Value("classpath:sql/我拉黑了谁.sql")
 	private Resource thoseIBlockResource;
@@ -4413,5 +4418,39 @@ public class LoverService {
 			roleRepository.findOneByTextualRepresentation("ROLE_XIAOBIAN")
 		);
 		return count > 0 ? Boolean.TRUE : Boolean.FALSE;
+	}
+
+	/**
+	 * 是否跳過首頁導覽
+	 *
+	 * @param lover
+	 * @return
+	 */
+	public Boolean oneTimeGuidance(Lover lover) {
+		if (!loverService.existOneOffEntity(lover)) {
+			oneOffRepository.saveAndFlush(
+				new OneOff(lover.getId(), Boolean.TRUE)
+			);
+			return Boolean.FALSE;
+		}
+
+		OneOff oneOff = oneOffRepository.findById(lover.getId()).get();
+		Boolean bool = oneOff.getIndexGuidance();
+
+		oneOff.setIndexGuidance(Boolean.TRUE);
+		oneOffRepository.saveAndFlush(oneOff);
+
+		return bool;
+	}
+
+	/**
+	 * 是否存在一次性資料表
+	 *
+	 * @param lover
+	 * @return
+	 */
+	public Boolean existOneOffEntity(Lover lover) {
+		OneOff oneOff = oneOffRepository.findById(lover.getId()).orElse(null);
+		return Objects.nonNull(oneOff) ? Boolean.TRUE : Boolean.FALSE;
 	}
 }

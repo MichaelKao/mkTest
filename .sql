@@ -1147,3 +1147,14 @@ COMMENT ON COLUMN"shi_yong_ti_yan_ma"."ti_yan_ma"IS'體驗碼';
 ALTER TABLE"shen_qing_jie_chu_ding_qi_ding_e"
 ADD COLUMN"li_cheng"int REFERENCES"li_cheng"("id")ON DELETE RESTRICT ON UPDATE CASCADE;
 COMMENT ON COLUMN"shen_qing_jie_chu_ding_qi_ding_e"."li_cheng"IS'月費歷程';
+
+/*
+ * 一次性
+ */
+CREATE TABLE"yi_ci_xing"(
+	"id"int8 PRIMARY KEY,
+	"shou_ye_dao_lan"bool NOT NULL
+);
+COMMENT ON TABLE"yi_ci_xing"IS'一次性';
+COMMENT ON COLUMN"yi_ci_xing"."id"IS'主键';
+COMMENT ON COLUMN"yi_ci_xing"."shou_ye_dao_lan"IS'首頁第一次提示導覽框';
