@@ -56,4 +56,12 @@ $(document).ready(function () {
 	$('BUTTON.userAlertClose').click(function () {
 		$('DIV.userAlert').fadeOut(500);
 	});
+
+	$('#guide').on('shown.bs.modal', function (event) {
+		$('.carousel').flickity({
+			'autoPlay': 2500,
+			'prevNextButtons': false,
+			'pageDots': false
+		});
+	});
 });

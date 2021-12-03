@@ -24,6 +24,7 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
+			<LINK href="https://npmcdn.com/flickity@2/dist/flickity.css" rel="stylesheet"/>
 			<LINK href="/STYLE/chatroom.css" rel="stylesheet"/>
 			<LINK href="/STYLE/rateStar.css" rel="stylesheet"/>
 			<LINK href="/STYLE/loading.css" rel="stylesheet"/>
@@ -510,65 +511,179 @@
 								</DIV>
 							</xsl:if>
 						</DIV>
-						<xsl:if test="@male">
-							<DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 pt-0 ps-2 pe-1 pb-2 mt-6 userAlert primary-gradient imageShadow">
-								<DIV class="d-flex">
-									<BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 pt-1 p-0 me-2 userAlertClose" type="button">
-										<I class="fal fa-times fontSize25"></I>
-									</BUTTON>
+						<DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 pt-0 ps-2 pe-1 pb-2 mt-6 userAlert primary-gradient imageShadow">
+							<DIV class="d-flex">
+								<BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 pt-1 p-0 me-2 userAlertClose" type="button">
+									<I class="fal fa-times fontSize25"></I>
+								</BUTTON>
+							</DIV>
+							<DIV class="text-white">
+								<DIV class="text-center text-sm text-bold mb-1">
+									<DIV>禮貌詢問並參考使用教學</DIV>
+									<DIV>甜蜜約會就在今天 !!</DIV>
+									<BUTTON class="btn btn-outline-light btn-round py-2 px-3 my-2" data-bs-target="#guide" data-bs-toggle="modal" type="button">效率約會使用教學</BUTTON>
 								</DIV>
-								<DIV class="text-white">
-									<DIV class="text-center text-sm text-bold mb-1">
-										<DIV>開始與meQUEEN聊天</DIV>
-										<DIV>!!防止詐騙與假帳號!!</DIV>
-									</DIV>
-									<DIV class="text-sm d-flex flex-column">
-										<DIV class="mb-1 d-flex">
-											<I class="fas fa-portrait fontSize22 col-1"></I>
-											<SPAN>有大頭照的訊息，meQUEEN回覆率提高70%</SPAN>
+							</DIV>
+						</DIV>
+						<DIV class="modal fade" id="guide" tabindex="-1">
+							<DIV class="modal-dialog modal-dialog-centered">
+								<DIV class="modal-content">
+									<DIV class="modal-body p-0">
+										<DIV class="closeGuidance">
+											<BUTTON class="btn btn-link text-white ms-auto fontSize30 m-0 me-2 p-0" data-bs-dismiss="modal" type="button">
+												<I class="fal fa-times"></I>
+											</BUTTON>
 										</DIV>
-										<DIV class="mb-1">
-											<I class="fas fa-comment fontSize22 col-1"></I>
-											<SPAN>充分了解認識再進一步洽談約會</SPAN>
-										</DIV>
-										<DIV class="mb-1 d-flex">
-											<I class="fas fa-badge-dollar fontSize22 col-1"></I>
-											<SPAN>約會先用ME點交易，女生爽約可檢舉退回</SPAN>
+										<DIV class="carousel mx-auto">
+											<xsl:if test="@male">
+												<DIV class="carousel-cell king imageShadow d-flex flex-column justify-content-center">
+													<DIV class="kingGuide">
+														<DIV class="kingGuideSlogan">LET'S CHAT AND DATE</DIV>
+														<DIV class="d-flex flex-column justify-content-center align-items-center mb-3 kingGuideContent">
+															<DIV class="guideTitle text-bold text-white h4 mb-0">效率3句邀約</DIV>
+															<DIV class="text-white h6 my-1 text-light">紳士邀約, 好感加倍</DIV>
+															<DIV class="text-white text-sm">1. 詳盡向meQUEEN自我介紹</DIV>
+															<DIV class="text-white text-sm">2. 提出約會地點時間內容</DIV>
+															<DIV class="text-white text-sm">3. 詢問meQUEEN約會預算</DIV>
+															<DIV class="kingFirstStep mt-1 text-sm text-white">
+																<DIV>禮貌且明確的邀約</DIV>
+																<DIV>禁止性交易與騷擾</DIV>
+																<DIV class="text-bold">追求到夢想女孩</DIV>
+															</DIV>
+														</DIV>
+													</DIV>
+													<OL class="flickity-page-dots">
+														<LI class="dot is-selected"></LI>
+														<LI class="dot"></LI>
+														<LI class="dot"></LI>
+													</OL>
+												</DIV>
+												<DIV class="carousel-cell king imageShadow d-flex flex-column justify-content-center">
+													<DIV class="kingGuide">
+														<DIV class="kingGuideSlogan">LET'S CHAT AND DATE</DIV>
+														<DIV class="d-flex flex-column justify-content-center align-items-center mb-3 kingGuideContent">
+															<DIV class="guideTitle text-bold text-white h4 mb-0">發送好友邀請</DIV>
+															<DIV class="text-white h6 mt-1 mb-0 text-light">詳盡對話確認意願後</DIV>
+															<DIV class="text-white h6 mb-0 text-light">發送加入好友邀請</DIV>
+															<DIV class="text-white text-sm mt-4">升級會員與meQUEEN成為好友</DIV>
+															<DIV class="text-white text-xs">聊天室暢聊並獲得通訊軟體</DIV>
+														</DIV>
+													</DIV>
+													<OL class="flickity-page-dots">
+														<LI class="dot"></LI>
+														<LI class="dot is-selected"></LI>
+														<LI class="dot"></LI>
+													</OL>
+												</DIV>
+												<DIV class="carousel-cell king imageShadow d-flex flex-column justify-content-center">
+													<DIV class="kingGuide">
+														<DIV class="kingGuideSlogan">LET'S CHAT AND DATE</DIV>
+														<DIV class="d-flex flex-column justify-content-center align-items-center mb-3 kingGuideContent">
+															<DIV class="guideTitle text-bold text-white h4 mb-0">發送約會見面費</DIV>
+															<DIV class="text-white h6 mt-1 mb-0">甜蜜約會就差一步</DIV>
+															<DIV class="text-white h6 mb-0 text-light">讓她打扮美美的與您見面</DIV>
+															<DIV class="text-white h6 mt-4 mb-0 text-light">無須升級, 儲值發送</DIV>
+															<DIV class="text-white text-xs">女生爽約可以聯繫客服退回</DIV>
+														</DIV>
+													</DIV>
+													<OL class="flickity-page-dots">
+														<LI class="dot"></LI>
+														<LI class="dot"></LI>
+														<LI class="dot is-selected"></LI>
+													</OL>
+												</DIV>
+											</xsl:if>
+											<xsl:if test="@female">
+												<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
+													<DIV class="d-flex flex-column justify-content-center align-items-center mb-3">
+														<H4 class="text-white text-light">LET'S CHAT AND DATE</H4>
+														<DIV class="guideTitle text-bold text-dark h4 mb-0">防止騷擾</DIV>
+														<DIV class="text-white h6 mt-1 mb-0 text-light">先聊聊觀察與考慮</DIV>
+													</DIV>
+													<DIV class="d-flex flex-column justify-content-center align-items-center my-2">
+														<DIV class="text-white text-bold">可以互相聊聊再決定加好友</DIV>
+														<DIV class="text-white text-bold">12小時內對方只有3句話額度</DIV>
+														<DIV class="text-white text-bold">防止被騷擾與浪費時間尬聊</DIV>
+													</DIV>
+													<DIV class="d-flex flex-column justify-content-center align-items-center my-3">
+														<DIV>
+															<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/queenChat1.jpg" width="150px"/>
+														</DIV>
+														<DIV class="queenSlogan mt-3 text-center text-white text-sm">
+															<DIV>禮貌且明確的邀約</DIV>
+															<DIV>禁止性交易與騷擾</DIV>
+															<DIV class="text-bold">追求到夢想女孩</DIV>
+														</DIV>
+													</DIV>
+													<OL class="flickity-page-dots">
+														<LI class="dot is-selected"></LI>
+														<LI class="dot"></LI>
+														<LI class="dot"></LI>
+													</OL>
+												</DIV>
+												<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
+													<DIV class="d-flex flex-column justify-content-center align-items-center mb-2">
+														<H4 class="text-white text-light">LET'S CHAT AND DATE</H4>
+														<DIV class="guideTitle text-bold text-dark h4 mb-0">篩選後加好友</DIV>
+														<DIV class="text-white h6 mt-1 mb-0 text-light">進一步認識</DIV>
+													</DIV>
+													<DIV class="d-flex flex-column justify-content-center align-items-center mt-2">
+														<DIV class="text-white text-bold">讓有誠意的meKING</DIV>
+														<DIV class="text-white text-bold">透過發送系統好友邀請</DIV>
+														<DIV class="text-white text-bold">解鎖聊天室限制</DIV>
+														<DIV class="text-white text-sm mt-2">同時獲得您綁定的通訊軟體</DIV>
+														<DIV class="text-white text-sm">以便約會後續聯繫</DIV>
+													</DIV>
+													<DIV class="d-flex flex-column justify-content-center align-items-center my-2">
+														<DIV>
+															<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/queenChat2.jpg" width="150px"/>
+														</DIV>
+														<DIV class="queenSlogan mt-2 text-center text-white text-sm">
+															<DIV>透過系統加入好友的男士</DIV>
+															<DIV>均已進行財富認證升級</DIV>
+														</DIV>
+													</DIV>
+													<OL class="flickity-page-dots">
+														<LI class="dot"></LI>
+														<LI class="dot is-selected"></LI>
+														<LI class="dot"></LI>
+													</OL>
+												</DIV>
+												<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
+													<DIV class="d-flex flex-column justify-content-center align-items-center">
+														<H4 class="text-white text-light">LET'S CHAT AND DATE</H4>
+														<DIV class="guideTitle text-bold text-dark h4 mb-0">接受ME點</DIV>
+														<DIV class="text-white h6 mt-1 mb-0 text-light">美美的您值得付費邀約</DIV>
+													</DIV>
+													<DIV class="d-flex flex-column justify-content-center align-items-center mt-2">
+														<DIV class="text-white text-bold">確認約會，即刻見面</DIV>
+														<DIV class="text-white text-bold">把邀約確定下來</DIV>
+														<DIV class="text-white text-sm mt-2">接受約會見面車馬費</DIV>
+														<DIV class="text-white text-sm">直接站內確認入帳</DIV>
+														<DIV class="text-white text-sm">48小時內可反悔退回</DIV>
+													</DIV>
+													<DIV class="d-flex flex-column justify-content-center align-items-center my-2">
+														<DIV>
+															<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/queenChat3.jpg" width="150px"/>
+														</DIV>
+														<DIV class="queenSlogan mt-2 text-center text-white text-sm">
+															<DIV>使用現金交易有爽約賴帳風險</DIV>
+															<DIV>提供匯款帳戶會洩漏個資</DIV>
+															<DIV>同時有被詐騙洗錢等危險</DIV>
+														</DIV>
+													</DIV>
+													<OL class="flickity-page-dots">
+														<LI class="dot"></LI>
+														<LI class="dot"></LI>
+														<LI class="dot is-selected"></LI>
+													</OL>
+												</DIV>
+											</xsl:if>
 										</DIV>
 									</DIV>
 								</DIV>
 							</DIV>
-						</xsl:if>
-						<xsl:if test="@female">
-							<DIV class="border-radius-lg mx-auto position-absolute left-0 right-0 pt-0 ps-2 pe-1 pb-2 mt-6 userAlert primary-gradient imageShadow">
-								<DIV class="d-flex">
-									<BUTTON class="btn btn-link text-white ms-auto fontSize22 m-0 pt-1 p-0 me-2 userAlertClose" type="button">
-										<I class="fal fa-times fontSize25"></I>
-									</BUTTON>
-								</DIV>
-								<DIV class="text-white">
-									<DIV class="text-center text-sm text-bold mb-1">
-										<DIV>開始與meKING聊天</DIV>
-										<DIV>!!防止騷擾詐騙渣男安心使用!!</DIV>
-									</DIV>
-
-									<DIV class="text-sm d-flex flex-column ps-1">
-										<DIV class="mb-1">
-											<I class="fas fa-comment fontSize22 col-1"></I>
-											<SPAN class="ms-1">充分了解認識再進一步洽談約會</SPAN>
-										</DIV>
-										<DIV class="mb-1">
-											<I class="fas fa-smile-plus fontSize22 col-1"></I>
-											<SPAN class="ms-1">只透過好友邀請功能加入通訊軟體</SPAN>
-										</DIV>
-										<DIV class="mb-1">
-											<I class="fas fa-badge-dollar fontSize22 col-1"></I>
-											<SPAN class="ms-1">約會先用ME點交易，確認收到再赴約</SPAN>
-										</DIV>
-									</DIV>
-								</DIV>
-							</DIV>
-						</xsl:if>
+						</DIV>
 						<DIV class="messages position-relative" id="messages">
 							<DIV id="messagesArea"></DIV>
 							<INPUT name="nextMsgsPage" type="hidden" value="1" />
@@ -592,6 +707,7 @@
 				</DIV>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
+			<SCRIPT src="https://npmcdn.com/flickity@2/dist/flickity.pkgd.js"/>
 			<SCRIPT src="/SCRIPT/chatroom.js"/>
 			<xsl:if test="@signIn">
 				<SCRIPT src="/SCRIPT/websocketChat.js"/>
