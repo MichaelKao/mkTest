@@ -293,7 +293,6 @@ $(document).ready(function () {
 						$(floatWrap).append(rateBtn);
 					}
 				});
-				console.log(chatStatus)
 				if (chatStatus === 'able') {
 					var sendContainer = document.createElement('DIV');
 					$(sendContainer).attr('class', 'sendContainer');

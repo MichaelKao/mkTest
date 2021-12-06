@@ -1874,32 +1874,45 @@ public class HistoryService {
 		Lover male = fareHistory.getInitiative();
 		Lover female = fareHistory.getPassive();
 
-		// 新增歷程
-		History returnFareHistory = new History(
-			female,
-			male,
-			BEHAVIOR_RETURN_FARE,
-			(short) Math.abs(fareHistory.getPoints()),
-			fareHistory
-		);
-		historyRepository.saveAndFlush(returnFareHistory);
+		History history = historyRepository.
+			findTop1ByBehaviorAndHistory(
+				BEHAVIOR_RETURN_FARE,
+				fareHistory
+			);
 
-		// 推送通知給對方
-		webSocketServer.sendNotification(
-			male.getIdentifier().toString(),
-			String.format(
-				"inbox%s退回您給的 ME 點！",
-				female.getNickname()
-			));
-		if (loverService.hasLineNotify(male)) {
-			// LINE Notify
-			lineMessagingService.notify(
+		// 新增歷程
+		if (Objects.nonNull(history)) {
+			return new JavaScriptObjectNotation().
+				withReason("此筆已被退回").
+				withResponse(false).
+				toJSONObject();
+		} else {
+			History returnFareHistory = new History(
+				female,
 				male,
+				BEHAVIOR_RETURN_FARE,
+				(short) Math.abs(fareHistory.getPoints()),
+				fareHistory
+			);
+			historyRepository.saveAndFlush(returnFareHistory);
+			// 推送通知給對方
+			webSocketServer.sendNotification(
+				male.getIdentifier().toString(),
 				String.format(
-					"有養蜜退回您給的 ME 點..馬上查看 https://%s/activities.asp",
-					Servant.LOCALHOST
+					"inbox%s退回您給的 ME 點！",
+					female.getNickname()
 				));
+			if (loverService.hasLineNotify(male)) {
+				// LINE Notify
+				lineMessagingService.notify(
+					male,
+					String.format(
+						"有養蜜退回您給的 ME 點..馬上查看 https://%s/activities.asp",
+						Servant.LOCALHOST
+					));
+			}
 		}
+
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
 				"returnFare.done",
@@ -1994,8 +2007,6 @@ public class HistoryService {
 			male = friend;
 		}
 
-		LOGGER.debug("測試loverService.getBlockers(me){}", loverService.getBlockers(me));
-		LOGGER.debug("測試loverService.getBlockeds(me){}", loverService.getBlockeds(me));
 		if (loverService.getBlockers(me).contains(friend)) {
 			chatStatus = "blocking";
 			return chatStatus;
