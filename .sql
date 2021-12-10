@@ -1158,3 +1158,12 @@ CREATE TABLE"yi_ci_xing"(
 COMMENT ON TABLE"yi_ci_xing"IS'一次性';
 COMMENT ON COLUMN"yi_ci_xing"."id"IS'主键';
 COMMENT ON COLUMN"yi_ci_xing"."shou_ye_dao_lan"IS'首頁第一次提示導覽框';
+
+/**
+ * 解除定期定額新增信箱欄位和後四碼欄位
+ */
+ALTER TABLE "shen_qing_jie_chu_ding_qi_ding_e"
+ADD COLUMN "xin_xiang" varchar,
+ADD COLUMN "hou_si_ma" varchar;
+COMMENT ON COLUMN"shen_qing_jie_chu_ding_qi_ding_e"."xin_xiang"IS'信箱';
+COMMENT ON COLUMN"shen_qing_jie_chu_ding_qi_ding_e"."hou_si_ma"IS'後四碼';
