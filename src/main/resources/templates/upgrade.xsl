@@ -184,7 +184,33 @@
 								<xsl:value-of select="@vvipExpiry"/>
 							</DIV>
 							<xsl:if test="@isEligibleToStopRecurring">
-								<BUTTON class="btn btn-round btn-dark py-2 px-3 px-sm-4 m-0 stopRecurring my-2 mx-auto">解除定期定額</BUTTON>
+								<BUTTON class="btn btn-round btn-dark py-2 px-3 px-sm-4 m-0 my-2 mx-auto" data-bs-target="#stopRecurringModal" data-bs-toggle="modal" type="button">解除定期定額</BUTTON>
+								<DIV class="modal fade" id="stopRecurringModal">
+									<DIV class="modal-dialog modal-dialog-centered">
+										<DIV class="modal-content">
+											<DIV class="modal-body">
+												<DIV class="d-flex">
+													<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+														<I class="fal fa-times"></I>
+													</BUTTON>
+												</DIV>
+												<DIV class="my-4 text-center">
+													<LABEL for="email">電子信箱 (成功解除後發送信箱通知)</LABEL>
+													<DIV class="input-group mb-2">
+														<INPUT class="form-control" id="email" placeholder="電子信箱" name="email" type="email" value=""/>
+													</DIV>
+													<LABEL for="lastFourDigits">信用卡後四碼 (綁定之信用卡後四碼)</LABEL>
+													<DIV class="input-group mb-2">
+														<INPUT class="form-control" id="lastFourDigits" inputmode="numeric" placeholder="信用卡後四碼" name="lastFourDigits" type="text" value=""/>
+													</DIV>
+												</DIV>
+												<DIV class="text-center">
+													<BUTTON class="btn btn-round btn-primary py-2 px-3 px-sm-4 m-0 stopRecurring my-2">確認解除</BUTTON>
+												</DIV>
+											</DIV>
+										</DIV>
+									</DIV>
+								</DIV>
 								<DIV class="text-primary text-sm">解除將於扣款日起失去PRO功能</DIV>
 							</xsl:if>
 						</xsl:if>
@@ -250,7 +276,6 @@
 							</xsl:if>
 						</DIV>
 					</DIV>
-					<DIV class=""></DIV>
 				</DIV>
 				<DIV class="text-center text-dark card border-radius-xl text-xs mx-auto col-12 col-md-10 col-xl-8 p-1">
 					<DIV>本筆款項將在信用卡帳單</DIV>

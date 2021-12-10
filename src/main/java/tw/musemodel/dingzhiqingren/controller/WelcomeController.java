@@ -39,7 +39,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -75,7 +74,6 @@ import tw.musemodel.dingzhiqingren.entity.Location;
 import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.entity.Picture;
 import tw.musemodel.dingzhiqingren.entity.Plan;
-import tw.musemodel.dingzhiqingren.entity.StopRecurringPaymentApplication;
 import tw.musemodel.dingzhiqingren.entity.TrialCode;
 import tw.musemodel.dingzhiqingren.model.Activated;
 import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
@@ -3176,7 +3174,7 @@ public class WelcomeController {
 		JavaScriptObjectNotation json = new JavaScriptObjectNotation();
 
 		String anchor;
-		try ( InputStream inputStream = multipartFile.getInputStream()) {
+		try (InputStream inputStream = multipartFile.getInputStream()) {
 			JSONObject jsonObject = loverService.qrCodeToString(
 				inputStream,
 				locale
@@ -3656,12 +3654,13 @@ public class WelcomeController {
 	@PostMapping(path = "/stopRecurring.json")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String stopRecurring(Authentication authentication, Locale locale, @RequestParam(defaultValue = "") String email, @RequestParam(defaultValue = "") String lastFourDigits) {
-		
+	String stopRecurring(Authentication authentication, Locale locale, @RequestParam(defaultValue = "") String email,
+		@RequestParam String lastFourDigits) {
+
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
-		return loverService.stopRecurring(me,email,lastFourDigits,locale);
+		return loverService.stopRecurring(me, email, lastFourDigits, locale);
 	}
 
 	/**
@@ -3717,7 +3716,7 @@ public class WelcomeController {
 			response.setDateHeader("Expires", 0);
 			response.setContentType("image/png");
 
-			try ( ServletOutputStream responseOutputStream = response.getOutputStream()) {
+			try (ServletOutputStream responseOutputStream = response.getOutputStream()) {
 				responseOutputStream.write(imgByte);
 				responseOutputStream.flush();
 			}

@@ -294,6 +294,18 @@ a.guidance:hover {
 	padding: 7px 12px;
 }
 
+.smallIcon {
+	background: white;
+	width: 40px;
+	height: 40px;
+	margin: 2px 4px;
+	border-radius: 8px;
+	font-family: ScriptMTBold, Script MT;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
 @media (max-width: 300px) {
         .userAlert {
                 width: 280px;
