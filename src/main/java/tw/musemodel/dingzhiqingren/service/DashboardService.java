@@ -585,6 +585,16 @@ public class DashboardService {
 				"name",
 				applicant.getNickname()
 			);
+			
+			pendingElement.setAttribute(
+				"email",
+				stopRecurringPaymentApplication.getEmail().toString()
+			);
+			
+			pendingElement.setAttribute(
+				"lastFourDigits",
+				stopRecurringPaymentApplication.getLastFourDigits().toString()
+			);
 
 			pendingElement.setAttribute(
 				"expiry",

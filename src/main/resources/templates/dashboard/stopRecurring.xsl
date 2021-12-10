@@ -55,6 +55,8 @@
 											<TH class="text-xs text-center">到期日期</TH>
 											<TH class="text-xs text-center">用戶</TH>
 											<TH class="text-xs text-center">用戶ID</TH>
+											<TH class="text-xs text-center">信箱</TH>
+											<TH class="text-xs text-center">後四碼</TH>
 											<TH class="text-xs text-center">作業</TH>
 										</TR>
 									</THEAD>
@@ -75,6 +77,18 @@
 													<SPAN>
 														<xsl:value-of select="@id"/>
 													</SPAN>
+												</TD>
+												<TD class="text-xs text-center">
+													<A>
+														<xsl:value-of select="@email"/>
+													</A>												
+												</TD>
+												<TD class="text-xs text-center">
+													<A>
+														<xsl:value-of select="@lastFourDigits"/>
+													</A>												
+												</TD>
+												<TD class="text-xs text-center">
 												</TD>
 												<TD class="text-xs text-center">
 													<INPUT name="applyID" type="hidden" value="{@applyID}"/>
