@@ -94,6 +94,10 @@ DIV.star {
         color: #16435E;
 }
 
+.btn.btn-link:hover, .btn.btn-link:focus {
+	color: #FFF9;
+}
+
 @media screen and (max-width: 767px) {
 	#icon {
 		position: fixed;

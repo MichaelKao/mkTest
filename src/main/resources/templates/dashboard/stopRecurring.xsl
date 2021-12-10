@@ -81,14 +81,12 @@
 												<TD class="text-xs text-center">
 													<A>
 														<xsl:value-of select="@email"/>
-													</A>												
+													</A>
 												</TD>
 												<TD class="text-xs text-center">
 													<A>
 														<xsl:value-of select="@lastFourDigits"/>
-													</A>												
-												</TD>
-												<TD class="text-xs text-center">
+													</A>
 												</TD>
 												<TD class="text-xs text-center">
 													<INPUT name="applyID" type="hidden" value="{@applyID}"/>
