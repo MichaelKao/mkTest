@@ -10,12 +10,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +35,8 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
+import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRepository;
+import tw.musemodel.dingzhiqingren.service.DashboardService;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
 import tw.musemodel.dingzhiqingren.service.LineMessagingService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
@@ -73,6 +77,14 @@ public class ProofOfConcept {
 
 	@Autowired
 	private LoverRepository loverRepository;
+
+	@Autowired
+	private StopRecurringPaymentApplicationRepository stopRecurringPaymentApplicationRepository;
+
+	@Autowired
+	private MessageSource messageSource;
+	@Autowired
+	private DashboardService dashboardService;
 
 	@GetMapping(path = "/isDevelopment", produces = MediaType.TEXT_PLAIN_VALUE)
 	@ResponseBody
@@ -308,4 +320,15 @@ public class ProofOfConcept {
 			)
 		);
 	}
+
+	@GetMapping(path = "/testStop.json/{email}/{lastFourDigits}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String stopTest(@PathVariable String email, @PathVariable String lastFourDigits) {
+		Lover me = loverService.loadByUsername(
+			"886987911993"
+		);
+		return loverService.stopRecurring(me, email, lastFourDigits, Locale.CHINESE);
+
+	}
+
 }

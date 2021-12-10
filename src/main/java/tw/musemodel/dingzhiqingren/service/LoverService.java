@@ -47,6 +47,7 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 import javax.xml.parsers.ParserConfigurationException;
 import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -69,6 +70,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -99,6 +101,7 @@ import tw.musemodel.dingzhiqingren.entity.Privilege;
 import tw.musemodel.dingzhiqingren.entity.PrivilegeKey;
 import tw.musemodel.dingzhiqingren.entity.ResetShadow;
 import tw.musemodel.dingzhiqingren.entity.Role;
+import tw.musemodel.dingzhiqingren.entity.StopRecurringPaymentApplication;
 import tw.musemodel.dingzhiqingren.entity.TrialCode;
 import tw.musemodel.dingzhiqingren.entity.UsedTrialCode;
 import tw.musemodel.dingzhiqingren.entity.User;
@@ -137,6 +140,7 @@ import tw.musemodel.dingzhiqingren.repository.PictureRepository;
 import tw.musemodel.dingzhiqingren.repository.PrivilegeRepository;
 import tw.musemodel.dingzhiqingren.repository.ResetShadowRepository;
 import tw.musemodel.dingzhiqingren.repository.RoleRepository;
+import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRepository;
 import tw.musemodel.dingzhiqingren.repository.TrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.UsedTrialCodeRepository;
 import tw.musemodel.dingzhiqingren.repository.UserRepository;
@@ -270,6 +274,9 @@ public class LoverService {
 	@Autowired
 	private OneOffRepository oneOffRepository;
 
+	@Autowired
+	private StopRecurringPaymentApplicationRepository stopRecurringPaymentApplicationRepository;
+
 	@Value("classpath:sql/我拉黑了谁.sql")
 	private Resource thoseIBlockResource;
 
@@ -296,6 +303,9 @@ public class LoverService {
 
 	@Autowired
 	private WithdrawalRecordRepository withdrawalRecordRepository;
+
+	@Autowired
+	private DashboardService dashboardService;
 
 	/**
 	 * 找上线用户。
@@ -2807,6 +2817,74 @@ public class LoverService {
 		});
 
 		return document;
+	}
+
+	/**
+	 * 取消定期定額
+	 *
+	 * @param lover
+	 * @param locale
+	 * @param email
+	 * @param lastFourDigits
+	 * @return
+	 */
+	public String stopRecurring(Lover lover, String email, String lastFourDigits, Locale locale) {
+		if (!email.matches("^\\w{1,63}@[a-zA-Z0-9]{2,63}\\.[a-zA-Z]{2,63}(\\.[a-zA-Z]{2,63})?$")) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"emailIsFail",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject().
+				toString();
+		}
+		if (!lastFourDigits.matches("^\\d{4}$")) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"lastFourDigitsLengthIsFail",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject().
+				toString();
+		}
+
+		if (!dashboardService.isRecurringPaymentStoppable(lover)) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"stopRecurring.isNotEligible",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject().
+				toString();
+		}
+
+		History history = historyRepository.findTop1ByInitiativeAndBehaviorOrderByOccurredDesc(
+			lover,
+			Behavior.YUE_FEI
+		);
+		StopRecurringPaymentApplication stopRecurringPaymentApplication = new StopRecurringPaymentApplication(
+			lover,
+			history,
+			email,
+			lastFourDigits
+		);
+		stopRecurringPaymentApplicationRepository.saveAndFlush(stopRecurringPaymentApplication);
+
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"stopRecurring.done",
+				null,
+				locale
+			)).
+			withResponse(true).
+			toJSONObject().
+			toString();
 	}
 
 	/**
