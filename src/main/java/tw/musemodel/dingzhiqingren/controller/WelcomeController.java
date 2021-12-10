@@ -3260,7 +3260,8 @@ public class WelcomeController {
 	@GetMapping(path = "/search.json")
 	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView search(@RequestParam(required = false) Location location,
-		@RequestParam(required = false) Companionship companionship, Authentication authentication,
+		@RequestParam(required = false) Companionship companionship,
+		@RequestParam(defaultValue = "0") final int p, Authentication authentication,
 		Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -3285,7 +3286,7 @@ public class WelcomeController {
 			)
 		);//网页标题
 
-		Collection<Lover> lovers = loverRepository.findAll(
+		Page<Lover> lovers = loverRepository.findAll(
 			LoverSpecification.search(
 				me,
 				new HashSet<>(loverService.findInceptions(
@@ -3293,22 +3294,23 @@ public class WelcomeController {
 					location
 				)),
 				new HashSet<>(loverService.getExceptions(me))
-			)
+			),
+			PageRequest.of(p, 10)
 		);
+
+		if (lovers.hasNext()) {
+			documentElement.setAttribute(
+				"hasNext",
+				Integer.toString(lovers.nextOrLastPageable().getPageNumber())
+			);
+		}
 
 		document = loverService.loversSimpleInfo(
 			document,
-			lovers,
+			lovers.getContent(),
 			me,
 			locale
 		);
-
-		documentElement.setAttribute(
-			"count",
-			Integer.toString(
-				lovers.size()
-			)
-		);//搜寻到几笔资料
 
 		String searchName = null;
 		if (Objects.nonNull(location)) {
@@ -3333,6 +3335,36 @@ public class WelcomeController {
 		ModelAndView modelAndView = new ModelAndView("search");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
+	}
+
+	@PostMapping(path = "/search.json")
+	@Secured({Servant.ROLE_ADVENTURER})
+	@ResponseBody
+	String searchMore(@RequestParam(required = false) Location location,
+		@RequestParam(required = false) Companionship companionship,
+		@RequestParam(defaultValue = "0") final int p, Authentication authentication,
+		Locale locale) throws SAXException, IOException, ParserConfigurationException {
+
+		if (servant.isNull(authentication)) {
+			return servant.mustBeAuthenticated(locale);
+		}
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		Page<Lover> lovers = loverRepository.findAll(
+			LoverSpecification.search(
+				me,
+				new HashSet<>(loverService.findInceptions(
+					companionship,
+					location
+				)),
+				new HashSet<>(loverService.getExceptions(me))
+			),
+			PageRequest.of(p, 10)
+		);
+
+		return loverService.loversSimpleInfoJSON(lovers, me, locale).toString();
 	}
 
 	/**

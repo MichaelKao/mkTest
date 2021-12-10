@@ -35,16 +35,15 @@
 						<SPAN class="mx-1">
 							<xsl:value-of select="@searchName"/>
 						</SPAN>
-						<SPAN>結果(<xsl:value-of select="@count"/>筆)</SPAN>
 					</H4>
 					<HR class="horizontal dark"/>
 				</DIV>
-				<DIV class="d-flex flex-wrap justify-content-center mx-0">
+				<DIV class="d-flex flex-wrap justify-content-center mx-0 loversWrap">
 					<xsl:for-each select="lover">
 						<A class="position-relative m-1" href="/profile/{@identifier}/">
 							<IMG class="border-radius-md" src="{@profileImage}" width="150"/>
 							<DIV class="position-absolute right-0 text-center" style="width: 32px; top: 5px;">
-								<xsl:if test="@vvip">
+								<xsl:if test="@vip">
 									<I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>
 								</xsl:if>
 								<xsl:if test="@relief = 'true'">
@@ -87,9 +86,18 @@
 						</A>
 					</xsl:for-each>
 				</DIV>
+				<DIV class="d-flex mt-3 justify-content-center pageBtnWrap">
+					<xsl:if test="@hasNext">
+						<BUTTON class="btn btn-primary btn-round pageBtn mx-1 m-0 px-2 py-1" data-page="{@hasNext}">
+							<SPAN>下一頁</SPAN>
+							<I class="fad fa-angle-double-right ms-1"></I>
+						</BUTTON>
+					</xsl:if>
+				</DIV>
 				<xsl:call-template name="footer"/>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
+			<SCRIPT src="/SCRIPT/search.js"/>
 			<xsl:if test="@signIn">
 				<SCRIPT src="/SCRIPT/websocket.js"/>
 			</xsl:if>
