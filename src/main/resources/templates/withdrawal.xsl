@@ -89,7 +89,7 @@
 													</DIV>
 												</DIV>
 												<DIV class="text-center">
-													<BUTTON class="btn btn-lg bg-gradient-primary btn-lg mb-0" type="submit">使用銀行匯款</BUTTON>
+													<BUTTON class="btn btn-primary btn-lg mb-0" type="submit">使用銀行匯款</BUTTON>
 												</DIV>
 											</FORM>
 										</DIV>

@@ -47,7 +47,6 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import javax.xml.parsers.ParserConfigurationException;
 import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -70,7 +69,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -2833,6 +2831,17 @@ public class LoverService {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
 					"emailIsFail",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject().
+				toString();
+		}
+		if (lastFourDigits.isBlank()) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"lastFourDigitsIsIsNotNull",
 					null,
 					locale
 				)).

@@ -565,8 +565,23 @@
 															<DIV class="guideTitle text-bold text-white h4 mb-0">發送好友邀請</DIV>
 															<DIV class="text-white h6 mt-1 mb-0 text-light">詳盡對話確認意願後</DIV>
 															<DIV class="text-white h6 mb-0 text-light">發送加入好友邀請</DIV>
-															<DIV class="text-white text-sm mt-4">升級會員與meQUEEN成為好友</DIV>
+															<A class="btn btn-light mt-2 px-2 py-1 m-0" href="/upgrade.asp">
+																<I class="fad fa-crown fontSize22 width30"></I>
+																<SPAN class="ms-1 text-sm">升級認證財富</SPAN>
+															</A>
+															<DIV class="text-white text-sm mt-2">升級會員與meQUEEN成為好友</DIV>
 															<DIV class="text-white text-xs">聊天室暢聊並獲得通訊軟體</DIV>
+															<DIV class="d-flex mt-1">
+																<DIV class="mx-1">
+																	<IMG src="/IMAGE/lineIcon.png" width="40" class="border-radius-md"/>
+																</DIV>
+																<DIV class="mx-1">
+																	<IMG src="/IMAGE/youngmeIcon.png" width="40" class="border-radius-md"/>
+																</DIV>
+																<DIV class="mx-1">
+																	<IMG src="/IMAGE/weChatIcon.png" width="40" class="border-radius-md"/>
+																</DIV>
+															</DIV>
 														</DIV>
 													</DIV>
 													<OL class="flickity-page-dots">
@@ -582,7 +597,11 @@
 															<DIV class="guideTitle text-bold text-white h4 mb-0">發送約會見面費</DIV>
 															<DIV class="text-white h6 mt-1 mb-0">甜蜜約會就差一步</DIV>
 															<DIV class="text-white h6 mb-0 text-light">讓她打扮美美的與您見面</DIV>
-															<DIV class="text-white h6 mt-4 mb-0 text-light">無須升級, 儲值發送</DIV>
+															<A class="btn btn-light mt-2 px-2 py-1 m-0" href="/recharge.asp">
+																<I class="fad fa-badge-dollar fontSize22 width30"></I>
+																<SPAN class="ms-1 text-sm">儲值 ME 點</SPAN>
+															</A>
+															<DIV class="text-white h6 mt-2 mb-0 text-light">無須升級, 儲值發送</DIV>
 															<DIV class="text-white text-xs">女生爽約可以聯繫客服退回</DIV>
 														</DIV>
 													</DIV>
