@@ -331,4 +331,11 @@ public class ProofOfConcept {
 
 	}
 
+	@GetMapping(path = "/checkPassword/{login}/{shadow}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String checkPassword(@PathVariable String login, @PathVariable String shadow) {
+		
+		//確認帳號是否存在
+		return loverService.checkPassword(login, shadow, Locale.CHINESE);
+	}
 }

@@ -3174,7 +3174,7 @@ public class WelcomeController {
 		JavaScriptObjectNotation json = new JavaScriptObjectNotation();
 
 		String anchor;
-		try (InputStream inputStream = multipartFile.getInputStream()) {
+		try ( InputStream inputStream = multipartFile.getInputStream()) {
 			JSONObject jsonObject = loverService.qrCodeToString(
 				inputStream,
 				locale
@@ -3716,7 +3716,7 @@ public class WelcomeController {
 			response.setDateHeader("Expires", 0);
 			response.setContentType("image/png");
 
-			try (ServletOutputStream responseOutputStream = response.getOutputStream()) {
+			try ( ServletOutputStream responseOutputStream = response.getOutputStream()) {
 				responseOutputStream.write(imgByte);
 				responseOutputStream.flush();
 			}
