@@ -3223,12 +3223,8 @@ public class LoverService {
 					calculateAge(lover).toString()
 				);
 			}
-			// 是否為長期貴賓 vvip
-			if (isVVIP(lover)) {
-				loverElement.setAttribute("vvip", null);
-			}
-			// 是否為短期貴賓 vip
-			if (isVIP(lover)) {
+			// 是否為貴賓
+			if (isVVIP(lover) || isVIP(lover) || isTrial(lover)) {
 				loverElement.setAttribute("vip", null);
 			}
 			// 是否有安心認證
@@ -3282,6 +3278,122 @@ public class LoverService {
 		});
 
 		return document;
+	}
+
+	/**
+	 * 搜尋頁面的情人基本資訊分頁
+	 *
+	 * @param lovers
+	 * @param me
+	 * @param locale
+	 * @return
+	 */
+	public JSONObject loversSimpleInfoJSON(Page<Lover> lovers, Lover me, Locale locale) {
+		Collection<Lover> following = loverService.getThoseIFollow(me);
+		JSONObject jSONObject = new JSONObject();
+		JSONArray jSONArray = new JSONArray();
+
+		lovers.getContent().stream().filter(lover -> !(Objects.nonNull(lover.getDelete()))).forEachOrdered(lover -> {
+			JSONObject json = new JSONObject();
+			json.
+				put(
+					"identifier",
+					lover.getIdentifier().toString()
+				).
+				put(
+					"profileImage",
+					String.format(
+						"https://%s/profileImage/%s",
+						Servant.STATIC_HOST,
+						lover.getProfileImage()
+					)
+				);
+
+			if (Objects.nonNull(lover.getNickname())) {
+				json.put(
+					"nickname",
+					lover.getNickname()
+				);
+			}
+			if (Objects.nonNull(lover.getBirthday())) {
+				json.put(
+					"age",
+					calculateAge(lover).toString()
+				);
+			}
+			// 是否為長期貴賓 vvip
+			if (isVVIP(lover) || isVIP(lover) || isTrial(lover)) {
+				json.put(
+					"vip",
+					true
+				);
+			}
+			// 是否有安心認證
+			if (Objects.nonNull(lover.getRelief())) {
+				Boolean relief = lover.getRelief();
+				json.put(
+					"relief",
+					relief ? true : false
+				);
+			}
+			// 是否收藏對方
+			if (Objects.nonNull(following) && following.contains(lover)) {
+				json.put(
+					"following",
+					true
+				);
+			}
+			if (Objects.nonNull(lover.getRelationship())) {
+				json.put(
+					"relationship",
+					messageSource.getMessage(
+						lover.getRelationship().toString(),
+						null,
+						locale
+					)
+				);
+			}
+
+			/*
+			 出没地区
+			 */
+			Collection<Location> locations = getLocations(lover, true);
+			if (!locations.isEmpty()) {
+				JSONArray locArray = new JSONArray();
+				int count = 0;
+				for (Location location : locations) {
+					++count;
+					if (count <= 3) {
+						locArray.put(
+							messageSource.getMessage(
+								location.getName(),
+								null,
+								locale
+							)
+						);
+					}
+				}
+				json.put(
+					"locations",
+					locArray
+				);
+			}
+			jSONArray.put(json);
+		});
+		jSONObject.
+			put(
+				"lovers", jSONArray
+			).
+			put(
+				"hasNext",
+				lovers.hasNext() ? lovers.nextOrLastPageable().getPageNumber() : null
+			).
+			put(
+				"hasPrev",
+				lovers.hasPrevious() ? lovers.previousOrFirstPageable().getPageNumber() : null
+			);
+
+		return jSONObject;
 	}
 
 	/**
