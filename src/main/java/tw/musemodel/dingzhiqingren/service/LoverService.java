@@ -666,7 +666,7 @@ public class LoverService {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public String checkPassword(String username, String originalPassword, Locale locale) {
+	public String checkPassword(String username, String originalPassword, Locale locale){
 		User user = userRepository.findOneByUsername(username);
 		boolean hashpass = bCryptPasswordEncoder.matches(originalPassword, user.getPassword());
 		if (hashpass) {
