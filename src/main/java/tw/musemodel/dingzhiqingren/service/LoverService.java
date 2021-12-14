@@ -71,6 +71,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
@@ -654,6 +655,39 @@ public class LoverService {
 	}
 
 	/**
+	 * 確認用戶的舊密碼是否正確
+	 *
+	 * @param username
+	 * @param originalPassword
+	 * @param locale
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public String checkPassword(String username, String originalPassword, Locale locale) {
+		User user = userRepository.findOneByUsername(username);
+		if (passwordEncoder.matches(originalPassword, user.getPassword())) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"checkPassword.done",
+					null,
+					locale
+				)).
+				withResponse(true).
+				toJSONObject().
+				toString();
+		}
+		return new JavaScriptObjectNotation().
+			withReason(messageSource.getMessage(
+				"checkPassword.fail",
+				null,
+				locale
+			)).
+			withResponse(false).
+			toJSONObject().
+			toString();
+	}
+
+	/**
 	 * 更新用户号的密码。
 	 *
 	 * @param mofo 用户号
@@ -1002,7 +1036,6 @@ public class LoverService {
 	@Transactional(readOnly = true)
 	public Collection<Integer> getThoseWhoBlockMe(Lover someone) {
 		Collection<Integer> ids;
-
 		try {
 			ids = jdbcTemplate.query(
 				FileCopyUtils.copyToString(new InputStreamReader(
