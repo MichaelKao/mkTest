@@ -612,11 +612,39 @@ public class WelcomeController {
 	@PostMapping(path = "/password.json", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String changePassword(@RequestParam String password, Authentication authentication,
-		Locale locale
-	) {
+	String changePassword(@RequestParam String oldPassword, @RequestParam String newPassword,
+		@RequestParam String confirmNewPassword, Authentication authentication, Locale locale) {
 		Lover me = loverService.loadByUsername(authentication.getName());
-		if (password.isBlank() || password.isEmpty()) {
+
+		// 確認舊密碼是否輸入正確
+		Boolean isOldPasswordCorrect = loverService.
+			checkPassword(
+				authentication.getName(),
+				oldPassword,
+				locale
+			);
+		if (!isOldPasswordCorrect) {
+			return new JavaScriptObjectNotation().
+				withReason(messageSource.getMessage(
+					"checkPassword.fail",
+					null,
+					locale
+				)).
+				withResponse(false).
+				toJSONObject().
+				toString();
+		}
+
+		// 新密碼驗證
+		if (!Objects.equals(newPassword, confirmNewPassword)) {
+			return new JavaScriptObjectNotation().
+				withReason("新密碼驗證錯誤").
+				withResponse(false).
+				toJSONObject().
+				toString();
+		}
+
+		if (newPassword.isBlank() || newPassword.isEmpty()) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
 					"resetPassword.shadowMustntBeNull",
@@ -627,7 +655,7 @@ public class WelcomeController {
 				toJSONObject().
 				toString();
 		}
-		loverService.changePassword(me, password);
+		loverService.changePassword(me, newPassword);
 		return new JavaScriptObjectNotation().
 			withReason(messageSource.getMessage(
 				"changePassword.done",
@@ -3261,7 +3289,8 @@ public class WelcomeController {
 	@Secured({Servant.ROLE_ADVENTURER})
 	ModelAndView search(@RequestParam(required = false) Location location,
 		@RequestParam(required = false) Companionship companionship,
-		@RequestParam(defaultValue = "0") final int p, Authentication authentication,
+		@RequestParam(defaultValue = "0")
+		final int p, Authentication authentication,
 		Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
@@ -3342,7 +3371,8 @@ public class WelcomeController {
 	@ResponseBody
 	String searchMore(@RequestParam(required = false) Location location,
 		@RequestParam(required = false) Companionship companionship,
-		@RequestParam(defaultValue = "0") final int p, Authentication authentication,
+		@RequestParam(defaultValue = "0")
+		final int p, Authentication authentication,
 		Locale locale) throws SAXException, IOException, ParserConfigurationException {
 
 		if (servant.isNull(authentication)) {
@@ -3686,8 +3716,10 @@ public class WelcomeController {
 	@PostMapping(path = "/stopRecurring.json")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String stopRecurring(Authentication authentication, Locale locale, @RequestParam(defaultValue = "") String email,
-		@RequestParam String lastFourDigits) {
+	String stopRecurring(Authentication authentication, Locale locale,
+		@RequestParam(defaultValue = "") String email,
+		@RequestParam String lastFourDigits
+	) {
 
 		Lover me = loverService.loadByUsername(
 			authentication.getName()

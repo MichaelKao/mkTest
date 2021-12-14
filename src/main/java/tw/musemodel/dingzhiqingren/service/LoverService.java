@@ -71,7 +71,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
@@ -663,28 +662,12 @@ public class LoverService {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public String checkPassword(String username, String originalPassword, Locale locale) {
+	public Boolean checkPassword(String username, String originalPassword, Locale locale) {
 		User user = userRepository.findOneByUsername(username);
 		if (passwordEncoder.matches(originalPassword, user.getPassword())) {
-			return new JavaScriptObjectNotation().
-				withReason(messageSource.getMessage(
-					"checkPassword.done",
-					null,
-					locale
-				)).
-				withResponse(true).
-				toJSONObject().
-				toString();
+			return Boolean.TRUE;
 		}
-		return new JavaScriptObjectNotation().
-			withReason(messageSource.getMessage(
-				"checkPassword.fail",
-				null,
-				locale
-			)).
-			withResponse(false).
-			toJSONObject().
-			toString();
+		return Boolean.FALSE;
 	}
 
 	/**

@@ -60,12 +60,41 @@
 										<I class="fal fa-times"></I>
 									</BUTTON>
 								</DIV>
-								<DIV class="row align-items-center my-3">
-									<DIV class="col-1">
-										<I class="fas fa-key text-lg"></I>
+								<DIV class="align-items-center justify-content-center my-3">
+									<LABEL for="oldPassword">
+										<I class="fas fa-lock-alt text-lg me-1"></I>
+										<SPAN>輸入舊密碼</SPAN>
+									</LABEL>
+									<DIV class="position-relative">
+										<INPUT class="form-control" id="oldPassword" name="oldPassword" placeholder="舊密碼" required="" type="password"/>
+										<SPAN class="text-secondary togglePwd text-sm cursor-pointer position-absolute" style="top: 10px;right: 10px;">
+											<I class="fad fa-eye"></I>
+										</SPAN>
 									</DIV>
-									<DIV class="col-11">
-										<INPUT class="form-control" name="password" placeholder="輸入新密碼" required="" type="password"/>
+								</DIV>
+								<HR/>
+								<DIV class="align-items-center justify-content-center my-3">
+									<LABEL for="newPassword">
+										<I class="fas fa-key text-lg me-1"></I>
+										<SPAN>輸入新密碼</SPAN>
+									</LABEL>
+									<DIV class="position-relative">
+										<INPUT class="form-control" id="newPassword" name="newPassword" placeholder="新密碼" required="" type="password"/>
+										<SPAN class="text-secondary togglePwd text-sm cursor-pointer position-absolute" style="top: 10px;right: 10px;">
+											<I class="fad fa-eye"></I>
+										</SPAN>
+									</DIV>
+								</DIV>
+								<DIV class="align-items-center justify-content-center my-3">
+									<LABEL for="confirmNewPassword">
+										<I class="fas fa-key text-lg me-1"></I>
+										<SPAN>再次輸入新密碼</SPAN>
+									</LABEL>
+									<DIV class="position-relative">
+										<INPUT class="form-control" id="confirmNewPassword" name="confirmNewPassword" placeholder="新密碼" required="" type="password"/>
+										<SPAN class="text-secondary togglePwd text-sm cursor-pointer position-absolute" style="top: 10px;right: 10px;">
+											<I class="fad fa-eye"></I>
+										</SPAN>
 									</DIV>
 								</DIV>
 								<DIV class="d-flex">

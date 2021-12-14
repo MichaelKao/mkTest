@@ -67,18 +67,18 @@ $(document).ready(function () {
 		$('#crop').html('請稍後...');
 		$('#crop').attr('disabled', 'true');
 
-		if (image.width < image.height && image.width < 800) {
+		if (image.width < image.height && image.width < 600) {
 			CutWidth = image.width;
 			CutHeight = image.width;
-		} else if (image.height < image.width && image.height < 800) {
+		} else if (image.height < image.width && image.height < 600) {
 			CutWidth = image.height;
 			CutHeight = image.height;
 		} else if (image.width < 100 && image.height < 100) {
 			alert('解析度太低');
 			return;
 		} else {
-			CutWidth = 800;
-			CutHeight = 800;
+			CutWidth = 600;
+			CutHeight = 600;
 		}
 		if (cropper) {
 			canvas = cropper.getCroppedCanvas({
