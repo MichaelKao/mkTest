@@ -226,6 +226,13 @@ public class WelcomeController {
 				null
 			);//性别
 
+			if (Objects.nonNull(me.getRelief()) && me.getRelief()) {
+				documentElement.setAttribute(
+					"relief",
+					"true"
+				);//是否通過安心認證
+			}
+
 			/*
 			 身份
 			 */

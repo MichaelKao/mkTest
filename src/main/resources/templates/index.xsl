@@ -214,10 +214,18 @@
 													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/kingTop2.jpg" width="150px"/>
 												</DIV>
 												<DIV class="text-white mt-1">獨立專區讓meQUEEN看到您</DIV>
-												<BUTTON class="btn btn-light mt-2 px-2 py-1 m-0 reliefBtn" data-bs-target="#cropModal" data-bs-toggle="modal">
-													<I class="fad fa-shield-check fontSize22 width30"></I>
-													<SPAN class="ms-1 text-sm">進行安心認證</SPAN>
-												</BUTTON>
+												<xsl:if test="@relief">
+													<DIV class="bg-light text-dark border-radius-md mt-2 px-2 py-1 m-0">
+														<I class="fad fa-shield-check fontSize22 width30"></I>
+														<SPAN class="ms-1 text-sm">已完成安心認證</SPAN>
+													</DIV>
+												</xsl:if>
+												<xsl:if test="not(@relief)">
+													<BUTTON class="btn btn-light mt-2 px-2 py-1 m-0 reliefBtn" data-bs-target="#cropModal" data-bs-toggle="modal">
+														<I class="fad fa-shield-check fontSize22 width30"></I>
+														<SPAN class="ms-1 text-sm">進行安心認證</SPAN>
+													</BUTTON>
+												</xsl:if>
 											</DIV>
 											<OL class="flickity-page-dots">
 												<LI class="dot"></LI>
@@ -292,10 +300,18 @@
 													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/queenTop2.jpg" width="150px"/>
 												</DIV>
 												<DIV class="text-white mt-1">獨立專區讓meKING看到您</DIV>
-												<BUTTON class="btn btn-light mt-2 px-2 py-1 m-0 reliefBtn" data-bs-target="#cropModal" data-bs-toggle="modal">
-													<I class="fad fa-shield-check fontSize22 width30"></I>
-													<SPAN class="ms-1 text-sm">進行安心認證</SPAN>
-												</BUTTON>
+												<xsl:if test="@relief">
+													<DIV class="bg-light text-dark border-radius-md mt-2 px-2 py-1 m-0">
+														<I class="fad fa-shield-check fontSize22 width30"></I>
+														<SPAN class="ms-1 text-sm">已完成安心認證</SPAN>
+													</DIV>
+												</xsl:if>
+												<xsl:if test="not(@relief)">
+													<BUTTON class="btn btn-light mt-2 px-2 py-1 m-0 reliefBtn" data-bs-target="#cropModal" data-bs-toggle="modal">
+														<I class="fad fa-shield-check fontSize22 width30"></I>
+														<SPAN class="ms-1 text-sm">進行安心認證</SPAN>
+													</BUTTON>
+												</xsl:if>
 											</DIV>
 											<OL class="flickity-page-dots">
 												<LI class="dot"></LI>
@@ -331,48 +347,50 @@
 						</DIV>
 					</DIV>
 				</DIV>
-				<DIV class="modal fade" id="cropModal">
-					<DIV class="modal-dialog modal-dialog-centered">
-						<DIV class="modal-content">
-							<DIV class="modal-body">
-								<DIV class="d-flex">
-									<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
-										<I class="fal fa-times"></I>
-									</BUTTON>
-								</DIV>
-								<DIV class="mt-3 text-center">
-									<DIV class="d-flex align-items-center justify-content-center">
-										<I class="fad fa-shield-check fontSize25"></I>
-										<SPAN class="text-primary text-bold">通過安心認證，增加邀約成功率</SPAN>
+				<xsl:if test="not(@relief)">
+					<DIV class="modal fade" id="cropModal">
+						<DIV class="modal-dialog modal-dialog-centered">
+							<DIV class="modal-content">
+								<DIV class="modal-body">
+									<DIV class="d-flex">
+										<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+											<I class="fal fa-times"></I>
+										</BUTTON>
 									</DIV>
-									<DIV class="text-dark text-sm text-bold mt-2">上傳一張您與證件的自拍吧!</DIV>
-									<DIV class="text-dark text-sm text-bold mb-2">證件與本人需可清楚辨識</DIV>
-									<DIV class="text-dark text-sm my-2">由真人審核，需等待3-5天</DIV>
-									<LABEL class="cursor-pointer">
-										<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
-										<I class="fad fa-camera fontSize35 text-primary"></I>
-									</LABEL>
-									<DIV class="text-primary text-sm">照片僅供系統認證使用，不會外流，請安心上傳。</DIV>
-									<DIV class="result"></DIV>
-									<DIV class="progress-wrapper my-3 w-90 mx-auto">
-										<DIV class="progress-info">
-											<DIV class="progress-percentage">
-												<span class="text-sm font-weight-bold">0%</span>
+									<DIV class="mt-3 text-center">
+										<DIV class="d-flex align-items-center justify-content-center">
+											<I class="fad fa-shield-check fontSize25"></I>
+											<SPAN class="text-primary text-bold">通過安心認證，增加邀約成功率</SPAN>
+										</DIV>
+										<DIV class="text-dark text-sm text-bold mt-2">上傳一張您與證件的自拍吧!</DIV>
+										<DIV class="text-dark text-sm text-bold mb-2">證件與本人需可清楚辨識</DIV>
+										<DIV class="text-dark text-sm my-2">由真人審核，需等待3-5天</DIV>
+										<LABEL class="cursor-pointer">
+											<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
+											<I class="fad fa-camera fontSize35 text-primary"></I>
+										</LABEL>
+										<DIV class="text-primary text-sm">照片僅供系統認證使用，不會外流，請安心上傳。</DIV>
+										<DIV class="result"></DIV>
+										<DIV class="progress-wrapper my-3 w-90 mx-auto">
+											<DIV class="progress-info">
+												<DIV class="progress-percentage">
+													<span class="text-sm font-weight-bold">0%</span>
+												</DIV>
+											</DIV>
+											<DIV class="progress">
+												<DIV class="progress-bar bg-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></DIV>
 											</DIV>
 										</DIV>
-										<DIV class="progress">
-											<DIV class="progress-bar bg-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></DIV>
-										</DIV>
 									</DIV>
-								</DIV>
-								<DIV class="text-center">
-									<BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
-									<BUTTON class="btn btn-outline-primary px-3 py-2" id="cropBtn" type="button" style="display: none;">上傳</BUTTON>
+									<DIV class="text-center">
+										<BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+										<BUTTON class="btn btn-outline-primary px-3 py-2" id="cropBtn" type="button" style="display: none;">上傳</BUTTON>
+									</DIV>
 								</DIV>
 							</DIV>
 						</DIV>
 					</DIV>
-				</DIV>
+				</xsl:if>
 				<DIV class="container px-0 px-md-3 pt-7 pt-md-8">
 					<INPUT name="gender" type="hidden">
 						<xsl:if test="@male">
