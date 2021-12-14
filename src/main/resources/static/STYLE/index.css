@@ -208,6 +208,10 @@ a.guidance:hover {
 	position: absolute;
 }
 
+.result IMG {
+        max-width: 100%;
+}
+
 @media (max-width: 991.9px) {
 	.logo {
 		width: 25% !important;

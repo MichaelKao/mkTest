@@ -1,0 +1,6 @@
+@media (min-width: 1080px) {
+        .loversWrap {
+                width: 900px;
+                margin: 0 auto !important;
+        }
+}

@@ -372,4 +372,137 @@ $(document).ready(function () {
 			'pageDots': false
 		});
 	});
+
+
+	var result = document.querySelector('.result');
+	var cropBtn = document.querySelector('#cropBtn');
+	var input;
+	var $cropModal = $('#cropModal');
+	var $reliefBtn = $('.reliefBtn');
+	var cropper;
+
+	$('INPUT[name="image"]').on("change", function (e) {
+		var files = e.target.files;
+		input = this;
+
+		var done = function (url) {
+			this.value = '';
+			let img = document.createElement('img');
+			img.id = 'image';
+			img.src = url;
+			result.innerHTML = '';
+			result.appendChild(img);
+			cropper = new Cropper(img, {
+				viewMode: 1,
+				dragMode: 'move',
+				autoCropArea: 1
+			});
+			$(cropBtn).css('display', 'inline');
+		};
+
+		var reader;
+		var file;
+		if (files && files.length > 0) {
+			file = files[0];
+			if (URL) {
+				done(URL.createObjectURL(file));
+			} else if (FileReader) {
+				reader = new FileReader();
+				reader.onload = function (e) {
+					done(reader.result);
+				};
+				reader.readAsDataURL(file);
+			}
+		}
+	});
+
+	$cropModal.on('hidden.bs.modal', function () {
+		if (cropper) {
+			cropper.destroy();
+			cropper = null;
+			input.value = '';
+			result.innerHTML = '';
+			$(cropBtn).css('display', 'none');
+			$('.progress-bar').css('width', '0%').attr('aria-valuenow', '0%');
+			$('.progress-percentage > SPAN').html('0%');
+			$(cropBtn).html('上傳');
+			$(cropBtn).removeAttr('disabled')
+		}
+	});
+
+	$(cropBtn).click(function () {
+		var canvas;
+		let CutWidth;
+		let CutHeight;
+		$(cropBtn).html('請稍後...');
+		$(cropBtn).attr('disabled', 'true');
+
+		if (image.width < image.height && image.width < 800) {
+			CutWidth = image.width;
+			CutHeight = image.width;
+		} else if (image.height < image.width && image.height < 800) {
+			CutWidth = image.height;
+			CutHeight = image.height;
+		} else if (image.width < 100 && image.height < 100) {
+			alert('解析度太低');
+			return;
+		} else {
+			CutWidth = 800;
+			CutHeight = 800;
+		}
+		if (cropper) {
+			canvas = cropper.getCroppedCanvas({
+				width: CutWidth,
+				height: CutHeight,
+			});
+			canvas.toBlob(function (blob) {
+				var OK = uploadpic(blob);
+				if (!OK && typeof (OK) != 'undefined') {
+					alert('上傳失敗');
+					$cropModal.modal('hide');
+				}
+
+				input.value = '';
+			});
+		}
+	});
+
+	function uploadpic(blob) {
+		var file = new FormData();
+		file.append('file', blob);
+
+		$.ajax({
+			url: '/uploadIdentity',
+			cache: false,
+			contentType: false,
+			processData: false,
+			data: file,
+			type: 'post',
+			success: function (data) {
+				$('.toast-body').html('上傳成功，等待人員審核');
+				$('.toast').toast('show');
+				$cropModal.modal('hide');
+				$reliefBtn.remove();
+			},
+			error: function (request, status, error) {
+				$('.toast-body').html('上傳失敗');
+				$('.toast').toast('show');
+				$cropModal.modal('hide');
+				return false;
+			}, xhr: function () {
+				var xhr = new window.XMLHttpRequest();
+				xhr.upload.addEventListener("progress", function (progressEvent) {
+					if (progressEvent.lengthComputable) {
+						var percentComplete = progressEvent.loaded / progressEvent.total;
+						var percentVal = Math.round(percentComplete * 100) + '%';
+						$('.progress-bar').css('width', percentVal).attr('aria-valuenow', percentVal);
+						$('.progress-percentage > SPAN').html(percentVal);
+					}
+				}, false);
+				return xhr;
+			}
+		}).fail(function () {
+			$cropModal.modal('hide');
+		});
+	}
 });
