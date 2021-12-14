@@ -276,9 +276,6 @@ public class LoverService {
 	@Autowired
 	private StopRecurringPaymentApplicationRepository stopRecurringPaymentApplicationRepository;
 
-	@Autowired
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
-
 	@Value("classpath:sql/我拉黑了谁.sql")
 	private Resource thoseIBlockResource;
 
@@ -666,10 +663,9 @@ public class LoverService {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public String checkPassword(String username, String originalPassword, Locale locale){
+	public String checkPassword(String username, String originalPassword, Locale locale) {
 		User user = userRepository.findOneByUsername(username);
-		boolean hashpass = bCryptPasswordEncoder.matches(originalPassword, user.getPassword());
-		if (hashpass) {
+		if (passwordEncoder.matches(originalPassword, user.getPassword())) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
 					"checkPassword.done",
