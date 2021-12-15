@@ -293,7 +293,7 @@ $(document).ready(function () {
 						$(floatWrap).append(rateBtn);
 					}
 				});
-				if (chatStatus === 'able') {
+				if (chatStatus === 'able' || chatStatus === 'customerService') {
 					var sendContainer = document.createElement('DIV');
 					$(sendContainer).attr('class', 'sendContainer');
 					$('.textareaBox').append(sendContainer);
@@ -302,10 +302,12 @@ $(document).ready(function () {
 					$(sendContainer).append(div);
 					var textarea = document.createElement('TEXTAREA');
 					$(textarea).attr('id', 'chatInput');
-					if (isMale === 'true' && !friendStatus.some(item => item === 'maleAddLineBtn')) {
-						$(textarea).attr('placeholder', '用3句話打動meQUEEN...')
+					if (chatStatus === 'customerService') {
+						$(textarea).attr('placeholder', '想詢問些什麼...');
+					} else if (isMale === 'true' && !friendStatus.some(item => item === 'maleAddLineBtn')) {
+						$(textarea).attr('placeholder', '用3句話打動meQUEEN...');
 					} else {
-						$(textarea).attr('placeholder', '說點什麼吧...')
+						$(textarea).attr('placeholder', '說點什麼吧...');
 					}
 					$(div).append(textarea);
 					var sendBtn = document.createElement('BUTTON');
@@ -336,28 +338,28 @@ $(document).ready(function () {
 					});
 				} else if (chatStatus === 'blocking') {
 					var div = document.createElement('DIV');
-					$(div).attr('class', 'ps-3 py-2');
+					$(div).attr('class', 'notAbleToChat');
 					$('.textareaBox').append(div);
 					var span = document.createElement('SPAN');
 					$(span).append('您已封鎖對方');
 					$(div).append(span);
 				} else if (chatStatus === 'blocked') {
 					var div = document.createElement('DIV');
-					$(div).attr('class', 'ps-3 py-2');
+					$(div).attr('class', 'notAbleToChat');
 					$('.textareaBox').append(div);
 					var span = document.createElement('SPAN');
 					$(span).append('此用戶已不存在');
 					$(div).append(span);
 				} else if (chatStatus === 'exceedSentencesLimit') {
 					var div = document.createElement('DIV');
-					$(div).attr('class', 'ps-3 py-2');
+					$(div).attr('class', 'notAbleToChat');
 					$('.textareaBox').append(div);
 					var span = document.createElement('SPAN');
 					$(span).append('12小時後繼續聊天!!');
 					$(div).append(span);
 				} else if (chatStatus === 'exceedFemaleLimit') {
 					var div = document.createElement('DIV');
-					$(div).attr('class', 'ps-3 py-2');
+					$(div).attr('class', 'notAbleToChat');
 					$('.textareaBox').append(div);
 					var span = document.createElement('SPAN');
 					$(span).append('升級與更多meQUEEN聊天吧!!');
@@ -382,7 +384,7 @@ $(document).ready(function () {
 				if (parseInt(jsonObj.msgCount) === 3 && isMale === 'true') {
 					$('.textareaBox').empty();
 					var div = document.createElement('DIV');
-					$(div).attr('class', 'ps-3 py-2');
+					$(div).attr('class', 'notAbleToChat');
 					$('.textareaBox').append(div);
 					var span = document.createElement('SPAN');
 					$(span).html('12小時後繼續聊天!!');

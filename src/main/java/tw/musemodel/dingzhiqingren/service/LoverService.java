@@ -3782,6 +3782,7 @@ public class LoverService {
 					preparedStatement.setInt(1, female.getId());
 					preparedStatement.setInt(2, female.getId());
 					preparedStatement.setInt(3, NUMBER_OF_GROUP_GREETING);
+					preparedStatement.setInt(4, female.getId());
 					return preparedStatement;
 				} catch (IOException ex) {
 					return null;
@@ -3808,7 +3809,7 @@ public class LoverService {
 			historyRepository.save(history);
 			// 推送通知給男生
 			webSocketServer.sendNotification(male.getIdentifier().toString(),
-				String.format("%s向你打招呼：「%s」",
+				String.format("inbox%s向你打招呼：「%s」",
 					female.getNickname(),
 					greetingMessage
 				));

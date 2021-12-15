@@ -238,7 +238,7 @@ public class WebSocketChatServer {
 		Session receiverSession = sessionPools.get(receiverConn);
 
 		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
-		if (sender.getGender()) {
+		if (sender.getGender() && !(loverService.isCustomerService(sender) || loverService.isCustomerService(receiver))) {
 			if ((!loverService.isVIP(male) && !loverService.isVVIP(male))
 				|| (Objects.isNull(lineGiven) || Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse())) {
 				int msgsCount = webSocketService.msgsCountWithin12Hrs(male, female);

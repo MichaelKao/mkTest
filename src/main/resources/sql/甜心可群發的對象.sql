@@ -30,6 +30,7 @@ AND (lover0_.id NOT IN(
 	JOIN gei_bu_gei_lai lovers5_
 	ON l3.id=lovers5_.nan_sheng
 	WHERE lovers5_.jie_guo = 'true'
+	AND lovers5_.nu_sheng = ?
 	)
 )
 ORDER BY lover0_.huo_yue DESC
