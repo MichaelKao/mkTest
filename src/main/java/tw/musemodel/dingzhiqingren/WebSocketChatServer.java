@@ -150,14 +150,17 @@ public class WebSocketChatServer {
 				= webSocketService.wholeHistoryMsgs(male, female, page);
 
 			String historyMsgs = gson.toJson(wholeHistoryMsgs);
-			String friendStatus = gson.toJson(historyService.friendStatus(sender, receiver));
-			String chatStatus = gson.toJson(historyService.chatStatus(sender, receiver));
 			LOGGER.debug(String.format(
 				"訊息歷史紀錄toJson：%s",
 				historyMsgs
 			));
-			ChatMessage cmHistory = new ChatMessage("history", historyMsgs, friendStatus);
-			cmHistory.setChatStatus(chatStatus);
+			ChatMessage cmHistory = new ChatMessage("history", historyMsgs);
+			if (Objects.isNull(chatMessage.getReconnect())) {
+				String friendStatus = gson.toJson(historyService.friendStatus(sender, receiver));
+				String chatStatus = gson.toJson(historyService.chatStatus(sender, receiver));
+				cmHistory.setFriendStatus(friendStatus);
+				cmHistory.setChatStatus(chatStatus);
+			}
 			if (Objects.nonNull(userSession) && userSession.isOpen()) {
 				userSession.getAsyncRemote().sendText(gson.toJson(cmHistory));
 				LOGGER.debug(String.format(

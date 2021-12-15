@@ -6,12 +6,20 @@ $(document).ready(function () {
 	var hostName = location.hostname;
 	var messagesArea = document.getElementById("messagesArea");
 	var $nextMsgsPage = $('INPUT[name="nextMsgsPage"]');
+	var connectJsonObject;
 
 	var websocket;
 	if (typeof (WebSocket) == 'undefined') {
 		console.log('[Chatroom]Not support WebSocket');
 	} else {
 		console.log('[Chatroom]Support WebSocket');
+		connectJsonObject = {
+			"type": "history",
+			"sender": self,
+			"receiver": friend,
+			"message": "",
+			"page": 0
+		};
 		connect();
 	}
 
@@ -20,15 +28,8 @@ $(document).ready(function () {
 		//開啟事件
 		websocket.onopen = function () {
 			console.log('[Chatroom]Chat WebSocket is open!');
-			var jsonObj = {
-				"type": "history",
-				"sender": self,
-				"receiver": friend,
-				"message": "",
-				"page": 0
-			};
 			$nextMsgsPage.val(1);
-			websocket.send(JSON.stringify(jsonObj));
+			websocket.send(JSON.stringify(connectJsonObject));
 		};
 
 		//獲得訊息事件
@@ -36,349 +37,351 @@ $(document).ready(function () {
 			var jsonObj = JSON.parse(msg.data);
 			if ('history' === jsonObj.type) {
 				messagesArea.innerHTML = '';
-				$('.floatBtn').remove();
-				$('.textareaBox').empty();
 				// 這行的jsonObj.message是從DB撈出跟對方的歷史訊息，再parse成JSON格式處理
 				var messages = JSON.parse(jsonObj.historyMsgs);
-				var friendStatus = JSON.parse(jsonObj.friendStatus);
-				var chatStatus = JSON.parse(jsonObj.chatStatus);
+				if (jsonObj.friendStatus) {
+					$('.floatBtn').remove();
+					$('.textareaBox').empty();
+					var friendStatus = JSON.parse(jsonObj.friendStatus);
+					var chatStatus = JSON.parse(jsonObj.chatStatus);
+					friendStatus.forEach(function (friendStatus) {
+						$('.inputContainer').prepend(floatDiv);
+						if (friendStatus === 'decideBtn') {
+							$(floatWrap).attr('class', 'border border-primary border-radius-xl text-xs px-3 py-1 shadow wordBreak text-center floatWrap');
+							$(floatDiv).prepend(floatWrap);
+							$(floatWrap).append(`<DIV class="text-primary">
+									<DIV><I class="fad fa-user-plus"></I><SPAN>接受後可於聊天室暢聊</SPAN></DIV>
+									<DIV>同時提供綁定的通訊軟體</DIV></DIV>`);
+							var acceptBtn = document.createElement('BUTTON');
+							$(acceptBtn).attr({
+								'class': 'btn btn-outline-primary btn-round px-2 py-1 m-0 me-1 accept',
+								'type': 'button'
+							});
+							$(acceptBtn).append('接受');
+							$(floatWrap).append(acceptBtn);
+							var refuseBtn = document.createElement('BUTTON');
+							$(refuseBtn).attr({
+								'class': 'btn btn-outline-dark btn-round px-2 py-1 m-0 border-radius-xl refuse',
+								'type': 'button'
+							});
+							$(refuseBtn).append('拒絕');
+							$(floatWrap).append(refuseBtn);
+							$('BUTTON.accept').dblclick(function (e) {
+								e.preventDefault();
+							});
+							$('BUTTON.accept').click(function (event) {
+								event.preventDefault();
+								$(this).attr('disabled', true);
+								$(this).siblings('BUTTON.refuse').attr('disabled', true);
+
+								$.post(
+									"/stalked.json",
+									{
+										whom: friend
+									},
+									function (data) {
+										if (data.response) {
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+											$('DIV.floatBtn').empty();
+											var jsonObj = {
+												'type': 'button',
+												'sender': self,
+												'receiver': friend,
+												'behavior': 'JI_NI_LAI'
+											};
+											websocket.send(JSON.stringify(jsonObj));
+										} else {
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+											if (data.redirect) {
+												$('.toast').on('hidden.bs.toast', function () {
+													location.href = data.redirect;
+												});
+											}
+										}
+									},
+									'json'
+									);
+								return false;
+							});
+							$('BUTTON.refuse').dblclick(function (e) {
+								e.preventDefault();
+							});
+							$('BUTTON.refuse').click(function (event) {
+								event.preventDefault();
+								$(this).attr('disabled', true);
+								$(this).siblings('BUTTON.accept').attr('disabled', true);
+
+								$.post(
+									"/notStalked.json",
+									{
+										whom: friend
+									},
+									function (data) {
+										if (data.response) {
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+											$('DIV.floatBtn').empty();
+											var jsonObj = {
+												'type': 'button',
+												'sender': self,
+												'receiver': friend,
+												'behavior': 'BU_JI_LAI'
+											};
+											websocket.send(JSON.stringify(jsonObj));
+										} else {
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+										}
+									},
+									'json'
+									);
+								return false;
+							});
+						}
+						if (friendStatus === 'femaleRateBtn') {
+							$(floatWrap).attr('class', 'border border-primary border-radius-xl text-xs px-3 py-1 shadow wordBreak text-center floatWrap');
+							$(floatDiv).prepend(floatWrap);
+							$(floatWrap).append(`<DIV class="text-primary">
+									<DIV><I class="fad fa-star-half"></I>
+									<SPAN>已成為好友</SPAN></DIV></DIV>`);
+							var rateBtn = document.createElement('BUTTON');
+							$(rateBtn).attr({
+								'class': 'btn btn-sm btn-primary btn-round px-2 py-1 m-0 rate',
+								'data-bs-target': '#rateModal',
+								'data-bs-toggle': 'modal',
+								'type': 'button'
+							});
+							$(rateBtn).append('好友評價');
+							$(floatWrap).append(rateBtn);
+						}
+						if (friendStatus === 'reqSocialMediaBtn') {
+							$(floatWrap).attr('class', 'border border-primary border-radius-xl text-primary text-xs px-3 py-1 shadow wordBreak text-center floatWrap');
+							$(floatDiv).prepend(floatWrap);
+							$(floatWrap).append(`<DIV><I class="far fa-user-plus ms-1"></I>
+									<SPAN>加入好友</SPAN></DIV><DIV>解鎖聊天室限制同時獲得私人通訊軟體</DIV>`);
+							var reqSocialMediaBtnBtn = document.createElement('BUTTON');
+							$(reqSocialMediaBtnBtn).attr({
+								'class': 'btn btn-primary btn-round px-2 py-1 m-0',
+								'id': 'giveMeLine',
+								'type': 'button'
+							});
+							$(reqSocialMediaBtnBtn).append('送出邀請');
+							$(floatWrap).append(reqSocialMediaBtnBtn);
+							$(reqSocialMediaBtnBtn).click(function (event) {
+								event.preventDefault();
+								let btn = this;
+								$.post(
+									'/stalking.json',
+									{
+										whom: friend
+									},
+									function (data) {
+										if (data.response) {
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+											$('DIV.floatBtn').empty();
+											var borderDiv = document.createElement('DIV');
+											$(borderDiv).attr({
+												'class': 'border border-primary border-radius-xl text-xs px-3 py-1 shadow wordBreak text-center floatWrap'
+											});
+											$('DIV.floatBtn').append(borderDiv);
+											var msgDiv = document.createElement('DIV');
+											$(msgDiv).attr('class', 'text-primary');
+											$(borderDiv).append(msgDiv);
+											var firstLineDiv = document.createElement('DIV');
+											$(msgDiv).append(firstLineDiv);
+											var firstLineI = document.createElement('I');
+											$(firstLineI).attr('class', 'fad fa-user-plus');
+											$(firstLineDiv).append(firstLineI);
+											var firstLineSpan = document.createElement('SPAN');
+											$(firstLineSpan).append('您已送出好友邀請，');
+											$(firstLineDiv).append(firstLineSpan);
+											var secondLineDiv = document.createElement('DIV');
+											$(secondLineDiv).append('請等待對方回應。');
+											$(msgDiv).append(secondLineDiv);
+											floatWrapResize();
+											var jsonObj = {
+												'type': 'button',
+												'sender': self,
+												'receiver': friend,
+												'behavior': 'JI_WO_LAI'
+											};
+											websocket.send(JSON.stringify(jsonObj));
+										} else {
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+										}
+									},
+									'json'
+									);
+								return false;
+							});
+						}
+						if (friendStatus === 'waitingForRes') {
+							$(floatWrap).attr('class', 'border border-primary border-radius-xl text-xs px-3 py-1 shadow wordBreak text-center floatWrap');
+							$(floatDiv).prepend(floatWrap);
+							$(floatWrap).append(`<DIV class="text-primary"><DIV><I class="fad fa-user-plus"></I>
+									<SPAN>您已送出好友邀請，</SPAN></DIV><DIV>請等待對方回應。</DIV></DIV>`);
+						}
+						if (friendStatus === 'maleAddLineBtn') {
+							$(floatWrap).attr('class', 'border border-primary border-radius-xl text-xs px-3 py-1 shadow wordBreak text-center floatWrap');
+							$(floatDiv).prepend(floatWrap);
+							$(floatWrap).append(`<DIV class="text-primary"><DIV><I class="fad fa-star-half"></I>
+									<SPAN>已接受您的好友邀請</SPAN></DIV></DIV>`);
+							var openSocialMediaBtn = document.createElement('BUTTON');
+							$(openSocialMediaBtn).attr({
+								'class': 'btn btn-sm btn-primary btn-round px-2 py-1 m-0 openSocialMedia',
+								'type': 'button'
+							});
+							$(openSocialMediaBtn).append('加通訊軟體');
+							$(floatWrap).append(openSocialMediaBtn);
+							$('BUTTON.openSocialMedia').dblclick(function (e) {
+								e.preventDefault();
+							});
+							$('BUTTON.openSocialMedia').click(function () {
+								$(this).attr('disabled', true);
+								$.post(
+									'/maleOpenLine.json',
+									{
+										whom: friend
+									},
+									function (data) {
+										if (data.response) {
+											var jsonObj = {
+												'type': 'button',
+												'sender': self,
+												'receiver': friend,
+												'behavior': 'LAI_KOU_DIAN'
+											};
+											websocket.send(JSON.stringify(jsonObj));
+										}
+										if (data.response && data.result === 'isLine') {
+											location.href = data.redirect;
+										} else if (data.response && data.result === 'isWeChat') {
+											var src = 'https://' + location.hostname + data.redirect;
+											$('IMG.weChatQRcode').attr('src', src);
+											$('A.weChatQRcode').attr('href', src);
+											$('#weChatModel').modal('show');
+											$('BUTTON.openSocialMedia').removeAttr('disabled');
+										} else {
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+											$('.toast').on('hidden.bs.toast', function () {
+												location.href = data.redirect;
+											});
+										}
+									},
+									'json'
+									);
+								return false;
+							});
+						}
+						if (friendStatus === 'maleRateBtn') {
+							var rateBtn = document.createElement('BUTTON');
+							$(rateBtn).attr({
+								'class': 'btn btn-sm btn-dark btn-round px-2 py-1 m-0 ms-1 rate',
+								'data-bs-target': '#rateModal',
+								'data-bs-toggle': 'modal',
+								'type': 'button'
+							});
+							$(rateBtn).append('好友評價');
+							$(floatWrap).append(rateBtn);
+						}
+					});
+					if (chatStatus === 'able' || chatStatus === 'customerService') {
+						var sendContainer = document.createElement('DIV');
+						$(sendContainer).attr('class', 'sendContainer');
+						$('.textareaBox').append(sendContainer);
+						var div = document.createElement('DIV');
+						$(div).attr('class', 'textareaContainer');
+						$(sendContainer).append(div);
+						var textarea = document.createElement('TEXTAREA');
+						$(textarea).attr('id', 'chatInput');
+						if (chatStatus === 'customerService') {
+							$(textarea).attr('placeholder', '想詢問些什麼...');
+						} else if (isMale === 'true' && !friendStatus.some(item => item === 'maleAddLineBtn')) {
+							$(textarea).attr('placeholder', '用3句話打動meQUEEN...');
+						} else {
+							$(textarea).attr('placeholder', '說點什麼吧...');
+						}
+						$(div).append(textarea);
+						var sendBtn = document.createElement('BUTTON');
+						$(sendBtn).attr({
+							'class': 'btn btn-link m-0 p-0 fontSize25 sendMsgBtn',
+							'disabled': 'true'
+						});
+						(sendContainer).append(sendBtn);
+						var i = document.createElement('I');
+						$(i).attr('class', 'fa fa-paper-plane');
+						$(sendBtn).append(i);
+						$(sendBtn).click(function () {
+							sendMessage();
+						});
+						// 輸入訊息後按鈕才能送出
+						$(textarea).on('keyup', function () {
+							var value = $(this).val().trim();
+							$(sendBtn).removeAttr('disabled', 'false');
+							if (value.length == 0) {
+								$(sendBtn).attr('disabled', 'true');
+							}
+						});
+						$(textarea).on('keydown', function (e) {
+							if (e.keyCode === 13 && e.altKey) {
+								sendMessage();
+								return false;
+							}
+						});
+					} else if (chatStatus === 'blocking') {
+						var div = document.createElement('DIV');
+						$(div).attr('class', 'notAbleToChat');
+						$('.textareaBox').append(div);
+						var span = document.createElement('SPAN');
+						$(span).append('您已封鎖對方');
+						$(div).append(span);
+					} else if (chatStatus === 'blocked') {
+						var div = document.createElement('DIV');
+						$(div).attr('class', 'notAbleToChat');
+						$('.textareaBox').append(div);
+						var span = document.createElement('SPAN');
+						$(span).append('此用戶已不存在');
+						$(div).append(span);
+					} else if (chatStatus === 'exceedSentencesLimit') {
+						var div = document.createElement('DIV');
+						$(div).attr('class', 'notAbleToChat');
+						$('.textareaBox').append(div);
+						var span = document.createElement('SPAN');
+						$(span).append('12小時後繼續聊天!!');
+						$(div).append(span);
+					} else if (chatStatus === 'exceedFemaleLimit') {
+						var div = document.createElement('DIV');
+						$(div).attr('class', 'notAbleToChat');
+						$('.textareaBox').append(div);
+						var span = document.createElement('SPAN');
+						$(span).append('升級與更多meQUEEN聊天吧!!');
+						$(div).append(span);
+						var div1 = document.createElement('DIV');
+						$(div).append(div1);
+						var a = document.createElement('A');
+						$(a).attr({
+							'class': 'btn btn-link m-0 p-0',
+							'href': '/upgrade.asp'
+						});
+						$(div1).append(a);
+						var i = document.createElement('I');
+						$(i).attr('class', 'fad fa-crown me-1');
+						$(a).append(i);
+						var s = document.createElement('SPAN');
+						$(s).append('馬上升級');
+						$(a).append(s);
+					}
+				}
 				appendHistoryData(messages, $('#messagesArea'));
 
 				var floatDiv = document.createElement('DIV');
 				$(floatDiv).attr('class', 'd-flex justify-content-center floatBtn');
 				var floatWrap = document.createElement('DIV');
-				friendStatus.forEach(function (friendStatus) {
-					$('.inputContainer').prepend(floatDiv);
-					if (friendStatus === 'decideBtn') {
-						$(floatWrap).attr('class', 'border border-primary border-radius-xl text-xs px-3 py-1 shadow wordBreak text-center floatWrap');
-						$(floatDiv).prepend(floatWrap);
-						$(floatWrap).append(`<DIV class="text-primary">
-									<DIV><I class="fad fa-user-plus"></I><SPAN>接受後可於聊天室暢聊</SPAN></DIV>
-									<DIV>同時提供綁定的通訊軟體</DIV></DIV>`);
-						var acceptBtn = document.createElement('BUTTON');
-						$(acceptBtn).attr({
-							'class': 'btn btn-outline-primary btn-round px-2 py-1 m-0 me-1 accept',
-							'type': 'button'
-						});
-						$(acceptBtn).append('接受');
-						$(floatWrap).append(acceptBtn);
-						var refuseBtn = document.createElement('BUTTON');
-						$(refuseBtn).attr({
-							'class': 'btn btn-outline-dark btn-round px-2 py-1 m-0 border-radius-xl refuse',
-							'type': 'button'
-						});
-						$(refuseBtn).append('拒絕');
-						$(floatWrap).append(refuseBtn);
-						$('BUTTON.accept').dblclick(function (e) {
-							e.preventDefault();
-						});
-						$('BUTTON.accept').click(function (event) {
-							event.preventDefault();
-							$(this).attr('disabled', true);
-							$(this).siblings('BUTTON.refuse').attr('disabled', true);
-
-							$.post(
-								"/stalked.json",
-								{
-									whom: friend
-								},
-								function (data) {
-									if (data.response) {
-										$('.toast-body').html(data.reason);
-										$('.toast').toast('show');
-										$('DIV.floatBtn').empty();
-										var jsonObj = {
-											'type': 'button',
-											'sender': self,
-											'receiver': friend,
-											'behavior': 'JI_NI_LAI'
-										};
-										websocket.send(JSON.stringify(jsonObj));
-									} else {
-										$('.toast-body').html(data.reason);
-										$('.toast').toast('show');
-										if (data.redirect) {
-											$('.toast').on('hidden.bs.toast', function () {
-												location.href = data.redirect;
-											});
-										}
-									}
-								},
-								'json'
-								);
-							return false;
-						});
-						$('BUTTON.refuse').dblclick(function (e) {
-							e.preventDefault();
-						});
-						$('BUTTON.refuse').click(function (event) {
-							event.preventDefault();
-							$(this).attr('disabled', true);
-							$(this).siblings('BUTTON.accept').attr('disabled', true);
-
-							$.post(
-								"/notStalked.json",
-								{
-									whom: friend
-								},
-								function (data) {
-									if (data.response) {
-										$('.toast-body').html(data.reason);
-										$('.toast').toast('show');
-										$('DIV.floatBtn').empty();
-										var jsonObj = {
-											'type': 'button',
-											'sender': self,
-											'receiver': friend,
-											'behavior': 'BU_JI_LAI'
-										};
-										websocket.send(JSON.stringify(jsonObj));
-									} else {
-										$('.toast-body').html(data.reason);
-										$('.toast').toast('show');
-									}
-								},
-								'json'
-								);
-							return false;
-						});
-					}
-					if (friendStatus === 'femaleRateBtn') {
-						$(floatWrap).attr('class', 'border border-primary border-radius-xl text-xs px-3 py-1 shadow wordBreak text-center floatWrap');
-						$(floatDiv).prepend(floatWrap);
-						$(floatWrap).append(`<DIV class="text-primary">
-									<DIV><I class="fad fa-star-half"></I>
-									<SPAN>已成為好友</SPAN></DIV></DIV>`);
-						var rateBtn = document.createElement('BUTTON');
-						$(rateBtn).attr({
-							'class': 'btn btn-sm btn-primary btn-round px-2 py-1 m-0 rate',
-							'data-bs-target': '#rateModal',
-							'data-bs-toggle': 'modal',
-							'type': 'button'
-						});
-						$(rateBtn).append('好友評價');
-						$(floatWrap).append(rateBtn);
-					}
-					if (friendStatus === 'reqSocialMediaBtn') {
-						$(floatWrap).attr('class', 'border border-primary border-radius-xl text-primary text-xs px-3 py-1 shadow wordBreak text-center floatWrap');
-						$(floatDiv).prepend(floatWrap);
-						$(floatWrap).append(`<DIV><I class="far fa-user-plus ms-1"></I>
-									<SPAN>加入好友</SPAN></DIV><DIV>解鎖聊天室限制同時獲得私人通訊軟體</DIV>`);
-						var reqSocialMediaBtnBtn = document.createElement('BUTTON');
-						$(reqSocialMediaBtnBtn).attr({
-							'class': 'btn btn-primary btn-round px-2 py-1 m-0',
-							'id': 'giveMeLine',
-							'type': 'button'
-						});
-						$(reqSocialMediaBtnBtn).append('送出邀請');
-						$(floatWrap).append(reqSocialMediaBtnBtn);
-						$(reqSocialMediaBtnBtn).click(function (event) {
-							event.preventDefault();
-							let btn = this;
-							$.post(
-								'/stalking.json',
-								{
-									whom: friend
-								},
-								function (data) {
-									if (data.response) {
-										$('.toast-body').html(data.reason);
-										$('.toast').toast('show');
-										$('DIV.floatBtn').empty();
-										var borderDiv = document.createElement('DIV');
-										$(borderDiv).attr({
-											'class': 'border border-primary border-radius-xl text-xs px-3 py-1 shadow wordBreak text-center floatWrap'
-										});
-										$('DIV.floatBtn').append(borderDiv);
-										var msgDiv = document.createElement('DIV');
-										$(msgDiv).attr('class', 'text-primary');
-										$(borderDiv).append(msgDiv);
-										var firstLineDiv = document.createElement('DIV');
-										$(msgDiv).append(firstLineDiv);
-										var firstLineI = document.createElement('I');
-										$(firstLineI).attr('class', 'fad fa-user-plus');
-										$(firstLineDiv).append(firstLineI);
-										var firstLineSpan = document.createElement('SPAN');
-										$(firstLineSpan).append('您已送出好友邀請，');
-										$(firstLineDiv).append(firstLineSpan);
-										var secondLineDiv = document.createElement('DIV');
-										$(secondLineDiv).append('請等待對方回應。');
-										$(msgDiv).append(secondLineDiv);
-										floatWrapResize();
-										var jsonObj = {
-											'type': 'button',
-											'sender': self,
-											'receiver': friend,
-											'behavior': 'JI_WO_LAI'
-										};
-										websocket.send(JSON.stringify(jsonObj));
-									} else {
-										$('.toast-body').html(data.reason);
-										$('.toast').toast('show');
-									}
-								},
-								'json'
-								);
-							return false;
-						});
-					}
-					if (friendStatus === 'waitingForRes') {
-						$(floatWrap).attr('class', 'border border-primary border-radius-xl text-xs px-3 py-1 shadow wordBreak text-center floatWrap');
-						$(floatDiv).prepend(floatWrap);
-						$(floatWrap).append(`<DIV class="text-primary"><DIV><I class="fad fa-user-plus"></I>
-									<SPAN>您已送出好友邀請，</SPAN></DIV><DIV>請等待對方回應。</DIV></DIV>`);
-					}
-					if (friendStatus === 'maleAddLineBtn') {
-						$(floatWrap).attr('class', 'border border-primary border-radius-xl text-xs px-3 py-1 shadow wordBreak text-center floatWrap');
-						$(floatDiv).prepend(floatWrap);
-						$(floatWrap).append(`<DIV class="text-primary"><DIV><I class="fad fa-star-half"></I>
-									<SPAN>已接受您的好友邀請</SPAN></DIV></DIV>`);
-						var openSocialMediaBtn = document.createElement('BUTTON');
-						$(openSocialMediaBtn).attr({
-							'class': 'btn btn-sm btn-primary btn-round px-2 py-1 m-0 openSocialMedia',
-							'type': 'button'
-						});
-						$(openSocialMediaBtn).append('加通訊軟體');
-						$(floatWrap).append(openSocialMediaBtn);
-						$('BUTTON.openSocialMedia').dblclick(function (e) {
-							e.preventDefault();
-						});
-						$('BUTTON.openSocialMedia').click(function () {
-							$(this).attr('disabled', true);
-							$.post(
-								'/maleOpenLine.json',
-								{
-									whom: friend
-								},
-								function (data) {
-									if (data.response) {
-										var jsonObj = {
-											'type': 'button',
-											'sender': self,
-											'receiver': friend,
-											'behavior': 'LAI_KOU_DIAN'
-										};
-										websocket.send(JSON.stringify(jsonObj));
-									}
-									if (data.response && data.result === 'isLine') {
-										location.href = data.redirect;
-									} else if (data.response && data.result === 'isWeChat') {
-										var src = 'https://' + location.hostname + data.redirect;
-										$('IMG.weChatQRcode').attr('src', src);
-										$('A.weChatQRcode').attr('href', src);
-										$('#weChatModel').modal('show');
-										$('BUTTON.openSocialMedia').removeAttr('disabled');
-									} else {
-										$('.toast-body').html(data.reason);
-										$('.toast').toast('show');
-										$('.toast').on('hidden.bs.toast', function () {
-											location.href = data.redirect;
-										});
-									}
-								},
-								'json'
-								);
-							return false;
-						});
-					}
-					if (friendStatus === 'maleRateBtn') {
-						var rateBtn = document.createElement('BUTTON');
-						$(rateBtn).attr({
-							'class': 'btn btn-sm btn-dark btn-round px-2 py-1 m-0 ms-1 rate',
-							'data-bs-target': '#rateModal',
-							'data-bs-toggle': 'modal',
-							'type': 'button'
-						});
-						$(rateBtn).append('好友評價');
-						$(floatWrap).append(rateBtn);
-					}
-				});
-				if (chatStatus === 'able' || chatStatus === 'customerService') {
-					var sendContainer = document.createElement('DIV');
-					$(sendContainer).attr('class', 'sendContainer');
-					$('.textareaBox').append(sendContainer);
-					var div = document.createElement('DIV');
-					$(div).attr('class', 'textareaContainer');
-					$(sendContainer).append(div);
-					var textarea = document.createElement('TEXTAREA');
-					$(textarea).attr('id', 'chatInput');
-					if (chatStatus === 'customerService') {
-						$(textarea).attr('placeholder', '想詢問些什麼...');
-					} else if (isMale === 'true' && !friendStatus.some(item => item === 'maleAddLineBtn')) {
-						$(textarea).attr('placeholder', '用3句話打動meQUEEN...');
-					} else {
-						$(textarea).attr('placeholder', '說點什麼吧...');
-					}
-					$(div).append(textarea);
-					var sendBtn = document.createElement('BUTTON');
-					$(sendBtn).attr({
-						'class': 'btn btn-link m-0 p-0 fontSize25 sendMsgBtn',
-						'disabled': 'true'
-					});
-					(sendContainer).append(sendBtn);
-					var i = document.createElement('I');
-					$(i).attr('class', 'fa fa-paper-plane');
-					$(sendBtn).append(i);
-					$(sendBtn).click(function () {
-						sendMessage();
-					});
-					// 輸入訊息後按鈕才能送出
-					$(textarea).on('keyup', function () {
-						var value = $(this).val().trim();
-						$(sendBtn).removeAttr('disabled', 'false');
-						if (value.length == 0) {
-							$(sendBtn).attr('disabled', 'true');
-						}
-					});
-					$(textarea).on('keydown', function (e) {
-						if (e.keyCode === 13 && e.altKey) {
-							sendMessage();
-							return false;
-						}
-					});
-				} else if (chatStatus === 'blocking') {
-					var div = document.createElement('DIV');
-					$(div).attr('class', 'notAbleToChat');
-					$('.textareaBox').append(div);
-					var span = document.createElement('SPAN');
-					$(span).append('您已封鎖對方');
-					$(div).append(span);
-				} else if (chatStatus === 'blocked') {
-					var div = document.createElement('DIV');
-					$(div).attr('class', 'notAbleToChat');
-					$('.textareaBox').append(div);
-					var span = document.createElement('SPAN');
-					$(span).append('此用戶已不存在');
-					$(div).append(span);
-				} else if (chatStatus === 'exceedSentencesLimit') {
-					var div = document.createElement('DIV');
-					$(div).attr('class', 'notAbleToChat');
-					$('.textareaBox').append(div);
-					var span = document.createElement('SPAN');
-					$(span).append('12小時後繼續聊天!!');
-					$(div).append(span);
-				} else if (chatStatus === 'exceedFemaleLimit') {
-					var div = document.createElement('DIV');
-					$(div).attr('class', 'notAbleToChat');
-					$('.textareaBox').append(div);
-					var span = document.createElement('SPAN');
-					$(span).append('升級與更多meQUEEN聊天吧!!');
-					$(div).append(span);
-					var div1 = document.createElement('DIV');
-					$(div).append(div1);
-					var a = document.createElement('A');
-					$(a).attr({
-						'class': 'btn btn-link m-0 p-0',
-						'href': '/upgrade.asp'
-					});
-					$(div1).append(a);
-					var i = document.createElement('I');
-					$(i).attr('class', 'fad fa-crown me-1');
-					$(a).append(i);
-					var s = document.createElement('SPAN');
-					$(s).append('馬上升級');
-					$(a).append(s);
-				}
 				scrollToEnd();
 			} else if ('chat' === jsonObj.type) {
 				if (parseInt(jsonObj.msgCount) === 3 && isMale === 'true') {
@@ -848,6 +851,14 @@ $(document).ready(function () {
 				reason = "Unknown reason";
 			console.log("[Chatroom]Chat WebSocket is close because : " + reason);
 			setTimeout(function () {
+				connectJsonObject = {
+					"type": "history",
+					"sender": self,
+					"receiver": friend,
+					"message": "",
+					"page": 0,
+					"reconnect": "true"
+				}
 				connect();
 			}, 1000);
 		};
@@ -1442,6 +1453,13 @@ $(document).ready(function () {
 		);
 		chatTimeOut = setTimeout(function () {
 			$('#messagesArea').html('');
+			connectJsonObject = {
+				"type": "history",
+				"sender": self,
+				"receiver": friend,
+				"message": "",
+				"page": 0
+			}
 			connect();
 			var img = $(conversation).find('IMG').attr('src');
 			var name = $(conversation).find('A.name').html();
