@@ -39,6 +39,9 @@ $(document).ready(function () {
 				messagesArea.innerHTML = '';
 				// 這行的jsonObj.message是從DB撈出跟對方的歷史訊息，再parse成JSON格式處理
 				var messages = JSON.parse(jsonObj.historyMsgs);
+				var floatDiv = document.createElement('DIV');
+				$(floatDiv).attr('class', 'd-flex justify-content-center floatBtn');
+				var floatWrap = document.createElement('DIV');
 				if (jsonObj.friendStatus) {
 					$('.floatBtn').remove();
 					$('.textareaBox').empty();
@@ -378,10 +381,6 @@ $(document).ready(function () {
 					}
 				}
 				appendHistoryData(messages, $('#messagesArea'));
-
-				var floatDiv = document.createElement('DIV');
-				$(floatDiv).attr('class', 'd-flex justify-content-center floatBtn');
-				var floatWrap = document.createElement('DIV');
 				scrollToEnd();
 			} else if ('chat' === jsonObj.type) {
 				if (parseInt(jsonObj.msgCount) === 3 && isMale === 'true') {

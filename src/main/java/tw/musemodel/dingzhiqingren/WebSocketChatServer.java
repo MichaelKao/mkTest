@@ -157,8 +157,8 @@ public class WebSocketChatServer {
 			ChatMessage cmHistory = new ChatMessage("history", historyMsgs);
 			if (Objects.isNull(chatMessage.getReconnect())) {
 				String friendStatus = gson.toJson(historyService.friendStatus(sender, receiver));
-				String chatStatus = gson.toJson(historyService.chatStatus(sender, receiver));
 				cmHistory.setFriendStatus(friendStatus);
+				String chatStatus = gson.toJson(historyService.chatStatus(sender, receiver));
 				cmHistory.setChatStatus(chatStatus);
 			}
 			if (Objects.nonNull(userSession) && userSession.isOpen()) {
