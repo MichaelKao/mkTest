@@ -63,7 +63,7 @@
 						</DIV>
 					</DIV>
 				</HEADER>
-				<SECTION class="container px-0 pt-7 position-relative">
+				<SECTION class="container px-0 pt-7 position-relative hideMe">
 					<DIV class="orangeBg">
 						<DIV class="videoSlogan">孤單是現代文明病, 找到陪伴就來養蜜</DIV>
 					</DIV>
@@ -75,7 +75,7 @@
 						<DIV class="text-right">WELCOME TO YOUNGME! LET'S CHAT &amp; DATE</DIV>
 					</DIV>
 				</SECTION>
-				<SECTION class="mt-3 py-4 py-md-6 container meKING">
+				<SECTION class="mt-3 py-4 py-md-6 container meKING hideMe">
 					<DIV class="text-right pe-lg-5 pe-xl-8 gentlemen">
 						<H2>OUR GENTLEMEN</H2>
 						<DIV>
@@ -102,7 +102,7 @@
 						</DIV>
 					</DIV>
 				</SECTION>
-				<SECTION class="mt-2 py-4 py-md-6 container meQUEEN">
+				<SECTION class="mt-2 py-4 py-md-6 container meQUEEN hideMe">
 					<DIV class="ladies px-2 ms-sm-1 py-1 ms-md-2 ms-lg-6 ms-xl-8 p-xl-5">
 						<H2>OUR LADIES</H2>
 						<DIV>

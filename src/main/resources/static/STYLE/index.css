@@ -293,3 +293,7 @@ a.guidance:hover {
 		width: 100vw;
 	}
 }
+
+.hideMe {
+	opacity:0;
+}
