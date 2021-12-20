@@ -31,6 +31,13 @@ $(document).ready(function () {
 		}
 	}
 
+	$('INPUT.hiddenImg').each(function () {
+		var hiddenImg = this;
+		var imgSrc = $(hiddenImg).val();
+		console.log(imgSrc)
+		$(hiddenImg).closest('DIV.blurImg').css('background-image', 'url(' + imgSrc + ')');
+	});
+
 	var result = document.querySelector('.result');
 	var cropBtn = document.querySelector('#cropBtn');
 	var input;
