@@ -46,189 +46,85 @@ $(document).ready(function () {
 		}
 	}
 
-	$('A.mobileModeA').click(function () {
-		let a = this;
-		loverMobilePage(a);
-	});
-
-	function loverMobilePage(a) {
-		let type = $(a).data('type');
-		$mobileRefreshBtn.data('type', type);
-		let p = 0;
-		if (getCookie(type + 'Page') !== '') {
-			p = getCookie(type + 'Page');
-		}
-		let wrap = $('DIV.mobileMode');
-		let pageBtnWrap = $('DIV#mobilePageBtn');
+	// 網頁版
+	if (!isMobile() && $('INPUT[name="signIn"]').val() === 'true') {
 		$.post(
-			'/seeMoreLover.json',
-			{
-				p: p,
-				type: type
-			},
+			'/indexWebView.json',
 			(data) => {
-			if (data.response) {
-				wrap.empty();
-				pageBtnWrap.empty();
-				$('A.mobileModeA').each(function (i, obj) {
-					$(this).removeClass('active');
-				});
-				$(a).addClass('active');
-				loverWebPage(type, wrap, data, pageBtnWrap);
+			if (data.vip) {
+				appendData(data.vip, 'vip', $('DIV.vip'), $('.vipPageBtn'));
+			}
+			if (data.relief) {
+				appendData(data.relief, 'relief', $('DIV.relief'), $('.reliefPageBtn'));
+			}
+			if (data.active) {
+				appendData(data.active, 'active', $('DIV.active'), $('.activePageBtn'));
+			}
+			if (data.register) {
+				appendData(data.register, 'register', $('DIV.register'), $('.registerPageBtn'));
 			}
 		},
 			'json'
 			);
-		return false;
 	}
 
-	$('BUTTON.pageBtn').click(function () {
-		let button = this;
-		let wrap;
-		var pageBtnWrap;
-		let p = $(button).data('page');
-		let type = $(button).data('type');
-		if ($(button).parent('DIV').attr('id') === 'mobilePageBtn') {
-			wrap = $('DIV.mobileMode');
-			pageBtnWrap = $('DIV#mobilePageBtn');
-			$mobileRefreshBtn.data('type', type);
-		} else {
-			wrap = $('DIV.' + type);
-			pageBtnWrap = $('DIV.' + type + 'PageBtn');
-		}
-		$.post(
-			'/seeMoreLover.json',
-			{
-				p: p,
-				type: type
-			},
-			(data) => {
-			if (data.response) {
-				wrap.empty();
-				pageBtnWrap.empty();
-				loverWebPage(type, wrap, data, pageBtnWrap);
-			}
-		},
-			'json'
-			);
-		return false;
-	});
-
-	$('BUTTON.refreshBtn').click(function () {
-		let button = this;
-		let wrap;
-		var pageBtnWrap;
-		let type = $(button).data('type');
-		if ($(button).attr('id') === 'mobileRefreshBtn') {
-			wrap = $('DIV.mobileMode');
-			pageBtnWrap = $('DIV#mobilePageBtn');
-		} else {
-			wrap = $('DIV.' + type);
-			pageBtnWrap = $('DIV.' + type + 'PageBtn');
-		}
-		$.post(
-			'/seeMoreLover.json',
-			{
-				p: 0,
-				type: type
-			},
-			(data) => {
-			if (data.response) {
-				wrap.empty();
-				pageBtnWrap.empty();
-				loverWebPage(type, wrap, data, pageBtnWrap);
-			}
-		},
-			'json'
-			);
-		return false;
-	});
-
-	function loverWebPage(type, wrap, data, pageBtnWrap) {
+	function appendData(data, memberType, memberWrap, pageBtnWrap) {
 		data.result.forEach(function (item) {
-			let outterA = document.createElement('A');
-			$(outterA).attr({
+			var relief = item.relief;
+			var vvip = item.vvip;
+			var relationship = item.relationship;
+
+			var a = document.createElement('A');
+			$(a).attr({
 				'class': 'position-relative m-1',
-				'href': '/profile/' + item.identifier + '/'
+				'href': 'profile/' + item.identifier + '/'
 			});
-			wrap.append(outterA);
+			memberWrap.append(a);
+			$(a).append(`<DIV style="width:152px; height:152px;"><IMG class="border-radius-md" loading="lazy" src="${item.profileImage}" width="152"/></DIV>`);
 
-			let IMG = document.createElement('IMG');
-			$(IMG).attr({
-				'class': 'border-radius-md width148whileMobile',
-				'src': item.profileImage,
-				'width': '152'
-			});
-			$(outterA).append(IMG);
-			let iconDiv = document.createElement('DIV');
-			$(iconDiv).attr({
-				'class': 'position-absolute right-0 text-center',
-				'style': 'width: 32px; top: 5px;'
-			});
-			$(outterA).append(iconDiv);
-			if (item.vip) {
-				let vipI = document.createElement('I');
-				$(vipI).attr('class', 'fad fa-crown fontSize22 text-yellow text-shadow');
-				$(iconDiv).append(vipI);
-			}
-
-			if (item.relief) {
-				let reliefI = document.createElement('I');
-				$(reliefI).attr('class', 'fas fa-shield-check fontSize22 text-success text-shadow');
-				$(iconDiv).append(reliefI);
-			}
-
-			if (item.following) {
-				let followingDiv = document.createElement('DIV');
-				$(followingDiv).attr({
-					'class': 'position-absolute left-0 text-center',
+			if (vvip || relief) {
+				var badgeDiv = document.createElement('DIV');
+				$(badgeDiv).attr({
+					'class': 'position-absolute right-0 text-center',
 					'style': 'width: 32px; top: 5px;'
 				});
-				$(outterA).append(followingDiv);
-				let followingI = document.createElement('I');
-				$(followingI).attr('class', 'fas fa-heart-circle text-pink fontSize22');
-				$(followingDiv).append(followingI);
+				$(a).append(badgeDiv);
+				if (vvip) {
+					$(badgeDiv).append(`<I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>`);
+				}
+				if (relief) {
+					$(badgeDiv).append(`<I class="fas fa-shield-check fontSize22 text-success text-shadow"></I>`);
+				}
 			}
-
-			let infoDiv = document.createElement('DIV');
-			$(infoDiv).attr('class', 'position-absolute imageShadow bottom-0 left-0 right-0 mx-3 mb-1 py-0 text-bolder text-dark bg-white opacity-7 border-radius-md p-1 text-xs text-center');
-			$(outterA).append(infoDiv);
-			let nameAgeDiv = document.createElement('DIV');
-			$(infoDiv).append(nameAgeDiv);
-			let infoSpan = document.createElement('SPAN');
-			$(infoSpan).html(item.nickname + ' ' + item.age);
-			$(nameAgeDiv).append(infoSpan);
-			if (item.relationship) {
-				let relationshipDiv = document.createElement('DIV');
-				$(infoDiv).append(relationshipDiv);
-				let relationshipSpan = document.createElement('SPAN');
-				$(relationshipSpan).html('尋找' + item.relationship);
-				$(relationshipDiv).append(relationshipSpan);
+			if (item.following) {
+				$(a).append(`<DIV class="position-absolute left-0 text-center" style="width: 32px; top: 5px;">
+						<I class="fas fa-heart-circle text-pink fontSize22"></I>
+						</DIV>`);
 			}
-			let locationDiv = document.createElement('DIV');
-			$(infoDiv).append(locationDiv);
-			if (typeof (item.location) != 'undefined') {
-				item.location.forEach(function (item, i, array) {
-					if (i === array.length - 1) {
-						let locationSpan = document.createElement('SPAN');
-						$(locationSpan).html(item.location);
-						$(locationDiv).append(locationSpan);
-						return;
-					}
-					let locationSpan = document.createElement('SPAN');
-					$(locationSpan).attr('class', 'me-1');
-					$(locationSpan).html(item.location);
-					$(locationDiv).append(locationSpan);
-				});
+			var infoDiv = document.createElement('DIV');
+			$(infoDiv).attr(
+				'class',
+				'position-absolute imageShadow bottom-0 left-0 right-0 mx-3 mb-1 py-0 text-bolder text-dark bg-white opacity-7 border-radius-md p-1 text-xs text-center'
+				);
+			$(a).append(infoDiv);
+			$(infoDiv).append(`<DIV><SPAN>${item.nickname}</SPAN>
+					<SPAN class="ms-2">${item.age}</SPAN></DIV>`);
+			if (relationship) {
+				$(infoDiv).append(`<DIV><SPAN>尋找</SPAN><SPAN>${relationship}</SPAN></DIV>`);
 			}
+			var locDiv = document.createElement('DIV');
+			$(infoDiv).append(locDiv);
+			item.location.forEach(function (item) {
+				$(locDiv).append(`<SPAN class="me-1">${item}</SPAN>`);
+			});
 		});
 
-		if (typeof (data.pagination.hasPrev) != 'undefined') {
+		if (typeof (data.hasPrev) != 'undefined') {
 			var prevBtn = document.createElement('BUTTON');
 			$(prevBtn).attr({
 				'class': 'btn btn-primary btn-round pageBtn mx-1 m-0 px-2 py-1',
-				'data-type': type,
-				'data-page': data.pagination.hasPrev
+				'data-type': memberType,
+				'data-page': data.hasPrev
 			});
 			pageBtnWrap.append(prevBtn);
 			var prevI = document.createElement('I');
@@ -255,23 +151,21 @@ $(document).ready(function () {
 						type: type
 					},
 					(data) => {
-					if (data.response) {
-						wrap.empty();
-						pageBtnWrap.empty();
-						loverWebPage(type, wrap, data, pageBtnWrap);
-					}
+					wrap.empty();
+					pageBtnWrap.empty();
+					appendData(data, type, wrap, pageBtnWrap);
 				},
 					'json'
 					);
 				return false;
 			});
 		}
-		if (typeof (data.pagination.hasNext) != 'undefined') {
+		if (typeof (data.hasNext) != 'undefined') {
 			var nextBtn = document.createElement('BUTTON');
 			$(nextBtn).attr({
 				'class': 'btn btn-primary btn-round pageBtn mx-1 m-0 px-2 py-1',
-				'data-type': type,
-				'data-page': data.pagination.hasNext
+				'data-type': memberType,
+				'data-page': data.hasNext
 			});
 			pageBtnWrap.append(nextBtn);
 			$(nextBtn).append('下一頁');
@@ -298,11 +192,9 @@ $(document).ready(function () {
 						type: type
 					},
 					(data) => {
-					if (data.response) {
-						wrap.empty();
-						pageBtnWrap.empty();
-						loverWebPage(type, wrap, data, pageBtnWrap);
-					}
+					wrap.empty();
+					pageBtnWrap.empty();
+					appendData(data, type, wrap, pageBtnWrap);
 				},
 					'json'
 					);
@@ -310,6 +202,68 @@ $(document).ready(function () {
 			});
 		}
 	}
+
+	$('A.mobileModeA').click(function () {
+		let a = this;
+		loverMobilePage(a);
+	});
+
+	function loverMobilePage(a) {
+		let type = $(a).data('type');
+		$mobileRefreshBtn.data('type', type);
+		let p = 0;
+		if (getCookie(type + 'Page') !== '') {
+			p = getCookie(type + 'Page');
+		}
+		let wrap = $('DIV.mobileMode');
+		let pageBtnWrap = $('DIV#mobilePageBtn');
+		$.post(
+			'/seeMoreLover.json',
+			{
+				p: p,
+				type: type
+			},
+			(data) => {
+			wrap.empty();
+			pageBtnWrap.empty();
+			$('A.mobileModeA').each(function (i, obj) {
+				$(this).removeClass('active');
+			});
+			$(a).addClass('active');
+			appendData(data, type, wrap, pageBtnWrap);
+		},
+			'json'
+			);
+		return false;
+	}
+
+	$('BUTTON.refreshBtn').click(function () {
+		let button = this;
+		let wrap;
+		var pageBtnWrap;
+		let type = $(button).data('type');
+		if ($(button).attr('id') === 'mobileRefreshBtn') {
+			wrap = $('DIV.mobileMode');
+			pageBtnWrap = $('DIV#mobilePageBtn');
+		} else {
+			wrap = $('DIV.' + type);
+			pageBtnWrap = $('DIV.' + type + 'PageBtn');
+		}
+		$.post(
+			'/seeMoreLover.json',
+			{
+				p: 0,
+				type: type
+			},
+			(data) => {
+			wrap.empty();
+			pageBtnWrap.empty();
+			appendData(data, type, wrap, pageBtnWrap);
+		},
+			'json'
+			);
+		return false;
+	});
 
 	// 判斷是否為手機裝置
 	function isMobile() {
@@ -328,7 +282,6 @@ $(document).ready(function () {
 		if (screenWidth < 769 && screenHeight < 950) {
 			mobileFlag = true;
 		}
-
 		return mobileFlag;
 	}
 
@@ -352,7 +305,6 @@ $(document).ready(function () {
 		var expires = "expires=" + d.toGMTString();
 		document.cookie = cname + "=" + cvalue + "; " + expires;
 	}
-
 	// LINE Notify 的提醒 modal
 	function showModal() {
 		if (getCookie('youngMeLineNotifyModal') === '') {
@@ -372,7 +324,6 @@ $(document).ready(function () {
 			'pageDots': false
 		});
 	});
-
 
 	var result = document.querySelector('.result');
 	var cropBtn = document.querySelector('#cropBtn');

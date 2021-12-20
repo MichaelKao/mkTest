@@ -249,16 +249,6 @@ public class WelcomeController {
 				);
 			}
 
-			document = loverService.indexDocument(
-				document,
-				me,
-				vipPage,
-				reliefPage,
-				activePage,
-				registerPage,
-				locale
-			);//登入后的甜心或男仕列表
-
 			if (loverService.annoucementCount(me) > 0) {
 				documentElement.setAttribute(
 					"announcement",
@@ -290,6 +280,26 @@ public class WelcomeController {
 		ModelAndView modelAndView = new ModelAndView("index");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
+	}
+
+	@PostMapping(path = "/indexWebView.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	@SuppressWarnings({"UnusedAssignment", "null"})
+	String indexWebView(
+		@CookieValue(defaultValue = "0", name = "vipPage") int vipPage,
+		@CookieValue(defaultValue = "0", name = "reliefPage") int reliefPage,
+		@CookieValue(defaultValue = "0", name = "activePage") int activePage,
+		@CookieValue(defaultValue = "0", name = "registerPage") int registerPage,
+		Authentication authentication, Locale locale) {
+
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);//本人
+
+		return loverService.
+			indexJson(me, vipPage, reliefPage, activePage, registerPage, locale).
+			toString();
 	}
 
 	/**
@@ -397,22 +407,17 @@ public class WelcomeController {
 
 		JSONObject jsonObject = new JSONObject();
 		return jsonObject.
-			put("response", true).
 			put(
 				"result",
 				loverService.seeMoreLover(me, page, locale)
 			).
 			put(
-				"pagination",
-				new JSONObject().
-					put(
-						"hasNext",
-						page.hasNext() ? page.nextOrLastPageable().getPageNumber() : null
-					).
-					put(
-						"hasPrev",
-						page.hasPrevious() ? page.previousOrFirstPageable().getPageNumber() : null
-					)
+				"hasNext",
+				page.hasNext() ? page.nextOrLastPageable().getPageNumber() : null
+			).
+			put(
+				"hasPrev",
+				page.hasPrevious() ? page.previousOrFirstPageable().getPageNumber() : null
 			).toString();
 	}
 

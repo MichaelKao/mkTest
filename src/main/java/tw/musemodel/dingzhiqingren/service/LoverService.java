@@ -3442,6 +3442,168 @@ public class LoverService {
 		return document;
 	}
 
+	public JSONObject indexJson(Lover me, Integer vipPage, Integer reliefPage, Integer activePage, Integer registerPage, Locale locale) {
+
+		JSONObject jSONObject = new JSONObject();
+
+		if (!me.getGender()) {
+			Page<Lover> vip = vipOnTheWall(
+				me,
+				vipPage < 0 ? 0 : vipPage,
+				PAGE_SIZE_ON_THE_WALL
+			);
+			jSONObject.put(
+				"vip",
+				createJSON(me, vip, locale)
+			);
+		}//貴賓列表区块
+
+		Page<Lover> relief = relievingOnTheWall(
+			me,
+			reliefPage < 0 ? 0 : reliefPage,
+			PAGE_SIZE_ON_THE_WALL
+		);
+		jSONObject.put(
+			"relief",
+			createJSON(me, relief, locale)
+		);//安心认证列表区块
+
+		Page<Lover> active = latestActiveOnTheWall(
+			me,
+			activePage < 0 ? 0 : activePage,
+			PAGE_SIZE_ON_THE_WALL
+		);
+		jSONObject.put(
+			"active",
+			createJSON(me, active, locale)
+		);//最近活跃列表区块
+
+		Page<Lover> register = latestRegisteredOnTheWall(
+			me,
+			registerPage < 0 ? 0 : registerPage,
+			PAGE_SIZE_ON_THE_WALL
+		);
+		jSONObject.put(
+			"register",
+			createJSON(me, register, locale)
+		);//最新注册列表区块
+
+		return jSONObject;
+	}
+
+	public JSONObject createJSON(Lover me, Page<Lover> page, Locale locale) {
+		JSONObject jSONObject = new JSONObject();
+		if (page.hasNext()) {
+			jSONObject.put(
+				"hasNext",
+				Integer.toString(page.nextOrLastPageable().getPageNumber())
+			);
+		}
+		if (page.hasPrevious()) {
+			jSONObject.put(
+				"hasPrev",
+				Integer.toString(page.previousOrFirstPageable().getPageNumber())
+			);
+		}
+		JSONArray jSONArray = new JSONArray();
+		Collection<Lover> following = loverService.getThoseIFollow(me);
+		page.getContent().forEach(lover -> {
+			JSONObject eachObject = new JSONObject();
+			if (Objects.nonNull(lover.getNickname())) {
+				eachObject.put(
+					"nickname",
+					lover.getNickname()
+				);
+			}
+			// 是否為長期貴賓 vvip
+			if (isVVIP(lover)) {
+				eachObject.put(
+					"vvip",
+					true
+				);
+			}
+			// 是否為短期貴賓 vip
+			if (isVIP(lover)) {
+				eachObject.put(
+					"vip",
+					true
+				);
+			}
+			if (Objects.nonNull(lover.getRelief())) {
+				eachObject.put(
+					"relief",
+					lover.getRelief()
+				);
+			}
+			// 是否收藏對方
+			if (Objects.nonNull(following) && following.contains(lover)) {
+				eachObject.put(
+					"following",
+					true
+				);
+			}
+			if (Objects.nonNull(lover.getRelationship())) {
+				eachObject.put(
+					"relationship",
+					messageSource.getMessage(
+						lover.getRelationship().toString(),
+						null,
+						locale
+					)
+				);
+			}
+
+			/*
+				   出没地区
+			 */
+			Collection<Location> locations = getLocations(lover, true);
+			JSONArray locArray = new JSONArray();
+			if (!locations.isEmpty()) {
+				int count = 0;
+				for (Location location : locations) {
+					++count;
+					if (count <= 3) {
+						locArray.put(
+							messageSource.getMessage(
+								location.getName(),
+								null,
+								locale
+							)
+						);
+					}
+				}
+			}
+			eachObject.
+				put(
+					"location",
+					locArray
+				).
+				put(
+					"age",
+					calculateAge(lover).toString()
+				).
+				put(
+					"identifier",
+					lover.getIdentifier().toString()
+				).
+				put(
+					"profileImage",
+					String.format(
+						"https://%s/profileImage/%s",
+						Servant.STATIC_HOST,
+						lover.getProfileImage()
+					)
+				);
+			jSONArray.put(eachObject);
+		});
+		jSONObject.put(
+			"result",
+			jSONArray
+		);
+
+		return jSONObject;
+	}
+
 	/**
 	 * 首頁的列表 Element
 	 *
@@ -3568,7 +3730,7 @@ public class LoverService {
 			JSONObject json = new JSONObject();
 			json.put("nickname", lover.getNickname());
 			if (isVVIP(lover)) {
-				json.put("vip", true);
+				json.put("vvip", true);
 			}
 			if (Objects.nonNull(lover.getRelief()) && lover.getRelief()) {
 				json.put("relief", true);
@@ -3596,18 +3758,14 @@ public class LoverService {
 				JSONArray jsonArrayLocation = new JSONArray();
 				int count = 0;
 				for (Location location : locations) {
-					JSONObject jsonObjectLocation = new JSONObject();
 					++count;
 					if (count <= 3) {
-						jsonObjectLocation.put(
-							"location",
+						jsonArrayLocation.put(
 							messageSource.getMessage(
 								location.getName(),
 								null,
 								locale
-							)
-						);
-						jsonArrayLocation.put(jsonObjectLocation);
+							));
 					}
 				}
 				json.put(
