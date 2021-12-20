@@ -48,6 +48,7 @@ $(document).ready(function () {
 
 	// 網頁版
 	if (!isMobile() && $('INPUT[name="signIn"]').val() === 'true') {
+		$('.loadingWrap').css('display', 'block');
 		$.post(
 			'/indexWebView.json',
 			(data) => {
@@ -63,6 +64,7 @@ $(document).ready(function () {
 			if (data.register) {
 				appendData(data.register, 'register', $('DIV.register'), $('.registerPageBtn'));
 			}
+			$('.loadingWrap').css('display', 'none');
 		},
 			'json'
 			);
@@ -132,6 +134,7 @@ $(document).ready(function () {
 			$(prevBtn).append(prevI);
 			$(prevBtn).append('上一頁');
 			$(prevBtn).click(function () {
+				$('.loadingWrap').css('display', 'block');
 				let button = this;
 				let wrap;
 				var pageBtnWrap;
@@ -154,6 +157,7 @@ $(document).ready(function () {
 					wrap.empty();
 					pageBtnWrap.empty();
 					appendData(data, type, wrap, pageBtnWrap);
+					$('.loadingWrap').css('display', 'none');
 				},
 					'json'
 					);
@@ -173,6 +177,7 @@ $(document).ready(function () {
 			$(nextI).attr('class', 'fad fa-angle-double-right ms-1');
 			$(nextBtn).append(nextI);
 			$(nextBtn).click(function () {
+				$('.loadingWrap').css('display', 'block');
 				let button = this;
 				let wrap;
 				var pageBtnWrap;
@@ -195,6 +200,7 @@ $(document).ready(function () {
 					wrap.empty();
 					pageBtnWrap.empty();
 					appendData(data, type, wrap, pageBtnWrap);
+					$('.loadingWrap').css('display', 'none');
 				},
 					'json'
 					);
@@ -206,6 +212,7 @@ $(document).ready(function () {
 	$('A.mobileModeA').click(function () {
 		let a = this;
 		loverMobilePage(a);
+		$('.loadingWrap').css('display', 'block');
 	});
 
 	function loverMobilePage(a) {
@@ -231,6 +238,7 @@ $(document).ready(function () {
 			});
 			$(a).addClass('active');
 			appendData(data, type, wrap, pageBtnWrap);
+			$('.loadingWrap').css('display', 'none');
 		},
 			'json'
 			);
@@ -238,6 +246,7 @@ $(document).ready(function () {
 	}
 
 	$('BUTTON.refreshBtn').click(function () {
+		$('.loadingWrap').css('display', 'block');
 		let button = this;
 		let wrap;
 		var pageBtnWrap;
@@ -259,6 +268,7 @@ $(document).ready(function () {
 			wrap.empty();
 			pageBtnWrap.empty();
 			appendData(data, type, wrap, pageBtnWrap);
+			$('.loadingWrap').css('display', 'none');
 		},
 			'json'
 			);

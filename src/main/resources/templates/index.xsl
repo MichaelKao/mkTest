@@ -29,6 +29,7 @@
 			<LINK href="https://npmcdn.com/flickity@2/dist/flickity.css" rel="stylesheet"/>
 			<LINK crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.css" integrity="sha512-Aix44jXZerxlqPbbSLJ03lEsUch9H/CmnNfWxShD6vJBbboR+rPdDXmKN+/QjISWT80D4wMjtM4Kx7+xkLVywQ==" referrerpolicy="no-referrer" rel="stylesheet"/>
 			<LINK href="/STYLE/index.css" rel="stylesheet"/>
+			<LINK href="/STYLE/loading.css" rel="stylesheet"/>
 		</HEAD>
 		<BODY class="pb-6">
 			<xsl:call-template name="navbar"/>
@@ -412,21 +413,23 @@
 							<I class="fad fa-comment-exclamation fontSize30 ms-1"></I>
 						</A>
 					</DIV>
-					<!--貴賓會員區塊-->
-					<ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
-						<DIV class="d-flex mb-2 mx-3 align-items-center justify-content-between">
-							<DIV class="m-2 text-bold text-dark">貴賓會員</DIV>
-							<DIV class="d-flex">
-								<DIV class="vipPageBtn"></DIV>
-								<DIV>
-									<BUTTON class="btn btn-link fontSize22 mx-1 m-0 p-0 refreshBtn" data-type="vip">
-										<I class="fal fa-sync-alt"></I>
-									</BUTTON>
+					<xsl:if test="@female">
+						<!--貴賓會員區塊-->
+						<ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
+							<DIV class="d-flex mb-2 mx-3 align-items-center justify-content-between">
+								<DIV class="m-2 text-bold text-dark">貴賓會員</DIV>
+								<DIV class="d-flex">
+									<DIV class="vipPageBtn"></DIV>
+									<DIV>
+										<BUTTON class="btn btn-link fontSize22 mx-1 m-0 p-0 refreshBtn" data-type="vip">
+											<I class="fal fa-sync-alt"></I>
+										</BUTTON>
+									</DIV>
 								</DIV>
 							</DIV>
-						</DIV>
-						<DIV class="d-flex flex-wrap justify-content-center mx-2 vip"></DIV>
-					</ARTICLE>
+							<DIV class="d-flex flex-wrap justify-content-center mx-2 vip"></DIV>
+						</ARTICLE>
+					</xsl:if>
 					<!--安心認證區塊-->
 					<ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
 						<DIV class="d-flex mb-2 mx-3 align-items-center justify-content-between">
@@ -512,6 +515,13 @@
 							</LI>
 						</UL>
 					</SECTION>
+				</DIV>
+				<DIV class="loadingWrap">
+					<DIV class="loading">
+						<DIV class="round"></DIV>
+						<DIV class="round ms-1"></DIV>
+						<DIV class="round ms-1"></DIV>
+					</DIV>
 				</DIV>
 			</xsl:if>
 			<xsl:call-template name="footer"/>
