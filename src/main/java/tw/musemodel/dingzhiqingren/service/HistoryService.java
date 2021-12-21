@@ -1923,6 +1923,13 @@ public class HistoryService {
 			toJSONObject();
 	}
 
+	/**
+	 * 聊天室彼此好友狀態
+	 *
+	 * @param me
+	 * @param friend
+	 * @return
+	 */
 	public List<String> friendStatus(Lover me, Lover friend) {
 		List<String> friendStatus = new ArrayList<>();
 
@@ -1987,12 +1994,19 @@ public class HistoryService {
 		return friendStatus;
 	}
 
+	/**
+	 * 聊天室可聊天狀態
+	 *
+	 * @param me
+	 * @param friend
+	 * @return
+	 */
 	public String chatStatus(Lover me, Lover friend) {
 
 		String chatStatus = null;
 		// 若是小編則可傳訊息
 		if (loverService.isCustomerService(me) || loverService.isCustomerService(friend)) {
-			chatStatus = "able";
+			chatStatus = "customerService";
 			return chatStatus;
 		}
 
@@ -2026,6 +2040,7 @@ public class HistoryService {
 			// 是否是好友
 			LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
 			List<Lover> list = loverService.maleHasSentFemaleListWithinOneDay(male);
+			LOGGER.debug("測試{}", list);
 			if ((loverService.isVIP(male) || loverService.isVVIP(male) || loverService.isTrial(male))) {
 				if (Objects.nonNull(lineGiven) && Objects.nonNull(lineGiven.getResponse()) && lineGiven.getResponse()
 					|| webSocketService.lessThan3MsgsWithin12Hrs(male, female)) {

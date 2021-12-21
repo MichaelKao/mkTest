@@ -49,6 +49,11 @@ public class ChatMessage {
 	 */
 	private String chatStatus;
 
+	/**
+	 * 重新連線
+	 */
+	private String reconnect;
+
 	public ChatMessage() {
 	}
 
@@ -60,11 +65,10 @@ public class ChatMessage {
 		this.message = message;
 	}
 
-	public ChatMessage(String type, String historyMsgs, String friendStatus) {
+	public ChatMessage(String type, String historyMsgs) {
 		super();
 		this.type = type;
 		this.historyMsgs = historyMsgs;
-		this.friendStatus = friendStatus;
 	}
 
 	public String getType() {
@@ -169,5 +173,13 @@ public class ChatMessage {
 
 	public void setChatStatus(String chatStatus) {
 		this.chatStatus = chatStatus;
+	}
+
+	public String getReconnect() {
+		return reconnect;
+	}
+
+	public void setReconnect(String reconnect) {
+		this.reconnect = reconnect;
 	}
 }
