@@ -1,12 +1,23 @@
 $(document).ready(function () {
-	$('#cellularPhoneNumber').keyup(function () {
+	$('#cellularPhoneNumber').on('change', function () {
 		let that = this;
-		$(this).val(
-			$(this).val().replace(/\D/gi, '')
+		$(that).val(
+			$(that).val().replace(/\D/gi, '')
 			);
 		$('INPUT[name="username"]').val(
 			$('#country').val().replace(/\D/g, '') +
-			$(this).val().replace(/^0/g, '')
+			$(that).val().replace(/^0/g, '')
+			);
+	});
+
+	$('#cellularPhoneNumber').keyup(function () {
+		let that = this;
+		$(that).val(
+			$(that).val().replace(/\D/gi, '')
+			);
+		$('INPUT[name="username"]').val(
+			$('#country').val().replace(/\D/g, '') +
+			$(that).val().replace(/^0/g, '')
 			);
 	});
 
@@ -14,7 +25,6 @@ $(document).ready(function () {
 	var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
 	var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 	var isNotStandalone = !window.matchMedia('(display-mode: standalone)').matches;
-
 	if (isIOS && isNotStandalone && isSafari) {
 		$('DIV.iosAddToDesktop').css('display', 'block');
 	}
@@ -27,7 +37,6 @@ $(document).ready(function () {
 			$(this).css('display', 'none')
 		});
 	});
-
 	$("SPAN.togglePwd").click(function (e) {
 		e.preventDefault();
 		var span = this;

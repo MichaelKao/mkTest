@@ -298,9 +298,13 @@
 	</xsl:template>
 
 	<xsl:template name="headMetaTags">
+		<META charset="UTF-8"/>
 		<META content="IE=edge" http-equiv="X-UA-Compatible"/>
 		<META content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
 		<META name="theme-color" content="#164353"/>
+		<META HTTP-EQUIV="pragma" CONTENT="no-cache"/>
+		<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate"/>
+		<META HTTP-EQUIV="expires" CONTENT="0"/>
 	</xsl:template>
 
 	<xsl:template name="bootstrapToast">
@@ -321,7 +325,7 @@
 
 	<!--地-->
 	<xsl:template name="footer">
-		<FOOTER class="text-xs my-4">
+		<FOOTER class="text-xs my-2">
 			<DIV class="text-center">
 				<I class="fal fa-copyright me-1"/>
 				<SPAN>2021 Young Me 養蜜</SPAN>

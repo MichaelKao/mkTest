@@ -3375,73 +3375,6 @@ public class LoverService {
 		return jSONObject;
 	}
 
-	/**
-	 * 首頁的列表 document
-	 *
-	 * @param document
-	 * @param lover
-	 * @param vipPage
-	 * @param reliefPage
-	 * @param activePage
-	 * @param registerPage
-	 * @param locale
-	 * @return
-	 */
-	public Document indexDocument(Document document, Lover lover, int vipPage, int reliefPage, int activePage, int registerPage, Locale locale) {
-		Element documentElement = document.getDocumentElement();
-
-		Element areaElement = document.createElement("area");
-		documentElement.appendChild(areaElement);
-
-		if (!lover.getGender()) {
-			areaElement.appendChild(createElement(
-				document.createElement("vip"),
-				lover,
-				vipOnTheWall(
-					lover,
-					vipPage < 0 ? 0 : vipPage,
-					PAGE_SIZE_ON_THE_WALL
-				),
-				locale
-			));//甜心才会显示的贵宾会员列表区块
-		}
-
-		areaElement.appendChild(createElement(
-			document.createElement("relief"),
-			lover,
-			relievingOnTheWall(
-				lover,
-				reliefPage < 0 ? 0 : reliefPage,
-				PAGE_SIZE_ON_THE_WALL
-			),
-			locale
-		));//安心认证列表区块
-
-		areaElement.appendChild(createElement(
-			document.createElement("active"),
-			lover,
-			latestActiveOnTheWall(
-				lover,
-				activePage < 0 ? 0 : activePage,
-				PAGE_SIZE_ON_THE_WALL
-			),
-			locale
-		));//最近活跃列表区块
-
-		areaElement.appendChild(createElement(
-			document.createElement("register"),
-			lover,
-			latestRegisteredOnTheWall(
-				lover,
-				registerPage < 0 ? 0 : registerPage,
-				PAGE_SIZE_ON_THE_WALL
-			),
-			locale
-		));//最新注册列表区块
-
-		return document;
-	}
-
 	public JSONObject indexJson(Lover me, Integer vipPage, Integer reliefPage, Integer activePage, Integer registerPage, Locale locale) {
 
 		JSONObject jSONObject = new JSONObject();
@@ -3491,6 +3424,14 @@ public class LoverService {
 		return jSONObject;
 	}
 
+	/**
+	 * 首頁網頁版 JSON
+	 *
+	 * @param me
+	 * @param page
+	 * @param locale
+	 * @return
+	 */
 	public JSONObject createJSON(Lover me, Page<Lover> page, Locale locale) {
 		JSONObject jSONObject = new JSONObject();
 		if (page.hasNext()) {
@@ -3602,117 +3543,6 @@ public class LoverService {
 		);
 
 		return jSONObject;
-	}
-
-	/**
-	 * 首頁的列表 Element
-	 *
-	 * @param element
-	 * @param me
-	 * @param page
-	 * @param locale
-	 * @return
-	 */
-	public Element createElement(Element element, Lover me, Page<Lover> page, Locale locale) {
-		if (page.hasNext()) {
-			element.setAttribute(
-				"hasNext",
-				Integer.toString(page.nextOrLastPageable().getPageNumber())
-			);
-		}
-		if (page.hasPrevious()) {
-			element.setAttribute(
-				"hasPrev",
-				Integer.toString(page.previousOrFirstPageable().getPageNumber())
-			);
-		}
-
-		Document document = element.getOwnerDocument();
-
-		Collection<Lover> following = loverService.getThoseIFollow(me);
-		page.getContent().forEach(lover -> {
-			Element sectionElement = document.createElement("section");
-			element.appendChild(sectionElement);
-			if (Objects.nonNull(lover.getNickname())) {
-				Element nicknameElement = document.createElement("nickname");
-				nicknameElement.setTextContent(lover.getNickname());
-				sectionElement.appendChild(nicknameElement);
-			}
-			// 是否為長期貴賓 vvip
-			if (isVVIP(lover)) {
-				sectionElement.setAttribute("vvip", null);
-			}
-			// 是否為短期貴賓 vip
-			if (isVIP(lover)) {
-				sectionElement.setAttribute("vip", null);
-			}
-			if (Objects.nonNull(lover.getRelief())) {
-				Boolean relief = lover.getRelief();
-				sectionElement.setAttribute(
-					"relief",
-					relief.toString()
-				);
-			}
-			// 是否收藏對方
-			if (Objects.nonNull(following) && following.contains(lover)) {
-				sectionElement.setAttribute(
-					"following",
-					null
-				);
-			}
-			if (Objects.nonNull(lover.getRelationship())) {
-				Element relationshipElement = document.createElement("relationship");
-				relationshipElement.setTextContent(
-					messageSource.getMessage(
-						lover.getRelationship().toString(),
-						null,
-						locale
-					)
-				);
-				sectionElement.appendChild(relationshipElement);
-			}
-
-			/*
-			 出没地区
-			 */
-			Collection<Location> locations = getLocations(lover, true);
-			if (!locations.isEmpty()) {
-				int count = 0;
-				for (Location location : locations) {
-					++count;
-					if (count <= 3) {
-						Element locationElement = document.createElement("location");
-						locationElement.setTextContent(
-							messageSource.getMessage(
-								location.getName(),
-								null,
-								locale
-							)
-						);
-						sectionElement.appendChild(locationElement);
-					}
-				}
-			}
-
-			Element ageElement = document.createElement("age");
-			ageElement.setTextContent(calculateAge(lover).toString());
-			sectionElement.appendChild(ageElement);
-
-			Element identifierElement = document.createElement("identifier");
-			identifierElement.setTextContent(lover.getIdentifier().toString());
-			sectionElement.appendChild(identifierElement);
-
-			Element profileImageElement = document.createElement("profileImage");
-			profileImageElement.setTextContent(
-				String.format(
-					"https://%s/profileImage/%s",
-					Servant.STATIC_HOST,
-					lover.getProfileImage()
-				)
-			);
-			sectionElement.appendChild(profileImageElement);
-		});
-		return element;
 	}
 
 	/**

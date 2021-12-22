@@ -186,14 +186,7 @@ public class WelcomeController {
 	 * @throws ParserConfigurationException
 	 */
 	@GetMapping(path = "/")
-	ModelAndView index(
-		@CookieValue(defaultValue = "0", name = "vipPage") int vipPage,
-		@CookieValue(defaultValue = "0", name = "reliefPage") int reliefPage,
-		@CookieValue(defaultValue = "0", name = "activePage") int activePage,
-		@CookieValue(defaultValue = "0", name = "registerPage") int registerPage,
-		Authentication authentication,
-		Locale locale
-	) throws IOException {
+	ModelAndView index(Authentication authentication, Locale locale) throws IOException {
 		Document document = Servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
