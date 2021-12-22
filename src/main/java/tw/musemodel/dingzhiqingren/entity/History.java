@@ -574,7 +574,11 @@ public class History implements java.io.Serializable {
 		/**
 		 * 照片中本人不可辨識。
 		 */
-		AN_XIN_SHI_BAI_3("AN_XIN_SHI_BAI_3", 27);
+		AN_XIN_SHI_BAI_3("AN_XIN_SHI_BAI_3", 27),
+		/**
+		 * 退點
+		 */
+		TUI_DIAN("TUI_DIAN", 28);
 
 		private String label;
 
