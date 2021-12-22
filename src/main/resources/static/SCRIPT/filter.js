@@ -194,6 +194,51 @@ $(document).ready(function () {
 			$(pageI).attr('class', 'fad fa-angle-double-left ms-1');
 			$(pageBtn).append(pageI);
 			$(pageBtn).append('上一頁');
+			$(pageBtn).click(function () {
+				var btn = this;
+				let p = $(btn).data('page');
+				var annualIncome;
+				var allowance;
+				if (typeof ($('SELECT[name="annualIncome"]').val()) != 'undefined') {
+					annualIncome = $('SELECT[name="annualIncome"]').val();
+					allowance = 0;
+				} else {
+					allowance = $('SELECT[name="allowance"]').val();
+					annualIncome = 0;
+				}
+				$.post(
+					'/filter.json',
+					{
+						p: p,
+						nickname: $('INPUT[name="nickname"]').val(),
+						maximumAge: $('INPUT#age').val().split(',')[1],
+						minimumAge: $('INPUT#age').val().split(',')[0],
+						maximumHeight: $('INPUT#height').val().split(',')[1],
+						minimumHeight: $('INPUT#height').val().split(',')[0],
+						maximumWeight: $('INPUT#weight').val().split(',')[1],
+						minimumWeight: $('INPUT#weight').val().split(',')[0],
+						bodyType: $('SELECT[name="bodyType"]').val(),
+						education: $('SELECT[name="education"]').val(),
+						marriage: $('SELECT[name="marriage"]').val(),
+						smoking: $('SELECT[name="smoking"]').val(),
+						drinking: $('SELECT[name="drinking"]').val(),
+						annualIncome: annualIncome,
+						allowance: allowance,
+						location: $('SELECT[name="location"]').val(),
+						service: $('SELECT[name="service"]').val()
+					},
+					function (data) {
+						if (data.response) {
+							filterPagination(data);
+						} else {
+							$('.toast-body').html(data.reason);
+							$('.toast').toast('show');
+						}
+					},
+					'json'
+					);
+				return false;
+			});
 		}
 		if (typeof (data.pagination.hasNext) != 'undefined') {
 			var pageBtn = document.createElement('BUTTON');
@@ -206,51 +251,51 @@ $(document).ready(function () {
 			var pageI = document.createElement('I');
 			$(pageI).attr('class', 'fad fa-angle-double-right ms-1');
 			$(pageBtn).append(pageI);
+			$(pageBtn).click(function () {
+				var btn = this;
+				let p = $(btn).data('page');
+				var annualIncome;
+				var allowance;
+				if (typeof ($('SELECT[name="annualIncome"]').val()) != 'undefined') {
+					annualIncome = $('SELECT[name="annualIncome"]').val();
+					allowance = 0;
+				} else {
+					allowance = $('SELECT[name="allowance"]').val();
+					annualIncome = 0;
+				}
+				$.post(
+					'/filter.json',
+					{
+						p: p,
+						nickname: $('INPUT[name="nickname"]').val(),
+						maximumAge: $('INPUT#age').val().split(',')[1],
+						minimumAge: $('INPUT#age').val().split(',')[0],
+						maximumHeight: $('INPUT#height').val().split(',')[1],
+						minimumHeight: $('INPUT#height').val().split(',')[0],
+						maximumWeight: $('INPUT#weight').val().split(',')[1],
+						minimumWeight: $('INPUT#weight').val().split(',')[0],
+						bodyType: $('SELECT[name="bodyType"]').val(),
+						education: $('SELECT[name="education"]').val(),
+						marriage: $('SELECT[name="marriage"]').val(),
+						smoking: $('SELECT[name="smoking"]').val(),
+						drinking: $('SELECT[name="drinking"]').val(),
+						annualIncome: annualIncome,
+						allowance: allowance,
+						location: $('SELECT[name="location"]').val(),
+						service: $('SELECT[name="service"]').val()
+					},
+					function (data) {
+						if (data.response) {
+							filterPagination(data);
+						} else {
+							$('.toast-body').html(data.reason);
+							$('.toast').toast('show');
+						}
+					},
+					'json'
+					);
+				return false;
+			});
 		}
-		$(pageBtn).click(function () {
-			var btn = this;
-			let p = $(btn).data('page');
-			var annualIncome;
-			var allowance;
-			if (typeof ($('SELECT[name="annualIncome"]').val()) != 'undefined') {
-				annualIncome = $('SELECT[name="annualIncome"]').val();
-				allowance = 0;
-			} else {
-				allowance = $('SELECT[name="allowance"]').val();
-				annualIncome = 0;
-			}
-			$.post(
-				'/filter.json',
-				{
-					p: p,
-					nickname: $('INPUT[name="nickname"]').val(),
-					maximumAge: $('INPUT#age').val().split(',')[1],
-					minimumAge: $('INPUT#age').val().split(',')[0],
-					maximumHeight: $('INPUT#height').val().split(',')[1],
-					minimumHeight: $('INPUT#height').val().split(',')[0],
-					maximumWeight: $('INPUT#weight').val().split(',')[1],
-					minimumWeight: $('INPUT#weight').val().split(',')[0],
-					bodyType: $('SELECT[name="bodyType"]').val(),
-					education: $('SELECT[name="education"]').val(),
-					marriage: $('SELECT[name="marriage"]').val(),
-					smoking: $('SELECT[name="smoking"]').val(),
-					drinking: $('SELECT[name="drinking"]').val(),
-					annualIncome: annualIncome,
-					allowance: allowance,
-					location: $('SELECT[name="location"]').val(),
-					service: $('SELECT[name="service"]').val()
-				},
-				function (data) {
-					if (data.response) {
-						filterPagination(data);
-					} else {
-						$('.toast-body').html(data.reason);
-						$('.toast').toast('show');
-					}
-				},
-				'json'
-				);
-			return false;
-		});
 	}
 });

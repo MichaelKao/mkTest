@@ -1167,3 +1167,17 @@ ADD COLUMN "xin_xiang" varchar,
 ADD COLUMN "hou_si_ma" varchar;
 COMMENT ON COLUMN"shen_qing_jie_chu_ding_qi_ding_e"."xin_xiang"IS'信箱';
 COMMENT ON COLUMN"shen_qing_jie_chu_ding_qi_ding_e"."hou_si_ma"IS'後四碼';
+
+/**
+ * 2021/12/22
+ * 添加「退点」行为
+ */
+ALTER TYPE"xing_wei"
+ADD VALUE'TUI_DIAN';
+
+/**
+ * 2021/12/22
+ * (曹操) mePoint 退回個案
+ */
+INSERT INTO"li_cheng"("zhu_dong_de","xing_wei","dian_shu")VALUES
+('2275','TUI_DIAN','-1400');

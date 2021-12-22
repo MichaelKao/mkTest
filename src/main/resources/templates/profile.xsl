@@ -344,8 +344,8 @@
 									<xsl:if test="position() mod 2 = 0">
 										<xsl:attribute name="style">background: #F3F3F3AA;</xsl:attribute>
 									</xsl:if>
-									<DIV class="col-3 col-sm-2">
-										<IMG class="border-radius-sm" src="{@profileImage}" width="50"/>
+									<DIV class="col-3 col-sm-2 blurImg">
+										<INPUT class="hiddenImg" type="hidden" value="{@profileImage}"/>
 									</DIV>
 									<DIV class="ms-2">
 										<xsl:choose>

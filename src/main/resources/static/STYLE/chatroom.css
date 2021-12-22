@@ -116,6 +116,13 @@ body{
 	height: 87px;
 }
 
+.notAbleToChat {
+	padding: 10px 20px;
+	background: #FFFB;
+	border-radius: 50px;
+	height: 70px;
+}
+
 .sendContainer {
 	display: grid;
 	grid-template-columns: auto 7vh;

@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Locale;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
-import net.bytebuddy.asm.Advice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -341,6 +340,6 @@ public class ProofOfConcept {
 		Locale locale
 	) {
 		//確認帳號是否存在
-		return loverService.checkPassword(login, shadow, locale);
+		return loverService.checkPassword(login, shadow, locale).toString();
 	}
 }

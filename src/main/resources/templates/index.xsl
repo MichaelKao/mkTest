@@ -27,7 +27,9 @@
 			<xsl:call-template name="headLinkTags"/>
 			<LINK href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@600" rel="stylesheet"/>
 			<LINK href="https://npmcdn.com/flickity@2/dist/flickity.css" rel="stylesheet"/>
+			<LINK crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.css" integrity="sha512-Aix44jXZerxlqPbbSLJ03lEsUch9H/CmnNfWxShD6vJBbboR+rPdDXmKN+/QjISWT80D4wMjtM4Kx7+xkLVywQ==" referrerpolicy="no-referrer" rel="stylesheet"/>
 			<LINK href="/STYLE/index.css" rel="stylesheet"/>
+			<LINK href="/STYLE/loading.css" rel="stylesheet"/>
 		</HEAD>
 		<BODY class="pb-6">
 			<xsl:call-template name="navbar"/>
@@ -62,7 +64,7 @@
 						</DIV>
 					</DIV>
 				</HEADER>
-				<SECTION class="container px-0 pt-7 position-relative">
+				<SECTION class="container px-0 pt-7 position-relative hideMe">
 					<DIV class="orangeBg">
 						<DIV class="videoSlogan">孤單是現代文明病, 找到陪伴就來養蜜</DIV>
 					</DIV>
@@ -74,7 +76,7 @@
 						<DIV class="text-right">WELCOME TO YOUNGME! LET'S CHAT &amp; DATE</DIV>
 					</DIV>
 				</SECTION>
-				<SECTION class="mt-3 py-4 py-md-6 container meKING">
+				<SECTION class="mt-3 py-4 py-md-6 container meKING hideMe">
 					<DIV class="text-right pe-lg-5 pe-xl-8 gentlemen">
 						<H2>OUR GENTLEMEN</H2>
 						<DIV>
@@ -101,7 +103,7 @@
 						</DIV>
 					</DIV>
 				</SECTION>
-				<SECTION class="mt-2 py-4 py-md-6 container meQUEEN">
+				<SECTION class="mt-2 py-4 py-md-6 container meQUEEN hideMe">
 					<DIV class="ladies px-2 ms-sm-1 py-1 ms-md-2 ms-lg-6 ms-xl-8 p-xl-5">
 						<H2>OUR LADIES</H2>
 						<DIV>
@@ -213,10 +215,18 @@
 													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/kingTop2.jpg" width="150px"/>
 												</DIV>
 												<DIV class="text-white mt-1">獨立專區讓meQUEEN看到您</DIV>
-												<A class="btn btn-light mt-2 px-2 py-1 m-0" href="/profile/">
-													<I class="fad fa-shield-check fontSize22 width30"></I>
-													<SPAN class="ms-1 text-sm">進行安心認證</SPAN>
-												</A>
+												<xsl:if test="@relief">
+													<DIV class="bg-light text-dark border-radius-md mt-2 px-2 py-1 m-0">
+														<I class="fad fa-shield-check fontSize22 width30"></I>
+														<SPAN class="ms-1 text-sm">已完成安心認證</SPAN>
+													</DIV>
+												</xsl:if>
+												<xsl:if test="not(@relief)">
+													<BUTTON class="btn btn-light mt-2 px-2 py-1 m-0 reliefBtn" data-bs-target="#cropModal" data-bs-toggle="modal">
+														<I class="fad fa-shield-check fontSize22 width30"></I>
+														<SPAN class="ms-1 text-sm">進行安心認證</SPAN>
+													</BUTTON>
+												</xsl:if>
 											</DIV>
 											<OL class="flickity-page-dots">
 												<LI class="dot"></LI>
@@ -291,10 +301,18 @@
 													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/queenTop2.jpg" width="150px"/>
 												</DIV>
 												<DIV class="text-white mt-1">獨立專區讓meKING看到您</DIV>
-												<A class="btn btn-light mt-2 px-2 py-1 m-0" href="/profile/">
-													<I class="fad fa-shield-check fontSize22 width30"></I>
-													<SPAN class="ms-1 text-sm">進行安心認證</SPAN>
-												</A>
+												<xsl:if test="@relief">
+													<DIV class="bg-light text-dark border-radius-md mt-2 px-2 py-1 m-0">
+														<I class="fad fa-shield-check fontSize22 width30"></I>
+														<SPAN class="ms-1 text-sm">已完成安心認證</SPAN>
+													</DIV>
+												</xsl:if>
+												<xsl:if test="not(@relief)">
+													<BUTTON class="btn btn-light mt-2 px-2 py-1 m-0 reliefBtn" data-bs-target="#cropModal" data-bs-toggle="modal">
+														<I class="fad fa-shield-check fontSize22 width30"></I>
+														<SPAN class="ms-1 text-sm">進行安心認證</SPAN>
+													</BUTTON>
+												</xsl:if>
 											</DIV>
 											<OL class="flickity-page-dots">
 												<LI class="dot"></LI>
@@ -330,7 +348,51 @@
 						</DIV>
 					</DIV>
 				</DIV>
-				<DIV class="container px-0 px-md-3 pt-7 pt-md-8">
+				<xsl:if test="not(@relief)">
+					<DIV class="modal fade" id="cropModal">
+						<DIV class="modal-dialog modal-dialog-centered">
+							<DIV class="modal-content">
+								<DIV class="modal-body">
+									<DIV class="d-flex">
+										<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
+											<I class="fal fa-times"></I>
+										</BUTTON>
+									</DIV>
+									<DIV class="mt-3 text-center">
+										<DIV class="d-flex align-items-center justify-content-center">
+											<I class="fad fa-shield-check fontSize25"></I>
+											<SPAN class="text-primary text-bold">通過安心認證，增加邀約成功率</SPAN>
+										</DIV>
+										<DIV class="text-dark text-sm text-bold mt-2">上傳一張您與證件的自拍吧!</DIV>
+										<DIV class="text-dark text-sm text-bold mb-2">證件與本人需可清楚辨識</DIV>
+										<DIV class="text-dark text-sm my-2">由真人審核，需等待3-5天</DIV>
+										<LABEL class="cursor-pointer">
+											<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
+											<I class="fad fa-camera fontSize35 text-primary"></I>
+										</LABEL>
+										<DIV class="text-primary text-sm">照片僅供系統認證使用，不會外流，請安心上傳。</DIV>
+										<DIV class="result"></DIV>
+										<DIV class="progress-wrapper my-3 w-90 mx-auto">
+											<DIV class="progress-info">
+												<DIV class="progress-percentage">
+													<span class="text-sm font-weight-bold">0%</span>
+												</DIV>
+											</DIV>
+											<DIV class="progress">
+												<DIV class="progress-bar bg-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></DIV>
+											</DIV>
+										</DIV>
+									</DIV>
+									<DIV class="text-center">
+										<BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>
+										<BUTTON class="btn btn-outline-primary px-3 py-2" id="cropBtn" type="button" style="display: none;">上傳</BUTTON>
+									</DIV>
+								</DIV>
+							</DIV>
+						</DIV>
+					</DIV>
+				</xsl:if>
+				<DIV class="container px-0 px-md-3 pt-6 pt-md-7">
 					<INPUT name="gender" type="hidden">
 						<xsl:if test="@male">
 							<xsl:attribute name="value">male</xsl:attribute>
@@ -339,7 +401,7 @@
 							<xsl:attribute name="value">female</xsl:attribute>
 						</xsl:if>
 					</INPUT>
-					<DIV class="text-center mb-3">
+					<DIV class="text-center my-3">
 						<A class="tutorial text-bold" href="">
 							<xsl:if test="@male">
 								<xsl:attribute name="href">https://medium.com/@me.KING</xsl:attribute>
@@ -348,15 +410,124 @@
 								<xsl:attribute name="href">https://medium.com/@meQUEEN</xsl:attribute>
 							</xsl:if>
 							<SPAN>養蜜超詳細教學點擊觀看</SPAN>
-							<I class="fad fa-comment-exclamation fontSize30 bottom-1 ms-1"></I>
+							<I class="fad fa-comment-exclamation fontSize30 ms-1"></I>
 						</A>
 					</DIV>
-					<xsl:apply-templates select="area"/>
+					<xsl:if test="@female">
+						<!--貴賓會員區塊-->
+						<ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
+							<DIV class="d-flex mb-2 mx-3 align-items-center justify-content-between">
+								<DIV class="m-2 text-bold text-dark">貴賓會員</DIV>
+								<DIV class="d-flex">
+									<DIV class="vipPageBtn"></DIV>
+									<DIV>
+										<BUTTON class="btn btn-link fontSize22 mx-1 m-0 p-0 refreshBtn" data-type="vip">
+											<I class="fal fa-sync-alt"></I>
+										</BUTTON>
+									</DIV>
+								</DIV>
+							</DIV>
+							<DIV class="d-flex flex-wrap justify-content-center mx-2 vip"></DIV>
+						</ARTICLE>
+					</xsl:if>
+					<!--安心認證區塊-->
+					<ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
+						<DIV class="d-flex mb-2 mx-3 align-items-center justify-content-between">
+							<DIV class="m-2 text-bold text-dark">安心認證</DIV>
+							<DIV class="d-flex">
+								<DIV class="reliefPageBtn"></DIV>
+								<DIV>
+									<BUTTON class="btn btn-link fontSize22 mx-1 m-0 p-0 refreshBtn" data-type="relief">
+										<I class="fal fa-sync-alt"></I>
+									</BUTTON>
+								</DIV>
+							</DIV>
+						</DIV>
+						<DIV class="d-flex flex-wrap justify-content-center mx-2 relief"></DIV>
+					</ARTICLE>
+					<!--最近活躍區塊-->
+					<ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
+						<DIV class="d-flex mb-2 mx-3 align-items-center justify-content-between">
+							<DIV class="m-2 text-bold text-dark">最近活躍</DIV>
+							<DIV class="d-flex">
+								<DIV class="activePageBtn"></DIV>
+								<DIV>
+									<BUTTON class="btn btn-link fontSize22 mx-1 m-0 p-0 refreshBtn" data-type="active">
+										<I class="fal fa-sync-alt"></I>
+									</BUTTON>
+								</DIV>
+							</DIV>
+						</DIV>
+						<DIV class="d-flex flex-wrap justify-content-center mx-2 active"></DIV>
+					</ARTICLE>
+					<!--最新註冊區塊-->
+					<ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
+						<DIV class="d-flex mb-2 mx-3 align-items-center justify-content-between">
+							<DIV class="m-2 text-bold text-dark">最新註冊</DIV>
+							<DIV class="d-flex">
+								<DIV class="registerPageBtn"></DIV>
+								<DIV>
+									<BUTTON class="btn btn-link fontSize22 mx-1 m-0 p-0 refreshBtn" data-type="register">
+										<I class="fal fa-sync-alt"></I>
+									</BUTTON>
+								</DIV>
+							</DIV>
+						</DIV>
+						<DIV class="d-flex flex-wrap justify-content-center mx-2 register"></DIV>
+					</ARTICLE>
+					<SECTION class="d-block d-md-none text-center">
+						<DIV class="mobileModeWrap">
+							<DIV class="d-flex flex-wrap justify-content-center mobileMode"></DIV>
+							<DIV class="d-flex mt-3 justify-content-center">
+								<DIV id="mobilePageBtn"></DIV>
+								<DIV>
+									<BUTTON class="btn btn-link fontSize22 mx-1 m-0 p-0 refreshBtn" id="mobileRefreshBtn">
+										<I class="fal fa-sync-alt"></I>
+									</BUTTON>
+								</DIV>
+							</DIV>
+						</DIV>
+					</SECTION>
+					<SECTION class="fixed-bottom d-block d-md-none bg-white shadow mx-2 my-1 bottom-1 text-lg">
+						<UL class="navbar-nav flex-row mobileMode">
+							<xsl:if test="@female">
+								<LI class="nav-item col-3 text-center">
+									<A class="nav-link cursor-pointer vipA mobileModeA" data-type="vip">VIP</A>
+								</LI>
+							</xsl:if>
+							<LI class="nav-item col-4 text-center">
+								<xsl:if test="@female">
+									<xsl:attribute name="class">nav-item col-3 text-center</xsl:attribute>
+								</xsl:if>
+								<A class="nav-link cursor-pointer reliefA mobileModeA" data-type="relief">安心</A>
+							</LI>
+							<LI class="nav-item col-4 text-center">
+								<xsl:if test="@female">
+									<xsl:attribute name="class">nav-item col-3 text-center</xsl:attribute>
+								</xsl:if>
+								<A class="nav-link cursor-pointer activeA mobileModeA" data-type="active">活躍</A>
+							</LI>
+							<LI class="nav-item col-4 text-center">
+								<xsl:if test="@female">
+									<xsl:attribute name="class">nav-item col-3 text-center</xsl:attribute>
+								</xsl:if>
+								<A class="nav-link cursor-pointer registerA mobileModeA" data-type="register">新會員</A>
+							</LI>
+						</UL>
+					</SECTION>
+				</DIV>
+				<DIV class="loadingWrap">
+					<DIV class="loading">
+						<DIV class="round"></DIV>
+						<DIV class="round ms-1"></DIV>
+						<DIV class="round ms-1"></DIV>
+					</DIV>
 				</DIV>
 			</xsl:if>
 			<xsl:call-template name="footer"/>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="https://npmcdn.com/flickity@2/dist/flickity.pkgd.js"/>
+			<SCRIPT crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.js" integrity="sha512-E4KfIuQAc9ZX6zW1IUJROqxrBqJXPuEcDKP6XesMdu2OV4LW7pj8+gkkyx2y646xEV7yxocPbaTtk2LQIJewXw==" referrerpolicy="no-referrer"/>
 			<SCRIPT src="/SCRIPT/index.js"/>
 			<xsl:choose>
 				<xsl:when test="@signIn">
@@ -368,356 +539,5 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</BODY>
-	</xsl:template>
-
-	<xsl:template match="area">
-		<!--貴賓會員區塊-->
-		<xsl:if test="vip">
-			<ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
-				<DIV class="d-flex mb-2 mx-3 align-items-center justify-content-between">
-					<DIV class="m-2 text-bold text-dark">貴賓會員</DIV>
-					<DIV class="d-flex">
-						<DIV class="vipPageBtn">
-							<xsl:if test="vip/@hasPrev">
-								<BUTTON class="btn btn-primary btn-round pageBtn mx-1 m-0 px-2 py-1" data-type="vip" data-page="{vip/@hasPrev}">
-									<I class="fad fa-angle-double-left me-1"></I>
-									<SPAN>上一頁</SPAN>
-								</BUTTON>
-							</xsl:if>
-							<xsl:if test="vip/@hasNext">
-								<BUTTON class="btn btn-primary btn-round pageBtn mx-1 m-0 px-2 py-1" data-type="vip" data-page="{vip/@hasNext}">
-									<SPAN>下一頁</SPAN>
-									<I class="fad fa-angle-double-right ms-1"></I>
-								</BUTTON>
-							</xsl:if>
-						</DIV>
-						<DIV>
-							<BUTTON class="btn btn-link fontSize22 mx-1 m-0 p-0 refreshBtn" data-type="vip">
-								<I class="fal fa-sync-alt"></I>
-							</BUTTON>
-						</DIV>
-					</DIV>
-				</DIV>
-				<DIV class="d-flex flex-wrap justify-content-center mx-2 vip">
-					<xsl:for-each select="vip/section">
-						<A class="position-relative m-1" href="/profile/{identifier}/">
-							<IMG class="border-radius-md width148whileMobile" src="{profileImage}" width="152"/>
-							<DIV class="position-absolute right-0 text-center" style="width: 32px; top: 5px;">
-								<xsl:if test="@vvip">
-									<I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>
-								</xsl:if>
-								<xsl:if test="@relief = 'true'">
-									<I class="fas fa-shield-check fontSize22 text-success text-shadow"></I>
-								</xsl:if>
-							</DIV>
-							<DIV class="position-absolute imageShadow bottom-0 left-0 right-0 mx-3 mb-1 py-0 text-bolder text-dark bg-white opacity-7 border-radius-md p-1 text-xs text-center">
-								<DIV>
-									<SPAN>
-										<xsl:value-of select="nickname"/>
-									</SPAN>
-									<SPAN class="ms-2">
-										<xsl:value-of select="age"/>
-									</SPAN>
-								</DIV>
-								<xsl:if test="relationship">
-									<DIV>
-										<SPAN>尋找</SPAN>
-										<SPAN>
-											<xsl:value-of select="relationship"/>
-										</SPAN>
-									</DIV>
-								</xsl:if>
-								<DIV>
-									<xsl:for-each select="location">
-										<SPAN class="me-1">
-											<xsl:if test="position() = last()">
-												<xsl:attribute name="class"></xsl:attribute>
-											</xsl:if>
-											<xsl:value-of select="."/>
-										</SPAN>
-									</xsl:for-each>
-								</DIV>
-							</DIV>
-							<xsl:if test="@following">
-								<DIV class="position-absolute left-0 text-center" style="width: 32px; top: 5px;">
-									<I class="fas fa-heart-circle text-pink fontSize22"></I>
-								</DIV>
-							</xsl:if>
-						</A>
-					</xsl:for-each>
-				</DIV>
-			</ARTICLE>
-		</xsl:if>
-		<!--安心認證區塊-->
-		<xsl:if test="relief">
-			<ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
-				<DIV class="d-flex mb-2 mx-3 align-items-center justify-content-between">
-					<DIV class="m-2 text-bold text-dark">安心認證</DIV>
-					<DIV class="d-flex">
-						<DIV class="reliefPageBtn">
-							<xsl:if test="relief/@hasPrev">
-								<BUTTON class="btn btn-primary btn-round pageBtn mx-1 m-0 px-2 py-1" data-type="relief" data-page="{relief/@hasPrev}">
-									<I class="fad fa-angle-double-left me-1"></I>
-									<SPAN>上一頁</SPAN>
-								</BUTTON>
-							</xsl:if>
-							<xsl:if test="relief/@hasNext">
-								<BUTTON class="btn btn-primary btn-round pageBtn mx-1 m-0 px-2 py-1" data-type="relief" data-page="{relief/@hasNext}">
-									<SPAN>下一頁</SPAN>
-									<I class="fad fa-angle-double-right ms-1"></I>
-								</BUTTON>
-							</xsl:if>
-						</DIV>
-						<DIV>
-							<BUTTON class="btn btn-link fontSize22 mx-1 m-0 p-0 refreshBtn" data-type="relief">
-								<I class="fal fa-sync-alt"></I>
-							</BUTTON>
-						</DIV>
-					</DIV>
-				</DIV>
-				<DIV class="d-flex flex-wrap justify-content-center mx-2 relief">
-					<xsl:for-each select="relief/section">
-						<A class="position-relative m-1" href="/profile/{identifier}/">
-							<IMG class="border-radius-md width148whileMobile" src="{profileImage}" width="152"/>
-							<DIV class="position-absolute right-0 text-center" style="width: 32px; top: 5px;">
-								<xsl:if test="@vvip">
-									<I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>
-								</xsl:if>
-								<xsl:if test="@relief = 'true'">
-									<I class="fas fa-shield-check fontSize22 text-success text-shadow"></I>
-								</xsl:if>
-							</DIV>
-							<DIV class="position-absolute imageShadow bottom-0 left-0 right-0 mx-3 mb-1 py-0 text-bolder text-dark bg-white opacity-7 border-radius-md p-1 text-xs text-center">
-								<DIV>
-									<SPAN>
-										<xsl:value-of select="nickname"/>
-									</SPAN>
-									<SPAN class="ms-2">
-										<xsl:value-of select="age"/>
-									</SPAN>
-								</DIV>
-								<xsl:if test="relationship">
-									<DIV>
-										<SPAN>尋找</SPAN>
-										<SPAN>
-											<xsl:value-of select="relationship"/>
-										</SPAN>
-									</DIV>
-								</xsl:if>
-								<DIV>
-									<xsl:for-each select="location">
-										<SPAN class="me-1">
-											<xsl:if test="position() = last()">
-												<xsl:attribute name="class"></xsl:attribute>
-											</xsl:if>
-											<xsl:value-of select="."/>
-										</SPAN>
-									</xsl:for-each>
-								</DIV>
-							</DIV>
-							<xsl:if test="@following">
-								<DIV class="position-absolute left-0 text-center" style="width: 32px; top: 5px;">
-									<I class="fas fa-heart-circle text-pink fontSize22"></I>
-								</DIV>
-							</xsl:if>
-						</A>
-					</xsl:for-each>
-				</DIV>
-			</ARTICLE>
-		</xsl:if>
-		<!--最近活躍區塊-->
-		<xsl:if test="active">
-			<ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
-				<DIV class="d-flex mb-2 mx-3 align-items-center justify-content-between">
-					<DIV class="m-2 text-bold text-dark">最近活躍</DIV>
-					<DIV class="d-flex">
-						<DIV class="activePageBtn">
-							<xsl:if test="active/@hasPrev">
-								<BUTTON class="btn btn-primary btn-round pageBtn mx-1 m-0 px-2 py-1" data-type="active" data-page="{active/@hasPrev}">
-									<I class="fad fa-angle-double-left me-1"></I>
-									<SPAN>上一頁</SPAN>
-								</BUTTON>
-							</xsl:if>
-							<xsl:if test="active/@hasNext">
-								<BUTTON class="btn btn-primary btn-round pageBtn mx-1 m-0 px-2 py-1" data-type="active" data-page="{active/@hasNext}">
-									<SPAN>下一頁</SPAN>
-									<I class="fad fa-angle-double-right ms-1"></I>
-								</BUTTON>
-							</xsl:if>
-						</DIV>
-						<DIV>
-							<BUTTON class="btn btn-link fontSize22 mx-1 m-0 p-0 refreshBtn" data-type="active">
-								<I class="fal fa-sync-alt"></I>
-							</BUTTON>
-						</DIV>
-					</DIV>
-				</DIV>
-				<DIV class="d-flex flex-wrap justify-content-center mx-2 active">
-					<xsl:for-each select="active/section">
-						<A class="position-relative m-1" href="/profile/{identifier}/">
-							<IMG class="border-radius-md width148whileMobile" src="{profileImage}" width="152"/>
-							<DIV class="position-absolute right-0 text-center" style="width: 32px; top: 5px;">
-								<xsl:if test="@vvip">
-									<I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>
-								</xsl:if>
-								<xsl:if test="@relief = 'true'">
-									<I class="fas fa-shield-check fontSize22 text-success text-shadow"></I>
-								</xsl:if>
-							</DIV>
-							<DIV class="position-absolute imageShadow bottom-0 left-0 right-0 mx-3 mb-1 py-0 text-bolder text-dark bg-white opacity-7 border-radius-md p-1 text-xs text-center">
-								<DIV>
-									<SPAN>
-										<xsl:value-of select="nickname"/>
-									</SPAN>
-									<SPAN class="ms-2">
-										<xsl:value-of select="age"/>
-									</SPAN>
-								</DIV>
-								<xsl:if test="relationship">
-									<DIV>
-										<SPAN>尋找</SPAN>
-										<SPAN>
-											<xsl:value-of select="relationship"/>
-										</SPAN>
-									</DIV>
-								</xsl:if>
-								<DIV>
-									<xsl:for-each select="location">
-										<SPAN class="me-1">
-											<xsl:if test="position() = last()">
-												<xsl:attribute name="class"></xsl:attribute>
-											</xsl:if>
-											<xsl:value-of select="."/>
-										</SPAN>
-									</xsl:for-each>
-								</DIV>
-							</DIV>
-							<xsl:if test="@following">
-								<DIV class="position-absolute left-0 text-center" style="width: 32px; top: 5px;">
-									<I class="fas fa-heart-circle text-pink fontSize22"></I>
-								</DIV>
-							</xsl:if>
-						</A>
-					</xsl:for-each>
-				</DIV>
-			</ARTICLE>
-		</xsl:if>
-		<!--最新註冊區塊-->
-		<xsl:if test="register">
-			<ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
-				<DIV class="d-flex mb-2 mx-3 align-items-center justify-content-between">
-					<DIV class="m-2 text-bold text-dark">最新註冊</DIV>
-					<DIV class="d-flex">
-						<DIV class="registerPageBtn">
-							<xsl:if test="register/@hasPrev">
-								<BUTTON class="btn btn-primary btn-round pageBtn mx-1 m-0 px-2 py-1" data-type="register" data-page="{register/@hasPrev}">
-									<I class="fad fa-angle-double-left me-1"></I>
-									<SPAN>上一頁</SPAN>
-								</BUTTON>
-							</xsl:if>
-							<xsl:if test="register/@hasNext">
-								<BUTTON class="btn btn-primary btn-round pageBtn mx-1 m-0 px-2 py-1" data-type="register" data-page="{register/@hasNext}">
-									<SPAN>下一頁</SPAN>
-									<I class="fad fa-angle-double-right ms-1"></I>
-								</BUTTON>
-							</xsl:if>
-						</DIV>
-						<DIV>
-							<BUTTON class="btn btn-link fontSize22 mx-1 m-0 p-0 refreshBtn" data-type="register">
-								<I class="fal fa-sync-alt"></I>
-							</BUTTON>
-						</DIV>
-					</DIV>
-				</DIV>
-				<DIV class="d-flex flex-wrap justify-content-center mx-2 register">
-					<xsl:for-each select="register/section">
-						<A class="position-relative m-1" href="/profile/{identifier}/">
-							<IMG class="border-radius-md width148whileMobile" src="{profileImage}" width="152"/>
-							<DIV class="position-absolute right-0 text-center" style="width: 32px; top: 5px;">
-								<xsl:if test="@vvip">
-									<I class="fad fa-crown fontSize22 text-yellow text-shadow"></I>
-								</xsl:if>
-								<xsl:if test="@relief = 'true'">
-									<I class="fas fa-shield-check fontSize22 text-success text-shadow"></I>
-								</xsl:if>
-							</DIV>
-							<DIV class="position-absolute imageShadow bottom-0 left-0 right-0 mx-3 mb-1 py-0 text-bolder text-dark bg-white opacity-7 border-radius-md p-1 text-xs text-center">
-								<DIV>
-									<SPAN>
-										<xsl:value-of select="nickname"/>
-									</SPAN>
-									<SPAN class="ms-2">
-										<xsl:value-of select="age"/>
-									</SPAN>
-								</DIV>
-								<xsl:if test="relationship">
-									<DIV>
-										<SPAN>尋找</SPAN>
-										<SPAN>
-											<xsl:value-of select="relationship"/>
-										</SPAN>
-									</DIV>
-								</xsl:if>
-								<DIV>
-									<xsl:for-each select="location">
-										<SPAN class="me-1">
-											<xsl:if test="position() = last()">
-												<xsl:attribute name="class"></xsl:attribute>
-											</xsl:if>
-											<xsl:value-of select="."/>
-										</SPAN>
-									</xsl:for-each>
-								</DIV>
-							</DIV>
-							<xsl:if test="@following">
-								<DIV class="position-absolute left-0 text-center" style="width: 32px; top: 5px;">
-									<I class="fas fa-heart-circle text-pink fontSize22"></I>
-								</DIV>
-							</xsl:if>
-						</A>
-					</xsl:for-each>
-				</DIV>
-			</ARTICLE>
-		</xsl:if>
-		<SECTION class="d-block d-md-none text-center">
-			<DIV class="mobileModeWrap">
-				<DIV class="d-flex flex-wrap justify-content-center mobileMode"></DIV>
-				<DIV class="d-flex mt-3 justify-content-center">
-					<DIV id="mobilePageBtn"></DIV>
-					<DIV>
-						<BUTTON class="btn btn-link fontSize22 mx-1 m-0 p-0 refreshBtn" id="mobileRefreshBtn">
-							<I class="fal fa-sync-alt"></I>
-						</BUTTON>
-					</DIV>
-				</DIV>
-			</DIV>
-		</SECTION>
-		<SECTION class="fixed-bottom d-block d-md-none bg-white shadow m-2 bottom12rem text-lg">
-			<UL class="navbar-nav flex-row mobileMode">
-				<xsl:if test="vip">
-					<LI class="nav-item col-3 text-center">
-						<A class="nav-link cursor-pointer vipA mobileModeA" data-type="vip">VIP</A>
-					</LI>
-				</xsl:if>
-				<LI class="nav-item col-4 text-center">
-					<xsl:if test="vip">
-						<xsl:attribute name="class">nav-item col-3 text-center</xsl:attribute>
-					</xsl:if>
-					<A class="nav-link cursor-pointer reliefA mobileModeA" data-type="relief">安心</A>
-				</LI>
-				<LI class="nav-item col-4 text-center">
-					<xsl:if test="vip">
-						<xsl:attribute name="class">nav-item col-3 text-center</xsl:attribute>
-					</xsl:if>
-					<A class="nav-link cursor-pointer activeA mobileModeA" data-type="active">活躍</A>
-				</LI>
-				<LI class="nav-item col-4 text-center">
-					<xsl:if test="vip">
-						<xsl:attribute name="class">nav-item col-3 text-center</xsl:attribute>
-					</xsl:if>
-					<A class="nav-link cursor-pointer registerA mobileModeA" data-type="register">新會員</A>
-				</LI>
-			</UL>
-		</SECTION>
 	</xsl:template>
 </xsl:stylesheet>

@@ -150,14 +150,17 @@ public class WebSocketChatServer {
 				= webSocketService.wholeHistoryMsgs(male, female, page);
 
 			String historyMsgs = gson.toJson(wholeHistoryMsgs);
-			String friendStatus = gson.toJson(historyService.friendStatus(sender, receiver));
-			String chatStatus = gson.toJson(historyService.chatStatus(sender, receiver));
 			LOGGER.debug(String.format(
 				"訊息歷史紀錄toJson：%s",
 				historyMsgs
 			));
-			ChatMessage cmHistory = new ChatMessage("history", historyMsgs, friendStatus);
-			cmHistory.setChatStatus(chatStatus);
+			ChatMessage cmHistory = new ChatMessage("history", historyMsgs);
+			if (Objects.isNull(chatMessage.getReconnect())) {
+				String friendStatus = gson.toJson(historyService.friendStatus(sender, receiver));
+				cmHistory.setFriendStatus(friendStatus);
+				String chatStatus = gson.toJson(historyService.chatStatus(sender, receiver));
+				cmHistory.setChatStatus(chatStatus);
+			}
 			if (Objects.nonNull(userSession) && userSession.isOpen()) {
 				userSession.getAsyncRemote().sendText(gson.toJson(cmHistory));
 				LOGGER.debug(String.format(
@@ -238,7 +241,7 @@ public class WebSocketChatServer {
 		Session receiverSession = sessionPools.get(receiverConn);
 
 		LineGiven lineGiven = lineGivenRepository.findByGirlAndGuy(female, male);
-		if (sender.getGender()) {
+		if (sender.getGender() && !(loverService.isCustomerService(sender) || loverService.isCustomerService(receiver))) {
 			if ((!loverService.isVIP(male) && !loverService.isVVIP(male))
 				|| (Objects.isNull(lineGiven) || Objects.isNull(lineGiven.getResponse()) || !lineGiven.getResponse())) {
 				int msgsCount = webSocketService.msgsCountWithin12Hrs(male, female);
