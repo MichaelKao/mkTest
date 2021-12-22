@@ -74,7 +74,7 @@ public class AmazonWebServices {
 		File file = new File(TEMP_DIRECTORY, Long.toString(
 			System.currentTimeMillis()
 		));
-		multipartFile.transferTo(file);
+			multipartFile.transferTo(file);
 		PutObjectResult putObjectResult = AMAZON_S3.putObject(
 			new PutObjectRequest(
 				BUCKET_NAME + bucketName,
