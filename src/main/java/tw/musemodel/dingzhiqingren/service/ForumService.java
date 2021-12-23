@@ -36,7 +36,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import tw.musemodel.dingzhiqingren.entity.ForumThread;
@@ -287,7 +286,7 @@ public class ForumService {
 	 * @return
 	 * @throws IOException
 	 */
-	public Document forumToDocument(Lover self, List<ForumThread> list) throws IOException {
+	public Document forumToDocument(Lover self) throws IOException {
 
 		Document document = Servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
@@ -315,136 +314,6 @@ public class ForumService {
 			forumThreadTagElement.setAttribute("id", forumThreadTag.getId().toString());
 			forumThreadTagElement.setTextContent(forumThreadTag.getPhrase());
 			documentElement.appendChild(forumThreadTagElement);
-		}
-
-		// 論壇文章
-		Element forumThreadsElement = document.createElement("forumThreads");
-		documentElement.appendChild(forumThreadsElement);
-		for (ForumThread forumThread : list) {
-			Element forumThreadElement = document.createElement("forumThread");
-			forumThreadsElement.appendChild(forumThreadElement);
-			forumThreadElement.setAttribute(
-				"identifier",
-				forumThread.getIdentifier().toString()
-			);
-
-			Lover author = forumThread.getAuthor();
-			Element authorElement = document.createElement("author");
-			forumThreadElement.appendChild(authorElement);
-			authorElement.setAttribute(
-				"nickname",
-				author.getNickname()
-			);
-			authorElement.setAttribute(
-				"identifier",
-				author.getIdentifier().toString()
-			);
-			authorElement.setAttribute(
-				"profileImage",
-				String.format(
-					"https://%s/profileImage/%s",
-					Servant.STATIC_HOST,
-					author.getProfileImage()
-				));
-			authorElement.setAttribute(
-				"relief",
-				Objects.nonNull(author.getRelief()) ? author.getRelief().toString() : "false"
-			);
-
-			Element titleElement = document.createElement("title");
-			forumThreadElement.appendChild(titleElement);
-			titleElement.setTextContent(forumThread.getTitle());
-
-			Element markdownElement = document.createElement("markdown");
-			forumThreadElement.appendChild(markdownElement);
-			String html = servant.markdownToHtml(forumThread.getMarkdown());
-			CDATASection cDATASection = document.createCDATASection(html);
-			markdownElement.appendChild(cDATASection);
-
-			Element dateElement = document.createElement("date");
-			dateElement.setTextContent(
-				servant.DATE_TIME_FORMATTER_yyyyMMddHHmm.format(
-					Servant.toTaipeiZonedDateTime(
-						forumThread.getCreated()
-					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
-				)
-			);
-			forumThreadElement.appendChild(dateElement);
-
-			for (ForumThreadHashTag forumThreadHashTag : forumThreadHashTagRepository.findByForumThread(forumThread)) {
-				Element hashTagElement = document.createElement("hashTag");
-				hashTagElement.setTextContent(forumThreadHashTag.getForumThreadTag().getPhrase());
-				forumThreadElement.appendChild(hashTagElement);
-			}
-
-			Collection<ForumThreadIllustration> forumThreadIllustrations = forumThreadIllustrationRepository.findByForumThread(forumThread);
-			if (forumThreadIllustrations.size() > 0) {
-				Element illustrationsElement = document.createElement("illustrations");
-				forumThreadElement.appendChild(illustrationsElement);
-				for (ForumThreadIllustration forumThreadIllustration : forumThreadIllustrations) {
-					Element illustrationElement = document.createElement("illustration");
-					illustrationElement.setTextContent(
-						String.format(
-							"https://%s/forum/%s/%s",
-							Servant.STATIC_HOST,
-							forumThread.getIdentifier(),
-							forumThreadIllustration.getIdentifier()
-						));
-					illustrationsElement.appendChild(illustrationElement);
-				}
-			}
-			// 留言
-			int commentCount = forumThreadCommentRepository.countByForumThread(forumThread);
-			Element commentsElement = document.createElement("comments");
-			forumThreadElement.appendChild(commentsElement);
-			commentsElement.setAttribute(
-				"commentCount",
-				Integer.toString(commentCount)
-			);
-			for (ForumThreadComment forumThreadComment : forumThreadCommentRepository.findByForumThreadOrderByCreatedDesc(forumThread)) {
-				Element commentElement = document.createElement("comment");
-				commentsElement.appendChild(commentElement);
-				commentElement.setAttribute(
-					"identifier",
-					forumThreadComment.getIdentifier().toString()
-				);
-				// 留言內容
-				String commenthtml = servant.markdownToHtml(forumThreadComment.getContent());
-				CDATASection commentCDATASection = document.createCDATASection(commenthtml);
-				commentElement.appendChild(commentCDATASection);
-				commentElement.setAttribute(
-					"date",
-					servant.DATE_TIME_FORMATTER_yyyyMMddHHmm.format(
-						Servant.toTaipeiZonedDateTime(
-							forumThreadComment.getCreated()
-						).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
-					)
-				);
-
-				// 留言方
-				Lover commenter = forumThreadComment.getCommenter();
-				Element commenterElement = document.createElement("commenter");
-				commentElement.appendChild(commenterElement);
-				commenterElement.setAttribute(
-					"commenterNickname",
-					commenter.getNickname()
-				);
-				commenterElement.setAttribute(
-					"commenterProfileImage",
-					String.format(
-						"https://%s/profileImage/%s",
-						Servant.STATIC_HOST,
-						commenter.getProfileImage()
-					));
-				commenterElement.setAttribute(
-					"commenterRelief",
-					Objects.nonNull(commenter.getRelief()) ? commenter.getRelief().toString() : "false"
-				);
-				commenterElement.setAttribute(
-					"commenterIdentifier",
-					commenter.getIdentifier().toString()
-				);
-			}
 		}
 
 		return document;

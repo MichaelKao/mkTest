@@ -96,7 +96,7 @@ $(document).ready(function () {
 			$('DIV.loadingWrap').css('display', 'block');
 			$.ajax({
 				method: 'post',
-				url: '/forumZone/add.asp',
+				url: '/forum/add.asp',
 				data: formData,
 				dataType: 'json',
 				cache: false,
@@ -256,7 +256,7 @@ $(document).ready(function () {
 		var profileImage = $(btn).closest('DIV').siblings('DIV.avatar').find('IMG').attr('src');
 		var forumIdentifier = $(btn).closest('DIV').siblings('INPUT[name="forumIdentifier"]').val();
 		$.post(
-			'/forumZone/comment.asp',
+			'/forum/comment.asp',
 			{
 				forumThread: forumIdentifier,
 				content: value
@@ -357,7 +357,7 @@ $(document).ready(function () {
 				$('.posts').append(load);
 				if (p > 0) {
 					$.post(
-						'/forumZone/loadMore.json',
+						'/forum/loadMore.json',
 						{
 							p: p,
 							sort: sort
@@ -693,6 +693,18 @@ $(document).ready(function () {
 		});
 	}
 
+	$.post(
+		'/forum/loadMore.json',
+		{
+			p: 0,
+			sort: 'popular'
+		},
+		function (data) {
+			appendData(data);
+		},
+		'json'
+		);
+
 	$('SPAN.sort').click(function () {
 		window.removeEventListener('scroll', handler);
 		var span = this;
@@ -701,7 +713,7 @@ $(document).ready(function () {
 		var $nextPage = $('INPUT[name="nextPage"]');
 		var $sort = $('INPUT[name="sort"]');
 		$.post(
-			'/forumZone/loadMore.json',
+			'/forum/loadMore.json',
 			{
 				p: 0,
 				sort: sort
@@ -730,7 +742,7 @@ $(document).ready(function () {
 		var $imgOriginalBox = $('DIV#imgOriginalBox');
 		forumIdentifier = $post.find('INPUT[name="forumIdentifier"]').val();
 		$.get(
-			'/forumZone/' + forumIdentifier + '.json',
+			'/forum/' + forumIdentifier + '.json',
 			function (data) {
 				$editModal.find('INPUT[name="title"]').val(data.title);
 				$editModal.find('TEXTAREA[name="markdown"]').val(data.markdown);
@@ -788,7 +800,6 @@ $(document).ready(function () {
 		openEditModal(editBtn);
 	});
 
-
 	$('#editBtn').click(function () {
 		var btn = this;
 		var title = $(btn).closest('DIV#editPostModal').find('INPUT[name="title"]').val();
@@ -809,7 +820,7 @@ $(document).ready(function () {
 		$('DIV.loadingWrap').css('display', 'block');
 		$.ajax({
 			method: 'post',
-			url: '/forumZone/editThread.asp',
+			url: '/forum/editThread.asp',
 			data: formData,
 			dataType: 'json',
 			cache: false,
@@ -855,7 +866,7 @@ $(document).ready(function () {
 	function editComment(btn) {
 		var commentIdentifier = $(btn).closest('DIV.comment').find('INPUT[name="commentIdentifier"]').val();
 		$.get(
-			'/forumZone/comment/' + commentIdentifier + '.json',
+			'/forum/comment/' + commentIdentifier + '.json',
 			function (data) {
 				$(btn).siblings('TEXTAREA').val(data.content);
 			},
@@ -871,7 +882,7 @@ $(document).ready(function () {
 		$('DIV.loadingWrap').css('display', 'block');
 		var commentIdentifier = $(btn).closest('DIV.comment').find('INPUT[name="commentIdentifier"]').val();
 		$.post(
-			'/forumZone/editComment.asp',
+			'/forum/editComment.asp',
 			{
 				'forumCommentIdentifier': commentIdentifier,
 				'content': $(btn).siblings('TEXTAREA').val()

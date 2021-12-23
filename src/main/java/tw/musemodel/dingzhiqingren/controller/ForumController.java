@@ -99,13 +99,7 @@ public class ForumController {
 			return Servant.redirectToProfile();
 		}
 
-		List<ForumThread> list = forumService.readAllThreadsSortByPopular(
-			me.getGender(),
-			p < 1 ? 0 : p - 1,
-			s
-		);
-
-		Document document = forumService.forumToDocument(me, list);
+		Document document = forumService.forumToDocument(me);
 		Element documentElement = servant.documentElement(
 			document,
 			authentication

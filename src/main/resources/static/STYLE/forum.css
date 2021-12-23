@@ -288,4 +288,5 @@ IMG.lightBoxImg {
 	height: 50px;
 	background-size: cover;
 	filter: blur(3.1px);
+	border-radius: 50%;
 }
