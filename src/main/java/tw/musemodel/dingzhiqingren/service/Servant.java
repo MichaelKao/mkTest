@@ -497,6 +497,11 @@ public class Servant {
 		));
 		seoElement.appendChild(tawkElement);
 
+		if (Objects.equals(LOCALHOST, "youngme.vip")) {
+			Element isProductionHostElement = document.createElement("isProductionHost");
+			seoElement.appendChild(isProductionHostElement);
+		}
+
 		return document;
 	}
 

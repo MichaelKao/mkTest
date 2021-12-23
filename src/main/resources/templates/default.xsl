@@ -365,6 +365,32 @@
 				disable-output-escaping="yes"
 			/>
 		</SCRIPT>
+		<xsl:if test="/document/seo/isProductionHost">
+			<SCRIPT>
+				(function (g, d, o) {
+				g._ltq = g._ltq || [];
+				g._lt = g._lt || function () {
+				g._ltq.push(arguments)
+				};
+				var h = location.protocol === 'https:' ? 'https://d.line-scdn.net' : 'http://d.line-cdn.net';
+				var s = d.createElement('script');
+				s.async = 1;
+				s.src = o || h + '/n/line_tag/public/release/v1/lt.js';
+				var t = d.getElementsByTagName('script')[0];
+				t.parentNode.insertBefore(s, t);
+				})(window, document);
+				_lt('init', {
+				customerType: 'lap',
+				sharedCookieDomain: 'youngme.vip',
+				tagId: 'de2dc0b2-f135-44ba-b7fe-31959fd7f2dd'
+				});
+				_lt('send', 'pv', ['de2dc0b2-f135-44ba-b7fe-31959fd7f2dd']);
+			</SCRIPT>
+			<NOSCRIPT>
+				<IMG height="1" width="1" style="display:none"
+				     src="https://tr.line.me/tag.gif?c_t=lap&#38;t_id=de2dc0b2-f135-44ba-b7fe-31959fd7f2dd&#38;e=pv&#38;noscript=1" />
+			</NOSCRIPT>
+		</xsl:if>
 	</xsl:template>
 
 	<!-- 後台需要的 -->
@@ -374,7 +400,7 @@
 		<SCRIPT crossorigin="anonymous" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"/>
 		<SCRIPT crossorigin="anonymous" integrity="sha512-yUNtg0k40IvRQNR20bJ4oH6QeQ/mgs9Lsa6V+3qxTj58u2r+JiAYOhOW0o+ijuMmqCtCEg7LZRA+T4t84/ayVA==" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.0/perfect-scrollbar.min.js"/>
 		<SCRIPT src="https://kit.fontawesome.com/5ed1767edc.js"/>
-		<SCRIPT src="/SCRIPT/default.js"/>
+		<SCRIPT src="/SCRIPT/dashboard.js"/>
 		<SCRIPT src="/SCRIPT/soft-ui-dashboard.min.js"/>
 	</xsl:template>
 
