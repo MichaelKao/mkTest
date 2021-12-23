@@ -196,7 +196,7 @@
 											<OL class="flickity-page-dots">
 												<LI class="dot is-selected"></LI>
 												<LI class="dot"></LI>
-												<!--<LI class="dot"></LI>-->
+												<LI class="dot"></LI>
 											</OL>
 										</DIV>
 										<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
@@ -231,10 +231,10 @@
 											<OL class="flickity-page-dots">
 												<LI class="dot"></LI>
 												<LI class="dot is-selected"></LI>
-												<!--<LI class="dot"></LI>-->
+												<LI class="dot"></LI>
 											</OL>
 										</DIV>
-										<!--										<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
+										<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
 											<DIV class="d-flex flex-column justify-content-center align-items-center mb-3">
 												<H2 class="text-white text-bold">TIPS</H2>
 												<DIV class="guideTitle text-bold text-primary h4 mb-0">討論區</DIV>
@@ -249,13 +249,17 @@
 													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/kingTop3.jpg" width="150px"/>
 												</DIV>
 												<DIV class="text-white mt-1">如何成為情場高手看這裡</DIV>
+												<A class="btn btn-light mt-2 px-2 py-1 m-0" href="/forum/">
+													<I class="fas fa-comment-alt-edit fontSize22 width30"></I>
+													<SPAN class="ms-1">討論區</SPAN>
+												</A>
 											</DIV>
 											<OL class="flickity-page-dots">
 												<LI class="dot"></LI>
 												<LI class="dot"></LI>
 												<LI class="dot is-selected"></LI>
 											</OL>
-										</DIV>-->
+										</DIV>
 									</xsl:if>
 									<xsl:if test="@female">
 										<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
@@ -282,7 +286,7 @@
 											<OL class="flickity-page-dots">
 												<LI class="dot is-selected"></LI>
 												<LI class="dot"></LI>
-												<!--<LI class="dot"></LI>-->
+												<LI class="dot"></LI>
 											</OL>
 										</DIV>
 										<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
@@ -317,10 +321,10 @@
 											<OL class="flickity-page-dots">
 												<LI class="dot"></LI>
 												<LI class="dot is-selected"></LI>
-												<!--<LI class="dot"></LI>-->
+												<LI class="dot"></LI>
 											</OL>
 										</DIV>
-										<!--										<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
+										<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
 											<DIV class="d-flex flex-column justify-content-center align-items-center mb-3">
 												<H2 class="text-white text-bold">TIPS</H2>
 												<DIV class="guideTitle text-bold text-primary h4 mb-0">討論區</DIV>
@@ -335,13 +339,17 @@
 													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/queenTop3.jpg" width="150px"/>
 												</DIV>
 												<DIV class="text-white mt-1">如何與優質男士展開約會</DIV>
+												<A class="btn btn-light mt-2 px-2 py-1 m-0" href="/forum/">
+													<I class="fas fa-comment-alt-edit fontSize22 width30"></I>
+													<SPAN class="ms-1">討論區</SPAN>
+												</A>
 											</DIV>
 											<OL class="flickity-page-dots">
 												<LI class="dot"></LI>
 												<LI class="dot"></LI>
 												<LI class="dot is-selected"></LI>
 											</OL>
-										</DIV>-->
+										</DIV>
 									</xsl:if>
 								</DIV>
 							</DIV>
