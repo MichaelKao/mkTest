@@ -303,8 +303,6 @@
 				disable-output-escaping="yes"
 			/>
 		</SCRIPT>
-		<!-- Event snippet for 註冊 conversion page -->
-		<SCRIPT>gtag('event', 'conversion', {'send_to': '<xsl:value-of select="/document/seo/googleAds/@id"/>/<xsl:value-of select="/document/seo/googleAds/@label"/>'});</SCRIPT>
 	</xsl:template>
 
 	<xsl:template name="headMetaTags">

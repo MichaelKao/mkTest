@@ -142,6 +142,8 @@
 					},['de2dc0b2-f135-44ba-b7fe-31959fd7f2dd']);
 				</SCRIPT>
 			</xsl:if>
+			<!-- Event snippet for 註冊 conversion page -->
+			<SCRIPT>gtag('event', 'conversion', {'send_to': '<xsl:value-of select="/document/seo/googleAds/@id"/>/<xsl:value-of select="/document/seo/googleAds/@label"/>'});</SCRIPT>
 		</BODY>
 	</xsl:template>
 	<xsl:template match="lover">

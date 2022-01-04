@@ -1035,9 +1035,7 @@ public class WelcomeController {
 			return Servant.redirectToRoot();
 		}
 
-		Document document = Servant.parseDocument(
-			"classpath:/skeleton/signIn.xml"
-		);
+		Document document = Servant.parseDocument();
 		Element documentElement = document.getDocumentElement();
 		documentElement.setAttribute("title", messageSource.getMessage(
 			"title.signIn",
