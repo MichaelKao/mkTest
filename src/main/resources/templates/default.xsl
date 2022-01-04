@@ -295,6 +295,16 @@
 		<LINK href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet"/>
 		<LINK href="/STYLE/soft-design-system.css" rel="stylesheet"/>
 		<LINK href="/STYLE/default.css" rel="stylesheet"/>
+		<!--Google Ads-->
+		<SCRIPT async="" src="https://www.googletagmanager.com/gtag/js?id={/document/seo/googleAds/@id}"/>
+		<SCRIPT>
+			<xsl:value-of
+				select="/document/seo/googleAds"
+				disable-output-escaping="yes"
+			/>
+		</SCRIPT>
+		<!-- Event snippet for 註冊 conversion page -->
+		<SCRIPT>gtag('event', 'conversion', {'send_to': '<xsl:value-of select="/document/seo/googleAds/@id"/>/<xsl:value-of select="/document/seo/googleAds/@label"/>'});</SCRIPT>
 	</xsl:template>
 
 	<xsl:template name="headMetaTags">

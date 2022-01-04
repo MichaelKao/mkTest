@@ -149,6 +149,16 @@ public class Servant {
 	public static final String MEASUREMENT_ID = System.getenv("MEASUREMENT_ID");
 
 	/**
+	 * Google Ads 帳戶專屬的轉換 ID
+	 */
+	public static final String AW_CONVERSION_ID = System.getenv("AW_CONVERSION_ID");
+
+	/**
+	 * Google Ads 每個轉換動作專屬的轉換標籤
+	 */
+	public static final String AW_CONVERSION_LABEL = System.getenv("AW_CONVERSION_LABEL");
+
+	/**
 	 * 1 天的毫秒数
 	 */
 	public static final Integer MILLISECONDS_IN_A_DAY = 86400000;
@@ -482,6 +492,21 @@ public class Servant {
 			)
 		));
 		seoElement.appendChild(googleAnalyticsElement);
+
+		Element googleAdsElement = document.createElement("googleAds");
+		googleAdsElement.setAttribute("id", AW_CONVERSION_ID);
+		googleAdsElement.setAttribute("label", AW_CONVERSION_LABEL);
+		googleAdsElement.appendChild(document.createCDATASection(
+			String.format(
+				new BufferedReader(new InputStreamReader(
+					new ClassPathResource("skeleton/googleAnalytics.js").
+						getInputStream(),
+					UTF_8
+				)).lines().collect(Collectors.joining("\n")),
+				AW_CONVERSION_ID
+			)
+		));
+		seoElement.appendChild(googleAdsElement);
 
 		Element tawkElement = document.createElement("tawk");
 		tawkElement.setAttribute("id", TAWK_PROPERTY_ID);
