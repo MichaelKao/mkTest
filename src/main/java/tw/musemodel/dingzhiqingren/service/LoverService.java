@@ -2843,7 +2843,7 @@ public class LoverService {
 	 * @return
 	 */
 	public String stopRecurring(Lover lover, String email, String lastFourDigits, Locale locale) {
-		if (!email.matches("^\\w{1,63}@[a-zA-Z0-9]{2,63}\\.[a-zA-Z]{2,63}(\\.[a-zA-Z]{2,63})?$")) {
+		if (!email.matches("^([\\w\\.\\-]){1,64}@[a-zA-Z0-9]{2,63}\\.[a-zA-Z]{2,63}(\\.[a-zA-Z]{2,63})?$")) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
 					"emailIsFail",
