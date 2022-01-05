@@ -1,10 +1,11 @@
 $(document).ready(function () {
-	var hostName = location.hostname;
+	const hostName = location.hostname;
+	const referralCode = document.getElementById('referralCode').innerHTML;
 
 	const shareData = {
 		title: 'MDN',
 		text: 'Youngme 養蜜之旅, 註冊時輸入我的專屬邀請碼：' + $('#referralCode').html(),
-		url: 'https://' + hostName
+		url: 'https://' + hostName + '/i/' + referralCode
 	}
 
 	const btn = document.querySelector('button.share');
@@ -21,9 +22,7 @@ $(document).ready(function () {
 
 	// 複製
 	$('BUTTON#referralCodeCopy').click(function () {
-		var content = document.getElementById('referralCode').innerHTML;
-
-		navigator.clipboard.writeText(content)
+		navigator.clipboard.writeText(referralCode)
 			.then(() => {
 				$('.toast-body').html('已複製');
 				$('.toast').toast('show');

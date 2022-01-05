@@ -148,7 +148,13 @@
 									<I class="fad fa-users-crown text-lg"></I>
 								</DIV>
 								<DIV class="col-11">
-									<INPUT class="form-control" name="referralCode" placeholder="邀請碼(選填)" type="text" value=""/>
+									<INPUT class="form-control" name="referralCode" placeholder="邀請碼(選填)" type="text" value="">
+										<xsl:if test="referralCode">
+											<xsl:attribute name="value">
+												<xsl:value-of select="referralCode"/>
+											</xsl:attribute>
+										</xsl:if>
+									</INPUT>
 								</DIV>
 							</DIV>
 							<DIV class="text-center">

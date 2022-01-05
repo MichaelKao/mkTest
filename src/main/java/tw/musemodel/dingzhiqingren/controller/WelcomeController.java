@@ -1184,6 +1184,100 @@ public class WelcomeController {
 	}
 
 	/**
+	 * 新建帐户页面(邀請碼網址)
+	 *
+	 * @param authentication 认证
+	 * @param locale 语言环境
+	 * @return 网页页面
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
+	@GetMapping(path = "/i/{referralCode}")
+	ModelAndView signUpWithReferralCode(@PathVariable String referralCode,
+		Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		if (!servant.isNull(authentication)) {
+			return new ModelAndView("redirect:/");
+		}
+		if (Objects.isNull(loverRepository.findByReferralCode(referralCode))) {
+			return new ModelAndView("redirect:/");
+		}
+
+		Document document = Servant.parseDocument();
+		Element documentElement = document.getDocumentElement();
+		documentElement.setAttribute("title", messageSource.getMessage(
+			"title.signUp",
+			null,
+			locale
+		));
+
+		Element formElement = document.createElement("form");
+		formElement.setAttribute(
+			"i18n-submit",
+			messageSource.getMessage(
+				"signUp.form.submit",
+				null,
+				locale
+			)
+		);
+		documentElement.appendChild(formElement);
+
+		Element countriesElement = document.createElement("countries");
+		servant.getCountries().stream().map(country -> {
+			Element optionElement = document.createElement("option");
+			optionElement.setAttribute(
+				"value",
+				country.getId().toString()
+			);
+			optionElement.setTextContent(
+				String.format(
+					"+%s (%s)",
+					country.getCallingCode(),
+					messageSource.getMessage(
+						String.format(
+							"country.%s",
+							country.getName()
+						),
+						null,
+						locale
+					)
+				)
+			);
+			return optionElement;
+		}).forEachOrdered(countryElement -> {
+			countriesElement.appendChild(countryElement);
+		});
+		formElement.appendChild(countriesElement);
+
+		Element genderElement = document.createElement("gender");
+		genderElement.setAttribute(
+			"female",
+			messageSource.getMessage(
+				"gender.female",
+				null,
+				locale
+			)
+		);
+		genderElement.setAttribute(
+			"male",
+			messageSource.getMessage(
+				"gender.male",
+				null,
+				locale
+			)
+		);
+		formElement.appendChild(genderElement);
+
+		Element referralCodeElement = document.createElement("referralCode");
+		referralCodeElement.setTextContent(referralCode);
+		formElement.appendChild(referralCodeElement);
+
+		ModelAndView modelAndView = new ModelAndView("signUp");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	/**
 	 * 新建帐户
 	 *
 	 * @param signUp 模型

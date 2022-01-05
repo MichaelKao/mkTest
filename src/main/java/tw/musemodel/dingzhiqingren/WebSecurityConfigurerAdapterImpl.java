@@ -74,6 +74,7 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 						"/resetPassword/**",
 						"/signIn.asp",
 						"/signUp.asp",
+						"/i/*",
 						"/*.png",
 						"/dashboard/manualUpgrade.xml",
 						"/privacy.asp",
