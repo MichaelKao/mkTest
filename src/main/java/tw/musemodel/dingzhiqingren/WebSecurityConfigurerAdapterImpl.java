@@ -146,7 +146,8 @@ public class WebSecurityConfigurerAdapterImpl extends WebSecurityConfigurerAdapt
 				"/manifest.json",
 				"/poc/**",
 				"/webhook/**",
-				"/ICON/**"
+				"/ICON/**",
+				"/.well-known/*"
 			);
 		LOGGER.debug(
 			String.format(
