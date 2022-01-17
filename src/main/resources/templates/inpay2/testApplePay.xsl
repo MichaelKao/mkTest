@@ -76,7 +76,7 @@
 				<xsl:attribute name="src">
 					<xsl:choose>
 						<xsl:when test="@development and @development='true'">/SCRIPT/rechargeByInpay2_.js</xsl:when>
-						<xsl:otherwise>/SCRIPT/rechargeByInpay2.js</xsl:otherwise>
+						<xsl:otherwise>/SCRIPT/testApplePay.js</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
 			</SCRIPT>
