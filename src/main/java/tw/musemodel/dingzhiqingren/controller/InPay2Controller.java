@@ -122,6 +122,16 @@ public class InPay2Controller {
 		);
 	}
 
+	@PostMapping(path = "/getTokenByTradeApplePay.json", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	String getTokenByTradeApplePay(final @RequestParam UUID me, final @RequestParam Plan plan, final HttpSession session) throws JsonProcessingException {
+		return inpay2Service.getTokenByTradeApplePay(
+			plan,
+			loverService.loadByIdentifier(me),
+			session
+		);
+	}
+
 	/**
 	 * 绿界以幕前方式传送付款结果。
 	 *
