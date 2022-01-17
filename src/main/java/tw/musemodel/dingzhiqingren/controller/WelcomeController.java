@@ -2232,6 +2232,8 @@ public class WelcomeController {
 
 		Element planElement = document.createElement("plan");
 		planElement.setAttribute("id", plan.getId().toString());
+		planElement.setAttribute("points", Short.toString(plan.getPoints()));
+		planElement.setAttribute("amount", Integer.toString(plan.getAmount()));
 		documentElement.appendChild(planElement);
 
 		ModelAndView modelAndView = new ModelAndView("inpay2/ECPayPayment");
