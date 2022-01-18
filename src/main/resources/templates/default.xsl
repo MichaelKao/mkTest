@@ -315,18 +315,11 @@
 		<META HTTP-EQUIV="expires" CONTENT="0"/>
 		<xsl:if test="/document/seo/isProductionHost">
 			<!-- Google Tag Manager -->
-			<!--			<SCRIPT>
-				(function(w,d,s,l,i){
-				w[l]=w[l]||[];
-				w[l].push(
-				{'gtm.start':new Date().getTime(),
-				event:'gtm.js'}
-				);
-				var f=d.getElementsByTagName(s)[0],
-				j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			<SCRIPT>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+				j=d.createElement(s),dl=l!='dataLayer'?'&amp;l='+l:'';j.async=true;j.src=
 				'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-				})(window,document,'script','dataLayer','GTM-58HPSHH');
-			</SCRIPT>-->
+				})(window,document,'script','dataLayer','GTM-58HPSHH');</SCRIPT>
 			<!-- End Google Tag Manager -->
 		</xsl:if>
 	</xsl:template>
@@ -342,6 +335,15 @@
 
 	<!--浮动式客服按钮-->
 	<xsl:template name="customerFloatBtn">
+		<xsl:if test="/document/seo/isProductionHost">
+			<!-- Google Tag Manager (noscript) -->
+			<NOSCRIPT>
+				<IFRAME src="https://www.googletagmanager.com/ns.html?id=GTM-58HPSHH"
+					height="0" width="0" style="display:none;visibility:hidden">
+				</IFRAME>
+			</NOSCRIPT>
+		</xsl:if>
+		<!-- End Google Tag Manager (noscript) -->
 		<A class="customerFloatBtn d-flex align-items-center justify-content-center position-fixed bg-dark fontSize25 text-white opacity-9 shadow" href="https://line.me/R/ti/p/%40017zadfy">
 			<I class="fad fa-user-headset"/>
 		</A>
@@ -414,13 +416,6 @@
 				<IMG height="1" width="1" style="display:none"
 				     src="https://tr.line.me/tag.gif?c_t=lap&#38;t_id=de2dc0b2-f135-44ba-b7fe-31959fd7f2dd&#38;e=pv&#38;noscript=1" />
 			</NOSCRIPT>
-			<!-- Google Tag Manager (noscript) -->
-			<!--			<NOSCRIPT>
-				<IFRAME src="https://www.googletagmanager.com/ns.html?id=GTM-58HPSHH"
-					height="0" width="0" style="display:none;visibility:hidden">
-				</IFRAME>
-			</NOSCRIPT>-->
-			<!-- End Google Tag Manager (noscript) -->
 		</xsl:if>
 	</xsl:template>
 
