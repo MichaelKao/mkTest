@@ -105,7 +105,7 @@ $(document).ready(function () {
 											<div class="text-danger">
 												<i class="fas fa-exclamation-circle me-1"></i>提醒： 為避免操作重複造成系統錯誤，請螢幕截圖方便進行交易。
 											</div>
-										</div>`)
+											</div>`)
 							let btnDiv = document.createElement('DIV');
 							$(btnDiv).attr('class', 'text-center');
 							$('.card-body').append(btnDiv);

@@ -313,6 +313,17 @@
 		<META HTTP-EQUIV="pragma" CONTENT="no-cache"/>
 		<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate"/>
 		<META HTTP-EQUIV="expires" CONTENT="0"/>
+		<xsl:if test="/document/seo/isProductionHost">
+			<!-- Google Tag Manager -->
+			<SCRIPT>
+				(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+				j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+				'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+				})(window,document,'script','dataLayer','GTM-58HPSHH');
+			</SCRIPT>
+			<!-- End Google Tag Manager -->
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template name="bootstrapToast">
@@ -398,6 +409,13 @@
 				<IMG height="1" width="1" style="display:none"
 				     src="https://tr.line.me/tag.gif?c_t=lap&#38;t_id=de2dc0b2-f135-44ba-b7fe-31959fd7f2dd&#38;e=pv&#38;noscript=1" />
 			</NOSCRIPT>
+			<!-- Google Tag Manager (noscript) -->
+			<NOSCRIPT>
+				<IFRAME src="https://www.googletagmanager.com/ns.html?id=GTM-58HPSHH"
+					height="0" width="0" style="display:none;visibility:hidden">
+				</IFRAME>
+			</NOSCRIPT>
+			<!-- End Google Tag Manager (noscript) -->
 		</xsl:if>
 	</xsl:template>
 
