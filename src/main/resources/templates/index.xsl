@@ -64,18 +64,6 @@
 						</DIV>
 					</DIV>
 				</HEADER>
-				<SECTION class="container px-0 pt-7 position-relative hideMe">
-					<DIV class="orangeBg">
-						<DIV class="videoSlogan">孤單是現代文明病, 找到陪伴就來養蜜</DIV>
-					</DIV>
-					<DIV class="embedVideo">
-						<IFRAME allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/LOIa7Zn2Z6A"></IFRAME>
-					</DIV>
-					<DIV class="robotoItalic text-primary text-lg videoSloganEng">
-						<DIV class="text-center ms-xl-10">LONELINESS IS MODERN CIVILZED ILLNESS</DIV>
-						<DIV class="text-right">WELCOME TO YOUNGME! LET'S CHAT &amp; DATE</DIV>
-					</DIV>
-				</SECTION>
 				<SECTION class="mt-3 py-4 py-md-6 container meKING hideMe">
 					<DIV class="text-right pe-lg-5 pe-xl-8 gentlemen">
 						<H2>OUR GENTLEMEN</H2>
