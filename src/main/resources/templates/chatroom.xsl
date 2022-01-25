@@ -328,7 +328,7 @@
 											<DIV class="d-none d-lg-block text-xs text-bold">搜尋</DIV>
 										</A>
 									</LI>
-									<!--									<LI class="nav-item d-flex align-items-end">
+									<LI class="nav-item d-flex align-items-end">
 										<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/forum/">
 											<DIV class="d-flex align-items-center">
 												<I class="fas fa-comment-alt-edit fontSize22 width30whenMobile"></I>
@@ -336,7 +336,7 @@
 											</DIV>
 											<DIV class="d-none d-lg-block text-xs text-bold">討論</DIV>
 										</A>
-									</LI>-->
+									</LI>
 									<LI class="nav-item d-flex align-items-end">
 										<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/favorite.asp">
 											<DIV class="d-flex align-items-center">

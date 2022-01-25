@@ -41,6 +41,25 @@ HEADER {
 	overflow-x: hidden;
 }
 
+.modal {
+	overflow-y: auto;
+}
+
+.example {
+	background: #164353;
+	color: #FFF;
+	padding: 3px 7px;
+	width: fit-content;
+	position: absolute;
+	border-radius: 10px;
+	font-size: 0.8rem;
+	top: 18px;
+	left: -130px;
+	right: 0;
+	margin: 0 auto;
+	box-shadow: 3px 3px 5px rgb(0 0 0 / 50%);
+}
+
 .divider {
 	border-bottom: 1px solid #FFFA;
 	width: 100%;

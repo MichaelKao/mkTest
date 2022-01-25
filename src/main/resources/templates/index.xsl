@@ -203,18 +203,26 @@
 													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/kingTop2.jpg" width="150px"/>
 												</DIV>
 												<DIV class="text-white mt-1">獨立專區讓meQUEEN看到您</DIV>
-												<xsl:if test="@relief">
-													<DIV class="bg-light text-dark border-radius-md mt-2 px-2 py-1 m-0">
-														<I class="fad fa-shield-check fontSize22 width30"></I>
-														<SPAN class="ms-1 text-sm">已完成安心認證</SPAN>
-													</DIV>
-												</xsl:if>
-												<xsl:if test="not(@relief)">
-													<BUTTON class="btn btn-light mt-2 px-2 py-1 m-0 reliefBtn" data-bs-target="#cropModal" data-bs-toggle="modal">
-														<I class="fad fa-shield-check fontSize22 width30"></I>
-														<SPAN class="ms-1 text-sm">進行安心認證</SPAN>
-													</BUTTON>
-												</xsl:if>
+												<xsl:choose>
+													<xsl:when test="@relief = 'true'">
+														<DIV class="bg-light text-dark border-radius-md mt-2 px-2 py-1 m-0">
+															<I class="fad fa-shield-check fontSize22 width30"></I>
+															<SPAN class="ms-1 text-sm">已完成安心認證</SPAN>
+														</DIV>
+													</xsl:when>
+													<xsl:when test="@relief = 'false'">
+														<DIV class="bg-light text-dark border-radius-md mt-2 px-2 py-1 m-0">
+															<I class="fad fa-spinner fontSize22 width30"></I>
+															<SPAN class="ms-1 text-sm">管理員審核中</SPAN>
+														</DIV>
+													</xsl:when>
+													<xsl:otherwise>
+														<BUTTON class="btn btn-light mt-2 px-2 py-1 m-0 reliefBtn" data-bs-target="#cropModal" data-bs-toggle="modal">
+															<I class="fad fa-shield-check fontSize22 width30"></I>
+															<SPAN class="ms-1 text-sm">進行安心認證</SPAN>
+														</BUTTON>
+													</xsl:otherwise>
+												</xsl:choose>
 											</DIV>
 											<OL class="flickity-page-dots">
 												<LI class="dot"></LI>
@@ -293,18 +301,26 @@
 													<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/queenTop2.jpg" width="150px"/>
 												</DIV>
 												<DIV class="text-white mt-1">獨立專區讓meKING看到您</DIV>
-												<xsl:if test="@relief">
-													<DIV class="bg-light text-dark border-radius-md mt-2 px-2 py-1 m-0">
-														<I class="fad fa-shield-check fontSize22 width30"></I>
-														<SPAN class="ms-1 text-sm">已完成安心認證</SPAN>
-													</DIV>
-												</xsl:if>
-												<xsl:if test="not(@relief)">
-													<BUTTON class="btn btn-light mt-2 px-2 py-1 m-0 reliefBtn" data-bs-target="#cropModal" data-bs-toggle="modal">
-														<I class="fad fa-shield-check fontSize22 width30"></I>
-														<SPAN class="ms-1 text-sm">進行安心認證</SPAN>
-													</BUTTON>
-												</xsl:if>
+												<xsl:choose>
+													<xsl:when test="@relief = 'true'">
+														<DIV class="bg-light text-dark border-radius-md mt-2 px-2 py-1 m-0">
+															<I class="fad fa-shield-check fontSize22 width30"></I>
+															<SPAN class="ms-1 text-sm">已完成安心認證</SPAN>
+														</DIV>
+													</xsl:when>
+													<xsl:when test="@relief = 'false'">
+														<DIV class="bg-light text-dark border-radius-md mt-2 px-2 py-1 m-0">
+															<I class="fad fa-spinner fontSize22 width30"></I>
+															<SPAN class="ms-1 text-sm">管理員審核中</SPAN>
+														</DIV>
+													</xsl:when>
+													<xsl:otherwise>
+														<BUTTON class="btn btn-light mt-2 px-2 py-1 m-0 reliefBtn" data-bs-target="#cropModal" data-bs-toggle="modal">
+															<I class="fad fa-shield-check fontSize22 width30"></I>
+															<SPAN class="ms-1 text-sm">進行安心認證</SPAN>
+														</BUTTON>
+													</xsl:otherwise>
+												</xsl:choose>
 											</DIV>
 											<OL class="flickity-page-dots">
 												<LI class="dot"></LI>
@@ -359,14 +375,23 @@
 											<I class="fad fa-shield-check fontSize25"></I>
 											<SPAN class="text-primary text-bold">通過安心認證，增加邀約成功率</SPAN>
 										</DIV>
-										<DIV class="text-dark text-sm text-bold mt-2">上傳一張您與證件的自拍吧!</DIV>
-										<DIV class="text-dark text-sm text-bold mb-2">證件與本人需可清楚辨識</DIV>
-										<DIV class="text-dark text-sm my-2">由真人審核，需等待3-5天</DIV>
-										<LABEL class="cursor-pointer">
+										<DIV class="text-dark text-sm text-bold mt-1">上傳一張您與證件的自拍吧!</DIV>
+										<DIV class="text-dark text-sm text-bold">證件與本人需可清楚辨識</DIV>
+										<DIV class="position-relative">
+											<DIV class="example">範例</DIV>
+											<DIV>
+												<IMG src="https://static.youngme.vip/IMAGE/reliefExample.png" width="200"/>
+											</DIV>
+										</DIV>
+										<DIV class="text-dark text-xs my-1">由真人審核，需等待3-5天</DIV>
+										<LABEL class="cursor-pointer mx-0 my-1">
 											<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
 											<I class="fad fa-camera fontSize35 text-primary"></I>
 										</LABEL>
-										<DIV class="text-primary text-sm">照片僅供系統認證使用，不會外流，請安心上傳。</DIV>
+										<DIV class="text-primary text-bold text-xs mb-1">
+											<DIV>照片僅供系統認證使用，</DIV>
+											<DIV>不會外流，請安心上傳。</DIV>
+										</DIV>
 										<DIV class="result"></DIV>
 										<DIV class="progress-wrapper my-3 w-90 mx-auto">
 											<DIV class="progress-info">

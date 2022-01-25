@@ -219,10 +219,11 @@ public class WelcomeController {
 				null
 			);//性别
 
-			if (Objects.nonNull(me.getRelief()) && me.getRelief()) {
+			if (Objects.nonNull(me.getRelief())) {
+				LOGGER.debug("測試{}", me.getRelief());
 				documentElement.setAttribute(
 					"relief",
-					"true"
+					me.getRelief().toString()
 				);//是否通過安心認證
 			}
 
