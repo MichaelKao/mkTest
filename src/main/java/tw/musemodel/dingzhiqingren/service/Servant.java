@@ -159,6 +159,21 @@ public class Servant {
 	public static final String AW_CONVERSION_LABEL = System.getenv("AW_CONVERSION_LABEL");
 
 	/**
+	 * 客服 LINE － 預設(未登入)
+	 */
+	public static final String CUSTOMER_LINE_DEFAULT = System.getenv("CUSTOMER_LINE_DEFAULT");
+
+	/**
+	 * 客服 LINE － meKING(已登入)
+	 */
+	public static final String CUSTOMER_LINE_MALE = System.getenv("CUSTOMER_LINE_MALE");
+
+	/**
+	 * 客服 LINE － meQUEEN(已登入)
+	 */
+	public static final String CUSTOMER_LINE_FEMALE = System.getenv("CUSTOMER_LINE_FEMALE");
+
+	/**
 	 * 1 天的毫秒数
 	 */
 	public static final Integer MILLISECONDS_IN_A_DAY = 86400000;
@@ -719,6 +734,11 @@ public class Servant {
 				null
 			);//有无连动 LINE Notify
 		}
+
+		documentElement.setAttribute(
+			"customerLine",
+			mofo.getGender() ? Servant.CUSTOMER_LINE_MALE : Servant.CUSTOMER_LINE_FEMALE
+		);//客服LINE
 
 		return documentElement;
 	}

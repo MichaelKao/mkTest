@@ -717,7 +717,7 @@
 						<DIV class="inputContainer">
 							<DIV class="textareaBox"></DIV>
 							<DIV class="customerBtnWrap">
-								<A class="customerBtn d-flex align-items-center justify-content-center bg-dark fontSize22 opacity-8 text-white" href="https://line.me/R/ti/p/%40017zadfy">
+								<A class="customerBtn d-flex align-items-center justify-content-center bg-dark fontSize22 opacity-8 text-white" href="{/document/@customerLine}">
 									<I class="fad fa-user-headset"></I>
 								</A>
 							</DIV>

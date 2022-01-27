@@ -180,6 +180,11 @@ public class InPay2Controller {
 			null
 		);
 
+		documentElement.setAttribute(
+			"customerLine",
+			me.getGender() ? Servant.CUSTOMER_LINE_MALE : Servant.CUSTOMER_LINE_FEMALE
+		);//客服LINE
+
 		documentElement.setAttribute("signIn", null);//登入中
 
 		String itemName = jsonObject.

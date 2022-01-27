@@ -344,7 +344,7 @@
 			</NOSCRIPT>
 		</xsl:if>
 		<!-- End Google Tag Manager (noscript) -->
-		<A class="customerFloatBtn d-flex align-items-center justify-content-center position-fixed bg-dark fontSize25 text-white opacity-9 shadow" href="https://line.me/R/ti/p/%40017zadfy">
+		<A class="customerFloatBtn d-flex align-items-center justify-content-center position-fixed bg-dark fontSize25 text-white opacity-9 shadow" href="{/document/@customerLine}">
 			<I class="fad fa-user-headset"/>
 		</A>
 	</xsl:template>

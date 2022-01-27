@@ -218,9 +218,12 @@ public class WelcomeController {
 				me.getGender() ? "male" : "female",
 				null
 			);//性别
+			documentElement.setAttribute(
+				"customerLine",
+				me.getGender() ? Servant.CUSTOMER_LINE_MALE : Servant.CUSTOMER_LINE_FEMALE
+			);//客服LINE
 
 			if (Objects.nonNull(me.getRelief())) {
-				LOGGER.debug("測試{}", me.getRelief());
 				documentElement.setAttribute(
 					"relief",
 					me.getRelief().toString()
@@ -270,6 +273,12 @@ public class WelcomeController {
 			);
 
 		}//if(登入状态下)
+		else {
+			documentElement.setAttribute(
+				"customerLine",
+				Servant.CUSTOMER_LINE_DEFAULT
+			);//客服LINE
+		}//if(未登入状态下)
 
 		ModelAndView modelAndView = new ModelAndView("index");
 		modelAndView.getModelMap().addAttribute(document);
@@ -452,6 +461,11 @@ public class WelcomeController {
 		);
 		documentElement.appendChild(formElement);
 
+		documentElement.setAttribute(
+			"customerLine",
+			Servant.CUSTOMER_LINE_DEFAULT
+		);//客服LINE
+
 		ModelAndView modelAndView = new ModelAndView("activate");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
@@ -564,6 +578,11 @@ public class WelcomeController {
 			locale
 		));
 		formElement.appendChild(shadowElement);
+
+		documentElement.setAttribute(
+			"customerLine",
+			Servant.CUSTOMER_LINE_DEFAULT
+		);//客服LINE
 
 		ModelAndView modelAndView = new ModelAndView("activated");
 		modelAndView.getModelMap().addAttribute(document);
@@ -733,6 +752,11 @@ public class WelcomeController {
 		});
 		formElement.appendChild(countryElement);
 
+		documentElement.setAttribute(
+			"customerLine",
+			Servant.CUSTOMER_LINE_DEFAULT
+		);//客服LINE
+
 		ModelAndView modelAndView = new ModelAndView("reactivate");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
@@ -875,6 +899,11 @@ public class WelcomeController {
 		});
 		formElement.appendChild(countriesElement);
 
+		documentElement.setAttribute(
+			"customerLine",
+			Servant.CUSTOMER_LINE_DEFAULT
+		);//客服LINE
+
 		ModelAndView modelAndView = new ModelAndView("resetPassword");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
@@ -958,6 +987,11 @@ public class WelcomeController {
 		);
 		documentElement.appendChild(formElement);
 		formElement.setAttribute("uri", request.getRequestURI());
+
+		documentElement.setAttribute(
+			"customerLine",
+			Servant.CUSTOMER_LINE_DEFAULT
+		);//客服LINE
 
 		ModelAndView modelAndView = new ModelAndView("resettingPassword");
 		modelAndView.getModelMap().addAttribute(document);
@@ -1080,6 +1114,11 @@ public class WelcomeController {
 		});
 		formElement.appendChild(countryElement);
 
+		documentElement.setAttribute(
+			"customerLine",
+			Servant.CUSTOMER_LINE_DEFAULT
+		);//客服LINE
+
 		ModelAndView modelAndView = new ModelAndView("signIn");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
@@ -1179,6 +1218,11 @@ public class WelcomeController {
 		);
 		formElement.appendChild(genderElement);
 
+		documentElement.setAttribute(
+			"customerLine",
+			Servant.CUSTOMER_LINE_DEFAULT
+		);//客服LINE
+
 		ModelAndView modelAndView = new ModelAndView("signUp");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
@@ -1272,6 +1316,11 @@ public class WelcomeController {
 		Element referralCodeElement = document.createElement("referralCode");
 		referralCodeElement.setTextContent(referralCode);
 		formElement.appendChild(referralCodeElement);
+
+		documentElement.setAttribute(
+			"customerLine",
+			Servant.CUSTOMER_LINE_DEFAULT
+		);//客服LINE
 
 		ModelAndView modelAndView = new ModelAndView("signUp");
 		modelAndView.getModelMap().addAttribute(document);
@@ -2242,49 +2291,6 @@ public class WelcomeController {
 		return modelAndView;
 	}
 
-	@GetMapping(path = "/applePay.asp")
-	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView applePay(Authentication authentication,
-		Locale locale) throws SAXException, IOException, ParserConfigurationException {
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
-		);
-		if (!loverService.isEligible(me)) {
-			//补齐个人资料
-			return Servant.redirectToProfile();
-		}
-		if (!me.getGender()) {
-			//甜心无法充值
-			return Servant.redirectToRoot();
-		}
-
-		Document document = Servant.parseDocument();
-		Element documentElement = servant.documentElement(
-			document,
-			authentication
-		);
-		if (servant.isDevelopment() || servant.isTesting()) {
-			documentElement.setAttribute("development", "true");
-		}
-
-		documentElement.setAttribute("title", messageSource.getMessage(
-			"title.recharge",
-			null,
-			locale
-		));//网页标题
-
-		Plan plan = planRepository.findById((short) 1).get();
-		Element planElement = document.createElement("plan");
-		planElement.setAttribute("id", plan.getId().toString());
-		planElement.setAttribute("points", Short.toString(plan.getPoints()));
-		planElement.setAttribute("amount", Integer.toString(plan.getAmount()));
-		documentElement.appendChild(planElement);
-
-		ModelAndView modelAndView = new ModelAndView("inpay2/testApplePay");
-		modelAndView.getModelMap().addAttribute(document);
-		return modelAndView;
-	}
-
 	/**
 	 * 动态日志。
 	 *
@@ -2967,6 +2973,10 @@ public class WelcomeController {
 		if (servant.isNull(authentication)) {
 			//未登录
 			documentElement = document.getDocumentElement();
+			documentElement.setAttribute(
+				"customerLine",
+				Servant.CUSTOMER_LINE_DEFAULT
+			);//客服LINE
 		} else {
 			//已登录
 			documentElement = servant.documentElement(
@@ -3006,8 +3016,11 @@ public class WelcomeController {
 		Element documentElement;
 		if (servant.isNull(authentication)) {
 			//未登录
-			LOGGER.debug("測試isNull()");
 			documentElement = document.getDocumentElement();
+			documentElement.setAttribute(
+				"customerLine",
+				Servant.CUSTOMER_LINE_DEFAULT
+			);//客服LINE
 		} else {
 			//已登录
 			documentElement = servant.documentElement(
