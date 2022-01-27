@@ -97,7 +97,7 @@
 								<DIV class="col-11">
 									<DIV class="text-xs mb-1">
 										<I class="fas fa-exclamation-circle me-1"></I>
-										<SPAN>生日註冊後不得更改</SPAN>
+										<SPAN>您的生日《註冊後不得更改》</SPAN>
 									</DIV>
 									<DIV class="d-flex justify-content-around align-items-center">
 										<INPUT class="d-none" name="birthday" type="hidden" value=""/>
@@ -123,7 +123,7 @@
 								<DIV class="col-11">
 									<DIV class="text-xs mb-2">
 										<I class="fas fa-exclamation-circle me-1"></I>
-										<SPAN>性別註冊後不得更改</SPAN>
+										<SPAN>您的性別《註冊後不得更改》</SPAN>
 									</DIV>
 									<DIV class="text-center">
 										<UL class="p-0 m-0">
@@ -132,12 +132,14 @@
 												<LABEL class="female" for="female">
 													<IMG src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/meQueen.png" width="75"/>
 												</LABEL>
+												<DIV class="gender">女</DIV>
 											</LI>
 											<LI>
 												<INPUT id="male" name="gender" type="radio" value="true"/>
 												<LABEL class="male" for="male">
 													<IMG src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/meKing.png" width="75"/>
 												</LABEL>
+												<DIV class="gender">男</DIV>
 											</LI>
 										</UL>
 									</DIV>
