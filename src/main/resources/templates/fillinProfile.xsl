@@ -136,6 +136,9 @@
 				<SCRIPT src="/SCRIPT/websocket.js"/>
 			</xsl:if>
 			<xsl:if test="/document/seo/isProductionHost">
+				<IMG id="1000303301_cpa_testing" src="https://ads.trafficjunky.net/tj_ads_pt?a=1000303301&amp;member_id=1003790101&amp;cb=
+					[RANDOM_NUMBER]&amp;cti=[TRANSACTION_UNIQ_ID]&amp;ctv=[VALUE_OF_THE_TRANSACTION]&amp;ctd=[TRANSACTION_DESCRIPTION]"
+				     width="1" height="1" border="0" />
 				<SCRIPT>
 					_lt('send', 'cv', {
 					type: 'Conversion'
