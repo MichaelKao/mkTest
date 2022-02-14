@@ -103,6 +103,20 @@
 					</DIV>
 				</DIV>
 				<DIV class="col-12 col-lg-8 mx-auto activities">
+					<xsl:if test="not(@lineNotify)">
+						<DIV class="d-flex justify-content-center align-items-center my-3 px-2">
+							<DIV>
+								<DIV class="text-bold">
+									<I class="fal fa-bell-plus fontSize22"></I>
+									<SPAN class="ms-2">LINE Notify 通知</SPAN>
+								</DIV>
+								<DIV class="text-xs text-lighter">綁定LINE NOTIFY重要訊息不漏接</DIV>
+							</DIV>
+							<DIV class="ms-auto">
+								<A class="btn btn-round text-lg btn-primary m-0 px-2 py-1" href="/notify-bot.line.me/authorize.asp">綁定</A>
+							</DIV>
+						</DIV>
+					</xsl:if>
 					<INPUT name="nextPage" type="hidden" value="1"/>
 					<xsl:for-each select="history">
 						<DIV class="card card-frame mb-2">
