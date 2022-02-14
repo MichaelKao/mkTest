@@ -4437,7 +4437,7 @@ public class WelcomeController {
 	@PostMapping(path = "/updateInbox.json")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String updateInbox(@RequestParam UUID friend, Authentication authentication,
+	String updateInbox(@RequestParam(required = false) UUID friend, Authentication authentication,
 		Locale locale
 	) {
 		return webSocketService.updateInbox(

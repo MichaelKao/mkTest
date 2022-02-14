@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
 	var self = $('INPUT[name="identifier"]').val();
 	var friend = $('INPUT[name="friendIdentifier"]').val();
 	var hostName = location.hostname;
