@@ -84,7 +84,7 @@ body{
 }
 
 .list{
-        padding-top: 45px;
+        padding-top: 57px;
         background-color: #DDD5;
         box-sizing: border-box;
         display: flex;
@@ -324,18 +324,9 @@ a.guidance:hover {
 }
 
 @media (max-width: 991.9px) {
-        .list {
-                padding-top: 47.7px;
-        }
 	.chatList>.list {
 		padding-top: 8px;
 	}
-}
-
-@media (min-width: 992px){
-        .list {
-                padding-top: 51px;
-        }
 }
 
 @media (max-width: 319px) {

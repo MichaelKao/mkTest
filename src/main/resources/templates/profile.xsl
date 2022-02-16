@@ -29,9 +29,16 @@
 			<LINK href="/STYLE/rateStar.css" rel="stylesheet"/>
 		</HEAD>
 		<BODY>
-			<xsl:call-template name="navbar"/>
+			<xsl:choose>
+				<xsl:when test="@me">
+					<xsl:call-template name="navbar"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="navbarWithoutBottomNav"/>
+				</xsl:otherwise>
+			</xsl:choose>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container py-7 py-md-8">
+			<DIV class="container py-6 py-md-7">
 				<DIV class="col-md-12 col-lg-10 mx-auto mb-2">
 					<DIV class="text-primary text-center text-lg text-bolder d-flex align-items-start">
 						<I class="fad fa-arrow-circle-left fontSize35 cursor-pointer prevPageBtn"></I>

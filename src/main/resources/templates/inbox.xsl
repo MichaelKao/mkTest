@@ -30,8 +30,8 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container col-sm-10 col-md-6 col-lg-5 col-xl-4 mx-auto px-1 px-sm-2 pt-6 pt-md-7 pb-2">
-				<H3 class="text-dark ms-3 mt-4">聊天</H3>
+			<DIV class="container col-sm-10 col-md-6 col-lg-5 col-xl-4 mx-auto px-1 px-sm-2 py-6 py-md-7 pb-2">
+				<H3 class="text-dark ms-3">聊天</H3>
 				<DIV class="justify-content-center mx-0" id="chatList">
 					<INPUT name="nextPage" type="hidden" value="1"/>
 					<INPUT name="gender" type="hidden" value="">

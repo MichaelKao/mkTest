@@ -28,7 +28,7 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container pt-7 pt-md-8">
+			<DIV class="container py-6 py-md-7">
 				<DIV class="text-center mx-sm-5 mx-lg-12 mb-3">
 					<H4>
 						<I class="fad fa-badge-dollar fontSize22 text-dark me-2"></I>

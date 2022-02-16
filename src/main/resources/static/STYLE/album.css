@@ -23,12 +23,6 @@ LABEL {
 	padding: 0;
 }
 
-@media screen and (min-width: 768px) {
-	.container.content {
-		width: 50%;
-	}
-}
-
 .uploadProfileImage {
 	position: absolute;
 	bottom: 2px;

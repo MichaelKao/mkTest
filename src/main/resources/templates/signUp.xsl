@@ -29,7 +29,7 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container pt-7 pb-4">
+			<DIV class="container pt-6 pb-2">
 				<DIV class="text-center mb-3">
 					<DIV>
 						<IMG class="logo" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/bigLOGO.svg" width="125"/>

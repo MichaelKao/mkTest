@@ -37,15 +37,15 @@
 			<xsl:if test="not(@signIn)">
 				<HEADER class="container px-0 mx-auto d-flex align-items-lg-center">
 					<input name="signIn" type="hidden" value="false"/>
-					<DIV class="row pt-5">
-						<DIV class="col-lg-8 p-0">
+					<DIV class="row mobileHeader">
+						<DIV class="col-lg-8 px-0 mobileImg">
 							<IMG class="top1Bg" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/index_TOP1.jpg"/>
 						</DIV>
-						<DIV class="col-lg-4 pt-6 pb-3 px-0 pe-1 d-flex flex-column justify-content-center align-items-center bg-dark position-relative">
+						<DIV class="col-lg-4 px-0 mobileInfo d-flex flex-column justify-content-center align-items-center bg-dark position-relative">
 							<DIV class="d-flex justify-content-center logoDiv">
 								<IMG class="logo" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/LOGO.svg"/>
 							</DIV>
-							<DIV class="d-flex flex-column align-items-center justify-content-center mt-2">
+							<DIV class="d-flex flex-column align-items-center justify-content-center mb-3">
 								<DIV class="text-white text-bold text-lg">
 									<SPAN class="me-3">奢華約會</SPAN>
 									<SPAN>即刻見面</SPAN>
@@ -56,7 +56,7 @@
 								</DIV>
 							</DIV>
 							<DIV class="d-flex justify-content-center">
-								<DIV class="mt-3">
+								<DIV class="mb-3">
 									<A class="btn btn-primary btn-round btn-sm px-5 py-2 mx-2 mb-0 imageShadow" href="/signIn.asp">登入</A>
 									<A class="btn btn-primary btn-round btn-sm px-5 py-2 mx-2 mb-0 imageShadow" href="/signUp.asp" onclick="fbq('track','StartTrial');">註冊</A>
 								</DIV>
@@ -64,7 +64,7 @@
 						</DIV>
 					</DIV>
 				</HEADER>
-				<SECTION class="mt-3 py-4 py-md-6 container meKING hideMe">
+				<SECTION class="py-4 py-md-6 container meKING hideMe">
 					<DIV class="text-right pe-lg-5 pe-xl-8 gentlemen">
 						<H2>OUR GENTLEMEN</H2>
 						<DIV>
@@ -91,7 +91,7 @@
 						</DIV>
 					</DIV>
 				</SECTION>
-				<SECTION class="mt-2 py-4 py-md-6 container meQUEEN hideMe">
+				<SECTION class="py-4 py-md-6 container meQUEEN hideMe">
 					<DIV class="ladies px-2 ms-sm-1 py-1 ms-md-2 ms-lg-6 ms-xl-8 p-xl-5">
 						<H2>OUR LADIES</H2>
 						<DIV>
@@ -413,7 +413,50 @@
 						</DIV>
 					</DIV>
 				</xsl:if>
-				<DIV class="container px-0 px-md-3 pt-6 pt-md-7">
+				<SECTION class="selector text-lg">
+					<UL class="navbar-nav flex-row mobileMode d-flex d-md-none">
+						<xsl:if test="@female">
+							<LI class="nav-item col-3 text-center">
+								<A class="nav-link cursor-pointer vipA mobileModeA" data-type="vip">VIP</A>
+							</LI>
+						</xsl:if>
+						<LI class="nav-item col-4 text-center">
+							<xsl:if test="@female">
+								<xsl:attribute name="class">nav-item col-3 text-center</xsl:attribute>
+							</xsl:if>
+							<A class="nav-link cursor-pointer reliefA mobileModeA" data-type="relief">安心</A>
+						</LI>
+						<LI class="nav-item col-4 text-center">
+							<xsl:if test="@female">
+								<xsl:attribute name="class">nav-item col-3 text-center</xsl:attribute>
+							</xsl:if>
+							<A class="nav-link cursor-pointer activeA mobileModeA" data-type="active">活躍</A>
+						</LI>
+						<LI class="nav-item col-4 text-center">
+							<xsl:if test="@female">
+								<xsl:attribute name="class">nav-item col-3 text-center</xsl:attribute>
+							</xsl:if>
+							<A class="nav-link cursor-pointer registerA mobileModeA" data-type="register">新會員</A>
+						</LI>
+					</UL>
+					<DIV class="ad mt-1 text-center">
+						<xsl:if test="@female">
+							<DIV>
+								<xsl:if test="not(@relief = 'false') and not(@relief = 'true')">
+									<xsl:attribute name="data-bs-target">#cropModal</xsl:attribute>
+									<xsl:attribute name="data-bs-toggle">modal</xsl:attribute>
+								</xsl:if>
+								<IMG src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/f_banner.png"/>
+							</DIV>
+						</xsl:if>
+						<xsl:if test="@male">
+							<A href="/upgrade.asp">
+								<IMG src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/m_banner.png"/>
+							</A>
+						</xsl:if>
+					</DIV>
+				</SECTION>
+				<DIV class="mainContent container px-0 px-md-3 pt-md-7">
 					<INPUT name="gender" type="hidden">
 						<xsl:if test="@male">
 							<xsl:attribute name="value">male</xsl:attribute>
@@ -422,18 +465,6 @@
 							<xsl:attribute name="value">female</xsl:attribute>
 						</xsl:if>
 					</INPUT>
-					<DIV class="text-center my-3">
-						<A class="tutorial text-bold" href="">
-							<xsl:if test="@male">
-								<xsl:attribute name="href">https://medium.com/@me.KING</xsl:attribute>
-							</xsl:if>
-							<xsl:if test="@female">
-								<xsl:attribute name="href">https://medium.com/@meQUEEN</xsl:attribute>
-							</xsl:if>
-							<SPAN>養蜜超詳細教學點擊觀看</SPAN>
-							<I class="fad fa-comment-exclamation fontSize30 ms-1"></I>
-						</A>
-					</DIV>
 					<xsl:if test="@female">
 						<!--貴賓會員區塊-->
 						<ARTICLE class="border-radius-xl shadow-lg p-2 mx-auto mb-3 d-none d-md-block">
@@ -508,33 +539,6 @@
 								</DIV>
 							</DIV>
 						</DIV>
-					</SECTION>
-					<SECTION class="fixed-bottom d-block d-md-none bg-white shadow mx-2 my-1 bottom-1 text-lg">
-						<UL class="navbar-nav flex-row mobileMode">
-							<xsl:if test="@female">
-								<LI class="nav-item col-3 text-center">
-									<A class="nav-link cursor-pointer vipA mobileModeA" data-type="vip">VIP</A>
-								</LI>
-							</xsl:if>
-							<LI class="nav-item col-4 text-center">
-								<xsl:if test="@female">
-									<xsl:attribute name="class">nav-item col-3 text-center</xsl:attribute>
-								</xsl:if>
-								<A class="nav-link cursor-pointer reliefA mobileModeA" data-type="relief">安心</A>
-							</LI>
-							<LI class="nav-item col-4 text-center">
-								<xsl:if test="@female">
-									<xsl:attribute name="class">nav-item col-3 text-center</xsl:attribute>
-								</xsl:if>
-								<A class="nav-link cursor-pointer activeA mobileModeA" data-type="active">活躍</A>
-							</LI>
-							<LI class="nav-item col-4 text-center">
-								<xsl:if test="@female">
-									<xsl:attribute name="class">nav-item col-3 text-center</xsl:attribute>
-								</xsl:if>
-								<A class="nav-link cursor-pointer registerA mobileModeA" data-type="register">新會員</A>
-							</LI>
-						</UL>
 					</SECTION>
 				</DIV>
 				<DIV class="loadingWrap">

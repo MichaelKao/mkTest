@@ -1,7 +1,8 @@
 SECTION.searchArea {
-	border-bottom: 3px solid #164353;
+	border-bottom: 7px solid #164353;
 	padding: 8px;
 	background: #16435322;
+	border-radius: 10px;
 }
 
 .slider.slider-horizontal {

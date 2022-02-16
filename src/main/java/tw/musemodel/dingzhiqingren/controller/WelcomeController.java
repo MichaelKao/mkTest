@@ -320,6 +320,7 @@ public class WelcomeController {
 	@Secured({Servant.ROLE_ADVENTURER})
 	@SuppressWarnings({"UnusedAssignment", "null"})
 	String seeMoreLover(@RequestParam int p,
+		@RequestParam boolean mobile,
 		@RequestParam String type, HttpServletResponse response,
 		Authentication authentication, Locale locale
 	) {
@@ -334,7 +335,7 @@ public class WelcomeController {
 				page = loverService.vipOnTheWall(
 					me,
 					p,
-					PAGE_SIZE_ON_THE_WALL
+					mobile ? 6 : PAGE_SIZE_ON_THE_WALL
 				);//甜心才会显示的贵宾会员列表区块
 				Cookie cookie = new Cookie(
 					"vipPage",
@@ -354,7 +355,7 @@ public class WelcomeController {
 			page = loverService.relievingOnTheWall(
 				me,
 				p,
-				PAGE_SIZE_ON_THE_WALL
+				mobile ? 6 : PAGE_SIZE_ON_THE_WALL
 			);//安心认证列表区块
 			Cookie cookie = new Cookie(
 				"reliefPage",
@@ -373,7 +374,7 @@ public class WelcomeController {
 			page = loverService.latestActiveOnTheWall(
 				me,
 				p,
-				PAGE_SIZE_ON_THE_WALL
+				mobile ? 6 : PAGE_SIZE_ON_THE_WALL
 			);//最近活跃列表区块
 			Cookie cookie = new Cookie(
 				"activePage",
@@ -392,7 +393,7 @@ public class WelcomeController {
 			page = loverService.latestRegisteredOnTheWall(
 				me,
 				p,
-				PAGE_SIZE_ON_THE_WALL
+				mobile ? 6 : PAGE_SIZE_ON_THE_WALL
 			);//最新注册列表区块
 			Cookie cookie = new Cookie(
 				"registerPage",

@@ -13,6 +13,42 @@ BODY {
         background: #F3F3F3;
 }
 
+.bottomNav {
+	position: fixed;
+	bottom: 15px;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	width: 490px;
+	flex-direction: row;
+	background: #fff;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+	border-radius: 50px;
+	justify-content: space-evenly;
+}
+
+@media (max-width: 510px) {
+	.bottomNav {
+		width: 420px;
+	}
+}
+
+@media (max-width: 450px) {
+	.bottomNav {
+		width: 330px;
+	}
+}
+
+@media (max-width: 350px) {
+	.bottomNav {
+		width: 90%;
+	}
+}
+
+.bottomNav .nav-link {
+	padding: 0.4rem;
+}
+
 INPUT, TEXTAREA {
         font-size: initial;
 }
@@ -87,6 +123,7 @@ INPUT, TEXTAREA {
 	right: 8px;
 	border-radius: 50px;
 	z-index: 9999;
+	text-align: center;
 }
 
 @media (max-width: 991.98px){
@@ -100,6 +137,12 @@ INPUT, TEXTAREA {
         }
 }
 
+@media (min-width: 767.98px){
+        .bottomNav {
+		width: 50%;
+	}
+}
+
 .modal-content {
         border: 0;
         opacity: 0.9;
@@ -109,3 +152,6 @@ INPUT, TEXTAREA {
         right: 0;
 }
 
+.bg-default {
+	background-color: #f3f3f3 !important;
+}

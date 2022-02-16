@@ -1,34 +1,117 @@
-.nav-link {
-	padding: 0.4rem 1rem;
+.selector {
+	background: #f3f3f3;
+	position: fixed;
+	top: 57px;
+	left: 0;
+	right: 0;
+	width: 480px;
+	margin: 0 auto;
+	z-index: 1;
 }
 
-.tutorial {
-        animation: Color 4s linear infinite;
-        -webkit-animation: Color 4s ease-in-out infinite;
-        text-shadow: 5px 5px #00000022;
+.mainContent {
+	margin-top: 290px;
 }
 
-@keyframes Color{
-        0%{
-                color: #164353;
-        }
-        100%{
-                color: #CE796B;
-        }
+.infos {
+	width: 235px;
+	height: 235px;
+}
+
+.infos IMG {
+	width: 235px;
+}
+
+@media (min-width: 768px) {
+	.mainContent {
+		margin-top: 225px;
+	}
+	.selector {
+		width: 700px;
+	}
+	.infos {
+		width: 155px;
+		height: 155px;
+	}
+	.infos IMG {
+		width: 155px;
+	}
+}
+
+@media (max-width: 510px) {
+	.mainContent {
+		margin-top: 267px;
+	}
+	.selector {
+		width: 420px;
+	}
+	.infos {
+		width: 200px;
+		height: 200px;
+	}
+	.infos IMG {
+		width: 200px;
+	}
+}
+
+@media (max-width: 450px) {
+	.selector {
+		width: 330px;
+	}
+	.mainContent {
+		margin-top: 235px;
+	}
+	.infos {
+		width: 160px;
+		height: 160px;
+	}
+	.infos IMG {
+		width: 160px;
+	}
+}
+
+@media (max-width: 350px) {
+	.selector {
+		width: 90%;
+	}
+	.mainContent {
+		margin-top: 220px;
+	}
+	.infos {
+		width: 140px;
+		height: 140px;
+	}
+	.infos IMG {
+		width: 140px;
+	}
+}
+
+.selector .nav-link {
+	padding: 0.2rem;
+	margin: 4px;
+}
+
+.selector .mobileMode {
+	background: #d6dcde;
+	border-radius: 5px;
+}
+
+.ad IMG {
+	width: 100%;
+	border-radius: 5px;
+	box-shadow: 2px 2px 5px rgba(0,0,0,0.6);
 }
 
 ARTICLE {
-        width: 686px;
+        width: 700px;
 }
 
-SECTION.fixed-bottom, UL.mobileMode A:first-child {
-        border-radius: 30px;
-}
-
-UL.mobileMode A.active {
+UL.mobileMode LI A.active {
 	background: #164353;
 	color: #FFF;
 	font-weight: bold;
+	border-radius: 5px;
+	box-shadow: 2px 2px 4px rgb(0 0 0 / 40%);
 }
 
 BODY {
@@ -38,7 +121,7 @@ BODY {
 HEADER {
 	height: 100vh;
         height: calc(var(--vh, 1vh) * 100);
-	overflow-x: hidden;
+	overflow: hidden;
 }
 
 .modal {
@@ -247,14 +330,23 @@ a.guidance:hover {
 }
 
 @media (max-width: 767.9px) {
-	.logo {
-		width: 35% !important;
+	.top1Bg {
+		transform: translateY(42px);
 	}
 	.logoDiv {
 		position: absolute;
 		top: -95px;
 		right: 0;
 		left: 0;
+	}
+	.mobileHeader {
+		flex-direction: column;
+	}
+	.mobileImg {
+		flex: 0.8;
+	}
+	.mobileInfo {
+		flex: 1.2;
 	}
 	.embedVideo {
 		margin: 0;
@@ -288,6 +380,9 @@ a.guidance:hover {
 }
 
 @media (max-width: 500px) {
+	.logo {
+		width: 32% !important;
+	}
 	.stepBox {
 		width: 80px;
 		height: 80px;

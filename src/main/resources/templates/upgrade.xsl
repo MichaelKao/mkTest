@@ -30,11 +30,11 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container pt-7 pt-md-8 px-2">
+			<DIV class="container py-6 py-md-7 px-2">
 				<DIV class="text-center mb-3">
 					<A class="tutorial text-bold" href="https://medium.com/@me.KING/%E9%A4%8A%E8%9C%9C%E6%97%85%E7%A8%8B-ep-3%E5%8D%87%E7%B4%9A%E9%82%80%E7%B4%84%E6%95%88%E7%8E%87-a9eec390ddd3">
 						<SPAN class="text-lg">升級您邀約成功率指南</SPAN>
-						<I class="fad fa-comment-exclamation fontSize30 bottom-1 ms-1"></I>
+						<I class="fad fa-comment-exclamation fontSize30 ms-1"></I>
 					</A>
 				</DIV>
 				<DIV class="carousel mb-5 mx-auto col-12 col-md-10 col-xl-8">

@@ -29,37 +29,35 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="page-header section-height-100">
-				<DIV class="container pt-7 pb-4">
-					<DIV class="text-center mb-3">
-						<DIV>
-							<IMG class="logo" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/bigLOGO.svg" width="125"/>
-						</DIV>
-						<DIV class="text-dark my-2">STEP 2 激活帳號</DIV>
-						<SVG viewBox="0 0 228 20" height="20" width="228" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-							<g id="iPhone_12_12_Pro_1" data-name="iPhone 12, 12 Pro – 1" clip-path="url(#clip-iPhone_12_12_Pro_1)">
-								<rect id="Rectangle_1" data-name="Rectangle 1" width="228" height="18" rx="9" transform="translate(0 0)" fill="#154354"></rect>
-								<g id="Ellipse_1" data-name="Ellipse 1" transform="translate(0 0)" fill="#fff" stroke="#62636e" stroke-width="3">
-									<circle cx="9" cy="9" r="9" stroke="none"></circle>
-									<circle cx="9" cy="9" r="7.5" fill="none"></circle>
-								</g>
-								<g id="Ellipse_2" data-name="Ellipse 2" transform="translate(70 0)" fill="#468ca6" stroke="#62636e" stroke-width="3">
-									<circle cx="9" cy="9" r="9" stroke="none"></circle>
-									<circle cx="9" cy="9" r="7.5" fill="none"></circle>
-								</g>
-								<g id="Ellipse_3" data-name="Ellipse 3" transform="translate(140 0)" fill="#fff" stroke="#62636e" stroke-width="3">
-									<circle cx="9" cy="9" r="9" stroke="none"></circle>
-									<circle cx="9" cy="9" r="7.5" fill="none"></circle>
-								</g>
-								<g id="Ellipse_4" data-name="Ellipse 4" transform="translate(210 0)" fill="#fff" stroke="#62636e" stroke-width="3">
-									<circle cx="9" cy="9" r="9" stroke="none"></circle>
-									<circle cx="9" cy="9" r="7.5" fill="none"></circle>
-								</g>
-							</g>
-						</SVG>
+			<DIV class="container pt-6 pb-2">
+				<DIV class="text-center mb-3">
+					<DIV>
+						<IMG class="logo" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/bigLOGO.svg" width="125"/>
 					</DIV>
-					<xsl:apply-templates select="form"/>
+					<DIV class="text-dark my-2">STEP 2 激活帳號</DIV>
+					<SVG viewBox="0 0 228 20" height="20" width="228" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+						<g id="iPhone_12_12_Pro_1" data-name="iPhone 12, 12 Pro – 1" clip-path="url(#clip-iPhone_12_12_Pro_1)">
+							<rect id="Rectangle_1" data-name="Rectangle 1" width="228" height="18" rx="9" transform="translate(0 0)" fill="#154354"></rect>
+							<g id="Ellipse_1" data-name="Ellipse 1" transform="translate(0 0)" fill="#fff" stroke="#62636e" stroke-width="3">
+								<circle cx="9" cy="9" r="9" stroke="none"></circle>
+								<circle cx="9" cy="9" r="7.5" fill="none"></circle>
+							</g>
+							<g id="Ellipse_2" data-name="Ellipse 2" transform="translate(70 0)" fill="#468ca6" stroke="#62636e" stroke-width="3">
+								<circle cx="9" cy="9" r="9" stroke="none"></circle>
+								<circle cx="9" cy="9" r="7.5" fill="none"></circle>
+							</g>
+							<g id="Ellipse_3" data-name="Ellipse 3" transform="translate(140 0)" fill="#fff" stroke="#62636e" stroke-width="3">
+								<circle cx="9" cy="9" r="9" stroke="none"></circle>
+								<circle cx="9" cy="9" r="7.5" fill="none"></circle>
+							</g>
+							<g id="Ellipse_4" data-name="Ellipse 4" transform="translate(210 0)" fill="#fff" stroke="#62636e" stroke-width="3">
+								<circle cx="9" cy="9" r="9" stroke="none"></circle>
+								<circle cx="9" cy="9" r="7.5" fill="none"></circle>
+							</g>
+						</g>
+					</SVG>
 				</DIV>
+				<xsl:apply-templates select="form"/>
 			</DIV>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="/SCRIPT/activate.js"/>

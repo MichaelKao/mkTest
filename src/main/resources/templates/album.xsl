@@ -30,9 +30,9 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container content px-3 pt-7 pt-md-8">
-				<A class="text-primary h2" href="/profile/">
-					<I class="fad fa-arrow-circle-left"></I>
+			<DIV class="container col-12 col-md-8 col-lg-6 px-3 py-6 py-md-7">
+				<A class="text-primary" href="/profile/">
+					<I class="fad fa-arrow-circle-left fontSize35"></I>
 				</A>
 				<ARTICLE class="card p-3 mt-3">
 					<DIV class="mb-3">

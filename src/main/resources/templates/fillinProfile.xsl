@@ -31,7 +31,7 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container pt-7 pt-md-8 pb-3 px-3">
+			<DIV class="container container py-6 py-md-7 px-3">
 				<DIV class="modal fade" id="qrcodeModal">
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">

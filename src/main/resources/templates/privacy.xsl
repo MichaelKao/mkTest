@@ -28,10 +28,10 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container py-8">
-				<DIV class="card col-11 col-md-8 col-lg-7 mx-auto">
-					<DIV class="card-header text-center h3 text-primary">隱私權政策</DIV>
-					<DIV class="card-body">
+			<DIV class="container py-6 py-md-7">
+				<DIV class="col-11 col-md-8 col-lg-7 mx-auto">
+					<H4 class="text-center text-primary">隱私權政策</H4>
+					<DIV>
 						<DIV>養蜜 (youngme.vip) 以下合稱本網站，為確保消費者個資隱私之權益，並遵循中華民國相關法律，訂定此份「隱私權保護政策」，請您詳細閱讀本政策聲明之內容。您使用本網站各項服務時，即代表您無條件同意所有條款、條件及須知。</DIV>
 						<DIV class="text-bold mt-3">一、資料的蒐集</DIV>
 						<DIV>為了提供良好的交友媒合服務，協助會員找到更適合的對象，本網站需要蒐集會員和媒合對象的個人資料，會員將依據本網站的引導，提供會員同意提供的個人資料，會員也同意本網站對所提供的資料進行描繪並向媒合的對象提供資料展示，以協助雙方判斷是否進一步互動或更深的認識彼此。</DIV>
@@ -76,8 +76,8 @@
 						<DIV class="text-bold mt-3">十二、隱私權保護政策諮詢</DIV>
 						<DIV>若您對自己在本網站中的隱私權有任何問題，請與我們聯絡：service@youngme.vip。</DIV>
 					</DIV>
-					<DIV class="text-center">
-						<A href="/signUp.asp" class="btn btn-lg primary-gradient text-white w-80" type="button">開始註冊</A>
+					<DIV class="text-center my-3">
+						<A href="/signUp.asp" class="btn primary-gradient text-white text-bold m-0 w-80 py-2">開始註冊</A>
 					</DIV>
 				</DIV>
 			</DIV>

@@ -28,13 +28,10 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container py-8 text-center">
-				<DIV class="mx-sm-5 mx-lg-12 mb-3">
-					<H4>
-						<I class="fad fa-box-heart fontSize22 text-dark me-2"></I>
-						<SPAN class="text-primary">
-							<xsl:value-of select="@title"/>
-						</SPAN>
+			<DIV class="container mx-auto col-md-10 col-lg-8 px-1 px-sm-2 py-6 py-md-7 pb-2">
+				<DIV class="text-center">
+					<H4 class="text-primary">
+						<xsl:value-of select="@title"/>
 					</H4>
 				</DIV>
 				<DIV class="d-flex flex-wrap justify-content-center mx-0">

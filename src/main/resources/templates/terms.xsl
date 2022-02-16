@@ -28,10 +28,10 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container py-8">
-				<DIV class="card col-11 col-md-8 col-lg-6 mx-auto">
-					<DIV class="card-header text-center h3 text-primary">服務條款</DIV>
-					<DIV class="card-body">
+			<DIV class="container py-6 py-md-7">
+				<DIV class="col-11 col-md-8 col-lg-6 mx-auto">
+					<H4 class="text-center text-primary">服務條款</H4>
+					<DIV>
 						<DIV class="mb-2">1. 使用本網站，即表示您完全同意接受這些條款和條件。如果您不同意這些條款和條件的任何部分，則不得使用本網站。</DIV>
 						<DIV class="mb-2">2. 您必須年滿18歲才能使用此網站，註冊表示您保證年滿18歲。</DIV>
 						<DIV class="mb-2">3. https://youngme.vip/網站上的所有內容和素材屬於我們完全擁有，不可以複製轉發到任何其他地方作為商業用途，也不可以隨意搜集轉賣會員資料。</DIV>
@@ -41,7 +41,7 @@
 						<DIV class="mb-2">7. 用戶內容不得為非法，不得侵犯任何第三方的合法權利。您不得向網站提交任何曾經或曾經遭受任何威脅或實際法律訴訟或其他類似投訴的用戶內容。</DIV>
 					</DIV>
 					<DIV class="text-center">
-						<A href="/signUp.asp" class="btn btn-lg primary-gradient text-white w-80" type="button">開始註冊</A>
+						<A href="/signUp.asp" class="btn primary-gradient text-white text-bold m-0 w-80 py-2">開始註冊</A>
 					</DIV>
 				</DIV>
 			</DIV>

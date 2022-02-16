@@ -29,7 +29,7 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container pt-7 pt-md-8 px-3">
+			<DIV class="container py-6 py-md-7 px-3">
 				<DIV class="modal fade" id="paymentModal" tabindex="-1">
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">

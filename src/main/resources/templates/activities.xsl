@@ -30,7 +30,7 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container pt-7 pt-md-8">
+			<DIV class="container py-6 py-md-7">
 				<H4 class="text-primary text-center">
 					<xsl:value-of select="@title"/>
 				</H4>

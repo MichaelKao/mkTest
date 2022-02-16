@@ -151,8 +151,8 @@
 					</DIV>
 				</DIV>
 			</DIV>
-			<DIV class="wrap px-3 pt-6 pt-md-7 pb-3">
-				<DIV class="mt-4 mx-auto col-md-10 col-lg-8 col-xl-6">
+			<DIV class="wrap px-3 py-6 py-md-7 pb-3">
+				<DIV class="mx-auto col-md-10 col-lg-8 col-xl-6">
 					<BUTTON class="primary-gradient w-30 ms-auto border-radius-xl py-2 m-0 shadow btn btn-link d-flex align-items-center justify-content-center bg-primary text-white" data-bs-target="#addPostModal" data-bs-toggle="modal" type="button">
 						<SPAN class="text-white cursor-pointer position-relative">
 							<I class="fas fa-newspaper fontSize22"></I>
@@ -177,6 +177,7 @@
 					<INPUT name="sort" type="hidden" value="popular"/>
 				</DIV>
 				<DIV class="posts col-md-10 col-lg-8 col-xl-6 mx-auto"></DIV>
+				<xsl:call-template name="footer"/>
 			</DIV>
 			<DIV class="loadingWrap" style="display: none;">
 				<DIV class="loading">
@@ -185,7 +186,6 @@
 					<DIV class="round ms-1"></DIV>
 				</DIV>
 			</DIV>
-			<xsl:call-template name="footer"/>
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.js" integrity="sha512-E4KfIuQAc9ZX6zW1IUJROqxrBqJXPuEcDKP6XesMdu2OV4LW7pj8+gkkyx2y646xEV7yxocPbaTtk2LQIJewXw==" referrerpolicy="no-referrer"/>
 			<SCRIPT src="https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"/>

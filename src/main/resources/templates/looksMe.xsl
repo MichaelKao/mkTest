@@ -28,8 +28,8 @@
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container py-8 text-center">
-				<DIV class="mx-sm-5 mx-lg-12 mb-3">
+			<DIV class="container py-6 py-md-7">
+				<DIV class="text-center">
 					<H4>
 						<I class="fad fa-shoe-prints fontSize22 text-dark me-2"></I>
 						<SPAN class="text-primary">

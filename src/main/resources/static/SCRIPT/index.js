@@ -82,7 +82,7 @@ $(document).ready(function () {
 				'href': 'profile/' + item.identifier + '/'
 			});
 			memberWrap.append(a);
-			$(a).append(`<DIV style="width:152px; height:152px;"><IMG class="border-radius-md" loading="lazy" src="${item.profileImage}" width="152"/></DIV>`);
+			$(a).append(`<DIV class="infos"><IMG class="border-radius-md" loading="lazy" src="${item.profileImage}"/></DIV>`);
 
 			if (vvip || relief) {
 				var badgeDiv = document.createElement('DIV');
@@ -124,7 +124,7 @@ $(document).ready(function () {
 		if (typeof (data.hasPrev) != 'undefined') {
 			var prevBtn = document.createElement('BUTTON');
 			$(prevBtn).attr({
-				'class': 'btn btn-primary btn-round pageBtn mx-1 m-0 px-2 py-1',
+				'class': 'btn btn-primary btn-round pageBtn text-lg mx-1 m-0 px-2 py-1',
 				'data-type': memberType,
 				'data-page': data.hasPrev
 			});
@@ -151,7 +151,8 @@ $(document).ready(function () {
 					'/seeMoreLover.json',
 					{
 						p: p,
-						type: type
+						type: type,
+						mobile: isMobile() ? true : false
 					},
 					(data) => {
 					wrap.empty();
@@ -167,7 +168,7 @@ $(document).ready(function () {
 		if (typeof (data.hasNext) != 'undefined') {
 			var nextBtn = document.createElement('BUTTON');
 			$(nextBtn).attr({
-				'class': 'btn btn-primary btn-round pageBtn mx-1 m-0 px-2 py-1',
+				'class': 'btn btn-primary btn-round pageBtn text-lg mx-1 m-0 px-2 py-1',
 				'data-type': memberType,
 				'data-page': data.hasNext
 			});
@@ -194,7 +195,8 @@ $(document).ready(function () {
 					'/seeMoreLover.json',
 					{
 						p: p,
-						type: type
+						type: type,
+						mobile: isMobile() ? true : false
 					},
 					(data) => {
 					wrap.empty();
@@ -228,7 +230,8 @@ $(document).ready(function () {
 			'/seeMoreLover.json',
 			{
 				p: p,
-				type: type
+				type: type,
+				mobile: true
 			},
 			(data) => {
 			wrap.empty();
@@ -262,7 +265,8 @@ $(document).ready(function () {
 			'/seeMoreLover.json',
 			{
 				p: 0,
-				type: type
+				type: type,
+				mobile: isMobile() ? true : false
 			},
 			(data) => {
 			wrap.empty();
@@ -472,7 +476,7 @@ $(document).ready(function () {
 			var bottom_of_object = $(this).offset().top + $(this).outerHeight();
 			var bottom_of_window = $(window).scrollTop() + $(window).height();
 
-			if (bottom_of_window > bottom_of_object - 100) {
+			if (bottom_of_window > bottom_of_object - 180) {
 				$(this).animate({'opacity': '1'}, 200);
 			}
 		});

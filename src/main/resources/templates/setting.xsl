@@ -24,12 +24,12 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
-			<STYLE>BODY{background: #F3F3F3 !important;} .resultIcon{font-size: 60px;}</STYLE>
+			<STYLE>BODY{background: #F3F3F3 !important;} .resultIcon{font-size: 60px;} i{width:25px;height:25px}</STYLE>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
-			<DIV class="container py-8 px-3">
+			<DIV class="container py-6 py-md-7 px-3">
 				<DIV class="modal fade" id="deleteModal">
 					<DIV class="modal-dialog modal-dialog-centered">
 						<DIV class="modal-content">
@@ -118,7 +118,7 @@
 							<DIV class="d-flex justify-content-center align-items-center">
 								<DIV>
 									<DIV class="text-bold">
-										<I class="fal fa-bell-plus fontSize22"></I>
+										<I class="fal fa-bell-plus text-center fontSize22"></I>
 										<SPAN class="ms-2">LINE Notify 通知</SPAN>
 									</DIV>
 									<DIV class="text-xs text-lighter">綁定LINE NOTIFY</DIV>
@@ -138,7 +138,7 @@
 							<HR class="horizontal dark"/>
 							<DIV class="d-flex justify-content-center align-items-center my-2">
 								<DIV class="text-bold">
-									<I class="fal fa-key fontSize22"></I>
+									<I class="fal fa-key text-center fontSize22"></I>
 									<SPAN class="ms-2">重設密碼</SPAN>
 								</DIV>
 								<DIV class="ms-auto">
@@ -149,7 +149,7 @@
 							<DIV class="d-flex justify-content-center align-items-center my-2">
 								<DIV>
 									<DIV class="text-bold">
-										<I class="fal fa-user-times fontSize22"></I>
+										<I class="fal fa-user-times text-center fontSize22"></I>
 										<SPAN class="ms-2">刪除帳號</SPAN>
 									</DIV>
 									<DIV class="text-xs text-lighter">清空現有帳號，資料將不會保存</DIV>
@@ -162,7 +162,7 @@
 							<DIV class="d-flex justify-content-center align-items-center my-2">
 								<DIV>
 									<DIV class="text-bold">
-										<I class="fal fa-user-slash fontSize22"></I>
+										<I class="fal fa-user-slash text-center fontSize22"></I>
 										<SPAN class="ms-2">封鎖名單</SPAN>
 									</DIV>
 								</DIV>
@@ -190,6 +190,20 @@
 											</DIV>
 										</DIV>
 									</xsl:for-each>
+								</DIV>
+							</DIV>
+							<HR class="horizontal dark"/>
+							<DIV class="d-flex justify-content-center align-items-center my-2">
+								<DIV>
+									<DIV class="text-bold">
+										<I class="fal fa-sign-out text-center fontSize22"></I>
+										<SPAN class="ms-2">登出</SPAN>
+									</DIV>
+								</DIV>
+								<DIV class="ms-auto">
+									<A class="btn btn-sm btn-round btn-primary m-0 px-2 py-1" href="/signOut.asp">
+										<SPAN>登出</SPAN>
+									</A>
 								</DIV>
 							</DIV>
 						</DIV>
