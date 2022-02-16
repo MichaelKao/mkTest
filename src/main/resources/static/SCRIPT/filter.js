@@ -167,16 +167,16 @@ $(document).ready(function () {
 			let locationDiv = document.createElement('DIV');
 			$(infoDiv).append(locationDiv);
 			if (typeof (item.location) != 'undefined') {
-				item.location.forEach(function (item, i, array) {
+				item.location.forEach(function (loc, i, array) {
 					if (i === array.length - 1) {
 						let locationSpan = document.createElement('SPAN');
-						$(locationSpan).html(item.location);
+						$(locationSpan).html(loc);
 						$(locationDiv).append(locationSpan);
 						return;
 					}
 					let locationSpan = document.createElement('SPAN');
 					$(locationSpan).attr('class', 'me-1');
-					$(locationSpan).html(item.location);
+					$(locationSpan).html(loc);
 					$(locationDiv).append(locationSpan);
 				});
 			}

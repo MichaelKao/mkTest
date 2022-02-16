@@ -167,7 +167,7 @@
 									</A>
 								</LI>
 								<xsl:if test="@female">
-									<LI class="nav-item d-flex align-items-end">
+									<LI class="nav-item d-none d-md-flex align-items-end">
 										<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/groupGreeting.asp">
 											<DIV class="d-flex align-items-center">
 												<I class="fad fa-hand-heart fontSize22 width30whenMobile me-1"></I>
@@ -207,7 +207,7 @@
 											<DIV class="d-none d-lg-block text-xs text-bold">儲值</DIV>
 										</A>
 									</LI>
-									<LI class="nav-item d-flex align-items-end">
+									<LI class="nav-item d-none d-md-flex align-items-end">
 										<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/upgrade.asp">
 											<DIV class="d-flex align-items-center">
 												<I class="fad fa-crown fontSize22 width30whenMobile me-1"></I>
@@ -267,13 +267,13 @@
 				</DIV>
 				<xsl:if test="@signIn">
 					<UL class="navbar-nav bottomNav d-md-none">
-						<LI class="nav-item col-3 text-center">
+						<LI class="nav-item text-center">
 							<A class="nav-link cursor-pointer" href="/">
 								<I class="fad fa-home-heart fontSize22"></I>
 								<DIV class="text-xs">養蜜</DIV>
 							</A>
 						</LI>
-						<LI class="nav-item col-3 text-center">
+						<LI class="nav-item text-center">
 							<A class="nav-link cursor-pointer" href="/inbox.asp">
 								<I class="fad fa-comments fontSize22"></I>
 								<SPAN class="text-xs text-light bg-danger border-radius-md ms-n2 position-absolute top-0 inbox" style="display: none;">
@@ -285,18 +285,34 @@
 								<DIV class="text-xs">聊天</DIV>
 							</A>
 						</LI>
-						<LI class="nav-item col-3 text-center">
+						<LI class="nav-item text-center">
 							<A class="nav-link cursor-pointer" href="/favorite.asp">
 								<I class="fad fa-box-heart fontSize22"></I>
 								<DIV class="text-xs">收藏</DIV>
 							</A>
 						</LI>
-						<LI class="nav-item col-3 text-center">
+						<LI class="nav-item text-center">
 							<A class="nav-link cursor-pointer" href="/forum/">
 								<I class="fas fa-comment-alt-edit fontSize22"></I>
 								<DIV class="text-xs">討論區</DIV>
 							</A>
 						</LI>
+						<xsl:if test="@female">
+							<LI class="nav-item text-center">
+								<A class="nav-link cursor-pointer" href="/groupGreeting.asp">
+									<I class="fad fa-hand-heart fontSize22"></I>
+									<DIV class="text-xs">群發</DIV>
+								</A>
+							</LI>
+						</xsl:if>
+						<xsl:if test="@male">
+							<LI class="nav-item text-center">
+								<A class="nav-link cursor-pointer" href="/upgrade.asp">
+									<I class="fad fa-crown fontSize22"></I>
+									<DIV class="text-xs">升級</DIV>
+								</A>
+							</LI>
+						</xsl:if>
 					</UL>
 				</xsl:if>
 			</NAV>
