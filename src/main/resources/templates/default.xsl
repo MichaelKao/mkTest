@@ -107,6 +107,15 @@
 										<DIV class="d-none d-lg-block text-xs text-bold">搜尋</DIV>
 									</A>
 								</LI>
+								<LI class="nav-item d-none d-md-flex align-items-end">
+									<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/">
+										<DIV class="d-flex align-items-center">
+											<I class="fad fa-home-heart fontSize22 width30whenMobile"></I>
+											<SPAN class="d-lg-none">所有養蜜</SPAN>
+										</DIV>
+										<DIV class="d-none d-lg-block text-xs text-bold">養蜜</DIV>
+									</A>
+								</LI>
 								<LI class="nav-item d-none d-lg-flex align-items-end">
 									<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/inbox.asp">
 										<DIV>
@@ -122,18 +131,9 @@
 									</A>
 								</LI>
 								<LI class="nav-item d-none d-md-flex align-items-end">
-									<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/">
-										<DIV class="d-flex align-items-center">
-											<I class="fad fa-home-heart fontSize22 width30whenMobile me-1"></I>
-											<SPAN class="d-lg-none">所有養蜜</SPAN>
-										</DIV>
-										<DIV class="d-none d-lg-block text-xs text-bold">養蜜</DIV>
-									</A>
-								</LI>
-								<LI class="nav-item d-none d-md-flex align-items-end">
 									<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/favorite.asp">
 										<DIV class="d-flex align-items-center">
-											<I class="fad fa-box-heart fontSize22 width30whenMobile me-1"></I>
+											<I class="fad fa-box-heart fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">我的收藏</SPAN>
 										</DIV>
 										<DIV class="d-none d-lg-block text-xs text-bold">收藏</DIV>
@@ -142,7 +142,7 @@
 								<LI class="nav-item d-none d-md-flex align-items-end">
 									<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/forum/">
 										<DIV class="d-flex align-items-center">
-											<I class="fas fa-comment-alt-edit fontSize22 width30whenMobile me-1"></I>
+											<I class="fas fa-comment-alt-edit fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">討論區</SPAN>
 										</DIV>
 										<DIV class="d-none d-lg-block text-xs text-bold">討論</DIV>
@@ -151,7 +151,7 @@
 								<LI class="nav-item d-flex align-items-end">
 									<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/profile/">
 										<DIV class="d-flex align-items-center">
-											<I class="fad fa-user-edit fontSize22 width30whenMobile me-1"></I>
+											<I class="fad fa-user-edit fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">個人檔案</SPAN>
 										</DIV>
 										<DIV class="d-none d-lg-block text-xs text-bold">個人</DIV>
@@ -160,7 +160,7 @@
 								<LI class="nav-item d-flex align-items-end">
 									<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/referralCode.asp">
 										<DIV class="d-flex align-items-center">
-											<I class="fad fa-users-crown fontSize22 width30whenMobile me-1"></I>
+											<I class="fad fa-users-crown fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">好友邀請碼</SPAN>
 										</DIV>
 										<DIV class="d-none d-lg-block text-xs text-bold">邀請</DIV>
@@ -170,7 +170,7 @@
 									<LI class="nav-item d-none d-md-flex align-items-end">
 										<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/groupGreeting.asp">
 											<DIV class="d-flex align-items-center">
-												<I class="fad fa-hand-heart fontSize22 width30whenMobile me-1"></I>
+												<I class="fad fa-hand-heart fontSize22 width30whenMobile"></I>
 												<SPAN class="d-lg-none">群發打招呼</SPAN>
 											</DIV>
 											<DIV class="d-none d-lg-block text-xs text-bold">群發</DIV>
@@ -180,7 +180,7 @@
 								<LI class="nav-item d-flex align-items-end">
 									<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/looksMe.asp">
 										<DIV class="d-flex align-items-center">
-											<I class="fad fa-shoe-prints fontSize22 width30whenMobile me-1"></I>
+											<I class="fad fa-shoe-prints fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">誰看過我</SPAN>
 										</DIV>
 										<DIV class="d-none d-lg-block text-xs text-bold">足跡</DIV>
@@ -190,7 +190,7 @@
 									<LI class="nav-item d-flex align-items-end">
 										<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/withdrawal.asp">
 											<DIV class="d-flex align-items-center">
-												<I class="fad fa-badge-dollar fontSize22 width30whenMobile me-1"></I>
+												<I class="fad fa-badge-dollar fontSize22 width30whenMobile"></I>
 												<SPAN class="d-lg-none">提領ME點</SPAN>
 											</DIV>
 											<DIV class="d-none d-lg-block text-xs text-bold">帳戶</DIV>
@@ -201,7 +201,7 @@
 									<LI class="nav-item d-flex align-items-end">
 										<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/recharge.asp">
 											<DIV class="d-flex align-items-center">
-												<I class="fad fa-badge-dollar fontSize22 width30whenMobile me-1"></I>
+												<I class="fad fa-badge-dollar fontSize22 width30whenMobile"></I>
 												<SPAN class="d-lg-none">購買ME點</SPAN>
 											</DIV>
 											<DIV class="d-none d-lg-block text-xs text-bold">儲值</DIV>
@@ -210,7 +210,7 @@
 									<LI class="nav-item d-none d-md-flex align-items-end">
 										<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/upgrade.asp">
 											<DIV class="d-flex align-items-center">
-												<I class="fad fa-crown fontSize22 width30whenMobile me-1"></I>
+												<I class="fad fa-crown fontSize22 width30whenMobile"></I>
 												<SPAN class="d-lg-none">meKING 升級</SPAN>
 											</DIV>
 											<DIV class="d-none d-lg-block text-xs text-bold">升級</DIV>
@@ -226,7 +226,7 @@
 											<xsl:attribute name="href">https://medium.com/@meQUEEN</xsl:attribute>
 										</xsl:if>
 										<DIV class="d-flex align-items-center">
-											<I class="fad fa-book-open fontSize22 width30whenMobile me-1"></I>
+											<I class="fad fa-book-open fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">觀看教學</SPAN>
 										</DIV>
 										<DIV class="d-none d-lg-block text-xs text-bold">教學</DIV>
@@ -235,7 +235,7 @@
 								<LI class="nav-item d-flex align-items-end">
 									<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/setting.asp">
 										<DIV class="d-flex align-items-center">
-											<I class="fad fa-cog fontSize22 width30whenMobile me-1"></I>
+											<I class="fad fa-cog fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">設定</SPAN>
 										</DIV>
 										<DIV class="d-none d-lg-block text-xs text-bold">設定</DIV>
@@ -246,7 +246,7 @@
 								<LI class="nav-item d-flex align-items-end">
 									<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/signIn.asp">
 										<DIV class="d-flex align-items-center">
-											<I class="fad fa-sign-in fontSize22 width30whenMobile me-1"></I>
+											<I class="fad fa-sign-in fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">登入</SPAN>
 										</DIV>
 										<DIV class="d-none d-lg-block text-xs text-bold">登入</DIV>
@@ -255,7 +255,7 @@
 								<LI class="nav-item d-flex align-items-end">
 									<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/signUp.asp">
 										<DIV class="d-flex align-items-center">
-											<I class="fad fa-user-plus fontSize22 width30whenMobile me-1"></I>
+											<I class="fad fa-user-plus fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">註冊</SPAN>
 										</DIV>
 										<DIV class="d-none d-lg-block text-xs text-bold">註冊</DIV>
@@ -341,15 +341,6 @@
 						<A class="d-lg-none px-1" href="/filter.asp">
 							<I class="fad fa-search fontSize22 text-dark" style="z-index: -1;"></I>
 						</A>
-						<A class="d-lg-none ps-1" href="/inbox.asp">
-							<I class="fad fa-comments fontSize22 text-dark" style="z-index: -1;"/>
-							<SPAN class="text-xs text-light bg-danger border-radius-md ms-n2 inbox" style="display: none;">
-								<xsl:if test="@inbox">
-									<xsl:attribute name="style">display: inline;</xsl:attribute>
-									<xsl:value-of select="@inbox"/>
-								</xsl:if>
-							</SPAN>
-						</A>
 						<BUTTON class="navbar-toggler shadow-none px-1" type="button" data-bs-toggle="collapse" data-bs-target="#navigation">
 							<SPAN class="navbar-toggler-icon mt-2">
 								<SPAN class="navbar-toggler-bar bar1"></SPAN>
@@ -394,7 +385,16 @@
 									<DIV class="d-none d-lg-block text-xs text-bold">搜尋</DIV>
 								</A>
 							</LI>
-							<LI class="nav-item d-none d-lg-flex align-items-end">
+							<LI class="nav-item d-flex align-items-end">
+								<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/">
+									<DIV class="d-flex align-items-center">
+										<I class="fad fa-home-heart fontSize22 width30whenMobile"></I>
+										<SPAN class="d-lg-none">所有養蜜</SPAN>
+									</DIV>
+									<DIV class="d-none d-lg-block text-xs text-bold">養蜜</DIV>
+								</A>
+							</LI>
+							<LI class="nav-item d-flex align-items-end">
 								<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/inbox.asp">
 									<DIV>
 										<I class="fad fa-comments fontSize22"/>
@@ -404,23 +404,15 @@
 												<xsl:value-of select="@inbox"/>
 											</xsl:if>
 										</SPAN>
+										<SPAN class="d-lg-none">聊天訊息</SPAN>
 									</DIV>
 									<DIV class="d-none d-lg-block text-xs text-bold">訊息</DIV>
 								</A>
 							</LI>
 							<LI class="nav-item d-flex align-items-end">
-								<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/">
-									<DIV class="d-flex align-items-center">
-										<I class="fad fa-home-heart fontSize22 width30whenMobile me-1"></I>
-										<SPAN class="d-lg-none">所有養蜜</SPAN>
-									</DIV>
-									<DIV class="d-none d-lg-block text-xs text-bold">養蜜</DIV>
-								</A>
-							</LI>
-							<LI class="nav-item d-flex align-items-end">
 								<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/favorite.asp">
 									<DIV class="d-flex align-items-center">
-										<I class="fad fa-box-heart fontSize22 width30whenMobile me-1"></I>
+										<I class="fad fa-box-heart fontSize22 width30whenMobile"></I>
 										<SPAN class="d-lg-none">我的收藏</SPAN>
 									</DIV>
 									<DIV class="d-none d-lg-block text-xs text-bold">收藏</DIV>
@@ -429,7 +421,7 @@
 							<LI class="nav-item d-flex align-items-end">
 								<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/forum/">
 									<DIV class="d-flex align-items-center">
-										<I class="fas fa-comment-alt-edit fontSize22 width30whenMobile me-1"></I>
+										<I class="fas fa-comment-alt-edit fontSize22 width30whenMobile"></I>
 										<SPAN class="d-lg-none">討論區</SPAN>
 									</DIV>
 									<DIV class="d-none d-lg-block text-xs text-bold">討論</DIV>
@@ -438,7 +430,7 @@
 							<LI class="nav-item d-flex align-items-end">
 								<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/profile/">
 									<DIV class="d-flex align-items-center">
-										<I class="fad fa-user-edit fontSize22 width30whenMobile me-1"></I>
+										<I class="fad fa-user-edit fontSize22 width30whenMobile"></I>
 										<SPAN class="d-lg-none">個人檔案</SPAN>
 									</DIV>
 									<DIV class="d-none d-lg-block text-xs text-bold">個人</DIV>
@@ -447,7 +439,7 @@
 							<LI class="nav-item d-flex align-items-end">
 								<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/referralCode.asp">
 									<DIV class="d-flex align-items-center">
-										<I class="fad fa-users-crown fontSize22 width30whenMobile me-1"></I>
+										<I class="fad fa-users-crown fontSize22 width30whenMobile"></I>
 										<SPAN class="d-lg-none">好友邀請碼</SPAN>
 									</DIV>
 									<DIV class="d-none d-lg-block text-xs text-bold">邀請</DIV>
@@ -457,7 +449,7 @@
 								<LI class="nav-item d-flex align-items-end">
 									<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/groupGreeting.asp">
 										<DIV class="d-flex align-items-center">
-											<I class="fad fa-hand-heart fontSize22 width30whenMobile me-1"></I>
+											<I class="fad fa-hand-heart fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">群發打招呼</SPAN>
 										</DIV>
 										<DIV class="d-none d-lg-block text-xs text-bold">群發</DIV>
@@ -467,7 +459,7 @@
 							<LI class="nav-item d-flex align-items-end">
 								<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/looksMe.asp">
 									<DIV class="d-flex align-items-center">
-										<I class="fad fa-shoe-prints fontSize22 width30whenMobile me-1"></I>
+										<I class="fad fa-shoe-prints fontSize22 width30whenMobile"></I>
 										<SPAN class="d-lg-none">誰看過我</SPAN>
 									</DIV>
 									<DIV class="d-none d-lg-block text-xs text-bold">足跡</DIV>
@@ -477,7 +469,7 @@
 								<LI class="nav-item d-flex align-items-end">
 									<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/withdrawal.asp">
 										<DIV class="d-flex align-items-center">
-											<I class="fad fa-badge-dollar fontSize22 width30whenMobile me-1"></I>
+											<I class="fad fa-badge-dollar fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">提領ME點</SPAN>
 										</DIV>
 										<DIV class="d-none d-lg-block text-xs text-bold">帳戶</DIV>
@@ -488,7 +480,7 @@
 								<LI class="nav-item d-flex align-items-end">
 									<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/recharge.asp">
 										<DIV class="d-flex align-items-center">
-											<I class="fad fa-badge-dollar fontSize22 width30whenMobile me-1"></I>
+											<I class="fad fa-badge-dollar fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">購買ME點</SPAN>
 										</DIV>
 										<DIV class="d-none d-lg-block text-xs text-bold">儲值</DIV>
@@ -497,7 +489,7 @@
 								<LI class="nav-item d-flex align-items-end">
 									<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/upgrade.asp">
 										<DIV class="d-flex align-items-center">
-											<I class="fad fa-crown fontSize22 width30whenMobile me-1"></I>
+											<I class="fad fa-crown fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">meKING 升級</SPAN>
 										</DIV>
 										<DIV class="d-none d-lg-block text-xs text-bold">升級</DIV>
@@ -513,7 +505,7 @@
 										<xsl:attribute name="href">https://medium.com/@meQUEEN</xsl:attribute>
 									</xsl:if>
 									<DIV class="d-flex align-items-center">
-										<I class="fad fa-book-open fontSize22 width30whenMobile me-1"></I>
+										<I class="fad fa-book-open fontSize22 width30whenMobile"></I>
 										<SPAN class="d-lg-none">觀看教學</SPAN>
 									</DIV>
 									<DIV class="d-none d-lg-block text-xs text-bold">教學</DIV>
@@ -522,7 +514,7 @@
 							<LI class="nav-item d-flex align-items-end">
 								<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/setting.asp">
 									<DIV class="d-flex align-items-center">
-										<I class="fad fa-cog fontSize22 width30whenMobile me-1"></I>
+										<I class="fad fa-cog fontSize22 width30whenMobile"></I>
 										<SPAN class="d-lg-none">設定</SPAN>
 									</DIV>
 									<DIV class="d-none d-lg-block text-xs text-bold">設定</DIV>
