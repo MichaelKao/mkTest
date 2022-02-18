@@ -396,8 +396,8 @@
 							</LI>
 							<LI class="nav-item d-flex align-items-end">
 								<A class="nav-link nav-link-icon p-2 p-lg-1 me-3 d-flex flex-column align-items-center" href="/inbox.asp">
-									<DIV>
-										<I class="fad fa-comments fontSize22"/>
+									<DIV class="d-flex align-items-center">
+										<I class="fad fa-comments fontSize22 width30whenMobile"/>
 										<SPAN class="text-xs text-light bg-danger border-radius-md ms-n1 inbox" style="display: none;">
 											<xsl:if test="@inbox">
 												<xsl:attribute name="style">display: inline;</xsl:attribute>
@@ -551,7 +551,7 @@
 		<LINK href="/ICON/apple-touch-icon-180x180.png" rel="apple-touch-icon" sizes="180x180"/>
 		<LINK href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet"/>
 		<LINK href="/STYLE/soft-design-system.css" rel="stylesheet"/>
-		<LINK href="/STYLE/default.css" rel="stylesheet"/>
+		<LINK href="/STYLE/default.css?v=20220218" rel="stylesheet"/>
 		<!--Google Ads-->
 		<SCRIPT async="" src="https://www.googletagmanager.com/gtag/js?id={/document/seo/googleAds/@id}"/>
 		<SCRIPT>

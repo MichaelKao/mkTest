@@ -28,7 +28,7 @@
 			<LINK href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@600" rel="stylesheet"/>
 			<LINK href="https://npmcdn.com/flickity@2/dist/flickity.css" rel="stylesheet"/>
 			<LINK crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.css" integrity="sha512-Aix44jXZerxlqPbbSLJ03lEsUch9H/CmnNfWxShD6vJBbboR+rPdDXmKN+/QjISWT80D4wMjtM4Kx7+xkLVywQ==" referrerpolicy="no-referrer" rel="stylesheet"/>
-			<LINK href="/STYLE/index.css" rel="stylesheet"/>
+			<LINK href="/STYLE/index.css?v=20220218" rel="stylesheet"/>
 			<LINK href="/STYLE/loading.css" rel="stylesheet"/>
 		</HEAD>
 		<BODY class="pb-6">
@@ -553,7 +553,7 @@
 			<xsl:call-template name="bodyScriptTags"/>
 			<SCRIPT src="https://npmcdn.com/flickity@2/dist/flickity.pkgd.js"/>
 			<SCRIPT crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.js" integrity="sha512-E4KfIuQAc9ZX6zW1IUJROqxrBqJXPuEcDKP6XesMdu2OV4LW7pj8+gkkyx2y646xEV7yxocPbaTtk2LQIJewXw==" referrerpolicy="no-referrer"/>
-			<SCRIPT src="/SCRIPT/index.js"/>
+			<SCRIPT src="/SCRIPT/index.js?v=20220218"/>
 			<xsl:choose>
 				<xsl:when test="@signIn">
 					<SCRIPT><![CDATA[fbq('track', 'memberspageview');]]></SCRIPT>
