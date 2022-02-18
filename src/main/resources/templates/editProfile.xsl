@@ -115,7 +115,7 @@
 		</BODY>
 	</xsl:template>
 	<xsl:template match="lover">
-		<FORM action="/me.asp" method="post">
+		<FORM action="/me.asp" class="editProfile" method="post">
 			<DIV class="card-body row pt-1 px-3">
 				<DIV class="col-12 col-lg-6">
 					<DIV class="form-group">

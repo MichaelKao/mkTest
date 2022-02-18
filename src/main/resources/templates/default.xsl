@@ -193,7 +193,7 @@
 												<I class="fad fa-badge-dollar fontSize22 width30whenMobile"></I>
 												<SPAN class="d-lg-none">提領ME點</SPAN>
 											</DIV>
-											<DIV class="d-none d-lg-block text-xs text-bold">帳戶</DIV>
+											<DIV class="d-none d-lg-block text-xs text-bold">提領</DIV>
 										</A>
 									</LI>
 								</xsl:if>
@@ -472,7 +472,7 @@
 											<I class="fad fa-badge-dollar fontSize22 width30whenMobile"></I>
 											<SPAN class="d-lg-none">提領ME點</SPAN>
 										</DIV>
-										<DIV class="d-none d-lg-block text-xs text-bold">帳戶</DIV>
+										<DIV class="d-none d-lg-block text-xs text-bold">提領</DIV>
 									</A>
 								</LI>
 							</xsl:if>

@@ -188,4 +188,8 @@ $(document).ready(function () {
 			'json'
 			);
 	}
+
+	$('.back').click(function () {
+		window.history.back();
+	})
 });
