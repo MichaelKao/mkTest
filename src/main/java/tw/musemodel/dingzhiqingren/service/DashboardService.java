@@ -1,7 +1,11 @@
 package tw.musemodel.dingzhiqingren.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,7 +15,15 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
+import lombok.Data;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -24,6 +36,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -109,6 +122,53 @@ public class DashboardService {
 
 	@Autowired
 	private UsedTrialCodeRepository usedTrialCodeRepository;
+
+	/**
+	 * 出入金(储值、提领成功)财务报表
+	 */
+	@Data
+	public static class FinancialStatementOfDepositAndWithdrawal {
+
+		/**
+		 * 昵称
+		 */
+		private String nickname;
+
+		/**
+		 * 帐号(手机号)
+		 */
+		private String login;
+
+		/**
+		 * 时戳
+		 */
+		private Date timestamp;
+
+		/**
+		 * 储值点数
+		 */
+		private Short deposit;
+
+		/**
+		 * 提领成功点数
+		 */
+		private Short withdrawal;
+
+		/**
+		 * 默认构造函数
+		 */
+		public FinancialStatementOfDepositAndWithdrawal() {
+		}
+
+		@Override
+		public String toString() {
+			try {
+				return new JsonMapper().writeValueAsString(this);
+			} catch (JsonProcessingException ignore) {
+				return Objects.isNull(login) ? "null" : login;
+			}
+		}
+	}
 
 	/**
 	 * 构建根元素。
@@ -585,12 +645,12 @@ public class DashboardService {
 				"name",
 				applicant.getNickname()
 			);
-			
+
 			pendingElement.setAttribute(
 				"email",
 				stopRecurringPaymentApplication.getEmail().toString()
 			);
-			
+
 			pendingElement.setAttribute(
 				"lastFourDigits",
 				stopRecurringPaymentApplication.getLastFourDigits().toString()

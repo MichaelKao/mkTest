@@ -3,6 +3,8 @@ package tw.musemodel.dingzhiqingren.controller;
 import com.beust.jcommander.internal.Lists;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -81,6 +83,9 @@ public class DashboardController {
 
 	@Autowired
 	private WebSocketServer webSocketServer;
+
+	@Autowired
+	private HistoryService historyService;
 
 	@Autowired
 	private LoverService loverService;
@@ -1520,5 +1525,111 @@ public class DashboardController {
 		return dashboardService.searchVip(
 			vipType, lover, authentication, Locale.TAIWAN
 		).toString();
+	}
+
+	/**
+	 * 出入金(储值、提领成功)财务报表
+	 *
+	 * @param response 响应
+	 * @throws IOException 输出入异常例外
+	 */
+	@GetMapping(path = "/financialStatementOfDepositAndWithdrawal.xls")
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	void financialStatementOfDepositAndWithdrawal(HttpServletResponse response) throws IOException {
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		Sheet sheet = workbook.createSheet();
+		Row firstRow = sheet.createRow(0);
+		firstRow.createCell(0, CellType.STRING).setCellValue("暱稱");
+		firstRow.createCell(1, CellType.STRING).setCellValue("帳號");
+		firstRow.createCell(2, CellType.STRING).setCellValue("日期時間");
+		firstRow.createCell(3, CellType.STRING).setCellValue("儲值");
+		firstRow.createCell(4, CellType.STRING).setCellValue("提領");
+		sheet.createFreezePane(0, 1);
+
+		CellStyle cellStyleDateTime = workbook.createCellStyle();
+		cellStyleDateTime.setDataFormat(workbook.
+			getCreationHelper().
+			createDataFormat().
+			getFormat("yyyy/m/d hh:mm:ss")
+		);//格式化时戳(年月日时分秒)
+
+		int rowNumber = 1;
+		for (DashboardService.FinancialStatementOfDepositAndWithdrawal financialStatement : historyService.financialStatementOfDepositAndWithdrawal()) {
+			Row row = sheet.createRow(rowNumber);
+
+			//昵称
+			row.createCell(
+				0,
+				CellType.STRING
+			).setCellValue(
+				financialStatement.getNickname()
+			);
+
+			//女神主键
+			row.createCell(
+				1,
+				CellType.STRING
+			).setCellValue(
+				financialStatement.getLogin()
+			);
+
+			//时戳
+			Cell cell = row.createCell(
+				2,
+				CellType.STRING
+			);
+			cell.setCellStyle(cellStyleDateTime);
+			cell.setCellValue(
+				DateTimeFormatter.
+					ofPattern("yyyy-MM-dd HH:mm:ss").
+					format(
+						Servant.toTaipeiZonedDateTime(
+							financialStatement.getTimestamp()
+						)
+					)
+			);
+
+			//储值
+			Short deposit = financialStatement.getDeposit();
+			if (Objects.nonNull(deposit)) {
+				row.createCell(
+					3,
+					CellType.STRING
+				).setCellValue(
+					deposit.toString()
+				);
+			}
+
+			//提领
+			Short withdrawal = financialStatement.getWithdrawal();
+			if (Objects.nonNull(withdrawal)) {
+				row.createCell(
+					4,
+					CellType.STRING
+				).setCellValue(
+					withdrawal.toString()
+				);
+			}
+
+			++rowNumber;
+		}//for
+
+		OutputStream outputStream = response.getOutputStream();
+		response.setHeader("Content-Type", "application/vnd.ms-excel");
+		response.setHeader(
+			"Content-Disposition",
+			String.format(
+				"attachment; filename=\"YM_Financial@%s.xls\"",
+				new SimpleDateFormat("yyyyMMddHHmmss").format(
+					new Date(
+						System.currentTimeMillis()
+					)
+				)
+			)
+		);
+		workbook.write(outputStream);
+		outputStream.close();
+
+		workbook.close();
 	}
 }

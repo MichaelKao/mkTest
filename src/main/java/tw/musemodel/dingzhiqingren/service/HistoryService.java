@@ -17,7 +17,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -58,7 +57,7 @@ import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.FollowRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
-import tw.musemodel.dingzhiqingren.repository.LoverRepository;
+import tw.musemodel.dingzhiqingren.service.DashboardService.FinancialStatementOfDepositAndWithdrawal;
 import tw.musemodel.dingzhiqingren.specification.HistorySpecification;
 
 /**
@@ -74,9 +73,6 @@ public class HistoryService {
 	private final static Short COST_GIMME_YOUR_LINE_INVITATION = Short.valueOf(System.getenv("COST_GIMME_YOUR_LINE_INVITATION"));
 
 	private final static long VIP_DAILY_TOLERANCE = 30L;
-
-	@Autowired
-	private Servant servant;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -103,9 +99,6 @@ public class HistoryService {
 	private LineGivenRepository lineGivenRepository;
 
 	@Autowired
-	private LoverRepository loverRepository;
-
-	@Autowired
 	private WebSocketService webSocketService;
 
 	@Value("classpath:sql/通知.sql")
@@ -116,10 +109,6 @@ public class HistoryService {
 
 	@Value("classpath:sql/两用户之间的对话.sql")
 	private Resource latestPageableConversationsWithSomeone;
-
-	@Deprecated
-	@Value("classpath:sql/与其它用户近期的对话.sql")
-	private Resource latestConversationsResource;
 
 	@Value("classpath:sql/与某咪郎最近的对话.sql")
 	private Resource latestConversationResource;
@@ -419,89 +408,6 @@ public class HistoryService {
 		} catch (IOException ignore) {
 			return null;
 		}
-	}
-
-	/**
-	 * 与其它用户近期的对话。
-	 *
-	 * @deprecated
-	 * @param mofo 用户号
-	 * @return 对话
-	 */
-	@Transactional(readOnly = true)
-	public List<History> latestConversations(Lover mofo) {
-		int id = mofo.getId();
-		List<Dialogist> candidates = jdbcTemplate.query(
-			(Connection connection) -> {
-				StringBuilder stringBuilder = new StringBuilder();
-				BEHAVIORS_OF_CONVERSATIONS.forEach(behavior -> {
-					stringBuilder.append(String.format(
-						"'%s',",
-						behavior.toString()
-					));
-				});
-				final String CONVERSATIONAL_BEHAVIORS = stringBuilder.
-					toString().
-					replaceAll(
-						",$",
-						""
-					);
-
-				PreparedStatement preparedStatement;
-				try {
-					preparedStatement = connection.prepareStatement(
-						String.format(
-							FileCopyUtils.copyToString(
-								new InputStreamReader(
-									latestConversationsResource.getInputStream(),
-									Servant.UTF_8
-								)
-							),
-							CONVERSATIONAL_BEHAVIORS,
-							CONVERSATIONAL_BEHAVIORS
-						)
-					);
-					preparedStatement.setInt(1, id);
-					preparedStatement.setInt(2, id);
-					return preparedStatement;
-				} catch (IOException ignore) {
-					return null;
-				}
-			},
-			(ResultSet resultSet, int rowNum) -> {
-				return new Dialogist(
-					resultSet.getInt("zhu_dong_de"),
-					resultSet.getInt("bei_dong_de")
-				);
-			}
-		);
-
-		List<Dialogist> dialogists = new ArrayList<>();
-		Iterator<Dialogist> iterator = candidates.iterator();
-		while (iterator.hasNext()) {
-			Dialogist candidate = iterator.next(),
-				dialogist = new Dialogist(
-					candidate.getPassive(),
-					candidate.getInitiative()
-				);
-			if (!dialogists.contains(candidate) && !dialogists.contains(dialogist)) {
-				dialogists.add(candidate);
-			}
-		}
-
-		List<History> histories = new ArrayList<>();
-		dialogists.forEach(dialogist -> {
-			histories.add(historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorInOrderByOccurredDesc(
-				loverRepository.
-					findById(dialogist.getInitiative()).
-					orElseThrow(),
-				loverRepository.
-					findById(dialogist.getPassive()).
-					orElseThrow(),
-				BEHAVIORS_OF_CONVERSATIONS
-			));
-		});
-		return histories;
 	}
 
 	/**
@@ -1930,6 +1836,7 @@ public class HistoryService {
 	 * @param friend
 	 * @return
 	 */
+	@SuppressWarnings("UnusedAssignment")
 	public List<String> friendStatus(Lover me, Lover friend) {
 		List<String> friendStatus = new ArrayList<>();
 
@@ -2001,6 +1908,7 @@ public class HistoryService {
 	 * @param friend
 	 * @return
 	 */
+	@SuppressWarnings("UnusedAssignment")
 	public String chatStatus(Lover me, Lover friend) {
 
 		String chatStatus = null;
@@ -2068,5 +1976,59 @@ public class HistoryService {
 			}
 		}
 		return chatStatus;
+	}
+
+	/**
+	 * 出入金(储值、提领成功)，财务报表用❗️
+	 *
+	 * @return 出入金(储值、提领成功)财务报表们
+	 */
+	@Transactional(readOnly = true)
+	public List<FinancialStatementOfDepositAndWithdrawal> financialStatementOfDepositAndWithdrawal() {
+		List<FinancialStatementOfDepositAndWithdrawal> financialStatements = new ArrayList<>();
+
+		List<Behavior> behaviors = new ArrayList<>();
+		behaviors.add(BEHAVIOR_CHARGED);
+		behaviors.add(BEHAVIOR_WITHDRAWAL_SUCCESS);
+
+		for (History history : historyRepository.findByBehaviorInOrderByOccurredDesc(behaviors)) {
+			Lover initiative = history.getInitiative();
+			Behavior behavior = history.getBehavior();
+			short points = history.getPoints();
+
+			FinancialStatementOfDepositAndWithdrawal financialStatement = new FinancialStatementOfDepositAndWithdrawal();
+			financialStatement.setTimestamp(
+				history.getOccurred()
+			);
+			financialStatement.setNickname(
+				initiative.getNickname()
+			);
+			financialStatement.setLogin(
+				initiative.getLogin()
+			);
+
+			/*
+			 储值点数
+			 */
+			if (Objects.equals(BEHAVIOR_CHARGED, behavior)) {
+				financialStatement.setDeposit(
+					points
+				);
+
+				financialStatements.add(financialStatement);
+			}
+
+			/*
+			 提领成功
+			 */
+			if (Objects.equals(BEHAVIOR_WITHDRAWAL_SUCCESS, behavior)) {
+				financialStatement.setWithdrawal(
+					points
+				);
+
+				financialStatements.add(financialStatement);
+			}
+		}//for
+		return financialStatements;
 	}
 }

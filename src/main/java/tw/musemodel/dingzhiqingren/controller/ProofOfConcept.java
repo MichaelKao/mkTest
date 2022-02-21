@@ -4,6 +4,9 @@ import com.jhlabs.image.OilFilter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,13 +14,19 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
@@ -36,8 +45,7 @@ import tw.musemodel.dingzhiqingren.entity.Lover;
 import tw.musemodel.dingzhiqingren.model.Activity;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LoverRepository;
-import tw.musemodel.dingzhiqingren.repository.StopRecurringPaymentApplicationRepository;
-import tw.musemodel.dingzhiqingren.service.DashboardService;
+import tw.musemodel.dingzhiqingren.service.DashboardService.FinancialStatementOfDepositAndWithdrawal;
 import tw.musemodel.dingzhiqingren.service.HistoryService;
 import tw.musemodel.dingzhiqingren.service.LineMessagingService;
 import tw.musemodel.dingzhiqingren.service.LoverService;
@@ -78,14 +86,6 @@ public class ProofOfConcept {
 
 	@Autowired
 	private LoverRepository loverRepository;
-
-	@Autowired
-	private StopRecurringPaymentApplicationRepository stopRecurringPaymentApplicationRepository;
-
-	@Autowired
-	private MessageSource messageSource;
-	@Autowired
-	private DashboardService dashboardService;
 
 	@GetMapping(path = "/isDevelopment", produces = MediaType.TEXT_PLAIN_VALUE)
 	@ResponseBody
@@ -160,14 +160,6 @@ public class ProofOfConcept {
 		return historyService.activities(
 			lover,
 			PageRequest.of(0, 10)
-		);
-	}
-
-	@GetMapping(path = "/inbox/{lover:\\d+}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	List<History> inbox(@PathVariable Lover lover) {
-		return historyService.latestConversations(
-			lover
 		);
 	}
 
@@ -341,5 +333,100 @@ public class ProofOfConcept {
 	) {
 		//確認帳號是否存在
 		return loverService.checkPassword(login, shadow, locale).toString();
+	}
+
+	@GetMapping(path = "/financialStatementOfDepositAndWithdrawal.xls")
+	void financialStatementOfDepositAndWithdrawal(HttpServletResponse response) throws IOException {
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		Sheet sheet = workbook.createSheet();
+		Row firstRow = sheet.createRow(0);
+		firstRow.createCell(0, CellType.STRING).setCellValue("暱稱");
+		firstRow.createCell(1, CellType.STRING).setCellValue("帳號");
+		firstRow.createCell(2, CellType.STRING).setCellValue("日期時間");
+		firstRow.createCell(3, CellType.STRING).setCellValue("儲值");
+		firstRow.createCell(4, CellType.STRING).setCellValue("提領");
+		sheet.createFreezePane(0, 1);
+
+		CellStyle cellStyleDateTime = workbook.createCellStyle();
+		cellStyleDateTime.setDataFormat(workbook.
+			getCreationHelper().
+			createDataFormat().
+			getFormat("yyyy/m/d hh:mm:ss")
+		);//格式化时戳(年月日时分秒)
+
+		int rowNumber = 1;
+		for (FinancialStatementOfDepositAndWithdrawal financialStatement : historyService.financialStatementOfDepositAndWithdrawal()) {
+			Row row = sheet.createRow(rowNumber);
+
+			//昵称
+			row.createCell(
+				0,
+				CellType.STRING
+			).setCellValue(
+				financialStatement.getNickname()
+			);
+
+			//女神主键
+			row.createCell(
+				1,
+				CellType.STRING
+			).setCellValue(
+				financialStatement.getLogin()
+			);
+
+			//时戳
+			Cell cell = row.createCell(
+				2,
+				CellType.STRING
+			);
+			cell.setCellStyle(cellStyleDateTime);
+			cell.setCellValue(
+				DateTimeFormatter.
+					ofPattern("yyyy-MM-dd HH:mm:ss").
+					format(
+						Servant.toTaipeiZonedDateTime(
+							financialStatement.getTimestamp()
+						)
+					)
+			);
+
+			//储值
+			Short deposit = financialStatement.getDeposit();
+			if (Objects.nonNull(deposit)) {
+				row.createCell(
+					3,
+					CellType.STRING
+				).setCellValue(
+					deposit.toString()
+				);
+			}
+
+			//提领
+			Short withdrawal = financialStatement.getWithdrawal();
+			if (Objects.nonNull(withdrawal)) {
+				row.createCell(
+					4,
+					CellType.STRING
+				).setCellValue(
+					withdrawal.toString()
+				);
+			}
+
+			++rowNumber;
+		}//for
+
+		OutputStream outputStream = response.getOutputStream();
+		response.setHeader("Content-Type", "application/vnd.ms-excel");
+		response.setHeader(
+			"Content-Disposition",
+			String.format(
+				"attachment; filename=\"YM_Financial@%s.xls\"",
+				new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System.currentTimeMillis()))
+			)
+		);
+		workbook.write(outputStream);
+		outputStream.close();
+
+		workbook.close();
 	}
 }
