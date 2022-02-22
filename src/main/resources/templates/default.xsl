@@ -789,11 +789,19 @@
 						</A>
 					</LI>
 					<LI class="nav-item">
-						<A class="nav-link" href="/dashboard/financialStatementOfDepositAndWithdrawal.xls">
+						<A class="nav-link" href="/dashboard/financialStatementOfDeposit.xls">
 							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
 								<I class="fal fa-file-chart-line text-lg text-dark"/>
 							</DIV>
-							<SPAN class="nav-link-text ms-1">下載財務報表</SPAN>
+							<SPAN class="nav-link-text ms-1">下載儲值報表</SPAN>
+						</A>
+					</LI>
+					<LI class="nav-item">
+						<A class="nav-link" href="/dashboard/financialStatementOfWithdrawal.xls">
+							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
+								<I class="fal fa-file-chart-line text-lg text-dark"/>
+							</DIV>
+							<SPAN class="nav-link-text ms-1">下載提款報表</SPAN>
 						</A>
 					</LI>
 					<LI class="nav-item">

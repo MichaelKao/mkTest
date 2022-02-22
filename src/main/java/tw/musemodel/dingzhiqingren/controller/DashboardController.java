@@ -85,9 +85,6 @@ public class DashboardController {
 	private WebSocketServer webSocketServer;
 
 	@Autowired
-	private HistoryService historyService;
-
-	@Autowired
 	private LoverService loverService;
 
 	@Autowired
@@ -1528,14 +1525,14 @@ public class DashboardController {
 	}
 
 	/**
-	 * 出入金(储值、提领成功)财务报表
+	 * 入金(储值)财务报表
 	 *
 	 * @param response 响应
 	 * @throws IOException 输出入异常例外
 	 */
-	@GetMapping(path = "/financialStatementOfDepositAndWithdrawal.xls")
+	@GetMapping(path = "/financialStatementOfDeposit.xls")
 	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
-	void financialStatementOfDepositAndWithdrawal(HttpServletResponse response) throws IOException {
+	void financialStatementOfDeposit(HttpServletResponse response) throws IOException {
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		Sheet sheet = workbook.createSheet();
 		Row firstRow = sheet.createRow(0);
@@ -1543,7 +1540,6 @@ public class DashboardController {
 		firstRow.createCell(1, CellType.STRING).setCellValue("帳號");
 		firstRow.createCell(2, CellType.STRING).setCellValue("日期時間");
 		firstRow.createCell(3, CellType.STRING).setCellValue("儲值");
-		firstRow.createCell(4, CellType.STRING).setCellValue("提領");
 		sheet.createFreezePane(0, 1);
 
 		CellStyle cellStyleDateTime = workbook.createCellStyle();
@@ -1554,8 +1550,7 @@ public class DashboardController {
 		);//格式化时戳(年月日时分秒)
 
 		int rowNumber = 1;
-		LOGGER.debug("一五五七");
-		for (DashboardService.FinancialStatementOfDepositAndWithdrawal financialStatement : historyService.financialStatementOfDepositAndWithdrawal()) {
+		for (DashboardService.FinancialStatementOfDepositAndWithdrawal financialStatement : dashboardService.financialStatementOfDeposit()) {
 			Row row = sheet.createRow(rowNumber);
 
 			//昵称
@@ -1566,7 +1561,7 @@ public class DashboardController {
 				financialStatement.getNickname()
 			);
 
-			//女神主键
+			//帐号(手机号)
 			row.createCell(
 				1,
 				CellType.STRING
@@ -1590,27 +1585,13 @@ public class DashboardController {
 					)
 			);
 
-			//储值
-			Short deposit = financialStatement.getDeposit();
-			if (Objects.nonNull(deposit)) {
-				row.createCell(
-					3,
-					CellType.STRING
-				).setCellValue(
-					deposit.toString()
-				);
-			}
-
-			//提领
-			Short withdrawal = financialStatement.getWithdrawal();
-			if (Objects.nonNull(withdrawal)) {
-				row.createCell(
-					4,
-					CellType.STRING
-				).setCellValue(
-					withdrawal.toString()
-				);
-			}
+			//点数
+			row.createCell(
+				3,
+				CellType.STRING
+			).setCellValue(
+				financialStatement.getPoints().toString()
+			);
 
 			++rowNumber;
 		}//for
@@ -1620,7 +1601,98 @@ public class DashboardController {
 		response.setHeader(
 			"Content-Disposition",
 			String.format(
-				"attachment; filename=\"YM_Financial@%s.xls\"",
+				"attachment; filename=\"deposit@%s.xls\"",
+				new SimpleDateFormat("yyyyMMddHHmmss").format(
+					new Date(
+						System.currentTimeMillis()
+					)
+				)
+			)
+		);
+		workbook.write(outputStream);
+		outputStream.close();
+
+		workbook.close();
+	}
+
+	/**
+	 * 出金(提领)财务报表
+	 *
+	 * @param response 响应
+	 * @throws IOException 输出入异常例外
+	 */
+	@GetMapping(path = "/financialStatementOfWithdrawal.xls")
+	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
+	void financialStatementOfWithdrawal(HttpServletResponse response) throws IOException {
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		Sheet sheet = workbook.createSheet();
+		Row firstRow = sheet.createRow(0);
+		firstRow.createCell(0, CellType.STRING).setCellValue("暱稱");
+		firstRow.createCell(1, CellType.STRING).setCellValue("帳號");
+		firstRow.createCell(2, CellType.STRING).setCellValue("日期時間");
+		firstRow.createCell(3, CellType.STRING).setCellValue("提领");
+		sheet.createFreezePane(0, 1);
+
+		CellStyle cellStyleDateTime = workbook.createCellStyle();
+		cellStyleDateTime.setDataFormat(workbook.
+			getCreationHelper().
+			createDataFormat().
+			getFormat("yyyy/m/d hh:mm:ss")
+		);//格式化时戳(年月日时分秒)
+
+		int rowNumber = 1;
+		for (DashboardService.FinancialStatementOfDepositAndWithdrawal financialStatement : dashboardService.financialStatementOfWithdrawal()) {
+			Row row = sheet.createRow(rowNumber);
+
+			//昵称
+			row.createCell(
+				0,
+				CellType.STRING
+			).setCellValue(
+				financialStatement.getNickname()
+			);
+
+			//帐号(手机号)
+			row.createCell(
+				1,
+				CellType.STRING
+			).setCellValue(
+				financialStatement.getLogin()
+			);
+
+			//时戳
+			Cell cell = row.createCell(
+				2,
+				CellType.STRING
+			);
+			cell.setCellStyle(cellStyleDateTime);
+			cell.setCellValue(
+				DateTimeFormatter.
+					ofPattern("yyyy-MM-dd HH:mm:ss").
+					format(
+						Servant.toTaipeiZonedDateTime(
+							financialStatement.getTimestamp()
+						)
+					)
+			);
+
+			//点数
+			row.createCell(
+				3,
+				CellType.STRING
+			).setCellValue(
+				financialStatement.getPoints().toString()
+			);
+
+			++rowNumber;
+		}//for
+
+		OutputStream outputStream = response.getOutputStream();
+		response.setHeader("Content-Type", "application/vnd.ms-excel");
+		response.setHeader(
+			"Content-Disposition",
+			String.format(
+				"attachment; filename=\"withdrawal@%s.xls\"",
 				new SimpleDateFormat("yyyyMMddHHmmss").format(
 					new Date(
 						System.currentTimeMillis()

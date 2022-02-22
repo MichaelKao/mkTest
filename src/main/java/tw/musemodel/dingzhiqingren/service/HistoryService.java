@@ -57,7 +57,6 @@ import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.FollowRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
-import tw.musemodel.dingzhiqingren.service.DashboardService.FinancialStatementOfDepositAndWithdrawal;
 import tw.musemodel.dingzhiqingren.specification.HistorySpecification;
 
 /**
@@ -106,9 +105,6 @@ public class HistoryService {
 
 	@Value("classpath:sql/与其他用户近期的对话.sql")
 	private Resource latestPageableConversations;
-
-	@Value("classpath:sql/heartsByBehaviorInOrderByOccurredDesc.sql")
-	private Resource heartsByBehaviorInOrderByOccurredDesc;
 
 	@Value("classpath:sql/两用户之间的对话.sql")
 	private Resource latestPageableConversationsWithSomeone;
@@ -1979,82 +1975,5 @@ public class HistoryService {
 			}
 		}
 		return chatStatus;
-	}
-
-	/**
-	 * 出入金(储值、提领成功)，财务报表用❗️
-	 *
-	 * @return 出入金(储值、提领成功)财务报表们
-	 */
-	@Transactional(readOnly = true)
-	public List<FinancialStatementOfDepositAndWithdrawal> financialStatementOfDepositAndWithdrawal() {
-		List<FinancialStatementOfDepositAndWithdrawal> financialStatements = new ArrayList<>();
-
-		List<Long> ids = jdbcTemplate.query(
-			(Connection connection) -> {
-				PreparedStatement preparedStatement;
-				try {
-					preparedStatement = connection.prepareStatement(
-						String.format(
-							FileCopyUtils.copyToString(
-								new InputStreamReader(
-									heartsByBehaviorInOrderByOccurredDesc.getInputStream(),
-									Servant.UTF_8
-								)
-							)
-						)
-					);
-
-					return preparedStatement;
-				} catch (IOException ignore) {
-					return null;
-				}
-			},
-			(ResultSet resultSet, int rowNum) -> {
-				return resultSet.getLong("id");
-			}
-		);
-
-		LOGGER.debug("二零一八");
-		for (History history : historyRepository.findByIdInOrderByOccurredDesc(ids)) {
-			LOGGER.debug("二零二零");
-			Lover initiative = history.getInitiative();
-			Behavior behavior = history.getBehavior();
-			short points = history.getPoints();
-
-			FinancialStatementOfDepositAndWithdrawal financialStatement = new FinancialStatementOfDepositAndWithdrawal();
-			financialStatement.setTimestamp(
-				history.getOccurred()
-			);
-			financialStatement.setNickname(
-				initiative.getNickname()
-			);
-			financialStatement.setLogin(
-				initiative.getLogin()
-			);
-
-			/*
-			 储值点数
-			 */
-			if (Objects.equals(BEHAVIOR_CHARGED, behavior)) {
-				financialStatement.setDeposit(
-					points
-				);
-
-				financialStatements.add(financialStatement);
-			}
-
-			/*
-			 提领成功
-			 */
-			if (Objects.equals(BEHAVIOR_WITHDRAWAL_SUCCESS, behavior)) {
-				financialStatement.setWithdrawal(
-					points
-				);
-
-				financialStatements.add(financialStatement);
-			}
-		}//for
-		return financialStatements;
 	}
 }
