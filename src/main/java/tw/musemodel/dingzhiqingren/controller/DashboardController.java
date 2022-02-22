@@ -1554,6 +1554,7 @@ public class DashboardController {
 		);//格式化时戳(年月日时分秒)
 
 		int rowNumber = 1;
+		LOGGER.debug("一五五七");
 		for (DashboardService.FinancialStatementOfDepositAndWithdrawal financialStatement : historyService.financialStatementOfDepositAndWithdrawal()) {
 			Row row = sheet.createRow(rowNumber);
 

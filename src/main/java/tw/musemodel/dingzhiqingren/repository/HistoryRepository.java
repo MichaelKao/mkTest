@@ -24,6 +24,12 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
 
 	/**
 	 * @param id 指定的主键们
+	 * @return 以发生时戳降幂排序的指定历程们
+	 */
+	public List<History> findByIdInOrderByOccurredDesc(List<Long> id);
+
+	/**
+	 * @param id 指定的主键们
 	 * @param pageable 可分页
 	 * @return 以发生时戳降幂排序的指定历程们
 	 */
