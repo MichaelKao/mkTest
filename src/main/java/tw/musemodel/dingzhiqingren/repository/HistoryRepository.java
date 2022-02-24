@@ -138,6 +138,14 @@ public interface HistoryRepository extends JpaRepository<History, Long>, JpaSpec
 
 	public List<History> findByBehaviorOrderByOccurredDesc(Behavior behavior);
 
+	/**
+	 * @param behavior 行为
+	 * @param since 开始时戳
+	 * @param until 结束时戳
+	 * @return
+	 */
+	public List<History> findByBehaviorAndOccurredBetweenOrderByOccurredDesc(Behavior behavior, Date since, Date until);
+
 	@Query("SELECT DISTINCT h.passive "
 		+ "FROM History h "
 		+ "WHERE h.initiative = :initiative "

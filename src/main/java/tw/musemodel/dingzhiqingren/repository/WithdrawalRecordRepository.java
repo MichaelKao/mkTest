@@ -24,6 +24,13 @@ public interface WithdrawalRecordRepository extends JpaRepository<WithdrawalReco
 
 	public List<WithdrawalRecord> findAllByHoneyAndStatusOrderByTimestampDesc(Lover honey, Boolean status);
 
+	/**
+	 * @param since 开始时戳
+	 * @param until 结束时戳
+	 * @return
+	 */
+	public List<WithdrawalRecord> findByTimestampBetweenOrderByTimestampDesc(Date since, Date until);
+
 	public List<WithdrawalRecord> findByHoneyAndStatusAndTimestamp(Lover honey, Boolean status, Date timestamp);
 
 	@Transactional

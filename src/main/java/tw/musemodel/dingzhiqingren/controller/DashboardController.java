@@ -1532,7 +1532,8 @@ public class DashboardController {
 	 */
 	@GetMapping(path = "/financialStatementOfDeposit.xls")
 	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
-	void financialStatementOfDeposit(HttpServletResponse response) throws IOException {
+	@SuppressWarnings("ConvertToTryWithResources")
+	void financialStatementOfDeposit(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam Date since, @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam Date until, HttpServletResponse response) throws IOException {
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		Sheet sheet = workbook.createSheet();
 		Row firstRow = sheet.createRow(0);
@@ -1550,7 +1551,7 @@ public class DashboardController {
 		);//格式化时戳(年月日时分秒)
 
 		int rowNumber = 1;
-		for (DashboardService.FinancialStatementOfDepositAndWithdrawal financialStatement : dashboardService.financialStatementOfDeposit()) {
+		for (DashboardService.FinancialStatementOfDepositAndWithdrawal financialStatement : dashboardService.financialStatementOfDeposit(since, until)) {
 			Row row = sheet.createRow(rowNumber);
 
 			//昵称
@@ -1623,7 +1624,8 @@ public class DashboardController {
 	 */
 	@GetMapping(path = "/financialStatementOfWithdrawal.xls")
 	@Secured({"ROLE_ALMIGHTY", "ROLE_FINANCE"})
-	void financialStatementOfWithdrawal(HttpServletResponse response) throws IOException {
+	@SuppressWarnings("ConvertToTryWithResources")
+	void financialStatementOfWithdrawal(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam Date since, @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam Date until, HttpServletResponse response) throws IOException {
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		Sheet sheet = workbook.createSheet();
 		Row firstRow = sheet.createRow(0);
@@ -1641,7 +1643,7 @@ public class DashboardController {
 		);//格式化时戳(年月日时分秒)
 
 		int rowNumber = 1;
-		for (DashboardService.FinancialStatementOfDepositAndWithdrawal financialStatement : dashboardService.financialStatementOfWithdrawal()) {
+		for (DashboardService.FinancialStatementOfDepositAndWithdrawal financialStatement : dashboardService.financialStatementOfWithdrawal(since, until)) {
 			Row row = sheet.createRow(rowNumber);
 
 			//昵称
