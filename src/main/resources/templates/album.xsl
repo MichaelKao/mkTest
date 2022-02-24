@@ -31,9 +31,16 @@
 			<xsl:call-template name="navbar"/>
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container col-12 col-md-8 col-lg-6 px-3 py-6 py-md-7">
-				<DIV class="text-primary cursor-pointer back">
-					<I class="fad fa-arrow-circle-left fontSize35"></I>
-				</DIV>
+				<xsl:if test="@firstTime">
+					<A class="text-primary cursor-pointer" href="/">
+						<I class="fad fa-arrow-circle-left fontSize35"></I>
+					</A>
+				</xsl:if>
+				<xsl:if test="not(@firstTime)">
+					<DIV class="text-primary cursor-pointer back">
+						<I class="fad fa-arrow-circle-left fontSize35"></I>
+					</DIV>
+				</xsl:if>
 				<ARTICLE class="card p-3 mt-3">
 					<DIV class="mb-3">
 						<DIV class="h4 titleBorder">主要照片</DIV>

@@ -2591,7 +2591,6 @@ public class LoverService {
 		return new JavaScriptObjectNotation().
 			withReason("update successfully").
 			withResponse(true).
-			withRedirect("/profile/").
 			toJSONObject();
 	}
 

@@ -137,7 +137,7 @@ $(document).ready(function () {
 			$(form).serialize(),
 			function (data) {
 				if (data.response) {
-					location.href = data.redirect;
+					location.href = '/profile/';
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').attr('data-bs-delay', '1000000000');
@@ -158,7 +158,7 @@ $(document).ready(function () {
 			$(form).serialize(),
 			function (data) {
 				if (data.response) {
-					location.href = '/';
+					location.href = '/album.asp?f=true';
 				} else {
 					$('.toast-body').html(data.reason);
 					$('.toast').attr('data-bs-delay', '1000000000');

@@ -1970,7 +1970,8 @@ public class WelcomeController {
 	 */
 	@GetMapping(path = "/album.asp")
 	@Secured({Servant.ROLE_ADVENTURER})
-	ModelAndView album(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	ModelAndView album(@RequestParam(name = "f", required = false) boolean firstTime,
+		Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
@@ -1990,6 +1991,13 @@ public class WelcomeController {
 			null,
 			locale
 		));//网页标题
+
+		/**
+		 * 是否為第一次(註冊完)，是的話要上傳完返回首頁
+		 */
+		if (firstTime) {
+			documentElement.setAttribute("firstTime", "true");
+		}
 
 		/*
 		 头像
