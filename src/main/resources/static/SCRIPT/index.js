@@ -330,6 +330,9 @@ $(document).ready(function () {
 
 	if ($('INPUT[name="guidance"]').val() === 'false') {
 		$('#guide').modal('show');
+		$('#guide').on('hidden.bs.modal', function () {
+			showModal();
+		});
 	}
 	$('#guide').on('shown.bs.modal', function (event) {
 		$('.carousel').flickity({
