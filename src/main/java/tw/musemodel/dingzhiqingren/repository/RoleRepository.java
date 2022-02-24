@@ -1,5 +1,6 @@
 package tw.musemodel.dingzhiqingren.repository;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import tw.musemodel.dingzhiqingren.entity.Role;
@@ -12,5 +13,7 @@ import tw.musemodel.dingzhiqingren.entity.Role;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Short> {
 
-        public Role findOneByTextualRepresentation(String textualRepresentation);
+	public Role findOneByTextualRepresentation(String textualRepresentation);
+
+	public List<Role> findAllByOrderBySort();
 }

@@ -860,7 +860,7 @@ public class DashboardService {
 		);
 
 		// 權限管理
-		for (Role role : roleRepository.findAll()) {
+		for (Role role : roleRepository.findAllByOrderBySort()) {
 			Element roleElement = document.createElement("role");
 			roleElement.setAttribute("roleID", role.getId().toString());
 			roleElement.setTextContent(

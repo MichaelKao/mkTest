@@ -1181,3 +1181,11 @@ ADD VALUE'TUI_DIAN';
  */
 INSERT INTO"li_cheng"("zhu_dong_de","xing_wei","dian_shu")VALUES
 ('2275','TUI_DIAN','-1400');
+
+/**
+ * 2022/02/24
+ * 角色表增加排序欄位
+ */
+ALTER TABLE"shen_fen"
+ADD COLUMN"pai_xu"int NOT NULL UNIQUE;
+COMMENT ON COLUMN"shen_fen"."pai_xu"IS'排序';

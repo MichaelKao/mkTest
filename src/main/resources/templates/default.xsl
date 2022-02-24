@@ -823,6 +823,22 @@
 							<DIV class="m-0 p-0 nav-link-text ms-1">會員資料</DIV>
 						</DIV>
 					</LI>
+					<LI class="nav-item">
+						<DIV class="nav-link cursor-pointer" id="copyMemberLink">
+							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
+								<I class="fal fa-copy text-lg text-dark"></I>
+							</DIV>
+							<DIV class="m-0 p-0 nav-link-text ms-1">會員資料</DIV>
+						</DIV>
+					</LI>
+					<LI class="nav-item">
+						<DIV class="nav-link cursor-pointer" id="copyMemberLink">
+							<DIV class="icon icon-shape icon-sm shadow border-radius-md me-2 d-flex align-items-center justify-content-center">
+								<I class="fal fa-copy text-lg text-dark"></I>
+							</DIV>
+							<DIV class="m-0 p-0 nav-link-text ms-1">會員資料</DIV>
+						</DIV>
+					</LI>
 				</UL>
 			</DIV>
 		</ASIDE>

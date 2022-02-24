@@ -81,6 +81,9 @@
 													<xsl:value-of select="."/>
 												</LABEL>
 											</DIV>
+											<xsl:if test="@roleID = 3">
+												<DIV class="text-danger text-xs">* 未勾選擇為停用帳號</DIV>
+											</xsl:if>
 										</xsl:for-each>
 									</DIV>
 									<DIV class="text-center">
