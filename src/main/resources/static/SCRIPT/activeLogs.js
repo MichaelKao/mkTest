@@ -63,18 +63,22 @@ $(document).ready(function () {
 			var cardBodyDiv = document.createElement('DIV');
 			$(cardBodyDiv).attr('class', 'card-body d-flex align-items-center justify-content-start py-2');
 			$(cardDiv).append(cardBodyDiv);
-			var profileDiv = document.createElement('DIV');
-			$(cardBodyDiv).append(profileDiv);
-			var profileA = document.createElement('A');
-			$(profileA).attr('href', '/profile/' + activity.identifier + '/');
-			$(profileDiv).append(profileA);
-			var profileImg = document.createElement('IMG');
-			$(profileImg).attr({
-				'alt': 'profile_photo',
-				'class': 'border-radius-md',
-				'src': activity.profileImage,
-				'width': '55'
-			});
+			if (activity.system) {
+				$(cardBodyDiv).html(`<div class="system"><i class="fas fa-bells"></i></div>`);
+			} else {
+				var profileDiv = document.createElement('DIV');
+				$(cardBodyDiv).append(profileDiv);
+				var profileA = document.createElement('A');
+				$(profileA).attr('href', '/profile/' + activity.identifier + '/');
+				$(profileDiv).append(profileA);
+				var profileImg = document.createElement('IMG');
+				$(profileImg).attr({
+					'alt': 'profile_photo',
+					'class': 'border-radius-md',
+					'src': activity.profileImage,
+					'width': '55'
+				});
+			}
 			$(profileA).append(profileImg);
 			var msgMainDiv = document.createElement('DIV');
 			$(msgMainDiv).attr('class', 'ms-4 w-100 d-flex flex-column flex-md-row');

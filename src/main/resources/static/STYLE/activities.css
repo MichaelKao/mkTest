@@ -1,0 +1,12 @@
+.system {
+	width: 55px;
+	height: 55px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.system i {
+	color: #CE796B;
+	font-size: 40px;
+}

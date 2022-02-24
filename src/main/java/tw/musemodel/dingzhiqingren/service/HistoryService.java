@@ -1422,6 +1422,7 @@ public class HistoryService {
 			String identifier = null;
 			String profileImage = null;
 			String message = null;
+			boolean system = false;
 
 			Element historyElement = document.createElement("history");
 			documentElement.appendChild(historyElement);
@@ -1453,39 +1454,34 @@ public class HistoryService {
 				);
 			}
 			if (behavior == BEHAVIOR_CERTIFICATION_SUCCESS) {
-				profileImage = passiveProfileImage;
+				system = true;
 				message = String.format(
 					"您已通過安心認證審核!"
 				);
-				identifier = passiveIdentifier;
 			}
 			if (behavior == BEHAVIOR_CERTIFICATION_FAIL) {
-				profileImage = passiveProfileImage;
+				system = true;
 				message = String.format(
 					"您申請的安心認證不通過，請重新上傳正確手持證件照!"
 				);
-				identifier = passiveIdentifier;
 			}
 			if (behavior == BEHAVIOR_CERTIFICATION_FAIL_1) {
-				profileImage = passiveProfileImage;
+				system = true;
 				message = String.format(
 					"您申請的安心認證不通過，本人和證件清晰需可辨識合照。請重新上傳正確手持證件照!"
 				);
-				identifier = passiveIdentifier;
 			}
 			if (behavior == BEHAVIOR_CERTIFICATION_FAIL_2) {
-				profileImage = passiveProfileImage;
+				system = true;
 				message = String.format(
 					"您申請的安心認證不通過，照片中證件不可辨識，請重新上傳正確手持證件照!"
 				);
-				identifier = passiveIdentifier;
 			}
 			if (behavior == BEHAVIOR_CERTIFICATION_FAIL_3) {
-				profileImage = passiveProfileImage;
+				system = true;
 				message = String.format(
 					"您申請的安心認證不通過，照片中本人不可辨識，請重新上傳正確手持證件照!"
 				);
-				identifier = passiveIdentifier;
 			}
 			// 歷程時間
 			historyElement.setAttribute(
@@ -1494,14 +1490,6 @@ public class HistoryService {
 					Servant.toTaipeiZonedDateTime(
 						activity.getOccurred()
 					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
-				));
-			// 顯示的大頭貼
-			historyElement.setAttribute(
-				"profileImage",
-				String.format(
-					"https://%s/profileImage/%s",
-					Servant.STATIC_HOST,
-					profileImage
 				)
 			);
 			// 歷程內容
@@ -1509,11 +1497,27 @@ public class HistoryService {
 				"message",
 				message
 			);
-			// 識別碼(個人檔案連結用)
-			historyElement.setAttribute(
-				"identifier",
-				identifier
-			);
+			if (system) {
+				historyElement.setAttribute(
+					"system",
+					Boolean.toString(system)
+				);
+			} else {
+				// 顯示的大頭貼
+				historyElement.setAttribute(
+					"profileImage",
+					String.format(
+						"https://%s/profileImage/%s",
+						Servant.STATIC_HOST,
+						profileImage
+					)
+				);
+				// 識別碼(個人檔案連結用)
+				historyElement.setAttribute(
+					"identifier",
+					identifier
+				);
+			}
 		}
 		return document;
 	}
@@ -1539,6 +1543,7 @@ public class HistoryService {
 			String identifier = null;
 			String profileImage = null;
 			String message = null;
+			boolean system = false;
 
 			if (behavior == BEHAVIOR_PICTURES_VIEWABLE) {
 				profileImage = initiativeProfileImage;
@@ -1594,41 +1599,52 @@ public class HistoryService {
 				);
 			}
 			if (behavior == BEHAVIOR_CERTIFICATION_SUCCESS) {
-				profileImage = passiveProfileImage;
+				system = true;
 				message = String.format(
 					"您已通過安心認證審核!"
 				);
-				identifier = passiveIdentifier;
 			}
 			if (behavior == BEHAVIOR_CERTIFICATION_FAIL) {
-				profileImage = passiveProfileImage;
+				system = true;
 				message = String.format(
 					"您申請的安心認證不通過，請重新上傳正確手持證件照!"
 				);
-				identifier = passiveIdentifier;
 			}
 			if (behavior == BEHAVIOR_CERTIFICATION_FAIL_1) {
-				profileImage = passiveProfileImage;
+				system = true;
 				message = String.format(
 					"您申請的安心認證不通過，本人和證件清晰需可辨識合照。請重新上傳正確手持證件照!"
 				);
-				identifier = passiveIdentifier;
 			}
 			if (behavior == BEHAVIOR_CERTIFICATION_FAIL_2) {
-				profileImage = passiveProfileImage;
+				system = true;
 				message = String.format(
 					"您申請的安心認證不通過，照片中證件不可辨識，請重新上傳正確手持證件照!"
 				);
-				identifier = passiveIdentifier;
 			}
 			if (behavior == BEHAVIOR_CERTIFICATION_FAIL_3) {
-				profileImage = passiveProfileImage;
+				system = true;
 				message = String.format(
 					"您申請的安心認證不通過，照片中本人不可辨識，請重新上傳正確手持證件照!"
 				);
-				identifier = passiveIdentifier;
 			}
-			// 歷程時間
+			if (system) {
+				activityJson.put(
+					"system",
+					system
+				);
+			} else {
+				activityJson.
+					put("profileImage", String.format(
+						"https://%s/profileImage/%s",
+						Servant.STATIC_HOST,
+						profileImage
+					)).
+					put(
+						"identifier",
+						identifier
+					);
+			}
 			activityJson.
 				put(
 					"time",
@@ -1636,19 +1652,11 @@ public class HistoryService {
 						Servant.toTaipeiZonedDateTime(
 							activity.getOccurred()
 						).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
-					)).
-				put("profileImage", String.format(
-					"https://%s/profileImage/%s",
-					Servant.STATIC_HOST,
-					profileImage
-				)).
+					)
+				).
 				put(
 					"message",
 					message
-				).
-				put(
-					"identifier",
-					identifier
 				);
 			array.put(activityJson);
 		}

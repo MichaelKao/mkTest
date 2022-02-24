@@ -2384,6 +2384,33 @@ public class WelcomeController {
 	}
 
 	/**
+	 * 載入更多通知
+	 *
+	 * @param p
+	 * @param authentication
+	 * @param locale
+	 * @return
+	 * @throws TransformerException
+	 * @throws IOException
+	 */
+	@PostMapping(path = "/loadMoreActivities.json")
+	@ResponseBody
+	@Secured({Servant.ROLE_ADVENTURER})
+	String loadMoreActivities(@RequestParam int p, Authentication authentication,
+		Locale locale) throws TransformerException, IOException {
+
+		Lover me = loverService.loadByUsername(
+			authentication.getName()
+		);
+
+		return historyService.loadMoreActivities(
+			me,
+			p,
+			10
+		).toString();
+	}
+
+	/**
 	 * 升级贵宾。
 	 *
 	 * @param authentication 认证
@@ -4387,23 +4414,6 @@ public class WelcomeController {
 				toJSONObject().toString();
 		}
 		return jsonObject.toString();
-	}
-
-	@PostMapping(path = "/loadMoreActivities.json")
-	@ResponseBody
-	@Secured({Servant.ROLE_ADVENTURER})
-	String loadMoreActivities(@RequestParam int p, Authentication authentication,
-		Locale locale) throws TransformerException, IOException {
-
-		Lover me = loverService.loadByUsername(
-			authentication.getName()
-		);
-
-		return historyService.loadMoreActivities(
-			me,
-			p,
-			10
-		).toString();
 	}
 
 	/**

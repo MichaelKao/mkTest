@@ -25,6 +25,7 @@
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
 			<LINK href="/STYLE/loading.css" rel="stylesheet"/>
+			<LINK href="/STYLE/activities.css" rel="stylesheet"/>
 			<STYLE>body {background-color: #F3F3F3;}</STYLE>
 		</HEAD>
 		<BODY>
@@ -121,11 +122,18 @@
 					<xsl:for-each select="history">
 						<DIV class="card card-frame mb-2">
 							<DIV class="card-body d-flex align-items-center justify-content-start py-2">
-								<DIV>
-									<A href="/profile/{@identifier}/">
-										<IMG alt="profile_photo" class="border-radius-md" src="{@profileImage}" width="55"/>
-									</A>
-								</DIV>
+								<xsl:if test="@system">
+									<DIV class="system">
+										<I class="fas fa-bells"></I>
+									</DIV>
+								</xsl:if>
+								<xsl:if test="not(@system)">
+									<DIV>
+										<A href="/profile/{@identifier}/">
+											<IMG alt="profile_photo" class="border-radius-md" src="{@profileImage}" width="55"/>
+										</A>
+									</DIV>
+								</xsl:if>
 								<DIV class="ms-4 w-100 d-flex flex-column flex-md-row">
 									<DIV>
 										<SPAN class="text-xs font-weight-bold my-2">
