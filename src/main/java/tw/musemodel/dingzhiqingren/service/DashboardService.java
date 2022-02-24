@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -24,8 +25,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -1398,13 +1397,26 @@ public class DashboardService {
 	/**
 	 * 入金(储值)历程，财务报表用❗️
 	 *
+	 * @param since 开始时戳
+	 * @param until 结束时戳
 	 * @return 入金(储值)历程
 	 */
 	@Transactional(readOnly = true)
-	public List<FinancialStatementOfDepositAndWithdrawal> financialStatementOfDeposit() {
+	public List<FinancialStatementOfDepositAndWithdrawal> financialStatementOfDeposit(Date since, Date until) {
 		List<FinancialStatementOfDepositAndWithdrawal> financialStatements = new ArrayList<>();
 
-		for (History history : historyRepository.findByBehaviorOrderByOccurredDesc(HistoryService.BEHAVIOR_CHARGED)) {
+		Calendar sinceCalendar = new GregorianCalendar(
+			Servant.ASIA_TAIPEI_TIME_ZONE,
+			Locale.TAIWAN
+		), untilCalendar = new GregorianCalendar(
+			Servant.ASIA_TAIPEI_TIME_ZONE,
+			Locale.TAIWAN
+		);
+
+		sinceCalendar.setTime(since);
+		untilCalendar.setTime(until);
+
+		for (History history : historyRepository.findByBehaviorAndOccurredBetweenOrderByOccurredDesc(HistoryService.BEHAVIOR_CHARGED, since, until)) {
 			Lover initiative = history.getInitiative();
 
 			FinancialStatementOfDepositAndWithdrawal financialStatement = new FinancialStatementOfDepositAndWithdrawal();
@@ -1430,13 +1442,26 @@ public class DashboardService {
 	/**
 	 * 出金(提领)历程，财务报表用❗️
 	 *
+	 * @param since 开始时戳
+	 * @param until 结束时戳
 	 * @return 出金(提领)历程
 	 */
 	@Transactional(readOnly = true)
-	public List<FinancialStatementOfDepositAndWithdrawal> financialStatementOfWithdrawal() {
+	public List<FinancialStatementOfDepositAndWithdrawal> financialStatementOfWithdrawal(Date since, Date until) {
 		List<FinancialStatementOfDepositAndWithdrawal> financialStatements = new ArrayList<>();
 
-		for (WithdrawalRecord withdrawalRecord : withdrawalRecordRepository.findAll(Sort.by(Order.desc("timestamp")))) {
+		Calendar sinceCalendar = new GregorianCalendar(
+			Servant.ASIA_TAIPEI_TIME_ZONE,
+			Locale.TAIWAN
+		), untilCalendar = new GregorianCalendar(
+			Servant.ASIA_TAIPEI_TIME_ZONE,
+			Locale.TAIWAN
+		);
+
+		sinceCalendar.setTime(since);
+		untilCalendar.setTime(until);
+
+		for (WithdrawalRecord withdrawalRecord : withdrawalRecordRepository.findByTimestampBetweenOrderByTimestampDesc(since, until)) {
 			Lover honey = withdrawalRecord.getHoney();
 
 			FinancialStatementOfDepositAndWithdrawal financialStatement = new FinancialStatementOfDepositAndWithdrawal();
