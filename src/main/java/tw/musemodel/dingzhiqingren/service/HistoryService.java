@@ -57,7 +57,6 @@ import tw.musemodel.dingzhiqingren.model.JavaScriptObjectNotation;
 import tw.musemodel.dingzhiqingren.repository.FollowRepository;
 import tw.musemodel.dingzhiqingren.repository.HistoryRepository;
 import tw.musemodel.dingzhiqingren.repository.LineGivenRepository;
-import tw.musemodel.dingzhiqingren.service.DashboardService.FinancialStatementOfDepositAndWithdrawal;
 import tw.musemodel.dingzhiqingren.specification.HistorySpecification;
 
 /**
@@ -1976,59 +1975,5 @@ public class HistoryService {
 			}
 		}
 		return chatStatus;
-	}
-
-	/**
-	 * 出入金(储值、提领成功)，财务报表用❗️
-	 *
-	 * @return 出入金(储值、提领成功)财务报表们
-	 */
-	@Transactional(readOnly = true)
-	public List<FinancialStatementOfDepositAndWithdrawal> financialStatementOfDepositAndWithdrawal() {
-		List<FinancialStatementOfDepositAndWithdrawal> financialStatements = new ArrayList<>();
-
-		List<Behavior> behaviors = new ArrayList<>();
-		behaviors.add(BEHAVIOR_CHARGED);
-		behaviors.add(BEHAVIOR_WITHDRAWAL_SUCCESS);
-
-		for (History history : historyRepository.findByBehaviorInOrderByOccurredDesc(behaviors)) {
-			Lover initiative = history.getInitiative();
-			Behavior behavior = history.getBehavior();
-			short points = history.getPoints();
-
-			FinancialStatementOfDepositAndWithdrawal financialStatement = new FinancialStatementOfDepositAndWithdrawal();
-			financialStatement.setTimestamp(
-				history.getOccurred()
-			);
-			financialStatement.setNickname(
-				initiative.getNickname()
-			);
-			financialStatement.setLogin(
-				initiative.getLogin()
-			);
-
-			/*
-			 储值点数
-			 */
-			if (Objects.equals(BEHAVIOR_CHARGED, behavior)) {
-				financialStatement.setDeposit(
-					points
-				);
-
-				financialStatements.add(financialStatement);
-			}
-
-			/*
-			 提领成功
-			 */
-			if (Objects.equals(BEHAVIOR_WITHDRAWAL_SUCCESS, behavior)) {
-				financialStatement.setWithdrawal(
-					points
-				);
-
-				financialStatements.add(financialStatement);
-			}
-		}//for
-		return financialStatements;
 	}
 }

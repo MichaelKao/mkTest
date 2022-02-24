@@ -3,9 +3,7 @@ package tw.musemodel.dingzhiqingren.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,15 +13,8 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 import lombok.Data;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -33,10 +24,11 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -145,14 +137,9 @@ public class DashboardService {
 		private Date timestamp;
 
 		/**
-		 * 储值点数
+		 * 点数
 		 */
-		private Short deposit;
-
-		/**
-		 * 提领成功点数
-		 */
-		private Short withdrawal;
+		private Short points;
 
 		/**
 		 * 默认构造函数
@@ -494,7 +481,7 @@ public class DashboardService {
 
 			recordElement.setAttribute(
 				"date",
-				servant.DATE_TIME_FORMATTER_yyyyMMddHHmm.format(
+				Servant.DATE_TIME_FORMATTER_yyyyMMddHHmm.format(
 					Servant.toTaipeiZonedDateTime(
 						history.getOccurred()
 					).withZoneSameInstant(Servant.ASIA_TAIPEI_ZONE_ID)
@@ -646,14 +633,12 @@ public class DashboardService {
 				applicant.getNickname()
 			);
 
-			pendingElement.setAttribute(
-				"email",
-				stopRecurringPaymentApplication.getEmail().toString()
+			pendingElement.setAttribute("email",
+				stopRecurringPaymentApplication.getEmail()
 			);
 
-			pendingElement.setAttribute(
-				"lastFourDigits",
-				stopRecurringPaymentApplication.getLastFourDigits().toString()
+			pendingElement.setAttribute("lastFourDigits",
+				stopRecurringPaymentApplication.getLastFourDigits()
 			);
 
 			pendingElement.setAttribute(
@@ -1303,6 +1288,7 @@ public class DashboardService {
 	 * @param locale
 	 * @return
 	 */
+	@SuppressWarnings("UnusedAssignment")
 	@Transactional(readOnly = true)
 	public JSONArray searchVip(String vipType, Lover lover, Authentication authentication, Locale locale) {
 		JSONArray array = new JSONArray();
@@ -1407,5 +1393,69 @@ public class DashboardService {
 		}
 
 		return array;
+	}
+
+	/**
+	 * 入金(储值)历程，财务报表用❗️
+	 *
+	 * @return 入金(储值)历程
+	 */
+	@Transactional(readOnly = true)
+	public List<FinancialStatementOfDepositAndWithdrawal> financialStatementOfDeposit() {
+		List<FinancialStatementOfDepositAndWithdrawal> financialStatements = new ArrayList<>();
+
+		for (History history : historyRepository.findByBehaviorOrderByOccurredDesc(HistoryService.BEHAVIOR_CHARGED)) {
+			Lover initiative = history.getInitiative();
+
+			FinancialStatementOfDepositAndWithdrawal financialStatement = new FinancialStatementOfDepositAndWithdrawal();
+			financialStatement.setNickname(
+				initiative.getNickname()
+			);
+			financialStatement.setLogin(
+				initiative.getLogin()
+			);
+			financialStatement.setTimestamp(
+				history.getOccurred()
+			);
+			financialStatement.setPoints(
+				history.getPoints()
+			);
+
+			financialStatements.add(financialStatement);
+		}//for
+
+		return financialStatements;
+	}
+
+	/**
+	 * 出金(提领)历程，财务报表用❗️
+	 *
+	 * @return 出金(提领)历程
+	 */
+	@Transactional(readOnly = true)
+	public List<FinancialStatementOfDepositAndWithdrawal> financialStatementOfWithdrawal() {
+		List<FinancialStatementOfDepositAndWithdrawal> financialStatements = new ArrayList<>();
+
+		for (WithdrawalRecord withdrawalRecord : withdrawalRecordRepository.findAll(Sort.by(Order.desc("timestamp")))) {
+			Lover honey = withdrawalRecord.getHoney();
+
+			FinancialStatementOfDepositAndWithdrawal financialStatement = new FinancialStatementOfDepositAndWithdrawal();
+			financialStatement.setNickname(
+				honey.getNickname()
+			);
+			financialStatement.setLogin(
+				honey.getLogin()
+			);
+			financialStatement.setTimestamp(
+				withdrawalRecord.getTimestamp()
+			);
+			financialStatement.setPoints(
+				withdrawalRecord.getPoints()
+			);
+
+			financialStatements.add(financialStatement);
+		}//for
+
+		return financialStatements;
 	}
 }

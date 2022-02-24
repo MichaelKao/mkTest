@@ -556,9 +556,9 @@ CREATE TABLE"fu_wu"(
 	"id"serial2 PRIMARY KEY,
 	"fu_wu_biao_qian"varchar NOT NULL UNIQUE
 );
-COMMENT ON TABLE"fu_wu"IS'甜心提取車馬費';
-COMMENT ON COLUMN"fu_wu"."id"IS'主鍵';
-COMMENT ON COLUMN"fu_wu"."fu_wu_biao_qian"IS'服務標籤';
+COMMENT ON TABLE"fu_wu"IS'服务';
+COMMENT ON COLUMN"fu_wu"."id"IS'主键';
+COMMENT ON COLUMN"fu_wu"."fu_wu_biao_qian"IS'服务标签';
 --
 INSERT INTO"fu_wu"("fu_wu_biao_qian")VALUES
 (E'KAN_DIAN_YING'),--看電影
@@ -1062,7 +1062,7 @@ CREATE TABLE"lun_tan_liu_yan"(
 	"id"serial8 PRIMARY KEY,
 	"shi_bie_ma"uuid NOT NULL UNIQUE,
 	"shi_chuo"timestamptz NOT NULL DEFAULT"now"(),
-	"lun_tan"int8 NOT NULL,
+	"lun_tan"int8 NOT NULL REFERENCES"lun_tan"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
 	"ping_lun_zhe"int NOT NULL REFERENCES"qing_ren"("id")ON DELETE RESTRICT ON UPDATE CASCADE,
 	"nei_rong"text NOT NULL
 );

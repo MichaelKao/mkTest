@@ -59,6 +59,9 @@ public class WithdrawalRecord implements java.io.Serializable {
 	@Column(name = "jin_e", nullable = false)
 	private Short points;
 
+	/**
+	 * 财务是否已处理
+	 */
 	@Column(name = "zhuang_tai", nullable = false)
 	private Boolean status;
 
