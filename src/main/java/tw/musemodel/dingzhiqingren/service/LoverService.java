@@ -2623,6 +2623,17 @@ public class LoverService {
 			leftPoints.toString()
 		);
 
+		String Relief="";
+		if (lover.getRelief() !=null && true){
+			Relief="1";
+		}else{
+			Relief="0";
+		}
+		documentElement.setAttribute(
+			"Relief",
+				Relief
+		);
+
 		if (withdrawalInfoRepository.countByHoney(lover) > 0) {
 			Element wireElement = document.createElement("wire");
 			documentElement.appendChild(wireElement);

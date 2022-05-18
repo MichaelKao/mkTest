@@ -212,8 +212,15 @@
 									</TBODY>
 								</TABLE>
 								<xsl:if test="(@totalPoints &gt; 0)">
-									<BUTTON class="btn btn-block btn-primary m-0 py-2 withdrawal border-radius-xl mt-2" data-bs-toggle="modal" data-bs-target="#paymentModal" type="button">提領</BUTTON>
+									<xsl:if test="(@Relief='1')">
+										<BUTTON class="btn btn-block btn-primary m-0 py-2 withdrawal border-radius-xl mt-2" data-bs-toggle="modal" data-bs-target="#paymentModal" type="button">提領</BUTTON>
+									</xsl:if>
+									<xsl:if test="(@Relief='0')">
+										<BUTTON class="btn btn-block btn-primary m-0 py-2 border-radius-xl mt-2"  type="button">請先進行「安心認證」，才能提領</BUTTON>
+									</xsl:if>
 								</xsl:if>
+
+
 							</DIV>
 							<DIV class="card p-3 mt-3">
 								<DIV class="text-center mb-3">

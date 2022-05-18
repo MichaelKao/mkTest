@@ -3149,15 +3149,28 @@ public class WelcomeController {
 		);
 
 		JSONObject jsonObject;
+
 		try {
-			jsonObject = loverService.wireTransfer(
-				wireTransferBankCode,
-				wireTransferBranchCode,
-				wireTransferAccountName,
-				wireTransferAccountNumber,
-				me,
-				locale
-			);
+			if (me.getRelief()){
+				jsonObject = loverService.wireTransfer(
+						wireTransferBankCode,
+						wireTransferBranchCode,
+						wireTransferAccountName,
+						wireTransferAccountNumber,
+						me,
+						locale
+				);
+			}else{
+				jsonObject = new JavaScriptObjectNotation().
+						withReason("請先進行「安心認證」").
+						withResponse(false).
+						toJSONObject();
+			}
+
+
+
+
+
 		} catch (Exception exception) {
 			jsonObject = new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(

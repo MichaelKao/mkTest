@@ -337,7 +337,7 @@
 																<SPAN class="ms-1 text-sm">升級認證財富</SPAN>
 															</A>
 															<DIV class="text-white text-sm mt-2">升級會員與meQUEEN成為好友</DIV>
-															<DIV class="text-white text-xs">聊天室暢聊並獲得通訊軟體</DIV>
+															<DIV class="text-white text-xs">聊天室暢聊</DIV>
 															<DIV class="d-flex mt-1">
 																<DIV class="mx-1">
 																	<IMG src="/IMAGE/lineIcon.png" width="40" class="border-radius-md"/>
@@ -417,8 +417,6 @@
 														<DIV class="text-white text-bold">讓有誠意的meKING</DIV>
 														<DIV class="text-white text-bold">透過發送系統好友邀請</DIV>
 														<DIV class="text-white text-bold">解鎖聊天室限制</DIV>
-														<DIV class="text-white text-sm mt-2">同時獲得您綁定的通訊軟體</DIV>
-														<DIV class="text-white text-sm">以便約會後續聯繫</DIV>
 													</DIV>
 													<DIV class="d-flex flex-column justify-content-center align-items-center my-2">
 														<DIV>
