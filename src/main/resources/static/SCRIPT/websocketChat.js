@@ -738,17 +738,17 @@ $(document).ready(function () {
 									'class': 'btn btn-sm btn-primary btn-round px-2 py-1 m-0 openSocialMedia',
 									type: 'button'
 								});
-								$(openSocialMediaBtn).html('加通訊軟體');
-								$(borderDiv).append(openSocialMediaBtn);
-								var rateBtn = document.createElement('BUTTON');
-								$(rateBtn).attr({
-									'class': 'btn btn-sm btn-dark btn-round px-2 py-1 m-0 ms-1 rate',
-									'data-bs-target': '#rateModal',
-									'data-bs-toggle': 'modal',
-									type: 'button'
-								});
-								$(rateBtn).html('好友評價');
-								$(borderDiv).append(rateBtn);
+								// $(openSocialMediaBtn).html('加通訊軟體');
+								// $(borderDiv).append(openSocialMediaBtn);
+								// var rateBtn = document.createElement('BUTTON');
+								// $(rateBtn).attr({
+								// 	'class': 'btn btn-sm btn-dark btn-round px-2 py-1 m-0 ms-1 rate',
+								// 	'data-bs-target': '#rateModal',
+								// 	'data-bs-toggle': 'modal',
+								// 	type: 'button'
+								// });
+								// $(rateBtn).html('好友評價');
+								// $(borderDiv).append(rateBtn);
 								floatWrapResize();
 								$('BUTTON.openSocialMedia').dblclick(function (e) {
 									e.preventDefault();
