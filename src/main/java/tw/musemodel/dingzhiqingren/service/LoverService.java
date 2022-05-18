@@ -1577,7 +1577,25 @@ public class LoverService {
 		lover.setGender(signUp.getGender());
 		lover.setBirthday(signUp.getBirthday());
 		lover.setProfileImage(identifier.toString());
-		lover.setAboutMe("正在找尋一段比閨蜜還親密的養蜜關係");
+//		lover.setAboutMe("正在找尋一段比閨蜜還親密的養蜜關係");
+		lover.setAboutMe(
+				"A. 關於我 (專長、興趣、專業)\n" +
+				"\n" +
+				"----------------------------------------\n" +
+				"\n" +
+				"專業吃貨，可以推薦優質餐廳一同品嘗美食\n" +
+				"\n" +
+				"服飾店員，可以陪逛街幫忙挑選穿搭與改造\n" +
+				"\n" +
+				"電影影評，可以一同賞析熱門電影加以討論\n" +
+				"\n" +
+				"B. 注意事項\n" +
+				"\n" +
+				"--------------------------------------\n" +
+				"\n" +
+				"非公開場合舉凡 招待所、MTV、KTV、車上\n" +
+				"\n" +
+				"都無法接受接單");
 		lover.setIdealConditions("合得來的養蜜");
 		lover.setGreeting("嗨，有機會成為養蜜嗎?");
 		lover.setRegistered(new Date(System.currentTimeMillis()));

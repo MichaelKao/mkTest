@@ -52,13 +52,15 @@ $(document).ready(function () {
 	$('BUTTON.filterBtn').click(function () {
 		var annualIncome;
 		var allowance;
-		if (typeof ($('SELECT[name="annualIncome"]').val()) != 'undefined') {
-			annualIncome = $('SELECT[name="annualIncome"]').val();
-			allowance = 0;
-		} else {
-			allowance = $('SELECT[name="allowance"]').val();
-			annualIncome = 0;
-		}
+		annualIncome=0;
+		allowance=0;
+		// if (typeof ($('SELECT[name="annualIncome"]').val()) != 'undefined') {
+		// 	annualIncome = $('SELECT[name="annualIncome"]').val();
+		// 	allowance = 0;
+		// } else {
+		// 	allowance = $('SELECT[name="allowance"]').val();
+		// 	annualIncome = 0;
+		// }
 		$.post(
 			'/filter.json',
 			{

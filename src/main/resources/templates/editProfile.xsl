@@ -225,57 +225,78 @@
 							</xsl:for-each>
 						</SELECT>
 					</DIV>
-					<DIV class="form-group">
-						<LABEL for="relationship">
-							<I class="fad fa-grin-hearts text-lg"></I>
-						</LABEL>
-						<SELECT class="form-control" id="relationship" name="relationship">
-							<xsl:for-each select="relationship">
-								<OPTION value="{@relationshipEnum}">
-									<xsl:if test="@relationshipSelected">
-										<xsl:attribute name="selected"/>
-									</xsl:if>
-									<xsl:value-of select="."/>
-								</OPTION>
-							</xsl:for-each>
-						</SELECT>
-					</DIV>
-					<xsl:if test="gender/@gender = 'male'">
-						<DIV class="form-group">
-							<LABEL for="annualIncome">
-								<I class="fad fa-usd-circle text-lg"></I>
-							</LABEL>
-							<SELECT class="form-control" id="annualIncome" name="annualIncome">
-								<xsl:for-each select="annualIncome">
-									<OPTION value="{@annualIncomeID}">
-										<xsl:if test="@annualIncomeSelected">
-											<xsl:attribute name="selected"/>
-										</xsl:if>
-										<xsl:value-of select="."/>
-									</OPTION>
-								</xsl:for-each>
-							</SELECT>
-						</DIV>
-					</xsl:if>
-					<xsl:if test="gender/@gender = 'female'">
-						<DIV class="form-group">
-							<LABEL for="allowance">
-								<I class="fad fa-usd-circle text-lg"></I>
-							</LABEL>
-							<SELECT class="form-control" id="allowance" name="allowance">
-								<xsl:for-each select="allowance">
-									<OPTION value="{@allowanceID}">
-										<xsl:if test="@allowanceSelected">
-											<xsl:attribute name="selected"/>
-										</xsl:if>
-										<xsl:value-of select="."/>
-									</OPTION>
-								</xsl:for-each>
-							</SELECT>
-						</DIV>
-					</xsl:if>
+<!--					<DIV class="form-group">-->
+<!--						<LABEL for="relationship">-->
+<!--							<I class="fad fa-grin-hearts text-lg"></I>-->
+<!--						</LABEL>-->
+<!--						<SELECT class="form-control" id="relationship" name="relationship">-->
+<!--							<xsl:for-each select="relationship">-->
+<!--								<OPTION value="{@relationshipEnum}">-->
+<!--									<xsl:if test="@relationshipSelected">-->
+<!--										<xsl:attribute name="selected"/>-->
+<!--									</xsl:if>-->
+<!--									<xsl:value-of select="."/>-->
+<!--								</OPTION>-->
+<!--							</xsl:for-each>-->
+<!--						</SELECT>-->
+<!--					</DIV>-->
+<!--					<xsl:if test="gender/@gender = 'male'">-->
+<!--						<DIV class="form-group">-->
+<!--							<LABEL for="annualIncome">-->
+<!--								<I class="fad fa-usd-circle text-lg"></I>-->
+<!--							</LABEL>-->
+<!--							<SELECT class="form-control" id="annualIncome" name="annualIncome">-->
+<!--								<xsl:for-each select="annualIncome">-->
+<!--									<OPTION value="{@annualIncomeID}">-->
+<!--										<xsl:if test="@annualIncomeSelected">-->
+<!--											<xsl:attribute name="selected"/>-->
+<!--										</xsl:if>-->
+<!--										<xsl:value-of select="."/>-->
+<!--									</OPTION>-->
+<!--								</xsl:for-each>-->
+<!--							</SELECT>-->
+<!--						</DIV>-->
+<!--					</xsl:if>-->
+<!--					<xsl:if test="gender/@gender = 'female'">-->
+<!--						<DIV class="form-group">-->
+<!--							<LABEL for="allowance">-->
+<!--								<I class="fad fa-usd-circle text-lg"></I>-->
+<!--							</LABEL>-->
+<!--							<SELECT class="form-control" id="allowance" name="allowance">-->
+<!--								<xsl:for-each select="allowance">-->
+<!--									<OPTION value="{@allowanceID}">-->
+<!--										<xsl:if test="@allowanceSelected">-->
+<!--											<xsl:attribute name="selected"/>-->
+<!--										</xsl:if>-->
+<!--										<xsl:value-of select="."/>-->
+<!--									</OPTION>-->
+<!--								</xsl:for-each>-->
+<!--							</SELECT>-->
+<!--						</DIV>-->
+<!--					</xsl:if>-->
 				</DIV>
+
 				<DIV class="col-12 col-lg-6">
+					<DIV class="form-group">
+						<LABEL>
+							<I class="fad fa-book-heart text-lg"></I>
+							<SPAN class="ms-1">提供服務</SPAN>
+						</LABEL>
+						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
+							<xsl:for-each select="service">
+								<DIV class="form-check p-0">
+									<INPUT class="form-check-input service" id="service{@serviceID}" type="checkbox" value="{@serviceID}">
+										<xsl:if test="@serviceSelected">
+											<xsl:attribute name="checked"/>
+										</xsl:if>
+									</INPUT>
+									<LABEL class="custom-control-label tag" for="service{@serviceID}">
+										<xsl:value-of select="."/>
+									</LABEL>
+								</DIV>
+							</xsl:for-each>
+						</DIV>
+					</DIV>
 					<DIV class="form-group">
 						<LABEL for="aboutMe">
 							<I class="fad fa-file-user text-lg"></I>
@@ -310,50 +331,31 @@
 							<xsl:value-of select="greeting"/>
 						</TEXTAREA>
 					</DIV>
-					<DIV class="form-group">
-						<LABEL>
-							<I class="fab fa-line text-lg me-1"></I>
-							<I class="fab fa-weixin text-lg"></I>
-							<SPAN class="text-xs m-1 mb-1">上傳 QR Code，安心加入好友，保護ID資料不外洩</SPAN>
-						</LABEL>
-						<DIV class="uploadQrcode ">
-							<LABEL>
-								<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
-								<A class="btn btn-primary px-4 py-1 me-1 mb-0">點擊上傳</A>
-							</LABEL>
-							<BUTTON class="btn btn-info px-4 py-1 ms-1 mb-0" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">使用教學</BUTTON>
-						</DIV>
-						<DIV class="mt-1">
-							<INPUT class="form-control" name="inviteMeAsLineFriend" readonly="" required="" style="display: none;" type="text" value="">
-								<xsl:if test="inviteMeAsLineFriend">
-									<xsl:attribute name="style">display: inline;</xsl:attribute>
-									<xsl:attribute name="value">
-										<xsl:value-of select="inviteMeAsLineFriend"/>
-									</xsl:attribute>
-								</xsl:if>
-							</INPUT>
-						</DIV>
-					</DIV>
-					<DIV class="form-group">
-						<LABEL>
-							<I class="fad fa-book-heart text-lg"></I>
-							<SPAN class="ms-1">約會模式</SPAN>
-						</LABEL>
-						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
-							<xsl:for-each select="service">
-								<DIV class="form-check p-0">
-									<INPUT class="form-check-input service" id="service{@serviceID}" type="checkbox" value="{@serviceID}">
-										<xsl:if test="@serviceSelected">
-											<xsl:attribute name="checked"/>
-										</xsl:if>
-									</INPUT>
-									<LABEL class="custom-control-label tag" for="service{@serviceID}">
-										<xsl:value-of select="."/>
-									</LABEL>
-								</DIV>
-							</xsl:for-each>
-						</DIV>
-					</DIV>
+<!--					<DIV class="form-group">-->
+<!--						<LABEL>-->
+<!--							<I class="fab fa-line text-lg me-1"></I>-->
+<!--							<I class="fab fa-weixin text-lg"></I>-->
+<!--							<SPAN class="text-xs m-1 mb-1">上傳 QR Code，安心加入好友，保護ID資料不外洩</SPAN>-->
+<!--						</LABEL>-->
+<!--						<DIV class="uploadQrcode ">-->
+<!--							<LABEL>-->
+<!--								<INPUT accept="image/*" class="sr-only" name="image" type="file"/>-->
+<!--								<A class="btn btn-primary px-4 py-1 me-1 mb-0">點擊上傳</A>-->
+<!--							</LABEL>-->
+<!--							<BUTTON class="btn btn-info px-4 py-1 ms-1 mb-0" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">使用教學</BUTTON>-->
+<!--						</DIV>-->
+<!--						<DIV class="mt-1">-->
+<!--							<INPUT class="form-control" name="inviteMeAsLineFriend" readonly="" required="" style="display: none;" type="text" value="">-->
+<!--								<xsl:if test="inviteMeAsLineFriend">-->
+<!--									<xsl:attribute name="style">display: inline;</xsl:attribute>-->
+<!--									<xsl:attribute name="value">-->
+<!--										<xsl:value-of select="inviteMeAsLineFriend"/>-->
+<!--									</xsl:attribute>-->
+<!--								</xsl:if>-->
+<!--							</INPUT>-->
+<!--						</DIV>-->
+<!--					</DIV>-->
+
 					<DIV class="form-group">
 						<LABEL>
 							<I class="fad fa-map-marker-alt text-lg"></I>

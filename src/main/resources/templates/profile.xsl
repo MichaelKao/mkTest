@@ -508,17 +508,7 @@
 				</DIV>
 			</SECTION>
 			<SECTION class="mb-2 p-3 card">
-				<DIV>
-					<I class="fad fa-map-marker-alt fontSize22 me-2"></I>
-					<xsl:for-each select="location">
-						<A class="me-1 btn btn-pink m-0 px-2 py-1" href="/search.json?location={@id}">
-							<SPAN>#</SPAN>
-							<SPAN>
-								<xsl:value-of select="."/>
-							</SPAN>
-						</A>
-					</xsl:for-each>
-				</DIV>
+
 				<DIV class="mt-2">
 					<I class="fad fa-book-heart fontSize22 me-2"></I>
 					<xsl:for-each select="service">
@@ -586,28 +576,28 @@
 						<xsl:value-of select="drinking"/>
 					</SPAN>
 				</DIV>
-				<DIV class="mb-2">
-					<I class="fad fa-grin-hearts fontSize22 col-1"></I>
-					<SPAN class="ms-4">
-						<xsl:value-of select="relationship"/>
-					</SPAN>
-				</DIV>
-				<xsl:if test="gender/@gender = 'female'">
-					<DIV class="mb-2">
-						<I class="fad fa-usd-circle fontSize22 col-1"></I>
-						<SPAN class="ms-4">
-							<xsl:value-of select="allowance"/>
-						</SPAN>
-					</DIV>
-				</xsl:if>
-				<xsl:if test="gender/@gender = 'male'">
-					<DIV class="mb-2">
-						<I class="fad fa-usd-circle fontSize22 col-1"></I>
-						<SPAN class="ms-4">
-							<xsl:value-of select="annualIncome"/>
-						</SPAN>
-					</DIV>
-				</xsl:if>
+<!--				<DIV class="mb-2">-->
+<!--					<I class="fad fa-grin-hearts fontSize22 col-1"></I>-->
+<!--					<SPAN class="ms-4">-->
+<!--						<xsl:value-of select="relationship"/>-->
+<!--					</SPAN>-->
+<!--				</DIV>-->
+<!--				<xsl:if test="gender/@gender = 'female'">-->
+<!--					<DIV class="mb-2">-->
+<!--						<I class="fad fa-usd-circle fontSize22 col-1"></I>-->
+<!--						<SPAN class="ms-4">-->
+<!--							<xsl:value-of select="allowance"/>-->
+<!--						</SPAN>-->
+<!--					</DIV>-->
+<!--				</xsl:if>-->
+<!--				<xsl:if test="gender/@gender = 'male'">-->
+<!--					<DIV class="mb-2">-->
+<!--						<I class="fad fa-usd-circle fontSize22 col-1"></I>-->
+<!--						<SPAN class="ms-4">-->
+<!--							<xsl:value-of select="annualIncome"/>-->
+<!--						</SPAN>-->
+<!--					</DIV>-->
+<!--				</xsl:if>-->
 			</SECTION>
 			<SECTION class="p-3 card">
 				<xsl:if test="/document/@me">
@@ -616,6 +606,17 @@
 						<SPAN>修改預設內容，邀約成功率提高60%！</SPAN>
 					</DIV>
 				</xsl:if>
+				<DIV>
+					<I class="fad fa-map-marker-alt fontSize22 me-2"></I>
+					<xsl:for-each select="location">
+						<A class="me-1 btn btn-pink m-0 px-2 py-1" href="/search.json?location={@id}">
+							<SPAN>#</SPAN>
+							<SPAN>
+								<xsl:value-of select="."/>
+							</SPAN>
+						</A>
+					</xsl:for-each>
+				</DIV>
 				<DIV class="d-flex">
 					<I class="fad fa-file-user fontSize22 col-1"></I>
 					<DIV class="aboutMe ms-4">

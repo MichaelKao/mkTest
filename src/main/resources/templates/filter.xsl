@@ -163,56 +163,56 @@
 							</DIV>
 						</DIV>
 					</DIV>
-					<DIV class="row">
-						<DIV class="col-6">
-							<DIV class="mb-4">
-								<xsl:if test="@female">
-									<DIV>
-										<I class="fad fa-usd-circle text-lg me-1"></I>
-										<SPAN>收入</SPAN>
-									</DIV>
-									<SELECT class="form-control" id="annualIncome" name="annualIncome">
-										<OPTION value="0">全部</OPTION>
-										<xsl:for-each select="annualIncome">
-											<OPTION value="{@annualIncomeID}">
-												<xsl:value-of select="."/>
-											</OPTION>
-										</xsl:for-each>
-									</SELECT>
-								</xsl:if>
-								<xsl:if test="@male">
-									<DIV>
-										<I class="fad fa-usd-circle text-lg me-1"></I>
-										<SPAN>零用</SPAN>
-									</DIV>
-									<SELECT class="form-control" id="allowance" name="allowance">
-										<OPTION value="0">全部</OPTION>
-										<xsl:for-each select="allowance">
-											<OPTION value="{@allowanceID}">
-												<xsl:value-of select="."/>
-											</OPTION>
-										</xsl:for-each>
-									</SELECT>
-								</xsl:if>
-							</DIV>
-						</DIV>
-						<DIV class="col-6">
-							<DIV class="mb-4">
-								<DIV>
-									<I class="fad fa-heart text-lg me-1"></I>
-									<SPAN>感情</SPAN>
-								</DIV>
-								<SELECT class="form-control" id="marriage" name="marriage">
-									<OPTION value="">全部</OPTION>
-									<xsl:for-each select="marriage">
-										<OPTION value="{@marriageEnum}">
-											<xsl:value-of select="."/>
-										</OPTION>
-									</xsl:for-each>
-								</SELECT>
-							</DIV>
-						</DIV>
-					</DIV>
+<!--					<DIV class="row">-->
+<!--						<DIV class="col-6">-->
+<!--							<DIV class="mb-4">-->
+<!--								<xsl:if test="@female">-->
+<!--									<DIV>-->
+<!--										<I class="fad fa-usd-circle text-lg me-1"></I>-->
+<!--										<SPAN>收入</SPAN>-->
+<!--									</DIV>-->
+<!--									<SELECT class="form-control" id="annualIncome" name="annualIncome">-->
+<!--										<OPTION value="0">全部</OPTION>-->
+<!--										<xsl:for-each select="annualIncome">-->
+<!--											<OPTION value="{@annualIncomeID}">-->
+<!--												<xsl:value-of select="."/>-->
+<!--											</OPTION>-->
+<!--										</xsl:for-each>-->
+<!--									</SELECT>-->
+<!--								</xsl:if>-->
+<!--								<xsl:if test="@male">-->
+<!--									<DIV>-->
+<!--										<I class="fad fa-usd-circle text-lg me-1"></I>-->
+<!--										<SPAN>零用</SPAN>-->
+<!--									</DIV>-->
+<!--									<SELECT class="form-control" id="allowance" name="allowance">-->
+<!--										<OPTION value="0">全部</OPTION>-->
+<!--										<xsl:for-each select="allowance">-->
+<!--											<OPTION value="{@allowanceID}">-->
+<!--												<xsl:value-of select="."/>-->
+<!--											</OPTION>-->
+<!--										</xsl:for-each>-->
+<!--									</SELECT>-->
+<!--								</xsl:if>-->
+<!--							</DIV>-->
+<!--						</DIV>-->
+<!--						<DIV class="col-6">-->
+<!--							<DIV class="mb-4">-->
+<!--								<DIV>-->
+<!--									<I class="fad fa-heart text-lg me-1"></I>-->
+<!--									<SPAN>感情</SPAN>-->
+<!--								</DIV>-->
+<!--								<SELECT class="form-control" id="marriage" name="marriage">-->
+<!--									<OPTION value="">全部</OPTION>-->
+<!--									<xsl:for-each select="marriage">-->
+<!--										<OPTION value="{@marriageEnum}">-->
+<!--											<xsl:value-of select="."/>-->
+<!--										</OPTION>-->
+<!--									</xsl:for-each>-->
+<!--								</SELECT>-->
+<!--							</DIV>-->
+<!--						</DIV>-->
+<!--					</DIV>-->
 					<DIV class="row">
 						<DIV class="col-6">
 							<DIV class="mb-4">

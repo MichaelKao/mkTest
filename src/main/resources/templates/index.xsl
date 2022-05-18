@@ -47,7 +47,7 @@
 							</DIV>
 							<DIV class="d-flex flex-column align-items-center justify-content-center mb-3">
 								<DIV class="text-white text-bold text-lg">
-									<SPAN class="me-3">奢華約會 test</SPAN>
+									<SPAN class="me-3">奢華約會</SPAN>
 									<SPAN>即刻見面</SPAN>
 								</DIV>
 								<DIV class="divider"></DIV>
