@@ -44,6 +44,7 @@
 										<LI class="nav-item">
 											<A class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#wire">
 												<SPAN class="text-primary text-bold">銀行匯款</SPAN>
+
 											</A>
 										</LI>
 										<!--										<LI class="nav-item">
@@ -89,6 +90,7 @@
 													</DIV>
 												</DIV>
 												<DIV class="text-center">
+													<SPAN class="text-primary text-bold">開立發票可減免一成手續費，請聯繫客服辦理</SPAN>
 													<BUTTON class="btn btn-primary btn-lg mb-0" type="submit">使用銀行匯款</BUTTON>
 												</DIV>
 											</FORM>
@@ -148,7 +150,7 @@
 					<DIV class="tab-pane mt-3 active" id="mainOne">
 						<DIV class="text-sm opacity-8 p-0 col-md-8 mx-auto">
 							<DIV class="card p-3">
-								<H6 class="text-center text-bold text-primary">目前可提領的總費用：<xsl:value-of select="@totalPoints"/></H6>
+								<H6 class="text-center text-bold text-primary">目前可提領的總價值：<xsl:value-of select="@totalPoints"/></H6>
 								<DIV class="text-xs text-center">
 									<SPAN>僅能提領</SPAN>
 									<xsl:value-of select="@before7days"/>
@@ -160,13 +162,19 @@
 									</SPAN>
 									<SPAN>換算台幣 1:1, 提領有一成金流手續費</SPAN>
 								</DIV>
+								<DIV class="my-1 text-danger text-xs text-center">
+									<SPAN>
+										<I class="far fa-wallet me-1"></I>
+									</SPAN>
+									<SPAN>透過邀請碼推薦男仕,再提升20%分潤!!</SPAN>
+								</DIV>
 								<TABLE class="table align-items-center mb-0">
 									<THEAD>
 										<TR>
 											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
 											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
 											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">ME點</TH>
-											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
+											<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">價值</TH>
 										</TR>
 									</THEAD>
 									<TBODY>
@@ -216,9 +224,11 @@
 										<BUTTON class="btn btn-block btn-primary m-0 py-2 withdrawal border-radius-xl mt-2" data-bs-toggle="modal" data-bs-target="#paymentModal" type="button">提領</BUTTON>
 									</xsl:if>
 									<xsl:if test="(@Relief='0')">
-										<BUTTON class="btn btn-block btn-primary m-0 py-2 border-radius-xl mt-2"  type="button">請先進行「安心認證」，才能提領</BUTTON>
+										<BUTTON class="btn btn-block btn-primary m-0 py-2 border-radius-xl mt-2"  type="button">您還不能執行此功能,請先完成安心認證,增加帳戶信任度</BUTTON>
 									</xsl:if>
+
 								</xsl:if>
+
 
 
 							</DIV>
@@ -283,7 +293,7 @@
 											</DIV>
 											<DIV class="ms-auto d-flex align-items-center">
 												<DIV>
-													<SPAN class="text-xs">金額</SPAN>
+													<SPAN class="text-xs">價值</SPAN>
 													<SPAN class="text-dark font-weight-bold text-sm ms-1">
 														<xsl:value-of select="@points"/>
 													</SPAN>
@@ -302,7 +312,7 @@
 															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
 															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
 															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">ME點</TH>
-															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
+															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">價值</TH>
 														</TR>
 													</THEAD>
 													<TBODY>
@@ -356,7 +366,7 @@
 											</DIV>
 											<DIV class="ms-auto d-flex align-items-center">
 												<DIV>
-													<SPAN class="text-xs">金額</SPAN>
+													<SPAN class="text-xs">價值</SPAN>
 													<SPAN class="text-dark font-weight-bold text-sm ms-1">
 														<xsl:value-of select="@points"/>
 													</SPAN>
@@ -375,7 +385,7 @@
 															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">日期</TH>
 															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">男仕</TH>
 															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">ME點</TH>
-															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">金額</TH>
+															<TH class="text-secondary text-center text-xxs font-weight-bolder opacity-7">價值</TH>
 														</TR>
 													</THEAD>
 													<TBODY>

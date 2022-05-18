@@ -69,7 +69,7 @@
 										<DIV class="my-2 text-primary text-xs">
 											<DIV>
 												<I class="fad fa-taxi fontSize22 me-1"></I>
-												<SPAN>率先支付約會車馬費，成功率提高80%</SPAN>
+												<SPAN>率先支付約會出席費，成功率提高80%</SPAN>
 											</DIV>
 											<DIV>
 												<I class="fad fa-gift fontSize22 me-1"></I>

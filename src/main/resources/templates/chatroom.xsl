@@ -95,7 +95,7 @@
 									<DIV class="my-2 text-primary text-xs">
 										<DIV>
 											<I class="fad fa-taxi fontSize22 me-1"></I>
-											<SPAN>率先支付約會車馬費，成功率提高80%</SPAN>
+											<SPAN>率先支付約會出席費，成功率提高80%</SPAN>
 										</DIV>
 										<DIV>
 											<I class="fad fa-gift fontSize22 me-1"></I>
@@ -442,7 +442,7 @@
 													<DIV class="d-flex flex-column justify-content-center align-items-center mt-2">
 														<DIV class="text-white text-bold">確認約會，即刻見面</DIV>
 														<DIV class="text-white text-bold">把邀約確定下來</DIV>
-														<DIV class="text-white text-sm mt-2">接受約會見面車馬費</DIV>
+														<DIV class="text-white text-sm mt-2">接受約會見面出席費</DIV>
 														<DIV class="text-white text-sm">直接站內確認入帳</DIV>
 														<DIV class="text-white text-sm">48小時內可反悔退回</DIV>
 													</DIV>

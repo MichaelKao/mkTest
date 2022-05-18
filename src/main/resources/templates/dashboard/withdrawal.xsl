@@ -113,7 +113,7 @@
 											<SPAN>失敗</SPAN>
 										</BUTTON>
 										<DIV>
-											<SPAN class="text-xs">金額：</SPAN>
+											<SPAN class="text-xs">價值：</SPAN>
 											<SPAN class="text-dark font-weight-bold text-sm">
 												<xsl:value-of select="@points"/>
 											</SPAN>
@@ -132,7 +132,7 @@
 													<TH class="text-xs text-center">日期</TH>
 													<TH class="text-xs text-center">男仕</TH>
 													<TH class="text-xs text-center">ME點</TH>
-													<TH class="text-xs text-center">金額</TH>
+													<TH class="text-xs text-center">價值</TH>
 												</TR>
 											</THEAD>
 											<TBODY>
@@ -186,7 +186,7 @@
 									</DIV>
 									<DIV class="ms-auto d-flex align-items-center">
 										<DIV>
-											<SPAN class="text-xs">金額：</SPAN>
+											<SPAN class="text-xs">價值：</SPAN>
 											<SPAN class="text-dark font-weight-bold text-sm">
 												<xsl:value-of select="@points"/>
 											</SPAN>
@@ -205,7 +205,7 @@
 													<TH class="text-xs text-center">日期</TH>
 													<TH class="text-xs text-center">男仕</TH>
 													<TH class="text-xs text-center">ME點</TH>
-													<TH class="text-xs text-center">金額</TH>
+													<TH class="text-xs text-center">價值</TH>
 												</TR>
 											</THEAD>
 											<TBODY>
