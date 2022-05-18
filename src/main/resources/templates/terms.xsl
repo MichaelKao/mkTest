@@ -30,7 +30,7 @@
 			<xsl:call-template name="bootstrapToast"/>
 			<DIV class="container py-6 py-md-7">
 				<DIV class="col-11 col-md-8 col-lg-6 mx-auto">
-					<H4 class="text-center text-primary">服務條款</H4>
+					<H4 class="text-center text-primary">Youngme 使用者條款</H4>
 					<DIV>
 						<DIV class="mb-2">1. 使用本網站，即表示您完全同意接受這些條款和條件。如果您不同意這些條款和條件的任何部分，則不得使用本網站。</DIV>
 						<DIV class="mb-2">2. 您必須年滿18歲才能使用此網站，註冊表示您保證年滿18歲。</DIV>

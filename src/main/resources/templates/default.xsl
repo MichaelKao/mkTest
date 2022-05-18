@@ -615,7 +615,7 @@
 			</DIV>
 			<DIV class="text-center">
 				<A class="m-2 text-secondary" href="/privacy.asp">隱私政策</A>
-				<A class="m-2 text-secondary" href="/terms.asp">服務條款</A>
+				<A class="m-2 text-secondary" href="/terms.asp">使用者條款</A>
 			</DIV>
 		</FOOTER>
 		<!-- Facebook Pixel Code -->

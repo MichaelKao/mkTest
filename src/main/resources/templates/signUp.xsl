@@ -172,7 +172,7 @@
 							<DIV>
 								<A href="/privacy.asp" class="text-primary font-weight-bold">隱私權政策</A>
 								<SPAN>與</SPAN>
-								<A href="/terms.asp" class="text-primary font-weight-bold">服務條款</A>
+								<A href="/terms.asp" class="text-primary font-weight-bold">使用者條款</A>
 							</DIV>
 							<SPAN>並表示已滿18歲。</SPAN>
 						</DIV>
