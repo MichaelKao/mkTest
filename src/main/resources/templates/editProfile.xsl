@@ -298,6 +298,26 @@
 						</DIV>
 					</DIV>
 					<DIV class="form-group">
+						<LABEL>
+							<I class="fad fa-map-marker-alt text-lg"></I>
+							<SPAN class="ms-1">約會地區</SPAN>
+						</LABEL>
+						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
+							<xsl:for-each select="location">
+								<DIV class="form-check p-0">
+									<INPUT class="form-check-input location" id="location{@locationID}" type="checkbox" value="{@locationID}">
+										<xsl:if test="@locationSelected">
+											<xsl:attribute name="checked"/>
+										</xsl:if>
+									</INPUT>
+									<LABEL class="custom-control-label tag" for="location{@locationID}">
+										<xsl:value-of select="."/>
+									</LABEL>
+								</DIV>
+							</xsl:for-each>
+						</DIV>
+					</DIV>
+					<DIV class="form-group">
 						<LABEL for="aboutMe">
 							<I class="fad fa-file-user text-lg"></I>
 							<SPAN class="ms-1">關於我</SPAN>
@@ -356,26 +376,7 @@
 <!--						</DIV>-->
 <!--					</DIV>-->
 
-					<DIV class="form-group">
-						<LABEL>
-							<I class="fad fa-map-marker-alt text-lg"></I>
-							<SPAN class="ms-1">約會地區</SPAN>
-						</LABEL>
-						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
-							<xsl:for-each select="location">
-								<DIV class="form-check p-0">
-									<INPUT class="form-check-input location" id="location{@locationID}" type="checkbox" value="{@locationID}">
-										<xsl:if test="@locationSelected">
-											<xsl:attribute name="checked"/>
-										</xsl:if>
-									</INPUT>
-									<LABEL class="custom-control-label tag" for="location{@locationID}">
-										<xsl:value-of select="."/>
-									</LABEL>
-								</DIV>
-							</xsl:for-each>
-						</DIV>
-					</DIV>
+
 				</DIV>
 				<DIV class="mx-auto mt-2 col-6 col-lg-4">
 					<BUTTON class="btn btn-round btn-dark mb-0 w-100" type="submit">

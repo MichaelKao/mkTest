@@ -260,115 +260,57 @@
 							</xsl:for-each>
 						</SELECT>
 					</DIV>
-					<DIV class="form-group">
-						<LABEL for="relationship">
-							<I class="fad fa-grin-hearts text-lg"></I>
-						</LABEL>
-						<SELECT class="form-control" id="relationship" name="relationship">
-							<xsl:for-each select="relationship">
-								<OPTION value="{@relationshipEnum}">
-									<xsl:if test="@relationshipSelected">
-										<xsl:attribute name="selected"/>
-									</xsl:if>
-									<xsl:value-of select="."/>
-								</OPTION>
-							</xsl:for-each>
-						</SELECT>
-					</DIV>
-					<xsl:if test="gender/@gender = 'male'">
-						<DIV class="form-group">
-							<LABEL for="annualIncome">
-								<I class="fad fa-usd-circle text-lg"></I>
-							</LABEL>
-							<SELECT class="form-control" id="annualIncome" name="annualIncome">
-								<xsl:for-each select="annualIncome">
-									<OPTION value="{@annualIncomeID}">
-										<xsl:if test="@annualIncomeSelected">
-											<xsl:attribute name="selected"/>
-										</xsl:if>
-										<xsl:value-of select="."/>
-									</OPTION>
-								</xsl:for-each>
-							</SELECT>
-						</DIV>
-					</xsl:if>
-					<xsl:if test="gender/@gender = 'female'">
-						<DIV class="form-group">
-							<LABEL for="allowance">
-								<I class="fad fa-usd-circle text-lg"></I>
-							</LABEL>
-							<SELECT class="form-control" id="allowance" name="allowance">
-								<xsl:for-each select="allowance">
-									<OPTION value="{@allowanceID}">
-										<xsl:if test="@allowanceSelected">
-											<xsl:attribute name="selected"/>
-										</xsl:if>
-										<xsl:value-of select="."/>
-									</OPTION>
-								</xsl:for-each>
-							</SELECT>
-						</DIV>
-					</xsl:if>
+<!--					<DIV class="form-group">-->
+<!--						<LABEL for="relationship">-->
+<!--							<I class="fad fa-grin-hearts text-lg"></I>-->
+<!--						</LABEL>-->
+<!--						<SELECT class="form-control" id="relationship" name="relationship">-->
+<!--							<xsl:for-each select="relationship">-->
+<!--								<OPTION value="{@relationshipEnum}">-->
+<!--									<xsl:if test="@relationshipSelected">-->
+<!--										<xsl:attribute name="selected"/>-->
+<!--									</xsl:if>-->
+<!--									<xsl:value-of select="."/>-->
+<!--								</OPTION>-->
+<!--							</xsl:for-each>-->
+<!--						</SELECT>-->
+<!--					</DIV>-->
+<!--					<xsl:if test="gender/@gender = 'male'">-->
+<!--						<DIV class="form-group">-->
+<!--							<LABEL for="annualIncome">-->
+<!--								<I class="fad fa-usd-circle text-lg"></I>-->
+<!--							</LABEL>-->
+<!--							<SELECT class="form-control" id="annualIncome" name="annualIncome">-->
+<!--								<xsl:for-each select="annualIncome">-->
+<!--									<OPTION value="{@annualIncomeID}">-->
+<!--										<xsl:if test="@annualIncomeSelected">-->
+<!--											<xsl:attribute name="selected"/>-->
+<!--										</xsl:if>-->
+<!--										<xsl:value-of select="."/>-->
+<!--									</OPTION>-->
+<!--								</xsl:for-each>-->
+<!--							</SELECT>-->
+<!--						</DIV>-->
+<!--					</xsl:if>-->
+<!--					<xsl:if test="gender/@gender = 'female'">-->
+<!--						<DIV class="form-group">-->
+<!--							<LABEL for="allowance">-->
+<!--								<I class="fad fa-usd-circle text-lg"></I>-->
+<!--							</LABEL>-->
+<!--							<SELECT class="form-control" id="allowance" name="allowance">-->
+<!--								<xsl:for-each select="allowance">-->
+<!--									<OPTION value="{@allowanceID}">-->
+<!--										<xsl:if test="@allowanceSelected">-->
+<!--											<xsl:attribute name="selected"/>-->
+<!--										</xsl:if>-->
+<!--										<xsl:value-of select="."/>-->
+<!--									</OPTION>-->
+<!--								</xsl:for-each>-->
+<!--							</SELECT>-->
+<!--						</DIV>-->
+<!--					</xsl:if>-->
 				</DIV>
 				<DIV class="col-12 col-lg-6">
-					<DIV class="form-group">
-						<LABEL for="aboutMe">
-							<I class="fad fa-file-user text-lg"></I>
-							<SPAN class="ms-1">關於我</SPAN>
-						</LABEL>
-						<SPAN class="ms-1 text-xs text-danger">(修改預設內容，邀約成功率提高60%！)</SPAN>
-						<TEXTAREA class="form-control" id="aboutMe" name="aboutMe" rows="6">
-							<xsl:value-of select="aboutMe"/>
-						</TEXTAREA>
-					</DIV>
-					<DIV class="form-group">
-						<LABEL for="idealConditions">
-							<I class="fad fa-fire-alt text-lg"></I>
-							<SPAN class="ms-1">理想對象</SPAN>
-						</LABEL>
-						<SPAN class="ms-1 text-xs text-danger">(修改預設內容，邀約成功率提高60%！)</SPAN>
-						<TEXTAREA class="form-control" id="idealConditions" name="idealConditions" rows="6">
-							<xsl:value-of select="idealConditions"/>
-						</TEXTAREA>
-					</DIV>
-					<DIV class="form-group">
-						<LABEL for="greeting">
-							<I class="fad fa-comment-edit text-lg"></I>
-							<xsl:if test="gender/@gender = 'female'">
-								<SPAN class="ms-1">與男仕打招呼</SPAN>
-							</xsl:if>
-							<xsl:if test="gender/@gender = 'male'">
-								<SPAN class="ms-1">用一句話介紹自己來打動甜心</SPAN>
-							</xsl:if>
-						</LABEL>
-						<TEXTAREA class="form-control" id="greeting" name="greeting" rows="4">
-							<xsl:value-of select="greeting"/>
-						</TEXTAREA>
-					</DIV>
-					<DIV class="form-group">
-						<LABEL>
-							<I class="fab fa-line text-lg me-1"></I>
-							<I class="fab fa-weixin text-lg"></I>
-							<SPAN class="text-xs m-1 mb-1">上傳 QR Code，安心加入好友，保護ID資料不外洩</SPAN>
-						</LABEL>
-						<DIV class="uploadQrcode ">
-							<LABEL>
-								<INPUT accept="image/*" class="sr-only" name="image" type="file"/>
-								<A class="btn btn-primary px-4 py-1 me-1 mb-0">點擊上傳</A>
-							</LABEL>
-							<BUTTON class="btn btn-info px-4 py-1 ms-1 mb-0" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">使用教學</BUTTON>
-						</DIV>
-						<DIV class="mt-1">
-							<INPUT class="form-control" name="inviteMeAsLineFriend" readonly="" required="" style="display: none;" type="text" value="">
-								<xsl:if test="inviteMeAsLineFriend">
-									<xsl:attribute name="style">display: inline;</xsl:attribute>
-									<xsl:attribute name="value">
-										<xsl:value-of select="inviteMeAsLineFriend"/>
-									</xsl:attribute>
-								</xsl:if>
-							</INPUT>
-						</DIV>
-					</DIV>
 					<DIV class="form-group">
 						<LABEL>
 							<I class="fad fa-book-heart text-lg"></I>
@@ -409,6 +351,65 @@
 							</xsl:for-each>
 						</DIV>
 					</DIV>
+					<DIV class="form-group">
+						<LABEL for="aboutMe">
+							<I class="fad fa-file-user text-lg"></I>
+							<SPAN class="ms-1">關於我</SPAN>
+						</LABEL>
+						<SPAN class="ms-1 text-xs text-danger">(修改預設內容，邀約成功率提高60%！)</SPAN>
+						<TEXTAREA class="form-control" id="aboutMe" name="aboutMe" rows="6">
+							<xsl:value-of select="aboutMe"/>
+						</TEXTAREA>
+					</DIV>
+					<DIV class="form-group">
+						<LABEL for="idealConditions">
+							<I class="fad fa-fire-alt text-lg"></I>
+							<SPAN class="ms-1">理想對象</SPAN>
+						</LABEL>
+						<SPAN class="ms-1 text-xs text-danger">(修改預設內容，邀約成功率提高60%！)</SPAN>
+						<TEXTAREA class="form-control" id="idealConditions" name="idealConditions" rows="6">
+							<xsl:value-of select="idealConditions"/>
+						</TEXTAREA>
+					</DIV>
+					<DIV class="form-group">
+						<LABEL for="greeting">
+							<I class="fad fa-comment-edit text-lg"></I>
+							<xsl:if test="gender/@gender = 'female'">
+								<SPAN class="ms-1">與男仕打招呼</SPAN>
+							</xsl:if>
+							<xsl:if test="gender/@gender = 'male'">
+								<SPAN class="ms-1">用一句話介紹自己來打動甜心</SPAN>
+							</xsl:if>
+						</LABEL>
+						<TEXTAREA class="form-control" id="greeting" name="greeting" rows="4">
+							<xsl:value-of select="greeting"/>
+						</TEXTAREA>
+					</DIV>
+<!--					<DIV class="form-group">-->
+<!--						<LABEL>-->
+<!--							<I class="fab fa-line text-lg me-1"></I>-->
+<!--							<I class="fab fa-weixin text-lg"></I>-->
+<!--							<SPAN class="text-xs m-1 mb-1">上傳 QR Code，安心加入好友，保護ID資料不外洩</SPAN>-->
+<!--						</LABEL>-->
+<!--						<DIV class="uploadQrcode ">-->
+<!--							<LABEL>-->
+<!--								<INPUT accept="image/*" class="sr-only" name="image" type="file"/>-->
+<!--								<A class="btn btn-primary px-4 py-1 me-1 mb-0">點擊上傳</A>-->
+<!--							</LABEL>-->
+<!--							<BUTTON class="btn btn-info px-4 py-1 ms-1 mb-0" data-bs-target="#qrcodeModal" data-bs-toggle="modal" type="button">使用教學</BUTTON>-->
+<!--						</DIV>-->
+<!--						<DIV class="mt-1">-->
+<!--							<INPUT class="form-control" name="inviteMeAsLineFriend" readonly="" required="" style="display: none;" type="text" value="">-->
+<!--								<xsl:if test="inviteMeAsLineFriend">-->
+<!--									<xsl:attribute name="style">display: inline;</xsl:attribute>-->
+<!--									<xsl:attribute name="value">-->
+<!--										<xsl:value-of select="inviteMeAsLineFriend"/>-->
+<!--									</xsl:attribute>-->
+<!--								</xsl:if>-->
+<!--							</INPUT>-->
+<!--						</DIV>-->
+<!--					</DIV>-->
+
 				</DIV>
 				<DIV class="mx-auto mt-2 col-6 col-lg-4">
 					<BUTTON class="btn btn-round btn-dark mb-0 w-100" type="submit">完成註冊!</BUTTON>

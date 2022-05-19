@@ -2496,12 +2496,12 @@ public class LoverService {
 				toJSONObject();
 		}
 
-		if (!lover.getGender() && (model.getInviteMeAsLineFriend().isBlank() || model.getInviteMeAsLineFriend().isEmpty())) {
-			return new JavaScriptObjectNotation().
-				withReason("請上傳 LINE 或 WeChat 的 QRcode").
-				withResponse(false).
-				toJSONObject();
-		}
+//		if (!lover.getGender() && (model.getInviteMeAsLineFriend().isBlank() || model.getInviteMeAsLineFriend().isEmpty())) {
+//			return new JavaScriptObjectNotation().
+//				withReason("請上傳 LINE 或 WeChat 的 QRcode").
+//				withResponse(false).
+//				toJSONObject();
+//		}
 
 		if (Objects.isNull(model.getBodyType())) {
 			return new JavaScriptObjectNotation().
@@ -2531,26 +2531,26 @@ public class LoverService {
 				toJSONObject();
 		}
 
-		if (Objects.isNull(model.getRelationship())) {
-			return new JavaScriptObjectNotation().
-				withReason("請擇一相處關係").
-				withResponse(false).
-				toJSONObject();
-		}
-
-		if (lover.getGender() && Objects.isNull(model.getAnnualIncome())) {
-			return new JavaScriptObjectNotation().
-				withReason("請擇一年收入").
-				withResponse(false).
-				toJSONObject();
-		}
-
-		if (!lover.getGender() && Objects.isNull(model.getAllowance())) {
-			return new JavaScriptObjectNotation().
-				withReason("請擇一期望零用金").
-				withResponse(false).
-				toJSONObject();
-		}
+//		if (Objects.isNull(model.getRelationship())) {
+//			return new JavaScriptObjectNotation().
+//				withReason("請擇一相處關係").
+//				withResponse(false).
+//				toJSONObject();
+//		}
+//
+//		if (lover.getGender() && Objects.isNull(model.getAnnualIncome())) {
+//			return new JavaScriptObjectNotation().
+//				withReason("請擇一年收入").
+//				withResponse(false).
+//				toJSONObject();
+//		}
+//
+//		if (!lover.getGender() && Objects.isNull(model.getAllowance())) {
+//			return new JavaScriptObjectNotation().
+//				withReason("請擇一期望零用金").
+//				withResponse(false).
+//				toJSONObject();
+//		}
 
 		if (model.getAboutMe().isBlank() || model.getAboutMe().isEmpty()) {
 			return new JavaScriptObjectNotation().
@@ -4000,21 +4000,21 @@ public class LoverService {
 		if (Objects.nonNull(someone.getDelete())) {
 			return false;
 		}//封号
-		if (Objects.isNull(someone.getRelationship())) {
-			return false;
-		}//预期关系
+//		if (Objects.isNull(someone.getRelationship())) {
+//			return false;
+//		}//预期关系
 		if (someone.getGender()) {
-			if (Objects.isNull(someone.getAnnualIncome())) {
-				return false;
-			}//年收入
+//			if (Objects.isNull(someone.getAnnualIncome())) {
+//				return false;
+//			}//年收入
 		} else {
-			String inviteMeAsFriend = someone.getInviteMeAsLineFriend();
-			if (Objects.isNull(inviteMeAsFriend) || inviteMeAsFriend.isBlank()) {
-				return false;
-			}//添加好友链结
-			if (Objects.isNull(someone.getAllowance())) {
-				return false;
-			}//期望零用钱
+//			String inviteMeAsFriend = someone.getInviteMeAsLineFriend();
+//			if (Objects.isNull(inviteMeAsFriend) || inviteMeAsFriend.isBlank()) {
+//				return false;
+//			}//添加好友链结
+//			if (Objects.isNull(someone.getAllowance())) {
+//				return false;
+//			}//期望零用钱
 		}
 		return !(getLocations(someone).isEmpty() || getCompanionships(someone).isEmpty());//(地区|友谊)标签
 	}
