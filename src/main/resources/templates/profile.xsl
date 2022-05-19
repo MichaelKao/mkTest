@@ -75,6 +75,13 @@
 												<I class="fad fa-gift fontSize22 me-1"></I>
 												<SPAN>透過ME點做為禮物發送，好感度增加90%</SPAN>
 											</DIV>
+											<DIV>
+												<I class="fad fa-gift fontSize22 me-1"></I>
+												<SPAN>確定邀約即表示您已閱讀並同意 <A class="m-2 text-secondary" href="/termsInvite.asp">服務條款</A>
+
+
+												</SPAN>
+											</DIV>
 										</DIV>
 										<INPUT class="form-control" id="fare" inputmode="numeric" min="1" name="howMany" required="" type="number"/>
 									</DIV>

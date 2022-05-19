@@ -3035,6 +3035,60 @@ public class WelcomeController {
 		return modelAndView;
 	}
 
+	//邀約條款
+	@GetMapping(path = "/termsInvite.asp")
+	ModelAndView termsInvite(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		Document document = Servant.parseDocument();
+
+		Element documentElement;
+		if (servant.isNull(authentication)) {
+			//未登录
+			documentElement = document.getDocumentElement();
+			documentElement.setAttribute(
+				"customerLine",
+				Servant.CUSTOMER_LINE_DEFAULT
+			);//客服LINE
+		} else {
+			//已登录
+			documentElement = servant.documentElement(
+				document,
+				authentication
+			);
+		}
+
+
+		ModelAndView modelAndView = new ModelAndView("termsInvite");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+	//須知
+	@GetMapping(path = "/mustknow.asp")
+	ModelAndView mustknow(Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+		Document document = Servant.parseDocument();
+
+		Element documentElement;
+		if (servant.isNull(authentication)) {
+			//未登录
+			documentElement = document.getDocumentElement();
+			documentElement.setAttribute(
+					"customerLine",
+					Servant.CUSTOMER_LINE_DEFAULT
+			);//客服LINE
+		} else {
+			//已登录
+			documentElement = servant.documentElement(
+					document,
+					authentication
+			);
+		}
+
+		ModelAndView modelAndView = new ModelAndView("mustknow");
+		modelAndView.getModelMap().addAttribute(document);
+		return modelAndView;
+	}
+
+
 	/**
 	 * 隐私权政策。
 	 *

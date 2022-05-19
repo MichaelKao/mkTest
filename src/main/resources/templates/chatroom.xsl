@@ -101,6 +101,11 @@
 											<I class="fad fa-gift fontSize22 me-1"></I>
 											<SPAN>透過ME點做為禮物發送，好感度增加90%</SPAN>
 										</DIV>
+										<DIV>
+											<I class="fad fa-gift fontSize22 me-1"></I>
+											<SPAN>確定邀約即表示您已閱讀並同意 <A class="m-2 text-secondary" href="/termsInvite.asp">服務條款</A>
+											</SPAN>
+										</DIV>
 									</DIV>
 								</xsl:if>
 								<xsl:if test="@female">
@@ -383,7 +388,7 @@
 												<DIV class="carousel-cell imageShadow d-flex flex-column justify-content-center">
 													<DIV class="d-flex flex-column justify-content-center align-items-center mb-3">
 														<H4 class="text-white text-light">LET'S CHAT AND DATE</H4>
-														<DIV class="guideTitle text-bold text-dark h4 mb-0">防止騷擾</DIV>
+														<DIV class="guideTitle text-bold text-dark h4 mb-0">陪玩須知</DIV>
 														<DIV class="text-white h6 mt-1 mb-0 text-light">先聊聊觀察與考慮</DIV>
 													</DIV>
 													<DIV class="d-flex flex-column justify-content-center align-items-center my-2">
@@ -395,11 +400,11 @@
 														<DIV>
 															<IMG class="border-radius-sm imageShadow" src="https://d2wqx6u4nuhgzp.cloudfront.net/IMAGE/queenChat1.jpg" width="150px"/>
 														</DIV>
+														<xsl:if test="@female">
 														<DIV class="queenSlogan mt-3 text-center text-white text-sm">
-															<DIV>禮貌且明確的邀約</DIV>
-															<DIV>禁止性交易與騷擾</DIV>
-															<DIV class="text-bold">追求到夢想女孩</DIV>
+															<DIV>確定邀約表示您已同意  <a href="/mustknow.asp">養蜜陪玩須知</a></DIV>
 														</DIV>
+														</xsl:if>
 													</DIV>
 													<OL class="flickity-page-dots">
 														<LI class="dot is-selected"></LI>
