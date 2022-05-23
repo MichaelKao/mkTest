@@ -160,7 +160,7 @@
 									<SPAN>
 										<I class="far fa-wallet me-1"></I>
 									</SPAN>
-									<SPAN>換算台幣 1:1, 提領有一成金流手續費</SPAN>
+									<SPAN>換算台幣 = 0.6 , 提領有一成金流手續費</SPAN>
 								</DIV>
 								<DIV class="my-1 text-danger text-xs text-center">
 									<SPAN>

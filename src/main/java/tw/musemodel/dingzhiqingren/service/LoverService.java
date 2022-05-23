@@ -163,6 +163,7 @@ public class LoverService {
 
 	private static final String AWS_SECRET_ACCESS_KEY = System.getenv("AWS_SECRET_ACCESS_KEY");
 
+
 	private static final AmazonSNS AMAZON_SNS = AmazonSNSClientBuilder.
 		standard().
 		withCredentials(new AWSStaticCredentialsProvider(
@@ -177,6 +178,8 @@ public class LoverService {
 	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	private static final Short NUMBER_OF_GROUP_GREETING = Short.valueOf(System.getenv("NUMBER_OF_GROUP_GREETING"));
+
+	public static final double ME_Point_To_NTD=0.6;
 
 	public static Object DATE_TIME_FORMATTER(String yyyyMMdd_HHmm) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -304,6 +307,8 @@ public class LoverService {
 
 	@Autowired
 	private DashboardService dashboardService;
+
+
 
 	/**
 	 * 找上线用户。
@@ -2710,7 +2715,7 @@ public class LoverService {
 			// 抽完1成可提領的金額
 			recordElement.setAttribute(
 				"points",
-				Long.toString(Math.round(Math.abs(points) * 0.9))
+				Long.toString(Math.round(Math.abs(points) * LoverService.ME_Point_To_NTD))
 			);
 		});
 
@@ -2768,7 +2773,7 @@ public class LoverService {
 			// 抽完1成可提領的金額
 			notAbleToWithdrawalElement.setAttribute(
 				"points",
-				Long.toString(Math.round(Math.abs(points) * 0.9))
+				Long.toString(Math.round(Math.abs(points) * LoverService.ME_Point_To_NTD))
 			);
 		});
 
@@ -2804,7 +2809,7 @@ public class LoverService {
 			// 抽完1成可提領的金額
 			recordElement.setAttribute(
 				"points",
-				Long.toString(Math.round(eachWithdrawal.getPoints() * 0.9))
+				Long.toString(Math.round(eachWithdrawal.getPoints() * LoverService.ME_Point_To_NTD))
 			);
 
 			Boolean status = eachWithdrawal.getStatus();
@@ -2853,7 +2858,7 @@ public class LoverService {
 				// 抽完1成可提領的金額
 				historyElement.setAttribute(
 					"points",
-					Long.toString(Math.round(withdrawalRecord.getPoints() * 0.9))
+					Long.toString(Math.round(withdrawalRecord.getPoints() * LoverService.ME_Point_To_NTD))
 				);
 			});
 		});
@@ -3046,7 +3051,7 @@ public class LoverService {
 
 		Long leftPoints = (fareSum + lineSum) - withdrawnPoints;
 
-		return Math.round(leftPoints * 0.9);
+		return Math.round(leftPoints * LoverService.ME_Point_To_NTD);
 	}
 
 	/**
