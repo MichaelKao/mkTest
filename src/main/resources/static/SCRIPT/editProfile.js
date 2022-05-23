@@ -7,6 +7,25 @@ $(document).ready(function () {
 	var $cropModal = $('#cropModal');
 	var cropper;
 
+	var $feeModal = $('#feeModal');
+
+	$feeModal.on('shown.bs.modal', function () {
+		$( ".service" ).each(function( index ) {
+			var element=$(this)[0];
+
+			var $tableRow = $('#fee_' + element.id);
+			if (element.checked){
+				$tableRow.show()
+			}else{
+				$tableRow.hide();
+			}
+		});
+
+	}).on('hidden.bs.modal', function () {
+
+	});
+
+
 	$('INPUT[name="image"]').on("change", function (e) {
 		var files = e.target.files;
 		input = this;
@@ -131,6 +150,10 @@ $(document).ready(function () {
 	$('FORM.editProfile').submit(function (event) {
 		event.preventDefault();
 		let form = this;
+
+		// let objService= [{serviceId:1,hour:2,point:3},{serviceId:1,hour:2,point:3}];
+		// let objForm=$(form);
+		// let objAll=$({...objForm, ...objService })
 
 		$.post(
 			$(form).attr('action'),

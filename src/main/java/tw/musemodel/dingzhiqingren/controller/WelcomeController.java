@@ -65,6 +65,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import tw.musemodel.dingzhiqingren.controller.vo.LoverVO;
 import tw.musemodel.dingzhiqingren.entity.Companionship;
 import tw.musemodel.dingzhiqingren.entity.ForumThread;
 import tw.musemodel.dingzhiqingren.entity.History;
@@ -98,6 +99,7 @@ import tw.musemodel.dingzhiqingren.service.LoverService;
 import tw.musemodel.dingzhiqingren.service.Servant;
 import static tw.musemodel.dingzhiqingren.service.Servant.PAGE_SIZE_ON_THE_WALL;
 import tw.musemodel.dingzhiqingren.service.WebSocketService;
+import tw.musemodel.dingzhiqingren.service.vo.CompanionshipWithInfo;
 import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
 /**
@@ -1665,14 +1667,38 @@ public class WelcomeController {
 	@PostMapping(path = "/me.asp")
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
-	String editProfile(Lover model, Authentication authentication,
-		Locale locale
+	String editProfile(LoverVO model, Authentication authentication,
+					   Locale locale
 	) {
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 
+		ArrayList<CompanionshipWithInfo> lstServices=new ArrayList<>();
+
+		for (int i = 0; i < model.getServiceId().size(); i++  ) {
+			Integer iServiceId=model.getServiceId().get(i);
+			if (model.getServiceChecked().contains(iServiceId)){
+
+				CompanionshipWithInfo info=new CompanionshipWithInfo();
+
+				info.setServiceId(iServiceId);
+				info.setHour(model.getHour().get(i));
+				info.setPoint(model.getPoint().get(i));
+
+				lstServices.add(info);
+			}
+		}
+
+		if (lstServices.size()>0){
+			loverService.updateService2(me,lstServices);
+		}
+
+
+//		for (CompanionshipWithInfo service : model.getServices()) {
+//			loverService.updateService(service, me,service.getHour(),service.getPoint());
+//		}
 		JSONObject jSONObject = loverService.updatePersonalInfo(me, model);
 
 		return jSONObject.toString();
@@ -3386,7 +3412,7 @@ public class WelcomeController {
 
 		JSONObject jsonObject;
 		try {
-			jsonObject = loverService.updateService(service, me);
+			jsonObject = loverService.updateService(service, me,0,0);
 		} catch (Exception exception) {
 			jsonObject = new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
@@ -3399,6 +3425,40 @@ public class WelcomeController {
 		}
 		return jsonObject.toString();
 	}
+//	@PostMapping(path = "/service2.json")
+//	@ResponseBody
+//	@Secured({Servant.ROLE_ADVENTURER})
+//	String loaction2(@RequestParam ArrayList<CompanionshipWithInfo> services, Authentication authentication,
+//					Locale locale
+//	) {
+//		if (servant.isNull(authentication)) {
+//			return servant.mustBeAuthenticated(locale);
+//		}
+//
+//		Lover me = loverService.loadByUsername(
+//			authentication.getName()
+//		);
+//
+//		JSONObject jsonObject=new JavaScriptObjectNotation().
+//				withResponse(true).
+//				//withResult(desiredCompanionship).
+//						toJSONObject();
+//		try {
+//			for (CompanionshipWithInfo service : services) {
+//				jsonObject = loverService.updateService(service, me,service.getHour(),service.getPoint());
+//			}
+//		} catch (Exception exception) {
+//			jsonObject = new JavaScriptObjectNotation().
+//				withReason(messageSource.getMessage(
+//					exception.getMessage(),
+//					null,
+//					locale
+//				)).
+//				withResponse(false).
+//				toJSONObject();
+//		}
+//		return jsonObject.toString();
+//	}
 
 	/**
 	 * 上傳手持身分證

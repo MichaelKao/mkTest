@@ -314,7 +314,7 @@
 					<DIV class="form-group">
 						<LABEL>
 							<I class="fad fa-book-heart text-lg"></I>
-							<SPAN class="ms-1">約會模式</SPAN>
+							<SPAN class="ms-1">提供服務</SPAN>
 						</LABEL>
 						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
 							<xsl:for-each select="service">

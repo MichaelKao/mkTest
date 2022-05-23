@@ -147,6 +147,8 @@ import tw.musemodel.dingzhiqingren.repository.WithdrawalRecordRepository;
 import static tw.musemodel.dingzhiqingren.service.HistoryService.*;
 import static tw.musemodel.dingzhiqingren.service.Servant.PAGE_SIZE_ON_THE_WALL;
 import static tw.musemodel.dingzhiqingren.service.Servant.UTF_8;
+
+import tw.musemodel.dingzhiqingren.service.vo.CompanionshipWithInfo;
 import tw.musemodel.dingzhiqingren.specification.LoverSpecification;
 
 /**
@@ -877,6 +879,37 @@ public class LoverService {
 			companionships.add(
 				desiredCompanionship.getCompanionship()
 			);
+		});
+
+		return companionships;
+	}
+	public Collection<CompanionshipWithInfo> getCompanionshipsWithInfo(Lover someone) {
+		Collection<CompanionshipWithInfo> companionships = new ArrayList<>();
+
+		desiredCompanionshipRepository.findByLover(someone).forEach(desiredCompanionship -> {
+			CompanionshipWithInfo info=new CompanionshipWithInfo();
+
+			info.setServiceId(desiredCompanionship.getId().getCompanionshipId());
+
+			int hour=0;
+
+			if (desiredCompanionship.getHour()==0){
+				hour=1;
+			}else{
+				hour=desiredCompanionship.getHour();
+			}
+			int point=0;
+
+			if (desiredCompanionship.getPoint()==0){
+				point=1200;
+			}else{
+				point=desiredCompanionship.getPoint();
+			}
+
+			info.setHour(hour);
+			info.setPoint(point);
+
+			companionships.add(info);
 		});
 
 		return companionships;
@@ -2349,14 +2382,34 @@ public class LoverService {
 					locale
 				)
 			);
+
 			serviceElement.setAttribute(
 				"serviceID", companionship.getId().toString()
 			);
+
 			getCompanionships(lover).stream().filter(c -> (Objects.equals(c, companionship))).forEachOrdered(_item -> {
 				serviceElement.setAttribute(
 					"serviceSelected", ""
 				);
 			});
+
+			serviceElement.setAttribute(
+					"serviceHour", String.valueOf(1)
+			);
+			serviceElement.setAttribute(
+					"servicePoint", String.valueOf(1200)
+			);
+
+			getCompanionshipsWithInfo(lover).stream().filter(c -> (c.getServiceId()==companionship.getId())).forEachOrdered(_item -> {
+				serviceElement.setAttribute(
+						"serviceHour", String.valueOf(_item.getHour())
+				);
+				serviceElement.setAttribute(
+						"servicePoint", String.valueOf(_item.getPoint())
+				);
+			});
+
+
 			return serviceElement;
 		}).forEachOrdered(serviceElement -> {
 			loverElement.appendChild(serviceElement);
@@ -2587,7 +2640,7 @@ public class LoverService {
 
 		if (getCompanionships(lover).isEmpty()) {
 			return new JavaScriptObjectNotation().
-				withReason("請至少填入一種約會模式").
+				withReason("請至少填入一種提供服務").
 				withResponse(false).
 				toJSONObject();
 		}
@@ -3118,7 +3171,7 @@ public class LoverService {
 	 * @return 期望陪伴
 	 */
 	@Transactional
-	public JSONObject updateService(Companionship companionship, Lover someone) {
+	public JSONObject updateService(Companionship companionship, Lover someone,int hour,int point) {
 		Set<Companionship> companionships = new HashSet<>();
 		desiredCompanionshipRepository.findByLover(someone).forEach(desiredCompanionship -> {
 			companionships.add(desiredCompanionship.getCompanionship());
@@ -3145,6 +3198,14 @@ public class LoverService {
 			desiredCompanionship.setId(id);
 			desiredCompanionship.setLover(someone);
 			desiredCompanionship.setCompanionship(companionship);
+
+			if (hour>0){
+				desiredCompanionship.setHour(hour);
+			}
+			if (point>0){
+				desiredCompanionship.setPoint(point);
+			}
+
 			desiredCompanionshipRepository.save(desiredCompanionship);
 		}
 		desiredCompanionshipRepository.flush();
@@ -3153,6 +3214,57 @@ public class LoverService {
 			withResponse(true).
 			//withResult(desiredCompanionship).
 			toJSONObject();
+	}
+
+	@Transactional
+	public JSONObject updateService2(Lover someone,List<CompanionshipWithInfo> services) {
+		Set<Companionship> companionshipsDB = new HashSet<>();
+		desiredCompanionshipRepository.findByLover(someone).forEach(desiredCompanionship -> {
+			companionshipsDB.add(desiredCompanionship.getCompanionship());
+		});
+
+//		for (CompanionshipWithInfo service : services) {
+//			for (Companionship companionship : companionshipsDB) {
+//				if (companionship.getId()==service.getServiceId()){
+//
+//				}
+//			}
+//		}
+
+		//先全刪除
+		DesiredCompanionship desiredCompanionship;
+		for (Companionship companionship : companionshipsDB) {
+			desiredCompanionship = desiredCompanionshipRepository.
+					findOneByLoverAndCompanionship(someone, companionship).
+					orElseThrow();
+			desiredCompanionshipRepository.delete(desiredCompanionship);
+		}
+
+		//再新增
+		for (CompanionshipWithInfo service : services) {
+			Companionship companionship = companionshipRepository.findById((short) service.getServiceId()).get();
+			DesiredCompanionshipKey id = new DesiredCompanionshipKey();
+			id.setLoverId(someone.getId());
+			id.setCompanionshipId((short) service.getServiceId());
+
+			desiredCompanionship = new DesiredCompanionship();
+			desiredCompanionship.setId(id);
+			desiredCompanionship.setLover(someone);
+			desiredCompanionship.setCompanionship(companionship);
+
+			desiredCompanionship.setHour(service.getHour());
+			desiredCompanionship.setPoint(service.getPoint());
+
+			desiredCompanionshipRepository.save(desiredCompanionship);
+		}
+
+		desiredCompanionshipRepository.flush();
+
+
+		return new JavaScriptObjectNotation().
+				withResponse(true).
+				//withResult(desiredCompanionship).
+						toJSONObject();
 	}
 
 	/**

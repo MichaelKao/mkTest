@@ -234,7 +234,7 @@
 							<DIV class="mb-4">
 								<DIV>
 									<I class="fad fa-book-heart text-lg me-1"></I>
-									<SPAN>約會模式</SPAN>
+									<SPAN>提供服務</SPAN>
 								</DIV>
 								<SELECT class="form-control" id="service" name="service">
 									<OPTION value="0">全部</OPTION>

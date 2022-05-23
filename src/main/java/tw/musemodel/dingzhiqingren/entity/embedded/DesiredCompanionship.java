@@ -4,13 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
+
 import lombok.Data;
 import tw.musemodel.dingzhiqingren.entity.Companionship;
 import tw.musemodel.dingzhiqingren.entity.Lover;
@@ -55,6 +50,13 @@ public class DesiredCompanionship implements Serializable {
 	@MapsId("companionshipId")
 	private Companionship companionship;
 
+	@Column
+	private int hour;
+
+	@Column
+	private int point;
+
+
 	@Override
 	public String toString() {
 		try {
@@ -62,5 +64,21 @@ public class DesiredCompanionship implements Serializable {
 		} catch (JsonProcessingException ignore) {
 			return Objects.isNull(id) ? "null" : id.toString();
 		}
+	}
+
+	public int getHour() {
+		return hour;
+	}
+
+	public void setHour(int hour) {
+		this.hour = hour;
+	}
+
+	public int getPoint() {
+		return point;
+	}
+
+	public void setPoint(int point) {
+		this.point = point;
 	}
 }

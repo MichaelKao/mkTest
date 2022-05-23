@@ -276,16 +276,62 @@
 <!--					</xsl:if>-->
 				</DIV>
 
+				<DIV class="modal fade" id="feeModal">
+					<DIV class="modal-dialog modal-dialog-centered">
+						<DIV class="modal-content">
+							<DIV class="modal-body">
+								<DIV class="mt-3 text-center">
+									<table class="table table-hover">
+										<thead class="thead-light">
+											<tr>
+												<th class="text-center">提供服務</th>
+												<th>時數(H)</th>
+												<th>費用(ME點)</th>
+											</tr>
+										</thead>
+										<tbody>
+											<xsl:for-each select="service">
+												<tr id="fee_service{@serviceID}" style="display: none" >
+													<td class="text-left">
+														<LABEL class="custom-control-label tag" >
+															<xsl:value-of select="."/>
+														</LABEL>
+													</td>
+													<td class="text-right">
+														<input type="number" class="form-control" name="serviceId[]" placeholder=""  value="{@serviceID}" style="display: none"/>
+														<input type="number" class="form-control" name="hour[]" id="fee_hour{@serviceID}" placeholder="" min="1"  value="{@serviceHour}"/>
+													</td>
+													<td class="text-right">
+														<input type="number" class="form-control" name="point[]" id="fee_point{@serviceID}" placeholder="" min="1"  value="{@servicePoint}"/>
+													</td>
+												</tr>
+											</xsl:for-each>
+										</tbody>
+									</table>
+								</DIV>
+								<DIV class="text-center">
+									<BUTTON type="button" class="btn btn-outline-primary px-3 py-2 block" data-bs-dismiss="modal">更新</BUTTON>
+<!--									<BUTTON class="btn btn-outline-dark mx-2 px-3 py-2" data-bs-dismiss="modal" type="button">取消</BUTTON>-->
+								</DIV>
+							</DIV>
+						</DIV>
+					</DIV>
+				</DIV>
+
 				<DIV class="col-12 col-lg-6">
 					<DIV class="form-group">
 						<LABEL>
 							<I class="fad fa-book-heart text-lg"></I>
-							<SPAN class="ms-1">提供服務</SPAN>
+							<SPAN class="ms-1">提供服務
+								<a class="btn btn-round btn-dark mb-0" href="#" data-bs-target="#feeModal" data-bs-toggle="modal">
+									<DIV>出席費用</DIV>
+								</a>
+							</SPAN>
 						</LABEL>
 						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
 							<xsl:for-each select="service">
 								<DIV class="form-check p-0">
-									<INPUT class="form-check-input service" id="service{@serviceID}" type="checkbox" value="{@serviceID}">
+									<INPUT class="form-check-input service" id="service{@serviceID}" name="serviceChecked[]"  type="checkbox" value="{@serviceID}">
 										<xsl:if test="@serviceSelected">
 											<xsl:attribute name="checked"/>
 										</xsl:if>
@@ -297,6 +343,8 @@
 							</xsl:for-each>
 						</DIV>
 					</DIV>
+
+
 					<DIV class="form-group">
 						<LABEL>
 							<I class="fad fa-map-marker-alt text-lg"></I>
