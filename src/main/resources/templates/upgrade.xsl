@@ -69,34 +69,15 @@
 							<SPAN class="text-white text-sm">only</SPAN>
 						</DIV>
 					</DIV>
-<!--					<DIV class="carousel-cell card d-flex flex-column justify-content-center align-items-center">-->
-<!--						<DIV>-->
-<!--							<SPAN class="text-white text-bold">無限聊天會員</SPAN>-->
-<!--							<SPAN class="text-white ms-1">-->
-<!--								<I class="fad fa-comments fontSize22"></I>-->
-<!--							</SPAN>-->
-<!--						</DIV>-->
-<!--						<DIV class=" d-flex flex-column">-->
-<!--							<SPAN class="text-white text-sm">和 meQUEEN 聊天次數無限制</SPAN>-->
-<!--						</DIV>-->
-<!--						<DIV>-->
-<!--							<SPAN class="text-primary text-bolder">PRO</SPAN>-->
-<!--							<SPAN class="text-white text-bolder mx-1">·</SPAN>-->
-<!--							<SPAN class="text-primary">-->
-<!--								<I class="fas fa-plus"></I>-->
-<!--							</SPAN>-->
-<!--						</DIV>-->
-<!--					</DIV>-->
 					<DIV class="carousel-cell card d-flex flex-column justify-content-center align-items-center">
 						<DIV>
-							<SPAN class="text-white text-bold">加入好友與通訊軟體</SPAN>
+							<SPAN class="text-white text-bold">無限聊天會員</SPAN>
 							<SPAN class="text-white ms-1">
-								<I class="fad fa-comment-plus fontSize22"></I>
+								<I class="fad fa-comments fontSize22"></I>
 							</SPAN>
 						</DIV>
-						<DIV class=" d-flex flex-column align-items-center">
-							<SPAN class="text-white text-sm">可加入 meQUEEN 的好友邀請</SPAN>
-							<SPAN class="text-white text-sm">同時得到對方的通訊軟體聯繫方式</SPAN>
+						<DIV class=" d-flex flex-column">
+							<SPAN class="text-white text-sm">和 meQUEEN 聊天次數無限制</SPAN>
 						</DIV>
 						<DIV>
 							<SPAN class="text-primary text-bolder">PRO</SPAN>
@@ -106,6 +87,25 @@
 							</SPAN>
 						</DIV>
 					</DIV>
+<!--					<DIV class="carousel-cell card d-flex flex-column justify-content-center align-items-center">-->
+<!--						<DIV>-->
+<!--							<SPAN class="text-white text-bold">加入好友與通訊軟體</SPAN>-->
+<!--							<SPAN class="text-white ms-1">-->
+<!--								<I class="fad fa-comment-plus fontSize22"></I>-->
+<!--							</SPAN>-->
+<!--						</DIV>-->
+<!--						<DIV class=" d-flex flex-column align-items-center">-->
+<!--							<SPAN class="text-white text-sm">可加入 meQUEEN 的好友邀請</SPAN>-->
+<!--							<SPAN class="text-white text-sm">同時得到對方的通訊軟體聯繫方式</SPAN>-->
+<!--						</DIV>-->
+<!--						<DIV>-->
+<!--							<SPAN class="text-primary text-bolder">PRO</SPAN>-->
+<!--							<SPAN class="text-white text-bolder mx-1">·</SPAN>-->
+<!--							<SPAN class="text-primary">-->
+<!--								<I class="fas fa-plus"></I>-->
+<!--							</SPAN>-->
+<!--						</DIV>-->
+<!--					</DIV>-->
 					<DIV class="carousel-cell card d-flex flex-column justify-content-center align-items-center">
 						<DIV>
 							<SPAN class="text-white text-bold">查看會員評價詳情</SPAN>

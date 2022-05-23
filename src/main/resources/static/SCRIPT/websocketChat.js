@@ -159,69 +159,69 @@ $(document).ready(function () {
 							$(rateBtn).append('好友評價');
 							$(floatWrap).append(rateBtn);
 						}
-						// if (friendStatus === 'reqSocialMediaBtn') {
-						// 	$(floatWrap).attr('class', 'border border-primary border-radius-xl text-primary text-xs px-3 py-1 shadow wordBreak text-center floatWrap');
-						// 	$(floatDiv).prepend(floatWrap);
-						// 	$(floatWrap).append(`<DIV><I class="far fa-user-plus ms-1"></I>
-						// 			<SPAN>加入好友</SPAN></DIV><DIV>解鎖聊天室限制同時獲得私人通訊軟體</DIV>`);
-						// 	var reqSocialMediaBtnBtn = document.createElement('BUTTON');
-						// 	$(reqSocialMediaBtnBtn).attr({
-						// 		'class': 'btn btn-primary btn-round px-2 py-1 m-0',
-						// 		'id': 'giveMeLine',
-						// 		'type': 'button'
-						// 	});
-						// 	$(reqSocialMediaBtnBtn).append('送出邀請');
-						// 	$(floatWrap).append(reqSocialMediaBtnBtn);
-						// 	$(reqSocialMediaBtnBtn).click(function (event) {
-						// 		event.preventDefault();
-						// 		let btn = this;
-						// 		$.post(
-						// 			'/stalking.json',
-						// 			{
-						// 				whom: friend
-						// 			},
-						// 			function (data) {
-						// 				if (data.response) {
-						// 					$('.toast-body').html(data.reason);
-						// 					$('.toast').toast('show');
-						// 					$('DIV.floatBtn').empty();
-						// 					var borderDiv = document.createElement('DIV');
-						// 					$(borderDiv).attr({
-						// 						'class': 'border border-primary border-radius-xl text-xs px-3 py-1 shadow wordBreak text-center floatWrap'
-						// 					});
-						// 					$('DIV.floatBtn').append(borderDiv);
-						// 					var msgDiv = document.createElement('DIV');
-						// 					$(msgDiv).attr('class', 'text-primary');
-						// 					$(borderDiv).append(msgDiv);
-						// 					var firstLineDiv = document.createElement('DIV');
-						// 					$(msgDiv).append(firstLineDiv);
-						// 					var firstLineI = document.createElement('I');
-						// 					$(firstLineI).attr('class', 'fad fa-user-plus');
-						// 					$(firstLineDiv).append(firstLineI);
-						// 					var firstLineSpan = document.createElement('SPAN');
-						// 					$(firstLineSpan).append('您已送出好友邀請，');
-						// 					$(firstLineDiv).append(firstLineSpan);
-						// 					var secondLineDiv = document.createElement('DIV');
-						// 					$(secondLineDiv).append('請等待對方回應。');
-						// 					$(msgDiv).append(secondLineDiv);
-						// 					floatWrapResize();
-						// 					var jsonObj = {
-						// 						'type': 'button',
-						// 						'sender': self,
-						// 						'receiver': friend,
-						// 						'behavior': 'JI_WO_LAI'
-						// 					};
-						// 					websocket.send(JSON.stringify(jsonObj));
-						// 				} else {
-						// 					$('.toast-body').html(data.reason);
-						// 					$('.toast').toast('show');
-						// 				}
-						// 			},
-						// 			'json'
-						// 			);
-						// 		return false;
-						// 	});
-						// }
+						if (friendStatus === 'reqSocialMediaBtn') {
+							$(floatWrap).attr('class', 'border border-primary border-radius-xl text-primary text-xs px-3 py-1 shadow wordBreak text-center floatWrap');
+							$(floatDiv).prepend(floatWrap);
+							$(floatWrap).append(`<DIV><I class="far fa-user-plus ms-1"></I>
+									<SPAN>加入好友</SPAN></DIV><DIV>解鎖聊天室限制</DIV>`);
+							var reqSocialMediaBtnBtn = document.createElement('BUTTON');
+							$(reqSocialMediaBtnBtn).attr({
+								'class': 'btn btn-primary btn-round px-2 py-1 m-0',
+								'id': 'giveMeLine',
+								'type': 'button'
+							});
+							$(reqSocialMediaBtnBtn).append('送出邀請');
+							$(floatWrap).append(reqSocialMediaBtnBtn);
+							$(reqSocialMediaBtnBtn).click(function (event) {
+								event.preventDefault();
+								let btn = this;
+								$.post(
+									'/stalking.json',
+									{
+										whom: friend
+									},
+									function (data) {
+										if (data.response) {
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+											$('DIV.floatBtn').empty();
+											var borderDiv = document.createElement('DIV');
+											$(borderDiv).attr({
+												'class': 'border border-primary border-radius-xl text-xs px-3 py-1 shadow wordBreak text-center floatWrap'
+											});
+											$('DIV.floatBtn').append(borderDiv);
+											var msgDiv = document.createElement('DIV');
+											$(msgDiv).attr('class', 'text-primary');
+											$(borderDiv).append(msgDiv);
+											var firstLineDiv = document.createElement('DIV');
+											$(msgDiv).append(firstLineDiv);
+											var firstLineI = document.createElement('I');
+											$(firstLineI).attr('class', 'fad fa-user-plus');
+											$(firstLineDiv).append(firstLineI);
+											var firstLineSpan = document.createElement('SPAN');
+											$(firstLineSpan).append('您已送出好友邀請，');
+											$(firstLineDiv).append(firstLineSpan);
+											var secondLineDiv = document.createElement('DIV');
+											$(secondLineDiv).append('請等待對方回應。');
+											$(msgDiv).append(secondLineDiv);
+											floatWrapResize();
+											var jsonObj = {
+												'type': 'button',
+												'sender': self,
+												'receiver': friend,
+												'behavior': 'JI_WO_LAI'
+											};
+											websocket.send(JSON.stringify(jsonObj));
+										} else {
+											$('.toast-body').html(data.reason);
+											$('.toast').toast('show');
+										}
+									},
+									'json'
+									);
+								return false;
+							});
+						}
 						if (friendStatus === 'waitingForRes') {
 							$(floatWrap).attr('class', 'border border-primary border-radius-xl text-xs px-3 py-1 shadow wordBreak text-center floatWrap');
 							$(floatDiv).prepend(floatWrap);
@@ -233,13 +233,13 @@ $(document).ready(function () {
 							$(floatDiv).prepend(floatWrap);
 							$(floatWrap).append(`<DIV class="text-primary"><DIV><I class="fad fa-star-half"></I>
 									<SPAN>已接受您的好友邀請</SPAN></DIV></DIV>`);
-							var openSocialMediaBtn = document.createElement('BUTTON');
-							$(openSocialMediaBtn).attr({
-								'class': 'btn btn-sm btn-primary btn-round px-2 py-1 m-0 openSocialMedia',
-								'type': 'button'
-							});
-							$(openSocialMediaBtn).append('加通訊軟體');
-							$(floatWrap).append(openSocialMediaBtn);
+							// var openSocialMediaBtn = document.createElement('BUTTON');
+							// $(openSocialMediaBtn).attr({
+							// 	'class': 'btn btn-sm btn-primary btn-round px-2 py-1 m-0 openSocialMedia',
+							// 	'type': 'button'
+							// });
+							// $(openSocialMediaBtn).append('加通訊軟體');
+							// $(floatWrap).append(openSocialMediaBtn);
 							$('BUTTON.openSocialMedia').dblclick(function (e) {
 								e.preventDefault();
 							});
