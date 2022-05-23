@@ -1930,6 +1930,23 @@ public class LoverService {
 					"id",
 					companionship.getId().toString()
 				);
+
+				serviceElement.setAttribute(
+						"serviceHour", String.valueOf(1)
+				);
+				serviceElement.setAttribute(
+						"servicePoint", String.valueOf(1200)
+				);
+
+				getCompanionshipsWithInfo(someone).stream().filter(c -> (c.getServiceId()==companionship.getId())).forEachOrdered(_item -> {
+					serviceElement.setAttribute(
+							"serviceHour", String.valueOf(_item.getHour())
+					);
+					serviceElement.setAttribute(
+							"servicePoint", String.valueOf(_item.getPoint())
+					);
+				});
+
 				serviceElement.setTextContent(
 					messageSource.getMessage(
 						companionship.getName(),
@@ -1942,6 +1959,8 @@ public class LoverService {
 				loverElement.appendChild(serviceElement);
 			});
 		}
+
+
 
 		if (Objects.nonNull(someone.getNickname())) {
 			Element nicknameElement = document.createElement("nickname");

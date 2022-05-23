@@ -323,11 +323,7 @@
 						<LABEL>
 							<I class="fad fa-book-heart text-lg"></I>
 							<SPAN class="ms-1">提供服務
-								<xsl:if test="gender/@gender = 'female'">
-								<a class="btn btn-round btn-dark mb-0" href="#" data-bs-target="#feeModal" data-bs-toggle="modal">
-									<DIV>出席費用</DIV>
-								</a>
-								</xsl:if>
+
 							</SPAN>
 						</LABEL>
 						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
@@ -343,7 +339,15 @@
 									</LABEL>
 								</DIV>
 							</xsl:for-each>
+
 						</DIV>
+						<xsl:if test="gender/@gender = 'female'">
+							<div class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
+								<a class="btn btn-round btn-dark mb-0" href="#" data-bs-target="#feeModal" data-bs-toggle="modal">
+									<DIV>出席費用</DIV>
+								</a>
+							</div>
+						</xsl:if>
 					</DIV>
 
 

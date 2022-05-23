@@ -514,18 +514,34 @@
 					</SAPN>
 				</DIV>
 			</SECTION>
-			<SECTION class="mb-2 p-3 card">
 
-				<DIV class="mt-2">
-					<I class="fad fa-book-heart fontSize22 me-2"></I>
-					<xsl:for-each select="service">
-						<A class="me-1 btn btn-outline-pink m-0 p-1" href="/search.json?companionship={@id}">
+			<SECTION class="mb-2 p-3 card">
+				<DIV>
+					<I class="fad fa-map-marker-alt fontSize22 me-2"></I>
+					<xsl:for-each select="location">
+						<A class="me-1 btn btn-pink m-0 px-2 py-1" href="/search.json?location={@id}">
 							<SPAN>#</SPAN>
 							<SPAN>
 								<xsl:value-of select="."/>
 							</SPAN>
 						</A>
 					</xsl:for-each>
+				</DIV>
+				<DIV class="mt-2">
+					<I class="fad fa-book-heart fontSize22 me-2"></I>
+					<div class="row">
+					<xsl:for-each select="service">
+						<div class="col-md-6">
+						<A class="me-1 btn btn-outline-pink m-0 p-1" href="/search.json?companionship={@id}">
+							<SPAN>
+								<xsl:value-of select="."/>
+							</SPAN>
+						</A>
+						<i class="fad fa-badge-dollar fontSize22 width30whenMobile" aria-hidden="true"></i>
+						<span><xsl:value-of select="@servicePoint"/>/<xsl:value-of select="@serviceHour"/>H</span>
+						</div>
+					</xsl:for-each>
+					</div>
 				</DIV>
 			</SECTION>
 			<SECTION class="mb-2 p-3 card">
@@ -613,17 +629,7 @@
 						<SPAN>修改預設內容，邀約成功率提高60%！</SPAN>
 					</DIV>
 				</xsl:if>
-				<DIV>
-					<I class="fad fa-map-marker-alt fontSize22 me-2"></I>
-					<xsl:for-each select="location">
-						<A class="me-1 btn btn-pink m-0 px-2 py-1" href="/search.json?location={@id}">
-							<SPAN>#</SPAN>
-							<SPAN>
-								<xsl:value-of select="."/>
-							</SPAN>
-						</A>
-					</xsl:for-each>
-				</DIV>
+
 				<DIV class="d-flex">
 					<I class="fad fa-file-user fontSize22 col-1"></I>
 					<DIV class="aboutMe ms-4">
