@@ -3425,40 +3425,6 @@ public class WelcomeController {
 		}
 		return jsonObject.toString();
 	}
-//	@PostMapping(path = "/service2.json")
-//	@ResponseBody
-//	@Secured({Servant.ROLE_ADVENTURER})
-//	String loaction2(@RequestParam ArrayList<CompanionshipWithInfo> services, Authentication authentication,
-//					Locale locale
-//	) {
-//		if (servant.isNull(authentication)) {
-//			return servant.mustBeAuthenticated(locale);
-//		}
-//
-//		Lover me = loverService.loadByUsername(
-//			authentication.getName()
-//		);
-//
-//		JSONObject jsonObject=new JavaScriptObjectNotation().
-//				withResponse(true).
-//				//withResult(desiredCompanionship).
-//						toJSONObject();
-//		try {
-//			for (CompanionshipWithInfo service : services) {
-//				jsonObject = loverService.updateService(service, me,service.getHour(),service.getPoint());
-//			}
-//		} catch (Exception exception) {
-//			jsonObject = new JavaScriptObjectNotation().
-//				withReason(messageSource.getMessage(
-//					exception.getMessage(),
-//					null,
-//					locale
-//				)).
-//				withResponse(false).
-//				toJSONObject();
-//		}
-//		return jsonObject.toString();
-//	}
 
 	/**
 	 * 上傳手持身分證
