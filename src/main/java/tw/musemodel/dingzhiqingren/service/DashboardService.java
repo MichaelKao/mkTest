@@ -772,7 +772,7 @@ public class DashboardService {
 			// 總共提領金額
 			recordElement.setAttribute(
 				"points",
-				Long.toString(Math.round(eachWithdrawal.getPoints() * LoverService.ME_Point_To_NTD))
+				Long.toString(LoverService.CalME_Point_ToNTD(eachWithdrawal.getPoints()))
 			);
 
 			Boolean status = eachWithdrawal.getStatus();
@@ -831,7 +831,7 @@ public class DashboardService {
 
 				historyElement.setAttribute(
 					"points",
-					Long.toString(Math.round(withdrawalRecord.getPoints() * LoverService.ME_Point_To_NTD))
+					Long.toString(LoverService.CalME_Point_ToNTD(Long.valueOf(withdrawalRecord.getPoints())))
 				);
 			}
 		}

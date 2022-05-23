@@ -2768,7 +2768,7 @@ public class LoverService {
 			// 抽完1成可提領的金額
 			recordElement.setAttribute(
 				"points",
-				Long.toString(Math.round(Math.abs(points) * LoverService.ME_Point_To_NTD))
+				Long.toString(LoverService.CalME_Point_ToNTD(Long.valueOf((Math.abs(points)))))
 			);
 		});
 
@@ -2826,7 +2826,7 @@ public class LoverService {
 			// 抽完1成可提領的金額
 			notAbleToWithdrawalElement.setAttribute(
 				"points",
-				Long.toString(Math.round(Math.abs(points) * LoverService.ME_Point_To_NTD))
+				Long.toString(LoverService.CalME_Point_ToNTD(Long.valueOf(Math.abs(points))))
 			);
 		});
 
@@ -2862,7 +2862,7 @@ public class LoverService {
 			// 抽完1成可提領的金額
 			recordElement.setAttribute(
 				"points",
-				Long.toString(Math.round(eachWithdrawal.getPoints() * LoverService.ME_Point_To_NTD))
+				Long.toString(LoverService.CalME_Point_ToNTD(eachWithdrawal.getPoints()))
 			);
 
 			Boolean status = eachWithdrawal.getStatus();
@@ -2911,7 +2911,7 @@ public class LoverService {
 				// 抽完1成可提領的金額
 				historyElement.setAttribute(
 					"points",
-					Long.toString(Math.round(withdrawalRecord.getPoints() * LoverService.ME_Point_To_NTD))
+					Long.toString(LoverService.CalME_Point_ToNTD(Long.valueOf(withdrawalRecord.getPoints())))
 				);
 			});
 		});
@@ -3104,7 +3104,15 @@ public class LoverService {
 
 		Long leftPoints = (fareSum + lineSum) - withdrawnPoints;
 
-		return Math.round(leftPoints * LoverService.ME_Point_To_NTD);
+		return LoverService.CalME_Point_ToNTD(leftPoints);
+	}
+
+	public static long CalME_Point_ToNTD(Long pointOrg){
+
+		double pointFee = pointOrg * 0.1;
+		double pointGirl=(pointOrg -pointFee) * LoverService.ME_Point_To_NTD;
+
+		return Math.round(pointGirl);
 	}
 
 	/**
