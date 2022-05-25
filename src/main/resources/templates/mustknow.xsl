@@ -50,6 +50,10 @@
 				list-style-type: none
 				}
 
+				ol.lst-kix_jgczz3gscok8-7.start {
+				counter-reset: lst-ctn-kix_jgczz3gscok8-7 0
+				}
+
 				ol.lst-kix_qk6k1tvty1hf-3 {
 				list-style-type: none
 				}
@@ -72,6 +76,10 @@
 
 				.lst-kix_2i391xhm6ry-4>li {
 				counter-increment: lst-ctn-kix_2i391xhm6ry-4
+				}
+
+				ol.lst-kix_jgczz3gscok8-1.start {
+				counter-reset: lst-ctn-kix_jgczz3gscok8-1 0
 				}
 
 				.lst-kix_4g3mv9s074cy-6>li {
@@ -146,6 +154,14 @@
 				counter-reset: lst-ctn-kix_2i391xhm6ry-0 0
 				}
 
+				ol.lst-kix_jgczz3gscok8-2.start {
+				counter-reset: lst-ctn-kix_jgczz3gscok8-2 0
+				}
+
+				.lst-kix_jgczz3gscok8-0>li {
+				counter-increment: lst-ctn-kix_jgczz3gscok8-0
+				}
+
 				ol.lst-kix_2i391xhm6ry-6.start {
 				counter-reset: lst-ctn-kix_2i391xhm6ry-6 0
 				}
@@ -154,15 +170,55 @@
 				counter-increment: lst-ctn-kix_qk6k1tvty1hf-3
 				}
 
+				ul.lst-kix_n1fnbl7wa7dq-5 {
+				list-style-type: none
+				}
+
 				ol.lst-kix_qk6k1tvty1hf-6.start {
 				counter-reset: lst-ctn-kix_qk6k1tvty1hf-6 0
+				}
+
+				ul.lst-kix_n1fnbl7wa7dq-6 {
+				list-style-type: none
+				}
+
+				ul.lst-kix_n1fnbl7wa7dq-7 {
+				list-style-type: none
+				}
+
+				ul.lst-kix_n1fnbl7wa7dq-8 {
+				list-style-type: none
+				}
+
+				ul.lst-kix_n1fnbl7wa7dq-1 {
+				list-style-type: none
+				}
+
+				ul.lst-kix_n1fnbl7wa7dq-2 {
+				list-style-type: none
+				}
+
+				ul.lst-kix_n1fnbl7wa7dq-3 {
+				list-style-type: none
 				}
 
 				ol.lst-kix_4g3mv9s074cy-7 {
 				list-style-type: none
 				}
 
+				ul.lst-kix_n1fnbl7wa7dq-4 {
+				list-style-type: none
+				}
+
 				ol.lst-kix_4g3mv9s074cy-8 {
+				list-style-type: none
+				}
+
+				.lst-kix_jgczz3gscok8-5>li {
+				counter-increment: lst-ctn-kix_jgczz3gscok8-5
+				}
+
+				ul.lst-kix_n1fnbl7wa7dq-0 {
 				list-style-type: none
 				}
 
@@ -270,6 +326,14 @@
 				counter-increment: lst-ctn-kix_4g3mv9s074cy-2
 				}
 
+				ol.lst-kix_jgczz3gscok8-0.start {
+				counter-reset: lst-ctn-kix_jgczz3gscok8-0 0
+				}
+
+				.lst-kix_jgczz3gscok8-3>li {
+				counter-increment: lst-ctn-kix_jgczz3gscok8-3
+				}
+
 				.lst-kix_qk6k1tvty1hf-5>li {
 				counter-increment: lst-ctn-kix_qk6k1tvty1hf-5
 				}
@@ -358,6 +422,10 @@
 				content: ""counter(lst-ctn-kix_yvqc3zdfhx8n-0, decimal) ") "
 				}
 
+				.lst-kix_n1fnbl7wa7dq-7>li:before {
+				content: "  "
+				}
+
 				ol.lst-kix_qk6k1tvty1hf-3.start {
 				counter-reset: lst-ctn-kix_qk6k1tvty1hf-3 0
 				}
@@ -374,6 +442,14 @@
 				counter-increment: lst-ctn-kix_2i391xhm6ry-1
 				}
 
+				.lst-kix_n1fnbl7wa7dq-3>li:before {
+				content: "  "
+				}
+
+				.lst-kix_n1fnbl7wa7dq-5>li:before {
+				content: "  "
+				}
+
 				.lst-kix_bukj9yunqdtp-5>li {
 				counter-increment: lst-ctn-kix_bukj9yunqdtp-5
 				}
@@ -388,6 +464,10 @@
 
 				.lst-kix_2i391xhm6ry-7>li {
 				counter-increment: lst-ctn-kix_2i391xhm6ry-7
+				}
+
+				.lst-kix_jgczz3gscok8-4>li {
+				counter-increment: lst-ctn-kix_jgczz3gscok8-4
 				}
 
 				.lst-kix_bukj9yunqdtp-1>li:before {
@@ -410,6 +490,10 @@
 				counter-reset: lst-ctn-kix_qk6k1tvty1hf-4 0
 				}
 
+				.lst-kix_jgczz3gscok8-1>li:before {
+				content: ""counter(lst-ctn-kix_jgczz3gscok8-1, decimal) "). "
+				}
+
 				.lst-kix_bukj9yunqdtp-7>li:before {
 				content: ""counter(lst-ctn-kix_bukj9yunqdtp-7, lower-latin) ". "
 				}
@@ -426,6 +510,10 @@
 				counter-increment: lst-ctn-kix_yvqc3zdfhx8n-6
 				}
 
+				.lst-kix_n1fnbl7wa7dq-1>li:before {
+				content: "  "
+				}
+
 				.lst-kix_4g3mv9s074cy-1>li {
 				counter-increment: lst-ctn-kix_4g3mv9s074cy-1
 				}
@@ -438,6 +526,14 @@
 				counter-increment: lst-ctn-kix_4g3mv9s074cy-7
 				}
 
+				.lst-kix_jgczz3gscok8-3>li:before {
+				content: ""counter(lst-ctn-kix_jgczz3gscok8-3, decimal) ". "
+				}
+
+				.lst-kix_jgczz3gscok8-7>li:before {
+				content: ""counter(lst-ctn-kix_jgczz3gscok8-7, lower-latin) ". "
+				}
+
 				.lst-kix_bukj9yunqdtp-5>li:before {
 				content: ""counter(lst-ctn-kix_bukj9yunqdtp-5, lower-roman) ". "
 				}
@@ -446,8 +542,32 @@
 				content: ""counter(lst-ctn-kix_bukj9yunqdtp-3, decimal) ". "
 				}
 
+				.lst-kix_jgczz3gscok8-5>li:before {
+				content: ""counter(lst-ctn-kix_jgczz3gscok8-5, lower-roman) ". "
+				}
+
 				ol.lst-kix_2i391xhm6ry-8.start {
 				counter-reset: lst-ctn-kix_2i391xhm6ry-8 0
+				}
+
+				.lst-kix_jgczz3gscok8-8>li {
+				counter-increment: lst-ctn-kix_jgczz3gscok8-8
+				}
+
+				ol.lst-kix_jgczz3gscok8-0 {
+				list-style-type: none
+				}
+
+				ol.lst-kix_jgczz3gscok8-1 {
+				list-style-type: none
+				}
+
+				ol.lst-kix_jgczz3gscok8-2 {
+				list-style-type: none
+				}
+
+				ol.lst-kix_jgczz3gscok8-4.start {
+				counter-reset: lst-ctn-kix_jgczz3gscok8-4 0
 				}
 
 				ol.lst-kix_4g3mv9s074cy-8.start {
@@ -458,12 +578,36 @@
 				counter-reset: lst-ctn-kix_yvqc3zdfhx8n-6 0
 				}
 
+				ol.lst-kix_jgczz3gscok8-3 {
+				list-style-type: none
+				}
+
+				ol.lst-kix_jgczz3gscok8-4 {
+				list-style-type: none
+				}
+
 				.lst-kix_qk6k1tvty1hf-0>li {
 				counter-increment: lst-ctn-kix_qk6k1tvty1hf-0
 				}
 
 				ol.lst-kix_qk6k1tvty1hf-8.start {
 				counter-reset: lst-ctn-kix_qk6k1tvty1hf-8 0
+				}
+
+				ol.lst-kix_jgczz3gscok8-5 {
+				list-style-type: none
+				}
+
+				ol.lst-kix_jgczz3gscok8-6 {
+				list-style-type: none
+				}
+
+				ol.lst-kix_jgczz3gscok8-7 {
+				list-style-type: none
+				}
+
+				ol.lst-kix_jgczz3gscok8-8 {
+				list-style-type: none
 				}
 
 				.lst-kix_bukj9yunqdtp-3>li {
@@ -590,6 +734,10 @@
 				list-style-type: none
 				}
 
+				.lst-kix_jgczz3gscok8-6>li {
+				counter-increment: lst-ctn-kix_jgczz3gscok8-6
+				}
+
 				ul.lst-kix_c6va3znsqoro-5 {
 				list-style-type: none
 				}
@@ -658,6 +806,10 @@
 				content: "("counter(lst-ctn-kix_4g3mv9s074cy-3, decimal) ") "
 				}
 
+				ol.lst-kix_jgczz3gscok8-3.start {
+				counter-reset: lst-ctn-kix_jgczz3gscok8-3 0
+				}
+
 				.lst-kix_4g3mv9s074cy-2>li:before {
 				content: ""counter(lst-ctn-kix_4g3mv9s074cy-2, lower-roman) ") "
 				}
@@ -718,12 +870,20 @@
 				content: "  "
 				}
 
+				.lst-kix_jgczz3gscok8-2>li {
+				counter-increment: lst-ctn-kix_jgczz3gscok8-2
+				}
+
 				ol.lst-kix_2i391xhm6ry-4.start {
 				counter-reset: lst-ctn-kix_2i391xhm6ry-4 0
 				}
 
 				.lst-kix_c6va3znsqoro-3>li:before {
 				content: "  "
+				}
+
+				ol.lst-kix_jgczz3gscok8-8.start {
+				counter-reset: lst-ctn-kix_jgczz3gscok8-8 0
 				}
 
 				ol.lst-kix_2i391xhm6ry-8 {
@@ -778,12 +938,32 @@
 				list-style-type: none
 				}
 
+				ol.lst-kix_jgczz3gscok8-5.start {
+				counter-reset: lst-ctn-kix_jgczz3gscok8-5 0
+				}
+
+				.lst-kix_n1fnbl7wa7dq-8>li:before {
+				content: "  "
+				}
+
+				.lst-kix_n1fnbl7wa7dq-6>li:before {
+				content: "  "
+				}
+
 				ol.lst-kix_2i391xhm6ry-3.start {
 				counter-reset: lst-ctn-kix_2i391xhm6ry-3 0
 				}
 
+				.lst-kix_jgczz3gscok8-8>li:before {
+				content: ""counter(lst-ctn-kix_jgczz3gscok8-8, lower-roman) ". "
+				}
+
 				.lst-kix_qk6k1tvty1hf-8>li {
 				counter-increment: lst-ctn-kix_qk6k1tvty1hf-8
+				}
+
+				.lst-kix_n1fnbl7wa7dq-4>li:before {
+				content: "  "
 				}
 
 				.lst-kix_yvqc3zdfhx8n-3>li:before {
@@ -810,12 +990,24 @@
 				counter-reset: lst-ctn-kix_yvqc3zdfhx8n-4 0
 				}
 
+				ol.lst-kix_jgczz3gscok8-6.start {
+				counter-reset: lst-ctn-kix_jgczz3gscok8-6 0
+				}
+
 				ol.lst-kix_2i391xhm6ry-2.start {
 				counter-reset: lst-ctn-kix_2i391xhm6ry-2 0
 				}
 
+				.lst-kix_jgczz3gscok8-7>li {
+				counter-increment: lst-ctn-kix_jgczz3gscok8-7
+				}
+
 				ol.lst-kix_yvqc3zdfhx8n-3.start {
 				counter-reset: lst-ctn-kix_yvqc3zdfhx8n-3 0
+				}
+
+				.lst-kix_jgczz3gscok8-1>li {
+				counter-increment: lst-ctn-kix_jgczz3gscok8-1
 				}
 
 				.lst-kix_bukj9yunqdtp-0>li:before {
@@ -850,6 +1042,10 @@
 				list-style-type: none
 				}
 
+				.lst-kix_jgczz3gscok8-0>li:before {
+				content: ""counter(lst-ctn-kix_jgczz3gscok8-0, decimal) ". "
+				}
+
 				.lst-kix_bukj9yunqdtp-6>li:before {
 				content: ""counter(lst-ctn-kix_bukj9yunqdtp-6, decimal) ". "
 				}
@@ -877,12 +1073,32 @@
 				list-style-type: none
 				}
 
+				.lst-kix_jgczz3gscok8-4>li:before {
+				content: ""counter(lst-ctn-kix_jgczz3gscok8-4, lower-latin) ". "
+				}
+
+				.lst-kix_n1fnbl7wa7dq-0>li:before {
+				content: "  "
+				}
+
 				.lst-kix_yvqc3zdfhx8n-3>li {
 				counter-increment: lst-ctn-kix_yvqc3zdfhx8n-3
 				}
 
 				.lst-kix_yvqc3zdfhx8n-7>li:before {
 				content: ""counter(lst-ctn-kix_yvqc3zdfhx8n-7, lower-latin) ". "
+				}
+
+				.lst-kix_jgczz3gscok8-2>li:before {
+				content: ""counter(lst-ctn-kix_jgczz3gscok8-2, lower-roman) ". "
+				}
+
+				.lst-kix_jgczz3gscok8-6>li:before {
+				content: ""counter(lst-ctn-kix_jgczz3gscok8-6, decimal) ". "
+				}
+
+				.lst-kix_n1fnbl7wa7dq-2>li:before {
+				content: "  "
 				}
 
 				.lst-kix_qk6k1tvty1hf-2>li {
@@ -907,37 +1123,18 @@
 				padding: 0
 				}
 
-				.c3 {
-				color: #000000;
-				font-weight: 400;
-				text-decoration: none;
-				vertical-align: baseline;
-				font-size: 20pt;
-				font-family: "Microsoft JhengHei";
-				font-style: normal
-				}
-
-				.c8 {
-				padding-top: 20pt;
-				padding-bottom: 6pt;
+				.c0 {
+				margin-left: 36pt;
+				padding-top: 0pt;
+				padding-left: 0pt;
+				padding-bottom: 0pt;
 				line-height: 1.15;
-				page-break-after: avoid;
 				orphans: 2;
 				widows: 2;
-				text-align: center
+				text-align: left
 				}
 
-				.c1 {
-				color: #000000;
-				font-weight: 400;
-				text-decoration: none;
-				vertical-align: baseline;
-				font-size: 16pt;
-				font-family: "Microsoft JhengHei";
-				font-style: normal
-				}
-
-				.c12 {
+				.c7 {
 				padding-top: 16pt;
 				padding-bottom: 4pt;
 				line-height: 1.15;
@@ -952,32 +1149,22 @@
 				font-weight: 400;
 				text-decoration: none;
 				vertical-align: baseline;
+				font-size: 16pt;
+				font-family: "Microsoft JhengHei";
+				font-style: normal
+				}
+
+				.c11 {
+				color: #000000;
+				font-weight: 400;
+				text-decoration: none;
+				vertical-align: baseline;
 				font-size: 11pt;
 				font-family: "Microsoft JhengHei";
 				font-style: normal
 				}
 
-				.c13 {
-				color: #000000;
-				font-weight: 400;
-				text-decoration: none;
-				vertical-align: baseline;
-				font-size: 16pt;
-				font-family: "Arial";
-				font-style: normal
-				}
-
-				.c14 {
-				color: #000000;
-				font-weight: 400;
-				text-decoration: none;
-				vertical-align: baseline;
-				font-size: 11pt;
-				font-family: "Arial";
-				font-style: normal
-				}
-
-				.c5 {
+				.c9 {
 				padding-top: 18pt;
 				padding-bottom: 6pt;
 				line-height: 1.15;
@@ -987,27 +1174,37 @@
 				text-align: left
 				}
 
-				.c11 {
-				color: #434343;
+				.c1 {
+				color: #000000;
 				font-weight: 400;
 				text-decoration: none;
 				vertical-align: baseline;
-				font-size: 14pt;
+				font-size: 12pt;
 				font-family: "Microsoft JhengHei";
 				font-style: normal
 				}
 
-				.c9 {
-				color: #ff0000;
+				.c4 {
+				color: #000000;
 				font-weight: 400;
 				text-decoration: none;
 				vertical-align: baseline;
-				font-size: 11pt;
-				font-family: "Microsoft JhengHei";
+				font-size: 12pt;
+				font-family: "Arial";
 				font-style: normal
 				}
 
-				.c0 {
+				.c5 {
+				padding-top: 20pt;
+				padding-bottom: 6pt;
+				line-height: 1.15;
+				page-break-after: avoid;
+				orphans: 2;
+				widows: 2;
+				text-align: center
+				}
+
+				.c12 {
 				padding-top: 0pt;
 				padding-bottom: 0pt;
 				line-height: 1.15;
@@ -1016,24 +1213,35 @@
 				text-align: left
 				}
 
+				.c13 {
+				color: #434343;
+				text-decoration: none;
+				vertical-align: baseline;
+				font-style: normal
+				}
+
+				.c8 {
+				color: #ff0000;
+				text-decoration: none;
+				vertical-align: baseline;
+				font-style: normal
+				}
+
 				.c6 {
-				<!--				background-color: #ffffff;-->
-				<!--				max-width: 451.4pt;-->
-				<!--				padding: 72pt 72pt 72pt 72pt-->
+				font-size: 12pt;
+				font-family: "Microsoft JhengHei";
+				font-weight: 400
 				}
 
 				.c10 {
+				/* background-color: #ffffff;
+				max-width: 451.4pt;
+				padding: 72pt 72pt 72pt 72pt */
+				}
+
+				.c3 {
 				padding: 0;
 				margin: 0
-				}
-
-				.c4 {
-				margin-left: 36pt;
-				padding-left: 0pt
-				}
-
-				.c7 {
-				height: 11pt
 				}
 
 				.title {
@@ -1161,41 +1369,86 @@
 			<DIV class="container py-6 py-md-7">
 				<DIV class="col-11 col-md-8 col-lg-6 mx-auto">
 					<H4 class="text-center text-primary">Youngme 使用者條款</H4>
-					<DIV class="c6">
-
-						<h1 class="c8" id="h.vai39ld9lwk"><span class="c3">Youngme陪玩須知</span></h1>
-						<h2 class="c5" id="h.wivyogekgdf9"><span class="c1">服務內容</span></h2>
-						<p class="c0"><span class="c2">本站養蜜提供陪伴媒合服務，租賃陪玩師一小段的療癒時光，與包養及八大相關產業性質不同，不提供任何性相關服務，因此為了防止發生意外，禁止在封閉空間進行約會。</span></p>
-						<h3 class="c12" id="h.4km40m2nyakk"><span class="c11">基本服務</span></h3>
-						<ul class="c10 lst-kix_g4duux1resp7-0 start">
-							<li class="c0 c4 li-bullet-0"><span class="c2">陪伴及約會</span></li>
-							<li class="c0 c4 li-bullet-0"><span class="c2">勾手臂、牽手、摟肩、摟腰及摸頭</span></li>
+					<div class="c10">
+						<h2 class="c9" id="h.wivyogekgdf9"><span class="c1">服務內容</span></h2>
+						<p class="c12"><span
+								class="c1">本站養蜜提供陪伴媒合服務，租賃陪玩師一小段的療癒時光，與包養及八大相關產業性質不同，不提供任何性相關服務，因此為了防止發生意外，禁止在封閉空間進行約會。</span>
+						</p>
+						<h3 class="c7" id="h.4km40m2nyakk"><span class="c6 c13">基本服務</span></h3>
+						<ul class="c3 lst-kix_n1fnbl7wa7dq-0 start">
+							<li class="c0 li-bullet-0"><span class="c1">陪伴及約會</span></li>
+							<li class="c0 li-bullet-0"><span
+									class="c1">勾手臂、牽手、摟肩、摟腰及摸頭</span>
+							</li>
 						</ul>
-						<p class="c0"><span class="c2">           * 根據陪玩師不同，提供不同服務</span></p>
-						<p class="c0"><span class="c2">           * 禁止上述以外的身體接觸與性交易</span></p>
-						<p class="c0 c7"><span class="c14"></span></p>
-						<h2 class="c5" id="h.7ns3agtkvazh"><span class="c13">工作須知</span></h2>
-						<ol class="c10 lst-kix_bukj9yunqdtp-0 start" start="1">
-							<li class="c0 c4 li-bullet-0"><span class="c2">養蜜陪玩師需滿18歲</span></li>
-							<li class="c0 c4 li-bullet-0"><span class="c2">須完成安全認證再進行提領薪水</span></li>
-							<li class="c0 c4 li-bullet-0"><span class="c2">無須輪班可打工兼職，時間您自由安排</span></li>
-							<li class="c0 c4 li-bullet-0"><span class="c2">不得脫離平台交易，通過任何其他途徑進行非平台訂單交易，因此產生糾紛怒不負責</span></li>
-							<li class="c0 c4 li-bullet-0"><span class="c2">不得透過本平台服務販賣商品或散佈商業廣告</span></li>
-							<li class="c0 c4 li-bullet-0"><span class="c2">嚴禁在封閉空間進行約會，例如 : 住宅、旅館、私人包廂、汽車等私人空間</span></li>
-							<li class="c0 c4 li-bullet-0"><span class="c2">性服務和過度的身體接觸完全禁止</span></li>
-							<li class="c0 c4 li-bullet-0"><span class="c2">不得進行非法相關行為</span></li>
-							<li class="c0 c4 li-bullet-0"><span class="c2">若在接洽時，客戶發送不當訊息，請提高警覺酌情接單</span></li>
-							<li class="c0 c4 li-bullet-0"><span class="c9">不得侵犯客戶隱私，例如 : 索取私人通訊方式</span></li>
-							<li class="c0 c4 li-bullet-0"><span class="c2">不得提供個人資料，例如 : 銀行帳戶、身分證等</span></li>
-							<li class="c0 c4 li-bullet-0"><span class="c2">若您與客戶互動間有任何疑慮，請隨時向客服諮詢</span></li>
-							<li class="c0 c4 li-bullet-0"><span class="c2">若您與客戶陪玩過程中，客戶進行不恰當行為，例如 : 騷擾、強制進行非約定的行程等，請立即通報客服</span></li>
+						<p class="c12"><span class="c1">           *
+							根據陪玩師不同，提供不同服務</span>
+						</p>
+						<p class="c12"><span class="c6">           *
+							禁止上述以外的身體接觸與性交易</span>
+						</p>
+						<h2 class="c9" id="h.7ns3agtkvazh"><span class="c4">工作須知</span></h2>
+						<ol class="c3 lst-kix_jgczz3gscok8-0 start" start="1">
+							<li class="c0 li-bullet-0"><span
+									class="c1">養蜜陪玩師需滿18歲</span></li>
+							<li class="c0 li-bullet-0"><span
+									class="c1">須完成真人認證再進行提領薪水</span>
+							</li>
+							<li class="c0 li-bullet-0"><span
+									class="c1">不得脫離平台交易，通過任何其他途徑進行非平台訂單交易，因此產生糾紛恕不負責</span>
+							</li>
+							<li class="c0 li-bullet-0"><span
+									class="c1">不得透過本平台服務販賣商品或散佈商業廣告</span>
+							</li>
+							<li class="c0 li-bullet-0"><span
+									class="c1">嚴禁在封閉空間進行約會，例如
+								:
+								住宅、旅館、私人包廂、汽車等私人空間</span>
+							</li>
+							<li class="c0 li-bullet-0"><span
+									class="c1">建議定點約會，若無可避免，請搭乘大眾運輸工具或計程車，請勿搭乘私人汽機車，因此產生糾紛恕不負責</span>
+							</li>
+							<li class="c0 li-bullet-0"><span
+									class="c1">性服務和過度的身體接觸完全禁止</span>
+							</li>
+							<li class="c0 li-bullet-0"><span
+									class="c6">不得進行非法相關行為</span></li>
+							<li class="c0 li-bullet-0"><span
+									class="c1">不得提供個人資料給客戶，例如
+								:
+								銀行帳戶、身分證、索取私人通訊方式等</span>
+							</li>
+							<li class="c0 li-bullet-0"><span
+									class="c1">若您與客戶互動間有任何疑慮，請隨時通知經紀</span>
+							</li>
+							<li class="c0 li-bullet-0"><span
+									class="c1">若您與客戶陪玩過程中，客戶進行不恰當行為，例如
+								:
+								騷擾、強制進行非約定的行程等，請立即通報經紀</span>
+							</li>
+							<li class="c0 li-bullet-0"><span
+									class="c1">陪玩費用七天後會透過金流系統匯款至您的帳戶，匯款證明將傳送至您的LINE</span>
+							</li>
+							<li class="c0 li-bullet-0"><span
+									class="c1">取消約會請於預約時間24小時前聯繫官方客服</span>
+							</li>
+							<li class="c0 li-bullet-0"><span
+									class="c1">確定接單約會後，無故缺席、失蹤放鳥客戶，恕不支付陪玩薪水，第二次出現該情況將終止您的合作</span>
+							</li>
+							<li class="c0 li-bullet-0"><span
+									class="c1">若您約會遲到需補足時數，ex
+								: 約會1小時、10點開始，您10 :
+								15開始進行陪玩，陪玩時間則需延後至11
+								: 15結束</span></li>
+							<li class="c0 li-bullet-0"><span
+									class="c6">若因電影場次有延後需加時，請立即通知客服或經紀協助客戶預先付清加時費</span>
+							</li>
 						</ol>
-						<p class="c0 c7"><span class="c2"></span></p>
-					</DIV>
+					</div>
 				</DIV>
 
 				<DIV class="text-center">
-					<A onClick="javascript :history.back(1);" class="btn primary-gradient text-white text-bold m-0 w-80 py-2">回上一頁</A>
+					<A onClick="javascript :history.back(1);" class="btn primary-gradient text-white text-bold m-0 w-40 py-2">回上一頁</A>
 				</DIV>
 
 			</DIV>
