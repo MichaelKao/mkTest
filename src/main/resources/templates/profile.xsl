@@ -551,9 +551,9 @@
 							<xsl:for-each select="service">
 								<div class="col-md-6">
 									<A class="me-1 btn btn-outline-pink m-0 p-1" href="/search.json?companionship={@id}">
-										<SPAN>
+										<span>
 											<xsl:value-of select="."/>
-										</SPAN>
+										</span>
 									</A>
 								</div>
 							</xsl:for-each>
