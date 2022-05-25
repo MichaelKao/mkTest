@@ -325,6 +325,11 @@
 							<SPAN class="ms-1">提供服務
 
 							</SPAN>
+							<xsl:if test="gender/@gender = 'female'">
+								<span class="text-primary text-bold text-sm">
+									(輸入明確的費用，邀約成功率提高60%！)
+								</span>
+							</xsl:if>
 						</LABEL>
 						<DIV class="d-flex flex-wrap bg-gray-100 border-radius-lg p-2">
 							<xsl:for-each select="service">

@@ -190,7 +190,7 @@
 												<SPAN class="text-secondary text-xs font-weight-bold">1000</SPAN>
 											</TD>
 											<TD class="text-sm text-center">
-												<SPAN class="text-secondary text-xs font-weight-bold">900</SPAN>
+												<SPAN class="text-secondary text-xs font-weight-bold">540</SPAN>
 											</TD>
 										</TR>
 										<xsl:for-each select="record">

@@ -75,15 +75,18 @@
 												<I class="fad fa-gift fontSize22 me-1"></I>
 												<SPAN>透過ME點做為禮物發送，好感度增加90%</SPAN>
 											</DIV>
-											<DIV>
-												<I class="fad fa-gift fontSize22 me-1"></I>
-												<SPAN>確定邀約即表示您已閱讀並同意 <A class="m-2 text-secondary" href="/termsInvite.asp">服務條款</A>
-
-
-												</SPAN>
-											</DIV>
 										</DIV>
 										<INPUT class="form-control" id="fare" inputmode="numeric" min="1" name="howMany" required="" type="number"/>
+										<xsl:if test="@male">
+											<DIV>
+												<I class="fad fa-gift fontSize22 me-1"></I>
+												<h9 class="text-secondary">確定邀約即表示您已閱讀並同意
+												</h9>
+												<div>
+													<A class="text-primary" href="/termsInvite.asp">服務條款</A>
+												</div>
+											</DIV>
+										</xsl:if>
 									</DIV>
 									<DIV class="text-center">
 										<BUTTON class="btn btn-outline-primary confirmFareBtn mx-1" type="button">
@@ -530,17 +533,32 @@
 				<DIV class="mt-2">
 					<I class="fad fa-book-heart fontSize22 me-2"></I>
 					<div class="row">
-					<xsl:for-each select="service">
-						<div class="col-md-6">
-						<A class="me-1 btn btn-outline-pink m-0 p-1" href="/search.json?companionship={@id}">
-							<SPAN>
-								<xsl:value-of select="."/>
-							</SPAN>
-						</A>
-						<i class="fad fa-badge-dollar fontSize22 width30whenMobile" aria-hidden="true"></i>
-						<span><xsl:value-of select="@servicePoint"/>/<xsl:value-of select="@serviceHour"/>H</span>
-						</div>
-					</xsl:for-each>
+
+						<xsl:if test="gender/@gender = 'female'">
+							<xsl:for-each select="service">
+								<div class="col-md-6">
+									<A class="me-1 btn btn-outline-pink m-0 p-1" href="/search.json?companionship={@id}">
+										<SPAN>
+											<xsl:value-of select="."/>
+										</SPAN>
+									</A>
+									<i class="fad fa-badge-dollar fontSize22 width30whenMobile" aria-hidden="true"></i>
+									<span><xsl:value-of select="@servicePoint"/>/<xsl:value-of select="@serviceHour"/>H</span>
+								</div>
+							</xsl:for-each>
+						</xsl:if>
+						<xsl:if test="gender/@gender = 'male'">
+							<xsl:for-each select="service">
+								<div class="col-md-6">
+									<A class="me-1 btn btn-outline-pink m-0 p-1" href="/search.json?companionship={@id}">
+										<SPAN>
+											<xsl:value-of select="."/>
+										</SPAN>
+									</A>
+								</div>
+							</xsl:for-each>
+						</xsl:if>
+
 					</div>
 				</DIV>
 			</SECTION>
