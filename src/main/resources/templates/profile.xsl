@@ -536,7 +536,7 @@
 
 						<xsl:if test="gender/@gender = 'female'">
 							<xsl:for-each select="service">
-								<div class="col-md-6 mb-2">
+								<div class="col-6 mb-2">
 									<A class="me-1 btn btn-outline-pink m-0 p-1" href="/search.json?companionship={@id}">
 										<SPAN>
 											<xsl:value-of select="."/>
@@ -549,7 +549,7 @@
 						</xsl:if>
 						<xsl:if test="gender/@gender = 'male'">
 							<xsl:for-each select="service">
-								<div class="col-md-6 mb-2">
+								<div class="col-6 mb-2">
 									<A class="me-1 btn btn-outline-pink m-0 p-1" href="/search.json?companionship={@id}">
 										<span>
 											<xsl:value-of select="."/>

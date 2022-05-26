@@ -127,39 +127,39 @@
 						</DIV>
 					</DIV>
 				</DIV>
-				<DIV class="modal fade" id="cannott_paymentModal" tabindex="-1">
-					<DIV class="modal-dialog modal-dialog-centered">
-						<DIV class="modal-content">
-							<DIV class="modal-body">
-								<DIV class="d-flex">
-									<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">
-										<I class="fal fa-times"></I>
-									</BUTTON>
-								</DIV>
-								<DIV class="tab-content">
-									<DIV class="tab-pane active" id="wire">
-										<DIV class="text-sm opacity-8 p-0">
-											<DIV class="mt-3 text-center">
-												<h5>您還不能執行此功能</h5>
-											</DIV>
-											<DIV class="mt-3 text-center">
-												<SPAN class="">請先完成 <b>安全認證</b></SPAN>
-											</DIV>
-											<DIV class="mt-3 text-center">
-												<SPAN class="">增加帳戶信任度</SPAN>
-											</DIV>
-											<DIV class="text-center">
+<!--				<DIV class="modal fade" id="cannott_paymentModal" tabindex="-1">-->
+<!--					<DIV class="modal-dialog modal-dialog-centered">-->
+<!--						<DIV class="modal-content">-->
+<!--							<DIV class="modal-body">-->
+<!--								<DIV class="d-flex">-->
+<!--									<BUTTON class="btn btn-link ms-auto fontSize22 m-0 p-0" data-bs-dismiss="modal" type="button">-->
+<!--										<I class="fal fa-times"></I>-->
+<!--									</BUTTON>-->
+<!--								</DIV>-->
+<!--								<DIV class="tab-content">-->
+<!--									<DIV class="tab-pane active" id="wire">-->
+<!--										<DIV class="text-sm opacity-8 p-0">-->
+<!--											<DIV class="mt-3 text-center">-->
+<!--												<h5>您還不能執行此功能</h5>-->
+<!--											</DIV>-->
+<!--											<DIV class="mt-3 text-center">-->
+<!--												<SPAN class="">請先完成 <b>安全認證</b></SPAN>-->
+<!--											</DIV>-->
+<!--											<DIV class="mt-3 text-center">-->
+<!--												<SPAN class="">增加帳戶信任度</SPAN>-->
+<!--											</DIV>-->
+<!--											<DIV class="text-center">-->
 
 
-												<BUTTON class="btn btn-primary btn-lg mb-0" data-bs-dismiss="modal"  type="button">確定</BUTTON>
-											</DIV>
-										</DIV>
-									</DIV>
-								</DIV>
-							</DIV>
-						</DIV>
-					</DIV>
-				</DIV>
+<!--												<BUTTON class="btn btn-primary btn-lg mb-0" data-bs-dismiss="modal"  type="button">確定</BUTTON>-->
+<!--											</DIV>-->
+<!--										</DIV>-->
+<!--									</DIV>-->
+<!--								</DIV>-->
+<!--							</DIV>-->
+<!--						</DIV>-->
+<!--					</DIV>-->
+<!--				</DIV>-->
 				<DIV class="nav-wrapper position-relative end-0 col-md-8 mx-auto">
 					<UL class="nav nav-pills nav-fill">
 						<LI class="nav-item">
