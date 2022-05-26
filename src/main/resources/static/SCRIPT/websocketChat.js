@@ -54,7 +54,7 @@ $(document).ready(function () {
 							$(floatDiv).prepend(floatWrap);
 							$(floatWrap).append(`<DIV class="text-primary">
 									<DIV><I class="fad fa-user-plus"></I><SPAN>接受後可於聊天室暢聊</SPAN></DIV>
-									<DIV>同時提供綁定的通訊軟體</DIV></DIV>`);
+									</DIV>`);
 							var acceptBtn = document.createElement('BUTTON');
 							$(acceptBtn).attr({
 								'class': 'btn btn-outline-primary btn-round px-2 py-1 m-0 me-1 accept',
@@ -600,9 +600,9 @@ $(document).ready(function () {
 								var firstLineSpan = document.createElement('SPAN');
 								$(firstLineSpan).append('接受後可於聊天室暢聊');
 								$(firstLineDiv).append(firstLineSpan);
-								var secondLineDiv = document.createElement('DIV');
-								$(secondLineDiv).append('同時提供綁定的通訊軟體');
-								$(msgDiv).append(secondLineDiv);
+								// var secondLineDiv = document.createElement('DIV');
+								// $(secondLineDiv).append('同時提供綁定的通訊軟體');
+								// $(msgDiv).append(secondLineDiv);
 								var acceptBtn = document.createElement('BUTTON');
 								$(acceptBtn).attr({
 									'class': 'btn btn-outline-primary btn-round px-2 py-1 m-0 me-1 accept',

@@ -1004,11 +1004,7 @@ public class HistoryService {
 		lineGivenRepository.saveAndFlush(lineGiven);
 
 		return new JavaScriptObjectNotation().
-			withReason(messageSource.getMessage(
-				"inviteMeAsLineFriend.done",
-				null,
-				locale
-			)).
+			withReason("您與男仕已成為好友").
 			withResponse(true).
 			withResult(history.getOccurred()).
 			toJSONObject();
@@ -1264,11 +1260,7 @@ public class HistoryService {
 		lineGivenRepository.saveAndFlush(lineGiven);
 
 		return new JavaScriptObjectNotation().
-			withReason(messageSource.getMessage(
-				"refuseToBeLineFriend.done",
-				null,
-				locale
-			)).
+			withReason("您已拒絕這位男士").
 			withResponse(true).
 			withResult(history.getOccurred()).
 			toJSONObject();
