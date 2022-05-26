@@ -2925,9 +2925,9 @@ public class WelcomeController {
 				)).
 				withResponse(false).
 				toJSONObject();
-			if (Objects.equals(exception.getMessage(), "inviteMeAsLineFriend.mustntBeNull")) {
-				jsonObject.put("redirect", "/me.asp");
-			}
+//			if (Objects.equals(exception.getMessage(), "inviteMeAsLineFriend.mustntBeNull")) {
+//				jsonObject.put("redirect", "/me.asp");
+//			}
 		}
 		return jsonObject.toString();
 	}

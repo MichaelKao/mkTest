@@ -961,35 +961,35 @@ public class HistoryService {
 		if (Objects.equals(passive.getGender(), false)) {
 			throw new RuntimeException("inviteMeAsLineFriend.passiveMustBeMale");
 		}
-		String inviteMeAsLineFriend = initiative.getInviteMeAsLineFriend();
-		if (Objects.isNull(inviteMeAsLineFriend) || inviteMeAsLineFriend.isBlank()) {
-			throw new RuntimeException("inviteMeAsLineFriend.mustntBeNull");
-		}
+//		String inviteMeAsLineFriend = initiative.getInviteMeAsLineFriend();
+//		if (Objects.isNull(inviteMeAsLineFriend) || inviteMeAsLineFriend.isBlank()) {
+//			throw new RuntimeException("inviteMeAsLineFriend.mustntBeNull");
+//		}
 
-		History history = new History(
-			initiative,
-			passive,
-			BEHAVIOR_INVITE_ME_AS_LINE_FRIEND
-		);
-		history.setGreeting(inviteMeAsLineFriend);
-		history = historyRepository.saveAndFlush(history);
-
-		// 推送通知給男生
-		webSocketServer.sendNotification(
-			passive.getIdentifier().toString(),
-			String.format(
-				"inbox%s已答應給你通訊軟體!",
-				initiative.getNickname()
-			));
-		if (loverService.hasLineNotify(passive)) {
-			// LINE Notify
-			lineMessagingService.notify(
-				passive,
-				String.format(
-					"有位甜心答應給你通訊軟體！馬上查看 https://%s/activities.asp",
-					Servant.LOCALHOST
-				));
-		}
+//		History history = new History(
+//			initiative,
+//			passive,
+//			BEHAVIOR_INVITE_ME_AS_LINE_FRIEND
+//		);
+//		history.setGreeting(inviteMeAsLineFriend);
+//		history = historyRepository.saveAndFlush(history);
+//
+//		// 推送通知給男生
+//		webSocketServer.sendNotification(
+//			passive.getIdentifier().toString(),
+//			String.format(
+//				"inbox%s已答應給你通訊軟體!",
+//				initiative.getNickname()
+//			));
+//		if (loverService.hasLineNotify(passive)) {
+//			// LINE Notify
+//			lineMessagingService.notify(
+//				passive,
+//				String.format(
+//					"有位甜心答應給你通訊軟體！馬上查看 https://%s/activities.asp",
+//					Servant.LOCALHOST
+//				));
+//		}
 
 		History historyReply = historyRepository.findTop1ByInitiativeAndPassiveAndBehaviorOrderByIdDesc(
 			passive, initiative, BEHAVIOR_GIMME_YOUR_LINE_INVITATION
@@ -1006,7 +1006,7 @@ public class HistoryService {
 		return new JavaScriptObjectNotation().
 			withReason("您與男仕已成為好友").
 			withResponse(true).
-			withResult(history.getOccurred()).
+			withResult(historyReply.getOccurred()).
 			toJSONObject();
 	}
 
