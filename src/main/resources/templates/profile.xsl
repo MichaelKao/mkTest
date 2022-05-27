@@ -532,9 +532,8 @@
 				</DIV>
 				<DIV class="mt-2">
 					<I class="fad fa-book-heart fontSize22 me-2"></I>
-					<div class="row">
-
-						<xsl:if test="gender/@gender = 'female'">
+					<xsl:if test="gender/@gender = 'female'">
+						<div class="row">
 							<xsl:for-each select="service">
 								<div class="col-6 mb-2">
 									<A class="me-1 btn btn-outline-pink m-0 p-1" href="/search.json?companionship={@id}">
@@ -546,19 +545,18 @@
 									<span><xsl:value-of select="@servicePoint"/>/<xsl:value-of select="@serviceHour"/>H</span>
 								</div>
 							</xsl:for-each>
-						</xsl:if>
-						<xsl:if test="gender/@gender = 'male'">
-							<xsl:for-each select="service">
-								<A class="me-1 btn btn-outline-pink m-0 p-1" href="/search.json?companionship={@id}">
-									<SPAN>#</SPAN>
-									<SPAN>
-										<xsl:value-of select="."/>
-									</SPAN>
-								</A>
-							</xsl:for-each>							
-						</xsl:if>
-
-					</div>
+						</div>
+					</xsl:if>
+					<xsl:if test="gender/@gender = 'male'">
+						<xsl:for-each select="service">
+							<A class="me-1 btn btn-outline-pink m-0 p-1" href="/search.json?companionship={@id}">
+								<SPAN>#</SPAN>
+								<SPAN>
+									<xsl:value-of select="."/>
+								</SPAN>
+							</A>
+						</xsl:for-each>							
+					</xsl:if>
 				</DIV>
 			</SECTION>
 			<SECTION class="mb-2 p-3 card">
