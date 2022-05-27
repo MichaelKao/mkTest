@@ -24,7 +24,7 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
-			<LINK href="/STYLE/withdrawal.css" rel="stylesheet"/>
+			<LINK href="/STYLE/withdrawal.css?v=20220527" rel="stylesheet"/>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
