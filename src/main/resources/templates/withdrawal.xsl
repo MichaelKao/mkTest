@@ -24,7 +24,7 @@
 				<xsl:value-of select="@title"/>
 			</TITLE>
 			<xsl:call-template name="headLinkTags"/>
-			<LINK href="/STYLE/withdrawal.css" rel="stylesheet"/>
+			<LINK href="/STYLE/withdrawal.css?v=20220527" rel="stylesheet"/>
 		</HEAD>
 		<BODY>
 			<xsl:call-template name="navbar"/>
@@ -182,7 +182,7 @@
 				<DIV class="tab-content">
 					<DIV class="tab-pane mt-3 active" id="mainOne">
 						<DIV class="text-sm opacity-8 p-0 col-md-8 mx-auto">
-							<DIV class="card p-3">
+							<DIV class="topCard p-3">
 								<H6 class="text-center text-bold text-primary">目前可提領的總價值：<xsl:value-of select="@totalPoints"/></H6>
 								<DIV class="text-xs text-center">
 									<SPAN>僅能提領</SPAN>
