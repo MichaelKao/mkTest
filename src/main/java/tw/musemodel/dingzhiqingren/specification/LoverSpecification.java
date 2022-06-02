@@ -193,26 +193,26 @@ public class LoverSpecification {
                 predicates.add(criteriaBuilder.isNull(
                         root.get(Lover_.delete)
                 ));//未封号
-                predicates.add(criteriaBuilder.isNotNull(
-                        root.get(Lover_.relationship)
-                ));//有预期关系
+//                predicates.add(criteriaBuilder.isNotNull(
+//                        root.get(Lover_.relationship)
+//                ));//有预期关系
                 if (gender) {
                         predicates.add(criteriaBuilder.isTrue(
                                 root.get(Lover_.gender)
                         ));//男士
-                        predicates.add(criteriaBuilder.isNotNull(
-                                root.get(Lover_.annualIncome)
-                        ));//有年收入
+//                        predicates.add(criteriaBuilder.isNotNull(
+//                                root.get(Lover_.annualIncome)
+//                        ));//有年收入
                 } else {
                         predicates.add(criteriaBuilder.isFalse(
                                 root.get(Lover_.gender)
                         ));//甜心
-                        predicates.add(criteriaBuilder.isNotNull(
-                                root.get(Lover_.inviteMeAsLineFriend)
-                        ));//有添加好友链结
-                        predicates.add(criteriaBuilder.isNotNull(
-                                root.get(Lover_.allowance)
-                        ));//有期望零用钱
+//                        predicates.add(criteriaBuilder.isNotNull(
+//                                root.get(Lover_.inviteMeAsLineFriend)
+//                        ));//有添加好友链结
+//                        predicates.add(criteriaBuilder.isNotNull(
+//                                root.get(Lover_.allowance)
+//                        ));//有期望零用钱
                 }
 
                 predicate.getExpressions().addAll(predicates);
