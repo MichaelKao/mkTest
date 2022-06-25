@@ -1334,14 +1334,19 @@ public class WelcomeController {
 	 * 新建帐户
 	 *
 	 * @param signUp 模型
-	 * @param request 请求
 	 * @param authentication 认证
+	 * @param request 请求
 	 * @return 杰森格式对象
 	 */
-	@PostMapping(path = "/signUp.asp")
+	@PostMapping(headers = "Content-Type=*/*", path = "/signUp.asp")
 	@ResponseBody
-	String signUp(SignUp signUp, HttpServletRequest request,
-		Authentication authentication, Locale locale) throws SAXException, IOException, ParserConfigurationException {
+	String signUp(
+		SignUp signUp,
+		Authentication authentication,
+		Locale locale,
+		HttpServletRequest request
+	) throws SAXException, IOException, ParserConfigurationException {
+		LOGGER.debug("除錯\n{}", signUp);
 		if (!servant.isNull(authentication)) {
 			return new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
@@ -1668,20 +1673,20 @@ public class WelcomeController {
 	@ResponseBody
 	@Secured({Servant.ROLE_ADVENTURER})
 	String editProfile(LoverVO model, Authentication authentication,
-					   Locale locale
+		Locale locale
 	) {
 		// 本人
 		Lover me = loverService.loadByUsername(
 			authentication.getName()
 		);
 
-		ArrayList<CompanionshipWithInfo> lstServices=new ArrayList<>();
+		ArrayList<CompanionshipWithInfo> lstServices = new ArrayList<>();
 
-		for (int i = 0; i < model.getServiceId().size(); i++  ) {
-			Integer iServiceId=model.getServiceId().get(i);
-			if (model.getServiceChecked().contains(iServiceId)){
+		for (int i = 0; i < model.getServiceId().size(); i++) {
+			Integer iServiceId = model.getServiceId().get(i);
+			if (model.getServiceChecked().contains(iServiceId)) {
 
-				CompanionshipWithInfo info=new CompanionshipWithInfo();
+				CompanionshipWithInfo info = new CompanionshipWithInfo();
 
 				info.setServiceId(iServiceId);
 				info.setHour(model.getHour().get(i));
@@ -1691,10 +1696,9 @@ public class WelcomeController {
 			}
 		}
 
-		if (lstServices.size()>0){
-			loverService.updateService2(me,lstServices);
+		if (lstServices.size() > 0) {
+			loverService.updateService2(me, lstServices);
 		}
-
 
 //		for (CompanionshipWithInfo service : model.getServices()) {
 //			loverService.updateService(service, me,service.getHour(),service.getPoint());
@@ -3082,7 +3086,6 @@ public class WelcomeController {
 			);
 		}
 
-
 		ModelAndView modelAndView = new ModelAndView("termsInvite");
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
@@ -3098,14 +3101,14 @@ public class WelcomeController {
 			//未登录
 			documentElement = document.getDocumentElement();
 			documentElement.setAttribute(
-					"customerLine",
-					Servant.CUSTOMER_LINE_DEFAULT
+				"customerLine",
+				Servant.CUSTOMER_LINE_DEFAULT
 			);//客服LINE
 		} else {
 			//已登录
 			documentElement = servant.documentElement(
-					document,
-					authentication
+				document,
+				authentication
 			);
 		}
 
@@ -3113,7 +3116,6 @@ public class WelcomeController {
 		modelAndView.getModelMap().addAttribute(document);
 		return modelAndView;
 	}
-
 
 	/**
 	 * 隐私权政策。
@@ -3231,25 +3233,21 @@ public class WelcomeController {
 		JSONObject jsonObject;
 
 		try {
-			if (me.getRelief()){
+			if (me.getRelief()) {
 				jsonObject = loverService.wireTransfer(
-						wireTransferBankCode,
-						wireTransferBranchCode,
-						wireTransferAccountName,
-						wireTransferAccountNumber,
-						me,
-						locale
+					wireTransferBankCode,
+					wireTransferBranchCode,
+					wireTransferAccountName,
+					wireTransferAccountNumber,
+					me,
+					locale
 				);
-			}else{
+			} else {
 				jsonObject = new JavaScriptObjectNotation().
-						withReason("請先進行「安心認證」").
-						withResponse(false).
-						toJSONObject();
+					withReason("請先進行「安心認證」").
+					withResponse(false).
+					toJSONObject();
 			}
-
-
-
-
 
 		} catch (Exception exception) {
 			jsonObject = new JavaScriptObjectNotation().
@@ -3412,7 +3410,7 @@ public class WelcomeController {
 
 		JSONObject jsonObject;
 		try {
-			jsonObject = loverService.updateService(service, me,0,0);
+			jsonObject = loverService.updateService(service, me, 0, 0);
 		} catch (Exception exception) {
 			jsonObject = new JavaScriptObjectNotation().
 				withReason(messageSource.getMessage(
@@ -3487,7 +3485,7 @@ public class WelcomeController {
 		JavaScriptObjectNotation json = new JavaScriptObjectNotation();
 
 		String anchor;
-		try (InputStream inputStream = multipartFile.getInputStream()) {
+		try ( InputStream inputStream = multipartFile.getInputStream()) {
 			JSONObject jsonObject = loverService.qrCodeToString(
 				inputStream,
 				locale
@@ -4065,7 +4063,7 @@ public class WelcomeController {
 			response.setDateHeader("Expires", 0);
 			response.setContentType("image/png");
 
-			try (ServletOutputStream responseOutputStream = response.getOutputStream()) {
+			try ( ServletOutputStream responseOutputStream = response.getOutputStream()) {
 				responseOutputStream.write(imgByte);
 				responseOutputStream.flush();
 			}
