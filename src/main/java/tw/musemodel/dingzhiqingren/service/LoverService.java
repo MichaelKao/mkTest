@@ -3817,8 +3817,9 @@ public class LoverService {
 				(resultSet, rowNum) -> resultSet.getInt("id")
 			);
 
-			return loverRepository.findByIdIn(
-				ids,
+			// 以id查詢情人 依照活耀程度重新到舊排序
+			return loverRepository.findByIdInOrderByActiveDesc(
+				ids, 
 				PageRequest.of(p, s)
 			);
 		} catch (IOException ignore) {

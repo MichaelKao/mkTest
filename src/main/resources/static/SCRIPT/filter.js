@@ -199,15 +199,8 @@ $(document).ready(function () {
 			$(pageBtn).click(function () {
 				var btn = this;
 				let p = $(btn).data('page');
-				var annualIncome;
-				var allowance;
-				if (typeof ($('SELECT[name="annualIncome"]').val()) != 'undefined') {
-					annualIncome = $('SELECT[name="annualIncome"]').val();
-					allowance = 0;
-				} else {
-					allowance = $('SELECT[name="allowance"]').val();
-					annualIncome = 0;
-				}
+				var annualIncome = 0;
+				var allowance = 0;
 				$.post(
 					'/filter.json',
 					{
@@ -256,15 +249,8 @@ $(document).ready(function () {
 			$(pageBtn).click(function () {
 				var btn = this;
 				let p = $(btn).data('page');
-				var annualIncome;
-				var allowance;
-				if (typeof ($('SELECT[name="annualIncome"]').val()) != 'undefined') {
-					annualIncome = $('SELECT[name="annualIncome"]').val();
-					allowance = 0;
-				} else {
-					allowance = $('SELECT[name="allowance"]').val();
-					annualIncome = 0;
-				}
+				var annualIncome = 0;
+				var allowance = 0;
 				$.post(
 					'/filter.json',
 					{

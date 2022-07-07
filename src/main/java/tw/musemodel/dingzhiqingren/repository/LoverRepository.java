@@ -71,6 +71,15 @@ public interface LoverRepository extends JpaRepository<Lover, Integer>, JpaSpeci
 	public Page<Lover> findByIdIn(Collection<Integer> id, Pageable pageable);
 
 	/**
+	 * findByIdInOrderByActiveDesc 以id查詢情人 依照活耀程度重新到舊排序
+	 * 
+	 * @param id 主鍵
+	 * @param pageable 分頁
+	 * @return 情人查詢結果
+	 */
+	public Page<Lover> findByIdInOrderByActiveDesc(Collection<Integer> id, Pageable pageable);
+	
+	/**
 	 * @param identifier 识别码
 	 * @return 情人
 	 */
