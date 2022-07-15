@@ -2111,10 +2111,6 @@ public class WelcomeController {
 			LOGGER.debug("上传的头贴大概率估计不是二维码");
 		}
 
-		amazonWebServices.deletePhotoFromS3Bucket(
-			"/profileImage", me.getProfileImage()
-		);
-
 		String fileName = UUID.randomUUID().toString();
 		amazonWebServices.uploadPhotoToS3Bucket(
 			multipartFile, fileName, "/profileImage"
@@ -2211,10 +2207,6 @@ public class WelcomeController {
 			pictureRepository.findOneByIdentifier(identifier).getId()
 		);
 		pictureRepository.flush();
-
-		amazonWebServices.deletePhotoFromS3Bucket(
-			"/pictures", identifier.toString()
-		);
 
 		return new JavaScriptObjectNotation().
 			withReason("Delete successfully").
